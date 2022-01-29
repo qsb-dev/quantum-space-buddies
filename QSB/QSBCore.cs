@@ -14,7 +14,9 @@ using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -42,7 +44,6 @@ namespace QSB
 	public class QSBCore : ModBehaviour
 	{
 		public static IModHelper Helper { get; private set; }
-		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
 		public static string DefaultServerIP;
 		public static bool UseKcpTransport => DebugSettings.UseKcpTransport;
 		public static int OverrideAppId => DebugSettings.OverrideAppId;
@@ -88,12 +89,9 @@ namespace QSB
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
 			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
 
-			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json");
+			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
 
-			if (DebugSettings == null)
-			{
-				DebugSettings = new DebugSettings();
-			}
+			InitializeAssemblies();
 
 			QSBPatchManager.Init();
 			DeterministicManager.Init();
@@ -121,7 +119,7 @@ namespace QSB
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
 		}
 
-		private void OnPatchType(QSBPatchTypes type)
+		private static void OnPatchType(QSBPatchTypes type)
 		{
 			if (type == QSBPatchTypes.OnClientConnect)
 			{
@@ -129,12 +127,28 @@ namespace QSB
 			}
 		}
 
-		private void OnUnpatchType(QSBPatchTypes type)
+		private static void OnUnpatchType(QSBPatchTypes type)
 		{
 			if (type == QSBPatchTypes.OnClientConnect)
 			{
 				Application.runInBackground = false;
 			}
+		}
+
+		private static void InitializeAssemblies()
+		{
+			DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
+			foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
+			{
+				var assembly = Assembly.LoadFile(path);
+				DebugLog.DebugWrite(assembly.ToString());
+				assembly.GetTypes()
+					.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
+					.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
+					.ForEach(x => x.Invoke(null, null));
+			}
+
+			DebugLog.DebugWrite($"Assemblies initialized", MessageType.Success);
 		}
 
 		public override void Configure(IModConfig config)

@@ -1,8 +1,10 @@
-﻿using Mirror;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
 using QSB.TornadoSync.TransformSync;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.TornadoSync
 {
@@ -10,7 +12,7 @@ namespace QSB.TornadoSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			QSBWorldSync.Init<QSBTornado, TornadoController>();
 

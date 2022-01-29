@@ -67,8 +67,11 @@ namespace QSB.OrbSync.TransformSync
 			if (AttachedTransform)
 			{
 				var body = AttachedTransform.GetAttachedOWRigidbody();
-				body.OnUnsuspendOWRigidbody -= OnUnsuspend;
-				body.OnSuspendOWRigidbody -= OnSuspend;
+				if (body)
+				{
+					body.OnUnsuspendOWRigidbody -= OnUnsuspend;
+					body.OnSuspendOWRigidbody -= OnSuspend;
+				}
 			}
 
 			base.Uninit();

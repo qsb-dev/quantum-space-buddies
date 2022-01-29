@@ -38,7 +38,7 @@ namespace QSB.Player.Messages
 				return;
 			}
 
-			QSBCore.UnityEvents.FireInNUpdates(KickPlayer, 10);
+			Delay.RunFramesLater(10, KickPlayer);
 		}
 
 		private void KickPlayer()

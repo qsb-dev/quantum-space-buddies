@@ -1,8 +1,10 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.SectorSync.WorldObjects
@@ -27,7 +29,7 @@ namespace QSB.SectorSync.WorldObjects
 		public bool IsFakeSector => AttachedObject is FakeSector;
 		public FakeSector FakeSector => (FakeSector)AttachedObject;
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (IsFakeSector)
 			{

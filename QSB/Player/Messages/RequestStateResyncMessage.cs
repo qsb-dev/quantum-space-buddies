@@ -31,7 +31,7 @@ namespace QSB.Player.Messages
 
 		public override void OnReceiveLocal()
 		{
-			QSBCore.UnityEvents.FireInNUpdates(() =>
+			Delay.RunFramesLater(60, () =>
 			{
 				if (_waitingForEvent)
 				{
@@ -42,7 +42,7 @@ namespace QSB.Player.Messages
 
 					_waitingForEvent = false;
 				}
-			}, 60);
+			});
 		}
 
 		public override void OnReceiveRemote()

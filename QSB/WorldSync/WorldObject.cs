@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using System.Threading;
+using UnityEngine;
 
 namespace QSB.WorldSync
 {
@@ -11,18 +13,12 @@ namespace QSB.WorldSync
 		public string Name => AttachedObject ? AttachedObject.name : "<NullObject!>";
 		public override string ToString() => $"{ObjectId}:{GetType().Name} ({Name})";
 
-		public virtual void Init() { }
+		public virtual async UniTask Init(CancellationToken ct) { }
 		public virtual void OnRemoval() { }
 		public virtual bool ShouldDisplayDebug() => QSBWorldSync.AllObjectsReady && AttachedObject && AttachedObject.gameObject.activeInHierarchy;
 		public virtual string ReturnLabel() => ToString();
 		public virtual void DisplayLines() { }
 
 		public abstract void SendInitialState(uint to);
-
-		/// indicates that this won't become ready immediately
-		protected void StartDelayedReady() => QSBWorldSync._numObjectsReadying++;
-
-		/// indicates that this is now ready
-		protected void FinishDelayedReady() => QSBWorldSync._numObjectsReadying--;
 	}
 }

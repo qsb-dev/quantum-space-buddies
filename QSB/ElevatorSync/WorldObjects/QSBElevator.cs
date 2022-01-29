@@ -1,6 +1,8 @@
-﻿using QSB.ElevatorSync.Messages;
+﻿using Cysharp.Threading.Tasks;
+using QSB.ElevatorSync.Messages;
 using QSB.Messaging;
 using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.ElevatorSync.WorldObjects
@@ -9,21 +11,15 @@ namespace QSB.ElevatorSync.WorldObjects
 	{
 		private OWTriggerVolume _elevatorTrigger;
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => AttachedObject._interactVolume, () =>
-			{
-				FinishDelayedReady();
+			// BUG : This won't work for the log lift! need to make a different trigger for that
 
-				// BUG : This won't work for the log lift! need to make a different trigger for that
+			var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
+			boxShape.center = new Vector3(0, 1.75f, 0.25f);
+			boxShape.size = new Vector3(3, 3.5f, 3);
 
-				var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
-				boxShape.center = new Vector3(0, 1.75f, 0.25f);
-				boxShape.size = new Vector3(3, 3.5f, 3);
-
-				_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
-			});
+			_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
 		}
 
 		public override void SendInitialState(uint to)

@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.ConversationSync.Patches;
 using QSB.LogSync;
 using QSB.Messaging;
@@ -8,6 +9,7 @@ using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.WorldSync
@@ -25,22 +27,27 @@ namespace QSB.WorldSync
 		/// </summary>
 		public static bool AllObjectsReady { get; private set; }
 
-		public static void BuildWorldObjects(OWScene scene)
+		private static CancellationTokenSource _cts;
+		private static readonly Dictionary<WorldObjectManager, UniTask> _managersBuilding = new();
+		private static readonly Dictionary<IWorldObject, UniTask> _objectsIniting = new();
+
+		public static async UniTaskVoid BuildWorldObjects(OWScene scene)
 		{
-			if (PlayerTransformSync.LocalInstance == null)
+			if (_cts != null)
 			{
-				DebugLog.ToConsole($"Warning - Tried to build WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
-				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance, () => BuildWorldObjects(scene));
 				return;
+			}
+
+			_cts = new CancellationTokenSource();
+
+			if (!PlayerTransformSync.LocalInstance)
+			{
+				DebugLog.ToConsole("Warning - Tried to build WorldObjects when LocalPlayer is not ready! Building when ready...", MessageType.Warning);
+				await UniTask.WaitUntil(() => PlayerTransformSync.LocalInstance, cancellationToken: _cts.Token);
 			}
 
 			GameInit();
 
-			DoBuild(scene);
-		}
-
-		private static void DoBuild(OWScene scene)
-		{
 			foreach (var manager in Managers)
 			{
 				switch (manager.WorldObjectType)
@@ -51,39 +58,64 @@ namespace QSB.WorldSync
 						continue;
 				}
 
-				DebugLog.DebugWrite($"Building {manager}", MessageType.Info);
-				manager.Try("building world objects", () => manager.BuildWorldObjects(scene));
+				var task = UniTask.Create(async () =>
+				{
+					await manager.Try("building world objects", async () =>
+					{
+						await manager.BuildWorldObjects(scene, _cts.Token);
+						DebugLog.DebugWrite($"Built {manager}", MessageType.Info);
+					});
+					_managersBuilding.Remove(manager);
+				});
+				if (!task.Status.IsCompleted())
+				{
+					_managersBuilding.Add(manager, task);
+				}
 			}
 
-			QSBCore.UnityEvents.RunWhen(() => _numManagersReadying == 0, () =>
+			await _managersBuilding.Values;
+			AllObjectsAdded = true;
+			DebugLog.DebugWrite("World Objects added.", MessageType.Success);
+
+			await _objectsIniting.Values;
+			AllObjectsReady = true;
+			DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
+
+			DeterministicManager.WorldObjectsReady();
+
+			if (!QSBCore.IsHost)
 			{
-				AllObjectsAdded = true;
-				DebugLog.DebugWrite("World Objects added.", MessageType.Success);
-				QSBCore.UnityEvents.RunWhen(() => _numObjectsReadying == 0, () =>
-				{
-					AllObjectsReady = true;
-					DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
-					DeterministicManager.WorldObjectsReady();
-
-					if (!QSBCore.IsHost)
-					{
-						new RequestInitialStatesMessage().Send();
-					}
-				});
-			});
+				new RequestInitialStatesMessage().Send();
+			}
 		}
-
-		internal static uint _numManagersReadying;
-		internal static uint _numObjectsReadying;
 
 		public static void RemoveWorldObjects()
 		{
-			GameReset();
+			if (_cts == null)
+			{
+				return;
+			}
 
+			_cts.Cancel();
+			_cts.Dispose();
+			_cts = null;
+
+			if (_managersBuilding.Count > 0)
+			{
+				DebugLog.DebugWrite($"{_managersBuilding.Count} managers still building", MessageType.Warning);
+			}
+
+			if (_objectsIniting.Count > 0)
+			{
+				DebugLog.DebugWrite($"{_objectsIniting.Count} objects still initing", MessageType.Warning);
+			}
+
+			_managersBuilding.Clear();
+			_objectsIniting.Clear();
 			AllObjectsAdded = false;
 			AllObjectsReady = false;
-			_numManagersReadying = 0;
-			_numObjectsReadying = 0;
+
+			GameReset();
 
 			foreach (var item in WorldObjects)
 			{
@@ -175,7 +207,7 @@ namespace QSB.WorldSync
 		public static TWorldObject GetWorldObject<TWorldObject>(this MonoBehaviour unityObject)
 			where TWorldObject : IWorldObject
 		{
-			if (unityObject == null)
+			if (!unityObject)
 			{
 				DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:NULL, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 				return default;
@@ -223,7 +255,6 @@ namespace QSB.WorldSync
 			where TWorldObject : WorldObject<TUnityObject>, new()
 			where TUnityObject : MonoBehaviour
 		{
-			//DebugLog.DebugWrite($"{typeof(TWorldObject).Name} init : {listToInitFrom.Count()} instances.", MessageType.Info);
 			foreach (var item in listToInitFrom)
 			{
 				var obj = new TWorldObject
@@ -231,10 +262,7 @@ namespace QSB.WorldSync
 					AttachedObject = item,
 					ObjectId = WorldObjects.Count
 				};
-
-				obj.Init();
-				WorldObjects.Add(obj);
-				UnityObjectsToWorldObjects.Add(item, obj);
+				AddAndInit(obj, item);
 			}
 		}
 
@@ -257,10 +285,25 @@ namespace QSB.WorldSync
 					ObjectId = WorldObjects.Count,
 					TriggerOwner = owner
 				};
+				AddAndInit(obj, item);
+			}
+		}
 
-				obj.Init();
-				WorldObjects.Add(obj);
-				UnityObjectsToWorldObjects.Add(item, obj);
+		private static void AddAndInit<TWorldObject, TUnityObject>(TWorldObject worldObject, TUnityObject unityObject)
+			where TWorldObject : WorldObject<TUnityObject>
+			where TUnityObject : MonoBehaviour
+		{
+			WorldObjects.Add(worldObject);
+			UnityObjectsToWorldObjects.Add(unityObject, worldObject);
+
+			var task = UniTask.Create(async () =>
+			{
+				await worldObject.Try("initing", () => worldObject.Init(_cts.Token));
+				_objectsIniting.Remove(worldObject);
+			});
+			if (!task.Status.IsCompleted())
+			{
+				_objectsIniting.Add(worldObject, task);
 			}
 		}
 

@@ -20,7 +20,7 @@ namespace QSB.ClientServerStateSync
 		private void Start()
 		{
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance != null,
+			Delay.RunWhen(() => PlayerTransformSync.LocalInstance != null,
 				() => new ClientStateMessage(ForceGetCurrentState()).Send());
 		}
 

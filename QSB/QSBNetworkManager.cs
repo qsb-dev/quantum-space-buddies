@@ -23,7 +23,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -59,14 +58,6 @@ namespace QSB
 
 		public override void Awake()
 		{
-			AppDomain.CurrentDomain.GetAssemblies()
-				.Where(x => x.GetName().Name.StartsWith("Mirror"))
-				.Append(typeof(QSBNetworkManager).Assembly)
-				.SelectMany(x => x.GetTypes())
-				.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
-				.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
-				.ForEach(x => x.Invoke(null, null));
-
 			gameObject.SetActive(false);
 
 			if (QSBCore.UseKcpTransport)
@@ -115,7 +106,7 @@ namespace QSB
 
 		private void InitPlayerName()
 		{
-			QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () =>
+			Delay.RunWhen(PlayerData.IsLoaded, () =>
 			{
 				try
 				{
@@ -217,19 +208,19 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBWorldSync.BuildWorldObjects(QSBSceneManager.CurrentScene);
+				QSBWorldSync.BuildWorldObjects(QSBSceneManager.CurrentScene).Forget();
 			}
 
 			var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
-			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+			Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new PlayerJoinMessage(PlayerName).Send());
 
 			if (!QSBCore.IsHost)
 			{
-				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+				Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 					() => new RequestStateResyncMessage().Send());
 			}
 

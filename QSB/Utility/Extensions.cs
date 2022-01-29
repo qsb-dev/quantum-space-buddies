@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
 using OWML.Common;
 using System;
 using System.Collections.Generic;
@@ -118,6 +119,18 @@ namespace QSB.Utility
 			try
 			{
 				action();
+			}
+			catch (Exception e)
+			{
+				DebugLog.ToConsole($"{self} - error {description} : {e}", MessageType.Error);
+			}
+		}
+
+		public static async UniTask Try(this object self, string description, Func<UniTask> func)
+		{
+			try
+			{
+				await func();
 			}
 			catch (Exception e)
 			{

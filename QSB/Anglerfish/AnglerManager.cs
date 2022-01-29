@@ -1,7 +1,9 @@
-﻿using QSB.Anglerfish.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Anglerfish.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace QSB.Anglerfish
 {
@@ -11,7 +13,7 @@ namespace QSB.Anglerfish
 
 		public static readonly List<AnglerfishController> Anglers = new();
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			Anglers.Clear();
 			Anglers.AddRange(QSBWorldSync.GetUnityObjects<AnglerfishController>().SortDeterministic());

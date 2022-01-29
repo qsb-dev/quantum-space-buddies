@@ -12,7 +12,7 @@ namespace QSB.WorldSync
 	{
 		public override void OnReceiveRemote()
 		{
-			QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsReady,
+			Delay.RunWhen(() => QSBWorldSync.AllObjectsReady,
 				() => SendInitialStates(From));
 		}
 

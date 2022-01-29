@@ -6,6 +6,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
     <OutputPath Condition="Exists($(OwmlDir))">$(OwmlDir)\Mods\QSB</OutputPath>
+    <NoWarn>1998</NoWarn>
   </PropertyGroup>
   <Target Name="weave qsb" BeforeTargets="PostBuildEvent" Condition="Exists($(GameDir))">
     <Exec Command="&quot;$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(OutputPath)\QSB.dll&quot; &quot;$(GameDir)&quot;" />
@@ -62,6 +63,7 @@ copy /y "$(OwmlDir)\OWML.Abstractions.dll" "$(UnityAssetsDir)"
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
+    <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\FizzyFacepunch\FizzyFacepunch.csproj" />
     <ProjectReference Include="..\QSBPatcher\QSBPatcher.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />

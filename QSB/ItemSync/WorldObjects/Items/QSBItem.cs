@@ -1,8 +1,10 @@
-﻿using QSB.ItemSync.WorldObjects.Sockets;
+﻿using Cysharp.Threading.Tasks;
+using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items
@@ -16,7 +18,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 		private Quaternion InitialRotation { get; set; }
 		private QSBSector InitialSector { get; set; }
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (AttachedObject == null)
 			{
@@ -24,31 +26,27 @@ namespace QSB.ItemSync.WorldObjects.Items
 				return;
 			}
 
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsAdded, () =>
+			await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
+
+			InitialParent = AttachedObject.transform.parent;
+			InitialPosition = AttachedObject.transform.localPosition;
+			InitialRotation = AttachedObject.transform.localRotation;
+			var initialSector = AttachedObject.GetSector();
+			if (initialSector != null)
 			{
-				FinishDelayedReady();
+				InitialSector = initialSector.GetWorldObject<QSBSector>();
+			}
 
-				InitialParent = AttachedObject.transform.parent;
-				InitialPosition = AttachedObject.transform.localPosition;
-				InitialRotation = AttachedObject.transform.localRotation;
-				var initialSector = AttachedObject.GetSector();
-				if (initialSector != null)
-				{
-					InitialSector = initialSector.GetWorldObject<QSBSector>();
-				}
+			if (InitialParent == null)
+			{
+				DebugLog.ToConsole($"Warning - InitialParent of {AttachedObject.name} is null!", OWML.Common.MessageType.Warning);
+			}
 
-				if (InitialParent == null)
-				{
-					DebugLog.ToConsole($"Warning - InitialParent of {AttachedObject.name} is null!", OWML.Common.MessageType.Warning);
-				}
-
-				if (InitialParent?.GetComponent<OWItemSocket>() != null)
-				{
-					var qsbObj = InitialParent.GetComponent<OWItemSocket>().GetWorldObject<QSBItemSocket>();
-					InitialSocket = qsbObj;
-				}
-			});
+			if (InitialParent?.GetComponent<OWItemSocket>() != null)
+			{
+				var qsbObj = InitialParent.GetComponent<OWItemSocket>().GetWorldObject<QSBItemSocket>();
+				InitialSocket = qsbObj;
+			}
 
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 		}
