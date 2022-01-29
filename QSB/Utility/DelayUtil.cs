@@ -11,7 +11,7 @@ namespace QSB.Utility
 			action();
 		});
 
-		public static UniTask RunFramesLater(Action action, int n) => UniTask.Create(async () =>
+		public static UniTask RunFramesLater(int n, Action action) => UniTask.Create(async () =>
 		{
 			await UniTask.DelayFrame(n);
 			action();
@@ -29,7 +29,7 @@ namespace QSB.Utility
 			await func();
 		});
 
-		public static UniTask RunFramesLater(Func<UniTask> func, int n) => UniTask.Create(async () =>
+		public static UniTask RunFramesLater(int n, Func<UniTask> func) => UniTask.Create(async () =>
 		{
 			await UniTask.DelayFrame(n);
 			await func();

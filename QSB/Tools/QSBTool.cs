@@ -15,9 +15,7 @@ namespace QSB.Tools
 			set
 			{
 				_toolGameObject = value;
-				DelayUtil.RunFramesLater(
-					() => DitheringAnimator = _toolGameObject.AddComponent<DitheringAnimator>(),
-					5);
+				DelayUtil.RunFramesLater(5, () => DitheringAnimator = _toolGameObject.AddComponent<DitheringAnimator>());
 			}
 		}
 		private GameObject _toolGameObject;

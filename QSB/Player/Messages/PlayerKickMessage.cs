@@ -38,7 +38,7 @@ namespace QSB.Player.Messages
 				return;
 			}
 
-			DelayUtil.RunFramesLater(KickPlayer, 10);
+			DelayUtil.RunFramesLater(10, KickPlayer);
 		}
 
 		private void KickPlayer()
