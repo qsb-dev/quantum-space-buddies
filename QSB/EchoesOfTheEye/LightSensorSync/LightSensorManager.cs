@@ -1,5 +1,7 @@
-﻿using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync
 {
@@ -8,6 +10,6 @@ namespace QSB.EchoesOfTheEye.LightSensorSync
 		// see AirlockManager question
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		public override void BuildWorldObjects(OWScene scene) => QSBWorldSync.Init<QSBSingleLightSensor, SingleLightSensor>();
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) => QSBWorldSync.Init<QSBSingleLightSensor, SingleLightSensor>();
 	}
 }

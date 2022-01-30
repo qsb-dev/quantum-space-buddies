@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using System.Threading;
+using UnityEngine;
 
 namespace QSB.WorldSync
 {
@@ -16,14 +18,10 @@ namespace QSB.WorldSync
 		/// </summary>
 		public abstract WorldObjectType WorldObjectType { get; }
 
-		public abstract void BuildWorldObjects(OWScene scene);
+		public abstract UniTask BuildWorldObjects(OWScene scene, CancellationToken ct);
 
 		public virtual void UnbuildWorldObjects() { }
 
-		/// indicates that this won't become ready immediately
-		protected void StartDelayedReady() => QSBWorldSync._numManagersReadying++;
-
-		/// indicates that this is now ready
-		protected void FinishDelayedReady() => QSBWorldSync._numManagersReadying--;
+		public override string ToString() => GetType().Name;
 	}
 }

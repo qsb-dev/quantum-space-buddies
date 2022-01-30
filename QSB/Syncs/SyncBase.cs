@@ -17,7 +17,7 @@ namespace QSB.Syncs
 	public abstract class SyncBase : QSBNetworkTransform
 	{
 		/// <summary>
-		/// valid if IsPlayerObject, otherwise null <br/>
+		/// valid if IsPlayerObject, otherwise null
 		/// </summary>
 		public PlayerInfo Player
 		{
@@ -81,7 +81,7 @@ namespace QSB.Syncs
 
 			if (!AttachedTransform)
 			{
-				DebugLog.ToConsole($"Error - AttachedObject {LogName} is null!", MessageType.Error);
+				DebugLog.ToConsole($"Error - AttachedObject {this} is null!", MessageType.Error);
 				return false;
 			}
 
@@ -92,7 +92,7 @@ namespace QSB.Syncs
 
 			if (!AllowNullReferenceTransform && !ReferenceTransform)
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is null.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is null.", MessageType.Warning);
 				return false;
 			}
 
@@ -114,7 +114,8 @@ namespace QSB.Syncs
 		public Transform ReferenceTransform { get; private set; }
 
 		public string Name => AttachedTransform ? AttachedTransform.name : "<NullObject!>";
-		public string LogName => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
+
+		public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
 			+ $"{netId}:{GetType().Name} ({Name})";
 
 		protected virtual float DistanceLeeway => 5f;
@@ -149,7 +150,7 @@ namespace QSB.Syncs
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			if (IsInitialized)
 			{
-				Uninit();
+				this.Try("uninitializing (from object destroy)", Uninit);
 			}
 		}
 
@@ -157,7 +158,7 @@ namespace QSB.Syncs
 		{
 			if (IsInitialized)
 			{
-				Uninit();
+				this.Try("uninitializing (from scene change)", Uninit);
 			}
 		}
 
@@ -182,9 +183,9 @@ namespace QSB.Syncs
 
 		private bool _shouldApply;
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
-			base.Deserialize(reader, initialState);
+			base.Deserialize(reader);
 			if (OnlyApplyOnDeserialize)
 			{
 				_shouldApply = true;
@@ -195,11 +196,11 @@ namespace QSB.Syncs
 		{
 			if (!IsInitialized && CheckReady())
 			{
-				Init();
+				this.Try("initializing", Init);
 			}
 			else if (IsInitialized && !CheckReady())
 			{
-				Uninit();
+				this.Try("uninitializing", Uninit);
 				base.Update();
 				return;
 			}
@@ -213,7 +214,7 @@ namespace QSB.Syncs
 
 			if (ReferenceTransform && ReferenceTransform.position == Vector3.zero)
 			{
-				DebugLog.ToConsole($"Warning - {LogName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedTransform.name}", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}", MessageType.Warning);
 			}
 
 			if (!hasAuthority && UseInterpolation)
@@ -238,7 +239,7 @@ namespace QSB.Syncs
 		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
 		{
 			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
+			if (Mathf.Abs(distance - _previousDistance) > DistanceLeeway)
 			{
 				_previousDistance = distance;
 				return targetPosition;
@@ -277,8 +278,7 @@ namespace QSB.Syncs
 		{
 			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsValid
-				|| !ReferenceTransform
-				|| !AttachedTransform.gameObject.activeInHierarchy)
+				|| !ReferenceTransform)
 			{
 				return;
 			}
@@ -302,13 +302,12 @@ namespace QSB.Syncs
 			if (!QSBCore.DebugSettings.ShowDebugLabels
 				|| Event.current.type != EventType.Repaint
 				|| !IsValid
-				|| !ReferenceTransform
-				|| !AttachedTransform.gameObject.activeInHierarchy)
+				|| !ReferenceTransform)
 			{
 				return;
 			}
 
-			DebugGUI.DrawLabel(AttachedTransform.transform, LogName);
+			DebugGUI.DrawLabel(AttachedTransform.transform, ToString());
 		}
 	}
 }

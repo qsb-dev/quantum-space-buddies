@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.SignalscopeTool.FrequencySync.Messages
 {
-	public class IdentifyFrequencyMessage : QSBEnumMessage<SignalFrequency>
+	public class IdentifyFrequencyMessage : QSBMessage<SignalFrequency>
 	{
 		public IdentifyFrequencyMessage(SignalFrequency frequency) => Value = frequency;
 

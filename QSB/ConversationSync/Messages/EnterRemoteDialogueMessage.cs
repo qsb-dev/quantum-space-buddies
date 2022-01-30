@@ -1,35 +1,14 @@
-﻿using Mirror;
-using QSB.ConversationSync.WorldObjects;
+﻿using QSB.ConversationSync.WorldObjects;
 using QSB.Messaging;
 
 namespace QSB.ConversationSync.Messages
 {
-	internal class EnterRemoteDialogueMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger>
+	internal class EnterRemoteDialogueMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger, int>
 	{
-		private int ActivatedDialogueIndex;
-		private int ListDialoguesIndex;
-
-		public EnterRemoteDialogueMessage(int activatedIndex, int listIndex)
-		{
-			ActivatedDialogueIndex = activatedIndex;
-			ListDialoguesIndex = listIndex;
-		}
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(ActivatedDialogueIndex);
-			writer.Write(ListDialoguesIndex);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			ActivatedDialogueIndex = reader.Read<int>();
-			ListDialoguesIndex = reader.Read<int>();
-		}
+		public EnterRemoteDialogueMessage(int dialogueIndex)
+			=> Value = dialogueIndex;
 
 		public override void OnReceiveRemote()
-			=> WorldObject.RemoteEnterDialogue(ActivatedDialogueIndex, ListDialoguesIndex);
+			=> WorldObject.RemoteEnterDialogue(Value);
 	}
 }

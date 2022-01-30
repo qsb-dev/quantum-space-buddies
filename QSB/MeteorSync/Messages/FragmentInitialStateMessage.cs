@@ -3,14 +3,13 @@ using OWML.Common;
 using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.MeteorSync.Messages
 {
 	/// called when we request a resync on client join
 	/// pain
-	public class FragmentResyncMessage : QSBWorldObjectMessage<QSBFragment>
+	public class FragmentInitialStateMessage : QSBWorldObjectMessage<QSBFragment>
 	{
 		private float Integrity;
 		private float OrigIntegrity;
@@ -23,7 +22,7 @@ namespace QSB.MeteorSync.Messages
 		private Vector3 RelVel;
 		private Vector3 RelAngVel;
 
-		public FragmentResyncMessage(QSBFragment qsbFragment)
+		public FragmentInitialStateMessage(QSBFragment qsbFragment)
 		{
 			Integrity = qsbFragment.AttachedObject._integrity;
 			OrigIntegrity = qsbFragment.AttachedObject._origIntegrity;
@@ -80,20 +79,22 @@ namespace QSB.MeteorSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			var qsbFragment = ObjectId.GetWorldObject<QSBFragment>();
-			qsbFragment.AttachedObject._integrity = Integrity;
-			qsbFragment.AttachedObject._origIntegrity = OrigIntegrity;
-			qsbFragment.LeashLength = LeashLength;
-			qsbFragment.AttachedObject.CallOnTakeDamage();
+			WorldObject.AttachedObject._origIntegrity = OrigIntegrity;
+			WorldObject.LeashLength = LeashLength;
+			if (!OWMath.ApproxEquals(WorldObject.AttachedObject._integrity, Integrity))
+			{
+				WorldObject.AttachedObject._integrity = Integrity;
+				WorldObject.AttachedObject.CallOnTakeDamage();
+			}
 
-			if (IsDetached)
+			if (IsDetached && !WorldObject.IsDetached)
 			{
 				// the detach is delayed, so wait until that happens
-				QSBCore.UnityEvents.RunWhen(() => qsbFragment.IsDetached, () =>
+				Delay.RunWhen(() => WorldObject.IsDetached, () =>
 				{
-					var body = qsbFragment.Body;
+					var body = WorldObject.Body;
 
-					if (IsThruWhiteHole && !qsbFragment.IsThruWhiteHole)
+					if (IsThruWhiteHole && !WorldObject.IsThruWhiteHole)
 					{
 						var whiteHoleVolume = MeteorManager.WhiteHoleVolume;
 						var attachedFluidDetector = body.GetAttachedFluidDetector();
@@ -108,28 +109,28 @@ namespace QSB.MeteorSync.Messages
 							constantForceDetector.ClearAllFields();
 						}
 
-						qsbFragment.DetachableFragment.ChangeFragmentSector(whiteHoleVolume._whiteHoleSector,
+						WorldObject.DetachableFragment.ChangeFragmentSector(whiteHoleVolume._whiteHoleSector,
 							whiteHoleVolume._whiteHoleProxyShadowSuperGroup);
 
-						qsbFragment.DetachableFragment.EndWarpScaling();
-						body.gameObject.AddComponent<DebrisLeash>().Init(whiteHoleVolume._whiteHoleBody, qsbFragment.LeashLength);
+						WorldObject.DetachableFragment.EndWarpScaling();
+						body.gameObject.AddComponent<DebrisLeash>().Init(whiteHoleVolume._whiteHoleBody, WorldObject.LeashLength);
 						whiteHoleVolume._ejectedBodyList.Add(body);
 					}
-					else if (!IsThruWhiteHole && qsbFragment.IsThruWhiteHole)
+					else if (!IsThruWhiteHole && WorldObject.IsThruWhiteHole)
 					{
 						// should only happen if client is way too far ahead and they try to connect. we fail here.
-						DebugLog.ToConsole($"{qsbFragment.LogName} is thru white hole, but msg is not. fuck", MessageType.Error);
+						DebugLog.ToConsole($"{WorldObject} is thru white hole, but msg is not. fuck", MessageType.Error);
 						return;
 					}
 
-					if (qsbFragment.IsThruWhiteHole)
+					if (WorldObject.IsThruWhiteHole)
 					{
 						var debrisLeash = body.GetComponent<DebrisLeash>();
 						debrisLeash._deccelerating = false;
 						debrisLeash.enabled = true;
 					}
 
-					var refBody = qsbFragment.RefBody;
+					var refBody = WorldObject.RefBody;
 					var pos = refBody.transform.FromRelPos(RelPos);
 					body.SetPosition(pos);
 					body.SetRotation(refBody.transform.FromRelRot(RelRot));
@@ -137,10 +138,10 @@ namespace QSB.MeteorSync.Messages
 					body.SetAngularVelocity(refBody.FromRelAngVel(RelAngVel));
 				});
 			}
-			else if (!IsDetached && qsbFragment.IsDetached)
+			else if (!IsDetached && WorldObject.IsDetached)
 			{
 				// should only happen if client is way too far ahead and they try to connect. we fail here.
-				DebugLog.ToConsole($"{qsbFragment.LogName} is detached, but msg is not. fuck", MessageType.Error);
+				DebugLog.ToConsole($"{WorldObject} is detached, but msg is not. fuck", MessageType.Error);
 			}
 		}
 	}

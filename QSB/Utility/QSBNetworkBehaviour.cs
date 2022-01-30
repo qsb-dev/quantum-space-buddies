@@ -10,31 +10,10 @@ namespace QSB.Utility
 
 		private double _lastSendTime;
 
-		public sealed override bool OnSerialize(NetworkWriter writer, bool initialState)
-		{
-			if (initialState)
-			{
-				Serialize(writer, true);
-				UpdatePrevData();
-				return true;
-			}
-
-			return false;
-		}
-
-		public sealed override void OnDeserialize(NetworkReader reader, bool initialState)
-		{
-			if (initialState)
-			{
-				UpdatePrevData();
-				Deserialize(reader, true);
-			}
-		}
-
 		protected abstract bool HasChanged();
 		protected abstract void UpdatePrevData();
-		protected abstract void Serialize(NetworkWriter writer, bool initialState);
-		protected abstract void Deserialize(NetworkReader reader, bool initialState);
+		protected abstract void Serialize(NetworkWriter writer);
+		protected abstract void Deserialize(NetworkReader reader);
 
 		protected virtual void Update()
 		{
@@ -63,7 +42,7 @@ namespace QSB.Utility
 				}
 
 				using var writer = NetworkWriterPool.GetWriter();
-				Serialize(writer, false);
+				Serialize(writer);
 				UpdatePrevData();
 
 				var data = writer.ToArraySegment();
@@ -94,7 +73,7 @@ namespace QSB.Utility
 		{
 			using var reader = NetworkReaderPool.GetReader(data);
 			UpdatePrevData();
-			Deserialize(reader, false);
+			Deserialize(reader);
 		}
 	}
 }

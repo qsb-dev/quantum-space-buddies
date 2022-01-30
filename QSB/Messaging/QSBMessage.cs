@@ -1,5 +1,4 @@
 ﻿using Mirror;
-using System;
 
 namespace QSB.Messaging
 {
@@ -46,9 +45,9 @@ namespace QSB.Messaging
 		public override string ToString() => GetType().Name;
 	}
 
-	public abstract class QSBBoolMessage : QSBMessage
+	public abstract class QSBMessage<V> : QSBMessage
 	{
-		protected bool Value;
+		protected V Value;
 
 		public override void Serialize(NetworkWriter writer)
 		{
@@ -59,41 +58,7 @@ namespace QSB.Messaging
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<bool>();
-		}
-	}
-
-	public abstract class QSBFloatMessage : QSBMessage
-	{
-		protected float Value;
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(Value);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Value = reader.Read<float>();
-		}
-	}
-
-	public abstract class QSBEnumMessage<E> : QSBMessage where E : Enum
-	{
-		protected E Value;
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write((int)(object)Value);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Value = (E)(object)reader.Read<int>();
+			Value = reader.Read<V>();
 		}
 	}
 }

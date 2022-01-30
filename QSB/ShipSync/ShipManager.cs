@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
 using OWML.Common;
 using QSB.Player;
 using QSB.ShipSync.TransformSync;
@@ -7,6 +8,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.ShipSync
@@ -43,7 +45,7 @@ namespace QSB.ShipSync
 		public void Start()
 			=> Instance = this;
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			var shipTransform = GameObject.Find("Ship_Body");
 			if (shipTransform == null)

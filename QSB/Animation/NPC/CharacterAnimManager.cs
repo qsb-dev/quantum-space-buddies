@@ -1,5 +1,7 @@
-﻿using QSB.Animation.NPC.WorldObjects;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Animation.NPC.WorldObjects;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.Animation.NPC
 {
@@ -8,7 +10,7 @@ namespace QSB.Animation.NPC
 		// im assuming this is used in the eye as well
 		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>();
 			QSBWorldSync.Init<QSBTravelerController, TravelerController>();

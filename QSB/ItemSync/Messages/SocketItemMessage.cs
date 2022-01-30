@@ -8,7 +8,7 @@ using QSB.WorldSync;
 
 namespace QSB.ItemSync.Messages
 {
-	internal class SocketItemMessage : QSBEnumMessage<SocketMessageType>
+	internal class SocketItemMessage : QSBMessage<SocketMessageType>
 	{
 		private int SocketId;
 		private int ItemId;
@@ -38,20 +38,20 @@ namespace QSB.ItemSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			IQSBOWItemSocket socketWorldObject;
-			IQSBOWItem itemWorldObject;
+			QSBItemSocket socketWorldObject;
+			IQSBItem itemWorldObject;
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.HeldItem = null;
 			switch (Value)
 			{
 				case SocketMessageType.Socket:
-					socketWorldObject = SocketId.GetWorldObject<IQSBOWItemSocket>();
-					itemWorldObject = ItemId.GetWorldObject<IQSBOWItem>();
+					socketWorldObject = SocketId.GetWorldObject<QSBItemSocket>();
+					itemWorldObject = ItemId.GetWorldObject<IQSBItem>();
 
 					socketWorldObject.PlaceIntoSocket(itemWorldObject);
 					return;
 				case SocketMessageType.StartUnsocket:
-					socketWorldObject = SocketId.GetWorldObject<IQSBOWItemSocket>();
+					socketWorldObject = SocketId.GetWorldObject<QSBItemSocket>();
 
 					if (!socketWorldObject.IsSocketOccupied())
 					{
@@ -62,7 +62,7 @@ namespace QSB.ItemSync.Messages
 					socketWorldObject.RemoveFromSocket();
 					return;
 				case SocketMessageType.CompleteUnsocket:
-					itemWorldObject = ItemId.GetWorldObject<IQSBOWItem>();
+					itemWorldObject = ItemId.GetWorldObject<IQSBItem>();
 
 					itemWorldObject.OnCompleteUnsocket();
 					return;

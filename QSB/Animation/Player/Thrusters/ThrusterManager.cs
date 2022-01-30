@@ -23,7 +23,7 @@ namespace QSB.Animation.Player.Thrusters
 			newVfx.transform.localScale = new Vector3(1, 1, 1);
 
 			// Deleted objects take 1 update to actually be deleted
-			QSBCore.UnityEvents.FireOnNextUpdate(() => newVfx.SetActive(true));
+			Delay.RunNextFrame(() => newVfx.SetActive(true));
 		}
 
 		private static void ReplaceParticleSystems(GameObject root, PlayerInfo player)

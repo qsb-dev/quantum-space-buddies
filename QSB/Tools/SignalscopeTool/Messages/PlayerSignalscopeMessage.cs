@@ -4,7 +4,7 @@ using QSB.Player.TransformSync;
 
 namespace QSB.Tools.SignalscopeTool.Messages
 {
-	public class PlayerSignalscopeMessage : QSBBoolMessage
+	public class PlayerSignalscopeMessage : QSBMessage<bool>
 	{
 		static PlayerSignalscopeMessage()
 		{

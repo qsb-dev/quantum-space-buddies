@@ -7,7 +7,7 @@ namespace QSB.AuthoritySync
 	/// <summary>
 	/// always sent to host
 	/// </summary>
-	public class AuthQueueMessage : QSBEnumMessage<AuthQueueAction>
+	public class AuthQueueMessage : QSBMessage<AuthQueueAction>
 	{
 		private uint NetId;
 

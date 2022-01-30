@@ -16,6 +16,7 @@ namespace QSB.Player.TransformSync
 	public class PlayerTransformSync : SectoredTransformSync
 	{
 		protected override bool IsPlayerObject => true;
+		protected override bool AllowInactiveAttachedObject => true;
 
 		private Transform _visibleCameraRoot;
 		private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
@@ -154,7 +155,7 @@ namespace QSB.Player.TransformSync
 			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
 			Player._ditheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
 			// get inactive renderers too
-			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			Delay.RunNextFrame(() =>
 				Player._ditheringAnimator._renderers = Player._ditheringAnimator
 					.GetComponentsInChildren<Renderer>(true)
 					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
@@ -254,8 +255,7 @@ namespace QSB.Player.TransformSync
 		{
 			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsValid
-				|| !ReferenceTransform
-				|| !AttachedTransform.gameObject.activeInHierarchy)
+				|| !ReferenceTransform)
 			{
 				return;
 			}

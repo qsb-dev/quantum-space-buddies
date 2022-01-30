@@ -21,13 +21,13 @@ namespace QSB.Syncs
 			Vector3.Distance(transform.position, _prevPosition) > 1E-05f ||
 			Quaternion.Angle(transform.rotation, _prevRotation) > 1E-05f;
 
-		protected override void Serialize(NetworkWriter writer, bool initialState)
+		protected override void Serialize(NetworkWriter writer)
 		{
 			writer.Write(transform.position);
 			writer.Write(transform.rotation);
 		}
 
-		protected override void Deserialize(NetworkReader reader, bool initialState)
+		protected override void Deserialize(NetworkReader reader)
 		{
 			transform.position = reader.ReadVector3();
 			transform.rotation = reader.ReadQuaternion();

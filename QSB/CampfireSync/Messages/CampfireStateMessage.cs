@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.CampfireSync.Messages
 {
-	internal class CampfireStateMessage : QSBEnumWorldObjectMessage<QSBCampfire, Campfire.State>
+	internal class CampfireStateMessage : QSBWorldObjectMessage<QSBCampfire, Campfire.State>
 	{
 		public CampfireStateMessage(Campfire.State state) => Value = state;
 

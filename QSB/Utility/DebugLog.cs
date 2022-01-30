@@ -1,6 +1,5 @@
 ﻿using Mirror;
 using OWML.Common;
-using QSB.Player.TransformSync;
 using System.Diagnostics;
 using System.Linq;
 

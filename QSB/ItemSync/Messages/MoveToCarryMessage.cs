@@ -4,7 +4,7 @@ using QSB.Player;
 
 namespace QSB.ItemSync.Messages
 {
-	internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBOWItem>
+	internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem>
 	{
 		public override void OnReceiveRemote()
 		{
@@ -25,7 +25,7 @@ namespace QSB.ItemSync.Messages
 				ItemType.VisionTorch => player.VisionTorchSocket,
 				_ => player.ItemSocket,
 			};
-			WorldObject.PickUpItem(itemSocket, From);
+			WorldObject.PickUpItem(itemSocket);
 		}
 	}
 }

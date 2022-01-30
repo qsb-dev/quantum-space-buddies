@@ -9,7 +9,10 @@ using QSB.WorldSync;
 
 namespace QSB.Player.Messages
 {
-	internal class EnterLeaveMessage : QSBEnumMessage<EnterLeaveType>
+	/// <summary>
+	/// todo SendInitialState
+	/// </summary>
+	internal class EnterLeaveMessage : QSBMessage<EnterLeaveType>
 	{
 		static EnterLeaveMessage()
 		{

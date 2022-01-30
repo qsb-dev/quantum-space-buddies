@@ -43,7 +43,7 @@ namespace QSB.Player.Messages
 			writer.Write(SignalscopeEquipped);
 			writer.Write(TranslatorEquipped);
 			writer.Write(ProbeActive);
-			writer.Write((int)ClientState);
+			writer.Write(ClientState);
 		}
 
 		public override void Deserialize(NetworkReader reader)
@@ -57,7 +57,7 @@ namespace QSB.Player.Messages
 			SignalscopeEquipped = reader.Read<bool>();
 			TranslatorEquipped = reader.Read<bool>();
 			ProbeActive = reader.Read<bool>();
-			ClientState = (ClientState)reader.Read<int>();
+			ClientState = reader.Read<ClientState>();
 		}
 
 		public override void OnReceiveRemote()

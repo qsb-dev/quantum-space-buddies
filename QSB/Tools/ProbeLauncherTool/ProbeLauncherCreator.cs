@@ -80,7 +80,7 @@ namespace QSB.Tools.ProbeLauncherTool
 			REMOTE_ProbeLauncher.transform.parent = player.CameraBody.transform;
 			REMOTE_ProbeLauncher.transform.localPosition = ProbeLauncherOffset;
 
-			//QSBCore.UnityEvents.FireInNUpdates(() => REMOTE_ProbeLauncher.SetActive(true), 5);
+			//UnityEvents.FireInNUpdates(() => REMOTE_ProbeLauncher.SetActive(true), 5);
 			REMOTE_ProbeLauncher.SetActive(true);
 		}
 	}

@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.ProbeTool.Messages
 {
-	internal class PlayerProbeEventMessage : QSBEnumMessage<ProbeEvent>
+	internal class PlayerProbeEventMessage : QSBMessage<ProbeEvent>
 	{
 		public PlayerProbeEventMessage(ProbeEvent probeEvent) => Value = probeEvent;
 

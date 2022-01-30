@@ -10,7 +10,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects
 {
 	internal class QSBNomaiText : WorldObject<NomaiText>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{
