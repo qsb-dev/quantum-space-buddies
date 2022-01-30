@@ -4,7 +4,7 @@ using QSB.Utility;
 
 namespace QSB.Player.Messages
 {
-	public class PlayerReadyMessage : QSBBoolMessage
+	public class PlayerReadyMessage : QSBMessage<bool>
 	{
 		public PlayerReadyMessage(bool ready) => Value = ready;
 

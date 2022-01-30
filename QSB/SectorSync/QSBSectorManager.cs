@@ -1,10 +1,12 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.SectorSync.WorldObjects;
 using QSB.Syncs.Sectored;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.SectorSync
@@ -44,8 +46,7 @@ namespace QSB.SectorSync
 			foreach (var sync in SectoredSyncs)
 			{
 				if (sync.hasAuthority
-					&& sync.IsValid
-					&& sync.AttachedTransform.gameObject.activeInHierarchy)
+					&& sync.IsValid)
 				{
 					UpdateReferenceSector(sync);
 				}
@@ -69,7 +70,7 @@ namespace QSB.SectorSync
 			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
 		}
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			DebugLog.DebugWrite("Building sectors...", MessageType.Info);
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)

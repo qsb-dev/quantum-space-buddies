@@ -4,6 +4,7 @@
   "debugMode": true,
   "drawGui": true,
   "drawLines": true,
+  "dumpWorldObjects": false,
   "showQuantumVisibilityObjects": false,
   "showDebugLabels": false,
   "avoidTimeSync": false,

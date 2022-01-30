@@ -1,17 +1,19 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
 {
 	internal class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
 	{
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init();
+			await base.Init(ct);
 			AttachedObject._randomYRotation = false;
 		}
 
@@ -21,12 +23,19 @@ namespace QSB.QuantumSync.WorldObjects
 			if (socket != null)
 			{
 				var socketObj = socket.GetWorldObject<QSBQuantumSocket>();
-				return $"{LogName}{Environment.NewLine}SocketId:{socketObj.ObjectId}";
+				return $"{this}{Environment.NewLine}SocketId:{socketObj.ObjectId}";
 			}
 			else
 			{
-				return $"{LogName}{Environment.NewLine}SocketId:NULL";
+				return $"{this}{Environment.NewLine}SocketId:NULL";
 			}
+		}
+
+		public override void SendInitialState(uint to)
+		{
+			base.SendInitialState(to);
+
+			// todo SendInitialState
 		}
 
 		public void MoveToSocket(uint playerId, int socketId, Quaternion localRotation)

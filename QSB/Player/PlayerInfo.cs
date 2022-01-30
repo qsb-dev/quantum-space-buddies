@@ -139,7 +139,7 @@ namespace QSB.Player
 		public Transform VisionTorchSocket => HandPivot.Find("REMOTE_VisionTorchSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
-		public IQSBOWItem HeldItem { get; set; }
+		public IQSBItem HeldItem { get; set; }
 		public bool FlashlightActive { get; set; }
 		public bool SuitedUp { get; set; }
 		public bool ProbeLauncherEquipped { get; set; }

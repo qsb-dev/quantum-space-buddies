@@ -1,9 +1,11 @@
-﻿using Mirror;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
 using QSB.Messaging;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.OrbSync.WorldObjects
@@ -14,15 +16,14 @@ namespace QSB.OrbSync.WorldObjects
 
 		public NomaiOrbTransformSync TransformSync;
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (QSBCore.IsHost)
 			{
 				Object.Instantiate(QSBNetworkManager.singleton.OrbPrefab).SpawnWithServerAuthority();
 			}
 
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => TransformSync, FinishDelayedReady);
+			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
 		}
 
 		public override void OnRemoval()
@@ -33,7 +34,7 @@ namespace QSB.OrbSync.WorldObjects
 			}
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (TransformSync.hasAuthority)
 			{

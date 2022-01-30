@@ -2,7 +2,6 @@
 using QSB.Animation.Player.Messages;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Player;
 using QSB.Utility;
 using UnityEngine;
 
@@ -65,12 +64,12 @@ namespace QSB.Animation.Player.Patches
 				if (__instance._justTookFallDamage)
 				{
 					__instance._animator.SetTrigger("LandHard");
-					new AnimationTriggerMessage(QSBPlayerManager.LocalPlayerId, "LandHard").Send();
+					new AnimationTriggerMessage("LandHard").Send();
 				}
 				else
 				{
 					__instance._animator.SetTrigger("Land");
-					new AnimationTriggerMessage(QSBPlayerManager.LocalPlayerId, "Land").Send();
+					new AnimationTriggerMessage( "Land").Send();
 				}
 			}
 
@@ -127,7 +126,7 @@ namespace QSB.Animation.Player.Patches
 			}
 
 			__instance._animator.SetTrigger("Jump");
-			new AnimationTriggerMessage(QSBPlayerManager.LocalPlayerId, "Jump").Send();
+			new AnimationTriggerMessage("Jump").Send();
 			return false;
 		}
 	}

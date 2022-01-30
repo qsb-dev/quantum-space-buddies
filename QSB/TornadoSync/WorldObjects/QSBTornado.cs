@@ -6,7 +6,7 @@ namespace QSB.TornadoSync.WorldObjects
 {
 	public class QSBTornado : WorldObject<TornadoController>
 	{
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{

@@ -5,7 +5,10 @@ using QSB.WorldSync;
 
 namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 {
-	internal class EyeStateMessage : QSBEnumMessage<EyeState>
+	/// <summary>
+	/// todo SendInitialState
+	/// </summary>
+	internal class EyeStateMessage : QSBMessage<EyeState>
 	{
 		static EyeStateMessage() => GlobalMessenger<EyeState>.AddListener(OWEvents.EyeStateChanged, Handler);
 

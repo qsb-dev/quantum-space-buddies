@@ -1,6 +1,5 @@
 ﻿using Mirror;
 using QSB.WorldSync;
-using System;
 
 namespace QSB.Messaging
 {
@@ -42,9 +41,9 @@ namespace QSB.Messaging
 		}
 	}
 
-	public abstract class QSBBoolWorldObjectMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
+	public abstract class QSBWorldObjectMessage<T, V> : QSBWorldObjectMessage<T> where T : IWorldObject
 	{
-		protected bool Value;
+		protected V Value;
 
 		public override void Serialize(NetworkWriter writer)
 		{
@@ -55,43 +54,7 @@ namespace QSB.Messaging
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<bool>();
-		}
-	}
-
-	public abstract class QSBFloatWorldObjectMessage<T> : QSBWorldObjectMessage<T> where T : IWorldObject
-	{
-		protected float Value;
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(Value);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Value = reader.Read<float>();
-		}
-	}
-
-	public abstract class QSBEnumWorldObjectMessage<T, E> : QSBWorldObjectMessage<T>
-		where T : IWorldObject
-		where E : Enum
-	{
-		protected E Value;
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write((int)(object)Value);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Value = (E)(object)reader.Read<int>();
+			Value = reader.Read<V>();
 		}
 	}
 }

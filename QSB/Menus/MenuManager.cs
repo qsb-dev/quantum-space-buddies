@@ -5,13 +5,10 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
-using Steamworks;
 using System;
 using System.Text;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
-using Button = UnityEngine.UI.Button;
 
 namespace QSB.Menus
 {
@@ -48,6 +45,8 @@ namespace QSB.Menus
 		private const string StopHostingString = "STOP HOSTING";
 
 		private Action PopupOK;
+
+		private bool _intentionalDisconnect;
 
 		public void Start()
 		{
@@ -95,8 +94,8 @@ namespace QSB.Menus
 		private void Update()
 		{
 			if (QSBCore.IsInMultiplayer
-			    && (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
-			    && _loadingText != null)
+				&& (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
+				&& _loadingText != null)
 			{
 				var num = LoadManager.GetAsyncLoadProgress();
 				num = num < 0.1f
@@ -169,10 +168,6 @@ namespace QSB.Menus
 			OWTime.Unpause(OWTime.PauseType.System);
 			OWInput.RestorePreviousInputs();
 
-			//if (QSBSceneManager.IsInUniverse)
-			//{
-			//	LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
-			//}
 			PopupOK?.SafeInvoke();
 			PopupOK = null;
 		}
@@ -182,7 +177,6 @@ namespace QSB.Menus
 			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Steam ID";
 			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
-			IPPopup.OnPopupValidate += Validate;
 
 			OneButtonInfoPopup = MenuApi.MakeInfoPopup("", "");
 			OneButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
@@ -268,7 +262,7 @@ namespace QSB.Menus
 
 				if (QSBCore.IsHost)
 				{
-					QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
+					Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 					SetButtonActive(NewGameButton, true);
 				}
 				else
@@ -280,13 +274,13 @@ namespace QSB.Menus
 			else
 			{
 				SetButtonActive(ClientButton, true);
-				QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
+				Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 				SetButtonActive(NewGameButton, true);
 			}
 
 			if (QSBCore.DebugSettings.SkipTitleScreen)
 			{
-				UnityEngine.Application.runInBackground = true;
+				Application.runInBackground = true;
 				var titleScreenManager = FindObjectOfType<TitleScreenManager>();
 				var titleScreenAnimation = titleScreenManager._cameraController;
 				const float small = 1 / 1000f;
@@ -306,7 +300,7 @@ namespace QSB.Menus
 
 		private void Disconnect()
 		{
-			QSBNetworkManager.singleton._intentionalDisconnect = true;
+			_intentionalDisconnect = true;
 			QSBNetworkManager.singleton.StopHost();
 			SetButtonActive(DisconnectButton.gameObject, false);
 
@@ -320,10 +314,11 @@ namespace QSB.Menus
 
 		private void Host()
 		{
-			QSBNetworkManager.singleton.StartHost();
 			SetButtonActive(DisconnectButton, true);
 			SetButtonActive(HostButton, false);
 			SetButtonActive(QuitButton, false);
+
+			QSBNetworkManager.singleton.StartHost();
 
 			var text = QSBCore.IsHost
 				? StopHostingString
@@ -335,36 +330,27 @@ namespace QSB.Menus
 				: "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.";
 			DisconnectPopup._labelText.text = popupText;
 
-			if (QSBCore.DebugSettings.UseKcpTransport)
+			if (!QSBCore.DebugSettings.UseKcpTransport)
 			{
-				return;
+				var steamId = ((FizzyFacepunch)Transport.activeTransport).SteamUserID.ToString();
+
+				PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
+
+				OpenInfoPopup($"Hosting server.\r\nClients will connect using your steam id, which is :\r\n" +
+					$"{steamId}\r\n" +
+					"Do you want to copy this to the clipboard?"
+					, "YES"
+					, "NO");
 			}
-
-			var steamId = ((FizzyFacepunch)Transport.activeTransport).GetSteamID();
-
-			PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
-
-			OpenInfoPopup($"Hosting server.\r\nClients will connect using your steam id, which is :\r\n" +
-				$"{steamId}\r\n" +
-				$"Do you want to copy this to the clipboard?"
-				, "YES"
-				, "NO");
-		}
-
-		private bool Validate()
-		{
-			//var inputText = ((PopupInputMenu)IPPopup).GetInputText();
-			//var regex = new Regex(@"\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z");
-			//return inputText == "localhost" || regex.Match(inputText).Success;
-			return ((PopupInputMenu)IPPopup).GetInputText() != "";
 		}
 
 		private void Connect()
 		{
 			var address = ((PopupInputMenu)IPPopup).GetInputText();
-
-			QSBNetworkManager.singleton.networkAddress = address;
-			QSBNetworkManager.singleton.StartClient();
+			if (address == string.Empty)
+			{
+				address = QSBCore.DefaultServerIP;
+			}
 
 			if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
 			{
@@ -376,6 +362,10 @@ namespace QSB.Menus
 			{
 				SetButtonActive(QuitButton, false);
 			}
+
+			QSBNetworkManager.singleton.networkAddress = address;
+			typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection)).SetValue(null, new NetworkConnectionToServer());
+			QSBNetworkManager.singleton.StartClient();
 		}
 
 		private void OnConnected()
@@ -385,7 +375,7 @@ namespace QSB.Menus
 				return;
 			}
 
-			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+			Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new RequestGameStateMessage().Send());
 		}
 
@@ -395,7 +385,6 @@ namespace QSB.Menus
 			{
 				KickReason.QSBVersionNotMatching => "Server refused connection as QSB version does not match.",
 				KickReason.GameVersionNotMatching => "Server refused connection as Outer Wilds version does not match.",
-				KickReason.GamePlatformNotMatching => "Server refused connection as Outer Wilds platform does not match. (Steam/Epic/Xbox)",
 				KickReason.DLCNotMatching => "Server refused connection as DLC installation state does not match.",
 				KickReason.InEye => "Server refused connection as game has progressed too far.",
 				KickReason.None => "Kicked from server. No reason given.",
@@ -420,8 +409,9 @@ namespace QSB.Menus
 
 		private void OnDisconnected(string error)
 		{
-			if (error == null)
+			if (_intentionalDisconnect)
 			{
+				_intentionalDisconnect = false;
 				return;
 			}
 

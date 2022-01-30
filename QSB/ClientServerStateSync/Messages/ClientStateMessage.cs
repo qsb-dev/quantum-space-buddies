@@ -5,7 +5,7 @@ using QSB.Utility;
 
 namespace QSB.ClientServerStateSync.Messages
 {
-	internal class ClientStateMessage : QSBEnumMessage<ClientState>
+	internal class ClientStateMessage : QSBMessage<ClientState>
 	{
 		public ClientStateMessage(ClientState state) => Value = state;
 

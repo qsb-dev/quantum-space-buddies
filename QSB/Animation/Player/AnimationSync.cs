@@ -119,11 +119,8 @@ namespace QSB.Animation.Player
 			InitAccelerationSync();
 			ThrusterManager.CreateRemotePlayerVFX(Player);
 
-			var ikSync = body.gameObject.GetAddComponent<PlayerHeadRotationSync>();
-			QSBCore.UnityEvents.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
-
-			//var toolArmSync = body.gameObject.GetAddComponent<ToolArmOverride>();
-			//toolArmSync.Init(Player, body);
+			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
+			Delay.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
 		}
 
 		private void InitAccelerationSync()
@@ -141,13 +138,13 @@ namespace QSB.Animation.Player
 
 		private void SuitUp()
 		{
-			new ChangeAnimTypeMessage(PlayerId, AnimationType.PlayerSuited).Send();
+			new ChangeAnimTypeMessage(AnimationType.PlayerSuited).Send();
 			SetAnimationType(AnimationType.PlayerSuited);
 		}
 
 		private void SuitDown()
 		{
-			new ChangeAnimTypeMessage(PlayerId, AnimationType.PlayerUnsuited).Send();
+			new ChangeAnimTypeMessage(AnimationType.PlayerUnsuited).Send();
 			SetAnimationType(AnimationType.PlayerUnsuited);
 		}
 

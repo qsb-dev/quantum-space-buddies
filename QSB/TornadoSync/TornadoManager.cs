@@ -1,8 +1,10 @@
-﻿using Mirror;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
 using QSB.TornadoSync.TransformSync;
 using QSB.TornadoSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.TornadoSync
 {
@@ -10,19 +12,9 @@ namespace QSB.TornadoSync
 	{
 		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
 
-		public override void BuildWorldObjects(OWScene scene)
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
 			QSBWorldSync.Init<QSBTornado, TornadoController>();
-
-			if (!QSBCore.IsHost)
-			{
-				return;
-			}
-
-			foreach (var transformSync in QSBWorldSync.GetUnityObjects<OccasionalTransformSync>())
-			{
-				NetworkServer.Destroy(transformSync.gameObject);
-			}
 
 			var gdBody = Locator._giantsDeep.GetOWRigidbody();
 			// cannon
@@ -33,20 +25,40 @@ namespace QSB.TornadoSync
 				SpawnOccasional(proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 			}
 
-			SpawnOccasional(cannon._probeBody, gdBody);
+			if (cannon._probeBody)
+			{
+				// probe is null on statue scene reload
+				SpawnOccasional(cannon._probeBody, gdBody);
+			}
 
 			// islands
-			foreach (var island in QSBWorldSync.GetUnityObjects<IslandController>())
+			foreach (var island in QSBWorldSync.GetUnityObjects<IslandController>().SortDeterministic())
 			{
 				SpawnOccasional(island._islandBody, gdBody);
 			}
 		}
 
+		public override void UnbuildWorldObjects()
+		{
+			if (QSBCore.IsHost)
+			{
+				foreach (var transformSync in QSBWorldSync.GetUnityObjects<OccasionalTransformSync>())
+				{
+					NetworkServer.Destroy(transformSync.gameObject);
+				}
+			}
+
+			OccasionalTransformSync.Bodies.Clear();
+		}
+
 		private static void SpawnOccasional(OWRigidbody body, OWRigidbody refBody)
 		{
-			var transformSync = Instantiate(QSBNetworkManager.singleton.OccasionalPrefab).GetRequiredComponent<OccasionalTransformSync>();
-			transformSync.InitBodyIndexes(body, refBody);
-			transformSync.gameObject.SpawnWithServerAuthority();
+			OccasionalTransformSync.Bodies.Add((body, refBody));
+			if (QSBCore.IsHost)
+			{
+				var transformSync = Instantiate(QSBNetworkManager.singleton.OccasionalPrefab).GetRequiredComponent<OccasionalTransformSync>();
+				transformSync.gameObject.SpawnWithServerAuthority();
+			}
 		}
 	}
 }

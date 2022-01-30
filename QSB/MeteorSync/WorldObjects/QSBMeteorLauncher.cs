@@ -4,6 +4,11 @@ namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBMeteorLauncher : WorldObject<MeteorLauncher>
 	{
+		public override void SendInitialState(uint to)
+		{
+			// todo SendInitialState
+		}
+
 		public int MeteorId;
 		public float LaunchSpeed;
 

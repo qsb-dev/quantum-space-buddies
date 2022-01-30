@@ -1,10 +1,11 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.WorldSync;
 
 namespace QSB.Animation.Player.Messages
 {
-	public class PlayerSuitMessage : QSBBoolMessage
+	public class PlayerSuitMessage : QSBMessage<bool>
 	{
 		static PlayerSuitMessage()
 		{
@@ -21,6 +22,8 @@ namespace QSB.Animation.Player.Messages
 		}
 
 		private PlayerSuitMessage(bool on) => Value = on;
+
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{

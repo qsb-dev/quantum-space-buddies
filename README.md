@@ -13,7 +13,7 @@ Spoilers within!
 
 ## License
 
-Copyright (C) 2020 - 2021 : 
+Copyright (C) 2020 - 2022 : 
 - Henry Pointer (_nebula or misternebula)
 - Will Corby (JohnCorby)
 - Aleksander Waage (AmazingAlek)
@@ -195,9 +195,12 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
 
 - [OWML](https://github.com/amazingalek/owml)
 - [Mirror](https://mirror-networking.com/)
+    - [kcp2k](https://github.com/vis2k/kcp2k)
+    - [where-allocation](https://github.com/vis2k/where-allocation)
 - [FizzyFacepunch](https://github.com/Chykary/FizzyFacepunch)
 - [HarmonyX](https://github.com/BepInEx/HarmonyX)
 - [Mono.Cecil](https://github.com/jbevain/cecil)
+- [UniTask](https://github.com/Cysharp/UniTask)
 
 ## Help / Discuss development / Whatever
 

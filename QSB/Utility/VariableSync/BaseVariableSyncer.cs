@@ -14,7 +14,7 @@ namespace QSB.Utility.VariableSync
 
 		protected override bool HasChanged() => !EqualityComparer<T>.Default.Equals(_prevValue, Value);
 		protected override void UpdatePrevData() => _prevValue = Value;
-		protected override void Serialize(NetworkWriter writer, bool initialState) => writer.Write(Value);
-		protected override void Deserialize(NetworkReader reader, bool initialState) => Value = reader.Read<T>();
+		protected override void Serialize(NetworkWriter writer) => writer.Write(Value);
+		protected override void Deserialize(NetworkReader reader) => Value = reader.Read<T>();
 	}
 }

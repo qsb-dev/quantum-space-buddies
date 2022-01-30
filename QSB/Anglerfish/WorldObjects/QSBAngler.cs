@@ -1,9 +1,10 @@
-﻿using Mirror;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
 using QSB.Anglerfish.Messages;
 using QSB.Anglerfish.TransformSync;
 using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.Anglerfish.WorldObjects
@@ -18,15 +19,14 @@ namespace QSB.Anglerfish.WorldObjects
 
 		private Vector3 _lastTargetPosition;
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab).SpawnWithServerAuthority();
+				NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab));
 			}
 
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => TransformSync, FinishDelayedReady);
+			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
 		}
 
 		public override void OnRemoval()
@@ -37,7 +37,7 @@ namespace QSB.Anglerfish.WorldObjects
 			}
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (TransformSync.hasAuthority)
 			{

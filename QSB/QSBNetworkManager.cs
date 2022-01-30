@@ -23,7 +23,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Linq;
-using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace QSB
@@ -49,18 +49,15 @@ namespace QSB
 		private bool _everConnected;
 
 		private string _lastTransportError;
-		internal bool _intentionalDisconnect;
+		private static readonly string[] _kcpErrorLogs =
+		{
+			"KCP: received disconnect message",
+			"Failed to resolve host: .*"
+		};
+		private const int _defaultSteamAppID = 753640;
 
 		public override void Awake()
 		{
-			AppDomain.CurrentDomain.GetAssemblies()
-				.Where(x => x.GetName().Name.StartsWith("Mirror"))
-				.Append(typeof(QSBNetworkManager).Assembly)
-				.SelectMany(x => x.GetTypes())
-				.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
-				.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
-				.ForEach(x => x.Invoke(null, null));
-
 			gameObject.SetActive(false);
 
 			if (QSBCore.DebugSettings.UseKcpTransport)
@@ -71,8 +68,9 @@ namespace QSB
 			{
 				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
 				fizzy.SteamAppID = QSBCore.DebugSettings.OverrideAppId == -1
-					? "753640"
-					: $"{QSBCore.DebugSettings.OverrideAppId}";
+					? _defaultSteamAppID.ToString()
+					: QSBCore.OverrideAppId.ToString();
+				fizzy.SetTransportError = error => _lastTransportError = error;
 				transport = fizzy;
 			}
 
@@ -108,7 +106,7 @@ namespace QSB
 
 		private void InitPlayerName()
 		{
-			QSBCore.UnityEvents.RunWhen(PlayerData.IsLoaded, () =>
+			Delay.RunWhen(PlayerData.IsLoaded, () =>
 			{
 				try
 				{
@@ -149,38 +147,34 @@ namespace QSB
 			return template;
 		}
 
-		private void Update()
-		{
-			_lastTransportError = null;
-		}
-
 		private void ConfigureNetworkManager()
 		{
 			networkAddress = QSBCore.DefaultServerIP;
 			maxConnections = MaxConnections;
 
-			kcp2k.Log.Info = s => DebugLog.DebugWrite("[KCP] " + s);
-			kcp2k.Log.Warning = s =>
+			if (QSBCore.UseKcpTransport)
 			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
-				_lastTransportError = s;
-			};
-			kcp2k.Log.Error = s =>
-			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
-				_lastTransportError = s;
-			};
+				kcp2k.Log.Info = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s);
+					if (_kcpErrorLogs.Any(p => Regex.IsMatch(s, p)))
+					{
+						_lastTransportError = s;
+					}
+				};
+				kcp2k.Log.Warning = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
+					_lastTransportError = s;
+				};
+				kcp2k.Log.Error = s =>
+				{
+					DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
+					_lastTransportError = s;
+				};
+			}
 
 			DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
-		}
-
-		public override void OnStartServer()
-		{
-			DebugLog.DebugWrite("OnStartServer", MessageType.Info);
-			if (QSBWorldSync.OldDialogueTrees.Count == 0 && QSBSceneManager.IsInUniverse)
-			{
-				QSBWorldSync.OldDialogueTrees.AddRange(QSBWorldSync.GetUnityObjects<CharacterDialogueTree>());
-			}
 		}
 
 		public override void OnServerAddPlayer(NetworkConnection connection) // Called on the server when a client joins
@@ -193,6 +187,7 @@ namespace QSB
 
 		public override void OnStartClient()
 		{
+			QSBCore.DefaultServerIP = networkAddress;
 			var config = QSBCore.Helper.Config;
 			config.SetSettingsValue("defaultServerIP", networkAddress);
 			QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
@@ -213,19 +208,19 @@ namespace QSB
 
 			if (QSBSceneManager.IsInUniverse)
 			{
-				QSBWorldSync.BuildWorldObjects(QSBSceneManager.CurrentScene);
+				QSBWorldSync.BuildWorldObjects(QSBSceneManager.CurrentScene).Forget();
 			}
 
 			var specificType = QSBCore.IsHost ? QSBPatchTypes.OnServerClientConnect : QSBPatchTypes.OnNonServerClientConnect;
 			QSBPatchManager.DoPatchType(specificType);
 			QSBPatchManager.DoPatchType(QSBPatchTypes.OnClientConnect);
 
-			QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+			Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new PlayerJoinMessage(PlayerName).Send());
 
 			if (!QSBCore.IsHost)
 			{
-				QSBCore.UnityEvents.RunWhen(() => PlayerTransformSync.LocalInstance,
+				Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 					() => new RequestStateResyncMessage().Send());
 			}
 
@@ -261,17 +256,8 @@ namespace QSB
 		public override void OnClientDisconnect()
 		{
 			base.OnClientDisconnect();
-			if (_intentionalDisconnect)
-			{
-				_lastTransportError = null;
-				_intentionalDisconnect = false;
-			}
-			else if (_lastTransportError == null)
-			{
-				_lastTransportError = "host disconnected";
-			}
-
 			OnClientDisconnected?.SafeInvoke(_lastTransportError);
+			_lastTransportError = null;
 		}
 
 		public override void OnServerDisconnect(NetworkConnection conn) // Called on the server when any client disconnects
@@ -293,7 +279,7 @@ namespace QSB
 			{
 				if (qsbOrb.TransformSync == null)
 				{
-					DebugLog.ToConsole($"{qsbOrb.LogName} TransformSync == null??????????", MessageType.Warning);
+					DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
 					continue;
 				}
 

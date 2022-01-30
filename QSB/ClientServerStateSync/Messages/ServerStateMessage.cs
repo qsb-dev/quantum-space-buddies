@@ -2,7 +2,7 @@
 
 namespace QSB.ClientServerStateSync.Messages
 {
-	internal class ServerStateMessage : QSBEnumMessage<ServerState>
+	internal class ServerStateMessage : QSBMessage<ServerState>
 	{
 		public ServerStateMessage(ServerState state) => Value = state;
 

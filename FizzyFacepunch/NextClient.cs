@@ -18,6 +18,7 @@ namespace Mirror.FizzySteam
         private event Action<byte[], int> OnReceivedData;
         private event Action OnConnected;
         private event Action OnDisconnected;
+        private Action<string> SetTransportError;
 
         private CancellationTokenSource cancelToken;
         private TaskCompletionSource<Task> connectedComplete;
@@ -39,6 +40,7 @@ namespace Mirror.FizzySteam
             c.OnConnected += () => transport.OnClientConnected.Invoke();
             c.OnDisconnected += () => transport.OnClientDisconnected.Invoke();
             c.OnReceivedData += (data, ch) => transport.OnClientDataReceived.Invoke(new ArraySegment<byte>(data), ch);
+            c.SetTransportError = transport.SetTransportError;
 
             if (SteamClient.IsValid)
             {
@@ -46,6 +48,7 @@ namespace Mirror.FizzySteam
             }
             else
             {
+                c.SetTransportError("SteamWorks not initialized");
                 Debug.LogError("SteamWorks not initialized");
                 c.OnConnectionFailed();
             }
@@ -72,10 +75,12 @@ namespace Mirror.FizzySteam
                 {
                     if (cancelToken.IsCancellationRequested)
                     {
+                        SetTransportError("The connection attempt was cancelled.");
                         Debug.LogError($"The connection attempt was cancelled.");
                     }
                     else if (timeOutTask.IsCompleted)
                     {
+                        SetTransportError($"Connection to {host} timed out.");
                         Debug.LogError($"Connection to {host} timed out.");
                     }
 
@@ -87,12 +92,14 @@ namespace Mirror.FizzySteam
             }
             catch (FormatException)
             {
+                SetTransportError("Connection string was not in the right format. Did you enter a SteamId?");
                 Debug.LogError($"Connection string was not in the right format. Did you enter a SteamId?");
                 Error = true;
                 OnConnectionFailed();
             }
             catch (Exception ex)
             {
+                SetTransportError(ex.Message);
                 Debug.LogError(ex.Message);
                 Error = true;
                 OnConnectionFailed();
@@ -142,6 +149,7 @@ namespace Mirror.FizzySteam
             }
             else if (info.State == ConnectionState.ClosedByPeer)
             {
+                SetTransportError("connection closed by peer");
                 Connected = false;
                 OnDisconnected.Invoke();
                 Debug.LogError("Disconnected.");

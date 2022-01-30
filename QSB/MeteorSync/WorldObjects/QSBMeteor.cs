@@ -5,6 +5,11 @@ namespace QSB.MeteorSync.WorldObjects
 {
 	public class QSBMeteor : WorldObject<MeteorController>
 	{
+		public override void SendInitialState(uint to)
+		{
+			// todo SendInitialState
+		}
+
 		public static bool IsSpecialImpact(GameObject go) =>
 			go == Locator.GetPlayerCollider().gameObject || (Locator.GetProbe() != null && go == Locator.GetProbe()._anchor._collider.gameObject);
 

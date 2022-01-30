@@ -14,13 +14,14 @@ using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /*
-	Copyright (C) 2020 - 2021
+	Copyright (C) 2020 - 2022
 			Henry Pointer (_nebula / misternebula),
 			Will Corby (JohnCorby),
 			Aleksander Waage (AmazingAlek),
@@ -43,8 +44,17 @@ namespace QSB
 	public class QSBCore : ModBehaviour
 	{
 		public static IModHelper Helper { get; private set; }
-		public static IModUnityEvents UnityEvents => Helper.Events.Unity;
-		public static string DefaultServerIP { get; private set; }
+		public static string DefaultServerIP;
+		public static bool UseKcpTransport => DebugSettings.UseKcpTransport;
+		public static int OverrideAppId => DebugSettings.OverrideAppId;
+		public static bool DumpWorldObjects => DebugSettings.DumpWorldObjects;
+		public static bool DebugMode => DebugSettings.DebugMode;
+		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
+		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
+		public static bool ShowDebugLabels => DebugMode && DebugSettings.ShowDebugLabels;
+		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
+		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
+		public static bool GreySkybox => DebugMode && DebugSettings.GreySkybox;
 		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
@@ -54,7 +64,6 @@ namespace QSB
 		public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
 		public static string QSBVersion => Helper.Manifest.Version;
 		public static string GameVersion => Application.version;
-		public static GamePlatform Platform { get; private set; }
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
 		public static DebugSettings DebugSettings { get; set; } = new();
@@ -71,23 +80,6 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-			switch (EntitlementsManager.instance._entitlementRetriever.GetType().Name)
-			{
-				case "EpicEntitlementRetriever":
-					Platform = GamePlatform.Epic;
-					break;
-				case "SteamEntitlementRetriever":
-					Platform = GamePlatform.Steam;
-					break;
-				case "MSStoreEntitlementRetriever":
-					Platform = GamePlatform.Xbox;
-					break;
-				case var other:
-					DebugLog.ToConsole($"Cannot get game platform (entitlement retriever name = {other})\nTell a QSB Dev!", MessageType.Error);
-					enabled = false;
-					return;
-			}
-
 			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
@@ -96,14 +88,12 @@ namespace QSB
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
 			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
 
-			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json");
+			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
 
-			if (DebugSettings == null)
-			{
-				DebugSettings = new DebugSettings();
-			}
+			InitializeAssemblies();
 
 			QSBPatchManager.Init();
+			DeterministicManager.Init();
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<DebugActions>();
@@ -128,7 +118,7 @@ namespace QSB
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
 		}
 
-		private void OnPatchType(QSBPatchTypes type)
+		private static void OnPatchType(QSBPatchTypes type)
 		{
 			if (type == QSBPatchTypes.OnClientConnect)
 			{
@@ -136,12 +126,28 @@ namespace QSB
 			}
 		}
 
-		private void OnUnpatchType(QSBPatchTypes type)
+		private static void OnUnpatchType(QSBPatchTypes type)
 		{
 			if (type == QSBPatchTypes.OnClientConnect)
 			{
 				Application.runInBackground = false;
 			}
+		}
+
+		private static void InitializeAssemblies()
+		{
+			DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
+			foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
+			{
+				var assembly = Assembly.LoadFile(path);
+				DebugLog.DebugWrite(assembly.ToString());
+				assembly.GetTypes()
+					.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
+					.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
+					.ForEach(x => x.Invoke(null, null));
+			}
+
+			DebugLog.DebugWrite($"Assemblies initialized", MessageType.Success);
 		}
 
 		public override void Configure(IModConfig config)

@@ -2,7 +2,6 @@
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

@@ -2,7 +2,7 @@
 
 namespace QSB.SatelliteSync.Messages
 {
-	internal class SatelliteProjectorSnapshotMessage : QSBBoolMessage
+	internal class SatelliteProjectorSnapshotMessage : QSBMessage<bool>
 	{
 		public SatelliteProjectorSnapshotMessage(bool forward) => Value = forward;
 

@@ -1,9 +1,10 @@
-﻿using Mirror;
+﻿using Cysharp.Threading.Tasks;
+using Mirror;
 using QSB.JellyfishSync.Messages;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.JellyfishSync.WorldObjects
@@ -14,15 +15,14 @@ namespace QSB.JellyfishSync.WorldObjects
 
 		public JellyfishTransformSync TransformSync;
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
 			if (QSBCore.IsHost)
 			{
-				Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab).SpawnWithServerAuthority();
+				NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab));
 			}
 
-			StartDelayedReady();
-			QSBCore.UnityEvents.RunWhen(() => TransformSync, FinishDelayedReady);
+			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
 		}
 
 		public override void OnRemoval()
@@ -33,7 +33,7 @@ namespace QSB.JellyfishSync.WorldObjects
 			}
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (TransformSync.hasAuthority)
 			{

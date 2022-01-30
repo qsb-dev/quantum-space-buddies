@@ -1,9 +1,12 @@
-﻿using QSB.Messaging;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.TriggerSync.Messages;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.TriggerSync.WorldObjects
@@ -25,14 +28,14 @@ namespace QSB.TriggerSync.WorldObjects
 
 		protected virtual string CompareTag => "PlayerDetector";
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
 			AttachedObject.OnEntry += OnEnterEvent;
 			AttachedObject.OnExit += OnExitEvent;
 
 			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 
-			QSBCore.UnityEvents.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
+			Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
 			{
 				if (AttachedObject._trackedObjects != null && AttachedObject._trackedObjects.Any(x => x.CompareTag(CompareTag)))
 				{
@@ -49,11 +52,11 @@ namespace QSB.TriggerSync.WorldObjects
 			QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{
-				((IQSBTrigger)this).SendMessage(new TriggerResyncMessage(Occupants) { To = to });
+				((IQSBTrigger)this).SendMessage(new TriggerInitialStateMessage(Occupants) { To = to });
 			}
 		}
 

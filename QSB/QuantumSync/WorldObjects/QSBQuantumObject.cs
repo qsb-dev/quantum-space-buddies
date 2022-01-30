@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.QuantumSync.Messages;
@@ -6,6 +7,7 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects
@@ -35,15 +37,9 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
-			StartDelayedReady();
-			QSBCore.UnityEvents.FireInNUpdates(LateInit, 5);
-		}
-
-		private void LateInit()
-		{
-			FinishDelayedReady();
+			await UniTask.DelayFrame(5, cancellationToken: ct);
 
 			if (HostControls)
 			{
@@ -77,7 +73,7 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void SendResyncInfo(uint to)
+		public override void SendInitialState(uint to)
 		{
 			if (QSBCore.IsHost)
 			{
@@ -109,7 +105,7 @@ namespace QSB.QuantumSync.WorldObjects
 			{
 				if (tracker == null)
 				{
-					DebugLog.ToConsole($"Warning - a ShapeVisibilityTracker in {LogName} is null!", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - a ShapeVisibilityTracker in {this} is null!", MessageType.Warning);
 					continue;
 				}
 
@@ -148,7 +144,7 @@ namespace QSB.QuantumSync.WorldObjects
 
 		private void OnDisable(Shape s) =>
 			// we wait a frame here in case the shapes get disabled as we switch from 1 visibility tracker to another
-			QSBCore.UnityEvents.FireOnNextUpdate(() =>
+			Delay.RunNextFrame(() =>
 			{
 				if (!IsEnabled)
 				{
