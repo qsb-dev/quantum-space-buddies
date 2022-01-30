@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
 using QSB.Utility;
-using System;
 using System.Linq;
 using UnityEngine;
 
@@ -112,7 +111,7 @@ namespace QSB.Animation.NPC.Patches
 	internal static class TravelerAudioManagerExtensions
 	{
 		/// bad, but works great
-		private static SignalName TravelerToSignalName(TravelerController traveler)
+		private static SignalName? TravelerToSignalName(TravelerController traveler)
 		{
 			var name = traveler.name;
 
@@ -151,12 +150,17 @@ namespace QSB.Animation.NPC.Patches
 				return SignalName.Traveler_Prisoner;
 			}
 
-			throw new ArgumentOutOfRangeException(nameof(name), name, null);
+			return null;
 		}
 
 		internal static void StopTravelerAudio(this TravelerAudioManager manager, TravelerController traveler)
 		{
 			var signalName = TravelerToSignalName(traveler);
+			if (signalName == null)
+			{
+				return;
+			}
+
 			var signal = manager._signals.First(x => x.GetName() == signalName);
 
 			signal.GetOWAudioSource().FadeOut(0.5f);
@@ -165,6 +169,11 @@ namespace QSB.Animation.NPC.Patches
 		internal static void PlayTravelerAudio(this TravelerAudioManager manager, TravelerController traveler, float audioDelay)
 		{
 			var signalName = TravelerToSignalName(traveler);
+			if (signalName == null)
+			{
+				return;
+			}
+
 			var signal = manager._signals.First(x => x.GetName() == signalName);
 
 			manager._playAfterDelay = false;
