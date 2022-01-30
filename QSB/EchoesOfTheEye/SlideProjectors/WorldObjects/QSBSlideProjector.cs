@@ -1,27 +1,27 @@
-﻿using QSB.Player;
+﻿using Cysharp.Threading.Tasks;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace QSB.EchoesOfTheEye.SlideProjectors.WorldObjects
 {
 	public class QSBSlideProjector : WorldObject<SlideProjector>
 	{
-		public override void Init()
+		public override async UniTask Init(CancellationToken ct)
 		{
-			base.Init();
-			DebugLog.DebugWrite($"Init {LogName}");
+			DebugLog.DebugWrite($"Init {this}");
 		}
 
 		public uint ControllingPlayer;
 
 		public void OnChangeAuthority(uint newOwner)
 		{
-			DebugLog.DebugWrite($"{LogName} change ControllingPlayer to {newOwner}");
+			DebugLog.DebugWrite($"{this} change ControllingPlayer to {newOwner}");
+		}
+
+		public override void SendInitialState(uint to)
+		{
+			// todo SendInitialState
 		}
 	}
 }
