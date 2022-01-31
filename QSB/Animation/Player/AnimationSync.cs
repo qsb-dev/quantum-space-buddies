@@ -41,10 +41,7 @@ namespace QSB.Animation.Player
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
 
-		protected void OnDestroy()
-		{
-			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
-		}
+		protected void OnDestroy() => QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
 
 		private void OnUniverseSceneLoaded(OWScene oldScene, OWScene newScene) => LoadControllers();
 

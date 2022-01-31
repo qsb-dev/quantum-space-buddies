@@ -10,10 +10,7 @@ namespace QSB.Animation.Player.Thrusters
 
 		private ThrusterModel _thrusterModel;
 
-		public void Init(ThrusterModel model)
-		{
-			_thrusterModel = model;
-		}
+		public void Init(ThrusterModel model) => _thrusterModel = model;
 
 		public void Update()
 		{

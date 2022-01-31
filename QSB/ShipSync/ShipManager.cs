@@ -38,7 +38,7 @@ namespace QSB.ShipSync
 			}
 		}
 
-		private List<PlayerInfo> _playersInShip = new();
+		private readonly List<PlayerInfo> _playersInShip = new();
 
 		private uint _currentFlyer = uint.MaxValue;
 

@@ -83,7 +83,7 @@ namespace QSB.Tools
 				ToolGameObject?.SetActive(true);
 				DitheringAnimator.SetVisible(true, 5f);
 			}
-			
+
 			Player.AudioController.PlayEquipTool();
 		}
 

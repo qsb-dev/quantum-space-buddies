@@ -6,7 +6,7 @@ namespace QSB.Animation.Player.Thrusters
 {
 	internal class RemoteThrusterWashController : MonoBehaviour
 	{
-		private float _raycastDistance = 10f;
+		private readonly float _raycastDistance = 10f;
 		private AnimationCurve _emissionDistanceScale;
 		private AnimationCurve _emissionThrusterScale;
 		private ParticleSystem _defaultParticleSystem;
