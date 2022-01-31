@@ -19,27 +19,17 @@ namespace MirrorWeaver
 
 			foreach (var type in assembly.MainModule.GetTypes())
 			{
-				if (type.HasGenericParameters)
-				{
-					continue;
-				}
+				if (type.HasGenericParameters) continue;
 
 				TypeReference currentType = type;
 				while (currentType != null)
 				{
 					foreach (var method in currentType.Resolve().Methods)
 					{
-						if (!method.HasBody)
-						{
-							continue;
-						}
-
+						if (!method.HasBody) continue;
 						foreach (var instruction in method.Body.Instructions)
 						{
-							if (instruction.Operand is not GenericInstanceMethod calledMethod)
-							{
-								continue;
-							}
+							if (instruction.Operand is not GenericInstanceMethod calledMethod) continue;
 
 							if (calledMethod.DeclaringType.Name == NetworkWriter_Write.DeclaringType.Name &&
 								calledMethod.Name == NetworkWriter_Write.Name)
@@ -47,9 +37,7 @@ namespace MirrorWeaver
 								var argType = calledMethod.GenericArguments[0];
 
 								if (argType is GenericParameter genericParameter && genericParameter.Owner == currentType.Resolve())
-								{
 									argType = ((GenericInstanceType)currentType).GenericArguments[genericParameter.Position];
-								}
 
 								writers.GetWriteFunc(argType, ref weavingFailed);
 							}
@@ -59,9 +47,7 @@ namespace MirrorWeaver
 								var argType = calledMethod.GenericArguments[0];
 
 								if (argType is GenericParameter genericParameter && genericParameter.Owner == currentType.Resolve())
-								{
 									argType = ((GenericInstanceType)currentType).GenericArguments[genericParameter.Position];
-								}
 
 								readers.GetReadFunc(argType, ref weavingFailed);
 							}

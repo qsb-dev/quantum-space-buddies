@@ -8,82 +8,82 @@ using Mono.Cecil;
 
 namespace Mirror.Weaver
 {
-	public static class Resolvers
-	{
-		public static MethodReference ResolveMethod(TypeReference tr, AssemblyDefinition assembly, Logger Log, string name, ref bool WeavingFailed)
-		{
-			if (tr == null)
-			{
-				Log.Error($"Cannot resolve method {name} without a class");
-				WeavingFailed = true;
-				return null;
-			}
-			var method = ResolveMethod(tr, assembly, Log, m => m.Name == name, ref WeavingFailed);
-			if (method == null)
-			{
-				Log.Error($"Method not found with name {name} in type {tr.Name}", tr);
-				WeavingFailed = true;
-			}
-			return method;
-		}
+    public static class Resolvers
+    {
+        public static MethodReference ResolveMethod(TypeReference tr, AssemblyDefinition assembly, Logger Log, string name, ref bool WeavingFailed)
+        {
+            if (tr == null)
+            {
+                Log.Error($"Cannot resolve method {name} without a class");
+                WeavingFailed = true;
+                return null;
+            }
+            MethodReference method = ResolveMethod(tr, assembly, Log, m => m.Name == name, ref WeavingFailed);
+            if (method == null)
+            {
+                Log.Error($"Method not found with name {name} in type {tr.Name}", tr);
+                WeavingFailed = true;
+            }
+            return method;
+        }
 
-		public static MethodReference ResolveMethod(TypeReference t, AssemblyDefinition assembly, Logger Log, System.Func<MethodDefinition, bool> predicate, ref bool WeavingFailed)
-		{
-			foreach (var methodRef in t.Resolve().Methods)
-			{
-				if (predicate(methodRef))
-				{
-					return assembly.MainModule.ImportReference(methodRef);
-				}
-			}
+        public static MethodReference ResolveMethod(TypeReference t, AssemblyDefinition assembly, Logger Log, System.Func<MethodDefinition, bool> predicate, ref bool WeavingFailed)
+        {
+            foreach (MethodDefinition methodRef in t.Resolve().Methods)
+            {
+                if (predicate(methodRef))
+                {
+                    return assembly.MainModule.ImportReference(methodRef);
+                }
+            }
 
-			Log.Error($"Method not found in type {t.Name}", t);
-			WeavingFailed = true;
-			return null;
-		}
+            Log.Error($"Method not found in type {t.Name}", t);
+            WeavingFailed = true;
+            return null;
+        }
 
-		public static MethodReference TryResolveMethodInParents(TypeReference tr, AssemblyDefinition assembly, string name)
-		{
-			if (tr == null)
-			{
-				return null;
-			}
-			foreach (var methodRef in tr.Resolve().Methods)
-			{
-				if (methodRef.Name == name)
-				{
-					return assembly.MainModule.ImportReference(methodRef);
-				}
-			}
+        public static MethodReference TryResolveMethodInParents(TypeReference tr, AssemblyDefinition assembly, string name)
+        {
+            if (tr == null)
+            {
+                return null;
+            }
+            foreach (MethodDefinition methodRef in tr.Resolve().Methods)
+            {
+                if (methodRef.Name == name)
+                {
+                    return assembly.MainModule.ImportReference(methodRef);
+                }
+            }
 
-			// Could not find the method in this class,  try the parent
-			return TryResolveMethodInParents(tr.Resolve().BaseType, assembly, name);
-		}
+            // Could not find the method in this class,  try the parent
+            return TryResolveMethodInParents(tr.Resolve().BaseType, assembly, name);
+        }
 
-		public static MethodDefinition ResolveDefaultPublicCtor(TypeReference variable)
-		{
-			foreach (var methodRef in variable.Resolve().Methods)
-			{
-				if (methodRef.Name == ".ctor" &&
-					methodRef.Resolve().IsPublic &&
-					methodRef.Parameters.Count == 0)
-				{
-					return methodRef;
-				}
-			}
-			return null;
-		}
+        public static MethodDefinition ResolveDefaultPublicCtor(TypeReference variable)
+        {
+            foreach (MethodDefinition methodRef in variable.Resolve().Methods)
+            {
+                if (methodRef.Name == ".ctor" &&
+                    methodRef.Resolve().IsPublic &&
+                    methodRef.Parameters.Count == 0)
+                {
+                    return methodRef;
+                }
+            }
+            return null;
+        }
 
-		public static MethodReference ResolveProperty(TypeReference tr, AssemblyDefinition assembly, string name)
-		{
-			foreach (var pd in tr.Resolve().Properties)
-			{
-				if (pd.Name == name)
-				{
-					return assembly.MainModule.ImportReference(pd.GetMethod);
-				}
-			}
-			return null;
-		}
-	}
+        public static MethodReference ResolveProperty(TypeReference tr, AssemblyDefinition assembly, string name)
+        {
+            foreach (PropertyDefinition pd in tr.Resolve().Properties)
+            {
+                if (pd.Name == name)
+                {
+                    return assembly.MainModule.ImportReference(pd.GetMethod);
+                }
+            }
+            return null;
+        }
+    }
 }
