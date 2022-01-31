@@ -1,263 +1,283 @@
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Mono.Cecil;
 
 namespace Mirror.Weaver
 {
-    public static class Extensions
-    {
-        public static bool Is(this TypeReference td, Type t)
-        {
-            if (t.IsGenericType)
-            {
-                return td.GetElementType().FullName == t.FullName;
-            }
-            return td.FullName == t.FullName;
-        }
+	public static class Extensions
+	{
+		public static bool Is(this TypeReference td, Type t)
+		{
+			if (t.IsGenericType)
+			{
+				return td.GetElementType().FullName == t.FullName;
+			}
+			return td.FullName == t.FullName;
+		}
 
-        public static bool Is<T>(this TypeReference td) => Is(td, typeof(T));
+		public static bool Is<T>(this TypeReference td) => Is(td, typeof(T));
 
-        public static bool IsDerivedFrom<T>(this TypeReference tr) => IsDerivedFrom(tr, typeof(T));
+		public static bool IsDerivedFrom<T>(this TypeReference tr) => IsDerivedFrom(tr, typeof(T));
 
-        public static bool IsDerivedFrom(this TypeReference tr, Type baseClass)
-        {
-            if (tr == null)
-                return false;
-            TypeDefinition td = tr.Resolve();
-            if (td == null)
-                return false;
-            if (!td.IsClass)
-                return false;
+		public static bool IsDerivedFrom(this TypeReference tr, Type baseClass)
+		{
+			if (tr == null)
+			{
+				return false;
+			}
 
-            // are ANY parent classes of baseClass?
-            TypeReference parent = td.BaseType;
+			var td = tr.Resolve();
+			if (td == null)
+			{
+				return false;
+			}
 
-            if (parent == null)
-                return false;
+			if (!td.IsClass)
+			{
+				return false;
+			}
 
-            if (parent.Is(baseClass))
-                return true;
+			// are ANY parent classes of baseClass?
+			var parent = td.BaseType;
 
-            if (parent.CanBeResolved())
-                return IsDerivedFrom(parent.Resolve(), baseClass);
+			if (parent == null)
+			{
+				return false;
+			}
 
-            return false;
-        }
+			if (parent.Is(baseClass))
+			{
+				return true;
+			}
 
-        public static TypeReference GetEnumUnderlyingType(this TypeDefinition td)
-        {
-            foreach (FieldDefinition field in td.Fields)
-            {
-                if (!field.IsStatic)
-                    return field.FieldType;
-            }
-            throw new ArgumentException($"Invalid enum {td.FullName}");
-        }
+			if (parent.CanBeResolved())
+			{
+				return IsDerivedFrom(parent.Resolve(), baseClass);
+			}
 
-        public static bool ImplementsInterface<TInterface>(this TypeDefinition td)
-        {
-            TypeDefinition typedef = td;
+			return false;
+		}
 
-            while (typedef != null)
-            {
-                if (typedef.Interfaces.Any(iface => iface.InterfaceType.Is<TInterface>()))
-                    return true;
+		public static TypeReference GetEnumUnderlyingType(this TypeDefinition td)
+		{
+			foreach (var field in td.Fields)
+			{
+				if (!field.IsStatic)
+				{
+					return field.FieldType;
+				}
+			}
+			throw new ArgumentException($"Invalid enum {td.FullName}");
+		}
 
-                try
-                {
-                    TypeReference parent = typedef.BaseType;
-                    typedef = parent?.Resolve();
-                }
-                catch (AssemblyResolutionException)
-                {
-                    // this can happen for plugins.
-                    //Console.WriteLine("AssemblyResolutionException: "+ ex.ToString());
-                    break;
-                }
-            }
+		public static bool ImplementsInterface<TInterface>(this TypeDefinition td)
+		{
+			var typedef = td;
 
-            return false;
-        }
+			while (typedef != null)
+			{
+				if (typedef.Interfaces.Any(iface => iface.InterfaceType.Is<TInterface>()))
+				{
+					return true;
+				}
 
-        public static bool IsMultidimensionalArray(this TypeReference tr) =>
-            tr is ArrayType arrayType && arrayType.Rank > 1;
+				try
+				{
+					var parent = typedef.BaseType;
+					typedef = parent?.Resolve();
+				}
+				catch (AssemblyResolutionException)
+				{
+					// this can happen for plugins.
+					//Console.WriteLine("AssemblyResolutionException: "+ ex.ToString());
+					break;
+				}
+			}
 
-        // Does type use netId as backing field
-        public static bool IsNetworkIdentityField(this TypeReference tr) =>
-            tr.Is<UnityEngine.GameObject>() ||
-            tr.Is<NetworkIdentity>() ||
-            tr.IsDerivedFrom<NetworkBehaviour>();
+			return false;
+		}
 
-        public static bool CanBeResolved(this TypeReference parent)
-        {
-            while (parent != null)
-            {
-                if (parent.Scope.Name == "Windows")
-                {
-                    return false;
-                }
+		public static bool IsMultidimensionalArray(this TypeReference tr) =>
+			tr is ArrayType arrayType && arrayType.Rank > 1;
 
-                if (parent.Scope.Name == "mscorlib")
-                {
-                    TypeDefinition resolved = parent.Resolve();
-                    return resolved != null;
-                }
+		// Does type use netId as backing field
+		public static bool IsNetworkIdentityField(this TypeReference tr) =>
+			tr.Is<UnityEngine.GameObject>() ||
+			tr.Is<NetworkIdentity>() ||
+			tr.IsDerivedFrom<NetworkBehaviour>();
 
-                try
-                {
-                    parent = parent.Resolve().BaseType;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+		public static bool CanBeResolved(this TypeReference parent)
+		{
+			while (parent != null)
+			{
+				if (parent.Scope.Name == "Windows")
+				{
+					return false;
+				}
 
-        // Makes T => Variable and imports function
-        public static MethodReference MakeGeneric(this MethodReference generic, ModuleDefinition module, TypeReference variableReference)
-        {
-            GenericInstanceMethod instance = new GenericInstanceMethod(generic);
-            instance.GenericArguments.Add(variableReference);
+				if (parent.Scope.Name == "mscorlib")
+				{
+					var resolved = parent.Resolve();
+					return resolved != null;
+				}
 
-            MethodReference readFunc = module.ImportReference(instance);
-            return readFunc;
-        }
+				try
+				{
+					parent = parent.Resolve().BaseType;
+				}
+				catch
+				{
+					return false;
+				}
+			}
+			return true;
+		}
 
-        // Given a method of a generic class such as ArraySegment`T.get_Count,
-        // and a generic instance such as ArraySegment`int
-        // Creates a reference to the specialized method  ArraySegment`int`.get_Count
-        // Note that calling ArraySegment`T.get_Count directly gives an invalid IL error
-        public static MethodReference MakeHostInstanceGeneric(this MethodReference self, ModuleDefinition module, GenericInstanceType instanceType)
-        {
-            MethodReference reference = new MethodReference(self.Name, self.ReturnType, instanceType)
-            {
-                CallingConvention = self.CallingConvention,
-                HasThis = self.HasThis,
-                ExplicitThis = self.ExplicitThis
-            };
+		// Makes T => Variable and imports function
+		public static MethodReference MakeGeneric(this MethodReference generic, ModuleDefinition module, TypeReference variableReference)
+		{
+			var instance = new GenericInstanceMethod(generic);
+			instance.GenericArguments.Add(variableReference);
 
-            foreach (ParameterDefinition parameter in self.Parameters)
-                reference.Parameters.Add(new ParameterDefinition(parameter.ParameterType));
+			var readFunc = module.ImportReference(instance);
+			return readFunc;
+		}
 
-            foreach (GenericParameter generic_parameter in self.GenericParameters)
-                reference.GenericParameters.Add(new GenericParameter(generic_parameter.Name, reference));
+		// Given a method of a generic class such as ArraySegment`T.get_Count,
+		// and a generic instance such as ArraySegment`int
+		// Creates a reference to the specialized method  ArraySegment`int`.get_Count
+		// Note that calling ArraySegment`T.get_Count directly gives an invalid IL error
+		public static MethodReference MakeHostInstanceGeneric(this MethodReference self, ModuleDefinition module, GenericInstanceType instanceType)
+		{
+			var reference = new MethodReference(self.Name, self.ReturnType, instanceType)
+			{
+				CallingConvention = self.CallingConvention,
+				HasThis = self.HasThis,
+				ExplicitThis = self.ExplicitThis
+			};
 
-            return module.ImportReference(reference);
-        }
+			foreach (var parameter in self.Parameters)
+			{
+				reference.Parameters.Add(new ParameterDefinition(parameter.ParameterType));
+			}
 
-        // Given a field of a generic class such as Writer<T>.write,
-        // and a generic instance such as ArraySegment`int
-        // Creates a reference to the specialized method  ArraySegment`int`.get_Count
-        // Note that calling ArraySegment`T.get_Count directly gives an invalid IL error
-        public static FieldReference SpecializeField(this FieldReference self, ModuleDefinition module, GenericInstanceType instanceType)
-        {
-            FieldReference reference = new FieldReference(self.Name, self.FieldType, instanceType);
-            return module.ImportReference(reference);
-        }
+			foreach (var generic_parameter in self.GenericParameters)
+			{
+				reference.GenericParameters.Add(new GenericParameter(generic_parameter.Name, reference));
+			}
 
-        public static CustomAttribute GetCustomAttribute<TAttribute>(this ICustomAttributeProvider method)
-        {
-            return method.CustomAttributes.FirstOrDefault(ca => ca.AttributeType.Is<TAttribute>());
-        }
+			return module.ImportReference(reference);
+		}
 
-        public static bool HasCustomAttribute<TAttribute>(this ICustomAttributeProvider attributeProvider)
-        {
-            return attributeProvider.CustomAttributes.Any(attr => attr.AttributeType.Is<TAttribute>());
-        }
+		// Given a field of a generic class such as Writer<T>.write,
+		// and a generic instance such as ArraySegment`int
+		// Creates a reference to the specialized method  ArraySegment`int`.get_Count
+		// Note that calling ArraySegment`T.get_Count directly gives an invalid IL error
+		public static FieldReference SpecializeField(this FieldReference self, ModuleDefinition module, GenericInstanceType instanceType)
+		{
+			var reference = new FieldReference(self.Name, self.FieldType, instanceType);
+			return module.ImportReference(reference);
+		}
 
-        public static T GetField<T>(this CustomAttribute ca, string field, T defaultValue)
-        {
-            foreach (CustomAttributeNamedArgument customField in ca.Fields)
-                if (customField.Name == field)
-                    return (T)customField.Argument.Value;
-            return defaultValue;
-        }
+		public static CustomAttribute GetCustomAttribute<TAttribute>(this ICustomAttributeProvider method) => method.CustomAttributes.FirstOrDefault(ca => ca.AttributeType.Is<TAttribute>());
 
-        public static MethodDefinition GetMethod(this TypeDefinition td, string methodName)
-        {
-            return td.Methods.FirstOrDefault(method => method.Name == methodName);
-        }
+		public static bool HasCustomAttribute<TAttribute>(this ICustomAttributeProvider attributeProvider) => attributeProvider.CustomAttributes.Any(attr => attr.AttributeType.Is<TAttribute>());
 
-        public static List<MethodDefinition> GetMethods(this TypeDefinition td, string methodName)
-        {
-            return td.Methods.Where(method => method.Name == methodName).ToList();
-        }
+		public static T GetField<T>(this CustomAttribute ca, string field, T defaultValue)
+		{
+			foreach (var customField in ca.Fields)
+			{
+				if (customField.Name == field)
+				{
+					return (T)customField.Argument.Value;
+				}
+			}
 
-        public static MethodDefinition GetMethodInBaseType(this TypeDefinition td, string methodName)
-        {
-            TypeDefinition typedef = td;
-            while (typedef != null)
-            {
-                foreach (MethodDefinition md in typedef.Methods)
-                {
-                    if (md.Name == methodName)
-                        return md;
-                }
+			return defaultValue;
+		}
 
-                try
-                {
-                    TypeReference parent = typedef.BaseType;
-                    typedef = parent?.Resolve();
-                }
-                catch (AssemblyResolutionException)
-                {
-                    // this can happen for plugins.
-                    break;
-                }
-            }
+		public static MethodDefinition GetMethod(this TypeDefinition td, string methodName) => td.Methods.FirstOrDefault(method => method.Name == methodName);
 
-            return null;
-        }
+		public static List<MethodDefinition> GetMethods(this TypeDefinition td, string methodName) => td.Methods.Where(method => method.Name == methodName).ToList();
 
-        // Finds public fields in type and base type
-        public static IEnumerable<FieldDefinition> FindAllPublicFields(this TypeReference variable)
-        {
-            return FindAllPublicFields(variable.Resolve());
-        }
+		public static MethodDefinition GetMethodInBaseType(this TypeDefinition td, string methodName)
+		{
+			var typedef = td;
+			while (typedef != null)
+			{
+				foreach (var md in typedef.Methods)
+				{
+					if (md.Name == methodName)
+					{
+						return md;
+					}
+				}
 
-        // Finds public fields in type and base type
-        public static IEnumerable<FieldDefinition> FindAllPublicFields(this TypeDefinition typeDefinition)
-        {
-            while (typeDefinition != null)
-            {
-                foreach (FieldDefinition field in typeDefinition.Fields)
-                {
-                    if (field.IsStatic || field.IsPrivate)
-                        continue;
+				try
+				{
+					var parent = typedef.BaseType;
+					typedef = parent?.Resolve();
+				}
+				catch (AssemblyResolutionException)
+				{
+					// this can happen for plugins.
+					break;
+				}
+			}
 
-                    if (field.IsNotSerialized)
-                        continue;
+			return null;
+		}
 
-                    yield return field;
-                }
+		// Finds public fields in type and base type
+		public static IEnumerable<FieldDefinition> FindAllPublicFields(this TypeReference variable) => FindAllPublicFields(variable.Resolve());
 
-                try
-                {
-                    typeDefinition = typeDefinition.BaseType?.Resolve();
-                }
-                catch (AssemblyResolutionException)
-                {
-                    break;
-                }
-            }
-        }
+		// Finds public fields in type and base type
+		public static IEnumerable<FieldDefinition> FindAllPublicFields(this TypeDefinition typeDefinition)
+		{
+			while (typeDefinition != null)
+			{
+				foreach (var field in typeDefinition.Fields)
+				{
+					if (field.IsStatic || field.IsPrivate)
+					{
+						continue;
+					}
 
-        public static bool ContainsClass(this ModuleDefinition module, string nameSpace, string className) =>
-            module.GetTypes().Any(td => td.Namespace == nameSpace &&
-                                  td.Name == className);
+					if (field.IsNotSerialized)
+					{
+						continue;
+					}
+
+					yield return field;
+				}
+
+				try
+				{
+					typeDefinition = typeDefinition.BaseType?.Resolve();
+				}
+				catch (AssemblyResolutionException)
+				{
+					break;
+				}
+			}
+		}
+
+		public static bool ContainsClass(this ModuleDefinition module, string nameSpace, string className) =>
+			module.GetTypes().Any(td => td.Namespace == nameSpace &&
+								  td.Name == className);
 
 
-        public static AssemblyNameReference FindReference(this ModuleDefinition module, string referenceName)
-        {
-            foreach (AssemblyNameReference reference in module.AssemblyReferences)
-            {
-                if (reference.Name == referenceName)
-                    return reference;
-            }
-            return null;
-        }
-    }
+		public static AssemblyNameReference FindReference(this ModuleDefinition module, string referenceName)
+		{
+			foreach (var reference in module.AssemblyReferences)
+			{
+				if (reference.Name == referenceName)
+				{
+					return reference;
+				}
+			}
+			return null;
+		}
+	}
 }
