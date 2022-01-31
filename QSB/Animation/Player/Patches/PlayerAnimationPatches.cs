@@ -69,7 +69,7 @@ namespace QSB.Animation.Player.Patches
 				else
 				{
 					__instance._animator.SetTrigger("Land");
-					new AnimationTriggerMessage( "Land").Send();
+					new AnimationTriggerMessage("Land").Send();
 				}
 			}
 

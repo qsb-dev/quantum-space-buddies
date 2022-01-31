@@ -10,11 +10,9 @@ namespace QSB.WorldSync
 	/// </summary>
 	public class RequestInitialStatesMessage : QSBMessage
 	{
-		public override void OnReceiveRemote()
-		{
+		public override void OnReceiveRemote() =>
 			Delay.RunWhen(() => QSBWorldSync.AllObjectsReady,
 				() => SendInitialStates(From));
-		}
 
 		private static void SendInitialStates(uint to)
 		{

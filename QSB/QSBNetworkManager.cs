@@ -30,7 +30,7 @@ namespace QSB
 {
 	public class QSBNetworkManager : NetworkManager
 	{
-		public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
+		public static new QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
 		public event Action OnClientConnected;
 		public event Action<string> OnClientDisconnected;
@@ -104,10 +104,8 @@ namespace QSB
 			ConfigureNetworkManager();
 		}
 
-		private void InitPlayerName()
-		{
-			Delay.RunWhen(PlayerData.IsLoaded, () =>
-			{
+		private void InitPlayerName() => Delay.RunWhen(PlayerData.IsLoaded,
+			() => {
 				try
 				{
 					var titleScreenManager = FindObjectOfType<TitleScreenManager>();
@@ -127,7 +125,6 @@ namespace QSB
 					PlayerName = "Player";
 				}
 			});
-		}
 
 		/// create a new network prefab from the network object prefab template.
 		/// this works by calling Unload(false) and then reloading the AssetBundle,

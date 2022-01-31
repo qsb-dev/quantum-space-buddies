@@ -67,15 +67,9 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 			}
 		}
 
-		public bool InConversation()
-		{
-			return enabled;
-		}
+		public bool InConversation() => enabled;
 
-		public InteractVolume GetInteractVolume()
-		{
-			return _interactVolume;
-		}
+		public InteractVolume GetInteractVolume() => _interactVolume;
 
 		private void Update()
 		{

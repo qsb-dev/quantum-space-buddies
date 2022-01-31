@@ -456,7 +456,7 @@ namespace QSB.QuantumSync.Patches
 				for (var i = 0; i < __instance._pointingSkeletons.Length; i++)
 				{
 					if (__instance._pointingSkeletons[i].gameObject.activeInHierarchy &&
-					    (!__instance._pointingSkeletons[i].IsVisible() || !__instance._pointingSkeletons[i].IsIlluminated()))
+						(!__instance._pointingSkeletons[i].IsVisible() || !__instance._pointingSkeletons[i].IsIlluminated()))
 					{
 						__instance._pointingSkeletons[i].gameObject.SetActive(false);
 

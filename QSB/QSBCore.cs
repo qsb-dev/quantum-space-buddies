@@ -68,12 +68,9 @@ namespace QSB
 		public static IMenuAPI MenuApi { get; private set; }
 		public static DebugSettings DebugSettings { get; set; } = new();
 
-		public void Awake()
-		{
-			var instance = TextTranslation.Get().m_table;
-			instance.theUITable[(int)UITextType.PleaseUseController] =
-				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
-		}
+		public void Awake() =>
+			UIHelper.ReplaceUI(UITextType.PleaseUseController,
+				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
 
 		public void Start()
 		{
@@ -150,10 +147,7 @@ namespace QSB
 			DebugLog.DebugWrite($"Assemblies initialized", MessageType.Success);
 		}
 
-		public override void Configure(IModConfig config)
-		{
-			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
-		}
+		public override void Configure(IModConfig config) => DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 
 		private void Update()
 		{
