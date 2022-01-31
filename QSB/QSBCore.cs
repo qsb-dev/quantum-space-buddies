@@ -141,7 +141,7 @@ namespace QSB
 				DebugLog.DebugWrite(assembly.ToString());
 				assembly.GetTypes()
 					.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
-					.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
+					.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
 					.ForEach(x => x.Invoke(null, null));
 			}
 
