@@ -61,24 +61,12 @@ namespace QSB.Tools
 
 		private static void CreateStowTransforms(Transform cameraBody)
 		{
-			var stow = new GameObject("REMOTE_ToolStowTransform");
-			StowTransform = stow.transform;
-			stow.transform.parent = cameraBody;
-			stow.transform.localPosition = Vector3.zero;
-			stow.transform.localRotation = Quaternion.Euler(45f, 0f, 0f);
+			var playerBody = cameraBody.parent;
 
-			var hold = new GameObject("REMOTE_ToolHoldTransform");
-			HoldTransform = hold.transform;
-			hold.transform.parent = cameraBody;
-			hold.transform.localPosition = Vector3.zero;
-			hold.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+			StowTransform = cameraBody.Find("REMOTE_ToolStowTransform");
+			HoldTransform = cameraBody.Find("REMOTE_ToolHoldTransform");
 
-			var itemCarryTool = new GameObject("REMOTE_ItemCarryTool");
-			itemCarryTool.transform.parent = cameraBody.parent;
-			itemCarryTool.transform.localPosition = new Vector3(0, 0.8496093f, 0.1500003f);
-			itemCarryTool.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-			itemCarryTool.transform.localScale = Vector3.one;
-
+			/*
 			var item = new GameObject("REMOTE_ItemSocket");
 			item.transform.parent = cameraBody;
 			item.transform.localPosition = new Vector3(0.125f, -0.12f, 0.2f);
@@ -109,12 +97,6 @@ namespace QSB.Tools
 			vesselCore.transform.localRotation = Quaternion.Euler(3.142f, 14.827f, 12.094f);
 			vesselCore.transform.localScale = new Vector3(0.27f, 0.27f, 0.27f);
 
-			var simpleLantern = new GameObject("REMOTE_SimpleLanternSocket");
-			simpleLantern.transform.parent = itemCarryTool.transform;
-			simpleLantern.transform.localPosition = new Vector3(0.378f, -0.861f, 0.14f);
-			simpleLantern.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-			simpleLantern.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-
 			var dreamLantern = new GameObject("REMOTE_DreamLanternSocket");
 			dreamLantern.transform.parent = cameraBody;
 			dreamLantern.transform.localPosition = new Vector3(0.243f, -0.207f, 0.262f);
@@ -132,6 +114,7 @@ namespace QSB.Tools
 			visionTorch.transform.localPosition = new Vector3(0.21f, -0.32f, 0.33f);
 			visionTorch.transform.localRotation = Quaternion.Euler(-4.5f, 0.03f, 9f);
 			visionTorch.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
+			*/
 		}
 
 		internal static MeshRenderer GetRenderer(GameObject root, string gameObjectName) =>

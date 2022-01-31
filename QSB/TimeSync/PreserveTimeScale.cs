@@ -4,22 +4,30 @@ namespace QSB.TimeSync
 {
 	public class PreserveTimeScale : NetworkBehaviour
 	{
-		public void Start()
+		public void Init()
 		{
-			// disable meditation button;
-			Locator.GetSceneMenuManager().pauseMenu._skipToNextLoopButton.SetActive(false);
+			if (!isServer)
+			{
+				var campfires = FindObjectsOfType<Campfire>();
+				foreach (var campfire in campfires)
+				{
+					campfire._canSleepHere = false;
+				}
+			}
 
-			// Allow server to sleep at campfires
-			if (isServer)
+			var menuManager = Locator.GetSceneMenuManager();
+
+			if (menuManager == null)
 			{
 				return;
 			}
 
-			var campfires = FindObjectsOfType<Campfire>();
-			foreach (var campfire in campfires)
+			if (menuManager._pauseMenu == null || menuManager.pauseMenu._skipToNextLoopButton == null)
 			{
-				campfire._canSleepHere = false; // Stop players from sleeping at campfires
+				return;
 			}
+
+			menuManager.pauseMenu._skipToNextLoopButton.SetActive(false);
 		}
 	}
 }
