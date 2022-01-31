@@ -14,16 +14,16 @@ namespace QSB.RespawnSync
 		private int _respawnIndex;
 		private bool _wearingSuit;
 
+		private static readonly UITextType _respawnPlayerText = UIHelper.AddToUITable("Respawn Player");
+
 		private void Awake()
 		{
 			_interactVolume = this.GetRequiredComponent<MultipleInteractionVolume>();
 			_interactVolume.OnPressInteract += OnPressInteract;
 			_interactVolume.OnGainFocus += OnGainFocus;
 
-			var respawnPlayerText = UIHelper.AddToUITable("Respawn Player");
-
 			_refillIndex = _interactVolume.AddInteraction(InputLibrary.interact, InputMode.Character, UITextType.None, true, true);
-			_respawnIndex = _interactVolume.AddInteraction(InputLibrary.interactSecondary, InputMode.Character, respawnPlayerText, true, true);
+			_respawnIndex = _interactVolume.AddInteraction(InputLibrary.interactSecondary, InputMode.Character, _respawnPlayerText, true, true);
 
 			GlobalMessenger.AddListener(OWEvents.SuitUp, OnSuitUp);
 			GlobalMessenger.AddListener(OWEvents.RemoveSuit, OnRemoveSuit);
