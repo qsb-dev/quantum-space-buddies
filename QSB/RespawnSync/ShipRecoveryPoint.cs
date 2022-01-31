@@ -24,8 +24,8 @@ namespace QSB.RespawnSync
 			_refillIndex = _interactVolume.AddInteraction(InputLibrary.interact, InputMode.Character, UITextType.None, true, true);
 			_respawnIndex = _interactVolume.AddInteraction(InputLibrary.interactSecondary, InputMode.Character, respawnPlayerText, true, true);
 
-			GlobalMessenger.AddListener("SuitUp", new Callback(OnSuitUp));
-			GlobalMessenger.AddListener("RemoveSuit", new Callback(OnRemoveSuit));
+			GlobalMessenger.AddListener("SuitUp", OnSuitUp);
+			GlobalMessenger.AddListener("RemoveSuit", OnRemoveSuit);
 		}
 
 		private void Start()
@@ -38,8 +38,8 @@ namespace QSB.RespawnSync
 		{
 			_interactVolume.OnPressInteract -= OnPressInteract;
 			_interactVolume.OnGainFocus -= OnGainFocus;
-			GlobalMessenger.RemoveListener("SuitUp", new Callback(OnSuitUp));
-			GlobalMessenger.RemoveListener("RemoveSuit", new Callback(OnRemoveSuit));
+			GlobalMessenger.RemoveListener("SuitUp", OnSuitUp);
+			GlobalMessenger.RemoveListener("RemoveSuit", OnRemoveSuit);
 		}
 
 		private void OnSuitUp()
@@ -71,33 +71,30 @@ namespace QSB.RespawnSync
 			var needsHealing = _playerResources.GetHealthFraction() != 1f;
 			var needsRefueling = _playerResources.GetFuelFraction() != 1f;
 
-			UITextType uitextType;
+			UITextType uiTextType;
 			bool keyCommandVisible;
 			if (needsHealing && needsRefueling)
 			{
-				uitextType = UITextType.RefillPrompt_0;
+				uiTextType = UITextType.RefillPrompt_0;
 				keyCommandVisible = true;
 			}
 			else if (needsHealing)
 			{
-				uitextType = UITextType.RefillPrompt_2;
+				uiTextType = UITextType.RefillPrompt_2;
 				keyCommandVisible = true;
 			}
 			else if (needsRefueling)
 			{
-				uitextType = UITextType.RefillPrompt_4;
+				uiTextType = UITextType.RefillPrompt_4;
 				keyCommandVisible = true;
 			}
 			else
 			{
-				uitextType = UITextType.RefillPrompt_7;
+				uiTextType = UITextType.RefillPrompt_7;
 				keyCommandVisible = false;
 			}
 
-			if (uitextType != UITextType.None)
-			{
-				_interactVolume.ChangePrompt(uitextType, _refillIndex);
-			}
+			_interactVolume.ChangePrompt(uiTextType, _refillIndex);
 
 			if (_wearingSuit)
 			{
@@ -143,19 +140,19 @@ namespace QSB.RespawnSync
 		{
 			var needsRefueling = _playerResources.GetFuelFraction() != 1f;
 			var needsHealing = _playerResources.GetHealthFraction() != 1f;
-			var flag4 = false;
+			var needsRefill = false;
 
 			if (needsRefueling)
 			{
-				flag4 = true;
+				needsRefill = true;
 			}
 
 			if (needsHealing)
 			{
-				flag4 = true;
+				needsRefill = true;
 			}
 
-			if (flag4)
+			if (needsRefill)
 			{
 				_playerResources.StartRefillResources(true, true);
 
