@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.Messaging;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.RespawnSync
@@ -24,8 +25,8 @@ namespace QSB.RespawnSync
 			_refillIndex = _interactVolume.AddInteraction(InputLibrary.interact, InputMode.Character, UITextType.None, true, true);
 			_respawnIndex = _interactVolume.AddInteraction(InputLibrary.interactSecondary, InputMode.Character, respawnPlayerText, true, true);
 
-			GlobalMessenger.AddListener("SuitUp", OnSuitUp);
-			GlobalMessenger.AddListener("RemoveSuit", OnRemoveSuit);
+			GlobalMessenger.AddListener(OWEvents.SuitUp, OnSuitUp);
+			GlobalMessenger.AddListener(OWEvents.RemoveSuit, OnRemoveSuit);
 		}
 
 		private void Start()
@@ -38,8 +39,8 @@ namespace QSB.RespawnSync
 		{
 			_interactVolume.OnPressInteract -= OnPressInteract;
 			_interactVolume.OnGainFocus -= OnGainFocus;
-			GlobalMessenger.RemoveListener("SuitUp", OnSuitUp);
-			GlobalMessenger.RemoveListener("RemoveSuit", OnRemoveSuit);
+			GlobalMessenger.RemoveListener(OWEvents.SuitUp, OnSuitUp);
+			GlobalMessenger.RemoveListener(OWEvents.RemoveSuit, OnRemoveSuit);
 		}
 
 		private void OnSuitUp()
