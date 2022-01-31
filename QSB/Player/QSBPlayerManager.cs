@@ -64,8 +64,8 @@ namespace QSB.Player
 		{
 			var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
 			if (includeLocalCamera
-			    && LocalPlayer != default
-			    && LocalPlayer.Camera != null)
+				&& LocalPlayer != default
+				&& LocalPlayer.Camera != null)
 			{
 				cameraList.Add(LocalPlayer);
 			}

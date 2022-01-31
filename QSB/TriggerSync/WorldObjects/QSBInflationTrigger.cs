@@ -53,8 +53,7 @@ namespace QSB.TriggerSync.WorldObjects
 			}
 		}
 
-		protected override void OnExit(PlayerInfo player)
-		{
+		protected override void OnExit(PlayerInfo player) =>
 			// wait 1 frame for player to be removed
 			Delay.RunNextFrame(() =>
 			{
@@ -63,7 +62,6 @@ namespace QSB.TriggerSync.WorldObjects
 					StartCollapse();
 				}
 			});
-		}
 
 		private void StartCollapse()
 		{

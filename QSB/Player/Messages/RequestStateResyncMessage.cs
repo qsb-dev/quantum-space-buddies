@@ -29,10 +29,8 @@ namespace QSB.Player.Messages
 			QSBMessageManager.Send(this);
 		}
 
-		public override void OnReceiveLocal()
-		{
-			Delay.RunFramesLater(60, () =>
-			{
+		public override void OnReceiveLocal() => Delay.RunFramesLater(60, 
+			() => {
 				if (_waitingForEvent)
 				{
 					if (QSBPlayerManager.PlayerList.Count > 1)
@@ -43,7 +41,6 @@ namespace QSB.Player.Messages
 					_waitingForEvent = false;
 				}
 			});
-		}
 
 		public override void OnReceiveRemote()
 		{

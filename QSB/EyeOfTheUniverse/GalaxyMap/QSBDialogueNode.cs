@@ -35,10 +35,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 			DBEntriesToSet = new string[0];
 		}
 
-		public void RefreshConditionsData()
-		{
-			_listPagesToDisplay = DisplayTextData.GetDisplayStringList();
-		}
+		public void RefreshConditionsData() => _listPagesToDisplay = DisplayTextData.GetDisplayStringList();
 
 		public void GetNextPage(out string mainText, ref List<DialogueOption> options)
 		{
@@ -57,10 +54,7 @@ namespace QSB.EyeOfTheUniverse.GalaxyMap
 			}
 		}
 
-		public bool HasNext()
-		{
-			return CurrentPage + 1 < _listPagesToDisplay.Count;
-		}
+		public bool HasNext() => CurrentPage + 1 < _listPagesToDisplay.Count;
 
 		public string GetOptionsText(out int count)
 		{

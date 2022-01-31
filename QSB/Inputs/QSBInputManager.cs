@@ -55,9 +55,6 @@ namespace QSB.Inputs
 
 		public bool InputsEnabled { get; private set; } = true;
 
-		public void SetInputsEnabled(bool enabled)
-		{
-			InputsEnabled = enabled;
-		}
+		public void SetInputsEnabled(bool enabled) => InputsEnabled = enabled;
 	}
 }

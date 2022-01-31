@@ -48,10 +48,7 @@ namespace QSB.Syncs.Sectored
 			_sectorId = reader.ReadInt();
 		}
 
-		protected void GetFromSector()
-		{
-			_sectorId = ReferenceSector?.ObjectId ?? -1;
-		}
+		protected void GetFromSector() => _sectorId = ReferenceSector?.ObjectId ?? -1;
 
 		protected void ApplyToSector()
 		{

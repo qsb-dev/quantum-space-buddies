@@ -151,10 +151,7 @@ namespace QSB
 			DebugLog.DebugWrite($"Assemblies initialized", MessageType.Success);
 		}
 
-		public override void Configure(IModConfig config)
-		{
-			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
-		}
+		public override void Configure(IModConfig config) => DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 
 		private void Update()
 		{
