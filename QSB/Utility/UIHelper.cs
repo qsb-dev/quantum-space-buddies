@@ -4,11 +4,18 @@ namespace QSB.Utility
 {
 	internal static class UIHelper
 	{
-		public static int AddToUITable(string text)
+		public static void ReplaceUI(UITextType key, string text)
 		{
-			var instance = UnityEngine.Object.FindObjectOfType<TextTranslation>().m_table;
-			instance.Insert_UI(instance.theUITable.Keys.Max() + 1, text);
-			return instance.theUITable.Keys.Max();
+			var table = TextTranslation.Get().m_table;
+			table.theUITable[(int)key] = text;
+		}
+
+		public static UITextType AddToUITable(string text)
+		{
+			var table = TextTranslation.Get().m_table;
+			var key = table.theUITable.Keys.Max() + 1;
+			table.theUITable[key] = text;
+			return (UITextType)key;
 		}
 	}
 }

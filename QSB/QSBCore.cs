@@ -69,12 +69,9 @@ namespace QSB
 
 		private static DebugSettings DebugSettings { get; set; } = new();
 
-		public void Awake()
-		{
-			var instance = TextTranslation.Get().m_table;
-			instance.theUITable[(int)UITextType.PleaseUseController] =
-				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
-		}
+		public void Awake() =>
+			UIHelper.ReplaceUI(UITextType.PleaseUseController,
+				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
 
 		public void Start()
 		{

@@ -22,7 +22,7 @@ namespace QSB.RespawnSync
 			var respawnPlayerText = UIHelper.AddToUITable("Respawn Player");
 
 			_refillIndex = _interactVolume.AddInteraction(InputLibrary.interact, InputMode.Character, UITextType.None, true, true);
-			_respawnIndex = _interactVolume.AddInteraction(InputLibrary.interactSecondary, InputMode.Character, (UITextType)respawnPlayerText, true, true);
+			_respawnIndex = _interactVolume.AddInteraction(InputLibrary.interactSecondary, InputMode.Character, respawnPlayerText, true, true);
 
 			GlobalMessenger.AddListener("SuitUp", new Callback(OnSuitUp));
 			GlobalMessenger.AddListener("RemoveSuit", new Callback(OnRemoveSuit));
