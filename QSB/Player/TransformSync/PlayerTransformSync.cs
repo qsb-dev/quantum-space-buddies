@@ -182,7 +182,7 @@ namespace QSB.Player.TransformSync
 
 			REMOTE_Player_Body.GetComponent<PlayerHUDMarker>().Init(Player);
 			REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = Player.Name;
-			Player._ditheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
+			Player._ditheringAnimator = REMOTE_Player_Body.GetComponent<DitheringAnimator>();
 			// get inactive renderers too
 			Delay.RunNextFrame(() =>
 				Player._ditheringAnimator._renderers = Player._ditheringAnimator
@@ -196,10 +196,7 @@ namespace QSB.Player.TransformSync
 			 */
 
 			REMOTE_PlayerCamera.GetComponent<Camera>().enabled = false;
-			var owcamera = REMOTE_PlayerCamera.AddComponent<OWCamera>();
-			owcamera.fieldOfView = 70;
-			owcamera.nearClipPlane = 0.1f;
-			owcamera.farClipPlane = 50000f;
+			var owcamera = REMOTE_PlayerCamera.GetComponent<OWCamera>();
 			Player.Camera = owcamera;
 			Player.CameraBody = REMOTE_PlayerCamera;
 			_visibleCameraRoot = REMOTE_PlayerCamera.transform;
