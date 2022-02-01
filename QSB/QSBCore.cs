@@ -77,7 +77,7 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
+			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
