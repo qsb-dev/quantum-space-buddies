@@ -2,7 +2,6 @@
 using Mono.Cecil;
 using System;
 using System.IO;
-using System.Reflection;
 
 namespace MirrorWeaver
 {
@@ -32,21 +31,13 @@ namespace MirrorWeaver
 		public static void Main(string[] args)
 		{
 			var qsbDll = Path.GetFullPath(args[0]);
-			var gameDir = Path.GetFullPath(args[1]);
+			var unityDir = Path.GetFullPath(args[1]);
 
 			var qsbDir = Path.GetDirectoryName(qsbDll)!;
-			var managedDir = Path.Combine(gameDir, "OuterWilds_Data", "Managed");
-
-			AppDomain.CurrentDomain.AssemblyResolve += (_, eventArgs) =>
-			{
-				var name = new AssemblyName(eventArgs.Name).Name + ".dll";
-				var path = Path.Combine(managedDir, name);
-				return File.Exists(path) ? Assembly.LoadFile(path) : null;
-			};
 
 			var resolver = new DefaultAssemblyResolver();
 			resolver.AddSearchDirectory(qsbDir);
-			resolver.AddSearchDirectory(managedDir);
+			resolver.AddSearchDirectory(unityDir);
 			var assembly = AssemblyDefinition.ReadAssembly(qsbDll, new ReaderParameters
 			{
 				ReadWrite = true,

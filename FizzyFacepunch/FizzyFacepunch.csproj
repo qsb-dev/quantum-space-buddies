@@ -4,8 +4,6 @@
     <Reference Include="../Mirror/*.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
+    <Reference Include="../UnityEngine/UnityEngine.CoreModule.dll" />
   </ItemGroup>
 </Project>
