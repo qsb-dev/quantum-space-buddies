@@ -5,6 +5,6 @@ namespace QSB.EchoesOfTheEye.SlideProjectors.Messages
 {
 	internal class NextSlideMessage : QSBWorldObjectMessage<QSBSlideProjector>
 	{
-		public override void OnReceiveRemote() => WorldObject.AttachedObject.NextSlide();
+		public override void OnReceiveRemote() => WorldObject.NextSlide();
 	}
 }
