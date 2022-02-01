@@ -18,34 +18,34 @@ namespace QSB.Utility
 
 		[JsonProperty("drawGui")]
 		private bool _drawGui;
-		public bool DrawGui { get => _drawGui && DebugMode; set => _drawGui = value; }
+		public bool DrawGui => DebugMode && _drawGui;
 
 		[JsonProperty("drawLines")]
 		private bool _drawLines;
-		public bool DrawLines { get => _drawLines && DebugMode; set => _drawLines = value; }
+		public bool DrawLines => DebugMode && _drawLines;
 
 		[JsonProperty("showQuantumVisibilityObjects")]
 		private bool _showQuantumVisibilityObjects;
-		public bool ShowQuantumVisibilityObjects { get => _showQuantumVisibilityObjects && DebugMode; set => _showQuantumVisibilityObjects = value; }
+		public bool ShowQuantumVisibilityObjects => DebugMode && _showQuantumVisibilityObjects;
 
 		[JsonProperty("showDebugLabels")]
 		private bool _showDebugLabels;
-		public bool ShowDebugLabels { get => _showDebugLabels && DebugMode; set => _showDebugLabels = value; }
+		public bool ShowDebugLabels => DebugMode && _showDebugLabels;
 
 		[JsonProperty("avoidTimeSync")]
 		private bool _avoidTimeSync;
-		public bool AvoidTimeSync { get => _avoidTimeSync && DebugMode; set => _avoidTimeSync = value; }
+		public bool AvoidTimeSync => DebugMode && _avoidTimeSync;
 
 		[JsonProperty("skipTitleScreen")]
 		private bool _skipTitleScreen;
-		public bool SkipTitleScreen { get => _skipTitleScreen && DebugMode; set => _skipTitleScreen = value; }
+		public bool SkipTitleScreen => DebugMode && _skipTitleScreen;
 
 		[JsonProperty("greySkybox")]
 		private bool _greySkybox;
-		public bool GreySkybox { get => _greySkybox && DebugMode; set => _greySkybox = value; }
+		public bool GreySkybox => DebugMode && _greySkybox;
 
 		[JsonProperty("playerIdInLogs")]
 		private bool _playerIdInLogs;
-		public bool PlayerIdInLogs { get => _playerIdInLogs && DebugMode; set => _playerIdInLogs = value; }
+		public bool PlayerIdInLogs => DebugMode && _playerIdInLogs;
 	}
 }
