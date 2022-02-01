@@ -9,12 +9,18 @@ namespace QSB.Utility
 			if (QSBCore.DebugSettings.GreySkybox)
 			{
 				QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-				Camera.main.backgroundColor = Color.gray;
+				if (Camera.main)
+				{
+					Camera.main.backgroundColor = Color.gray;
+				}
 			}
 			else
 			{
 				QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-				Camera.main.backgroundColor = _origColor;
+				if (Camera.main)
+				{
+					Camera.main.backgroundColor = _origColor;
+				}
 			}
 		}
 
