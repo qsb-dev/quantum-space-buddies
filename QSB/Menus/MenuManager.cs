@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace QSB.Menus
 {
-	internal class MenuManager : MonoBehaviour
+	internal class MenuManager : Manager
 	{
 		public static MenuManager Instance;
 
@@ -174,7 +174,7 @@ namespace QSB.Menus
 
 		private void CreateCommonPopups()
 		{
-			var text = QSBCore.UseKcpTransport ? "Public IP Address" : "Steam ID";
+			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Steam ID";
 			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
 
@@ -278,7 +278,7 @@ namespace QSB.Menus
 				SetButtonActive(NewGameButton, true);
 			}
 
-			if (QSBCore.SkipTitleScreen)
+			if (QSBCore.DebugSettings.SkipTitleScreen)
 			{
 				Application.runInBackground = true;
 				var titleScreenManager = FindObjectOfType<TitleScreenManager>();
@@ -330,7 +330,7 @@ namespace QSB.Menus
 				: "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.";
 			DisconnectPopup._labelText.text = popupText;
 
-			if (!QSBCore.UseKcpTransport)
+			if (!QSBCore.DebugSettings.UseKcpTransport)
 			{
 				var steamId = ((FizzyFacepunch)Transport.activeTransport).SteamUserID.ToString();
 

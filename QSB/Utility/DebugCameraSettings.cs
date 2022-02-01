@@ -6,7 +6,7 @@ namespace QSB.Utility
 	{
 		public static void UpdateFromDebugSetting()
 		{
-			if (QSBCore.GreySkybox)
+			if (QSBCore.DebugSettings.GreySkybox)
 			{
 				QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 				Camera.main.backgroundColor = Color.gray;

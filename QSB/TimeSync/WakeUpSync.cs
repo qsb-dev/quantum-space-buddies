@@ -114,14 +114,14 @@ namespace QSB.TimeSync
 		{
 			new RequestStateResyncMessage().Send();
 			CurrentState = State.Loaded;
-			gameObject.GetRequiredComponent<PreserveTimeScale>();
+			gameObject.GetRequiredComponent<PreserveTimeScale>().Init();
 			if (isServer)
 			{
 				SendServerTime();
 			}
 			else
 			{
-				if (!QSBCore.AvoidTimeSync)
+				if (!QSBCore.DebugSettings.AvoidTimeSync)
 				{
 					WakeUpOrSleep();
 				}
@@ -250,7 +250,7 @@ namespace QSB.TimeSync
 			{
 				UpdateServer();
 			}
-			else if (isLocalPlayer && !QSBCore.AvoidTimeSync)
+			else if (isLocalPlayer && !QSBCore.DebugSettings.AvoidTimeSync)
 			{
 				UpdateClient();
 			}

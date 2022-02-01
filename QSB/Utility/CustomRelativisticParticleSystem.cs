@@ -11,11 +11,11 @@ namespace QSB.Utility
 		private Quaternion _rotation;
 		private ParticleSystem.MainModule _mainModule;
 		private ParticleSystem.VelocityOverLifetimeModule _velocityOverLifetimeModule;
-		private ModuleVector _velocityOverLifetimeVector;
+		private RelativisticParticleSystem.ModuleVector _velocityOverLifetimeVector;
 		private ParticleSystem.LimitVelocityOverLifetimeModule _limitVelocityOverLifetimeModule;
-		private ModuleVector _limitVelocityOverLifetimeVector;
+		private RelativisticParticleSystem.ModuleVector _limitVelocityOverLifetimeVector;
 		private ParticleSystem.ForceOverLifetimeModule _forceOverLifetimeModule;
-		private ModuleVector _forceOverLifetimeVector;
+		private RelativisticParticleSystem.ModuleVector _forceOverLifetimeVector;
 		private bool _isReady;
 
 		private void Awake()
@@ -39,11 +39,11 @@ namespace QSB.Utility
 			_mainModule.simulationSpace = ParticleSystemSimulationSpace.Custom;
 			_mainModule.customSimulationSpace = _simulationSpace;
 			_velocityOverLifetimeModule = _particleSystem.velocityOverLifetime;
-			_velocityOverLifetimeVector = new ModuleVector(_velocityOverLifetimeModule.x, _velocityOverLifetimeModule.y, _velocityOverLifetimeModule.z);
+			_velocityOverLifetimeVector = new RelativisticParticleSystem.ModuleVector(_velocityOverLifetimeModule.x, _velocityOverLifetimeModule.y, _velocityOverLifetimeModule.z);
 			_limitVelocityOverLifetimeModule = _particleSystem.limitVelocityOverLifetime;
-			_limitVelocityOverLifetimeVector = new ModuleVector(_limitVelocityOverLifetimeModule.limitX, _limitVelocityOverLifetimeModule.limitY, _limitVelocityOverLifetimeModule.limitZ);
+			_limitVelocityOverLifetimeVector = new RelativisticParticleSystem.ModuleVector(_limitVelocityOverLifetimeModule.limitX, _limitVelocityOverLifetimeModule.limitY, _limitVelocityOverLifetimeModule.limitZ);
 			_forceOverLifetimeModule = _particleSystem.forceOverLifetime;
-			_forceOverLifetimeVector = new ModuleVector(_forceOverLifetimeModule.x, _forceOverLifetimeModule.y, _forceOverLifetimeModule.z);
+			_forceOverLifetimeVector = new RelativisticParticleSystem.ModuleVector(_forceOverLifetimeModule.x, _forceOverLifetimeModule.y, _forceOverLifetimeModule.z);
 		}
 
 		public void Init(PlayerInfo playerInfo)
@@ -105,46 +105,6 @@ namespace QSB.Utility
 				_forceOverLifetimeModule.x = x;
 				_forceOverLifetimeModule.y = y;
 				_forceOverLifetimeModule.z = z;
-			}
-		}
-
-		private struct ModuleVector
-		{
-			public ParticleSystem.MinMaxCurve OrigX;
-			public ParticleSystem.MinMaxCurve OrigY;
-			public ParticleSystem.MinMaxCurve OrigZ;
-
-			public ModuleVector(ParticleSystem.MinMaxCurve x, ParticleSystem.MinMaxCurve y, ParticleSystem.MinMaxCurve z)
-			{
-				OrigX = x;
-				OrigY = y;
-				OrigZ = z;
-			}
-
-			public void GetRotatedVector(Quaternion rotation, out ParticleSystem.MinMaxCurve x, out ParticleSystem.MinMaxCurve y, out ParticleSystem.MinMaxCurve z)
-			{
-				if (OrigX.mode == ParticleSystemCurveMode.Constant)
-				{
-					var vector = rotation * new Vector3(OrigX.constant, OrigY.constant, OrigZ.constant);
-					x = new ParticleSystem.MinMaxCurve(vector.x);
-					y = new ParticleSystem.MinMaxCurve(vector.y);
-					z = new ParticleSystem.MinMaxCurve(vector.z);
-				}
-				else if (OrigX.mode == ParticleSystemCurveMode.TwoConstants)
-				{
-					var vector2 = rotation * new Vector3(OrigX.constantMin, OrigY.constantMin, OrigZ.constantMin);
-					var vector3 = rotation * new Vector3(OrigX.constantMax, OrigY.constantMax, OrigZ.constantMax);
-					x = new ParticleSystem.MinMaxCurve(vector2.x, vector3.x);
-					y = new ParticleSystem.MinMaxCurve(vector2.y, vector3.y);
-					z = new ParticleSystem.MinMaxCurve(vector2.z, vector3.z);
-				}
-				else
-				{
-					Debug.LogWarning("Cannot properly rotate Module Curves! Use Constants mode instead, dummy.");
-					x = OrigX;
-					y = OrigY;
-					z = OrigZ;
-				}
 			}
 		}
 	}

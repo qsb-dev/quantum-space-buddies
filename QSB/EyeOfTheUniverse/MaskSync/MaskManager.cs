@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.MaskSync
 {
-	internal class MaskManager : MonoBehaviour
+	internal class MaskManager : Manager
 	{
 		private static bool _flickering;
 		private static float _flickerOutTime;

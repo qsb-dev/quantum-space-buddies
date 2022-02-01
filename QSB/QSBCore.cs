@@ -66,8 +66,7 @@ namespace QSB
 		public static string GameVersion => Application.version;
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
-
-		private static DebugSettings DebugSettings { get; set; } = new();
+		public static DebugSettings DebugSettings { get; set; } = new();
 
 		public void Awake() =>
 			UIHelper.ReplaceUI(UITextType.PleaseUseController,
@@ -78,7 +77,7 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
+			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
@@ -95,23 +94,16 @@ namespace QSB
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<DebugActions>();
-			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
-			gameObject.AddComponent<MenuManager>();
-			gameObject.AddComponent<RespawnManager>();
-			gameObject.AddComponent<SatelliteProjectorManager>();
-			gameObject.AddComponent<StatueManager>();
-			gameObject.AddComponent<GalaxyMapManager>();
 			gameObject.AddComponent<DebugCameraSettings>();
-			gameObject.AddComponent<MaskManager>();
 
-			// WorldObject managers
-			QSBWorldSync.Managers = typeof(WorldObjectManager).GetDerivedTypes()
-				.Select(x => (WorldObjectManager)gameObject.AddComponent(x))
+			var managers = typeof(Manager).GetDerivedTypes()
+				.Select(x => (Manager)gameObject.AddComponent(x))
 				.ToArray();
 
+			QSBWorldSync.Managers = managers.OfType<WorldObjectManager>().ToArray();
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
 		}
@@ -156,12 +148,12 @@ namespace QSB
 			{
 				DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
-				GetComponent<DebugActions>().enabled = DebugMode;
-				GetComponent<DebugGUI>().enabled = DebugMode;
+				GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
+				GetComponent<DebugGUI>().enabled = DebugSettings.DrawGui;
 				QuantumManager.UpdateFromDebugSetting();
 				DebugCameraSettings.UpdateFromDebugSetting();
 
-				DebugLog.ToConsole($"DEBUG MODE = {DebugMode}");
+				DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 			}
 		}
 	}

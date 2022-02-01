@@ -32,7 +32,7 @@ namespace QSB.Utility
 
 		private void Awake()
 		{
-			enabled = QSBCore.DebugMode;
+			enabled = QSBCore.DebugSettings.DrawGui;
 
 			guiGUIStyle.fontSize = 9;
 		}
@@ -251,7 +251,7 @@ namespace QSB.Utility
 
 		private static void DrawWorldObjectLabels()
 		{
-			if (!QSBCore.ShowDebugLabels)
+			if (!QSBCore.DebugSettings.ShowDebugLabels)
 			{
 				return;
 			}
@@ -272,7 +272,7 @@ namespace QSB.Utility
 
 		private static void DrawWorldObjectLines()
 		{
-			if (!QSBCore.ShowLinesInDebug)
+			if (!QSBCore.DebugSettings.DrawLines)
 			{
 				return;
 			}

@@ -16,9 +16,9 @@ using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.ShipSync.TransformSync;
+using QSB.Syncs.Occasional;
 using QSB.TimeSync;
 using QSB.Tools.ProbeTool.TransformSync;
-using QSB.TornadoSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -60,14 +60,14 @@ namespace QSB
 		{
 			gameObject.SetActive(false);
 
-			if (QSBCore.UseKcpTransport)
+			if (QSBCore.DebugSettings.UseKcpTransport)
 			{
 				transport = gameObject.AddComponent<kcp2k.KcpTransport>();
 			}
 			else
 			{
 				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
-				fizzy.SteamAppID = QSBCore.OverrideAppId == -1
+				fizzy.SteamAppID = QSBCore.DebugSettings.OverrideAppId == -1
 					? _defaultSteamAppID.ToString()
 					: QSBCore.OverrideAppId.ToString();
 				fizzy.SetTransportError = error => _lastTransportError = error;

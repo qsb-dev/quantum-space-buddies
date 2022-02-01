@@ -103,7 +103,7 @@ namespace QSB.JellyfishSync.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug
+			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsValid
 				|| !ReferenceTransform)
 			{

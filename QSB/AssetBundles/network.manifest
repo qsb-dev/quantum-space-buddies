@@ -1,24 +1,38 @@
 ManifestFileVersion: 0
-CRC: 1732808678
+CRC: 3845994459
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: ed5c3538b047d0f36eb783ec66a9c0f3
+    Hash: 9533a5dbb791bfc59b79819e0aba65e4
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 8d215c2a845369265db87f3ba41f9fb2
+    Hash: 4ad490e6c84a0b7216746dbf592063ce
 HashAppended: 0
 ClassTypes:
 - Class: 1
   Script: {instanceID: 0}
 - Class: 4
   Script: {instanceID: 0}
+- Class: 20
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
 - Class: 95
   Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: 860895539, guid: b782d36837e164d4e87858bf8f2736c6, type: 3}
-- Class: 114
-  Script: {fileID: 1077175584, guid: 9cd729e946a229f4889bac4e78b39c69, type: 3}
+  Script: {fileID: 860895539, guid: 423c527502fb00e46b2ab34c090b8315, type: 3}
 - Class: 114
   Script: {fileID: -790547616, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
@@ -32,6 +46,12 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 78926581, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
+  Script: {fileID: 534438773, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -120762068, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: -2067710655, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
   Script: {fileID: -749020886, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: -270813150, guid: 27687deae413b90448366870cb0de502, type: 3}
@@ -41,10 +61,19 @@ ClassTypes:
   Script: {fileID: 677635994, guid: 27687deae413b90448366870cb0de502, type: 3}
 - Class: 114
   Script: {fileID: 2036222940, guid: 27687deae413b90448366870cb0de502, type: 3}
+- Class: 114
+  Script: {fileID: 1077175584, guid: 0f1c874d19f16374db66a6621905b435, type: 3}
 - Class: 115
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+- Class: 221
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Prefabs/NetworkObject.prefab
+- Assets/GameAssets/AnimatorController/Player.controller
 - Assets/Prefabs/NETWORK_Player_Body.prefab
+- Assets/Prefabs/REMOTE_Player_Body.prefab
+- Assets/GameAssets/AnimatorOverrideController/PlayerUnsuitedOverride.overrideController
 Dependencies: []

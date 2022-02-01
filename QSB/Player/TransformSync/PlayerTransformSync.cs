@@ -112,47 +112,76 @@ namespace QSB.Player.TransformSync
 
 		protected override Transform InitRemoteTransform()
 		{
+			DebugLog.DebugWrite($"InitRemoteTransform");
 			/*
 			 * CREATE PLAYER STRUCTURE
 			 */
 
 			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
-			var REMOTE_Player_Body = new GameObject("REMOTE_Player_Body");
-
-			var REMOTE_PlayerCamera = new GameObject("REMOTE_PlayerCamera");
-			REMOTE_PlayerCamera.transform.parent = REMOTE_Player_Body.transform;
-			REMOTE_PlayerCamera.transform.localPosition = new Vector3(0f, 0.8496093f, 0.1500003f);
-
-			var REMOTE_RoastingSystem = new GameObject("REMOTE_RoastingSystem");
-			REMOTE_RoastingSystem.transform.parent = REMOTE_Player_Body.transform;
-			REMOTE_RoastingSystem.transform.localPosition = new Vector3(0f, 0.4f, 0f);
-
-			var REMOTE_Stick_Root = new GameObject("REMOTE_Stick_Root");
-			REMOTE_Stick_Root.transform.parent = REMOTE_RoastingSystem.transform;
-			REMOTE_Stick_Root.transform.localPosition = new Vector3(0.25f, 0f, 0.08f);
-			REMOTE_Stick_Root.transform.localRotation = Quaternion.Euler(0f, -10f, 0f);
+			var REMOTE_Player_Body = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Player_Body.prefab"));
+			REMOTE_Player_Body.transform.localPosition = Vector3.zero;
+			REMOTE_Player_Body.transform.localScale = Vector3.one;
+			REMOTE_Player_Body.transform.localRotation = Quaternion.identity;
+			var REMOTE_PlayerCamera = REMOTE_Player_Body.transform.Find("REMOTE_PlayerCamera").gameObject;
+			var REMOTE_RoastingSystem = REMOTE_Player_Body.transform.Find("REMOTE_RoastingSystem").gameObject;
+			var REMOTE_Stick_Root = REMOTE_RoastingSystem.transform.Find("REMOTE_Stick_Root").gameObject;
+			var REMOTE_Traveller_HEA_Player_v2 = REMOTE_Player_Body.transform.Find("REMOTE_Traveller_HEA_Player_v2").gameObject;
 
 			/*
 			 * SET UP PLAYER BODY
 			 */
 
-			var player = Locator.GetPlayerTransform();
-			var playerModel = player.Find("Traveller_HEA_Player_v2");
-
-			var REMOTE_Traveller_HEA_Player_v2 = Instantiate(playerModel);
-			REMOTE_Traveller_HEA_Player_v2.transform.parent = REMOTE_Player_Body.transform;
-			REMOTE_Traveller_HEA_Player_v2.transform.localPosition = new Vector3(0f, -1.03f, -0.2f);
-			REMOTE_Traveller_HEA_Player_v2.transform.localRotation = Quaternion.Euler(-1.500009f, 0f, 0f);
-			REMOTE_Traveller_HEA_Player_v2.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-
 			Player.Body = REMOTE_Player_Body;
 
-			Player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2);
+			var localPlayerAnimController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>(true);
+			var playerClothesMat = localPlayerAnimController._unsuitedGroup.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material;
+			var playerSkinMat = localPlayerAnimController._unsuitedGroup.transform.GetChild(1).GetComponent<SkinnedMeshRenderer>().material;
+			var playerSuitMat = localPlayerAnimController._suitedGroup.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material;
+			var playerJetpackMat = localPlayerAnimController._suitedGroup.transform.GetChild(4).GetComponent<SkinnedMeshRenderer>().material;
+
+			static void ReplaceMaterial(SkinnedMeshRenderer renderer, int index, Material mat)
+			{
+				var mats = renderer.materials;
+				mats[index] = mat;
+				renderer.materials = mats;
+			}
+
+			foreach (var renderer in REMOTE_Traveller_HEA_Player_v2.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+			{
+				for (var i = 0; i < renderer.materials.Length; i++)
+				{
+					if (renderer.materials[i].name.Trim() == "Traveller_HEA_Player_Skin_mat (Instance)")
+					{
+						ReplaceMaterial(renderer, i, playerSkinMat);
+						continue;
+					}
+
+					if (renderer.materials[i].name.Trim() == "Traveller_HEA_Player_Clothes_mat (Instance)")
+					{
+						ReplaceMaterial(renderer, i, playerClothesMat);
+						continue;
+					}
+
+					if (renderer.materials[i].name.Trim() == "Traveller_HEA_PlayerSuit_mat (Instance)")
+					{
+						ReplaceMaterial(renderer, i, playerSuitMat);
+						continue;
+					}
+
+					if (renderer.materials[i].name.Trim() == "Props_HEA_Jetpack_mat (Instance)")
+					{
+						ReplaceMaterial(renderer, i, playerJetpackMat);
+						continue;
+					}
+				}
+			}
+
+			Player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
 			Player.InstrumentsManager.InitRemote(REMOTE_Player_Body.transform);
 
-			REMOTE_Player_Body.AddComponent<PlayerHUDMarker>().Init(Player);
-			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
+			REMOTE_Player_Body.GetComponent<PlayerHUDMarker>().Init(Player);
+			REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = Player.Name;
 			Player._ditheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
 			// get inactive renderers too
 			Delay.RunNextFrame(() =>
@@ -166,8 +195,7 @@ namespace QSB.Player.TransformSync
 			 * SET UP PLAYER CAMERA
 			 */
 
-			var camera = REMOTE_PlayerCamera.AddComponent<Camera>();
-			camera.enabled = false;
+			REMOTE_PlayerCamera.GetComponent<Camera>().enabled = false;
 			var owcamera = REMOTE_PlayerCamera.AddComponent<OWCamera>();
 			owcamera.fieldOfView = 70;
 			owcamera.nearClipPlane = 0.1f;
@@ -253,7 +281,7 @@ namespace QSB.Player.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug
+			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsValid
 				|| !ReferenceTransform)
 			{

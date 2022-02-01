@@ -16,22 +16,36 @@ namespace QSB.Utility
 		[JsonProperty("debugMode")]
 		public bool DebugMode { get; set; }
 
+		[JsonProperty("drawGui")]
+		private bool _drawGui;
+		public bool DrawGui { get => _drawGui && DebugMode; set => _drawGui = value; }
+
 		[JsonProperty("drawLines")]
-		public bool DrawLines { get; set; }
+		private bool _drawLines;
+		public bool DrawLines { get => _drawLines && DebugMode; set => _drawLines = value; }
 
 		[JsonProperty("showQuantumVisibilityObjects")]
-		public bool ShowQuantumVisibilityObjects { get; set; }
+		private bool _showQuantumVisibilityObjects;
+		public bool ShowQuantumVisibilityObjects { get => _showQuantumVisibilityObjects && DebugMode; set => _showQuantumVisibilityObjects = value; }
 
 		[JsonProperty("showDebugLabels")]
-		public bool ShowDebugLabels { get; set; }
+		private bool _showDebugLabels;
+		public bool ShowDebugLabels { get => _showDebugLabels && DebugMode; set => _showDebugLabels = value; }
 
 		[JsonProperty("avoidTimeSync")]
-		public bool AvoidTimeSync { get; set; }
+		private bool _avoidTimeSync;
+		public bool AvoidTimeSync { get => _avoidTimeSync && DebugMode; set => _avoidTimeSync = value; }
 
 		[JsonProperty("skipTitleScreen")]
-		public bool SkipTitleScreen { get; set; }
+		private bool _skipTitleScreen;
+		public bool SkipTitleScreen { get => _skipTitleScreen && DebugMode; set => _skipTitleScreen = value; }
 
 		[JsonProperty("greySkybox")]
-		public bool GreySkybox { get; set; }
+		private bool _greySkybox;
+		public bool GreySkybox { get => _greySkybox && DebugMode; set => _greySkybox = value; }
+
+		[JsonProperty("playerIdInLogs")]
+		private bool _playerIdInLogs;
+		public bool PlayerIdInLogs { get => _playerIdInLogs && DebugMode; set => _playerIdInLogs = value; }
 	}
 }

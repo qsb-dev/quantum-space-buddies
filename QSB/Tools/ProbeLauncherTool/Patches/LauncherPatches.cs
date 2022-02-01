@@ -68,7 +68,7 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 		{
 			if (__instance._owAudioSource == null)
 			{
-				DebugLog.ToConsole($"Error - _owAudioSource of {__instance._owAudioSource}", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - _owAudioSource of {__instance.name} is null.", OWML.Common.MessageType.Error);
 				return true;
 			}
 
@@ -82,7 +82,7 @@ namespace QSB.Tools.ProbeLauncherTool.Patches
 		{
 			if (__instance._owAudioSource == null)
 			{
-				DebugLog.ToConsole($"Error - _owAudioSource of {__instance._owAudioSource}", OWML.Common.MessageType.Error);
+				DebugLog.ToConsole($"Error - _owAudioSource of {__instance.name} is null.", OWML.Common.MessageType.Error);
 				return true;
 			}
 

@@ -86,7 +86,7 @@ namespace QSB.Animation.Player.Thrusters
 
 		private void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug || !QSBWorldSync.AllObjectsReady)
+			if (!QSBCore.DebugSettings.DrawLines || !QSBWorldSync.AllObjectsReady)
 			{
 				return;
 			}

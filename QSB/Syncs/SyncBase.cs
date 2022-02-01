@@ -276,7 +276,7 @@ namespace QSB.Syncs
 
 		protected virtual void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug
+			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsValid
 				|| !ReferenceTransform)
 			{
@@ -299,7 +299,7 @@ namespace QSB.Syncs
 
 		private void OnGUI()
 		{
-			if (!QSBCore.ShowDebugLabels
+			if (!QSBCore.DebugSettings.ShowDebugLabels
 				|| Event.current.type != EventType.Repaint
 				|| !IsValid
 				|| !ReferenceTransform)
