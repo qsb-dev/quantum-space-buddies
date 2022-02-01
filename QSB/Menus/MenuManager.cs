@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace QSB.Menus
 {
-	internal class MenuManager : MonoBehaviour
+	internal class MenuManager : Manager
 	{
 		public static MenuManager Instance;
 

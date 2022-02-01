@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Inputs
 {
-	public class QSBInputManager : MonoBehaviour
+	public class QSBInputManager : Manager
 	{
 		// TODO : finish instruments - disabled for 0.7.0 release
 		/*

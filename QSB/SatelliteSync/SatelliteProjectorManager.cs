@@ -1,10 +1,11 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Utility;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.SatelliteSync
 {
-	internal class SatelliteProjectorManager : MonoBehaviour
+	internal class SatelliteProjectorManager : Manager
 	{
 		public static SatelliteProjectorManager Instance { get; private set; }
 

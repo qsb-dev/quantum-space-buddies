@@ -1,10 +1,11 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Utility;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap
 {
-	internal class GalaxyMapManager : MonoBehaviour
+	internal class GalaxyMapManager : Manager
 	{
 		public static GalaxyMapManager Instance { get; private set; }
 

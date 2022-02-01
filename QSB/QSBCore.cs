@@ -94,23 +94,16 @@ namespace QSB
 
 			gameObject.AddComponent<QSBNetworkManager>();
 			gameObject.AddComponent<DebugActions>();
-			gameObject.AddComponent<QSBInputManager>();
 			gameObject.AddComponent<TimeSyncUI>();
 			gameObject.AddComponent<PlayerEntanglementWatcher>();
 			gameObject.AddComponent<DebugGUI>();
-			gameObject.AddComponent<MenuManager>();
-			gameObject.AddComponent<RespawnManager>();
-			gameObject.AddComponent<SatelliteProjectorManager>();
-			gameObject.AddComponent<StatueManager>();
-			gameObject.AddComponent<GalaxyMapManager>();
 			gameObject.AddComponent<DebugCameraSettings>();
-			gameObject.AddComponent<MaskManager>();
 
-			// WorldObject managers
-			QSBWorldSync.Managers = typeof(WorldObjectManager).GetDerivedTypes()
-				.Select(x => (WorldObjectManager)gameObject.AddComponent(x))
+			var managers = typeof(Manager).GetDerivedTypes()
+				.Select(x => (Manager)gameObject.AddComponent(x))
 				.ToArray();
 
+			QSBWorldSync.Managers = managers.OfType<WorldObjectManager>().ToArray();
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
 		}
