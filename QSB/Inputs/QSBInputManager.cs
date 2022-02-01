@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.Inputs
 {
-	public class QSBInputManager : Manager
+	public class QSBInputManager : MonoBehaviour, IAddComponentOnStart
 	{
 		// TODO : finish instruments - disabled for 0.7.0 release
 		/*

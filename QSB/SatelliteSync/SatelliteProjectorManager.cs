@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.SatelliteSync
 {
-	internal class SatelliteProjectorManager : Manager
+	internal class SatelliteProjectorManager : MonoBehaviour, IAddComponentOnStart
 	{
 		public static SatelliteProjectorManager Instance { get; private set; }
 

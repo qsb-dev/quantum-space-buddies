@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.RespawnSync
 {
-	internal class RespawnManager : Manager
+	internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 	{
 		public static RespawnManager Instance;
 

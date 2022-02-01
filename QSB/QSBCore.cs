@@ -3,9 +3,7 @@ using OWML.Common;
 using OWML.ModHelper;
 using QSB.Menus;
 using QSB.Patches;
-using QSB.Player;
 using QSB.QuantumSync;
-using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.IO;
@@ -76,18 +74,11 @@ namespace QSB
 			QSBPatchManager.Init();
 			DeterministicManager.Init();
 
-			gameObject.AddComponent<QSBNetworkManager>();
-			gameObject.AddComponent<DebugActions>();
-			gameObject.AddComponent<TimeSyncUI>();
-			gameObject.AddComponent<PlayerEntanglementWatcher>();
-			gameObject.AddComponent<DebugGUI>();
-			gameObject.AddComponent<DebugCameraSettings>();
-
-			var managers = typeof(Manager).GetDerivedTypes()
-				.Select(x => (Manager)gameObject.AddComponent(x))
+			var components = typeof(IAddComponentOnStart).GetDerivedTypes()
+				.Select(x => gameObject.AddComponent(x))
 				.ToArray();
 
-			QSBWorldSync.Managers = managers.OfType<WorldObjectManager>().ToArray();
+			QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
 		}

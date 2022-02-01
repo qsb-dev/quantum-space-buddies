@@ -28,7 +28,7 @@ using UnityEngine;
 
 namespace QSB
 {
-	public class QSBNetworkManager : NetworkManager
+	public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	{
 		public static new QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 

@@ -2,7 +2,7 @@
 
 namespace QSB.Utility
 {
-	internal class DebugCameraSettings : MonoBehaviour
+	internal class DebugCameraSettings : MonoBehaviour, IAddComponentOnStart
 	{
 		public static void UpdateFromDebugSetting()
 		{

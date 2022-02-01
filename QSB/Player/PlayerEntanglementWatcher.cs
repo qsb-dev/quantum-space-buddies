@@ -1,12 +1,13 @@
 ﻿using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.QuantumSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Player
 {
-	internal class PlayerEntanglementWatcher : MonoBehaviour
+	internal class PlayerEntanglementWatcher : MonoBehaviour, IAddComponentOnStart
 	{
 		private QuantumObject _previousCollidingQuantumObject;
 

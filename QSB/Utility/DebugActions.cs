@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 
 namespace QSB.Utility
 {
-	public class DebugActions : MonoBehaviour
+	public class DebugActions : MonoBehaviour, IAddComponentOnStart
 	{
 		private void GoToVessel()
 		{
