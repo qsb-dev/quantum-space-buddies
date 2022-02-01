@@ -24,7 +24,7 @@ namespace QSB.Syncs.Occasional
 				SpawnOccasional(proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 			}
 
-			if (cannon._probeBody != null)
+			if (cannon._probeBody)
 			{
 				// probe is null on statue scene reload
 				SpawnOccasional(cannon._probeBody, gdBody);
