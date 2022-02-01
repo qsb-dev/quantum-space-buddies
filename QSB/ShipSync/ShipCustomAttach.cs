@@ -4,14 +4,15 @@ namespace QSB.ShipSync
 {
 	public class ShipCustomAttach : MonoBehaviour
 	{
-		private const string ATTACH_TEXT = "Attach to ship";
-		private const string DETACH_TEXT = "Detach from ship";
-		private static readonly ScreenPrompt _prompt = new(InputLibrary.interactSecondary, ATTACH_TEXT + "   <CMD>");
+		private static readonly ScreenPrompt _attachPrompt = new(InputLibrary.interactSecondary, InputLibrary.interact,
+			"Attach to ship" + "   <CMD>", ScreenPrompt.MultiCommandType.HOLD_ONE_AND_PRESS_2ND);
+		private static readonly ScreenPrompt _detachPrompt = new(InputLibrary.cancel, "Detach from ship" + "   <CMD>");
 		private PlayerAttachPoint _playerAttachPoint;
 
 		private void Awake()
 		{
-			Locator.GetPromptManager().AddScreenPrompt(_prompt, PromptPosition.UpperRight);
+			Locator.GetPromptManager().AddScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
+			Locator.GetPromptManager().AddScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
 
 			_playerAttachPoint = gameObject.AddComponent<PlayerAttachPoint>();
 			_playerAttachPoint._lockPlayerTurning = false;
@@ -19,37 +20,43 @@ namespace QSB.ShipSync
 			_playerAttachPoint._centerCamera = false;
 		}
 
-		private void OnDestroy() =>
-			Locator.GetPromptManager().RemoveScreenPrompt(_prompt, PromptPosition.UpperRight);
+		private void OnDestroy()
+		{
+			if (Locator.GetPromptManager())
+			{
+				Locator.GetPromptManager().RemoveScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
+				Locator.GetPromptManager().RemoveScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
+			}
+		}
 
 		private void Update()
 		{
-			_prompt.SetVisibility(false);
+			_attachPrompt.SetVisibility(false);
+			_detachPrompt.SetVisibility(false);
 			if (!PlayerState.IsInsideShip())
 			{
 				return;
 			}
 
 			var attachedToUs = _playerAttachPoint.enabled;
-			if (PlayerState.IsAttached() && !attachedToUs)
+			if (!attachedToUs && PlayerState.IsAttached())
 			{
 				return;
 			}
 
-			_prompt.SetVisibility(true);
-			if (OWInput.IsNewlyPressed(InputLibrary.interactSecondary, InputMode.Character))
+			_attachPrompt.SetVisibility(!attachedToUs);
+			_detachPrompt.SetVisibility(attachedToUs);
+
+			if (!attachedToUs &&
+				OWInput.IsPressed(InputLibrary.interactSecondary, InputMode.Character) &&
+				OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Character))
 			{
-				if (!attachedToUs)
-				{
-					transform.position = Locator.GetPlayerTransform().position;
-					_playerAttachPoint.AttachPlayer();
-					_prompt.SetText(DETACH_TEXT + "   <CMD>");
-				}
-				else
-				{
-					_playerAttachPoint.DetachPlayer();
-					_prompt.SetText(ATTACH_TEXT + "   <CMD>");
-				}
+				transform.position = Locator.GetPlayerTransform().position;
+				_playerAttachPoint.AttachPlayer();
+			}
+			else if (attachedToUs && OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Character))
+			{
+				_playerAttachPoint.DetachPlayer();
 			}
 		}
 	}
