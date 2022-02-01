@@ -1,16 +1,10 @@
 ﻿using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
-using QSB.EyeOfTheUniverse.GalaxyMap;
-using QSB.EyeOfTheUniverse.MaskSync;
-using QSB.Inputs;
 using QSB.Menus;
 using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync;
-using QSB.RespawnSync;
-using QSB.SatelliteSync;
-using QSB.StatueSync;
 using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -45,16 +39,6 @@ namespace QSB
 	{
 		public static IModHelper Helper { get; private set; }
 		public static string DefaultServerIP;
-		public static bool UseKcpTransport => DebugSettings.UseKcpTransport;
-		public static int OverrideAppId => DebugSettings.OverrideAppId;
-		public static bool DumpWorldObjects => DebugSettings.DumpWorldObjects;
-		public static bool DebugMode => DebugSettings.DebugMode;
-		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
-		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
-		public static bool ShowDebugLabels => DebugMode && DebugSettings.ShowDebugLabels;
-		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
-		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
-		public static bool GreySkybox => DebugMode && DebugSettings.GreySkybox;
 		public static AssetBundle NetworkAssetBundle { get; internal set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
@@ -66,7 +50,7 @@ namespace QSB
 		public static string GameVersion => Application.version;
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
-		public static DebugSettings DebugSettings { get; set; } = new();
+		public static DebugSettings DebugSettings { get; private set; } = new();
 
 		public void Awake() =>
 			UIHelper.ReplaceUI(UITextType.PleaseUseController,

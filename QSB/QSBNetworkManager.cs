@@ -69,7 +69,7 @@ namespace QSB
 				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
 				fizzy.SteamAppID = QSBCore.DebugSettings.OverrideAppId == -1
 					? _defaultSteamAppID.ToString()
-					: QSBCore.OverrideAppId.ToString();
+					: QSBCore.DebugSettings.OverrideAppId.ToString();
 				fizzy.SetTransportError = error => _lastTransportError = error;
 				transport = fizzy;
 			}
@@ -149,7 +149,7 @@ namespace QSB
 			networkAddress = QSBCore.DefaultServerIP;
 			maxConnections = MaxConnections;
 
-			if (QSBCore.UseKcpTransport)
+			if (QSBCore.DebugSettings.UseKcpTransport)
 			{
 				kcp2k.Log.Info = s =>
 				{

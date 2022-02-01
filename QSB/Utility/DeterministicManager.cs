@@ -30,7 +30,7 @@ namespace QSB.Utility
 
 		public static void WorldObjectsReady()
 		{
-			if (QSBCore.DumpWorldObjects)
+			if (QSBCore.DebugSettings.DumpWorldObjects)
 			{
 				using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "world objects.csv")))
 				{
