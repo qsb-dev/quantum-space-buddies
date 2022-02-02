@@ -112,7 +112,6 @@ namespace QSB.Player.TransformSync
 
 		protected override Transform InitRemoteTransform()
 		{
-			DebugLog.DebugWrite($"InitRemoteTransform");
 			/*
 			 * CREATE PLAYER STRUCTURE
 			 */
@@ -207,39 +206,19 @@ namespace QSB.Player.TransformSync
 			 * SET UP ROASTING STICK
 			 */
 
-			var REMOTE_Stick_Pivot = Instantiate(GetStickPivot());
-			REMOTE_Stick_Pivot.name = "REMOTE_Stick_Pivot";
-			REMOTE_Stick_Pivot.parent = REMOTE_Stick_Root.transform;
+			var REMOTE_Stick_Pivot = REMOTE_Stick_Root.transform.GetChild(0);
 			REMOTE_Stick_Pivot.gameObject.SetActive(false);
-
-			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm").gameObject);
-			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit").gameObject);
-
-			var mallowRoot = REMOTE_Stick_Pivot.Find("Stick_Tip/Mallow_Root");
-			mallowRoot.gameObject.SetActive(false);
-			var oldMarshmallow = mallowRoot.GetComponent<Marshmallow>();
-
-			// Recreate particle system
-			Destroy(mallowRoot.Find("MallowSmoke").GetComponent<RelativisticParticleSystem>());
-			var newSystem = mallowRoot.Find("MallowSmoke").gameObject.AddComponent<CustomRelativisticParticleSystem>();
+			var mallowRoot = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip/Mallow_Root");
+			var newSystem = mallowRoot.Find("MallowSmoke").gameObject.GetComponent<CustomRelativisticParticleSystem>();
 			newSystem.Init(Player);
-
-			// Create new marshmallow
-			var newMarshmallow = mallowRoot.gameObject.AddComponent<QSBMarshmallow>();
-			newMarshmallow._fireRenderer = oldMarshmallow._fireRenderer;
-			newMarshmallow._smokeParticles = oldMarshmallow._smokeParticles;
-			newMarshmallow._mallowRenderer = oldMarshmallow._mallowRenderer;
-			newMarshmallow._rawColor = oldMarshmallow._rawColor;
-			newMarshmallow._toastedColor = oldMarshmallow._toastedColor;
-			newMarshmallow._burntColor = oldMarshmallow._burntColor;
-			Destroy(oldMarshmallow);
-
 			Player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
-			Player.Marshmallow = newMarshmallow;
-			mallowRoot.gameObject.SetActive(true);
+			var marshmallow = mallowRoot.GetComponent<QSBMarshmallow>();
+			Player.Marshmallow = marshmallow;
+			marshmallow.enabled = true;
+
 			_visibleRoastingSystem = REMOTE_RoastingSystem.transform;
 			_visibleStickPivot = REMOTE_Stick_Pivot;
-			_visibleStickTip = REMOTE_Stick_Pivot.Find("Stick_Tip");
+			_visibleStickTip = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip");
 
 			return REMOTE_Player_Body.transform;
 		}

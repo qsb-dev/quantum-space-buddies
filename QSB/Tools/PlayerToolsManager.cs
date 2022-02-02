@@ -40,10 +40,17 @@ namespace QSB.Tools
 				DebugLog.ToConsole($"Error when trying to find materials : {ex}", OWML.Common.MessageType.Error);
 			}
 
-			FlashlightCreator.CreateFlashlight(player);
-			SignalscopeCreator.CreateSignalscope(player);
-			ProbeLauncherCreator.CreateProbeLauncher(player);
-			TranslatorCreator.CreateTranslator(player);
+			try
+			{
+				FlashlightCreator.CreateFlashlight(player);
+				SignalscopeCreator.CreateSignalscope(player);
+				ProbeLauncherCreator.CreateProbeLauncher(player);
+				TranslatorCreator.CreateTranslator(player);
+			}
+			catch (Exception ex)
+			{
+				DebugLog.ToConsole($"Error when trying to create tools : {ex}", OWML.Common.MessageType.Error);
+			}
 		}
 
 		public static void InitLocal()
