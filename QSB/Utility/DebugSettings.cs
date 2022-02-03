@@ -5,16 +5,16 @@ namespace QSB.Utility
 	public class DebugSettings
 	{
 		[JsonProperty("useKcpTransport")]
-		public bool UseKcpTransport { get; set; }
+		public bool UseKcpTransport;
 
 		[JsonProperty("overrideAppId")]
-		public int OverrideAppId { get; set; } = -1;
+		public int OverrideAppId = -1;
 
 		[JsonProperty("dumpWorldObjects")]
-		public bool DumpWorldObjects { get; set; }
+		public bool DumpWorldObjects;
 
 		[JsonProperty("debugMode")]
-		public bool DebugMode { get; set; }
+		public bool DebugMode;
 
 		[JsonProperty("drawGui")]
 		private bool _drawGui;
@@ -24,13 +24,13 @@ namespace QSB.Utility
 		private bool _drawLines;
 		public bool DrawLines => DebugMode && _drawLines;
 
-		[JsonProperty("showQuantumVisibilityObjects")]
-		private bool _showQuantumVisibilityObjects;
-		public bool ShowQuantumVisibilityObjects => DebugMode && _showQuantumVisibilityObjects;
+		[JsonProperty("drawLabels")]
+		private bool _drawLabels;
+		public bool DrawLabels => DebugMode && _drawLabels;
 
-		[JsonProperty("showDebugLabels")]
-		private bool _showDebugLabels;
-		public bool ShowDebugLabels => DebugMode && _showDebugLabels;
+		[JsonProperty("drawQuantumVisibilityObjects")]
+		private bool _drawQuantumVisibilityObjects;
+		public bool DrawQuantumVisibilityObjects => DebugMode && _drawQuantumVisibilityObjects;
 
 		[JsonProperty("avoidTimeSync")]
 		private bool _avoidTimeSync;

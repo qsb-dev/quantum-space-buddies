@@ -251,7 +251,7 @@ namespace QSB.Utility
 
 		private static void DrawWorldObjectLabels()
 		{
-			if (!QSBCore.DebugSettings.ShowDebugLabels)
+			if (!QSBCore.DebugSettings.DrawLabels)
 			{
 				return;
 			}
