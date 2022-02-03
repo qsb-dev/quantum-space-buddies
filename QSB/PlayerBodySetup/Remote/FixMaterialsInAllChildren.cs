@@ -22,7 +22,7 @@ namespace QSB.PlayerBodySetup.Remote
 		{
 			for (var i = 0; i < renderer.materials.Length; i++)
 			{
-				if (renderer.materials[i].name.Trim() == $"{materialName} (Instance)")
+				if (renderer.materials[i].name.Trim() == $"REM_{materialName} (Instance)")
 				{
 					ReplaceMaterial(renderer, i, replacementMaterial);
 				}
@@ -36,21 +36,17 @@ namespace QSB.PlayerBodySetup.Remote
 				"Traveller_HEA_Player_Skin_mat",
 				"Traveller_HEA_Player_Clothes_mat",
 				"Traveller_HEA_PlayerSuit_mat",
-				"Props_HEA_Jetpack_mat"
+				"Props_HEA_Jetpack_mat",
+				"Effects_HEA_MarshmallowFlames_mat",
+				"Effects_HEA_Smoke_mat",
+				"Props_HEA_RoastingStick_mat"
 			};
 
 			var allMaterials = (Material[])Resources.FindObjectsOfTypeAll(typeof(Material));
 
 			foreach (var name in matNameList)
 			{
-				DebugLog.DebugWrite(name);
-
-				var matchingMaterial = allMaterials.Where(x => x.name == name).ToArray();
-
-				foreach (var item in matchingMaterial)
-				{
-					DebugLog.DebugWrite($"- {item.name}");
-				}
+				var matchingMaterial = allMaterials.FirstOrDefault(x => x.name == name);
 
 				if (matchingMaterial == default)
 				{
@@ -58,7 +54,7 @@ namespace QSB.PlayerBodySetup.Remote
 					return;
 				}
 
-				_materialDefinitions.Add(new(name, matchingMaterial[0]));
+				_materialDefinitions.Add(new(name, matchingMaterial));
 			}
 		}
 
