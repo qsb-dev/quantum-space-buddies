@@ -1,7 +1,6 @@
 ﻿using QSB.Anglerfish.WorldObjects;
 using QSB.AuthoritySync;
 using QSB.Syncs.Unsectored.Rigidbodies;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
