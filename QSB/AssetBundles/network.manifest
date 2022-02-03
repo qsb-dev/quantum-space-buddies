@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2877256378
+CRC: 1123733639
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 8d7ea522fab30919b9da9d6fcc291d2b
+    Hash: 7e0da2aacf9096ee9b81154698d577ff
   TypeTreeHash:
     serializedVersion: 2
     Hash: 7c361b9660415c98c90cf08b6645985a
@@ -101,7 +101,6 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/Prefabs/NetworkObject.prefab
 - Assets/GameAssets/AnimatorController/Player.controller
 - Assets/Prefabs/NETWORK_Player_Body.prefab
 - Assets/Prefabs/REMOTE_Player_Body.prefab
