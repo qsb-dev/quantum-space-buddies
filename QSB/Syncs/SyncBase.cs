@@ -164,16 +164,7 @@ namespace QSB.Syncs
 
 		protected virtual void Init()
 		{
-			try
-			{
-				AttachedTransform = InitAttachedTransform();
-			}
-			catch (Exception ex)
-			{
-				DebugLog.ToConsole($"Exception when Init-ing {this} : {ex}", MessageType.Error);
-				return;
-			}
-
+			AttachedTransform = InitAttachedTransform();
 			IsInitialized = true;
 		}
 
