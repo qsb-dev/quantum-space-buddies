@@ -359,6 +359,7 @@ MigrationBackup/
 
 # Unecessary asset bundle file
 QSB/AssetBundles/AssetBundles*
+QSB/AssetBundles/*.manifest
 QSB.csproj.user
 GameAssets/
 Chert/

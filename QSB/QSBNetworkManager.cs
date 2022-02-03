@@ -40,10 +40,9 @@ namespace QSB
 		public GameObject AnglerPrefab { get; private set; }
 		public GameObject JellyfishPrefab { get; private set; }
 		public GameObject OccasionalPrefab { get; private set; }
-		public string PlayerName { get; private set; }
+		private string PlayerName { get; set; }
 
 		private const int MaxConnections = 128;
-		private const int MaxBufferedPackets = 64;
 
 		private GameObject _probePrefab;
 		private bool _everConnected;
