@@ -4,15 +4,9 @@ using QSB.EchoesOfTheEye.SlideProjectors.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace QSB.EchoesOfTheEye.SlideProjectors
+namespace QSB.EchoesOfTheEye.SlideProjectors.Patches
 {
 	internal class ProjectorPatches : QSBPatch
 	{
@@ -20,34 +14,26 @@ namespace QSB.EchoesOfTheEye.SlideProjectors
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(SlideProjector), nameof(SlideProjector.OnPressInteract))]
-		public static void Interact(SlideProjector __instance)
-		{
-			var worldObject = QSBWorldSync.GetWorldObject<QSBSlideProjector>(__instance);
-			worldObject.SendMessage(new ProjectorAuthorityMessage(QSBPlayerManager.LocalPlayerId));
-		}
+		public static void Interact(SlideProjector __instance) =>
+			__instance.GetWorldObject<QSBSlideProjector>()
+				.SendMessage(new ProjectorAuthorityMessage(QSBPlayerManager.LocalPlayerId));
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(SlideProjector), nameof(SlideProjector.CancelInteraction))]
-		public static void CancelInteract(SlideProjector __instance)
-		{
-			var worldObject = QSBWorldSync.GetWorldObject<QSBSlideProjector>(__instance);
-			worldObject.SendMessage(new ProjectorAuthorityMessage(0u));
-		}
+		public static void CancelInteract(SlideProjector __instance) =>
+			__instance.GetWorldObject<QSBSlideProjector>()
+				.SendMessage(new ProjectorAuthorityMessage(0));
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(SlideProjector), nameof(SlideProjector.NextSlide))]
-		public static void NextSlide(SlideProjector __instance)
-		{
-			var worldObject = QSBWorldSync.GetWorldObject<QSBSlideProjector>(__instance);
-			worldObject.SendMessage(new NextSlideMessage());
-		}
+		public static void NextSlide(SlideProjector __instance) =>
+			__instance.GetWorldObject<QSBSlideProjector>()
+				.SendMessage(new NextSlideMessage());
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(SlideProjector), nameof(SlideProjector.PreviousSlide))]
-		public static void PreviousSlide(SlideProjector __instance)
-		{
-			var worldObject = QSBWorldSync.GetWorldObject<QSBSlideProjector>(__instance);
-			worldObject.SendMessage(new PreviousSlideMessage());
-		}
+		public static void PreviousSlide(SlideProjector __instance) =>
+			__instance.GetWorldObject<QSBSlideProjector>()
+				.SendMessage(new PreviousSlideMessage());
 	}
 }

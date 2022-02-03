@@ -57,24 +57,16 @@ namespace QSB.OrbSync.TransformSync
 
 		protected override void Uninit()
 		{
+			base.Uninit();
+
 			if (QSBCore.IsHost)
 			{
 				netIdentity.UnregisterAuthQueue();
 			}
 
-			// this is null sometimes on here, but not on other similar transforms syncs (like anglers)
-			// idk why, but whatever
-			if (AttachedTransform)
-			{
-				var body = AttachedTransform.GetAttachedOWRigidbody();
-				if (body)
-				{
-					body.OnUnsuspendOWRigidbody -= OnUnsuspend;
-					body.OnSuspendOWRigidbody -= OnSuspend;
-				}
-			}
-
-			base.Uninit();
+			var body = AttachedTransform.GetAttachedOWRigidbody();
+			body.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			body.OnSuspendOWRigidbody -= OnSuspend;
 		}
 
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);

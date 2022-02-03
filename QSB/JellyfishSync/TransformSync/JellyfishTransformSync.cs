@@ -56,6 +56,8 @@ namespace QSB.JellyfishSync.TransformSync
 
 		protected override void Uninit()
 		{
+			base.Uninit();
+
 			if (QSBCore.IsHost)
 			{
 				netIdentity.UnregisterAuthQueue();
@@ -63,8 +65,6 @@ namespace QSB.JellyfishSync.TransformSync
 
 			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
-
-			base.Uninit();
 		}
 
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);

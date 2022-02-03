@@ -1,7 +1,6 @@
 ﻿using QSB.Anglerfish.WorldObjects;
 using QSB.AuthoritySync;
 using QSB.Syncs.Unsectored.Rigidbodies;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,6 +53,8 @@ namespace QSB.Anglerfish.TransformSync
 
 		protected override void Uninit()
 		{
+			base.Uninit();
+
 			if (QSBCore.IsHost)
 			{
 				netIdentity.UnregisterAuthQueue();
@@ -61,8 +62,6 @@ namespace QSB.Anglerfish.TransformSync
 
 			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
-
-			base.Uninit();
 		}
 
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);

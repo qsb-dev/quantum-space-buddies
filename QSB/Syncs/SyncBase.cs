@@ -175,8 +175,6 @@ namespace QSB.Syncs
 				Destroy(AttachedTransform.gameObject);
 			}
 
-			AttachedTransform = null;
-			ReferenceTransform = null;
 			IsInitialized = false;
 			IsValid = false;
 		}
@@ -299,7 +297,7 @@ namespace QSB.Syncs
 
 		private void OnGUI()
 		{
-			if (!QSBCore.DebugSettings.ShowDebugLabels
+			if (!QSBCore.DebugSettings.DrawLabels
 				|| Event.current.type != EventType.Repaint
 				|| !IsValid
 				|| !ReferenceTransform)

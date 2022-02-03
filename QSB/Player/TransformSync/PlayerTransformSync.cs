@@ -1,14 +1,10 @@
 ﻿using OWML.Common;
-using QSB.Audio;
 using QSB.Messaging;
 using QSB.Player.Messages;
-using QSB.RoastingSync;
-using QSB.SectorSync;
+using QSB.PlayerBodySetup.Local;
+using QSB.PlayerBodySetup.Remote;
 using QSB.Syncs.Sectored.Transforms;
-using QSB.Tools;
 using QSB.Utility;
-using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
@@ -40,9 +36,6 @@ namespace QSB.Player.TransformSync
 		protected Quaternion _tipRotationVelocity;
 		protected Vector3 _roastingPositionVelocity;
 		protected Quaternion _roastingRotationVelocity;
-
-		private Transform GetStickPivot()
-			=> QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
 
 		public override void OnStartClient()
 		{
@@ -77,172 +70,21 @@ namespace QSB.Player.TransformSync
 		}
 
 		protected override Transform InitLocalTransform()
-		{
-			SectorDetector.Init(Locator.GetPlayerSectorDetector(), TargetType.Player);
-
-			// player body
-			var player = Locator.GetPlayerTransform();
-			var playerModel = player.Find("Traveller_HEA_Player_v2");
-			Player.AnimationSync.InitLocal(playerModel);
-			Player.InstrumentsManager.InitLocal(player);
-			Player.Body = player.gameObject;
-
-			// camera
-			var cameraBody = Locator.GetPlayerCamera().gameObject.transform;
-			Player.Camera = Locator.GetPlayerCamera();
-			Player.CameraBody = cameraBody.gameObject;
-			_visibleCameraRoot = cameraBody;
-
-			PlayerToolsManager.InitLocal();
-
-			// stick
-			var pivot = GetStickPivot();
-			Player.RoastingStick = pivot.parent.gameObject;
-			_visibleRoastingSystem = pivot.parent.parent;
-			_visibleStickPivot = pivot;
-			_visibleStickTip = pivot.Find("Stick_Tip");
-
-			Player.IsReady = true;
-			new PlayerReadyMessage(true).Send();
-
-			new RequestStateResyncMessage().Send();
-
-			return player;
-		}
+			=> LocalPlayerCreation.CreatePlayer(
+				Player,
+				SectorDetector,
+				out _visibleCameraRoot,
+				out _visibleRoastingSystem,
+				out _visibleStickPivot,
+				out _visibleStickTip);
 
 		protected override Transform InitRemoteTransform()
-		{
-			DebugLog.DebugWrite($"InitRemoteTransform");
-			/*
-			 * CREATE PLAYER STRUCTURE
-			 */
-
-			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
-
-			var REMOTE_Player_Body = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Player_Body.prefab"));
-			REMOTE_Player_Body.transform.localPosition = Vector3.zero;
-			REMOTE_Player_Body.transform.localScale = Vector3.one;
-			REMOTE_Player_Body.transform.localRotation = Quaternion.identity;
-			var REMOTE_PlayerCamera = REMOTE_Player_Body.transform.Find("REMOTE_PlayerCamera").gameObject;
-			var REMOTE_RoastingSystem = REMOTE_Player_Body.transform.Find("REMOTE_RoastingSystem").gameObject;
-			var REMOTE_Stick_Root = REMOTE_RoastingSystem.transform.Find("REMOTE_Stick_Root").gameObject;
-			var REMOTE_Traveller_HEA_Player_v2 = REMOTE_Player_Body.transform.Find("REMOTE_Traveller_HEA_Player_v2").gameObject;
-
-			/*
-			 * SET UP PLAYER BODY
-			 */
-
-			Player.Body = REMOTE_Player_Body;
-
-			var localPlayerAnimController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>(true);
-			var playerClothesMat = localPlayerAnimController._unsuitedGroup.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material;
-			var playerSkinMat = localPlayerAnimController._unsuitedGroup.transform.GetChild(1).GetComponent<SkinnedMeshRenderer>().material;
-			var playerSuitMat = localPlayerAnimController._suitedGroup.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material;
-			var playerJetpackMat = localPlayerAnimController._suitedGroup.transform.GetChild(4).GetComponent<SkinnedMeshRenderer>().material;
-
-			static void ReplaceMaterial(SkinnedMeshRenderer renderer, int index, Material mat)
-			{
-				var mats = renderer.materials;
-				mats[index] = mat;
-				renderer.materials = mats;
-			}
-
-			foreach (var renderer in REMOTE_Traveller_HEA_Player_v2.GetComponentsInChildren<SkinnedMeshRenderer>(true))
-			{
-				for (var i = 0; i < renderer.materials.Length; i++)
-				{
-					if (renderer.materials[i].name.Trim() == "Traveller_HEA_Player_Skin_mat (Instance)")
-					{
-						ReplaceMaterial(renderer, i, playerSkinMat);
-						continue;
-					}
-
-					if (renderer.materials[i].name.Trim() == "Traveller_HEA_Player_Clothes_mat (Instance)")
-					{
-						ReplaceMaterial(renderer, i, playerClothesMat);
-						continue;
-					}
-
-					if (renderer.materials[i].name.Trim() == "Traveller_HEA_PlayerSuit_mat (Instance)")
-					{
-						ReplaceMaterial(renderer, i, playerSuitMat);
-						continue;
-					}
-
-					if (renderer.materials[i].name.Trim() == "Props_HEA_Jetpack_mat (Instance)")
-					{
-						ReplaceMaterial(renderer, i, playerJetpackMat);
-						continue;
-					}
-				}
-			}
-
-			Player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
-			Player.InstrumentsManager.InitRemote(REMOTE_Player_Body.transform);
-
-			REMOTE_Player_Body.GetComponent<PlayerHUDMarker>().Init(Player);
-			REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = Player.Name;
-			Player._ditheringAnimator = REMOTE_Player_Body.GetComponent<DitheringAnimator>();
-			// get inactive renderers too
-			Delay.RunNextFrame(() =>
-				Player._ditheringAnimator._renderers = Player._ditheringAnimator
-					.GetComponentsInChildren<Renderer>(true)
-					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
-					.ToArray());
-			Player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
-
-			/*
-			 * SET UP PLAYER CAMERA
-			 */
-
-			REMOTE_PlayerCamera.GetComponent<Camera>().enabled = false;
-			var owcamera = REMOTE_PlayerCamera.GetComponent<OWCamera>();
-			Player.Camera = owcamera;
-			Player.CameraBody = REMOTE_PlayerCamera;
-			_visibleCameraRoot = REMOTE_PlayerCamera.transform;
-
-			PlayerToolsManager.InitRemote(Player);
-
-			/*
-			 * SET UP ROASTING STICK
-			 */
-
-			var REMOTE_Stick_Pivot = Instantiate(GetStickPivot());
-			REMOTE_Stick_Pivot.name = "REMOTE_Stick_Pivot";
-			REMOTE_Stick_Pivot.parent = REMOTE_Stick_Root.transform;
-			REMOTE_Stick_Pivot.gameObject.SetActive(false);
-
-			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm").gameObject);
-			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit").gameObject);
-
-			var mallowRoot = REMOTE_Stick_Pivot.Find("Stick_Tip/Mallow_Root");
-			mallowRoot.gameObject.SetActive(false);
-			var oldMarshmallow = mallowRoot.GetComponent<Marshmallow>();
-
-			// Recreate particle system
-			Destroy(mallowRoot.Find("MallowSmoke").GetComponent<RelativisticParticleSystem>());
-			var newSystem = mallowRoot.Find("MallowSmoke").gameObject.AddComponent<CustomRelativisticParticleSystem>();
-			newSystem.Init(Player);
-
-			// Create new marshmallow
-			var newMarshmallow = mallowRoot.gameObject.AddComponent<QSBMarshmallow>();
-			newMarshmallow._fireRenderer = oldMarshmallow._fireRenderer;
-			newMarshmallow._smokeParticles = oldMarshmallow._smokeParticles;
-			newMarshmallow._mallowRenderer = oldMarshmallow._mallowRenderer;
-			newMarshmallow._rawColor = oldMarshmallow._rawColor;
-			newMarshmallow._toastedColor = oldMarshmallow._toastedColor;
-			newMarshmallow._burntColor = oldMarshmallow._burntColor;
-			Destroy(oldMarshmallow);
-
-			Player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
-			Player.Marshmallow = newMarshmallow;
-			mallowRoot.gameObject.SetActive(true);
-			_visibleRoastingSystem = REMOTE_RoastingSystem.transform;
-			_visibleStickPivot = REMOTE_Stick_Pivot;
-			_visibleStickTip = REMOTE_Stick_Pivot.Find("Stick_Tip");
-
-			return REMOTE_Player_Body.transform;
-		}
+			=> RemotePlayerCreation.CreatePlayer(
+				Player,
+				out _visibleCameraRoot,
+				out _visibleRoastingSystem,
+				out _visibleStickPivot,
+				out _visibleStickTip);
 
 		protected override void GetFromAttached()
 		{

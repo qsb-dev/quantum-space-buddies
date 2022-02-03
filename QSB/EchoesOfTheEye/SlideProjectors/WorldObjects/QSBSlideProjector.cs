@@ -34,7 +34,7 @@ namespace QSB.EchoesOfTheEye.SlideProjectors.WorldObjects
 				{
 					if (AttachedObject._oneShotSource != null)
 					{
-						AttachedObject._oneShotSource.PlayOneShot(global::AudioType.Projector_Next, 1f);
+						AttachedObject._oneShotSource.PlayOneShot(AudioType.Projector_Next);
 					}
 
 					if (AttachedObject.IsProjectorFullyLit())
@@ -62,7 +62,7 @@ namespace QSB.EchoesOfTheEye.SlideProjectors.WorldObjects
 				{
 					if (AttachedObject._oneShotSource != null)
 					{
-						AttachedObject._oneShotSource.PlayOneShot(global::AudioType.Projector_Prev, 1f);
+						AttachedObject._oneShotSource.PlayOneShot(AudioType.Projector_Prev);
 					}
 
 					if (AttachedObject.IsProjectorFullyLit())

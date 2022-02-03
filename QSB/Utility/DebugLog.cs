@@ -9,7 +9,7 @@ namespace QSB.Utility
 	{
 		public static void ToConsole(string message, MessageType type = MessageType.Message)
 		{
-			if (NetworkClient.localPlayer != null && QSBCore.DebugSettings.PlayerIdInLogs)
+			if (QSBCore.DebugSettings.PlayerIdInLogs && NetworkClient.localPlayer)
 			{
 				message = $"[{NetworkClient.localPlayer.netId}] " + message;
 			}
