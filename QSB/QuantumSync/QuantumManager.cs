@@ -134,7 +134,7 @@ namespace QSB.QuantumSync
 
 		public static void UpdateFromDebugSetting()
 		{
-			if (QSBCore.DebugSettings.ShowQuantumVisibilityObjects)
+			if (QSBCore.DebugSettings.DrawQuantumVisibilityObjects)
 			{
 				if (_debugSphere == null)
 				{

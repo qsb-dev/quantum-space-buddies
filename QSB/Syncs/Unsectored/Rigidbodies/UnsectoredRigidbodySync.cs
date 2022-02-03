@@ -47,12 +47,6 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 			_relativeAngularVelocity = reader.ReadVector3();
 		}
 
-		protected override void Uninit()
-		{
-			base.Uninit();
-			AttachedRigidbody = null;
-		}
-
 		protected override void GetFromAttached()
 		{
 			transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());

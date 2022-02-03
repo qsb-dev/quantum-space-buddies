@@ -37,7 +37,7 @@ namespace QSB
 	{
 		public static IModHelper Helper { get; private set; }
 		public static string DefaultServerIP;
-		public static AssetBundle NetworkAssetBundle { get; internal set; }
+		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static AssetBundle DebugAssetBundle { get; private set; }

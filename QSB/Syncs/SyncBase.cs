@@ -164,16 +164,7 @@ namespace QSB.Syncs
 
 		protected virtual void Init()
 		{
-			try
-			{
-				AttachedTransform = InitAttachedTransform();
-			}
-			catch (Exception ex)
-			{
-				DebugLog.ToConsole($"Exception when Init-ing {this} : {ex}", MessageType.Error);
-				return;
-			}
-
+			AttachedTransform = InitAttachedTransform();
 			IsInitialized = true;
 		}
 
@@ -184,8 +175,6 @@ namespace QSB.Syncs
 				Destroy(AttachedTransform.gameObject);
 			}
 
-			AttachedTransform = null;
-			ReferenceTransform = null;
 			IsInitialized = false;
 			IsValid = false;
 		}
@@ -308,7 +297,7 @@ namespace QSB.Syncs
 
 		private void OnGUI()
 		{
-			if (!QSBCore.DebugSettings.ShowDebugLabels
+			if (!QSBCore.DebugSettings.DrawLabels
 				|| Event.current.type != EventType.Repaint
 				|| !IsValid
 				|| !ReferenceTransform)

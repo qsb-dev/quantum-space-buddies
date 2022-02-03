@@ -1,16 +1,10 @@
 ﻿using OWML.Common;
-using QSB.Audio;
 using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.PlayerBodySetup.Local;
 using QSB.PlayerBodySetup.Remote;
-using QSB.RoastingSync;
-using QSB.SectorSync;
 using QSB.Syncs.Sectored.Transforms;
-using QSB.Tools;
 using QSB.Utility;
-using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
