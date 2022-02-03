@@ -2,6 +2,7 @@
 using QSB.OrbSync.WorldObjects;
 using QSB.Syncs.Unsectored.Transforms;
 using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -64,9 +65,15 @@ namespace QSB.OrbSync.TransformSync
 				netIdentity.UnregisterAuthQueue();
 			}
 
-			var body = AttachedTransform.GetAttachedOWRigidbody();
-			body.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			body.OnSuspendOWRigidbody -= OnSuspend;
+			if (AttachedTransform)
+			{
+				var body = AttachedTransform.GetAttachedOWRigidbody();
+				if (body)
+				{
+					body.OnUnsuspendOWRigidbody -= OnUnsuspend;
+					body.OnSuspendOWRigidbody -= OnSuspend;
+				}
+			}
 		}
 
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
