@@ -132,14 +132,14 @@ namespace QSB
 		/// see https://docs.unity3d.com/Manual/AssetBundles-Native.html.
 		private static GameObject MakeNewNetworkObject(int assetId, string name, Type transformSyncType)
 		{
-			QSBCore.NetworkAssetBundle.Unload(false);
-			QSBCore.NetworkAssetBundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/network");
+			var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/empty");
+			var template = bundle.LoadAsset<GameObject>("Assets/Prefabs/Empty.prefab");
+			bundle.Unload(false);
 
-			var template = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NetworkObject.prefab");
 			DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
 				+ $"for {assetId} {name} {transformSyncType.Name}");
 			template.name = name;
-			template.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", assetId.ToGuid().ToString("N"));
+			template.AddComponent<NetworkIdentity>().SetValue("m_AssetId", assetId.ToGuid().ToString("N"));
 			template.AddComponent(transformSyncType);
 			return template;
 		}

@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1236337440
+CRC: 3534813956
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 91db39439a02545ccbd81737830d763f
+    Hash: 677d9e2d9728a18aa772e1a8984bfbf7
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 7c361b9660415c98c90cf08b6645985a
+    Hash: a0f19331c041111ef6a5025afcba6279
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -29,30 +29,22 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 74
   Script: {instanceID: 0}
-- Class: 89
-  Script: {instanceID: 0}
 - Class: 90
   Script: {instanceID: 0}
 - Class: 91
   Script: {instanceID: 0}
 - Class: 95
   Script: {instanceID: 0}
-- Class: 108
-  Script: {instanceID: 0}
 - Class: 114
   Script: {fileID: 11500000, guid: 314f0c0103103bd478ae105cf60b1365, type: 3}
 - Class: 114
   Script: {fileID: 860895539, guid: 8d4647d1c34eabf4994ee44623a0f497, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: e42e9139b0e8a8d4da6071e8a2fc96c4, type: 3}
 - Class: 114
   Script: {fileID: -790547616, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
 - Class: 114
   Script: {fileID: 806682216, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
 - Class: 114
   Script: {fileID: 916105004, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
-- Class: 114
-  Script: {fileID: 254946531, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
 - Class: 114
   Script: {fileID: -1164351254, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
 - Class: 114
@@ -70,13 +62,7 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -270813150, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
 - Class: 114
-  Script: {fileID: 47018526, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
-- Class: 114
-  Script: {fileID: -1791653300, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
-- Class: 114
   Script: {fileID: -1617191155, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
-- Class: 114
-  Script: {fileID: 580283664, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
 - Class: 114
   Script: {fileID: 677635994, guid: 7f3cc24903ed9434188d184e6d0fcc8f, type: 3}
 - Class: 114
@@ -84,24 +70,15 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: ffc24e0d00092f241ac5a55bdc4fc7a1, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 3903e88da210781499b2d4e834748cdc, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: e187162eb6b0668459f733949ca86ca4, type: 3}
-- Class: 114
   Script: {fileID: 1077175584, guid: 5140986e5c4050848b00d11439f5888c, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 137
   Script: {instanceID: 0}
-- Class: 198
-  Script: {instanceID: 0}
-- Class: 199
-  Script: {instanceID: 0}
 - Class: 221
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/Prefabs/NetworkObject.prefab
 - Assets/GameAssets/AnimatorController/Player.controller
 - Assets/Prefabs/NETWORK_Player_Body.prefab
 - Assets/Prefabs/REMOTE_Player_Body.prefab
