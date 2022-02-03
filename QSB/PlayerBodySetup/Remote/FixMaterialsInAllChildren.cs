@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using QSB.Utility;
+using QSB.WorldSync;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.PlayerBodySetup.Remote
@@ -28,9 +32,19 @@ namespace QSB.PlayerBodySetup.Remote
 
 		public static void ReplaceMaterials(Transform rootObject)
 		{
+			DebugLog.DebugWrite($"Replace materials on children of {rootObject.name}");
+
 			if (_materialDefinitions.Count == 0)
 			{
-				GenerateMaterialDefinitions();
+				try
+				{
+					GenerateMaterialDefinitions();
+				}
+				catch (Exception ex)
+				{
+					DebugLog.ToConsole($"Exception when generating material definitions. {ex}", OWML.Common.MessageType.Error);
+					return;
+				}
 			}
 
 			foreach (var renderer in rootObject.GetComponentsInChildren<Renderer>(true))
@@ -44,31 +58,28 @@ namespace QSB.PlayerBodySetup.Remote
 
 		private static void GenerateMaterialDefinitions()
 		{
-			var localPlayerAnimController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>(true);
+			var matNameList = new List<string>()
+			{
+				"Traveller_HEA_Player_Skin_mat",
+				"Traveller_HEA_Player_Clothes_mat",
+				"Traveller_HEA_PlayerSuit_mat",
+				"Props_HEA_Jetpack_mat"
+			};
 
-			var playerClothesMat = localPlayerAnimController._unsuitedGroup.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material;
-			var playerSkinMat = localPlayerAnimController._unsuitedGroup.transform.GetChild(1).GetComponent<SkinnedMeshRenderer>().material;
-			var playerSuitMat = localPlayerAnimController._suitedGroup.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material;
-			var playerJetpackMat = localPlayerAnimController._suitedGroup.transform.GetChild(4).GetComponent<SkinnedMeshRenderer>().material;
+			var allMaterials = (Material[])Resources.FindObjectsOfTypeAll(typeof(Material));
 
-			var roastingSystem = Locator.GetPlayerCamera().transform.Find("RoastingSystem");
-			var stickRoot = roastingSystem.GetChild(0);
-			var stickPivot = stickRoot.GetChild(0);
-			var stickTip = stickPivot.GetChild(0);
+			foreach (var name in matNameList)
+			{
+				var matchingMaterial = allMaterials.FirstOrDefault(x => x.name == name);
 
-			var localMallowRoot = stickTip.Find("Mallow_Root");
-			var localMallowFlames = localMallowRoot.Find("Effects_HEA_MarshmallowFlames");
-			var mallowFlamesMat = localMallowFlames.GetComponent<MeshRenderer>().material;
+				if (matchingMaterial == default)
+				{
+					DebugLog.ToConsole($"Error - could not find material with the name {name}!", OWML.Common.MessageType.Error);
+					return;
+				}
 
-			var localStick = stickTip.Find("Props_HEA_RoastingSick").GetChild(0);
-			var roastingStickMat = localStick.GetComponent<MeshRenderer>().material;
-
-			_materialDefinitions.Add(new(playerSkinMat.name, playerSkinMat));
-			_materialDefinitions.Add(new(playerClothesMat.name, playerClothesMat));
-			_materialDefinitions.Add(new(playerSuitMat.name, playerSuitMat));
-			_materialDefinitions.Add(new(playerJetpackMat.name, playerJetpackMat));
-			_materialDefinitions.Add(new(mallowFlamesMat.name, mallowFlamesMat));
-			_materialDefinitions.Add(new(roastingStickMat.name, roastingStickMat));
+				_materialDefinitions.Add(new(name, matchingMaterial));
+			}
 		}
 	}
 }

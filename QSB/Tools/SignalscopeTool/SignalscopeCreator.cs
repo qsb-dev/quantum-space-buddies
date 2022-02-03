@@ -6,8 +6,6 @@ namespace QSB.Tools.SignalscopeTool
 {
 	internal static class SignalscopeCreator
 	{
-		private static readonly Vector3 SignalscopeScale = new(1.5f, 1.5f, 1.5f);
-
 		internal static void CreateSignalscope(PlayerInfo player)
 		{
 			var signalscopeRoot = player.CameraBody.transform.Find("REMOTE_Signalscope").gameObject;

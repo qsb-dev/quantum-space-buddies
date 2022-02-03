@@ -17,9 +17,13 @@ namespace QSB.PlayerBodySetup.Remote
 			out Transform visibleStickPivot,
 			out Transform visibleStickTip)
 		{
+			DebugLog.DebugWrite($"CREATE PLAYER");
+
 			/*
 			 * CREATE PLAYER STRUCTURE
 			 */
+
+			DebugLog.DebugWrite($"CREATE PLAYER STRUCTURE");
 
 			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
@@ -35,6 +39,8 @@ namespace QSB.PlayerBodySetup.Remote
 			/*
 			 * SET UP PLAYER BODY
 			 */
+
+			DebugLog.DebugWrite($"SET UP PLAYER BODY");
 
 			player.Body = REMOTE_Player_Body;
 
@@ -58,6 +64,8 @@ namespace QSB.PlayerBodySetup.Remote
 			 * SET UP PLAYER CAMERA
 			 */
 
+			DebugLog.DebugWrite($"SET UP PLAYER CAMERA");
+
 			REMOTE_PlayerCamera.GetComponent<Camera>().enabled = false;
 			var owcamera = REMOTE_PlayerCamera.GetComponent<OWCamera>();
 			player.Camera = owcamera;
@@ -70,6 +78,8 @@ namespace QSB.PlayerBodySetup.Remote
 			 * SET UP ROASTING STICK
 			 */
 
+			DebugLog.DebugWrite($"SET UP ROASTING STICK");
+
 			var REMOTE_Stick_Pivot = REMOTE_Stick_Root.transform.GetChild(0);
 			REMOTE_Stick_Pivot.gameObject.SetActive(false);
 			var mallowRoot = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip/Mallow_Root");
@@ -78,7 +88,6 @@ namespace QSB.PlayerBodySetup.Remote
 			player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
 			var marshmallow = mallowRoot.GetComponent<QSBMarshmallow>();
 			player.Marshmallow = marshmallow;
-			marshmallow.enabled = true;
 
 			visibleRoastingSystem = REMOTE_RoastingSystem.transform;
 			visibleStickPivot = REMOTE_Stick_Pivot;

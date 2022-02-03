@@ -68,60 +68,8 @@ namespace QSB.Tools
 
 		private static void CreateStowTransforms(Transform cameraBody)
 		{
-			var playerBody = cameraBody.parent;
-
 			StowTransform = cameraBody.Find("REMOTE_ToolStowTransform");
 			HoldTransform = cameraBody.Find("REMOTE_ToolHoldTransform");
-
-			/*
-			var item = new GameObject("REMOTE_ItemSocket");
-			item.transform.parent = cameraBody;
-			item.transform.localPosition = new Vector3(0.125f, -0.12f, 0.2f);
-			item.transform.localRotation = Quaternion.Euler(0, 0, 15);
-			item.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
-
-			var scroll = new GameObject("REMOTE_ScrollSocket");
-			scroll.transform.parent = cameraBody;
-			scroll.transform.localPosition = new Vector3(0.148f, -0.0522f, 0.2465f);
-			scroll.transform.localRotation = Quaternion.Euler(236.054f, 56.46799f, -152.472f);
-			scroll.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
-
-			var sharedStone = new GameObject("REMOTE_SharedStoneSocket");
-			sharedStone.transform.parent = cameraBody;
-			sharedStone.transform.localPosition = new Vector3(0.1375f, -0.119f, 0.2236f);
-			sharedStone.transform.localRotation = Quaternion.Euler(-23.053f, -0.263f, 6.704f);
-			sharedStone.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
-
-			var warpCore = new GameObject("REMOTE_WarpCoreSocket");
-			warpCore.transform.parent = cameraBody;
-			warpCore.transform.localPosition = new Vector3(0.161f, -0.107f, 0.223f);
-			warpCore.transform.localRotation = Quaternion.Euler(179.949f, 82.59f, 163.697f);
-			warpCore.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
-
-			var vesselCore = new GameObject("REMOTE_VesselCoreSocket");
-			vesselCore.transform.parent = cameraBody;
-			vesselCore.transform.localPosition = new Vector3(0.177f, -0.106f, 0.2f);
-			vesselCore.transform.localRotation = Quaternion.Euler(3.142f, 14.827f, 12.094f);
-			vesselCore.transform.localScale = new Vector3(0.27f, 0.27f, 0.27f);
-
-			var dreamLantern = new GameObject("REMOTE_DreamLanternSocket");
-			dreamLantern.transform.parent = cameraBody;
-			dreamLantern.transform.localPosition = new Vector3(0.243f, -0.207f, 0.262f);
-			dreamLantern.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-			dreamLantern.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
-
-			var slideReel = new GameObject("REMOTE_SlideReelSocket");
-			slideReel.transform.parent = cameraBody;
-			slideReel.transform.localPosition = new Vector3(0.1353f, -0.0878f, 0.2878f);
-			slideReel.transform.localRotation = Quaternion.Euler(-145.532f, 6.589996f, -94.54901f);
-			slideReel.transform.localScale = new Vector3(0.3300001f, 0.33f, 0.3299999f);
-
-			var visionTorch = new GameObject("REMOTE_VisionTorchSocket");
-			visionTorch.transform.parent = cameraBody;
-			visionTorch.transform.localPosition = new Vector3(0.21f, -0.32f, 0.33f);
-			visionTorch.transform.localRotation = Quaternion.Euler(-4.5f, 0.03f, 9f);
-			visionTorch.transform.localScale = new Vector3(0.33f, 0.33f, 0.33f);
-			*/
 		}
 
 		internal static MeshRenderer GetRenderer(GameObject root, string gameObjectName) =>
