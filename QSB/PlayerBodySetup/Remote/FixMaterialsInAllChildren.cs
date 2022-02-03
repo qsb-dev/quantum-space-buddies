@@ -5,39 +5,22 @@ namespace QSB.PlayerBodySetup.Remote
 {
 	public static class FixMaterialsInAllChildren
 	{
-		private static List<MaterialDefinition> _materialDefinitions = new();
+		private static readonly List<(string MaterialName, Material ReplacementMaterial)> _materialDefinitions = new();
 
-		static void ReplaceMaterial(Renderer renderer, int index, Material mat)
+		private static void ReplaceMaterial(Renderer renderer, int index, Material mat)
 		{
 			var mats = renderer.materials;
 			mats[index] = mat;
 			renderer.materials = mats;
 		}
 
-		static void CheckReplaceMaterials(Renderer renderer, string materialName, Material replacementMaterial)
+		private static void ReplaceMaterials(Renderer renderer, string materialName, Material replacementMaterial)
 		{
 			for (var i = 0; i < renderer.materials.Length; i++)
 			{
 				if (renderer.materials[i].name.Trim() == $"{materialName} (Instance)")
 				{
 					ReplaceMaterial(renderer, i, replacementMaterial);
-					continue;
-				}
-			}
-		}
-
-		public static void ReplaceMaterials(Transform rootObject)
-		{
-			if (_materialDefinitions.Count == 0)
-			{
-				GenerateMaterialDefinitions();
-			}
-
-			foreach (var renderer in rootObject.GetComponentsInChildren<Renderer>(true))
-			{
-				foreach (var def in _materialDefinitions)
-				{
-					CheckReplaceMaterials(renderer, def.MaterialName, def.ReplacementMaterial);
 				}
 			}
 		}
@@ -63,12 +46,28 @@ namespace QSB.PlayerBodySetup.Remote
 			var localStick = stickTip.Find("Props_HEA_RoastingSick").GetChild(0);
 			var roastingStickMat = localStick.GetComponent<MeshRenderer>().material;
 
-			_materialDefinitions.Add(new(playerSkinMat.name, playerSkinMat));
-			_materialDefinitions.Add(new(playerClothesMat.name, playerClothesMat));
-			_materialDefinitions.Add(new(playerSuitMat.name, playerSuitMat));
-			_materialDefinitions.Add(new(playerJetpackMat.name, playerJetpackMat));
-			_materialDefinitions.Add(new(mallowFlamesMat.name, mallowFlamesMat));
-			_materialDefinitions.Add(new(roastingStickMat.name, roastingStickMat));
+			_materialDefinitions.Add((playerSkinMat.name, playerSkinMat));
+			_materialDefinitions.Add((playerClothesMat.name, playerClothesMat));
+			_materialDefinitions.Add((playerSuitMat.name, playerSuitMat));
+			_materialDefinitions.Add((playerJetpackMat.name, playerJetpackMat));
+			_materialDefinitions.Add((mallowFlamesMat.name, mallowFlamesMat));
+			_materialDefinitions.Add((roastingStickMat.name, roastingStickMat));
+		}
+
+		public static void ReplaceMaterials(Transform rootObject)
+		{
+			if (_materialDefinitions.Count == 0)
+			{
+				GenerateMaterialDefinitions();
+			}
+
+			foreach (var renderer in rootObject.GetComponentsInChildren<Renderer>(true))
+			{
+				foreach (var (materialName, replacementMaterial) in _materialDefinitions)
+				{
+					ReplaceMaterials(renderer, materialName, replacementMaterial);
+				}
+			}
 		}
 	}
 }
