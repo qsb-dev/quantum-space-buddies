@@ -65,6 +65,8 @@ namespace QSB.OrbSync.TransformSync
 				netIdentity.UnregisterAuthQueue();
 			}
 
+			// this is null sometimes on here, but not on other similar transforms syncs (like anglers)
+			// idk why, but whatever
 			if (AttachedTransform)
 			{
 				var body = AttachedTransform.GetAttachedOWRigidbody();
