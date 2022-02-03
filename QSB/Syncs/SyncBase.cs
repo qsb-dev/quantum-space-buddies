@@ -150,7 +150,9 @@ namespace QSB.Syncs
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			if (IsInitialized)
 			{
-				this.Try("uninitializing (from object destroy)", Uninit);
+				this.Try("calling Uninit() (from object destroy)", Uninit);
+				IsInitialized = false;
+				IsValid = false;
 			}
 		}
 
@@ -158,15 +160,13 @@ namespace QSB.Syncs
 		{
 			if (IsInitialized)
 			{
-				this.Try("uninitializing (from scene change)", Uninit);
+				this.Try("calling Uninit() (from scene change)", Uninit);
+				IsInitialized = false;
+				IsValid = false;
 			}
 		}
 
-		protected virtual void Init()
-		{
-			AttachedTransform = InitAttachedTransform();
-			IsInitialized = true;
-		}
+		protected virtual void Init() => AttachedTransform = InitAttachedTransform();
 
 		protected virtual void Uninit()
 		{
@@ -174,9 +174,6 @@ namespace QSB.Syncs
 			{
 				Destroy(AttachedTransform.gameObject);
 			}
-
-			IsInitialized = false;
-			IsValid = false;
 		}
 
 		private bool _shouldApply;
@@ -194,11 +191,14 @@ namespace QSB.Syncs
 		{
 			if (!IsInitialized && CheckReady())
 			{
-				this.Try("initializing", Init);
+				this.Try("calling Init()", Init);
+				IsInitialized = true;
 			}
 			else if (IsInitialized && !CheckReady())
 			{
-				this.Try("uninitializing", Uninit);
+				this.Try("calling Uninit()", Uninit);
+				IsInitialized = false;
+				IsValid = false;
 				base.Update();
 				return;
 			}
