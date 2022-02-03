@@ -39,7 +39,12 @@ namespace QSB.PlayerBodySetup.Remote
 				"Props_HEA_Jetpack_mat",
 				"Effects_HEA_MarshmallowFlames_mat",
 				"Effects_HEA_Smoke_mat",
-				"Props_HEA_RoastingStick_mat"
+				"Props_HEA_RoastingStick_mat",
+				"Effects_HEA_ScannerLightVolume_mat",
+				"Effects_HEA_ScannerProjector_mat",
+				"Props_HEA_Lightbulb_mat",
+				"Props_HEA_PlayerTools_mat",
+				"Structure_HEA_PlayerShip_Screens_mat"
 			};
 
 			var allMaterials = (Material[])Resources.FindObjectsOfTypeAll(typeof(Material));
