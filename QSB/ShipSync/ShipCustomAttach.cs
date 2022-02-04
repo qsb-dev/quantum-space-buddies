@@ -61,10 +61,12 @@ namespace QSB.ShipSync
 			{
 				transform.position = Locator.GetPlayerTransform().position;
 				_playerAttachPoint.AttachPlayer();
+				ShipManager.Instance.CockpitController._shipAudioController.PlayBuckle();
 			}
 			else if (attachedToUs && OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Character))
 			{
 				_playerAttachPoint.DetachPlayer();
+				ShipManager.Instance.CockpitController._shipAudioController.PlayUnbuckle();
 			}
 		}
 	}
