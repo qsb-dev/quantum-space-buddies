@@ -25,12 +25,18 @@ namespace QSB.RespawnSync
 		private void Start()
 		{
 			Instance = this;
-			QSBSceneManager.OnSceneLoaded += (OWScene old, OWScene newScene, bool inUniverse)
+			QSBSceneManager.OnSceneLoaded += (_, newScene, inUniverse)
 				=> Delay.RunWhen(
 					() => Locator.GetMarkerManager() != null,
 					() => Init(newScene, inUniverse));
 			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
 			QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
+
+			QSBPlayerManager.OnRemovePlayer += player =>
+			{
+				_playersPendingRespawn.Remove(player);
+				UpdateRespawnNotification();
+			};
 		}
 
 		private void OnConnected()

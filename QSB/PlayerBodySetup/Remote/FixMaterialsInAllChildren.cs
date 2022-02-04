@@ -1,6 +1,4 @@
 ﻿using QSB.Utility;
-using QSB.WorldSync;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,6 +8,21 @@ namespace QSB.PlayerBodySetup.Remote
 	public static class FixMaterialsInAllChildren
 	{
 		private static readonly List<(string MaterialName, Material ReplacementMaterial)> _materialDefinitions = new();
+		private static readonly List<string> _materialNames = new()
+		{
+			"Traveller_HEA_Player_Skin_mat",
+			"Traveller_HEA_Player_Clothes_mat",
+			"Traveller_HEA_PlayerSuit_mat",
+			"Props_HEA_Jetpack_mat",
+			"Effects_HEA_MarshmallowFlames_mat",
+			"Effects_HEA_Smoke_mat",
+			"Props_HEA_RoastingStick_mat",
+			"Effects_HEA_ScannerLightVolume_mat",
+			"Effects_HEA_ScannerProjector_mat",
+			"Props_HEA_Lightbulb_mat",
+			"Props_HEA_PlayerTools_mat",
+			"Structure_HEA_PlayerShip_Screens_mat"
+		};
 
 		private static void ReplaceMaterial(Renderer renderer, int index, Material mat)
 		{
@@ -31,25 +44,9 @@ namespace QSB.PlayerBodySetup.Remote
 
 		private static void GenerateMaterialDefinitions()
 		{
-			var matNameList = new List<string>()
-			{
-				"Traveller_HEA_Player_Skin_mat",
-				"Traveller_HEA_Player_Clothes_mat",
-				"Traveller_HEA_PlayerSuit_mat",
-				"Props_HEA_Jetpack_mat",
-				"Effects_HEA_MarshmallowFlames_mat",
-				"Effects_HEA_Smoke_mat",
-				"Props_HEA_RoastingStick_mat",
-				"Effects_HEA_ScannerLightVolume_mat",
-				"Effects_HEA_ScannerProjector_mat",
-				"Props_HEA_Lightbulb_mat",
-				"Props_HEA_PlayerTools_mat",
-				"Structure_HEA_PlayerShip_Screens_mat"
-			};
-
 			var allMaterials = (Material[])Resources.FindObjectsOfTypeAll(typeof(Material));
 
-			foreach (var name in matNameList)
+			foreach (var name in _materialNames)
 			{
 				var matchingMaterial = allMaterials.FirstOrDefault(x => x.name == name);
 
@@ -59,7 +56,7 @@ namespace QSB.PlayerBodySetup.Remote
 					return;
 				}
 
-				_materialDefinitions.Add(new(name, matchingMaterial));
+				_materialDefinitions.Add((name, matchingMaterial));
 			}
 		}
 

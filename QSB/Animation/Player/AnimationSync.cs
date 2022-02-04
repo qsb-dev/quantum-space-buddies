@@ -7,7 +7,6 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Animation.Player
