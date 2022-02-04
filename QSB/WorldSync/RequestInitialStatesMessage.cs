@@ -31,6 +31,11 @@ namespace QSB.WorldSync
 			{
 				worldObject.SendInitialState(to);
 			}
+
+			foreach (var qsbNetworkBehaviour in QSBWorldSync.GetUnityObjects<QSBNetworkBehaviour>())
+			{
+				qsbNetworkBehaviour.SendInitialState(to);
+			}
 		}
 	}
 }
