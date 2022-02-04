@@ -39,9 +39,17 @@ namespace QSB.ShipSync
 			}
 
 			var attachedToUs = _playerAttachPoint.enabled;
-			if (!attachedToUs && PlayerState.IsAttached())
+			if (!attachedToUs)
 			{
-				return;
+				if (PlayerState.IsAttached())
+				{
+					return;
+				}
+
+				if (Locator.GetPlayerController() && !Locator.GetPlayerController().IsGrounded())
+				{
+					return;
+				}
 			}
 
 			_attachPrompt.SetVisibility(!attachedToUs);
