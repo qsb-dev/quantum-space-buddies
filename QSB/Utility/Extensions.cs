@@ -44,6 +44,17 @@ namespace QSB.Utility
 			return conn.identity.netId;
 		}
 
+		public static NetworkConnection GetNetworkConnection(this uint playerId)
+		{
+			var conn = NetworkServer.connections.Values.FirstOrDefault(x => playerId == x.GetPlayerId());
+			if (conn == default)
+			{
+				DebugLog.ToConsole($"Error - GetNetworkConnection on {playerId} found no connection\n{Environment.StackTrace}", MessageType.Error);
+			}
+
+			return conn;
+		}
+
 		public static void SpawnWithServerAuthority(this GameObject go) =>
 			NetworkServer.Spawn(go, NetworkServer.localConnection);
 

@@ -2,7 +2,6 @@
 using QSB.Messaging;
 using QSB.Utility;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace QSB.AuthoritySync
 {
@@ -61,9 +60,7 @@ namespace QSB.AuthoritySync
 		public static void SetAuthority(this NetworkIdentity identity, uint id)
 		{
 			var oldConn = identity.connectionToClient;
-			var newConn = id != uint.MaxValue
-				? NetworkServer.connections.Values.FirstOrDefault(x => x.GetPlayerId() == id)
-				: null;
+			var newConn = id != uint.MaxValue ? id.GetNetworkConnection() : null;
 
 			if (oldConn == newConn)
 			{
