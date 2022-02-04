@@ -5,10 +5,10 @@
   "debugMode": true,
   "drawGui": true,
   "drawLines": true,
-  "drawLabels": false,
+  "drawLabels": true,
   "drawQuantumVisibilityObjects": false,
   "avoidTimeSync": false,
   "skipTitleScreen": true,
   "greySkybox": false,
-  "playerIdInLogs": false
+  "playerIdInLogs": true
 }
