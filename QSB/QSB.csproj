@@ -37,14 +37,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" IncludeAssets="compile" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.168" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\FizzyFacepunch\FizzyFacepunch.csproj" />
     <ProjectReference Include="..\QSBPatcher\QSBPatcher.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
-    <PackageReference Include="HarmonyX" Version="2.8.0" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.3.1" IncludeAssets="compile" />
+    <PackageReference Include="HarmonyX" Version="2.9.0" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.3.2" IncludeAssets="compile" />
   </ItemGroup>
   <ItemGroup>
     <None Update="AssetBundles\*">
