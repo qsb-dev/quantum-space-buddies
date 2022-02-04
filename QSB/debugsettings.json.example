@@ -1,14 +1,14 @@
 ﻿{
-  "useKcpTransport": true,
+  "useKcpTransport": false,
   "overrideAppId": -1,
   "dumpWorldObjects": false,
-  "debugMode": true,
-  "drawGui": true,
-  "drawLines": true,
-  "drawLabels": true,
+  "debugMode": false,
+  "drawGui": false,
+  "drawLines": false,
+  "drawLabels": false,
   "drawQuantumVisibilityObjects": false,
   "avoidTimeSync": false,
-  "skipTitleScreen": true,
+  "skipTitleScreen": false,
   "greySkybox": false,
   "playerIdInLogs": true
 }
