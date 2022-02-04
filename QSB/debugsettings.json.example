@@ -2,6 +2,7 @@
   "useKcpTransport": false,
   "overrideAppId": -1,
   "dumpWorldObjects": false,
+  "playerIdInLogs": true
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
@@ -10,5 +11,4 @@
   "avoidTimeSync": false,
   "skipTitleScreen": false,
   "greySkybox": false,
-  "playerIdInLogs": true
 }
