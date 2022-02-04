@@ -2,7 +2,7 @@
   "useKcpTransport": false,
   "overrideAppId": -1,
   "dumpWorldObjects": false,
-  "playerIdInLogs": true
+  "playerIdInLogs": false
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
