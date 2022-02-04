@@ -1,7 +1,4 @@
 ﻿using QSB.Player;
-using QSB.Utility;
-using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace QSB.Tools.TranslatorTool
 {

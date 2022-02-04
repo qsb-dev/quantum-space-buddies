@@ -1,5 +1,4 @@
 ﻿using QSB.Player;
-using UnityEngine;
 
 namespace QSB.Tools.FlashlightTool
 {
