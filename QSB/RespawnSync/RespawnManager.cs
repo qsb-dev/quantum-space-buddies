@@ -32,7 +32,11 @@ namespace QSB.RespawnSync
 			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
 			QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
 
-			QSBPlayerManager.OnRemovePlayer += player => _playersPendingRespawn.Remove(player);
+			QSBPlayerManager.OnRemovePlayer += player =>
+			{
+				_playersPendingRespawn.Remove(player);
+				UpdateRespawnNotification();
+			};
 		}
 
 		private void OnConnected()
