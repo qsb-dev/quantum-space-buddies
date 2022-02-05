@@ -26,10 +26,11 @@ namespace QSB.Utility
 
 		private static Color _origColor;
 
-		private void Start()
+		private void Awake()
 		{
 			_origColor = Camera.main.backgroundColor;
 			UpdateFromDebugSetting();
+			Destroy(this);
 		}
 
 		private static void OnSceneLoaded(OWScene arg1, OWScene arg2, bool arg3)

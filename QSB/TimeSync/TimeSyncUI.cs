@@ -9,7 +9,7 @@ namespace QSB.TimeSync
 {
 	internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 	{
-		public static TimeSyncUI Instance;
+		private static TimeSyncUI _instance;
 
 		public static float TargetTime;
 
@@ -20,9 +20,9 @@ namespace QSB.TimeSync
 		private TimeSyncType _currentType;
 		private Enum _currentReason;
 
-		public void Awake()
+		private void Awake()
 		{
-			Instance = this;
+			_instance = this;
 			enabled = false;
 
 			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoad;
@@ -47,10 +47,10 @@ namespace QSB.TimeSync
 		}
 
 		public static void Start(TimeSyncType type, Enum reason) =>
-			Delay.RunWhen(() => Instance._isSetUp, () => Instance.StartTimeSync(type, reason));
+			Delay.RunWhen(() => _instance._isSetUp, () => _instance.StartTimeSync(type, reason));
 
 		public static void Stop() =>
-			Delay.RunWhen(() => Instance._isSetUp, () => Instance.EndTimeSync());
+			Delay.RunWhen(() => _instance._isSetUp, () => _instance.EndTimeSync());
 
 		private void StartTimeSync(TimeSyncType type, Enum reason)
 		{

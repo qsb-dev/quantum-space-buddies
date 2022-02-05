@@ -16,7 +16,7 @@ namespace QSB.EyeOfTheUniverse.MaskSync
 
 		public static List<PlayerInfo> WentOnSolanumsWildRide = new();
 
-		public void Awake() => QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+		private void Awake() => QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
 		private static void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
 		{

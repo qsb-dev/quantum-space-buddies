@@ -30,7 +30,7 @@ namespace QSB.SatelliteSync
 
 		private static RenderTexture _satelliteCameraSnapshot;
 
-		public void Start()
+		private void Awake()
 		{
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;

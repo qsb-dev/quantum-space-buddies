@@ -22,7 +22,7 @@ namespace QSB.RespawnSync
 		private GameObject _owRecoveryPoint;
 		private GameObject _qsbRecoveryPoint;
 
-		private void Start()
+		private void Awake()
 		{
 			Instance = this;
 			QSBSceneManager.OnSceneLoaded += (_, newScene, inUniverse)
