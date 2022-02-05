@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Player;
+using UnityEngine;
 
 namespace QSB.ShipSync
 {
@@ -38,7 +39,7 @@ namespace QSB.ShipSync
 				return;
 			}
 
-			var attachedToUs = _playerAttachPoint.enabled;
+			var attachedToUs = PlayerAttachWatcher.Current == _playerAttachPoint;
 			if (!attachedToUs)
 			{
 				if (PlayerState.IsAttached())
