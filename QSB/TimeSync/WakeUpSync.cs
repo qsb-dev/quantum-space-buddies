@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.ClientServerStateSync;
+using QSB.ClientServerStateSync.Messages;
 using QSB.DeathSync;
 using QSB.Inputs;
 using QSB.Messaging;
@@ -297,7 +298,7 @@ namespace QSB.TimeSync
 				{
 					//?
 					DebugLog.ToConsole($"Warning - Server waiting for players to die, but players waiting for ready signal! Assume players correct.", MessageType.Warning);
-					ServerStateManager.Instance.SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToReady);
+					new ServerStateMessage(ServerState.WaitingForAllPlayersToReady).Send();
 				}
 			}
 

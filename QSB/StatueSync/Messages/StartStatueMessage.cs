@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using QSB.ClientServerStateSync;
+using QSB.ClientServerStateSync.Messages;
 using QSB.Messaging;
 using QSB.WorldSync;
 using UnityEngine;
@@ -41,7 +42,7 @@ namespace QSB.StatueSync.Messages
 		{
 			if (QSBCore.IsHost)
 			{
-				ServerStateManager.Instance.SendChangeServerStateMessage(ServerState.InStatueCutscene);
+				new ServerStateMessage(ServerState.InStatueCutscene).Send();
 			}
 		}
 
@@ -49,7 +50,7 @@ namespace QSB.StatueSync.Messages
 		{
 			if (QSBCore.IsHost)
 			{
-				ServerStateManager.Instance.SendChangeServerStateMessage(ServerState.InStatueCutscene);
+				new ServerStateMessage(ServerState.InStatueCutscene).Send();
 			}
 
 			StatueManager.Instance.BeginSequence(PlayerPosition, PlayerRotation, CameraDegrees);
