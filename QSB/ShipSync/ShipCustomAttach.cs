@@ -42,6 +42,12 @@ namespace QSB.ShipSync
 			var attachedToUs = PlayerAttachWatcher.Current == _playerAttachPoint;
 			if (!attachedToUs)
 			{
+				if (_playerAttachPoint.enabled)
+				{
+					// attached to us, then attached to something else
+					_playerAttachPoint.enabled = false;
+				}
+
 				if (PlayerState.IsAttached())
 				{
 					return;
