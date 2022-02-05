@@ -94,12 +94,12 @@ namespace QSB.Utility
 
 			WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 			WriteLine(1, $"HasWokenUp : {QSBWorldSync.AllObjectsReady}");
-			if (WakeUpSync.LocalInstance != null)
+			if (WakeUpSync.Instance != null)
 			{
 				WriteLine(1, $"Server State : {ServerStateManager.Instance.GetServerState()}");
-				var currentState = WakeUpSync.LocalInstance.CurrentState;
+				var currentState = WakeUpSync.Instance.CurrentState;
 				WriteLine(1, $"WakeUpSync State : {currentState}");
-				var reason = WakeUpSync.LocalInstance.CurrentReason;
+				var reason = WakeUpSync.Instance.CurrentReason;
 				if (currentState == WakeUpSync.State.FastForwarding && reason != null)
 				{
 					WriteLine(1, $"Reason : {(FastForwardReason)reason}");
@@ -113,7 +113,7 @@ namespace QSB.Utility
 					WriteLine(1, $"Reason : NULL", Color.red);
 				}
 
-				WriteLine(1, $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
+				WriteLine(1, $"Time Difference : {WakeUpSync.Instance.GetTimeDifference()}");
 				WriteLine(1, $"Timescale : {OWTime.GetTimeScale()}");
 				WriteLine(1, $"Time Remaining : {Mathf.Floor(TimeLoop.GetSecondsRemaining() / 60f)}:{Mathf.Round(TimeLoop.GetSecondsRemaining() % 60f * 100f / 100f)}");
 				WriteLine(1, $"Loop Count : {TimeLoop.GetLoopCount()}");
