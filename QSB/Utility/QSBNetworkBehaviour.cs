@@ -57,6 +57,33 @@ namespace QSB.Utility
 			}
 		}
 
+		public void SendInitialState(uint to)
+		{
+			if (!isClient)
+			{
+				return;
+			}
+
+			if (!hasAuthority)
+			{
+				return;
+			}
+
+			if (!NetworkClient.ready)
+			{
+				return;
+			}
+
+			_lastSendTime = NetworkTime.localTime;
+
+			using var writer = NetworkWriterPool.GetWriter();
+			Serialize(writer);
+			UpdatePrevData();
+
+			var data = writer.ToArraySegment();
+			CmdSendInitialData(to, data);
+		}
+
 		[Command(channel = Channels.Reliable, requiresAuthority = true)]
 		private void CmdSendDataReliable(ArraySegment<byte> data) => RpcSendDataReliable(data);
 
@@ -68,6 +95,12 @@ namespace QSB.Utility
 
 		[ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
 		private void RpcSendDataUnreliable(ArraySegment<byte> data) => OnData(data);
+
+		[Command(channel = Channels.Reliable, requiresAuthority = true)]
+		private void CmdSendInitialData(uint to, ArraySegment<byte> data) => TargetSendInitialData(to.GetNetworkConnection(), data);
+
+		[TargetRpc(channel = Channels.Reliable)]
+		private void TargetSendInitialData(NetworkConnection target, ArraySegment<byte> data) => OnData(data);
 
 		private void OnData(ArraySegment<byte> data)
 		{

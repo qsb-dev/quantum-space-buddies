@@ -35,7 +35,7 @@ namespace QSB.ItemSync.Messages
 					player.AnimationSync.VisibleAnimator.SetTrigger("HoldScroll");
 					break;
 				case ItemType.WarpCore:
-					if ((WorldObject as QSBWarpCoreItem).IsVesselCoreType())
+					if (((QSBWarpCoreItem)WorldObject).IsVesselCoreType())
 					{
 						DebugLog.DebugWrite($"HOLD VESSEL CORE");
 						player.AnimationSync.VisibleAnimator.SetTrigger("HoldAdvWarpCore");

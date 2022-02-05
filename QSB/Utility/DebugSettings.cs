@@ -13,6 +13,9 @@ namespace QSB.Utility
 		[JsonProperty("dumpWorldObjects")]
 		public bool DumpWorldObjects;
 
+		[JsonProperty("playerIdInLogs")]
+		public bool PlayerIdInLogs;
+
 		[JsonProperty("debugMode")]
 		public bool DebugMode;
 
@@ -43,9 +46,5 @@ namespace QSB.Utility
 		[JsonProperty("greySkybox")]
 		private bool _greySkybox;
 		public bool GreySkybox => DebugMode && _greySkybox;
-
-		[JsonProperty("playerIdInLogs")]
-		private bool _playerIdInLogs;
-		public bool PlayerIdInLogs => DebugMode && _playerIdInLogs;
 	}
 }
