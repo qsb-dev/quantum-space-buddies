@@ -46,12 +46,12 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 					{
 						case LightSourceType.UNDEFINED:
 							{
-								var owlight = source as OWLight2;
-								var occludableLight = owlight.GetLight().shadows != LightShadows.None
-									&& owlight.GetLight().shadowStrength > 0.5f;
+								var light = source as OWLight2;
+								var occludableLight = light.GetLight().shadows != LightShadows.None
+									&& light.GetLight().shadowStrength > 0.5f;
 
-								if (owlight.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
-									&& !__instance.CheckOcclusion(owlight.transform.position, vector, sensorWorldDir, occludableLight))
+								if (light.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
+									&& !__instance.CheckOcclusion(light.transform.position, vector, sensorWorldDir, occludableLight))
 								{
 									__instance._illuminated = true;
 								}
@@ -60,7 +60,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 							}
 						case LightSourceType.FLASHLIGHT:
 							{
-								if (source is Flashlight && (source as Flashlight) == Locator.GetFlashlight())
+								if (source is Flashlight light && light == Locator.GetFlashlight())
 								{
 									var position = Locator.GetPlayerCamera().transform.position;
 									var to = __instance.transform.position - position;
@@ -119,12 +119,12 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 								break;
 							}
 						case LightSourceType.SIMPLE_LANTERN:
-							foreach (var owlight in __instance._lightSources[i].GetLights())
+							foreach (var light in __instance._lightSources[i].GetLights())
 							{
-								var occludableLight = owlight.GetLight().shadows != LightShadows.None
-									&& owlight.GetLight().shadowStrength > 0.5f;
+								var occludableLight = light.GetLight().shadows != LightShadows.None
+									&& light.GetLight().shadowStrength > 0.5f;
 								var maxDistance = Mathf.Min(__instance._maxSimpleLanternDistance, __instance._maxDistance);
-								if (owlight.CheckIlluminationAtPoint(vector, __instance._sensorRadius, maxDistance) && !__instance.CheckOcclusion(owlight.transform.position, vector, sensorWorldDir, occludableLight))
+								if (light.CheckIlluminationAtPoint(vector, __instance._sensorRadius, maxDistance) && !__instance.CheckOcclusion(light.transform.position, vector, sensorWorldDir, occludableLight))
 								{
 									__instance._illuminated = true;
 									break;
