@@ -16,10 +16,14 @@ namespace QSB.TimeSync.Patches
 			DebugLog.DebugWrite($"OnStartOfTimeLoop");
 			return false;
 		}
+
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(OWTime), nameof(OWTime.Pause))]
-		public static bool StopPausing()
-			=> false;
+		public static bool StopPausing(OWTime.PauseType pauseType)
+			=> pauseType
+			is OWTime.PauseType.Initializing
+			or OWTime.PauseType.Streaming
+			or OWTime.PauseType.Loading;
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(SubmitActionSkipToNextLoop), nameof(SubmitActionSkipToNextLoop.AdvanceToNewTimeLoop))]
