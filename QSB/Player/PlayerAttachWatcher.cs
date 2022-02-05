@@ -10,6 +10,7 @@ namespace QSB.Player
 		private void Awake()
 		{
 			Harmony.CreateAndPatchAll(typeof(PlayerAttachWatcher));
+			QSBSceneManager.OnSceneLoaded += (_, _, _) => Current = null;
 			Destroy(this);
 		}
 

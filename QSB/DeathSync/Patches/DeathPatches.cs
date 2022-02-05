@@ -183,10 +183,17 @@ namespace QSB.DeathSync.Patches
 		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
 		{
-			if (!QSBPlayerManager.LocalPlayer.IsDead)
+			if (QSBPlayerManager.LocalPlayer.IsDead)
 			{
-				QSBPlayerManager.LocalPlayer.IsDead = true;
-				new PlayerDeathMessage(deathType).Send();
+				return;
+			}
+
+			QSBPlayerManager.LocalPlayer.IsDead = true;
+			new PlayerDeathMessage(deathType).Send();
+
+			if (PlayerAttachWatcher.Current)
+			{
+				PlayerAttachWatcher.Current.DetachPlayer();
 			}
 		}
 
