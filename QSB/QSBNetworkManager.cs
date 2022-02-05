@@ -234,9 +234,9 @@ namespace QSB
 
 			QSBWorldSync.RemoveWorldObjects();
 
-			if (WakeUpSync.Instance != null)
+			if (WakeUpSync.LocalInstance != null)
 			{
-				WakeUpSync.Instance.OnDisconnect();
+				WakeUpSync.LocalInstance.OnDisconnect();
 			}
 
 			if (_everConnected)

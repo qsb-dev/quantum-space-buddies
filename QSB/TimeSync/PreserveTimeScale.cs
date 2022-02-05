@@ -1,13 +1,12 @@
-﻿using QSB.Utility;
-using UnityEngine;
+﻿using Mirror;
 
 namespace QSB.TimeSync
 {
-	public class PreserveTimeScale : MonoBehaviour, IAddComponentOnStart
+	public class PreserveTimeScale : NetworkBehaviour
 	{
 		public void Init()
 		{
-			if (!QSBCore.IsHost)
+			if (!isServer)
 			{
 				var campfires = FindObjectsOfType<Campfire>();
 				foreach (var campfire in campfires)

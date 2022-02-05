@@ -72,7 +72,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches
 								}
 								else
 								{
-									var player = QSBPlayerManager.PlayerList.First(x => x.FlashLight == (QSBFlashlight)source /*bug ??? always invalid cast*/);
+									var player = QSBPlayerManager.PlayerList.First(x => x.FlashLight == (QSBFlashlight)source);
 
 									var position = player.Camera.transform.position;
 									var to = __instance.transform.position - position;

@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.Inputs;
@@ -12,9 +13,9 @@ using UnityEngine;
 
 namespace QSB.TimeSync
 {
-	public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
+	public class WakeUpSync : NetworkBehaviour
 	{
-		public static WakeUpSync Instance { get; private set; }
+		public static WakeUpSync LocalInstance { get; private set; }
 
 		private const float PauseOrFastForwardThreshold = 1.0f;
 		private const float TimescaleBounds = 0.3f;
@@ -33,6 +34,8 @@ namespace QSB.TimeSync
 		private int _serverLoopCount;
 		private bool _hasWokenUp;
 
+		public override void OnStartLocalPlayer() => LocalInstance = this;
+
 		public void OnDisconnect()
 		{
 			OWTime.SetTimeScale(1f);
@@ -49,10 +52,20 @@ namespace QSB.TimeSync
 			QSBInputManager.Instance.SetInputsEnabled(true);
 		}
 
-		private void Awake()
+		public void Start()
 		{
-			Instance = this;
+			if (!isLocalPlayer)
+			{
+				return;
+			}
+
+			if (QSBSceneManager.IsInUniverse)
+			{
+				Init();
+			}
+
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+
 			GlobalMessenger.AddListener(OWEvents.WakeUp, OnWakeUp);
 		}
 
@@ -71,6 +84,12 @@ namespace QSB.TimeSync
 			}
 
 			_hasWokenUp = true;
+		}
+
+		public void OnDestroy()
+		{
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			GlobalMessenger.RemoveListener(OWEvents.WakeUp, OnWakeUp);
 		}
 
 		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
@@ -96,7 +115,7 @@ namespace QSB.TimeSync
 			new RequestStateResyncMessage().Send();
 			CurrentState = State.Loaded;
 			gameObject.GetRequiredComponent<PreserveTimeScale>().Init();
-			if (QSBCore.IsHost)
+			if (isServer)
 			{
 				SendServerTime();
 			}
@@ -125,7 +144,7 @@ namespace QSB.TimeSync
 				return;
 			}
 
-			if (PlayerData.LoadLoopCount() != _serverLoopCount && !QSBCore.IsHost)
+			if (PlayerData.LoadLoopCount() != _serverLoopCount && !isServer)
 			{
 				DebugLog.ToConsole($"Warning - ServerLoopCount is not the same as local loop count! local:{PlayerData.LoadLoopCount()} server:{_serverLoopCount}");
 				return;
@@ -227,11 +246,11 @@ namespace QSB.TimeSync
 
 		public void Update()
 		{
-			if (QSBCore.IsHost)
+			if (isServer)
 			{
 				UpdateServer();
 			}
-			else if (!QSBCore.DebugSettings.AvoidTimeSync)
+			else if (isLocalPlayer && !QSBCore.DebugSettings.AvoidTimeSync)
 			{
 				UpdateClient();
 			}
