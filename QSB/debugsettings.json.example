@@ -2,7 +2,7 @@
   "useKcpTransport": false,
   "overrideAppId": -1,
   "dumpWorldObjects": false,
-  "playerIdInLogs": false
+  "playerIdInLogs": false,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
@@ -10,5 +10,5 @@
   "drawQuantumVisibilityObjects": false,
   "avoidTimeSync": false,
   "skipTitleScreen": false,
-  "greySkybox": false,
+  "greySkybox": false
 }
