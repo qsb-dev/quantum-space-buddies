@@ -16,6 +16,7 @@ namespace QSB.TimeSync.Patches
 			DebugLog.DebugWrite($"OnStartOfTimeLoop");
 			return false;
 		}
+
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(OWTime), nameof(OWTime.Pause))]
 		public static bool StopPausing(OWTime.PauseType pauseType)

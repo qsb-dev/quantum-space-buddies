@@ -126,7 +126,7 @@ namespace QSB.Menus
 		{
 			OneButtonInfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(okButtonText), null, true, false);
 
-			OWTime.Pause(OWTime.PauseType.System);
+			OWTime.Pause(OWTime.PauseType.Menu);
 			OWInput.ChangeInputMode(InputMode.Menu);
 
 			var pauseCommandListener = Locator.GetPauseCommandListener();
@@ -143,7 +143,7 @@ namespace QSB.Menus
 		{
 			TwoButtonInfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(okButtonText), new ScreenPrompt(cancelButtonText), true, true);
 
-			OWTime.Pause(OWTime.PauseType.System);
+			OWTime.Pause(OWTime.PauseType.Menu);
 			OWInput.ChangeInputMode(InputMode.Menu);
 
 			var pauseCommandListener = Locator.GetPauseCommandListener();
@@ -165,7 +165,7 @@ namespace QSB.Menus
 				_addedPauseLock = false;
 			}
 
-			OWTime.Unpause(OWTime.PauseType.System);
+			OWTime.Unpause(OWTime.PauseType.Menu);
 			OWInput.RestorePreviousInputs();
 
 			PopupOK?.SafeInvoke();
