@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <Reference Include="../Mirror/*.dll" />
+    <Reference Include="../UnityEngine/UnityEngine.CoreModule.dll" />
+  </ItemGroup>
+</Project>
