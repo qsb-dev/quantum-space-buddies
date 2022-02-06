@@ -34,12 +34,11 @@ namespace QSB.Menus
 		// title screen only
 		private GameObject ResumeGameButton;
 		private GameObject NewGameButton;
-		private GameObject ClientButton;
+		private GameObject ConnectButton;
 
 		private const int _ClientButtonIndex = 2;
-		private const int _DisconnectIndex = 3;
 
-		private const string OpenString = "OPEN TO MULTIPLAYER";
+		private const string HostString = "OPEN TO MULTIPLAYER";
 		private const string ConnectString = "CONNECT TO MULTIPLAYER";
 		private const string DisconnectString = "DISCONNECT";
 		private const string StopHostingString = "STOP HOSTING";
@@ -204,7 +203,7 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			HostButton = MenuApi.PauseMenu_MakeSimpleButton(OpenString);
+			HostButton = MenuApi.PauseMenu_MakeSimpleButton(HostString);
 			HostButton.onClick.AddListener(Host);
 
 			DisconnectPopup = MenuApi.MakeTwoChoicePopup("Are you sure you want to disconnect?\r\nThis will send you back to the main menu.", "YES", "NO");
@@ -250,15 +249,15 @@ namespace QSB.Menus
 		{
 			CreateCommonPopups();
 
-			ClientButton = MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _ClientButtonIndex, IPPopup);
-			_loadingText = ClientButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
+			ConnectButton = MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _ClientButtonIndex, IPPopup);
+			_loadingText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 			ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 			NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
 
 			if (QSBCore.IsInMultiplayer)
 			{
-				SetButtonActive(ClientButton, false);
+				SetButtonActive(ConnectButton, false);
 
 				if (QSBCore.IsHost)
 				{
@@ -273,7 +272,7 @@ namespace QSB.Menus
 			}
 			else
 			{
-				SetButtonActive(ClientButton, true);
+				SetButtonActive(ConnectButton, true);
 				Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 				SetButtonActive(NewGameButton, true);
 			}
@@ -408,7 +407,7 @@ namespace QSB.Menus
 			OpenInfoPopup(text, "OK");
 
 			SetButtonActive(DisconnectButton, false);
-			SetButtonActive(ClientButton, true);
+			SetButtonActive(ConnectButton, true);
 			SetButtonActive(HostButton, true);
 			SetButtonActive(QuitButton, true);
 		}
@@ -433,7 +432,7 @@ namespace QSB.Menus
 			OpenInfoPopup($"Client disconnected with error!\r\n{error}", "OK");
 
 			SetButtonActive(DisconnectButton, false);
-			SetButtonActive(ClientButton, true);
+			SetButtonActive(ConnectButton, true);
 			SetButtonActive(QuitButton, true);
 			SetButtonActive(HostButton, true);
 			SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
