@@ -195,10 +195,6 @@ namespace EpicTransport
 		public void Send(byte[] data, int channelId) => Send(hostProductId, socketId, data, (byte)channelId);
 
 		protected override void OnConnectionFailed(ProductUserId remoteId) => OnDisconnected.Invoke();
-		public void EosNotInitialized()
-		{
-			SetTransportError("EOS not initialized");
-			OnDisconnected.Invoke();
-		}
+		public void EosNotInitialized() => OnDisconnected.Invoke();
 	}
 }
