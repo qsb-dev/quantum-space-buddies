@@ -1,5 +1,5 @@
-﻿using Mirror;
-using Mirror.FizzySteam;
+﻿using EpicTransport;
+using Mirror;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -65,12 +65,21 @@ namespace QSB
 			}
 			else
 			{
-				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
-				fizzy.SteamAppID = QSBCore.DebugSettings.OverrideAppId == -1
-					? _defaultSteamAppID.ToString()
-					: QSBCore.DebugSettings.OverrideAppId.ToString();
-				fizzy.SetTransportError = error => _lastTransportError = error;
-				transport = fizzy;
+				var eosTransport = gameObject.AddComponent<EosTransport>();
+				EOSSDKComponent.Instance.apiKeys = new EosApiKey
+				{
+					name = null,
+					hideFlags = HideFlags.None,
+					epicProductName = null,
+					epicProductVersion = null,
+					epicProductId = null,
+					epicSandboxId = null,
+					epicDeploymentId = null,
+					epicClientId = null,
+					epicClientSecret = null
+				}; // todo
+				// todo eosTransport.SetTransportError = error => _lastTransportError = error;
+				transport = eosTransport;
 			}
 
 			gameObject.SetActive(true);

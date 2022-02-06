@@ -1,6 +1,5 @@
 ﻿{
   "useKcpTransport": false,
-  "overrideAppId": -1,
   "dumpWorldObjects": false,
   "playerIdInLogs": false,
   "debugMode": false,

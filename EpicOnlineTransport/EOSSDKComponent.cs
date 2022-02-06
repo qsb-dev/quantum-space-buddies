@@ -21,7 +21,7 @@ namespace EpicTransport {
         // Unity Inspector shown variables
         
         [SerializeField]
-        private EosApiKey apiKeys;
+        public EosApiKey apiKeys;
 
         [Header("User Login")]
         public bool authInterfaceLogin = false;
@@ -132,7 +132,7 @@ namespace EpicTransport {
         }
 
         protected static EOSSDKComponent instance;
-        protected static EOSSDKComponent Instance {
+        public static EOSSDKComponent Instance {
             get {
                 if (instance == null) {
                     return new GameObject("EOSSDKComponent").AddComponent<EOSSDKComponent>();
