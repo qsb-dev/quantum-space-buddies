@@ -42,6 +42,8 @@
 
 #endif
 
+#define EOS_PLATFORM_WINDOWS_64
+
 using System.Runtime.InteropServices;
 
 namespace Epic.OnlineServices
@@ -85,7 +87,7 @@ namespace Epic.OnlineServices
 
 		#endif
 		;
-		
+
 		public const CallingConvention LibraryCallingConvention =
 		#if EOS_PLATFORM_WINDOWS_32
 			CallingConvention.StdCall
