@@ -73,7 +73,9 @@ namespace QSB
 				eosApiKey.epicDeploymentId = "1f164829371e4cdcb23efedce98d99ad";
 				eosApiKey.epicClientId = "xyza7891TmlpkaiDv6KAnJH0f07aAbTu";
 				eosApiKey.epicClientSecret = "ft17miukylHF877istFuhTgq+Kw1le3Pfigvf9Dtu20";
-				EOSSDKComponent.Instance.apiKeys = eosApiKey;
+
+				var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
+				eosSdkComponent.apiKeys = eosApiKey;
 
 				var eosTransport = gameObject.AddComponent<EosTransport>();
 				// todo eosTransport.SetTransportError = error => _lastTransportError = error;
