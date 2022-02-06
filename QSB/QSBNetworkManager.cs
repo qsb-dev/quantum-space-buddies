@@ -133,6 +133,11 @@ namespace QSB
 					DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 					PlayerName = "Player";
 				}
+
+				if (!QSBCore.DebugSettings.UseKcpTransport)
+				{
+					EOSSDKComponent.DisplayName = PlayerName;
+				}
 			});
 
 		/// create a new network prefab from the network object prefab template.
