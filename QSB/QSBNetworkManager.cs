@@ -1,4 +1,5 @@
-﻿using EpicTransport;
+﻿using Epic.OnlineServices.Logging;
+using EpicTransport;
 using Mirror;
 using OWML.Common;
 using OWML.Utils;
@@ -76,6 +77,8 @@ namespace QSB
 
 				var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
 				eosSdkComponent.apiKeys = eosApiKey;
+				eosSdkComponent.epicLoggerLevel = LogLevel.Info;
+				eosSdkComponent.collectPlayerMetrics = false;
 
 				var eosTransport = gameObject.AddComponent<EosTransport>();
 				// todo eosTransport.SetTransportError = error => _lastTransportError = error;

@@ -43,7 +43,8 @@ namespace EpicTransport {
         [Header("Misc")]
         public LogLevel epicLoggerLevel = LogLevel.Error;
 
-        [SerializeField] private bool collectPlayerMetrics = true;
+        [SerializeField]
+        public bool collectPlayerMetrics = true;
         public static bool CollectPlayerMetrics {
             get {
                 return Instance.collectPlayerMetrics;
