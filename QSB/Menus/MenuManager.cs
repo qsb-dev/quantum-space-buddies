@@ -1,5 +1,5 @@
-﻿using Mirror;
-using Mirror.FizzySteam;
+﻿using EpicTransport;
+using Mirror;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
@@ -332,12 +332,12 @@ namespace QSB.Menus
 
 			if (!QSBCore.DebugSettings.UseKcpTransport)
 			{
-				var steamId = ((FizzyFacepunch)Transport.activeTransport).SteamUserID.ToString();
+				var id = EOSSDKComponent.LocalUserProductIdString;
 
-				PopupOK += () => GUIUtility.systemCopyBuffer = steamId;
+				PopupOK += () => GUIUtility.systemCopyBuffer = id;
 
-				OpenInfoPopup($"Hosting server.\r\nClients will connect using your steam id, which is :\r\n" +
-					$"{steamId}\r\n" +
+				OpenInfoPopup($"Hosting server.\r\nClients will connect using your id, which is :\r\n" +
+					$"{id}\r\n" +
 					"Do you want to copy this to the clipboard?"
 					, "YES"
 					, "NO");
