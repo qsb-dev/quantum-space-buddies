@@ -53,7 +53,6 @@ namespace QSB
 			"KCP: received disconnect message",
 			"Failed to resolve host: .*"
 		};
-		private const int _defaultSteamAppID = 753640;
 
 		public override void Awake()
 		{
