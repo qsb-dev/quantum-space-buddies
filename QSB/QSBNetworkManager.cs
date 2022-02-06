@@ -81,7 +81,7 @@ namespace QSB
 				eosSdkComponent.collectPlayerMetrics = false;
 
 				var eosTransport = gameObject.AddComponent<EosTransport>();
-				// todo eosTransport.SetTransportError = error => _lastTransportError = error;
+				eosTransport.SetTransportError = error => _lastTransportError = error;
 				transport = eosTransport;
 			}
 

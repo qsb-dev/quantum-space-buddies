@@ -18,6 +18,7 @@ namespace EpicTransport
 		private event Action<byte[], int> OnReceivedData;
 		private event Action OnConnected;
 		public event Action OnDisconnected;
+		private Action<string> SetTransportError;
 
 		private TimeSpan ConnectionTimeout;
 
@@ -42,6 +43,7 @@ namespace EpicTransport
 			c.OnConnected += () => transport.OnClientConnected.Invoke();
 			c.OnDisconnected += () => transport.OnClientDisconnected.Invoke();
 			c.OnReceivedData += (data, channel) => transport.OnClientDataReceived.Invoke(new ArraySegment<byte>(data), channel);
+			c.SetTransportError = transport.SetTransportError;
 
 			return c;
 		}

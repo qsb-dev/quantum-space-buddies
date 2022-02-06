@@ -40,6 +40,8 @@ namespace EpicTransport
 
 		private int packetId = 0;
 
+		public Action<string> SetTransportError;
+
 		private void Awake()
 		{
 			Debug.Assert(Channels != null && Channels.Length > 0, "No channel configured for EOS Transport.");
