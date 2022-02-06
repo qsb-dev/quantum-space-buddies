@@ -269,6 +269,7 @@ namespace QSB
 
 		public override void OnClientDisconnect()
 		{
+			DebugLog.DebugWrite("OnClientDisconnect");
 			base.OnClientDisconnect();
 			OnClientDisconnected?.SafeInvoke(_lastTransportError);
 			_lastTransportError = null;
