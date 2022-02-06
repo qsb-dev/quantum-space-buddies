@@ -301,6 +301,7 @@ namespace QSB.Menus
 		private void Disconnect()
 		{
 			_intentionalDisconnect = true;
+
 			QSBNetworkManager.singleton.StopHost();
 			SetButtonActive(DisconnectButton.gameObject, false);
 
@@ -314,6 +315,8 @@ namespace QSB.Menus
 
 		private void Host()
 		{
+			_intentionalDisconnect = false;
+
 			SetButtonActive(DisconnectButton, true);
 			SetButtonActive(HostButton, false);
 			SetButtonActive(QuitButton, false);
@@ -346,6 +349,8 @@ namespace QSB.Menus
 
 		private void Connect()
 		{
+			_intentionalDisconnect = false;
+
 			var address = ((PopupInputMenu)IPPopup).GetInputText();
 			if (address == string.Empty)
 			{
@@ -412,6 +417,7 @@ namespace QSB.Menus
 		{
 			if (_intentionalDisconnect)
 			{
+				DebugLog.DebugWrite("intentional disconnect. dont show popup");
 				_intentionalDisconnect = false;
 				return;
 			}
