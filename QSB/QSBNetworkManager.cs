@@ -64,19 +64,18 @@ namespace QSB
 			}
 			else
 			{
+				// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
+				var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
+				eosApiKey.epicProductName = "QSB";
+				eosApiKey.epicProductVersion = "1.0";
+				eosApiKey.epicProductId = "d4623220acb64419921c72047931b165";
+				eosApiKey.epicSandboxId = "d9bc4035269747668524931b0840ca29";
+				eosApiKey.epicDeploymentId = "1f164829371e4cdcb23efedce98d99ad";
+				eosApiKey.epicClientId = "xyza7891TmlpkaiDv6KAnJH0f07aAbTu";
+				eosApiKey.epicClientSecret = "ft17miukylHF877istFuhTgq+Kw1le3Pfigvf9Dtu20";
+				EOSSDKComponent.Instance.apiKeys = eosApiKey;
+
 				var eosTransport = gameObject.AddComponent<EosTransport>();
-				EOSSDKComponent.Instance.apiKeys = new EosApiKey
-				{
-					name = null,
-					hideFlags = HideFlags.None,
-					epicProductName = null,
-					epicProductVersion = null,
-					epicProductId = null,
-					epicSandboxId = null,
-					epicDeploymentId = null,
-					epicClientId = null,
-					epicClientSecret = null
-				}; // todo
 				// todo eosTransport.SetTransportError = error => _lastTransportError = error;
 				transport = eosTransport;
 			}
@@ -111,8 +110,9 @@ namespace QSB
 			ConfigureNetworkManager();
 		}
 
-		private void InitPlayerName() => Delay.RunWhen(PlayerData.IsLoaded,
-			() => {
+		private void InitPlayerName() =>
+			Delay.RunWhen(PlayerData.IsLoaded, () =>
+			{
 				try
 				{
 					var titleScreenManager = FindObjectOfType<TitleScreenManager>();
