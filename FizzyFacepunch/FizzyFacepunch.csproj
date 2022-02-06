@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Mirror.FizzySteam</RootNamespace>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Facepunch.Steamworks" Version="2.3.3" />
     <Reference Include="../Mirror/*.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="../UnityEngine/UnityEngine.CoreModule.dll" />
   </ItemGroup>
 </Project>
