@@ -66,6 +66,7 @@ namespace EpicTransport
 
 				if (await Task.WhenAny(connectedCompleteTask, Task.Delay(ConnectionTimeout /*, cancelToken.Token*/)) != connectedCompleteTask)
 				{
+					SetTransportError($"Connection to {host} timed out.");
 					Debug.LogError($"Connection to {host} timed out.");
 					OnConnected -= SetConnectedComplete;
 					OnConnectionFailed(hostProductId);
@@ -75,12 +76,14 @@ namespace EpicTransport
 			}
 			catch (FormatException)
 			{
+				SetTransportError("Connection string was not in the right format. Did you enter a ProductId?");
 				Debug.LogError($"Connection string was not in the right format. Did you enter a ProductId?");
 				Error = true;
 				OnConnectionFailed(hostProductId);
 			}
 			catch (Exception ex)
 			{
+				SetTransportError(ex.Message);
 				Debug.LogError(ex.Message);
 				Error = true;
 				OnConnectionFailed(hostProductId);
@@ -177,6 +180,7 @@ namespace EpicTransport
 					Debug.Log("Connection established.");
 					break;
 				case InternalMessages.DISCONNECT:
+					SetTransportError("host disconnected");
 					Connected = false;
 					Debug.Log("Disconnected.");
 
@@ -191,6 +195,10 @@ namespace EpicTransport
 		public void Send(byte[] data, int channelId) => Send(hostProductId, socketId, data, (byte)channelId);
 
 		protected override void OnConnectionFailed(ProductUserId remoteId) => OnDisconnected.Invoke();
-		public void EosNotInitialized() => OnDisconnected.Invoke();
+		public void EosNotInitialized()
+		{
+			SetTransportError("EOS not initialized");
+			OnDisconnected.Invoke();
+		}
 	}
 }
