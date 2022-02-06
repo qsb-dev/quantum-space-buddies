@@ -174,7 +174,7 @@ namespace QSB.Menus
 
 		private void CreateCommonPopups()
 		{
-			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Steam ID";
+			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "ID";
 			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
 
