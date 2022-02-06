@@ -174,7 +174,7 @@ namespace QSB.Menus
 
 		private void CreateCommonPopups()
 		{
-			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "ID";
+			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Product User ID";
 			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 			IPPopup.OnPopupConfirm += Connect;
 
@@ -335,12 +335,12 @@ namespace QSB.Menus
 
 			if (!QSBCore.DebugSettings.UseKcpTransport)
 			{
-				var id = EOSSDKComponent.LocalUserProductIdString;
+				var productUserId = EOSSDKComponent.LocalUserProductIdString;
 
-				PopupOK += () => GUIUtility.systemCopyBuffer = id;
+				PopupOK += () => GUIUtility.systemCopyBuffer = productUserId;
 
-				OpenInfoPopup($"Hosting server.\r\nClients will connect using your id, which is :\r\n" +
-					$"{id}\r\n" +
+				OpenInfoPopup($"Hosting server.\r\nClients will connect using your product user id, which is :\r\n" +
+					$"{productUserId}\r\n" +
 					"Do you want to copy this to the clipboard?"
 					, "YES"
 					, "NO");
