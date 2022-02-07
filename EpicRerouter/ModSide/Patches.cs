@@ -3,7 +3,7 @@ using System;
 
 namespace EpicRerouter.ModSide
 {
-	[HarmonyPatch(typeof(ExeSide.EpicPlatformManager))]
+	[HarmonyPatch(typeof(EpicPlatformManager))]
 	public static class Patches
 	{
 		public static void Apply()

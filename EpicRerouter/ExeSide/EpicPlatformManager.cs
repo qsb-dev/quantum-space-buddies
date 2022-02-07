@@ -30,7 +30,7 @@ namespace EpicRerouter.ExeSide
 				{
 					if (ex.Result == Result.AlreadyConfigured)
 					{
-						Console.Error.WriteLine("[EOS] platform already configured!");
+						throw new Exception("[EOS] platform already configured!");
 					}
 				}
 			}
@@ -90,8 +90,7 @@ namespace EpicRerouter.ExeSide
 			};
 			if (PlatformInterface == null)
 			{
-				Console.Error.WriteLine("[EOS] Platform interface is null!");
-				return;
+				throw new Exception("[EOS] Platform interface is null!");
 			}
 
 			PlatformInterface.GetAuthInterface().Login(loginOptions, null, OnLogin);
@@ -122,7 +121,7 @@ namespace EpicRerouter.ExeSide
 				return;
 			}
 
-			Console.Error.WriteLine("[EOS SDK] Login failed");
+			throw new Exception("[EOS SDK] Login failed");
 		}
 
 		private class EOSInitializeException : Exception

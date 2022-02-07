@@ -59,7 +59,7 @@ namespace EpicRerouter.ExeSide
 				EpicPlatformManager.Uninit();
 
 				Console.ReadKey();
-				Environment.Exit((int)AsyncOwnershipStatus.NotReady);
+				Environment.Exit((int)AsyncOwnershipStatus.NotOwned);
 			}
 		}
 	}
