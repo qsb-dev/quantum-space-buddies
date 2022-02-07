@@ -4,10 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 using static EntitlementsManager;
 using Debug = UnityEngine.Debug;
 
-namespace EpicRerouter.QsbSide
+namespace EpicRerouter.ModSide
 {
 	public static class Interop
 	{
@@ -23,30 +24,34 @@ namespace EpicRerouter.QsbSide
 
 			Log("go");
 
-			Harmony.CreateAndPatchAll(typeof(Patches));
+			Patches.Apply();
 
 			var processPath = Path.Combine(
 				Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
 				"EpicRerouter.exe"
 			);
-			var assemblyLocations = AppDomain.CurrentDomain.GetAssemblies()
+			var assemblyDirs = AppDomain.CurrentDomain.GetAssemblies()
 				.Select(x =>
 				{
 					try
 					{
-						return x.Location == string.Empty ? null : x.Location;
+						return Path.GetDirectoryName(x.Location);
 					}
 					catch
 					{
 						return null;
 					}
 				})
-				.Where(x => x != null);
+				.Where(x => x != null)
+				.Distinct();
 			var process = Process.Start(new ProcessStartInfo
 			{
 				FileName = processPath,
 				WorkingDirectory = Path.GetDirectoryName(processPath)!,
-				Arguments = assemblyLocations.Join(x => $"\"{x}\"", " "),
+				Arguments = assemblyDirs
+					.Prepend(Application.productName)
+					.Prepend(Application.version)
+					.Join(x => $"\"{x}\"", " "),
 				UseShellExecute = false
 			});
 			process!.WaitForExit();

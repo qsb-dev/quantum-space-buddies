@@ -1,10 +1,23 @@
 ﻿using HarmonyLib;
+using System;
 
-namespace EpicRerouter.QsbSide
+namespace EpicRerouter.ModSide
 {
-	[HarmonyPatch(typeof(ProcessSide.EpicPlatformManager))]
+	[HarmonyPatch(typeof(ExeSide.EpicPlatformManager))]
 	public static class Patches
 	{
+		public static void Apply()
+		{
+			try
+			{
+				Harmony.CreateAndPatchAll(typeof(Patches));
+			}
+			catch (Exception e)
+			{
+				Interop.Log(e);
+			}
+		}
+
 		[HarmonyPrefix]
 		[HarmonyPatch("instance", MethodType.Getter)]
 		private static bool GetInstance()

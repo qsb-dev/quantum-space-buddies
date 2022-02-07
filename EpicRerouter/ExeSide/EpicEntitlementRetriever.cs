@@ -3,7 +3,7 @@ using Epic.OnlineServices.Ecom;
 using System;
 using static EntitlementsManager;
 
-namespace EpicRerouter.ProcessSide
+namespace EpicRerouter.ExeSide
 {
 	public static class EpicEntitlementRetriever
 	{

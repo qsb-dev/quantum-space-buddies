@@ -3,7 +3,7 @@ using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Platform;
 using System;
 
-namespace EpicRerouter.ProcessSide
+namespace EpicRerouter.ExeSide
 {
 	public static class EpicPlatformManager
 	{

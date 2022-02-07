@@ -52,7 +52,7 @@ namespace QSB
 
 		public void Awake()
 		{
-			EpicRerouter.QsbSide.Interop.Go();
+			EpicRerouter.ModSide.Interop.Go();
 
 			UIHelper.ReplaceUI(UITextType.PleaseUseController,
 				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
