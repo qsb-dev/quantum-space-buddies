@@ -31,19 +31,19 @@ namespace EpicRerouter.ModSide
 				"EpicRerouter.exe"
 			);
 			Log($"process path = {processPath}");
+			var gamePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(EpicPlatformManager).Assembly.Location)!, ".."));
+			Log($"game path = {gamePath}");
 			var args = new[]
 			{
 				Application.productName,
 				Application.version,
-				Path.GetDirectoryName(typeof(EpicPlatformManager).Assembly.Location)
+				Path.Combine(gamePath, "Managed")
 			};
 			Log($"args = {args.Join()}");
-			var workingDirectory = Path.GetFullPath(Path.Combine(args[2], "..", "Plugins", "x86_64"));
-			Log($"working dir = {workingDirectory}");
 			var process = Process.Start(new ProcessStartInfo
 			{
 				FileName = processPath,
-				WorkingDirectory = workingDirectory,
+				WorkingDirectory = Path.Combine(gamePath, "Plugins", "x86_64"),
 				Arguments = args.Join(x => $"\"{x}\"", " "),
 				UseShellExecute = false
 			});
