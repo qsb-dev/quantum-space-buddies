@@ -4,5 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.168" IncludeAssets="compile" />
+    <PackageReference Include="HarmonyX" Version="2.9.0" IncludeAssets="compile"/>
   </ItemGroup>
 </Project>
