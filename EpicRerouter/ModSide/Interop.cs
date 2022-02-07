@@ -51,13 +51,20 @@ namespace EpicRerouter.ModSide
 				Arguments = args
 					.Concat(gameArgs)
 					.Join(x => $"\"{x}\"", " "),
-				UseShellExecute = false
+
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
 			});
 			process!.WaitForExit();
 			OwnershipStatus = (AsyncOwnershipStatus)process.ExitCode;
 			Log($"ownership status = {OwnershipStatus}");
+
+			Log($"output:\n{process.StandardOutput.ReadToEnd()}");
+			Log($"error:\n{process.StandardError.ReadToEnd()}");
 		}
 
-		public static void Log(object msg) => Debug.LogError($"[interop] {msg}");
+		public static void Log(object msg) => Debug.LogError($"[epic rerouter interop] {msg}");
 	}
 }

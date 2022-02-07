@@ -14,12 +14,6 @@ namespace EpicRerouter.ExeSide
 
 		private static void Main(string[] args)
 		{
-			AppDomain.CurrentDomain.UnhandledException += (_, e) =>
-			{
-				Console.Error.WriteLine(e.ExceptionObject);
-				Console.ReadKey();
-			};
-
 			ProductName = args[0];
 			Console.WriteLine($"product name = {ProductName}");
 			Version = args[1];
@@ -58,8 +52,7 @@ namespace EpicRerouter.ExeSide
 				EpicEntitlementRetriever.Uninit();
 				EpicPlatformManager.Uninit();
 
-				Console.ReadKey();
-				Environment.Exit((int)AsyncOwnershipStatus.NotOwned);
+				Environment.Exit((int)EpicEntitlementRetriever.GetOwnershipStatus());
 			}
 		}
 	}
