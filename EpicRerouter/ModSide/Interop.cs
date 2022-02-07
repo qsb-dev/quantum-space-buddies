@@ -64,6 +64,6 @@ namespace EpicRerouter.ModSide
 			Log($"error:\n{process.StandardError.ReadToEnd()}");
 		}
 
-		public static void Log(object msg) => Debug.LogError($"[EpicRerouter] {msg}");
+		public static void Log(object msg) => Debug.Log($"[EpicRerouter] {msg}");
 	}
 }
