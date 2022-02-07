@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using UnityEngine;
 using static EntitlementsManager;
 
 namespace EpicRerouter.ModSide
@@ -6,39 +7,60 @@ namespace EpicRerouter.ModSide
 	[HarmonyPatch(typeof(EpicPlatformManager))]
 	public static class Patches
 	{
-		public static void Apply() => Harmony.CreateAndPatchAll(typeof(Patches));
-
-		[HarmonyPrefix]
-		[HarmonyPatch("instance", MethodType.Getter)]
-		private static bool GetInstance()
+		public static void Apply()
 		{
-			Interop.Log("instance get called. return nothing");
-			return false;
+			var harmony = new Harmony(typeof(Patches).FullName);
+			harmony.PatchAll(typeof(EntitlementsManagerPatches));
+			harmony.PatchAll(typeof(EpicPlatformManagerPatches));
 		}
 
-		[HarmonyPrefix]
-		[HarmonyPatch("instance", MethodType.Setter)]
-		private static bool SetInstance()
+		[HarmonyPatch(typeof(EntitlementsManager))]
+		private static class EntitlementsManagerPatches
 		{
-			Interop.Log("instance set called. do nothing");
-			return false;
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(EntitlementsManager.InitializeOnAwake))]
+			private static bool InitializeOnAwake(EntitlementsManager __instance)
+			{
+				Object.Destroy(__instance);
+				return false;
+			}
+
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(EntitlementsManager.Start))]
+			private static bool Start() => false;
+
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(EntitlementsManager.OnDestroy))]
+			private static bool OnDestroy() => false;
+
+			[HarmonyPrefix]
+			[HarmonyPatch(nameof(EntitlementsManager.IsDlcOwned))]
+			private static bool IsDlcOwned(out AsyncOwnershipStatus __result)
+			{
+				__result = Interop.OwnershipStatus;
+				Interop.Log($"ownership status = {__result}");
+				return false;
+			}
 		}
 
-		[HarmonyPrefix]
-		[HarmonyPatch("platformInterface", MethodType.Getter)]
-		private static bool GetPlatformInterface()
+		[HarmonyPatch(typeof(EpicPlatformManager))]
+		private static class EpicPlatformManagerPatches
 		{
-			Interop.Log("platformInterface get called. return nothing");
-			return false;
-		}
+			[HarmonyPrefix]
+			[HarmonyPatch("Awake")]
+			private static bool Awake(EpicPlatformManager __instance)
+			{
+				Object.Destroy(__instance);
+				return false;
+			}
 
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(EntitlementsManager), nameof(EntitlementsManager.IsDlcOwned))]
-		private static bool IsDlcOwned(out AsyncOwnershipStatus __result)
-		{
-			__result = Interop.OwnershipStatus;
-			Interop.Log($"ownership status = {__result}");
-			return false;
+			[HarmonyPrefix]
+			[HarmonyPatch("Start")]
+			private static bool Start() => false;
+
+			[HarmonyPrefix]
+			[HarmonyPatch("OnDestroy")]
+			private static bool OnDestroy() => false;
 		}
 	}
 }

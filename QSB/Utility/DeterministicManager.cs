@@ -10,7 +10,7 @@ namespace QSB.Utility
 {
 	public static class DeterministicManager
 	{
-		private static readonly Harmony _harmony = new(typeof(DeterministicManager).AssemblyQualifiedName);
+		private static readonly Harmony _harmony = new(typeof(DeterministicManager).FullName);
 		private static bool _patched;
 
 		private static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> _cache = new();
