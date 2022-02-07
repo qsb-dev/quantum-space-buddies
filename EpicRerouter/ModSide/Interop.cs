@@ -19,7 +19,7 @@ namespace EpicRerouter.ModSide
 			if (typeof(EpicPlatformManager).GetField("_platformInterface", BindingFlags.NonPublic | BindingFlags.Instance) == null)
 			{
 				Log("not epic. don't reroute");
-				// return;
+				return;
 			}
 
 			Log("go");

@@ -1,28 +1,18 @@
 ﻿using HarmonyLib;
-using System;
+using static EntitlementsManager;
 
 namespace EpicRerouter.ModSide
 {
 	[HarmonyPatch(typeof(EpicPlatformManager))]
 	public static class Patches
 	{
-		public static void Apply()
-		{
-			try
-			{
-				Harmony.CreateAndPatchAll(typeof(Patches));
-			}
-			catch (Exception e)
-			{
-				Interop.Log(e);
-			}
-		}
+		public static void Apply() => Harmony.CreateAndPatchAll(typeof(Patches));
 
 		[HarmonyPrefix]
 		[HarmonyPatch("instance", MethodType.Getter)]
 		private static bool GetInstance()
 		{
-			Interop.Log("instance get called");
+			Interop.Log("instance get called. return nothing");
 			return false;
 		}
 
@@ -30,7 +20,7 @@ namespace EpicRerouter.ModSide
 		[HarmonyPatch("instance", MethodType.Setter)]
 		private static bool SetInstance()
 		{
-			Interop.Log("instance set called");
+			Interop.Log("instance set called. do nothing");
 			return false;
 		}
 
@@ -38,7 +28,16 @@ namespace EpicRerouter.ModSide
 		[HarmonyPatch("platformInterface", MethodType.Getter)]
 		private static bool GetPlatformInterface()
 		{
-			Interop.Log("platformInterface get called");
+			Interop.Log("platformInterface get called. return nothing");
+			return false;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(EntitlementsManager), nameof(EntitlementsManager.IsDlcOwned))]
+		private static bool IsDlcOwned(out AsyncOwnershipStatus __result)
+		{
+			__result = Interop.OwnershipStatus;
+			Interop.Log($"ownership status = {__result}");
 			return false;
 		}
 	}
