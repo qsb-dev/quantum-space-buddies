@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MirrorWeaver", "MirrorWeave
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicOnlineTransport", "EpicOnlineTransport\EpicOnlineTransport.csproj", "{971AA4A1-6729-40DE-AADF-2754F1E8783A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicRerouter", "EpicRerouter\EpicRerouter.csproj", "{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{971AA4A1-6729-40DE-AADF-2754F1E8783A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{971AA4A1-6729-40DE-AADF-2754F1E8783A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{971AA4A1-6729-40DE-AADF-2754F1E8783A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

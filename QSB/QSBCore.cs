@@ -50,9 +50,13 @@ namespace QSB
 		public static IMenuAPI MenuApi { get; private set; }
 		public static DebugSettings DebugSettings { get; private set; } = new();
 
-		public void Awake() =>
+		public void Awake()
+		{
+			EpicRerouter.Interop.Go();
+
 			UIHelper.ReplaceUI(UITextType.PleaseUseController,
 				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
+		}
 
 		public void Start()
 		{

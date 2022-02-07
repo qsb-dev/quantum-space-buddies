@@ -41,6 +41,7 @@
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
+    <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
   <ItemGroup>
