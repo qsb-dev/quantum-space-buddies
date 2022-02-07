@@ -116,7 +116,8 @@ namespace EpicRerouter.ExeSide
 			if (loginCallbackInfo.ResultCode == Result.Success)
 			{
 				LocalUserId = loginCallbackInfo.LocalUserId;
-				Console.WriteLine($"[EOS SDK] login success! user ID: {LocalUserId}");
+				LocalUserId.ToString(out var s);
+				Console.WriteLine($"[EOS SDK] login success! user ID: {s}");
 				OnAuthSuccess.Invoke();
 				return;
 			}
