@@ -4,13 +4,17 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using static EntitlementsManager;
 using Debug = UnityEngine.Debug;
 
 namespace EpicRerouter
 {
+	/// <summary>
+	/// runs on qsb side
+	/// </summary>
 	public static class Interop
 	{
-		public static void Log(object msg) => Debug.LogError($"[interop] {msg}");
+		public static AsyncOwnershipStatus OwnershipStatus { get; private set; } = AsyncOwnershipStatus.NotReady;
 
 		public static void Go()
 		{
@@ -43,8 +47,10 @@ namespace EpicRerouter
 				UseShellExecute = false
 			});
 			process!.WaitForExit();
-			var ownershipStatus = (EntitlementsManager.AsyncOwnershipStatus)process.ExitCode;
-			Log($"ownership status = {ownershipStatus}");
+			OwnershipStatus = (AsyncOwnershipStatus)process.ExitCode;
+			Log($"ownership status = {OwnershipStatus}");
 		}
+
+		public static void Log(object msg) => Debug.LogError($"[interop] {msg}");
 	}
 }

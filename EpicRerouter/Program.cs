@@ -1,13 +1,16 @@
-﻿using Epic.OnlineServices.Ecom;
-using System;
+﻿using System;
 using System.Reflection;
 using System.Threading;
+using static EntitlementsManager;
 
 namespace EpicRerouter
 {
-	public static class Program
+	/// <summary>
+	/// runs on process side
+	/// </summary>
+	internal static class Program
 	{
-		public static void Main(string[] assemblyLocations)
+		private static void Main(string[] assemblyLocations)
 		{
 			try
 			{
@@ -21,7 +24,7 @@ namespace EpicRerouter
 			{
 				Console.WriteLine("all done");
 				Thread.Sleep(3000);
-				Environment.Exit((int)OwnershipStatus.Owned);
+				Environment.Exit((int)AsyncOwnershipStatus.Owned);
 			}
 		}
 	}
