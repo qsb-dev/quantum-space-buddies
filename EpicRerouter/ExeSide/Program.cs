@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using static EntitlementsManager;
@@ -25,6 +26,8 @@ namespace EpicRerouter.ExeSide
 			Console.WriteLine($"version = {Version}");
 			var managedDir = args[2];
 			Console.WriteLine($"managed dir = {managedDir}");
+			var gameArgs = args.Skip(3).ToArray();
+			Console.WriteLine($"game args = {string.Join(", ", gameArgs)}");
 			Console.WriteLine();
 
 			AppDomain.CurrentDomain.AssemblyResolve += (_, e) =>
