@@ -2,6 +2,7 @@
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Platform;
 using System;
+using System.Threading;
 
 namespace EpicRerouter.ExeSide
 {
@@ -12,6 +13,7 @@ namespace EpicRerouter.ExeSide
 		private const string _eosDeploymentID = "e176ecc84fbc4dd8934664684f44dc71";
 		private const string _eosClientID = "5c553c6accee4111bc8ea3a3ae52229b";
 		private const string _eosClientSecret = "k87Nfp75BzPref4nJFnnbNjYXQQR";
+		private const float _tickInterval = 0.1f;
 
 		public static PlatformInterface PlatformInterface;
 		public static EpicAccountId LocalUserId;
@@ -38,8 +40,11 @@ namespace EpicRerouter.ExeSide
 			Auth();
 		}
 
-		public static void Tick() =>
+		public static void Tick()
+		{
 			PlatformInterface.Tick();
+			Thread.Sleep(TimeSpan.FromSeconds(_tickInterval));
+		}
 
 		public static void Uninit()
 		{
@@ -72,12 +77,12 @@ namespace EpicRerouter.ExeSide
 				DeploymentId = _eosDeploymentID
 			};
 			PlatformInterface = PlatformInterface.Create(options);
-			Console.WriteLine("[EOS] Platform interface has been created");
+			Program.Log("[EOS] Platform interface has been created");
 		}
 
 		private static void Auth()
 		{
-			Console.WriteLine("[EOS] Authenticating...");
+			Program.Log("[EOS] Authenticating...");
 			var loginOptions = new LoginOptions
 			{
 				Credentials = new Credentials
@@ -116,7 +121,7 @@ namespace EpicRerouter.ExeSide
 			{
 				LocalUserId = loginCallbackInfo.LocalUserId;
 				LocalUserId.ToString(out var s);
-				Console.WriteLine($"[EOS SDK] login success! user ID: {s}");
+				Program.Log($"[EOS SDK] login success! user ID: {s}");
 				OnAuthSuccess.Invoke();
 				return;
 			}

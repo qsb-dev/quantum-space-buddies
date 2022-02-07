@@ -1,7 +1,5 @@
 ﻿using Epic.OnlineServices;
 using Epic.OnlineServices.Ecom;
-using System;
-using static EntitlementsManager;
 
 namespace EpicRerouter.ExeSide
 {
@@ -19,20 +17,20 @@ namespace EpicRerouter.ExeSide
 		public static void Uninit() =>
 			EpicPlatformManager.OnAuthSuccess -= EOSQueryOwnership;
 
-		public static AsyncOwnershipStatus GetOwnershipStatus()
+		public static EntitlementsManager.AsyncOwnershipStatus GetOwnershipStatus()
 		{
 			if (!_epicResultReceived)
 			{
-				return AsyncOwnershipStatus.NotReady;
+				return EntitlementsManager.AsyncOwnershipStatus.NotReady;
 			}
 
 			return _epicDlcOwnershipStatus == OwnershipStatus.Owned ?
-				AsyncOwnershipStatus.Owned : AsyncOwnershipStatus.NotOwned;
+				EntitlementsManager.AsyncOwnershipStatus.Owned : EntitlementsManager.AsyncOwnershipStatus.NotOwned;
 		}
 
 		private static void EOSQueryOwnership()
 		{
-			Console.WriteLine("[EOS] querying DLC ownership");
+			Program.Log("[EOS] querying DLC ownership");
 			_ecomInterface = EpicPlatformManager.PlatformInterface.GetEcomInterface();
 			var queryOwnershipOptions = new QueryOwnershipOptions
 			{
@@ -48,7 +46,7 @@ namespace EpicRerouter.ExeSide
 			{
 				_epicDlcOwnershipStatus = data.ItemOwnership[0].OwnershipStatus;
 				_epicResultReceived = true;
-				Console.WriteLine($"[EOS] Query DLC ownership complete: {_epicDlcOwnershipStatus}");
+				Program.Log($"[EOS] Query DLC ownership complete: {_epicDlcOwnershipStatus}");
 			}
 		}
 	}

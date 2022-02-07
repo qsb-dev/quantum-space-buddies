@@ -2,8 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using static EntitlementsManager;
 
 namespace EpicRerouter.ExeSide
 {
@@ -15,14 +13,13 @@ namespace EpicRerouter.ExeSide
 		private static void Main(string[] args)
 		{
 			ProductName = args[0];
-			Console.WriteLine($"product name = {ProductName}");
+			Log($"product name = {ProductName}");
 			Version = args[1];
-			Console.WriteLine($"version = {Version}");
+			Log($"version = {Version}");
 			var managedDir = args[2];
-			Console.WriteLine($"managed dir = {managedDir}");
+			Log($"managed dir = {managedDir}");
 			var gameArgs = args.Skip(3).ToArray();
-			Console.WriteLine($"game args = {string.Join(", ", gameArgs)}");
-			Console.WriteLine();
+			Log($"game args = {string.Join(", ", gameArgs)}");
 
 			AppDomain.CurrentDomain.AssemblyResolve += (_, e) =>
 			{
@@ -41,10 +38,9 @@ namespace EpicRerouter.ExeSide
 				EpicPlatformManager.Init();
 				EpicEntitlementRetriever.Init();
 
-				while (EpicEntitlementRetriever.GetOwnershipStatus() == AsyncOwnershipStatus.NotReady)
+				while (EpicEntitlementRetriever.GetOwnershipStatus() == EntitlementsManager.AsyncOwnershipStatus.NotReady)
 				{
 					EpicPlatformManager.Tick();
-					Thread.Sleep(100);
 				}
 			}
 			finally
@@ -55,5 +51,7 @@ namespace EpicRerouter.ExeSide
 				Environment.Exit((int)EpicEntitlementRetriever.GetOwnershipStatus());
 			}
 		}
+
+		public static void Log(object msg) => Console.Error.WriteLine(msg);
 	}
 }

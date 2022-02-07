@@ -5,14 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using static EntitlementsManager;
 using Debug = UnityEngine.Debug;
 
 namespace EpicRerouter.ModSide
 {
 	public static class Interop
 	{
-		public static AsyncOwnershipStatus OwnershipStatus = AsyncOwnershipStatus.NotReady;
+		public static EntitlementsManager.AsyncOwnershipStatus OwnershipStatus = EntitlementsManager.AsyncOwnershipStatus.NotReady;
 
 		public static void Go()
 		{
@@ -58,7 +57,7 @@ namespace EpicRerouter.ModSide
 				RedirectStandardError = true
 			});
 			process!.WaitForExit();
-			OwnershipStatus = (AsyncOwnershipStatus)process.ExitCode;
+			OwnershipStatus = (EntitlementsManager.AsyncOwnershipStatus)process.ExitCode;
 			Log($"ownership status = {OwnershipStatus}");
 
 			Log($"output:\n{process.StandardOutput.ReadToEnd()}");
