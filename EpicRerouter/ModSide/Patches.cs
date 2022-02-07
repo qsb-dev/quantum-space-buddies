@@ -3,7 +3,6 @@ using static EntitlementsManager;
 
 namespace EpicRerouter.ModSide
 {
-	[HarmonyPatch(typeof(EpicPlatformManager))]
 	public static class Patches
 	{
 		public static void Apply() => Harmony.CreateAndPatchAll(typeof(Patches));
