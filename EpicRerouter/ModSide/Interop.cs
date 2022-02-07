@@ -10,7 +10,7 @@ namespace EpicRerouter.ModSide
 {
 	public static class Interop
 	{
-		public static AsyncOwnershipStatus OwnershipStatus { get; private set; } = AsyncOwnershipStatus.NotReady;
+		public static AsyncOwnershipStatus OwnershipStatus = AsyncOwnershipStatus.NotReady;
 
 		public static void Go()
 		{
