@@ -140,7 +140,7 @@ namespace QSB.Menus
 
 		private void OpenInfoPopup(string message, string okButtonText, string cancelButtonText)
 		{
-			TwoButtonInfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(okButtonText), new ScreenPrompt(cancelButtonText), true, true);
+			TwoButtonInfoPopup.SetUpPopup(message, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(okButtonText), new ScreenPrompt(cancelButtonText));
 
 			OWTime.Pause(OWTime.PauseType.Menu);
 			OWInput.ChangeInputMode(InputMode.Menu);
