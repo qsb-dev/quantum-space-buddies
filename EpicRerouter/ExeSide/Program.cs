@@ -1,7 +1,5 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using static EntitlementsManager;
@@ -15,28 +13,25 @@ namespace EpicRerouter.ExeSide
 
 		private static void Main(string[] args)
 		{
-			ProductName = args[1];
-			Console.WriteLine($"product name = {ProductName}");
-			Version = args[2];
-			Console.WriteLine($"version = {Version}");
+			AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+			{
+				Console.Error.WriteLine(e.ExceptionObject);
+				Console.ReadKey();
+			};
 
-			var assemblyDirs = args.Skip(2).ToArray();
-			Console.WriteLine($"assembly dirs = {assemblyDirs.Join()}");
+			ProductName = args[0];
+			Console.WriteLine($"product name = {ProductName}");
+			Version = args[1];
+			Console.WriteLine($"version = {Version}");
+			var managedDir = args[2];
+			Console.WriteLine($"managed dir = {managedDir}");
 			Console.WriteLine();
 
 			AppDomain.CurrentDomain.AssemblyResolve += (_, e) =>
 			{
 				var name = new AssemblyName(e.Name).Name + ".dll";
-				foreach (var dir in assemblyDirs)
-				{
-					var path = Path.Combine(dir, name);
-					if (File.Exists(path))
-					{
-						return Assembly.LoadFile(path);
-					}
-				}
-
-				return null;
+				var path = Path.Combine(managedDir, name);
+				return File.Exists(path) ? Assembly.LoadFile(path) : null;
 			};
 
 			Go();
@@ -60,10 +55,7 @@ namespace EpicRerouter.ExeSide
 				EpicEntitlementRetriever.Uninit();
 				EpicPlatformManager.Uninit();
 
-				Console.WriteLine("all done");
-				Console.ReadKey();
-
-				Environment.Exit((int)AsyncOwnershipStatus.NotReady);
+				// Environment.Exit((int)AsyncOwnershipStatus.NotReady);
 			}
 		}
 	}

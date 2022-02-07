@@ -30,28 +30,17 @@ namespace EpicRerouter.ModSide
 				Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
 				"EpicRerouter.exe"
 			);
-			var assemblyDirs = AppDomain.CurrentDomain.GetAssemblies()
-				.Select(x =>
-				{
-					try
-					{
-						return Path.GetDirectoryName(x.Location);
-					}
-					catch
-					{
-						return null;
-					}
-				})
-				.Where(x => x != null)
-				.Distinct();
+			var args = new[]
+			{
+				Application.productName,
+				Application.version,
+				Path.GetDirectoryName(typeof(EpicPlatformManager).Assembly.Location)
+			};
 			var process = Process.Start(new ProcessStartInfo
 			{
 				FileName = processPath,
 				WorkingDirectory = Path.GetDirectoryName(processPath)!,
-				Arguments = assemblyDirs
-					.Prepend(Application.productName)
-					.Prepend(Application.version)
-					.Join(x => $"\"{x}\"", " "),
+				Arguments = args.Join(x => $"\"{x}\"", " "),
 				UseShellExecute = false
 			});
 			process!.WaitForExit();
