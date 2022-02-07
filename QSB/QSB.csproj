@@ -43,6 +43,8 @@
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
     <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
+    <PackageReference Include="HarmonyX" Version="2.9.0" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.3.2" IncludeAssets="compile" />
   </ItemGroup>
   <ItemGroup>
     <None Update="AssetBundles\*">
