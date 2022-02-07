@@ -1,7 +1,6 @@
 ﻿using Epic.OnlineServices;
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Platform;
-using EpicRerouter.QsbSide;
 using System;
 
 namespace EpicRerouter.ProcessSide
@@ -34,7 +33,7 @@ namespace EpicRerouter.ProcessSide
 				{
 					if (ex.Result == Result.AlreadyConfigured)
 					{
-						Console.WriteLine("[EOS] platform already configured!");
+						Console.Error.WriteLine("[EOS] platform already configured!");
 					}
 				}
 			}
@@ -42,10 +41,8 @@ namespace EpicRerouter.ProcessSide
 			Auth();
 		}
 
-		public static void Tick()
-		{
+		public static void Tick() =>
 			PlatformInterface.Tick();
-		}
 
 		public static void Uninit()
 		{
@@ -78,12 +75,12 @@ namespace EpicRerouter.ProcessSide
 				DeploymentId = _eosDeploymentID
 			};
 			PlatformInterface = PlatformInterface.Create(options);
-			Interop.Log("[EOS] Platform interface has been created");
+			Console.WriteLine("[EOS] Platform interface has been created");
 		}
 
 		private static void Auth()
 		{
-			Interop.Log("[EOS] Authenticating...");
+			Console.WriteLine("[EOS] Authenticating...");
 			var loginOptions = new LoginOptions
 			{
 				Credentials = new Credentials
@@ -96,7 +93,7 @@ namespace EpicRerouter.ProcessSide
 			};
 			if (PlatformInterface == null)
 			{
-				Interop.Log("[EOS] Platform interface is null!");
+				Console.Error.WriteLine("[EOS] Platform interface is null!");
 				return;
 			}
 
@@ -122,18 +119,21 @@ namespace EpicRerouter.ProcessSide
 			if (loginCallbackInfo.ResultCode == Result.Success)
 			{
 				LocalUserId = loginCallbackInfo.LocalUserId;
-				Interop.Log($"[EOS SDK] login success! user ID: {LocalUserId}");
+				Console.WriteLine($"[EOS SDK] login success! user ID: {LocalUserId}");
 				OnAuthSuccess.Invoke();
 				return;
 			}
 
-			Interop.Log("[EOS SDK] Login failed");
+			Console.Error.WriteLine("[EOS SDK] Login failed");
 		}
 
 		private class EOSInitializeException : Exception
 		{
 			public readonly Result Result;
-			public EOSInitializeException(string msg, Result initResult) : base(msg) => Result = initResult;
+
+			public EOSInitializeException(string msg, Result initResult) :
+				base(msg) =>
+				Result = initResult;
 		}
 	}
 }
