@@ -13,9 +13,13 @@ namespace EpicRerouter.ExeSide
 		private static void Main(string[] args)
 		{
 			ProductName = args[0];
+			Log($"product name = {ProductName}");
 			Version = args[1];
+			Log($"version = {Version}");
 			var managedDir = args[2];
+			Log($"managed dir = {managedDir}");
 			var gameArgs = args.Skip(3).ToArray();
+			Log($"game args = {string.Join(", ", gameArgs)}");
 
 			AppDomain.CurrentDomain.AssemblyResolve += (_, e) =>
 			{
