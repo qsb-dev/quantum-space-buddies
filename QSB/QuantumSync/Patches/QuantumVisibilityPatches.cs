@@ -26,7 +26,7 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShapeVisibilityTracker), nameof(ShapeVisibilityTracker.IsVisibleUsingCameraFrustum))]
-		public static bool ShapeVisibilityTracker_IsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, ref bool __result)
+		public static bool ShapeVisibilityTracker_IsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, out bool __result)
 		{
 			__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false).Item1;
 			return false;
@@ -34,7 +34,7 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShapeVisibilityTracker), nameof(ShapeVisibilityTracker.IsVisible))]
-		public static bool ShapeVisibilityTracker_IsVisible(ShapeVisibilityTracker __instance, ref bool __result)
+		public static bool ShapeVisibilityTracker_IsVisible(ShapeVisibilityTracker __instance, out bool __result)
 		{
 			__result = QuantumManager.IsVisible(__instance, false);
 			return false;
@@ -44,7 +44,7 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(RendererVisibilityTracker), nameof(RendererVisibilityTracker.IsVisibleUsingCameraFrustum))]
-		public static bool RendererVisibilityTracker_IsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, ref bool __result)
+		public static bool RendererVisibilityTracker_IsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, out bool __result)
 		{
 			__result = QSBPlayerManager.GetPlayersWithCameras()
 					.Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), __instance._renderer.bounds))
@@ -57,7 +57,7 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(VisibilityObject), nameof(VisibilityObject.CheckIllumination))]
-		public static bool VisibilityObject_CheckIllumination(VisibilityObject __instance, ref bool __result)
+		public static bool VisibilityObject_CheckIllumination(VisibilityObject __instance, out bool __result)
 		{
 			if (!__instance._checkIllumination)
 			{

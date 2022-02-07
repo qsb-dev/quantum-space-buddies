@@ -59,7 +59,7 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumMoon), nameof(QuantumMoon.ChangeQuantumState))]
-		public static bool ChangeQuantumState(QuantumMoon __instance, bool skipInstantVisibilityCheck, ref bool __result)
+		public static bool ChangeQuantumState(QuantumMoon __instance, bool skipInstantVisibilityCheck, out bool __result)
 		{
 			var foundNewPosition = false;
 
