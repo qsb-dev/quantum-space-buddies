@@ -1,30 +1,26 @@
 ﻿using Epic.OnlineServices;
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Platform;
+using EpicRerouter.QsbSide;
 using System;
-using UnityEngine;
 
-namespace EpicRerouter
+namespace EpicRerouter.ProcessSide
 {
 	/// <summary>
 	/// runs on process side
 	/// </summary>
 	public static class EpicPlatformManager
 	{
-		public const string EOS_PRODUCT_ID = "prod-starfish";
-		public const string EOS_SANDBOX_ID = "starfish";
-		public const string EOS_DEPLOYMENT_ID = "e176ecc84fbc4dd8934664684f44dc71";
-		public const string EOS_CLIENT_ID = "5c553c6accee4111bc8ea3a3ae52229b";
-		public const string EOS_CLIENT_SECRET = "k87Nfp75BzPref4nJFnnbNjYXQQR";
+		private const string _eosProductID = "prod-starfish";
+		private const string _eosSandboxID = "starfish";
+		private const string _eosDeploymentID = "e176ecc84fbc4dd8934664684f44dc71";
+		private const string _eosClientID = "5c553c6accee4111bc8ea3a3ae52229b";
+		private const string _eosClientSecret = "k87Nfp75BzPref4nJFnnbNjYXQQR";
 
-		private const float TICK_INTERVAL = 0.1f;
-		private const bool ENABLE_SDK_DEBUGGING = false;
+		public static PlatformInterface PlatformInterface;
+		public static EpicAccountId LocalUserId;
 
-		public static PlatformInterface PlatformInterface { get; private set; }
-		public static EpicAccountId LocalUserId { get; private set; }
-		private static float _lastTick;
-
-		public static OWEvent onAuthSuccess = new(1);
+		public static OWEvent OnAuthSuccess = new(1);
 
 		public static void Init()
 		{
@@ -38,7 +34,7 @@ namespace EpicRerouter
 				{
 					if (ex.Result == Result.AlreadyConfigured)
 					{
-						Debug.Log("[EOS] platform already configured!");
+						Console.WriteLine("[EOS] platform already configured!");
 					}
 				}
 			}
@@ -48,11 +44,7 @@ namespace EpicRerouter
 
 		public static void Tick()
 		{
-			if (PlatformInterface != null && _lastTick + 0.1f <= Time.unscaledTime)
-			{
-				PlatformInterface.Tick();
-				_lastTick = Time.unscaledTime;
-			}
+			PlatformInterface.Tick();
 		}
 
 		public static void Uninit()
@@ -66,8 +58,8 @@ namespace EpicRerouter
 		{
 			var result = PlatformInterface.Initialize(new InitializeOptions
 			{
-				ProductName = Application.productName,
-				ProductVersion = Application.version
+				ProductName = Program.ProductName,
+				ProductVersion = Program.Version
 			});
 			if (result != Result.Success)
 			{
@@ -76,22 +68,22 @@ namespace EpicRerouter
 
 			var options = new Options
 			{
-				ProductId = "prod-starfish",
-				SandboxId = "starfish",
+				ProductId = _eosProductID,
+				SandboxId = _eosSandboxID,
 				ClientCredentials = new ClientCredentials
 				{
-					ClientId = "5c553c6accee4111bc8ea3a3ae52229b",
-					ClientSecret = "k87Nfp75BzPref4nJFnnbNjYXQQR"
+					ClientId = _eosClientID,
+					ClientSecret = _eosClientSecret
 				},
-				DeploymentId = "e176ecc84fbc4dd8934664684f44dc71"
+				DeploymentId = _eosDeploymentID
 			};
 			PlatformInterface = PlatformInterface.Create(options);
-			Debug.Log("[EOS] Platform interface has been created");
+			Interop.Log("[EOS] Platform interface has been created");
 		}
 
 		private static void Auth()
 		{
-			Debug.Log("[EOS] Authenticating...");
+			Interop.Log("[EOS] Authenticating...");
 			var loginOptions = new LoginOptions
 			{
 				Credentials = new Credentials
@@ -104,7 +96,8 @@ namespace EpicRerouter
 			};
 			if (PlatformInterface == null)
 			{
-				Debug.LogError("[EOS] Platform interface is null!");
+				Interop.Log("[EOS] Platform interface is null!");
+				return;
 			}
 
 			PlatformInterface.GetAuthInterface().Login(loginOptions, null, OnLogin);
@@ -129,15 +122,15 @@ namespace EpicRerouter
 			if (loginCallbackInfo.ResultCode == Result.Success)
 			{
 				LocalUserId = loginCallbackInfo.LocalUserId;
-				Debug.Log($"[EOS SDK] login success! user ID: {LocalUserId}");
-				onAuthSuccess.Invoke();
+				Interop.Log($"[EOS SDK] login success! user ID: {LocalUserId}");
+				OnAuthSuccess.Invoke();
 				return;
 			}
 
-			Debug.LogError("[EOS SDK] Login failed");
+			Interop.Log("[EOS SDK] Login failed");
 		}
 
-		public class EOSInitializeException : Exception
+		private class EOSInitializeException : Exception
 		{
 			public readonly Result Result;
 			public EOSInitializeException(string msg, Result initResult) : base(msg) => Result = initResult;

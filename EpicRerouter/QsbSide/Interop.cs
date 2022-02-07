@@ -7,7 +7,7 @@ using System.Reflection;
 using static EntitlementsManager;
 using Debug = UnityEngine.Debug;
 
-namespace EpicRerouter
+namespace EpicRerouter.QsbSide
 {
 	/// <summary>
 	/// runs on qsb side

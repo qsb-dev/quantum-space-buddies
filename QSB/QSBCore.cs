@@ -54,7 +54,7 @@ namespace QSB
 		{
 			if (true || typeof(EpicPlatformManager).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever"))
 			{
-				EpicRerouter.Interop.Go();
+				EpicRerouter.QsbSide.Interop.Go();
 			}
 
 			UIHelper.ReplaceUI(UITextType.PleaseUseController,

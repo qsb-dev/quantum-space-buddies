@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 
-namespace EpicRerouter
+namespace EpicRerouter.QsbSide
 {
 	/// <summary>
 	/// runs on qsb side
 	/// </summary>
-	[HarmonyPatch(typeof(EpicPlatformManager))]
+	[HarmonyPatch(typeof(ProcessSide.EpicPlatformManager))]
 	internal static class Patches
 	{
 		[HarmonyPrefix]
