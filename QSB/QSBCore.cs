@@ -52,10 +52,7 @@ namespace QSB
 
 		public void Awake()
 		{
-			if (true || typeof(EpicPlatformManager).Assembly.GetTypes().Any(x => x.Name == "EpicEntitlementRetriever"))
-			{
-				EpicRerouter.QsbSide.Interop.Go();
-			}
+			EpicRerouter.QsbSide.Interop.Go();
 
 			UIHelper.ReplaceUI(UITextType.PleaseUseController,
 				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");

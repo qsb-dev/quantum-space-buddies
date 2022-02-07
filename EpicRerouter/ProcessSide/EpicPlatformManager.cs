@@ -5,9 +5,6 @@ using System;
 
 namespace EpicRerouter.ProcessSide
 {
-	/// <summary>
-	/// runs on process side
-	/// </summary>
 	public static class EpicPlatformManager
 	{
 		private const string _eosProductID = "prod-starfish";

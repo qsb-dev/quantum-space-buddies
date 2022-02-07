@@ -9,15 +9,18 @@ using Debug = UnityEngine.Debug;
 
 namespace EpicRerouter.QsbSide
 {
-	/// <summary>
-	/// runs on qsb side
-	/// </summary>
 	public static class Interop
 	{
 		public static AsyncOwnershipStatus OwnershipStatus { get; private set; } = AsyncOwnershipStatus.NotReady;
 
 		public static void Go()
 		{
+			if (typeof(EpicPlatformManager).GetField("_platformInterface", BindingFlags.NonPublic | BindingFlags.Instance) == null)
+			{
+				Log("not epic. don't reroute");
+				// return;
+			}
+
 			Log("go");
 
 			Harmony.CreateAndPatchAll(typeof(Patches));

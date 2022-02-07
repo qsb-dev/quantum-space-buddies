@@ -1,14 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using static EntitlementsManager;
 
 namespace EpicRerouter.ProcessSide
 {
-	/// <summary>
-	/// runs on process side
-	/// </summary>
-	internal static class Program
+	public static class Program
 	{
 		public static string ProductName;
 		public static string Version;
@@ -17,10 +15,15 @@ namespace EpicRerouter.ProcessSide
 		{
 			try
 			{
-				foreach (var assemblyLocation in args)
+				ProductName = args[1];
+				Console.WriteLine($"product name = {ProductName}");
+				Version = args[2];
+				Console.WriteLine($"version = {Version}");
+
+				foreach (var assemblyLocation in args.Skip(2))
 				{
 					var assembly = Assembly.LoadFile(assemblyLocation);
-					Console.WriteLine($"loaded {assembly}");
+					Console.WriteLine($"loaded {assembly} at {assemblyLocation}");
 				}
 
 				Console.WriteLine();

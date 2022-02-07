@@ -5,9 +5,6 @@ using static EntitlementsManager;
 
 namespace EpicRerouter.ProcessSide
 {
-	/// <summary>
-	/// runs on process side
-	/// </summary>
 	public static class EpicEntitlementRetriever
 	{
 		private const string _eosDlcItemID = "49a9ac61fe464cbf8c8c73f46b3f1133";

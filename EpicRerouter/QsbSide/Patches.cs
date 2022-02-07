@@ -2,11 +2,8 @@
 
 namespace EpicRerouter.QsbSide
 {
-	/// <summary>
-	/// runs on qsb side
-	/// </summary>
 	[HarmonyPatch(typeof(ProcessSide.EpicPlatformManager))]
-	internal static class Patches
+	public static class Patches
 	{
 		[HarmonyPrefix]
 		[HarmonyPatch("instance", MethodType.Getter)]
