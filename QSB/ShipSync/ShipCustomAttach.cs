@@ -40,6 +40,13 @@ namespace QSB.ShipSync
 			}
 
 			var attachedToUs = PlayerAttachWatcher.Current == _playerAttachPoint;
+			_detachPrompt.SetVisibility(attachedToUs);
+			if (attachedToUs && OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Character))
+			{
+				_playerAttachPoint.DetachPlayer();
+				ShipManager.Instance.CockpitController._shipAudioController.PlayUnbuckle();
+			}
+
 			if (!attachedToUs)
 			{
 				if (_playerAttachPoint.enabled)
@@ -60,8 +67,6 @@ namespace QSB.ShipSync
 			}
 
 			_attachPrompt.SetVisibility(!attachedToUs);
-			_detachPrompt.SetVisibility(attachedToUs);
-
 			if (!attachedToUs &&
 				OWInput.IsPressed(InputLibrary.interactSecondary, InputMode.Character) &&
 				OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Character))
@@ -69,11 +74,6 @@ namespace QSB.ShipSync
 				transform.position = Locator.GetPlayerTransform().position;
 				_playerAttachPoint.AttachPlayer();
 				ShipManager.Instance.CockpitController._shipAudioController.PlayBuckle();
-			}
-			else if (attachedToUs && OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Character))
-			{
-				_playerAttachPoint.DetachPlayer();
-				ShipManager.Instance.CockpitController._shipAudioController.PlayUnbuckle();
 			}
 		}
 	}
