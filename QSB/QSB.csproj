@@ -14,6 +14,7 @@
   <PropertyGroup>
     <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
 		copy /y "$(OutputPath)\*.dll" "$(UnityAssetsDir)"
+		copy /y "$(OutputPath)\*.exe" "$(UnityAssetsDir)"
 		copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp-firstpass.dll" "$(UnityAssetsDir)"
 		copy /y "$(GameDir)\OuterWilds_Data\Managed\Unity.InputSystem.dll" "$(UnityAssetsDir)"
 		copy /y "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UI.dll" "$(UnityAssetsDir)"
