@@ -63,6 +63,10 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
+			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
+
+			InitializeAssemblies();
+
 			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
@@ -70,10 +74,6 @@ namespace QSB
 			ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
 			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
-
-			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
-
-			InitializeAssemblies();
 
 			QSBPatchManager.Init();
 			DeterministicManager.Init();
