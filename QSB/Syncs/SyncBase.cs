@@ -150,7 +150,7 @@ namespace QSB.Syncs
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			if (IsInitialized)
 			{
-				this.Try("uninitializing (from object destroy)", Uninit);
+				SafeUninit();
 			}
 		}
 
@@ -158,15 +158,42 @@ namespace QSB.Syncs
 		{
 			if (IsInitialized)
 			{
-				this.Try("uninitializing (from scene change)", Uninit);
+				SafeUninit();
 			}
 		}
 
-		protected virtual void Init()
+		private const float _pauseTimerDelay = 1;
+		private float _pauseTimer;
+
+		private void SafeInit()
 		{
-			AttachedTransform = InitAttachedTransform();
-			IsInitialized = true;
+			this.Try("initializing", () =>
+			{
+				Init();
+				IsInitialized = true;
+			});
+			if (!IsInitialized)
+			{
+				_pauseTimer = _pauseTimerDelay;
+			}
 		}
+
+		private void SafeUninit()
+		{
+			this.Try("uninitializing", () =>
+			{
+				Uninit();
+				IsInitialized = false;
+				IsValid = false;
+			});
+			if (IsInitialized)
+			{
+				_pauseTimer = _pauseTimerDelay;
+			}
+		}
+
+		protected virtual void Init() =>
+			AttachedTransform = InitAttachedTransform();
 
 		protected virtual void Uninit()
 		{
@@ -174,9 +201,6 @@ namespace QSB.Syncs
 			{
 				Destroy(AttachedTransform.gameObject);
 			}
-
-			IsInitialized = false;
-			IsValid = false;
 		}
 
 		private bool _shouldApply;
@@ -192,13 +216,20 @@ namespace QSB.Syncs
 
 		protected sealed override void Update()
 		{
+			if (_pauseTimer > 0)
+			{
+				_pauseTimer = Mathf.Max(0, _pauseTimer - Time.unscaledDeltaTime);
+				base.Update();
+				return;
+			}
+
 			if (!IsInitialized && CheckReady())
 			{
-				this.Try("initializing", Init);
+				SafeInit();
 			}
 			else if (IsInitialized && !CheckReady())
 			{
-				this.Try("uninitializing", Uninit);
+				SafeUninit();
 				base.Update();
 				return;
 			}
