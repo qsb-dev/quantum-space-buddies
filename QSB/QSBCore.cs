@@ -66,16 +66,19 @@ namespace QSB
 
 			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
 
-			Application.logMessageReceived += (condition, stackTrace, logType) =>
-				DebugLog.DebugWrite($"[Debug] {condition} {stackTrace}", logType switch
-				{
-					LogType.Error => MessageType.Error,
-					LogType.Assert => MessageType.Error,
-					LogType.Warning => MessageType.Warning,
-					LogType.Log => MessageType.Message,
-					LogType.Exception => MessageType.Error,
-					_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
-				});
+			if (DebugSettings.HookDebugLogs)
+			{
+				Application.logMessageReceived += (condition, stackTrace, logType) =>
+					DebugLog.DebugWrite($"[Debug] {condition} {stackTrace}", logType switch
+					{
+						LogType.Error => MessageType.Error,
+						LogType.Assert => MessageType.Error,
+						LogType.Warning => MessageType.Warning,
+						LogType.Log => MessageType.Message,
+						LogType.Exception => MessageType.Error,
+						_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
+					});
+			}
 
 			InitializeAssemblies();
 

@@ -13,6 +13,9 @@ namespace QSB.Utility
 		[JsonProperty("playerIdInLogs")]
 		public bool PlayerIdInLogs;
 
+		[JsonProperty("hookDebugLogs")]
+		public bool HookDebugLogs;
+
 		[JsonProperty("debugMode")]
 		public bool DebugMode;
 
