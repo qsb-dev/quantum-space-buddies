@@ -6,6 +6,7 @@ using QSB.Patches;
 using QSB.QuantumSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -64,6 +65,17 @@ namespace QSB
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
 			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
+
+			Application.logMessageReceived += (condition, stackTrace, logType) =>
+				DebugLog.DebugWrite($"[Debug] {condition} {stackTrace}", logType switch
+				{
+					LogType.Error => MessageType.Error,
+					LogType.Assert => MessageType.Error,
+					LogType.Warning => MessageType.Warning,
+					LogType.Log => MessageType.Message,
+					LogType.Exception => MessageType.Error,
+					_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
+				});
 
 			InitializeAssemblies();
 
