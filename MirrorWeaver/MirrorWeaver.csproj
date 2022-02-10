@@ -4,7 +4,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Mono.Cecil" Version="0.11.4" />
-        <Reference Include="../UnityEngine/UnityEngine.CoreModule.dll" />
+        <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.168" />
         <Reference Include="../Mirror/*.dll" />
     </ItemGroup>
 </Project>
