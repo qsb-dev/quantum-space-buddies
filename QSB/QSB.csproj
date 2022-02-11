@@ -11,7 +11,7 @@
   <Target Name="weave qsb" BeforeTargets="PostBuildEvent">
     <Exec Command="&quot;$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; &quot;$(SolutionDir)\UnityEngine&quot;" />
   </Target>
-  <PropertyGroup Condition="Exists('$(UnityAssetsDir)') and Exists('$(GameDir)') and Exists('$(OwmlDir)')">
+  <PropertyGroup Condition="Exists('$(UnityAssetsDir)') and Exists('$(GameDir)')">
     <GameDllsDir>$(GameDir)\OuterWilds_Data\Managed</GameDllsDir>
     <UnityDllsDir>$(UnityAssetsDir)\Dlls</UnityDllsDir>
     <PostBuildEvent>
@@ -26,15 +26,13 @@
       copy /y "$(GameDllsDir)\UnityEngine.UI.dll" "$(UnityDllsDir)"
       copy /y "$(GameDllsDir)\EOS-SDK.dll" "$(UnityDllsDir)"
       copy /y "$(GameDllsDir)\UniSense.dll" "$(UnityDllsDir)"
-      copy /y "$(OwmlDir)\Autofac.dll" "$(UnityDllsDir)"
-      copy /y "$(OwmlDir)\Newtonsoft.Json.dll" "$(UnityDllsDir)"
-      copy /y "$(OwmlDir)\0Harmony.dll" "$(UnityDllsDir)"
-      copy /y "$(OwmlDir)\MonoMod*.dll" "$(UnityDllsDir)"
-      copy /y "$(OwmlDir)\Mono.Cecil*.dll" "$(UnityDllsDir)"
-      copy /y "$(OwmlDir)\OWML*.dll" "$(UnityDllsDir)"
-      copy /y "$(OwmlDir)\NAudio-Unity.dll" "$(UnityDllsDir)"
-      copy /y "$(OwmlDir)\Gameloop.Vdf.dll" "$(UnityDllsDir)"
-      copy /y "$(OwmlDir)\dn*.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\Autofac.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\Newtonsoft.Json.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\0Harmony.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\MonoMod*.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\Mono.Cecil.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\OWML*.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\NAudio-Unity.dll" "$(UnityDllsDir)"
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
