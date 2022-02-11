@@ -8,33 +8,48 @@
     <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\QSB</OutputPath>
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
-  <Target Name="weave qsb" BeforeTargets="PostBuildEvent">
-    <Exec Command="&quot;$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; &quot;$(SolutionDir)\UnityEngine&quot;" />
-  </Target>
-  <PropertyGroup Condition="Exists('$(UnityAssetsDir)') and Exists('$(GameDir)')">
-    <GameDllsDir>$(GameDir)\OuterWilds_Data\Managed</GameDllsDir>
-    <UnityDllsDir>$(UnityAssetsDir)\Dlls</UnityDllsDir>
-    <PostBuildEvent>
-      del /f "$(UnityDllsDir)\*.dll"
-      del /f "$(UnityDllsDir)\*.exe"
 
-      copy /y "$(OutputPath)\*.dll" "$(UnityDllsDir)"
-      copy /y "$(OutputPath)\*.exe" "$(UnityDllsDir)"
-
-      copy /y "$(GameDllsDir)\Assembly-CSharp*.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\Unity.InputSystem.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\UnityEngine.UI.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\EOS-SDK.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\UniSense.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\Autofac.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\Newtonsoft.Json.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\0Harmony.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\MonoMod*.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\Mono.Cecil.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\OWML*.dll" "$(UnityDllsDir)"
-      copy /y "$(GameDllsDir)\NAudio-Unity.dll" "$(UnityDllsDir)"
-    </PostBuildEvent>
+  <PropertyGroup>
+    <GameDllsDir Condition="Exists('$(GameDir)')">$(GameDir)\OuterWilds_Data\Managed</GameDllsDir>
+    <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
   </PropertyGroup>
+  <Target Name="delete asset bundle crap" BeforeTargets="PreBuildEvent">
+    <Exec Command="del /f AssetBundles\AssetBundles" />
+    <Exec Command="del /f AssetBundles\*.manifest" />
+  </Target>
+  <Target Name="copy game dlls to local folder" BeforeTargets="PreBuildEvent" Condition="Exists('$(GameDir)')">
+    <Exec Command="del /f ..\GameDlls\*.dll" />
+
+    <Exec Command="copy /y &quot;$(GameDllsDir)\UnityEngine.CoreModule.dll&quot; ..\GameDlls" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\OWML.ModHelper.dll&quot; ..\GameDlls" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Assembly-CSharp.dll&quot; ..\GameDlls" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\UnityEngine.AnimationModule.dll&quot; ..\GameDlls" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\OWML.Common.dll&quot; ..\GameDlls" />
+  </Target>
+  <Target Name="weave qsb" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;..\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; ..\GameDlls" />
+  </Target>
+  <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityAssetsDir)') and Exists('$(GameDir)')">
+    <Exec Command="del /f &quot;$(UnityDllsDir)\*.dll&quot;" />
+    <Exec Command="del /f &quot;$(UnityDllsDir)\*.exe&quot;" />
+
+    <Exec Command="copy /y &quot;$(OutputPath)\*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(OutputPath)\*.exe&quot; &quot;$(UnityDllsDir)&quot;" />
+
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Assembly-CSharp*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Unity.InputSystem.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\UnityEngine.UI.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\EOS-SDK.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\UniSense.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Autofac.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Newtonsoft.Json.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\0Harmony.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\MonoMod*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Mono.Cecil.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\OWML*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\NAudio-Unity.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+  </Target>
+
   <ItemGroup>
     <None Include="default-config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

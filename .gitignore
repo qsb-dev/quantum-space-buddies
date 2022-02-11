@@ -398,11 +398,8 @@ FodyWeavers.xsd
 *.sln.iml
 .idea
 
-# Unecessary asset bundle file
-QSB/AssetBundles/AssetBundles*
-QSB/AssetBundles/*.manifest
-qsb-unityproject
-
 # User specific locations
 DevEnv.targets
 QSB/debugsettings.json
+
+qsb-unityproject
