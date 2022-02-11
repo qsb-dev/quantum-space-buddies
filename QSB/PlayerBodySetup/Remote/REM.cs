@@ -1,4 +1,4 @@
-namespace QSB.PlayerBodySetup
+namespace QSB.PlayerBodySetup.Remote
 {
 	public class REM_DitheringAnimator : DitheringAnimator { }
 	public class REM_OWCamera : OWCamera { }
