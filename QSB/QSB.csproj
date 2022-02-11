@@ -15,19 +15,18 @@
     <Exec Command="del /f /q &quot;$(OutputPath)\*.pdb&quot;" />
     <Exec Command="del /f /q &quot;$(OutputPath)\AssetBundles\*&quot;" />
   </Target>
-  
+
+  <PropertyGroup>
+    <GameDllsDir Condition="Exists('$(GameDir)')">$(GameDir)\OuterWilds_Data\Managed</GameDllsDir>
+    <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
+  </PropertyGroup>
   <Target Name="remove dumb files" AfterTargets="PostBuildEvent">
     <Exec Command="del /f /q &quot;$(OutputPath)\*.exe.config&quot;" />
   </Target>
   <Target Name="weave qsb" AfterTargets="PostBuildEvent">
     <Exec Command="&quot;..\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; ..\GameDlls" />
   </Target>
-  <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityAssetsDir)') and Exists('$(GameDir)')">
-    <PropertyGroup>
-      <GameDllsDir>$(GameDir)\OuterWilds_Data\Managed</GameDllsDir>
-      <UnityDllsDir>$(UnityAssetsDir)\Dlls</UnityDllsDir>
-    </PropertyGroup>
-
+  <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)') and Exists('$(GameDllsDir)')">
     <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.dll&quot;" />
     <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.exe&quot;" />
 
