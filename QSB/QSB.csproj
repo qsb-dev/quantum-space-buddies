@@ -9,8 +9,15 @@
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
 
+  <Target Name="clean before building" BeforeTargets="PreBuildEvent">
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.dll&quot;" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.exe&quot;" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.pdb&quot;" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\AssetBundles\*&quot;" />
+  </Target>
+  
   <Target Name="remove dumb files" AfterTargets="PostBuildEvent">
-    <Exec Command="del /f &quot;$(OutputPath)\*.exe.config&quot;" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.exe.config&quot;" />
   </Target>
   <Target Name="weave qsb" AfterTargets="PostBuildEvent">
     <Exec Command="&quot;..\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; ..\GameDlls" />
@@ -21,8 +28,8 @@
       <UnityDllsDir>$(UnityAssetsDir)\Dlls</UnityDllsDir>
     </PropertyGroup>
 
-    <Exec Command="del /f &quot;$(UnityDllsDir)\*.dll&quot;" />
-    <Exec Command="del /f &quot;$(UnityDllsDir)\*.exe&quot;" />
+    <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.dll&quot;" />
+    <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.exe&quot;" />
 
     <Exec Command="copy /y &quot;$(OutputPath)\*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
     <Exec Command="copy /y &quot;$(OutputPath)\*.exe&quot; &quot;$(UnityDllsDir)&quot;" />
