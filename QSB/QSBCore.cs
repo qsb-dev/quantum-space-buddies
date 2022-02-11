@@ -69,7 +69,7 @@ namespace QSB
 			if (DebugSettings.HookDebugLogs)
 			{
 				Application.logMessageReceived += (condition, stackTrace, logType) =>
-					DebugLog.DebugWrite($"[Debug] {condition} {stackTrace}", logType switch
+					DebugLog.DebugWrite($"[Debug] {condition}\nStacktrace: {stackTrace}", logType switch
 					{
 						LogType.Error => MessageType.Error,
 						LogType.Assert => MessageType.Error,
