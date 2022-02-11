@@ -10,10 +10,10 @@
   </PropertyGroup>
 
   <Target Name="clean before building" BeforeTargets="PreBuildEvent">
-    <Exec Command="del /f /q &quot;$(OutputPath)\*.dll&quot;" />
-    <Exec Command="del /f /q &quot;$(OutputPath)\*.exe&quot;" />
-    <Exec Command="del /f /q &quot;$(OutputPath)\*.pdb&quot;" />
-    <Exec Command="del /f /q &quot;$(OutputPath)\AssetBundles\*&quot;" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.dll&quot;" IgnoreExitCode="true" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.exe&quot;" IgnoreExitCode="true" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.pdb&quot;" IgnoreExitCode="true" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\AssetBundles\*&quot;" IgnoreExitCode="true" />
   </Target>
 
   <PropertyGroup>
