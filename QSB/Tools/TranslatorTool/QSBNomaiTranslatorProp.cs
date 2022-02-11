@@ -34,11 +34,6 @@ namespace QSB.Tools.TranslatorTool
 
 			TurnOffArrowEmission();
 
-			TranslatorProp.SetActive(false);
-		}
-
-		private void Start()
-		{
 			_scanBeams = transform.GetComponentsInChildren<QSBTranslatorScanBeam>();
 			for (var i = 0; i < _scanBeams.Length; i++)
 			{
@@ -46,6 +41,8 @@ namespace QSB.Tools.TranslatorTool
 			}
 
 			enabled = false;
+
+			TranslatorProp.SetActive(false);
 		}
 
 		private void TurnOffArrowEmission()
