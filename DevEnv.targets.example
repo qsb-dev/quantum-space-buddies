@@ -3,6 +3,6 @@
   <PropertyGroup>
     <GameDir>C:\Program Files\Epic Games\OuterWilds</GameDir>
     <OwmlDir>$(AppData)\OuterWildsModManager\OWML</OwmlDir>
-    <UnityAssetsDir>$(SolutionDir)\qsb-unityproject\Assets\DLLs</UnityAssetsDir>
+    <UnityAssetsDir>$(SolutionDir)\qsb-unityproject\Assets</UnityAssetsDir>
   </PropertyGroup>
 </Project>

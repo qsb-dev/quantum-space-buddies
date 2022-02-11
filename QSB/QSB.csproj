@@ -5,35 +5,37 @@
     <Product>Quantum Space Buddies</Product>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
-    <OutputPath Condition="Exists($(OwmlDir))">$(OwmlDir)\Mods\QSB</OutputPath>
+    <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\QSB</OutputPath>
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
   <Target Name="weave qsb" BeforeTargets="PostBuildEvent">
-    <Exec Command="&quot;$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(OutputPath)\QSB.dll&quot; &quot;$(SolutionDir)\UnityEngine&quot;" />
+    <Exec Command="&quot;$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; &quot;$(SolutionDir)\UnityEngine&quot;" />
   </Target>
-  <PropertyGroup>
-    <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
-      del /f "$(UnityAssetsDir)\*.dll"
-      del /f "$(UnityAssetsDir)\*.exe"
+  <PropertyGroup Condition="Exists('$(UnityAssetsDir)') and Exists('$(GameDir)') and Exists('$(OwmlDir)')">
+    <GameDllsDir>$(GameDir)\OuterWilds_Data\Managed</GameDllsDir>
+    <UnityDllsDir>$(UnityAssetsDir)\Dlls</UnityDllsDir>
+    <PostBuildEvent>
+      del /f "$(UnityDllsDir)\*.dll"
+      del /f "$(UnityDllsDir)\*.exe"
 
-      copy /y "$(OutputPath)\*.dll" "$(UnityAssetsDir)"
-      copy /y "$(OutputPath)\*.exe" "$(UnityAssetsDir)"
+      copy /y "$(OutputPath)\*.dll" "$(UnityDllsDir)"
+      copy /y "$(OutputPath)\*.exe" "$(UnityDllsDir)"
 
-      copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp*.dll" "$(UnityAssetsDir)"
-      copy /y "$(GameDir)\OuterWilds_Data\Managed\Unity.InputSystem.dll" "$(UnityAssetsDir)"
-      copy /y "$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UI.dll" "$(UnityAssetsDir)"
-      copy /y "$(GameDir)\OuterWilds_Data\Managed\EOS-SDK.dll" "$(UnityAssetsDir)"
-      copy /y "$(GameDir)\OuterWilds_Data\Managed\UniSense.dll" "$(UnityAssetsDir)"
-      copy /y "$(OwmlDir)\Autofac.dll" "$(UnityAssetsDir)"
-      copy /y "$(OwmlDir)\Newtonsoft.Json.dll" "$(UnityAssetsDir)"
-      copy /y "$(OwmlDir)\0Harmony.dll" "$(UnityAssetsDir)"
-      copy /y "$(OwmlDir)\MonoMod.*.dll" "$(UnityAssetsDir)"
-      copy /y "$(OwmlDir)\Mono.Cecil*.dll" "$(UnityAssetsDir)"
-      copy /y "$(OwmlDir)\OWML.*.dll" "$(UnityAssetsDir)"
-      copy /y "$(OwmlDir)\NAudio-Unity.dll" "$(UnityAssetsDir)"
-      copy /y "$(OwmlDir)\Gameloop.Vdf.dll" "$(UnityAssetsDir)"
-      copy /y "$(OwmlDir)\dn*.dll" "$(UnityAssetsDir)"
-	</PostBuildEvent>
+      copy /y "$(GameDllsDir)\Assembly-CSharp*.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\Unity.InputSystem.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\UnityEngine.UI.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\EOS-SDK.dll" "$(UnityDllsDir)"
+      copy /y "$(GameDllsDir)\UniSense.dll" "$(UnityDllsDir)"
+      copy /y "$(OwmlDir)\Autofac.dll" "$(UnityDllsDir)"
+      copy /y "$(OwmlDir)\Newtonsoft.Json.dll" "$(UnityDllsDir)"
+      copy /y "$(OwmlDir)\0Harmony.dll" "$(UnityDllsDir)"
+      copy /y "$(OwmlDir)\MonoMod*.dll" "$(UnityDllsDir)"
+      copy /y "$(OwmlDir)\Mono.Cecil*.dll" "$(UnityDllsDir)"
+      copy /y "$(OwmlDir)\OWML*.dll" "$(UnityDllsDir)"
+      copy /y "$(OwmlDir)\NAudio-Unity.dll" "$(UnityDllsDir)"
+      copy /y "$(OwmlDir)\Gameloop.Vdf.dll" "$(UnityDllsDir)"
+      copy /y "$(OwmlDir)\dn*.dll" "$(UnityDllsDir)"
+    </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <None Include="default-config.json">
