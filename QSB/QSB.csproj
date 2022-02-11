@@ -9,9 +9,8 @@
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
 
-  <Target Name="delete asset bundle crap" BeforeTargets="PreBuildEvent">
-    <Exec Command="del /f AssetBundles\AssetBundles" />
-    <Exec Command="del /f AssetBundles\*.manifest" />
+  <Target Name="remove dumb files" AfterTargets="PostBuildEvent">
+    <Exec Command="del /f &quot;$(OutputPath)\*.exe.config&quot;" />
   </Target>
   <Target Name="weave qsb" AfterTargets="PostBuildEvent">
     <Exec Command="&quot;..\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; ..\GameDlls" />
@@ -52,6 +51,8 @@
     <None Include="AssetBundles\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Remove="AssetBundles\AssetBundles" />
+    <None Remove="AssetBundles\*.manifest" />
     <None Include="debugsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
