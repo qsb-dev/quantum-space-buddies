@@ -59,7 +59,7 @@
     </None>
     <None Remove="AssetBundles\AssetBundles" />
     <None Remove="AssetBundles\*.manifest" />
-    <None Include="debugsettings.json">
+    <None Condition="Exists('debugsettings.json')" Include="debugsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
