@@ -58,7 +58,7 @@ namespace QSB.PlayerBodySetup.Remote
 					.GetComponentsInChildren<Renderer>(true)
 					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
 					.ToArray());
-			player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
+			player.AudioController = REMOTE_Player_Body.transform.Find("REMOTE_Audio_Player").GetComponent<QSBPlayerAudioController>();
 
 			/*
 			 * SET UP PLAYER CAMERA

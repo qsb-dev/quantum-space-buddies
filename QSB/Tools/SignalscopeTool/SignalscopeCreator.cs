@@ -1,6 +1,5 @@
 ﻿using QSB.Player;
-using UnityEngine;
-using UnityEngine.Rendering;
+using QSB.PlayerBodySetup.Remote;
 
 namespace QSB.Tools.SignalscopeTool
 {
@@ -10,8 +9,6 @@ namespace QSB.Tools.SignalscopeTool
 		{
 			var signalscopeRoot = player.CameraBody.transform.Find("REMOTE_Signalscope").gameObject;
 
-			signalscopeRoot.SetActive(false);
-
 			var Props_HEA_Signalscope = signalscopeRoot.transform.Find("Props_HEA_Signalscope");
 
 			var tool = signalscopeRoot.GetComponent<QSBTool>();
@@ -19,8 +16,7 @@ namespace QSB.Tools.SignalscopeTool
 			tool.ToolGameObject = Props_HEA_Signalscope.gameObject;
 			tool.Player = player;
 
-			Props_HEA_Signalscope.GetComponent<MeshRenderer>().material = PlayerToolsManager.Props_HEA_PlayerTool_mat;
-			Props_HEA_Signalscope.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+			FixMaterialsInAllChildren.ReplaceMaterials(signalscopeRoot.transform);
 
 			signalscopeRoot.SetActive(true);
 		}

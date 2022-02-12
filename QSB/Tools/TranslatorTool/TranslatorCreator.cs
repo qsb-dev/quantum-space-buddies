@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.PlayerBodySetup.Remote;
 
 namespace QSB.Tools.TranslatorTool
 {
@@ -14,6 +15,10 @@ namespace QSB.Tools.TranslatorTool
 			tool.Type = ToolType.Translator;
 			tool.ToolGameObject = REMOTE_TranslatorGroup.gameObject;
 			tool.Player = player;
+
+			FixMaterialsInAllChildren.ReplaceMaterials(REMOTE_NomaiTranslatorProp.transform);
+
+			REMOTE_NomaiTranslatorProp.SetActive(true);
 		}
 	}
 }
