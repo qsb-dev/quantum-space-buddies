@@ -1,8 +1,10 @@
 ﻿using Mono.Cecil;
+using Mono.Cecil.Cil;
 using MonoMod.Utils;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace ProxyInjector
@@ -37,6 +39,15 @@ namespace ProxyInjector
 				}
 
 				var proxyTd = new TypeDefinition(td.Namespace, "PROXY_" + td.Name, td.Attributes, qsbModule.ImportReference(td));
+
+				var ctor = td.Methods.First(md => md.Name == ".ctor" && !md.HasParameters);
+				var proxyCtor = new MethodDefinition(ctor.Name, ctor.Attributes, qsbModule.ImportReference(ctor.ReturnType));
+				proxyCtor.Body = new MethodBody(proxyCtor);
+				proxyCtor.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_0));
+				proxyCtor.Body.Instructions.Add(Instruction.Create(OpCodes.Call, qsbModule.ImportReference(ctor)));
+				proxyCtor.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+				proxyTd.Methods.Add(proxyCtor);
+
 				qsbModule.Types.Add(proxyTd);
 				count++;
 			}
