@@ -12,34 +12,13 @@ namespace QSB.Tools
 {
 	public class PlayerToolsManager
 	{
-		public static Transform StowTransform;
-		public static Transform HoldTransform;
-
-		public static Material Props_HEA_PlayerTool_mat;
-		public static Material Props_HEA_Lightbulb_mat;
-		public static Material Props_HEA_Lightbulb_OFF_mat;
-		public static Material Structure_HEA_PlayerShip_Screens_mat;
+		//public static Material Props_HEA_PlayerTool_mat;
+		//public static Material Props_HEA_Lightbulb_mat;
+		//public static Material Props_HEA_Lightbulb_OFF_mat;
+		//public static Material Structure_HEA_PlayerShip_Screens_mat;
 
 		public static void InitRemote(PlayerInfo player)
 		{
-			try
-			{
-				CreateStowTransforms(player.CameraBody.transform);
-
-				var surfaceData = Locator.GetSurfaceManager()._surfaceLookupAsset;
-				var metal = surfaceData.surfaceTypeGroups[15].materials;
-				var glass = surfaceData.surfaceTypeGroups[19].materials;
-
-				Props_HEA_PlayerTool_mat = metal[27];
-				Props_HEA_Lightbulb_mat = glass[47];
-				Props_HEA_Lightbulb_OFF_mat = glass[48];
-				Structure_HEA_PlayerShip_Screens_mat = glass[41];
-			}
-			catch (Exception ex)
-			{
-				DebugLog.ToConsole($"Error when trying to find materials : {ex}", OWML.Common.MessageType.Error);
-			}
-
 			try
 			{
 				FlashlightCreator.CreateFlashlight(player);
@@ -65,14 +44,5 @@ namespace QSB.Tools
 				spot.GetLight().shadows = LightShadows.Soft;
 			}
 		}
-
-		private static void CreateStowTransforms(Transform cameraBody)
-		{
-			StowTransform = cameraBody.Find("REMOTE_ToolStowTransform");
-			HoldTransform = cameraBody.Find("REMOTE_ToolHoldTransform");
-		}
-
-		internal static MeshRenderer GetRenderer(GameObject root, string gameObjectName) =>
-			root.GetComponentsInChildren<MeshRenderer>(true).First(x => x.name == gameObjectName);
 	}
 }
