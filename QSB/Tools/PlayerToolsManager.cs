@@ -5,18 +5,12 @@ using QSB.Tools.SignalscopeTool;
 using QSB.Tools.TranslatorTool;
 using QSB.Utility;
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Tools
 {
 	public class PlayerToolsManager
 	{
-		//public static Material Props_HEA_PlayerTool_mat;
-		//public static Material Props_HEA_Lightbulb_mat;
-		//public static Material Props_HEA_Lightbulb_OFF_mat;
-		//public static Material Structure_HEA_PlayerShip_Screens_mat;
-
 		public static void InitRemote(PlayerInfo player)
 		{
 			try

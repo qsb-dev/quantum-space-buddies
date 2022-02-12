@@ -58,7 +58,6 @@ namespace QSB.PlayerBodySetup.Remote
 					.GetComponentsInChildren<Renderer>(true)
 					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
 					.ToArray());
-			DebugLog.DebugWrite($" - get audio controller");
 			player.AudioController = REMOTE_Player_Body.transform.Find("REMOTE_Audio_Player").GetComponent<QSBPlayerAudioController>();
 
 			/*
