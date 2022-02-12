@@ -36,8 +36,8 @@ namespace ProxyInjector
 					continue;
 				}
 
-				var proxyTd = new TypeDefinition(td.Namespace, td.Name, td.Attributes, qsbModule.ImportReference(td));
-				proxyTd.Namespace = proxyTd.Namespace == string.Empty ? "PROXY" : "PROXY." + proxyTd.Namespace;
+				var proxyTd = new TypeDefinition(td.Namespace, td.FullName, td.Attributes, qsbModule.ImportReference(td));
+				proxyTd.Namespace = string.IsNullOrEmpty(proxyTd.Namespace) ? "PROXY" : "PROXY." + proxyTd.Namespace;
 				qsbModule.Types.Add(proxyTd);
 				count++;
 			}
