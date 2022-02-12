@@ -26,8 +26,8 @@
   <Target Name="weave qsb" AfterTargets="PostBuildEvent">
     <Exec Command="&quot;..\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; ..\GameDlls" />
   </Target>
-  <Target Name="inject proxy scripts" AfterTargets="PostBuildEvent" Condition="Exists('$(GameDllsDir)')">
-    <Exec Command="&quot;..\ProxyInjector\bin\$(Configuration)\ProxyInjector&quot; &quot;$(TargetPath)&quot; &quot;$(GameDllsDir)\Assembly-CSharp.dll&quot;" />
+  <Target Name="inject proxy scripts" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;..\ProxyInjector\bin\$(Configuration)\ProxyInjector&quot; &quot;$(TargetPath)&quot; ..\GameDlls\Assembly-CSharp.dll" />
   </Target>
   <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)') and Exists('$(GameDllsDir)')">
     <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.dll&quot;" />
@@ -73,7 +73,7 @@
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
     <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
-    <ProjectReference Condition="Exists('$(GameDllsDir)')" Include="..\ProxyInjector\ProxyInjector.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\ProxyInjector\ProxyInjector.csproj" ReferenceOutputAssembly="false" />
     <PackageReference Include="HarmonyX" Version="2.9.0" IncludeAssets="compile" />
     <PackageReference Include="OWML" Version="2.3.2" IncludeAssets="compile" />
   </ItemGroup>
