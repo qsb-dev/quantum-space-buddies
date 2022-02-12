@@ -17,6 +17,8 @@ namespace QSB.Tools.TranslatorTool
 			tool.Player = player;
 
 			FixMaterialsInAllChildren.ReplaceMaterials(REMOTE_NomaiTranslatorProp.transform);
+
+			REMOTE_NomaiTranslatorProp.SetActive(true);
 		}
 	}
 }

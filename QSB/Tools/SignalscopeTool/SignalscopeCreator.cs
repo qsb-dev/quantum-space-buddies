@@ -9,8 +9,6 @@ namespace QSB.Tools.SignalscopeTool
 		{
 			var signalscopeRoot = player.CameraBody.transform.Find("REMOTE_Signalscope").gameObject;
 
-			signalscopeRoot.SetActive(false);
-
 			var Props_HEA_Signalscope = signalscopeRoot.transform.Find("Props_HEA_Signalscope");
 
 			var tool = signalscopeRoot.GetComponent<QSBTool>();

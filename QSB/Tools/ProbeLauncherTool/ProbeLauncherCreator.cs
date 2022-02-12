@@ -8,7 +8,6 @@ namespace QSB.Tools.ProbeLauncherTool
 		internal static void CreateProbeLauncher(PlayerInfo player)
 		{
 			var REMOTE_ProbeLauncher = player.CameraBody.transform.Find("REMOTE_ProbeLauncher").gameObject;
-			REMOTE_ProbeLauncher.SetActive(false);
 
 			var REMOTE_Props_HEA_ProbeLauncher = REMOTE_ProbeLauncher.transform.Find("Props_HEA_ProbeLauncher");
 
@@ -19,7 +18,6 @@ namespace QSB.Tools.ProbeLauncherTool
 
 			FixMaterialsInAllChildren.ReplaceMaterials(REMOTE_ProbeLauncher.transform);
 
-			//UnityEvents.FireInNUpdates(() => REMOTE_ProbeLauncher.SetActive(true), 5);
 			REMOTE_ProbeLauncher.SetActive(true);
 		}
 	}
