@@ -48,19 +48,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 		protected override Transform InitRemoteTransform()
 		{
-			var probe = Locator.GetProbe().transform;
-
-			if (!probe)
-			{
-				DebugLog.ToConsole("Error - Probe is null!", MessageType.Error);
-				return default;
-			}
-
-			var body = probe.gameObject.activeSelf
-				? probe.InstantiateInactive()
-				: Instantiate(probe);
-
-			body.name = "RemoteProbeTransform";
+			var body = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Probe_Body.prefab")).transform;
 
 			ProbeCreator.CreateProbe(body, Player);
 

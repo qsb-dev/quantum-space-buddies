@@ -24,7 +24,10 @@ namespace QSB.PlayerBodySetup.Remote
 			"Structure_HEA_PlayerShip_Screens_mat",
 			"Effects_RecallWhiteHole_mat",
 			"Effects_HEA_Vapor_mat",
-			"Props_HEA_Lightbulb_OFF_mat"
+			"Props_HEA_Lightbulb_OFF_mat",
+			"Props_HEA_PlayerProbe_mat",
+			"Props_HEA_PlayerProbeLightbulb_mat",
+			"Effects_RecallBlackHole_mat"
 		};
 
 		private static void ReplaceMaterial(Renderer renderer, int index, Material mat)

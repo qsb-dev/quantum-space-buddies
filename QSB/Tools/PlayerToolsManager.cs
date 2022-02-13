@@ -13,17 +13,10 @@ namespace QSB.Tools
 	{
 		public static void InitRemote(PlayerInfo player)
 		{
-			try
-			{
-				FlashlightCreator.CreateFlashlight(player);
-				SignalscopeCreator.CreateSignalscope(player);
-				ProbeLauncherCreator.CreateProbeLauncher(player);
-				TranslatorCreator.CreateTranslator(player);
-			}
-			catch (Exception ex)
-			{
-				DebugLog.ToConsole($"Error when trying to create tools : {ex}", OWML.Common.MessageType.Error);
-			}
+			player.Try("create flashlight", () => FlashlightCreator.CreateFlashlight(player));
+			player.Try("create signalscope", () => SignalscopeCreator.CreateSignalscope(player));
+			player.Try("create probe launcher", () => ProbeLauncherCreator.CreateProbeLauncher(player));
+			player.Try("create translator", () => TranslatorCreator.CreateTranslator(player));
 		}
 
 		public static void InitLocal()
