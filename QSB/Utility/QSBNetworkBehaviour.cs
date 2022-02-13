@@ -17,11 +17,6 @@ namespace QSB.Utility
 
 		protected virtual void Update()
 		{
-			if (!isClient)
-			{
-				return;
-			}
-
 			if (!hasAuthority)
 			{
 				return;
@@ -59,11 +54,6 @@ namespace QSB.Utility
 
 		public void SendInitialState(uint to)
 		{
-			if (!isClient)
-			{
-				return;
-			}
-
 			if (!hasAuthority)
 			{
 				return;
