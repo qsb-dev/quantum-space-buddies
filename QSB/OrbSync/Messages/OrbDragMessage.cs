@@ -12,7 +12,7 @@ namespace QSB.OrbSync.Messages
 		{
 			if (QSBCore.IsHost && Value)
 			{
-				WorldObject.TransformSync.netIdentity.UpdateAuthQueue(From, AuthQueueAction.Force);
+				WorldObject.TransformSync.netIdentity.ServerUpdateAuthQueue(From, AuthQueueAction.Force);
 			}
 		}
 

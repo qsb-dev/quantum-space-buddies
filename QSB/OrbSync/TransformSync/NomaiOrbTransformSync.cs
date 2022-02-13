@@ -31,7 +31,7 @@ namespace QSB.OrbSync.TransformSync
 			if (QSBCore.IsHost)
 			{
 				netIdentity.RegisterAuthQueue();
-				netIdentity.UpdateAuthQueue(QSBPlayerManager.LocalPlayerId, AuthQueueAction.Add);
+				netIdentity.ServerUpdateAuthQueue(QSBPlayerManager.LocalPlayerId, AuthQueueAction.Add);
 			}
 
 			base.OnStartClient();
@@ -61,7 +61,7 @@ namespace QSB.OrbSync.TransformSync
 			body.OnSuspendOWRigidbody += OnSuspend;
 			if (!QSBCore.IsHost)
 			{
-				netIdentity.SendAuthQueueMessage(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+				netIdentity.UpdateAuthQueue(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace QSB.OrbSync.TransformSync
 			}
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
 	}
 }

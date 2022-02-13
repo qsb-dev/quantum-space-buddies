@@ -17,7 +17,7 @@ namespace QSB.AuthoritySync
 		public static void RegisterAuthQueue(this NetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
 		public static void UnregisterAuthQueue(this NetworkIdentity identity) => _authQueue.Remove(identity);
 
-		public static void UpdateAuthQueue(this NetworkIdentity identity, uint id, AuthQueueAction action)
+		public static void ServerUpdateAuthQueue(this NetworkIdentity identity, uint id, AuthQueueAction action)
 		{
 			var authQueue = _authQueue[identity];
 			var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
@@ -53,7 +53,7 @@ namespace QSB.AuthoritySync
 			var id = conn.GetPlayerId();
 			foreach (var identity in _authQueue.Keys)
 			{
-				identity.UpdateAuthQueue(id, AuthQueueAction.Remove);
+				identity.ServerUpdateAuthQueue(id, AuthQueueAction.Remove);
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace QSB.AuthoritySync
 
 		#region any client
 
-		public static void SendAuthQueueMessage(this NetworkIdentity identity, AuthQueueAction action) =>
+		public static void UpdateAuthQueue(this NetworkIdentity identity, AuthQueueAction action) =>
 			new AuthQueueMessage(identity.netId, action).Send();
 
 		#endregion
