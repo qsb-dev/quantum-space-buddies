@@ -23,7 +23,7 @@ namespace QSB.Anglerfish.TransformSync
 			_instances.Add(this);
 			if (QSBCore.IsHost)
 			{
-				netIdentity.RegisterAuthQueue();
+				netIdentity.RegisterAuthQueue(false);
 			}
 
 			base.OnStartClient();

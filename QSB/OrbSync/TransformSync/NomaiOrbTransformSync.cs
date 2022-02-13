@@ -1,6 +1,5 @@
 ﻿using QSB.AuthoritySync;
 using QSB.OrbSync.WorldObjects;
-using QSB.Player;
 using QSB.Syncs.Unsectored.Transforms;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -30,8 +29,7 @@ namespace QSB.OrbSync.TransformSync
 			_instances.Add(this);
 			if (QSBCore.IsHost)
 			{
-				netIdentity.RegisterAuthQueue();
-				netIdentity.ServerUpdateAuthQueue(QSBPlayerManager.LocalPlayerId, AuthQueueAction.Add);
+				netIdentity.RegisterAuthQueue(true);
 			}
 
 			base.OnStartClient();
@@ -59,10 +57,7 @@ namespace QSB.OrbSync.TransformSync
 
 			body.OnUnsuspendOWRigidbody += OnUnsuspend;
 			body.OnSuspendOWRigidbody += OnSuspend;
-			if (!QSBCore.IsHost)
-			{
-				netIdentity.UpdateAuthQueue(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
-			}
+			netIdentity.UpdateAuthQueue(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
 		protected override void Uninit()
