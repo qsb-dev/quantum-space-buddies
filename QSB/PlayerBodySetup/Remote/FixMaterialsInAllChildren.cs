@@ -27,7 +27,9 @@ namespace QSB.PlayerBodySetup.Remote
 			"Props_HEA_Lightbulb_OFF_mat",
 			"Props_HEA_PlayerProbe_mat",
 			"Props_HEA_PlayerProbeLightbulb_mat",
-			"Effects_RecallBlackHole_mat"
+			"Effects_RecallBlackHole_mat",
+			"Effects_HEA_Vapor_Player_mat",
+			"Effects_HEA_ThrusterFlames_mat"
 		};
 
 		private static void ReplaceMaterial(Renderer renderer, int index, Material mat)
