@@ -6,20 +6,26 @@ namespace QSB.OrbSync.Messages
 {
 	public class OrbSlotMessage : QSBWorldObjectMessage<QSBOrb, int>
 	{
-		public OrbSlotMessage(int slotIndex) => Value = slotIndex;
+		private bool _playAudio;
+
+		public OrbSlotMessage(int slotIndex, bool playAudio)
+		{
+			Value = slotIndex;
+			_playAudio = playAudio;
+		}
 
 		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(Value);
+			writer.Write(_playAudio);
 		}
 
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<int>();
+			_playAudio = reader.Read<bool>();
 		}
 
-		public override void OnReceiveRemote() => WorldObject.SetSlot(Value);
+		public override void OnReceiveRemote() => WorldObject.SetSlot(Value, _playAudio);
 	}
 }
