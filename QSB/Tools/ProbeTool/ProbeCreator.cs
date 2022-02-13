@@ -1,6 +1,6 @@
 ﻿using QSB.Player;
+using QSB.PlayerBodySetup.Remote;
 using UnityEngine;
-using UnityEngine.PostProcessing;
 
 namespace QSB.Tools.ProbeTool
 {
@@ -11,6 +11,8 @@ namespace QSB.Tools.ProbeTool
 			var qsbProbe = newProbe.gameObject.GetComponent<QSBProbe>();
 			player.Probe = qsbProbe;
 			qsbProbe.SetOwner(player);
+
+			FixMaterialsInAllChildren.ReplaceMaterials(newProbe);
 
 			newProbe.gameObject.SetActive(true);
 		}
