@@ -291,7 +291,8 @@ namespace QSB.Syncs
 			{
 				if (IsPlayerObject)
 				{
-					AttachedTransform.SetParent(ReferenceTransform, true);
+					AttachedTransform.parent = ReferenceTransform;
+					AttachedTransform.localScale = Vector3.one;
 					SmoothPosition = AttachedTransform.localPosition;
 					SmoothRotation = AttachedTransform.localRotation;
 				}
