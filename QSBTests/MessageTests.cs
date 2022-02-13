@@ -1,8 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using HarmonyLib;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using MonoMod.Cil;
+using MonoMod.Utils;
 using QSB.Messaging;
 using QSB.Utility;
 using System;
@@ -20,22 +22,22 @@ namespace QSBTests
 			var module = ModuleDefinition.ReadModule("QSB.dll");
 			var messageTypes = typeof(QSBMessage).GetDerivedTypes();
 
-			var fromField = module.ImportReference(typeof(QSBMessage).GetField("From", Util.Flags));
-			var toField = module.ImportReference(typeof(QSBMessage).GetField("To", Util.Flags));
-			var objectIdField = module.ImportReference(typeof(QSBWorldObjectMessage<>).GetField("ObjectId", Util.Flags));
+			var fromField = typeof(QSBMessage).GetField("From", Util.AllInstance);
+			var toField = typeof(QSBMessage).GetField("To", Util.AllInstance);
+			var objectIdField = typeof(QSBWorldObjectMessage<>).GetField("ObjectId", Util.AllInstance);
 
 			foreach (var type in messageTypes)
 			{
-				var fields = type.GetFields(Util.Flags)
-					.Select(x => module.ImportReference(x));
+				var fields = type.GetFields(Util.AllInstance)
+					.Select(x => module.ImportReference(x).Resolve());
 
-				var constructor = module.ImportReference(type.GetConstructors(Util.Flags).Single()).Resolve();
-				var serialize = module.ImportReference(type.GetMethod("Serialize", Util.Flags)).Resolve();
-				var deserialize = module.ImportReference(type.GetMethod("Deserialize", Util.Flags)).Resolve();
+				var constructor = module.ImportReference(type.GetConstructors(Util.AllInstance).Single()).Resolve();
+				var serialize = module.ImportReference(type.GetMethod("Serialize", Util.AllInstance)).Resolve();
+				var deserialize = module.ImportReference(type.GetMethod("Deserialize", Util.AllInstance)).Resolve();
 
 				foreach (var field in fields)
 				{
-					if (!field.GenericEq(fromField) && !field.GenericEq(toField) && !field.GenericEq(objectIdField))
+					if (!field.Is(fromField) && !field.Is(toField) && !field.Is(objectIdField))
 					{
 						constructor.CheckUses(field, Util.UseType.Store);
 					}
@@ -47,33 +49,25 @@ namespace QSBTests
 		}
 	}
 
-	public static partial class Util
+	public static class Util
 	{
-		public const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-
-		/// <summary>
-		/// ignores open vs closed generic type
-		/// </summary>
-		public static bool GenericEq(this MemberReference a, MemberReference b) =>
-			a.DeclaringType.Namespace == b.DeclaringType.Namespace &&
-			a.DeclaringType.Name == b.DeclaringType.Name &&
-			a.Name == b.Name;
+		public static readonly BindingFlags AllInstance = AccessTools.all ^ BindingFlags.Static;
 
 		public enum UseType { Store, Load }
 
-		public static void CheckUses(this MethodDefinition method, FieldReference field, UseType useType)
+		public static void CheckUses(this MethodDefinition method, FieldDefinition field, UseType useType)
 		{
 			Func<Instruction, bool> matches = useType switch
 			{
-				UseType.Store => x => x.MatchStfld(out var f) && f.GenericEq(field),
-				UseType.Load => x => (x.MatchLdfld(out var f) || x.MatchLdflda(out f)) && f.GenericEq(field),
+				UseType.Store => x => x.MatchStfld(out var f) && f.Resolve() == field,
+				UseType.Load => i => (i.MatchLdfld(out var f) || i.MatchLdflda(out f)) && f.Resolve() == field,
 				_ => throw new ArgumentOutOfRangeException(nameof(useType), useType, null)
 			};
 
 			while (true)
 			{
-				var il = method.Body.Instructions;
-				var uses = il.Any(matches);
+				var instructions = method.Body.Instructions;
+				var uses = instructions.Any(matches);
 				if (uses)
 				{
 					return;
@@ -85,7 +79,7 @@ namespace QSBTests
 					break;
 				}
 
-				var callsBase = il.Any(x => x.MatchCall(out var m) && m.GenericEq(baseMethod));
+				var callsBase = instructions.Any(x => x.MatchCall(out var m) && m.Resolve() == baseMethod);
 				if (!callsBase)
 				{
 					break;
