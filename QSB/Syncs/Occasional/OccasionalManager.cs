@@ -42,8 +42,7 @@ namespace QSB.Syncs.Occasional
 
 			if (QSBCore.IsHost)
 			{
-				var transformSync = Instantiate(QSBNetworkManager.singleton.OccasionalPrefab).GetRequiredComponent<OccasionalTransformSync>();
-				transformSync.gameObject.SpawnWithServerAuthority();
+				Instantiate(QSBNetworkManager.singleton.OccasionalPrefab).SpawnWithServerAuthority();
 			}
 		}
 

@@ -1,5 +1,6 @@
 ﻿using QSB.AuthoritySync;
 using QSB.OrbSync.WorldObjects;
+using QSB.Player;
 using QSB.Syncs.Unsectored.Transforms;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -27,12 +28,23 @@ namespace QSB.OrbSync.TransformSync
 		public override void OnStartClient()
 		{
 			_instances.Add(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.RegisterAuthQueue();
+				netIdentity.UpdateAuthQueue(QSBPlayerManager.LocalPlayerId, AuthQueueAction.Add);
+			}
+
 			base.OnStartClient();
 		}
 
 		public override void OnStopClient()
 		{
 			_instances.Remove(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
 			base.OnStopClient();
 		}
 
@@ -45,24 +57,17 @@ namespace QSB.OrbSync.TransformSync
 			var body = AttachedTransform.GetAttachedOWRigidbody();
 			SetReferenceTransform(body.GetOrigParent());
 
-			if (QSBCore.IsHost)
-			{
-				netIdentity.RegisterAuthQueue();
-			}
-
 			body.OnUnsuspendOWRigidbody += OnUnsuspend;
 			body.OnSuspendOWRigidbody += OnSuspend;
-			netIdentity.SendAuthQueueMessage(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			if (!QSBCore.IsHost)
+			{
+				netIdentity.SendAuthQueueMessage(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			}
 		}
 
 		protected override void Uninit()
 		{
 			base.Uninit();
-
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
 
 			// this is null sometimes on here, but not on other similar transforms syncs (like anglers)
 			// idk why, but whatever

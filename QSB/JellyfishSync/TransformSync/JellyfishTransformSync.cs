@@ -24,12 +24,22 @@ namespace QSB.JellyfishSync.TransformSync
 		public override void OnStartClient()
 		{
 			_instances.Add(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.RegisterAuthQueue();
+			}
+
 			base.OnStartClient();
 		}
 
 		public override void OnStopClient()
 		{
 			_instances.Remove(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
 			base.OnStopClient();
 		}
 
@@ -44,11 +54,6 @@ namespace QSB.JellyfishSync.TransformSync
 			base.Init();
 			SetReferenceTransform(_qsbJellyfish.AttachedObject._planetBody.transform);
 
-			if (QSBCore.IsHost)
-			{
-				netIdentity.RegisterAuthQueue();
-			}
-
 			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
 			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
@@ -57,11 +62,6 @@ namespace QSB.JellyfishSync.TransformSync
 		protected override void Uninit()
 		{
 			base.Uninit();
-
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
 
 			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;

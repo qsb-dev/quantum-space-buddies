@@ -21,12 +21,22 @@ namespace QSB.Anglerfish.TransformSync
 		public override void OnStartClient()
 		{
 			_instances.Add(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.RegisterAuthQueue();
+			}
+
 			base.OnStartClient();
 		}
 
 		public override void OnStopClient()
 		{
 			_instances.Remove(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
 			base.OnStopClient();
 		}
 
@@ -41,11 +51,6 @@ namespace QSB.Anglerfish.TransformSync
 			base.Init();
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
 
-			if (QSBCore.IsHost)
-			{
-				netIdentity.RegisterAuthQueue();
-			}
-
 			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
 			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
@@ -54,11 +59,6 @@ namespace QSB.Anglerfish.TransformSync
 		protected override void Uninit()
 		{
 			base.Uninit();
-
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
 
 			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
