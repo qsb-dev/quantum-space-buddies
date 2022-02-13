@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Tools.FlashlightTool
@@ -32,6 +33,12 @@ namespace QSB.Tools.FlashlightTool
 			_lightSourceVolume = this.GetRequiredComponentInChildren<LightSourceVolume>();
 			_lightSourceVolume.LinkLightSource(this);
 			_lightSourceVolume.SetVolumeActivation(FlashlightOn);
+			if (_basePivot == null)
+			{
+				DebugLog.DebugWrite($"Error - _basePivot is null!", OWML.Common.MessageType.Error);
+				return;
+			}
+
 			_baseForward = _basePivot.forward;
 			_baseRotation = _basePivot.rotation;
 		}
