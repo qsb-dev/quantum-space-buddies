@@ -37,7 +37,7 @@ namespace QSB.Utility
 			if (!conn.identity)
 			{
 				// wtf
-				DebugLog.ToConsole($"Error - GetPlayerId on {conn.address} has no identity\n{Environment.StackTrace}", MessageType.Error);
+				DebugLog.ToConsole($"Error - GetPlayerId on {conn} has no identity\n{Environment.StackTrace}", MessageType.Error);
 				return uint.MaxValue;
 			}
 
