@@ -279,34 +279,37 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			// revert authority from ship
-			if (ShipTransformSync.LocalInstance != null)
+			if (!QSBCore.IsHost)
 			{
-				var identity = ShipTransformSync.LocalInstance.netIdentity;
-				if (identity != null && identity.connectionToClient == conn)
+				// revert authority from ship
+				if (ShipTransformSync.LocalInstance != null)
 				{
-					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+					var identity = ShipTransformSync.LocalInstance.netIdentity;
+					if (identity != null && identity.connectionToClient == conn)
+					{
+						identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+					}
 				}
+
+				// stop dragging for the orbs this player was dragging
+				foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
+				{
+					if (qsbOrb.TransformSync == null)
+					{
+						DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
+						continue;
+					}
+
+					var identity = qsbOrb.TransformSync.netIdentity;
+					if (identity.connectionToClient == conn)
+					{
+						qsbOrb.SetDragging(false);
+						qsbOrb.SendMessage(new OrbDragMessage(false));
+					}
+				}
+
+				AuthorityManager.OnDisconnect(conn);
 			}
-
-			// stop dragging for the orbs this player was dragging
-			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
-			{
-				if (qsbOrb.TransformSync == null)
-				{
-					DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
-					continue;
-				}
-
-				var identity = qsbOrb.TransformSync.netIdentity;
-				if (identity.connectionToClient == conn)
-				{
-					qsbOrb.SetDragging(false);
-					qsbOrb.SendMessage(new OrbDragMessage(false));
-				}
-			}
-
-			AuthorityManager.OnDisconnect(conn);
 
 			base.OnServerDisconnect(conn);
 		}
