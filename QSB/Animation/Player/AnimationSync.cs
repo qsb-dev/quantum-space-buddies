@@ -81,9 +81,6 @@ namespace QSB.Animation.Player
 				NetworkAnimator.enabled = true;
 				NetworkAnimator.Invoke("Awake");
 
-				//var localPlayerAnimController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>(true);
-				//_suitedAnimController = localPlayerAnimController._baseAnimController;
-				//_unsuitedAnimController = localPlayerAnimController._unsuitedAnimOverride;
 				_suitedAnimController = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<RuntimeAnimatorController>("Assets/GameAssets/AnimatorController/Player.controller"));
 				_unsuitedAnimController = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<AnimatorOverrideController>("Assets/GameAssets/AnimatorOverrideController/PlayerUnsuitedOverride.overrideController"));
 				_suitedGraphics = modelRoot.GetChild(1).gameObject;
@@ -134,13 +131,21 @@ namespace QSB.Animation.Player
 
 		private void SuitUp()
 		{
-			new ChangeAnimTypeMessage(AnimationType.PlayerSuited).Send();
+			if (Player == QSBPlayerManager.LocalPlayer)
+			{
+				new ChangeAnimTypeMessage(AnimationType.PlayerSuited).Send();
+			}
+
 			SetAnimationType(AnimationType.PlayerSuited);
 		}
 
 		private void SuitDown()
 		{
-			new ChangeAnimTypeMessage(AnimationType.PlayerUnsuited).Send();
+			if (Player == QSBPlayerManager.LocalPlayer)
+			{
+				new ChangeAnimTypeMessage(AnimationType.PlayerUnsuited).Send();
+			}
+
 			SetAnimationType(AnimationType.PlayerUnsuited);
 		}
 
