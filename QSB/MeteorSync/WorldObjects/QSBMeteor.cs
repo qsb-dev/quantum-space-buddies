@@ -10,8 +10,12 @@ namespace QSB.MeteorSync.WorldObjects
 			// todo SendInitialState
 		}
 
+		/// <summary>
+		/// for syncing impacts from remote player and probe
+		/// </summary>
 		public static bool IsSpecialImpact(GameObject go) =>
-			go == Locator.GetPlayerCollider().gameObject || (Locator.GetProbe() != null && go == Locator.GetProbe()._anchor._collider.gameObject);
+			go == Locator.GetPlayerCollider().gameObject ||
+			Locator.GetProbe() && go == Locator.GetProbe()._anchor._collider.gameObject;
 
 		public void SpecialImpact()
 		{

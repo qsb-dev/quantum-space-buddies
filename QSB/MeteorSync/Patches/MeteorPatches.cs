@@ -1,10 +1,8 @@
 ﻿using HarmonyLib;
-using OWML.Common;
 using QSB.Messaging;
 using QSB.MeteorSync.Messages;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -68,8 +66,7 @@ namespace QSB.MeteorSync.Patches
 						particleSystem.Play();
 					}
 
-					var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
-					qsbMeteorLauncher.SendMessage(new MeteorPreLaunchMessage());
+					__instance.GetWorldObject<QSBMeteorLauncher>().SendMessage(new MeteorPreLaunchMessage());
 				}
 
 				if (Time.time > __instance._lastLaunchTime + __instance._launchDelay + 2.3f)
@@ -92,6 +89,11 @@ namespace QSB.MeteorSync.Patches
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
 		public static bool LaunchMeteor(MeteorLauncher __instance)
 		{
+			if (!QSBWorldSync.AllObjectsReady)
+			{
+				return true;
+			}
+
 			var flag = __instance._dynamicMeteorPool != null && (__instance._meteorPool == null || Random.value < __instance._dynamicProbability);
 			MeteorController meteorController = null;
 			if (!flag)
@@ -125,13 +127,8 @@ namespace QSB.MeteorSync.Patches
 
 			if (meteorController != null)
 			{
-				var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
-				var qsbMeteor = meteorController.GetWorldObject<QSBMeteor>();
-
-				qsbMeteorLauncher.MeteorId = qsbMeteor.ObjectId;
-				qsbMeteorLauncher.LaunchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
-
-				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + (__instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed);
+				var launchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
+				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * launchSpeed;
 				var angularVelocity = __instance.transform.forward * 2f;
 				meteorController.Launch(null, __instance.transform.position, __instance.transform.rotation, linearVelocity, angularVelocity);
 				if (__instance._audioSector.ContainsOccupant(DynamicOccupant.Player))
@@ -140,31 +137,35 @@ namespace QSB.MeteorSync.Patches
 					__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
 				}
 
-				qsbMeteorLauncher.SendMessage(new MeteorLaunchMessage(qsbMeteorLauncher));
+				__instance.GetWorldObject<QSBMeteorLauncher>().SendMessage(new MeteorLaunchMessage(meteorController, launchSpeed));
 			}
 
 			return false;
 		}
 
-		[HarmonyPostfix]
-		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
-		public static void Impact(MeteorController __instance,
-			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
-		{
-			var qsbMeteor = __instance.GetWorldObject<QSBMeteor>();
-			if (QSBMeteor.IsSpecialImpact(hitObject))
-			{
-				qsbMeteor.SendMessage(new MeteorSpecialImpactMessage());
-			}
-		}
-
-		[HarmonyPostfix]
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
-		public static void AddDamage(FragmentIntegrity __instance,
+		public static bool AddDamage(FragmentIntegrity __instance,
 			float damage)
 		{
-			var qsbFragment = __instance.GetWorldObject<QSBFragment>();
-			qsbFragment.SendMessage(new FragmentDamageMessage(damage));
+			if (__instance._integrity <= 0f)
+			{
+				return false;
+			}
+
+			__instance._integrity = __instance.CanBreak() ?
+				Mathf.Max(0f, __instance._integrity - damage * __instance.DamageMultiplier()) :
+				Mathf.Max(0f, __instance._integrity - Mathf.Min(damage * __instance.DamageMultiplier(), __instance._integrity / 2f));
+
+			if (__instance._integrity == 0f && __instance._motherFragment != null)
+			{
+				__instance._motherFragment.ChildIsBroken();
+			}
+
+			__instance.CallOnTakeDamage();
+			__instance.GetWorldObject<QSBFragment>().SendMessage(new FragmentDamageMessage(damage));
+
+			return false;
 		}
 	}
 
@@ -177,97 +178,11 @@ namespace QSB.MeteorSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
-		public static bool FixedUpdate(MeteorLauncher __instance)
-			=> false;
+		public static bool FixedUpdate(MeteorLauncher __instance) => false;
 
 		[HarmonyPrefix]
-		[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
-		public static bool LaunchMeteor(MeteorLauncher __instance)
-		{
-			var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
-
-			MeteorController meteorController = null;
-			QSBMeteor qsbMeteor;
-
-			bool MeteorMatches(MeteorController x)
-			{
-				qsbMeteor = x.GetWorldObject<QSBMeteor>();
-				return qsbMeteor.ObjectId == qsbMeteorLauncher.MeteorId;
-			}
-
-			if (__instance._meteorPool != null)
-			{
-				meteorController = __instance._meteorPool.Find(MeteorMatches);
-				if (meteorController != null)
-				{
-					meteorController.Initialize(__instance.transform, __instance._detectableField, __instance._detectableFluid);
-				}
-			}
-			else if (__instance._dynamicMeteorPool != null)
-			{
-				meteorController = __instance._dynamicMeteorPool.Find(MeteorMatches);
-				if (meteorController != null)
-				{
-					meteorController.Initialize(__instance.transform, null, null);
-				}
-			}
-
-			if (meteorController != null)
-			{
-				var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + (__instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed);
-				var angularVelocity = __instance.transform.forward * 2f;
-				meteorController.Launch(null, __instance.transform.position, __instance.transform.rotation, linearVelocity, angularVelocity);
-				if (__instance._audioSector.ContainsOccupant(DynamicOccupant.Player))
-				{
-					__instance._launchSource.pitch = Random.Range(0.4f, 0.6f);
-					__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
-				}
-			}
-			else
-			{
-				DebugLog.ToConsole($"{qsbMeteorLauncher} - could not find meteor {qsbMeteorLauncher.MeteorId} in pool", MessageType.Warning);
-			}
-
-			return false;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
-		public static bool Impact(MeteorController __instance,
-			GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
-		{
-			__instance._intactRenderer.enabled = false;
-			__instance._impactLight.enabled = true;
-			__instance._impactLight.intensity = __instance._impactLightCurve.Evaluate(0f);
-			var rotation = Quaternion.LookRotation(impactVel);
-			foreach (var particleSystem in __instance._impactParticles)
-			{
-				particleSystem.transform.rotation = rotation;
-				particleSystem.Play();
-			}
-
-			__instance._impactSource.PlayOneShot(AudioType.BH_MeteorImpact);
-			foreach (var owCollider in __instance._owColliders)
-			{
-				owCollider.SetActivation(false);
-			}
-
-			__instance._owRigidbody.MakeKinematic();
-			__instance.transform.SetParent(hitObject.GetAttachedOWRigidbody().transform);
-			FragmentSurfaceProxy.UntrackMeteor(__instance);
-			FragmentCollisionProxy.UntrackMeteor(__instance);
-			__instance._ignoringCollisions = false;
-			__instance._hasImpacted = true;
-			__instance._impactTime = Time.time;
-
-			var qsbMeteor = __instance.GetWorldObject<QSBMeteor>();
-			if (QSBMeteor.IsSpecialImpact(hitObject))
-			{
-				qsbMeteor.SendMessage(new MeteorSpecialImpactMessage());
-			}
-
-			return false;
-		}
+		[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
+		public static bool AddDamage() => false;
 	}
 
 	/// <summary>
@@ -276,6 +191,22 @@ namespace QSB.MeteorSync.Patches
 	public class MeteorPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
+		public static void Impact(MeteorController __instance,
+			GameObject hitObject)
+		{
+			if (!QSBWorldSync.AllObjectsReady)
+			{
+				return;
+			}
+
+			if (QSBMeteor.IsSpecialImpact(hitObject))
+			{
+				__instance.GetWorldObject<QSBMeteor>().SendMessage(new MeteorSpecialImpactMessage());
+			}
+		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
@@ -294,6 +225,11 @@ namespace QSB.MeteorSync.Patches
 			float distance)
 		{
 			if (__instance._detachableFragment == null || __instance._detachableFragment._fragmentIntegrity == null)
+			{
+				return true;
+			}
+
+			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
 			}

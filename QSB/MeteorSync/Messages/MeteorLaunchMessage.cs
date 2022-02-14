@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
+using QSB.WorldSync;
 
 namespace QSB.MeteorSync.Messages
 {
@@ -9,10 +10,10 @@ namespace QSB.MeteorSync.Messages
 		private int MeteorId;
 		private float LaunchSpeed;
 
-		public MeteorLaunchMessage(QSBMeteorLauncher qsbMeteorLauncher)
+		public MeteorLaunchMessage(MeteorController meteorController, float launchSpeed)
 		{
-			MeteorId = qsbMeteorLauncher.MeteorId;
-			LaunchSpeed = qsbMeteorLauncher.LaunchSpeed;
+			MeteorId = meteorController.GetWorldObject<QSBMeteor>().ObjectId;
+			LaunchSpeed = launchSpeed;
 		}
 
 		public override void Serialize(NetworkWriter writer)
@@ -29,6 +30,7 @@ namespace QSB.MeteorSync.Messages
 			LaunchSpeed = reader.Read<float>();
 		}
 
-		public override void OnReceiveRemote() => WorldObject.LaunchMeteor(MeteorId, LaunchSpeed);
+		public override void OnReceiveRemote() =>
+			WorldObject.LaunchMeteor(MeteorId.GetWorldObject<QSBMeteor>(), LaunchSpeed);
 	}
 }

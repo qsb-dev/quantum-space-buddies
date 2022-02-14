@@ -38,6 +38,22 @@ namespace QSB.MeteorSync.WorldObjects
 		public float LeashLength;
 
 		public void AddDamage(float damage)
-			=> AttachedObject.AddDamage(damage);
+		{
+			if (AttachedObject._integrity <= 0f)
+			{
+				return;
+			}
+
+			AttachedObject._integrity = AttachedObject.CanBreak() ?
+				Mathf.Max(0f, AttachedObject._integrity - damage * AttachedObject.DamageMultiplier()) :
+				Mathf.Max(0f, AttachedObject._integrity - Mathf.Min(damage * AttachedObject.DamageMultiplier(), AttachedObject._integrity / 2f));
+
+			if (AttachedObject._integrity == 0f && AttachedObject._motherFragment != null)
+			{
+				AttachedObject._motherFragment.ChildIsBroken();
+			}
+
+			AttachedObject.CallOnTakeDamage();
+		}
 	}
 }

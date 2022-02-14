@@ -7,8 +7,10 @@ using UnityEngine;
 
 namespace QSB.MeteorSync.Messages
 {
+	/// <summary>
 	/// called when we request a resync on client join
 	/// pain
+	/// </summary>
 	public class FragmentInitialStateMessage : QSBWorldObjectMessage<QSBFragment>
 	{
 		private float Integrity;
