@@ -21,8 +21,6 @@ namespace Mirror.Weaver
             if (tr == null)
                 return false;
             TypeDefinition td = tr.Resolve();
-            if (td == null)
-                return false;
             if (!td.IsClass)
                 return false;
 
