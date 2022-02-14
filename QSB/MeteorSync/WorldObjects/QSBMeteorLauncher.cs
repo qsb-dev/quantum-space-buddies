@@ -1,7 +1,4 @@
-﻿using OWML.Common;
-using QSB.Utility;
-using QSB.WorldSync;
-using UnityEngine;
+﻿using QSB.WorldSync;
 
 namespace QSB.MeteorSync.WorldObjects
 {
@@ -12,6 +9,9 @@ namespace QSB.MeteorSync.WorldObjects
 			// todo SendInitialState
 		}
 
+		public int MeteorId;
+		public float LaunchSpeed;
+
 		public void PreLaunchMeteor()
 		{
 			foreach (var particleSystem in AttachedObject._launchParticles)
@@ -20,24 +20,12 @@ namespace QSB.MeteorSync.WorldObjects
 			}
 		}
 
-		public void LaunchMeteor(QSBMeteor qsbMeteor, float launchSpeed)
+		public void LaunchMeteor(int meteorId, float launchSpeed)
 		{
-			var meteorController = qsbMeteor.AttachedObject;
-			if (meteorController.hasLaunched)
-			{
-				DebugLog.DebugWrite($"{qsbMeteor} of {this} has already launched", MessageType.Warning);
-				return;
-			}
+			MeteorId = meteorId;
+			LaunchSpeed = launchSpeed;
 
-			var linearVelocity = AttachedObject._parentBody.GetPointVelocity(AttachedObject.transform.position) + AttachedObject.transform.TransformDirection(AttachedObject._launchDirection) * launchSpeed;
-			var angularVelocity = AttachedObject.transform.forward * 2f;
-			meteorController.Launch(null, AttachedObject.transform.position, AttachedObject.transform.rotation, linearVelocity, angularVelocity);
-			if (AttachedObject._audioSector.ContainsOccupant(DynamicOccupant.Player))
-			{
-				AttachedObject._launchSource.pitch = Random.Range(0.4f, 0.6f);
-				AttachedObject._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
-			}
-
+			AttachedObject.LaunchMeteor();
 			foreach (var particleSystem in AttachedObject._launchParticles)
 			{
 				particleSystem.Stop();
