@@ -47,7 +47,6 @@ namespace QSB.PlayerBodySetup.Remote
 			FixMaterialsInAllChildren.ReplaceMaterials(REMOTE_Player_Body.transform);
 
 			player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
-			player.InstrumentsManager.InitRemote(REMOTE_Player_Body.transform);
 
 			REMOTE_Player_Body.GetComponent<PlayerHUDMarker>().Init(player);
 			REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = player.Name;

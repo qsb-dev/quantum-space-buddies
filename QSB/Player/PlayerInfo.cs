@@ -4,7 +4,6 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
-using QSB.Instruments;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player.Messages;
@@ -31,7 +30,6 @@ namespace QSB.Player
 		public PlayerHUDMarker HudMarker { get; set; }
 		public PlayerTransformSync TransformSync { get; }
 		public AnimationSync AnimationSync { get; }
-		public InstrumentsManager InstrumentsManager { get; }
 		public ClientState State { get; set; }
 		public EyeState EyeState { get; set; }
 		public bool IsDead { get; set; }
@@ -152,9 +150,6 @@ namespace QSB.Player
 		public GameObject CurrentDialogueBox { get; set; }
 
 		// Animation
-		public bool PlayingInstrument => AnimationSync.CurrentType
-			is not AnimationType.PlayerSuited
-			and not AnimationType.PlayerUnsuited;
 		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Local only
@@ -219,7 +214,6 @@ namespace QSB.Player
 			PlayerId = transformSync.netId;
 			TransformSync = transformSync;
 			AnimationSync = transformSync.GetComponent<AnimationSync>();
-			InstrumentsManager = transformSync.GetComponent<InstrumentsManager>();
 		}
 
 		public void UpdateObjectsFromStates()
