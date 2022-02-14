@@ -193,12 +193,13 @@ namespace Mirror.Weaver
                 Stopwatch rwstopwatch = Stopwatch.StartNew();
                 // Need to track modified from ReaderWriterProcessor too because it could find custom read/write functions or create functions for NetworkMessages
                 modified = ReaderWriterProcessor.Process(CurrentAssembly, resolver, Log, writers, readers, ref WeavingFailed);
-                MirrorWeaver.QSBReaderWriterProcessor.Process(CurrentAssembly, writers, readers, ref WeavingFailed);
                 rwstopwatch.Stop();
                 Console.WriteLine($"Find all reader and writers took {rwstopwatch.ElapsedMilliseconds} milliseconds");
 
                 ModuleDefinition moduleDefinition = CurrentAssembly.MainModule;
                 Console.WriteLine($"Script Module: {moduleDefinition.Name}");
+
+                MirrorWeaver.QSBReaderWriterProcessor.Process(moduleDefinition, writers, readers, ref WeavingFailed);
 
                 modified |= WeaveModule(moduleDefinition);
 

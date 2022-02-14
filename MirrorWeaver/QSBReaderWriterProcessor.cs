@@ -1,6 +1,8 @@
 ﻿using Mirror;
 using Mirror.Weaver;
 using Mono.Cecil;
+using System;
+using System.Diagnostics;
 
 namespace MirrorWeaver
 {
@@ -12,51 +14,59 @@ namespace MirrorWeaver
 		/// traverses from non generic classes up thru base types
 		/// in order to replace generic parameters with their corresponding generic arguments.
 		/// </summary>
-		public static void Process(AssemblyDefinition assembly, Writers writers, Readers readers, ref bool weavingFailed)
+		public static void Process(ModuleDefinition module, Writers writers, Readers readers, ref bool weavingFailed)
 		{
-			var NetworkWriter_Write = assembly.MainModule.ImportReference(typeof(NetworkWriter).GetMethod(nameof(NetworkWriter.Write)));
-			var NetworkReader_Read = assembly.MainModule.ImportReference(typeof(NetworkReader).GetMethod(nameof(NetworkReader.Read)));
+			var sw = Stopwatch.StartNew();
 
-			foreach (var type in assembly.MainModule.GetTypes())
+			var NetworkWriter_Write = typeof(NetworkWriter).GetMethod(nameof(NetworkWriter.Write));
+			var NetworkReader_Read = typeof(NetworkReader).GetMethod(nameof(NetworkReader.Read));
+
+			var count = 0;
+			foreach (var type in module.GetTypes())
 			{
 				if (type.HasGenericParameters) continue;
 
 				TypeReference currentType = type;
 				while (currentType != null)
 				{
-					foreach (var method in currentType.Resolve().Methods)
+					var currentTypeDef = currentType.Resolve();
+					foreach (var method in currentTypeDef.Methods)
 					{
 						if (!method.HasBody) continue;
 						foreach (var instruction in method.Body.Instructions)
 						{
 							if (instruction.Operand is not GenericInstanceMethod calledMethod) continue;
 
-							if (calledMethod.DeclaringType.Name == NetworkWriter_Write.DeclaringType.Name &&
+							if (calledMethod.DeclaringType.FullName == NetworkWriter_Write.DeclaringType.FullName &&
 								calledMethod.Name == NetworkWriter_Write.Name)
 							{
 								var argType = calledMethod.GenericArguments[0];
 
-								if (argType is GenericParameter genericParameter && genericParameter.Owner == currentType.Resolve())
+								if (argType is GenericParameter genericParameter && genericParameter.Owner == currentTypeDef)
 									argType = ((GenericInstanceType)currentType).GenericArguments[genericParameter.Position];
 
 								writers.GetWriteFunc(argType, ref weavingFailed);
+								count++;
 							}
-							else if (calledMethod.DeclaringType.Name == NetworkReader_Read.DeclaringType.Name &&
+							else if (calledMethod.DeclaringType.FullName == NetworkReader_Read.DeclaringType.FullName &&
 								calledMethod.Name == NetworkReader_Read.Name)
 							{
 								var argType = calledMethod.GenericArguments[0];
 
-								if (argType is GenericParameter genericParameter && genericParameter.Owner == currentType.Resolve())
+								if (argType is GenericParameter genericParameter && genericParameter.Owner == currentTypeDef)
 									argType = ((GenericInstanceType)currentType).GenericArguments[genericParameter.Position];
 
 								readers.GetReadFunc(argType, ref weavingFailed);
+								count++;
 							}
 						}
 					}
 
-					currentType = currentType.Resolve()?.BaseType;
+					currentType = currentTypeDef.BaseType;
 				}
 			}
+
+			Console.WriteLine($"got/generated {count} read/write funcs in {sw.ElapsedMilliseconds} ms");
 		}
 	}
 }
