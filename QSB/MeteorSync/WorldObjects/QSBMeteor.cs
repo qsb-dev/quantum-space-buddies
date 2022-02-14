@@ -1,4 +1,6 @@
-﻿using QSB.WorldSync;
+﻿using OWML.Common;
+using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.MeteorSync.WorldObjects
@@ -19,6 +21,12 @@ namespace QSB.MeteorSync.WorldObjects
 
 		public void SpecialImpact()
 		{
+			if (AttachedObject.hasImpacted)
+			{
+				DebugLog.DebugWrite($"{this} has already impacted", MessageType.Warning);
+				return;
+			}
+
 			AttachedObject._intactRenderer.enabled = false;
 			AttachedObject._impactLight.enabled = true;
 			AttachedObject._impactLight.intensity = AttachedObject._impactLightCurve.Evaluate(0f);
