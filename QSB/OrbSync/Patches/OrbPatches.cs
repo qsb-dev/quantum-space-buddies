@@ -14,23 +14,50 @@ namespace QSB.OrbSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		[HarmonyPostfix]
+		[HarmonyPrefix]
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.StartDragFromPosition))]
-		private static void StartDragFromPosition(NomaiInterfaceOrb __instance, bool __result)
+		private static bool StartDragFromPosition(NomaiInterfaceOrb __instance, ref bool __result,
+			Vector3 manipPos)
 		{
-			if (!__result)
-			{
-				return;
-			}
-
 			if (!QSBWorldSync.AllObjectsReady)
 			{
-				return;
+				return true;
 			}
 
-			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-			qsbOrb.SendMessage(new OrbDragMessage(true));
-			qsbOrb.TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+			if (__instance._orbBody.IsSuspended() || __instance._isBeingDragged)
+			{
+				__result = false;
+				return false;
+			}
+
+			if (__instance.RecentlyEnteredSlot())
+			{
+				__instance._loseFocusToStartDrag = true;
+			}
+
+			if (Vector3.Distance(manipPos, __instance.transform.position) < __instance._startDragDist)
+			{
+				if (!__instance._loseFocusToStartDrag)
+				{
+					__instance._isBeingDragged = true;
+					__instance._interactibleCollider.enabled = false;
+					if (__instance._orbAudio != null)
+					{
+						__instance._orbAudio.PlayStartDragClip();
+					}
+
+					var qsbOrb = __instance.GetWorldObject<QSBOrb>();
+					qsbOrb.SendMessage(new OrbDragMessage(true));
+					qsbOrb.TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+				}
+			}
+			else
+			{
+				__instance._loseFocusToStartDrag = false;
+			}
+
+			__result = __instance._isBeingDragged;
+			return false;
 		}
 
 		[HarmonyPrefix]
@@ -40,6 +67,11 @@ namespace QSB.OrbSync.Patches
 			if (!QSBWorldSync.AllObjectsReady)
 			{
 				return true;
+			}
+
+			if (!__instance._isBeingDragged)
+			{
+				return false;
 			}
 
 			var qsbOrb = __instance.GetWorldObject<QSBOrb>();

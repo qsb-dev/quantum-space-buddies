@@ -51,8 +51,6 @@ namespace QSB.OrbSync.WorldObjects
 				return;
 			}
 
-			DebugLog.DebugWrite($"{this} dragging = {value}");
-
 			if (value)
 			{
 				AttachedObject._isBeingDragged = true;
@@ -67,8 +65,6 @@ namespace QSB.OrbSync.WorldObjects
 				AttachedObject._isBeingDragged = false;
 				AttachedObject._interactibleCollider.enabled = true;
 			}
-
-			DebugLog.DebugWrite($"{this} interactible collider enabled = {AttachedObject._interactibleCollider.enabled}");
 		}
 
 		public void SetSlot(int slotIndex, bool playAudio)

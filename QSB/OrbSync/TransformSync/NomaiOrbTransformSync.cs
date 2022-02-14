@@ -1,7 +1,6 @@
 ﻿using QSB.AuthoritySync;
 using QSB.OrbSync.WorldObjects;
 using QSB.Syncs.Unsectored.Transforms;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,8 +15,8 @@ namespace QSB.OrbSync.TransformSync
 		/// </summary>
 		protected override bool CheckValid() => AttachedTransform && base.CheckValid();
 
-		protected override bool UseInterpolation => false;
-		protected override bool OnlyApplyOnDeserialize => true;
+		protected override bool UseInterpolation => true;
+		protected override float DistanceLeeway => 1f;
 
 		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
 		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
@@ -81,7 +80,11 @@ namespace QSB.OrbSync.TransformSync
 		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
 		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
 
-		protected override void ApplyToAttached() =>
-			_qsbOrb.AttachedObject.SetTargetPosition(ReferenceTransform.FromRelPos(transform.position));
+		protected override void ApplyToAttached()
+		{
+			base.ApplyToAttached();
+
+			_qsbOrb.AttachedObject.SetTargetPosition(AttachedTransform.position);
+		}
 	}
 }
