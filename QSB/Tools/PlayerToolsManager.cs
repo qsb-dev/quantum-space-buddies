@@ -26,7 +26,7 @@ namespace QSB.Tools
 
 			if (lightLOD != null)
 			{
-				UnityEngine.Object.Destroy(lightLOD);
+				Object.Destroy(lightLOD);
 				spot.GetLight().shadows = LightShadows.Soft;
 			}
 		}
