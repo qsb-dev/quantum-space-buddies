@@ -86,7 +86,8 @@ namespace QSB.OrbSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.CheckSlotCollision))]
-		private static bool CheckSlotCollision(NomaiInterfaceOrb __instance, bool playAudio)
+		private static bool CheckSlotCollision(NomaiInterfaceOrb __instance,
+			bool playAudio)
 		{
 			if (!QSBWorldSync.AllObjectsReady)
 			{

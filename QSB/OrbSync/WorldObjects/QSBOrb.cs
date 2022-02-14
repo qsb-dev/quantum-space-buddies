@@ -76,8 +76,6 @@ namespace QSB.OrbSync.WorldObjects
 				return;
 			}
 
-			DebugLog.DebugWrite($"{this} slot = {slotIndex} {newSlot}");
-
 			if (oldSlot)
 			{
 				oldSlot._occupyingOrb = null;
