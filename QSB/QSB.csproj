@@ -32,9 +32,11 @@
   <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)') and Exists('$(GameDllsDir)')">
     <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.dll&quot;" />
     <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.exe&quot;" />
+    <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.pdb&quot;" />
 
     <Exec Command="copy /y &quot;$(OutputPath)\*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
     <Exec Command="copy /y &quot;$(OutputPath)\*.exe&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(OutputPath)\*.pdb&quot; &quot;$(UnityDllsDir)&quot;" />
 
     <Exec Command="copy /y &quot;$(GameDllsDir)\Assembly-CSharp*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
     <Exec Command="copy /y &quot;$(GameDllsDir)\Unity.InputSystem.dll&quot; &quot;$(UnityDllsDir)&quot;" />
