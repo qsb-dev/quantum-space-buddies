@@ -125,7 +125,7 @@ namespace QSB.Utility
 			return new Guid(bytes);
 		}
 
-		public static void Try(this object self, string description, Action action)
+		public static void Try(this object self, string doingWhat, Action action)
 		{
 			try
 			{
@@ -133,11 +133,11 @@ namespace QSB.Utility
 			}
 			catch (Exception e)
 			{
-				DebugLog.ToConsole($"{self} - error {description} : {e}", MessageType.Error);
+				DebugLog.ToConsole($"{self} - error {doingWhat} : {e}", MessageType.Error);
 			}
 		}
 
-		public static async UniTask Try(this object self, string description, Func<UniTask> func)
+		public static async UniTask Try(this object self, string doingWhat, Func<UniTask> func)
 		{
 			try
 			{
@@ -145,7 +145,7 @@ namespace QSB.Utility
 			}
 			catch (Exception e)
 			{
-				DebugLog.ToConsole($"{self} - error {description} : {e}", MessageType.Error);
+				DebugLog.ToConsole($"{self} - error {doingWhat} : {e}", MessageType.Error);
 			}
 		}
 

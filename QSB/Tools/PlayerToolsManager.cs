@@ -4,7 +4,6 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.Tools.SignalscopeTool;
 using QSB.Tools.TranslatorTool;
 using QSB.Utility;
-using System;
 using UnityEngine;
 
 namespace QSB.Tools
@@ -13,10 +12,10 @@ namespace QSB.Tools
 	{
 		public static void InitRemote(PlayerInfo player)
 		{
-			player.Try("create flashlight", () => FlashlightCreator.CreateFlashlight(player));
-			player.Try("create signalscope", () => SignalscopeCreator.CreateSignalscope(player));
-			player.Try("create probe launcher", () => ProbeLauncherCreator.CreateProbeLauncher(player));
-			player.Try("create translator", () => TranslatorCreator.CreateTranslator(player));
+			player.Try("creating flashlight", () => FlashlightCreator.CreateFlashlight(player));
+			player.Try("creating signalscope", () => SignalscopeCreator.CreateSignalscope(player));
+			player.Try("creating probe launcher", () => ProbeLauncherCreator.CreateProbeLauncher(player));
+			player.Try("creating translator", () => TranslatorCreator.CreateTranslator(player));
 		}
 
 		public static void InitLocal()
