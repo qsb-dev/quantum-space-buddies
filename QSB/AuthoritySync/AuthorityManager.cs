@@ -50,7 +50,7 @@ namespace QSB.AuthoritySync
 		/// <summary>
 		/// transfer authority to a different client
 		/// </summary>
-		public static void OnDisconnect(NetworkConnection conn)
+		public static void OnDisconnect(NetworkConnectionToClient conn)
 		{
 			var id = conn.GetPlayerId();
 			foreach (var identity in _authQueue.Keys)

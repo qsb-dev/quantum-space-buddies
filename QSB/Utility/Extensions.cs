@@ -32,7 +32,7 @@ namespace QSB.Utility
 
 		#region MIRROR
 
-		public static uint GetPlayerId(this NetworkConnection conn)
+		public static uint GetPlayerId(this NetworkConnectionToClient conn)
 		{
 			if (!conn.identity)
 			{
@@ -44,7 +44,7 @@ namespace QSB.Utility
 			return conn.identity.netId;
 		}
 
-		public static NetworkConnection GetNetworkConnection(this uint playerId)
+		public static NetworkConnectionToClient GetNetworkConnection(this uint playerId)
 		{
 			var conn = NetworkServer.connections.Values.FirstOrDefault(x => playerId == x.GetPlayerId());
 			if (conn == default)

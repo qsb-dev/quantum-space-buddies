@@ -191,7 +191,7 @@ namespace QSB
 			DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
 		}
 
-		public override void OnServerAddPlayer(NetworkConnection connection) // Called on the server when a client joins
+		public override void OnServerAddPlayer(NetworkConnectionToClient connection) // Called on the server when a client joins
 		{
 			DebugLog.DebugWrite($"OnServerAddPlayer", MessageType.Info);
 			base.OnServerAddPlayer(connection);
@@ -275,7 +275,7 @@ namespace QSB
 			_lastTransportError = null;
 		}
 
-		public override void OnServerDisconnect(NetworkConnection conn) // Called on the server when any client disconnects
+		public override void OnServerDisconnect(NetworkConnectionToClient conn) // Called on the server when any client disconnects
 		{
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
