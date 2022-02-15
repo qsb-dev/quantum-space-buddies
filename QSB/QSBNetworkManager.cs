@@ -279,7 +279,8 @@ namespace QSB
 		{
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			if (!QSBCore.IsHost)
+			// local conn = we are host, so skip
+			if (conn is not LocalConnectionToClient)
 			{
 				// revert authority from ship
 				if (ShipTransformSync.LocalInstance != null)
