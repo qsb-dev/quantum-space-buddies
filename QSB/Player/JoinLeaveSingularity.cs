@@ -56,7 +56,7 @@ namespace QSB.Player
 
 			#region effect
 
-			var referenceEffect = QSBWorldSync.GetUnityObjects<GravityCannonController>().First()._warpEffect;
+			var referenceEffect = QSBWorldSync.GetUnityObjects<ProbeLauncher>().First()._probeRetrievalEffect;
 			var effectGo = referenceEffect.gameObject.InstantiateInactive();
 			effectGo.transform.parent = transform;
 			effectGo.transform.localPosition = Vector3.zero;
@@ -71,11 +71,16 @@ namespace QSB.Player
 			effect._singularity.enabled = true;
 			effect._singularity._startActive = false;
 			effect._singularity._muteSingularityEffectAudio = false;
-			effect._singularity._creationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-			effect._singularity._destructionCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+			effect._singularity._creationCurve = AnimationCurve.EaseInOut(0, 0, .5f, 1);
+			effect._singularity._destructionCurve = AnimationCurve.EaseInOut(0, 1, .5f, 0);
 
-			var renderer = effectGo.GetComponent<OWRenderer>();
-			renderer.SetColor(_joining ? Color.white : Color.black);
+			var renderer = effectGo.GetComponent<Renderer>();
+			renderer.material.SetFloat("_DistortFadeDist", 3);
+			renderer.material.SetFloat("_MassScale", _joining ? -1 : 1);
+			renderer.material.SetFloat("_MaxDistortRadius", 10);
+			renderer.transform.localScale = Vector3.one * 10;
+			renderer.material.SetFloat("_Radius", 1);
+			renderer.material.SetColor("_Color", _joining ? Color.white : Color.black);
 
 			effectGo.SetActive(true);
 
@@ -83,16 +88,15 @@ namespace QSB.Player
 
 			Delay.RunNextFrame(() =>
 			{
-				const float length = 0;
 				if (_joining)
 				{
 					DebugLog.DebugWrite($"WARP IN {_player.TransformSync}");
-					effect.WarpObjectIn(length);
+					effect.WarpObjectIn(.5f);
 				}
 				else
 				{
 					DebugLog.DebugWrite($"WARP OUT {_player.TransformSync}");
-					effect.WarpObjectOut(length);
+					effect.WarpObjectOut(.5f);
 				}
 			});
 		}
@@ -118,11 +122,6 @@ namespace QSB.Player
 			Destroy(gameObject);
 
 			_player.SetVisible(true);
-		}
-
-		private void OnRenderObject()
-		{
-			Popcron.Gizmos.Cube(transform.position, transform.rotation, Vector3.one * 3, Color.cyan);
 		}
 	}
 }
