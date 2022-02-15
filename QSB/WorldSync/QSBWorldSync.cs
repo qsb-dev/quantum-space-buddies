@@ -29,8 +29,8 @@ namespace QSB.WorldSync
 		public static bool AllObjectsReady { get; private set; }
 
 		private static CancellationTokenSource _cts;
-		private static readonly Dictionary<WorldObjectManager, UniTask> _managersBuilding = new();
-		private static readonly Dictionary<IWorldObject, UniTask> _objectsIniting = new();
+		private static readonly List<UniTask> _managerTasks = new();
+		private static readonly List<UniTask> _objectTasks = new();
 
 		public static async UniTaskVoid BuildWorldObjects(OWScene scene)
 		{
@@ -59,26 +59,21 @@ namespace QSB.WorldSync
 						continue;
 				}
 
-				var task = UniTask.Create(async () =>
+				var task = manager.Try("building world objects", async () =>
 				{
-					await manager.Try("building world objects", async () =>
-					{
-						await manager.BuildWorldObjects(scene, _cts.Token);
-						DebugLog.DebugWrite($"Built {manager}", MessageType.Info);
-					});
-					_managersBuilding.Remove(manager);
+					await manager.BuildWorldObjects(scene, _cts.Token);
+					DebugLog.DebugWrite($"Built {manager}", MessageType.Info);
 				});
-				if (!task.Status.IsCompleted())
-				{
-					_managersBuilding.Add(manager, task);
-				}
+				_managerTasks.Add(task);
 			}
 
-			await _managersBuilding.Values;
+			await _managerTasks;
+			_managerTasks.Clear();
 			AllObjectsAdded = true;
 			DebugLog.DebugWrite("World Objects added.", MessageType.Success);
 
-			await _objectsIniting.Values;
+			await _objectTasks;
+			_objectTasks.Clear();
 			AllObjectsReady = true;
 			DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
 
@@ -97,22 +92,24 @@ namespace QSB.WorldSync
 				return;
 			}
 
+			var count = _managerTasks.Count(x => !x.Status.IsCompleted());
+			if (count > 0)
+			{
+				DebugLog.DebugWrite($"{count} managers still building", MessageType.Warning);
+			}
+
+			count = _objectTasks.Count(x => !x.Status.IsCompleted());
+			if (count > 0)
+			{
+				DebugLog.DebugWrite($"{count} objects still initing", MessageType.Warning);
+			}
+
 			_cts.Cancel();
 			_cts.Dispose();
 			_cts = null;
 
-			if (_managersBuilding.Count > 0)
-			{
-				DebugLog.DebugWrite($"{_managersBuilding.Count} managers still building", MessageType.Warning);
-			}
-
-			if (_objectsIniting.Count > 0)
-			{
-				DebugLog.DebugWrite($"{_objectsIniting.Count} objects still initing", MessageType.Warning);
-			}
-
-			_managersBuilding.Clear();
-			_objectsIniting.Clear();
+			_managerTasks.Clear();
+			_objectTasks.Clear();
 			AllObjectsAdded = false;
 			AllObjectsReady = false;
 
@@ -299,15 +296,8 @@ namespace QSB.WorldSync
 			WorldObjects.Add(worldObject);
 			UnityObjectsToWorldObjects.Add(unityObject, worldObject);
 
-			var task = UniTask.Create(async () =>
-			{
-				await worldObject.Try("initing", () => worldObject.Init(_cts.Token));
-				_objectsIniting.Remove(worldObject);
-			});
-			if (!task.Status.IsCompleted())
-			{
-				_objectsIniting.Add(worldObject, task);
-			}
+			var task = worldObject.Try("initing", () => worldObject.Init(_cts.Token));
+			_objectTasks.Add(task);
 		}
 
 		public static void SetDialogueCondition(string name, bool state)
