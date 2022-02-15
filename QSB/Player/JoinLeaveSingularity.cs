@@ -56,7 +56,7 @@ namespace QSB.Player
 
 			#region effect
 
-			var referenceEffect = QSBWorldSync.GetUnityObjects<ProbeLauncher>().First()._probeRetrievalEffect;
+			var referenceEffect = QSBWorldSync.GetUnityObjects<GravityCannonController>().First()._warpEffect;
 			var effectGo = referenceEffect.gameObject.InstantiateInactive();
 			effectGo.transform.parent = transform;
 			effectGo.transform.localPosition = Vector3.zero;
@@ -71,8 +71,8 @@ namespace QSB.Player
 			effect._singularity.enabled = true;
 			effect._singularity._startActive = false;
 			effect._singularity._muteSingularityEffectAudio = false;
-			effect._singularity._creationCurve = AnimationCurve.EaseInOut(0, 0, .5f, 1);
-			effect._singularity._destructionCurve = AnimationCurve.EaseInOut(0, 1, .5f, 0);
+			effect._singularity._creationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+			effect._singularity._destructionCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
 			var renderer = effectGo.GetComponent<Renderer>();
 			renderer.material.SetFloat("_DistortFadeDist", 3);
@@ -91,12 +91,12 @@ namespace QSB.Player
 				if (_joining)
 				{
 					DebugLog.DebugWrite($"WARP IN {_player.TransformSync}");
-					effect.WarpObjectIn(1.5f);
+					effect.WarpObjectIn(0);
 				}
 				else
 				{
 					DebugLog.DebugWrite($"WARP OUT {_player.TransformSync}");
-					effect.WarpObjectOut(1.5f);
+					effect.WarpObjectOut(0);
 				}
 			});
 		}
