@@ -1,27 +1,30 @@
 ﻿using QSB.Utility;
-using System.Collections;
 using UnityEngine;
 
 namespace QSB.Player
 {
 	public class JoinLeaveSingularity : MonoBehaviour
 	{
+		public static void Create(PlayerInfo player, bool joining)
+		{
+			var go = new GameObject(nameof(JoinLeaveSingularity));
+			go.SetActive(false);
+			var joinLeaveSingularity = go.AddComponent<JoinLeaveSingularity>();
+			joinLeaveSingularity._player = player;
+			joinLeaveSingularity._joining = joining;
+			go.SetActive(true);
+		}
+
 		private PlayerInfo _player;
 		private bool _joining;
 
-		public static void Create(PlayerInfo player, bool joining)
-		{
-			var joinLeaveSingularity = new GameObject(nameof(JoinLeaveSingularity))
-				.AddComponent<JoinLeaveSingularity>();
-			joinLeaveSingularity._player = player;
-			joinLeaveSingularity._joining = joining;
-		}
+		private SingularityWarpEffect _effect;
 
-		private IEnumerator Start()
+		private void Awake()
 		{
 			DebugLog.DebugWrite($"WARP {_player.TransformSync}");
 
-			transform.parent = _player.TransformSync.ReferenceTransform;
+			transform.parent = _player.Body.transform.parent;
 			transform.localPosition = _player.Body.transform.localPosition;
 			transform.localRotation = _player.Body.transform.localRotation;
 			transform.localScale = _player.Body.transform.localScale;
@@ -46,32 +49,34 @@ namespace QSB.Player
 			renderer.SetMaterialProperty(Shader.PropertyToID("_Radius"), 1);
 			renderer.SetColor(_joining ? Color.white * 2 : Color.black);
 
-			var warpedObjectGeometry = effect._warpedObjectGeometry.InstantiateInactive();
+			_effect = effect;
+			var warpedObjectGeometry = _effect._warpedObjectGeometry.InstantiateInactive();
 			warpedObjectGeometry.transform.parent = transform;
 			warpedObjectGeometry.transform.localPosition = Vector3.zero;
 			warpedObjectGeometry.transform.localRotation = Quaternion.identity;
 			warpedObjectGeometry.transform.localScale = Vector3.one;
-			effect._warpedObjectGeometry = warpedObjectGeometry;
+			_effect._warpedObjectGeometry = warpedObjectGeometry;
+
+			_effect.OnWarpComplete += OnWarpComplete;
 
 			warpedObjectGeometry.SetActive(true);
 			effectGo.SetActive(true);
+		}
 
+		private void Start()
+		{
 			_player.SetVisible(false);
-
-			effect.OnWarpComplete += OnWarpComplete;
-
-			yield return new WaitForSeconds(1);
 
 			const float length = 1;
 			if (_joining)
 			{
 				DebugLog.DebugWrite($"WARP IN {_player.TransformSync}");
-				effect.WarpObjectIn(length);
+				_effect.WarpObjectIn(length);
 			}
 			else
 			{
 				DebugLog.DebugWrite($"WARP OUT {_player.TransformSync}");
-				effect.WarpObjectOut(length);
+				_effect.WarpObjectOut(length);
 			}
 		}
 
