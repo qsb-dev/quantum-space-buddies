@@ -44,12 +44,6 @@ namespace QSB.Player.TransformSync
 			base.OnStartClient();
 			QSBPlayerManager.OnAddPlayer?.Invoke(Player);
 			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
-
-			if (!isLocalPlayer)
-			{
-				Delay.RunWhen(() => IsValid && ReferenceTransform,
-					() => JoinLeaveSingularity.Create(Player, true));
-			}
 		}
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
