@@ -1,80 +1,87 @@
 ﻿using QSB.Utility;
-using QSB.WorldSync;
-using System.Linq;
+using System.Collections;
 using UnityEngine;
 
 namespace QSB.Player
 {
-	public static class JoinLeaveSingularity
+	public class JoinLeaveSingularity : MonoBehaviour
 	{
+		private PlayerInfo _player;
+		private bool _joining;
+
 		public static void Create(PlayerInfo player, bool joining)
 		{
-			DebugLog.DebugWrite($"{player.TransformSync} join/leave singularity: (joining = {joining})");
+			var joinLeaveSingularity = new GameObject(nameof(JoinLeaveSingularity))
+				.AddComponent<JoinLeaveSingularity>();
+			joinLeaveSingularity._player = player;
+			joinLeaveSingularity._joining = joining;
+		}
 
-			var go = new GameObject(nameof(JoinLeaveSingularity));
+		private IEnumerator Start()
+		{
+			DebugLog.DebugWrite($"WARP {_player.TransformSync}");
 
-			var playerGo = player.Body;
-			playerGo.SetActive(false);
-			go.transform.parent = playerGo.transform.parent;
-			go.transform.localPosition = playerGo.transform.localPosition;
-			go.transform.localRotation = playerGo.transform.localRotation;
-			go.transform.localScale = playerGo.transform.localScale;
+			transform.parent = _player.TransformSync.ReferenceTransform;
+			transform.localPosition = _player.Body.transform.localPosition;
+			transform.localRotation = _player.Body.transform.localRotation;
+			transform.localScale = _player.Body.transform.localScale;
 
-			var fakePlayerGo = playerGo.InstantiateInactive();
-			fakePlayerGo.transform.parent = go.transform;
-			fakePlayerGo.transform.localPosition = Vector3.zero;
-			fakePlayerGo.transform.localRotation = Quaternion.identity;
-			fakePlayerGo.transform.localScale = Vector3.one;
+			var SingularityWarpEffect = _player.Body.transform.Find("SingularityWarpEffect").gameObject;
 
-			foreach (var component in fakePlayerGo.GetComponents<Component>())
-			{
-				if (component is not (Transform or Renderer))
-				{
-					Object.Destroy(component);
-				}
-			}
-
-			fakePlayerGo.SetActive(true);
-
-			var referenceEffect = joining ?
-				QSBWorldSync.GetUnityObjects<ProbeLauncher>()
-					.Select(x => x._probeRetrievalEffect)
-					.First(x => x) :
-				QSBWorldSync.GetUnityObjects<SurveyorProbe>()
-					.Select(x => x._warpEffect)
-					.First(x => x);
-			var effectGo = referenceEffect.gameObject.InstantiateInactive();
-			effectGo.transform.parent = go.transform;
+			var effectGo = SingularityWarpEffect.InstantiateInactive();
+			effectGo.transform.parent = transform;
 			effectGo.transform.localPosition = Vector3.zero;
 			effectGo.transform.localRotation = Quaternion.identity;
 			effectGo.transform.localScale = Vector3.one;
 
 			var effect = effectGo.GetComponent<SingularityWarpEffect>();
-			effect._warpedObjectGeometry = fakePlayerGo;
+			var curve = AnimationCurve.EaseInOut(0, 0, .2f, 1);
+			effect._singularity._creationCurve = curve;
+			effect._singularity._destructionCurve = curve;
+
+			var renderer = effectGo.GetComponent<OWRenderer>();
+			renderer.SetMaterialProperty(Shader.PropertyToID("_DistortFadeDist"), 3);
+			renderer.SetMaterialProperty(Shader.PropertyToID("_MassScale"), _joining ? -1 : 1);
+			renderer.SetMaterialProperty(Shader.PropertyToID("_MaxDistortRadius"), 10);
+			renderer.SetMaterialProperty(Shader.PropertyToID("_Radius"), 1);
+			renderer.SetColor(_joining ? Color.white * 2 : Color.black);
+
+			var warpedObjectGeometry = effect._warpedObjectGeometry.InstantiateInactive();
+			warpedObjectGeometry.transform.parent = transform;
+			warpedObjectGeometry.transform.localPosition = Vector3.zero;
+			warpedObjectGeometry.transform.localRotation = Quaternion.identity;
+			warpedObjectGeometry.transform.localScale = Vector3.one;
+			effect._warpedObjectGeometry = warpedObjectGeometry;
+
+			warpedObjectGeometry.SetActive(true);
 			effectGo.SetActive(true);
 
-			effect.OnWarpComplete += () =>
-			{
-				DebugLog.DebugWrite($"{player.TransformSync} warp complete");
+			_player.SetVisible(false);
 
-				Object.Destroy(go);
+			effect.OnWarpComplete += OnWarpComplete;
 
-				if (playerGo)
-				{
-					playerGo.SetActive(true);
-				}
-			};
-			const float length = 3;
-			if (joining)
+			yield return new WaitForSeconds(1);
+
+			const float length = 1;
+			if (_joining)
 			{
-				DebugLog.DebugWrite($"{player.TransformSync} warp in (white hole)");
+				DebugLog.DebugWrite($"WARP IN {_player.TransformSync}");
 				effect.WarpObjectIn(length);
 			}
 			else
 			{
-				DebugLog.DebugWrite($"{player.TransformSync} warp out (black hole)");
+				DebugLog.DebugWrite($"WARP OUT {_player.TransformSync}");
 				effect.WarpObjectOut(length);
 			}
+		}
+
+		private void OnWarpComplete()
+		{
+			DebugLog.DebugWrite($"WARP DONE {_player.TransformSync}");
+
+			Destroy(gameObject);
+
+			_player.SetVisible(true);
 		}
 	}
 }

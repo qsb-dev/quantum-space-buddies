@@ -76,6 +76,9 @@ namespace QSB.Player.Messages
 			player.Name = PlayerName;
 			DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
 			DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
+
+			Delay.RunWhen(() => player.TransformSync.IsValid && player.TransformSync.ReferenceTransform,
+				() => JoinLeaveSingularity.Create(player, true));
 		}
 
 		public override void OnReceiveLocal()

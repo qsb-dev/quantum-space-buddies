@@ -46,19 +46,12 @@ namespace QSB.Player.TransformSync
 			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
 		}
 
-		public override void OnStartLocalPlayer()
-		{
-			LocalInstance = this;
-
-			if (!QSBCore.IsHost)
-			{
-				Delay.RunWhen(() => IsValid && ReferenceTransform,
-					() => new JoinLeaveSingularityMessage(true).Send());
-			}
-		}
+		public override void OnStartLocalPlayer() => LocalInstance = this;
 
 		public override void OnStopClient()
 		{
+			JoinLeaveSingularity.Create(Player, false);
+
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
 			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
 			base.OnStopClient();
