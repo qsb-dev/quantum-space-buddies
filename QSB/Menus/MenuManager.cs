@@ -2,6 +2,7 @@
 using Mirror;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
@@ -301,6 +302,11 @@ namespace QSB.Menus
 		{
 			_intentionalDisconnect = true;
 
+			if (!QSBCore.IsHost)
+			{
+				new JoinLeaveSingularityMessage(false).Send();
+			}
+
 			QSBNetworkManager.singleton.StopHost();
 			SetButtonActive(DisconnectButton.gameObject, false);
 
@@ -373,7 +379,7 @@ namespace QSB.Menus
 			QSBNetworkManager.singleton.StartClient();
 		}
 
-		private void OnConnected()
+		private static void OnConnected()
 		{
 			if (QSBCore.IsHost || !QSBCore.IsInMultiplayer)
 			{

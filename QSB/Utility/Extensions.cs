@@ -19,14 +19,16 @@ namespace QSB.Utility
 
 		public static GameObject InstantiateInactive(this GameObject original)
 		{
-			original.SetActive(false);
-			var copy = Object.Instantiate(original);
-			original.SetActive(true);
-			return copy;
-		}
+			if (original.activeSelf)
+			{
+				original.SetActive(false);
+				var copy = Object.Instantiate(original);
+				original.SetActive(true);
+				return copy;
+			}
 
-		public static Transform InstantiateInactive(this Transform original) =>
-			original.gameObject.InstantiateInactive().transform;
+			return Object.Instantiate(original);
+		}
 
 		#endregion
 
