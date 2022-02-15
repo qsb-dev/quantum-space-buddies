@@ -50,7 +50,10 @@ namespace QSB.Player.TransformSync
 
 		public override void OnStopClient()
 		{
-			JoinLeaveSingularity.Create(Player, false);
+			if (!isLocalPlayer)
+			{
+				JoinLeaveSingularity.Create(Player, false);
+			}
 
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
 			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
