@@ -91,12 +91,12 @@ namespace QSB.Player
 				if (_joining)
 				{
 					DebugLog.DebugWrite($"WARP IN {_player.TransformSync}");
-					effect.WarpObjectIn(.5f);
+					effect.WarpObjectIn(2);
 				}
 				else
 				{
 					DebugLog.DebugWrite($"WARP OUT {_player.TransformSync}");
-					effect.WarpObjectOut(.5f);
+					effect.WarpObjectOut(2);
 				}
 			});
 		}
