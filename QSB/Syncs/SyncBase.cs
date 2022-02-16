@@ -138,7 +138,7 @@ namespace QSB.Syncs
 				// and use the closest one
 				_player = QSBPlayerManager.PlayerList
 					.Where(x => x.PlayerId <= netId)
-					.OrderBy(x => x.PlayerId).Last();
+					.MaxBy(x => x.PlayerId);
 			}
 
 			DontDestroyOnLoad(gameObject);

@@ -120,7 +120,7 @@ namespace QSB.SectorSync
 			}
 
 			var closest = goodSectors
-				.OrderBy(sector => CalculateSectorScore(sector, _sectorDetector._attachedRigidbody)).First();
+				.MinBy(sector => CalculateSectorScore(sector, _sectorDetector._attachedRigidbody));
 
 			if (inASector)
 			{

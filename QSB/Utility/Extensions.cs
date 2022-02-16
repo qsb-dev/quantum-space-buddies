@@ -19,14 +19,16 @@ namespace QSB.Utility
 
 		public static GameObject InstantiateInactive(this GameObject original)
 		{
+			if (!original.activeSelf)
+			{
+				return Object.Instantiate(original);
+			}
+
 			original.SetActive(false);
 			var copy = Object.Instantiate(original);
 			original.SetActive(true);
 			return copy;
 		}
-
-		public static Transform InstantiateInactive(this Transform original) =>
-			original.gameObject.InstantiateInactive().transform;
 
 		#endregion
 
@@ -92,6 +94,66 @@ namespace QSB.Utility
 			{
 				action(item);
 			}
+		}
+
+		public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+		{
+			var comparer = Comparer<TKey>.Default;
+			var yk = default(TKey);
+			var y = default(TSource);
+			var hasValue = false;
+			foreach (var x in source)
+			{
+				var xk = keySelector(x);
+				if (!hasValue)
+				{
+					hasValue = true;
+					yk = xk;
+					y = x;
+				}
+				else if (comparer.Compare(xk, yk) < 0)
+				{
+					yk = xk;
+					y = x;
+				}
+			}
+
+			if (!hasValue)
+			{
+				throw new InvalidOperationException("Sequence contains no elements");
+			}
+
+			return y;
+		}
+
+		public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+		{
+			var comparer = Comparer<TKey>.Default;
+			var yk = default(TKey);
+			var y = default(TSource);
+			var hasValue = false;
+			foreach (var x in source)
+			{
+				var xk = keySelector(x);
+				if (!hasValue)
+				{
+					hasValue = true;
+					yk = xk;
+					y = x;
+				}
+				else if (comparer.Compare(xk, yk) > 0)
+				{
+					yk = xk;
+					y = x;
+				}
+			}
+
+			if (!hasValue)
+			{
+				throw new InvalidOperationException("Sequence contains no elements");
+			}
+
+			return y;
 		}
 
 		public static int IndexOf<T>(this T[] array, T value) => Array.IndexOf(array, value);
