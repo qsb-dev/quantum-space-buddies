@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.SectorSync;
 using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
@@ -26,7 +25,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
-			SectorDetector.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe);
+			SectorDetector.Init(Locator.GetProbe().GetSectorDetector());
 
 			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
