@@ -75,10 +75,20 @@ namespace QSB.WorldSync
 			}
 
 			await _managersBuilding.Values;
+			if (_cts == null)
+			{
+				return;
+			}
+
 			AllObjectsAdded = true;
 			DebugLog.DebugWrite("World Objects added.", MessageType.Success);
 
 			await _objectsIniting.Values;
+			if (_cts == null)
+			{
+				return;
+			}
+
 			AllObjectsReady = true;
 			DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
 
