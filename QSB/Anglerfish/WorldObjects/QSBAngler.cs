@@ -37,13 +37,8 @@ namespace QSB.Anglerfish.WorldObjects
 			}
 		}
 
-		public override void SendInitialState(uint to)
-		{
-			if (TransformSync.hasAuthority)
-			{
-				this.SendMessage(new AnglerDataMessage(this) { To = to });
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			this.SendMessage(new AnglerDataMessage(this) { To = to });
 
 		public void UpdateTargetVelocity()
 		{
