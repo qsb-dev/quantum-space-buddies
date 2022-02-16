@@ -72,8 +72,8 @@ namespace QSB.Syncs.Occasional
 			var pos = ReferenceTransform.FromRelPos(transform.position);
 			AttachedRigidbody.SetPosition(pos);
 			AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
-			AttachedRigidbody.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
-			AttachedRigidbody.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
+			AttachedRigidbody.SetVelocity(ReferenceRigidbody.FromRelVel(_relativeVelocity, pos));
+			AttachedRigidbody.SetAngularVelocity(ReferenceRigidbody.FromRelAngVel(_relativeAngularVelocity));
 
 			Move();
 		}

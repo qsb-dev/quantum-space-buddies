@@ -278,7 +278,7 @@ namespace QSB.Syncs
 			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
 		}
 
-		public void SetReferenceTransform(Transform referenceTransform)
+		public virtual void SetReferenceTransform(Transform referenceTransform)
 		{
 			if (ReferenceTransform == referenceTransform)
 			{

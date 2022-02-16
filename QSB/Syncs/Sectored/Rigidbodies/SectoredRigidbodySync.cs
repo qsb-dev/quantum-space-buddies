@@ -17,6 +17,7 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 		private Vector3 _prevAngularVelocity;
 
 		public OWRigidbody AttachedRigidbody { get; private set; }
+		public OWRigidbody ReferenceRigidbody { get; private set; }
 
 		protected abstract OWRigidbody InitAttachedRigidbody();
 
@@ -24,6 +25,17 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 		{
 			AttachedRigidbody = InitAttachedRigidbody();
 			return AttachedRigidbody ? AttachedRigidbody.transform : null;
+		}
+
+		public override void SetReferenceTransform(Transform referenceTransform)
+		{
+			if (ReferenceTransform == referenceTransform)
+			{
+				return;
+			}
+
+			base.SetReferenceTransform(referenceTransform);
+			ReferenceRigidbody = ReferenceTransform ? ReferenceTransform.GetAttachedOWRigidbody() : null;
 		}
 
 		protected override void UpdatePrevData()
@@ -57,8 +69,8 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 
 			transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());
 			transform.rotation = ReferenceTransform.ToRelRot(AttachedRigidbody.GetRotation());
-			_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelVel(AttachedRigidbody.GetVelocity(), AttachedRigidbody.GetPosition());
-			_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
+			_relativeVelocity = ReferenceRigidbody.ToRelVel(AttachedRigidbody.GetVelocity(), AttachedRigidbody.GetPosition());
+			_relativeAngularVelocity = ReferenceRigidbody.ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
 		}
 
 		protected override void ApplyToAttached()
@@ -84,8 +96,8 @@ namespace QSB.Syncs.Sectored.Rigidbodies
 			AttachedRigidbody.MoveToPosition(positionToSet);
 			AttachedRigidbody.MoveToRotation(rotationToSet);
 
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, targetPos);
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity);
+			var targetVelocity = ReferenceRigidbody.FromRelVel(_relativeVelocity, targetPos);
+			var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(_relativeAngularVelocity);
 
 			AttachedRigidbody.SetVelocity(targetVelocity);
 			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
