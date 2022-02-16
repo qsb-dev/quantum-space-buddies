@@ -111,7 +111,7 @@ namespace QSB.Player
 				return null;
 			}
 
-			return playerList.Where(x => x.IsReady && x.Body != null).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
+			return playerList.Where(x => x.IsReady && x.Body != null).MinBy(x => Vector3.Distance(x.Body.transform.position, worldPoint));
 		}
 
 		public static IEnumerable<Tuple<PlayerInfo, IQSBItem>> GetPlayerCarryItems()

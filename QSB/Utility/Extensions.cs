@@ -19,15 +19,15 @@ namespace QSB.Utility
 
 		public static GameObject InstantiateInactive(this GameObject original)
 		{
-			if (original.activeSelf)
+			if (!original.activeSelf)
 			{
-				original.SetActive(false);
-				var copy = Object.Instantiate(original);
-				original.SetActive(true);
-				return copy;
+				return Object.Instantiate(original);
 			}
 
-			return Object.Instantiate(original);
+			original.SetActive(false);
+			var copy = Object.Instantiate(original);
+			original.SetActive(true);
+			return copy;
 		}
 
 		#endregion
@@ -94,6 +94,41 @@ namespace QSB.Utility
 			{
 				action(item);
 			}
+		}
+
+		public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+		{
+			var comparer = Comparer<TKey>.Default;
+			var y = default(TSource);
+			var yk = default(TKey);
+			foreach (var x in source)
+			{
+				var xk = keySelector(x);
+				if (xk != null && (yk == null || comparer.Compare(xk, yk) < 0))
+				{
+					y = x;
+					yk = xk;
+				}
+			}
+
+			return y;
+		}
+
+		public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+		{
+			var comparer = Comparer<TKey>.Default;
+			var y = default(TSource);
+			var yk = default(TKey);
+			foreach (var x in source)
+			{
+				var xk = keySelector(x);
+				if (xk != null && (yk == null || comparer.Compare(xk, yk) > 0))
+				{
+					yk = xk;
+				}
+			}
+
+			return y;
 		}
 
 		public static int IndexOf<T>(this T[] array, T value) => Array.IndexOf(array, value);
