@@ -9,6 +9,8 @@ namespace QSB.Player
 	{
 		public static void Create(PlayerInfo player, bool joining)
 		{
+			return;
+
 			var go = new GameObject(nameof(JoinLeaveSingularity));
 			go.SetActive(false);
 			var joinLeaveSingularity = go.AddComponent<JoinLeaveSingularity>();
