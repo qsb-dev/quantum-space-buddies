@@ -22,11 +22,6 @@ namespace QSB.Utility
 				return;
 			}
 
-			if (!NetworkClient.ready)
-			{
-				return;
-			}
-
 			if (NetworkTime.localTime >= _lastSendTime + SendInterval)
 			{
 				_lastSendTime = NetworkTime.localTime;
@@ -55,11 +50,6 @@ namespace QSB.Utility
 		public void SendInitialState(uint to)
 		{
 			if (!hasAuthority)
-			{
-				return;
-			}
-
-			if (!NetworkClient.ready)
 			{
 				return;
 			}
