@@ -52,13 +52,8 @@ namespace QSB.TriggerSync.WorldObjects
 			QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 		}
 
-		public override void SendInitialState(uint to)
-		{
-			if (QSBCore.IsHost)
-			{
-				((IQSBTrigger)this).SendMessage(new TriggerInitialStateMessage(Occupants) { To = to });
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			((IQSBTrigger)this).SendMessage(new TriggerInitialStateMessage(Occupants) { To = to });
 
 		protected void OnEnterEvent(GameObject hitObj)
 		{

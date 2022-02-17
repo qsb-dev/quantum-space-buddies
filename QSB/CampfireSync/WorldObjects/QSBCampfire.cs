@@ -6,13 +6,8 @@ namespace QSB.CampfireSync.WorldObjects
 {
 	public class QSBCampfire : WorldObject<Campfire>
 	{
-		public override void SendInitialState(uint to)
-		{
-			if (QSBCore.IsHost)
-			{
-				this.SendMessage(new CampfireStateMessage(GetState()) { To = to });
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			this.SendMessage(new CampfireStateMessage(GetState()) { To = to });
 
 		public void StartRoasting()
 			=> AttachedObject.StartRoasting();

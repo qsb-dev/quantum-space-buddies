@@ -6,17 +6,16 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 {
 	public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
 	{
-		private const float PositionMovedThreshold = 0.05f;
-		private const float AngleRotatedThreshold = 0.05f;
 		private const float VelocityChangeThreshold = 0.05f;
-		private const float AngVelocityChangeThreshold = 0.05f;
+		private const float AngularVelocityChangeThreshold = 0.05f;
 
-		protected Vector3 _relativeVelocity;
-		protected Vector3 _relativeAngularVelocity;
+		protected Vector3 Velocity;
+		protected Vector3 AngularVelocity;
 		private Vector3 _prevVelocity;
 		private Vector3 _prevAngularVelocity;
 
-		protected OWRigidbody AttachedRigidbody { get; private set; }
+		public OWRigidbody AttachedRigidbody { get; private set; }
+		public OWRigidbody ReferenceRigidbody { get; private set; }
 
 		protected abstract OWRigidbody InitAttachedRigidbody();
 
@@ -26,33 +25,44 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 			return AttachedRigidbody ? AttachedRigidbody.transform : null;
 		}
 
+		public override void SetReferenceTransform(Transform referenceTransform)
+		{
+			if (ReferenceTransform == referenceTransform)
+			{
+				return;
+			}
+
+			base.SetReferenceTransform(referenceTransform);
+			ReferenceRigidbody = ReferenceTransform ? ReferenceTransform.GetAttachedOWRigidbody() : null;
+		}
+
 		protected override void UpdatePrevData()
 		{
 			base.UpdatePrevData();
-			_prevVelocity = _relativeVelocity;
-			_prevAngularVelocity = _relativeAngularVelocity;
+			_prevVelocity = Velocity;
+			_prevAngularVelocity = AngularVelocity;
 		}
 
 		protected override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(_relativeVelocity);
-			writer.Write(_relativeAngularVelocity);
+			writer.Write(Velocity);
+			writer.Write(AngularVelocity);
 		}
 
 		protected override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			_relativeVelocity = reader.ReadVector3();
-			_relativeAngularVelocity = reader.ReadVector3();
+			Velocity = reader.ReadVector3();
+			AngularVelocity = reader.ReadVector3();
 		}
 
 		protected override void GetFromAttached()
 		{
 			transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());
 			transform.rotation = ReferenceTransform.ToRelRot(AttachedRigidbody.GetRotation());
-			_relativeVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelVel(AttachedRigidbody.GetVelocity(), AttachedRigidbody.GetPosition());
-			_relativeAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
+			Velocity = ReferenceRigidbody.ToRelVel(AttachedRigidbody.GetVelocity(), AttachedRigidbody.GetPosition());
+			AngularVelocity = ReferenceRigidbody.ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
 		}
 
 		protected override void ApplyToAttached()
@@ -72,36 +82,16 @@ namespace QSB.Syncs.Unsectored.Rigidbodies
 			AttachedRigidbody.MoveToPosition(positionToSet);
 			AttachedRigidbody.MoveToRotation(rotationToSet);
 
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, targetPos);
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity);
+			var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
+			var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
 
 			AttachedRigidbody.SetVelocity(targetVelocity);
 			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
 		}
 
-		protected override bool HasChanged()
-		{
-			if (Vector3.Distance(transform.position, _prevPosition) > PositionMovedThreshold)
-			{
-				return true;
-			}
-
-			if (Quaternion.Angle(transform.rotation, _prevRotation) > AngleRotatedThreshold)
-			{
-				return true;
-			}
-
-			if (Vector3.Distance(_relativeVelocity, _prevVelocity) > VelocityChangeThreshold)
-			{
-				return true;
-			}
-
-			if (Vector3.Distance(_relativeAngularVelocity, _prevAngularVelocity) > AngVelocityChangeThreshold)
-			{
-				return true;
-			}
-
-			return false;
-		}
+		protected override bool HasChanged() =>
+			base.HasChanged() ||
+			Vector3.Distance(Velocity, _prevVelocity) > VelocityChangeThreshold ||
+			Vector3.Distance(AngularVelocity, _prevAngularVelocity) > AngularVelocityChangeThreshold;
 	}
 }

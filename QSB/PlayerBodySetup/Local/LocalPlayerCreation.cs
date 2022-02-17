@@ -22,7 +22,7 @@ namespace QSB.PlayerBodySetup.Local
 		{
 			DebugLog.DebugWrite($"CREATE PLAYER");
 
-			sectorDetector.Init(Locator.GetPlayerSectorDetector(), TargetType.Player);
+			sectorDetector.Init(Locator.GetPlayerSectorDetector());
 
 			// player body
 			var playerBody = Locator.GetPlayerTransform();

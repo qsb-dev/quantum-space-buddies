@@ -73,13 +73,8 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void SendInitialState(uint to)
-		{
-			if (QSBCore.IsHost)
-			{
-				((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(ControllingPlayer) { To = to });
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(ControllingPlayer) { To = to });
 
 		public List<Shape> GetAttachedShapes()
 		{

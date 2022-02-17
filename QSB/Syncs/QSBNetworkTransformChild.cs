@@ -10,8 +10,11 @@ namespace QSB.Syncs
 
 		protected override float SendInterval => 0.05f;
 
-		protected Vector3 _prevPosition;
-		protected Quaternion _prevRotation;
+		private const float PositionChangeThreshold = 0.05f;
+		private const float RotationChangeThreshold = 0.05f;
+
+		private Vector3 _prevPosition;
+		private Quaternion _prevRotation;
 
 		protected override void UpdatePrevData()
 		{
@@ -20,8 +23,8 @@ namespace QSB.Syncs
 		}
 
 		protected override bool HasChanged() =>
-			Vector3.Distance(Target.localPosition, _prevPosition) > 1E-05f ||
-			Quaternion.Angle(Target.localRotation, _prevRotation) > 1E-05f;
+			Vector3.Distance(Target.localPosition, _prevPosition) > PositionChangeThreshold ||
+			Quaternion.Angle(Target.localRotation, _prevRotation) > RotationChangeThreshold;
 
 		protected override void Serialize(NetworkWriter writer)
 		{

@@ -6,13 +6,8 @@ namespace QSB.TornadoSync.WorldObjects
 {
 	public class QSBTornado : WorldObject<TornadoController>
 	{
-		public override void SendInitialState(uint to)
-		{
-			if (QSBCore.IsHost)
-			{
-				this.SendMessage(new TornadoFormStateMessage(FormState) { To = to });
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			this.SendMessage(new TornadoFormStateMessage(FormState) { To = to });
 
 		public bool FormState
 		{

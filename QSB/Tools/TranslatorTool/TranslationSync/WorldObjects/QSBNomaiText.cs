@@ -10,14 +10,9 @@ namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects
 {
 	internal class QSBNomaiText : WorldObject<NomaiText>
 	{
-		public override void SendInitialState(uint to)
-		{
-			if (QSBCore.IsHost)
-			{
-				GetTranslatedIds().ForEach(id =>
-					this.SendMessage(new SetAsTranslatedMessage(id) { To = to }));
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			GetTranslatedIds().ForEach(id =>
+				this.SendMessage(new SetAsTranslatedMessage(id) { To = to }));
 
 		public void SetAsTranslated(int id) => AttachedObject.SetAsTranslated(id);
 

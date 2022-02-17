@@ -118,8 +118,8 @@ namespace QSB.Syncs
 		public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
 			+ $"{netId}:{GetType().Name} ({Name})";
 
-		protected virtual float DistanceLeeway => 5f;
-		private float _previousDistance;
+		protected virtual float DistanceChangeThreshold => 5f;
+		private float _prevDistance;
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
@@ -219,7 +219,6 @@ namespace QSB.Syncs
 			if (_pauseTimer > 0)
 			{
 				_pauseTimer = Mathf.Max(0, _pauseTimer - Time.unscaledDeltaTime);
-				base.Update();
 				return;
 			}
 
@@ -230,14 +229,11 @@ namespace QSB.Syncs
 			else if (IsInitialized && !CheckReady())
 			{
 				SafeUninit();
-				base.Update();
-				return;
 			}
 
 			IsValid = CheckValid();
 			if (!IsValid)
 			{
-				base.Update();
 				return;
 			}
 
@@ -248,8 +244,7 @@ namespace QSB.Syncs
 
 			if (!hasAuthority && UseInterpolation)
 			{
-				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
-				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+				Interpolate();
 			}
 
 			if (hasAuthority)
@@ -265,20 +260,24 @@ namespace QSB.Syncs
 			base.Update();
 		}
 
-		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		private void Interpolate()
 		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (Mathf.Abs(distance - _previousDistance) > DistanceLeeway)
+			var distance = Vector3.Distance(SmoothPosition, transform.position);
+			if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold)
 			{
-				_previousDistance = distance;
-				return targetPosition;
+				SmoothPosition = transform.position;
+				SmoothRotation = transform.rotation;
+			}
+			else
+			{
+				SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
 			}
 
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
+			_prevDistance = distance;
 		}
 
-		public void SetReferenceTransform(Transform referenceTransform)
+		public virtual void SetReferenceTransform(Transform referenceTransform)
 		{
 			if (ReferenceTransform == referenceTransform)
 			{
@@ -287,7 +286,7 @@ namespace QSB.Syncs
 
 			ReferenceTransform = referenceTransform;
 
-			if (!hasAuthority && UseInterpolation)
+			if (!hasAuthority && UseInterpolation && AttachedTransform)
 			{
 				if (IsPlayerObject)
 				{

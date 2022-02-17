@@ -16,16 +16,13 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects
 
 		public override void SendInitialState(uint to)
 		{
-			if (QSBCore.IsHost)
+			if (AttachedObject._preLaunchProbeProxy.activeSelf)
 			{
-				if (AttachedObject._preLaunchProbeProxy.activeSelf)
-				{
-					this.SendMessage(new RetrieveProbeMessage(false));
-				}
-				else
-				{
-					this.SendMessage(new LaunchProbeMessage(false));
-				}
+				this.SendMessage(new RetrieveProbeMessage(false));
+			}
+			else
+			{
+				this.SendMessage(new LaunchProbeMessage(false));
 			}
 		}
 

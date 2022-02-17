@@ -9,15 +9,12 @@ namespace QSB.ZeroGCaveSync.WorldObjects
 	{
 		public override void SendInitialState(uint to)
 		{
-			if (QSBCore.IsHost)
+			if (!AttachedObject._damaged)
 			{
-				if (!AttachedObject._damaged)
-				{
-					this.SendMessage(new SatelliteNodeRepairedMessage());
-				}
-
-				this.SendMessage(new SatelliteNodeRepairTickMessage(AttachedObject._repairFraction));
+				this.SendMessage(new SatelliteNodeRepairedMessage());
 			}
+
+			this.SendMessage(new SatelliteNodeRepairTickMessage(AttachedObject._repairFraction));
 		}
 
 		public void SetRepaired()

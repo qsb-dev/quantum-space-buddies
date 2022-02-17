@@ -26,13 +26,8 @@ namespace QSB.GeyserSync.WorldObjects
 			}
 		}
 
-		public override void SendInitialState(uint to)
-		{
-			if (QSBCore.IsHost)
-			{
-				this.SendMessage(new GeyserMessage(AttachedObject._isActive));
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			this.SendMessage(new GeyserMessage(AttachedObject._isActive));
 
 		private void OnActivate() => this.SendMessage(new GeyserMessage(true));
 		private void OnDeactivate() => this.SendMessage(new GeyserMessage(false));

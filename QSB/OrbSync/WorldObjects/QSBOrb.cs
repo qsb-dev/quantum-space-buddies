@@ -36,12 +36,9 @@ namespace QSB.OrbSync.WorldObjects
 
 		public override void SendInitialState(uint to)
 		{
-			if (TransformSync.hasAuthority)
-			{
-				this.SendMessage(new OrbDragMessage(AttachedObject._isBeingDragged) { To = to });
-				var slotIndex = AttachedObject._slots.IndexOf(AttachedObject._occupiedSlot);
-				this.SendMessage(new OrbSlotMessage(slotIndex, false) { To = to });
-			}
+			this.SendMessage(new OrbDragMessage(AttachedObject._isBeingDragged) { To = to });
+			var slotIndex = AttachedObject._slots.IndexOf(AttachedObject._occupiedSlot);
+			this.SendMessage(new OrbSlotMessage(slotIndex, false) { To = to });
 		}
 
 		public void SetDragging(bool value)

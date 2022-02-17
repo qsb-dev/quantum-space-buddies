@@ -9,6 +9,7 @@ namespace QSB.Utility
 		protected virtual bool UseReliableRpc => false;
 
 		private double _lastSendTime;
+		private byte[] _lastKnownData;
 
 		protected abstract bool HasChanged();
 		protected abstract void UpdatePrevData();
@@ -18,11 +19,6 @@ namespace QSB.Utility
 		protected virtual void Update()
 		{
 			if (!hasAuthority)
-			{
-				return;
-			}
-
-			if (!NetworkClient.ready)
 			{
 				return;
 			}
@@ -49,29 +45,24 @@ namespace QSB.Utility
 				{
 					CmdSendDataUnreliable(data);
 				}
+
+				if (QSBCore.IsHost)
+				{
+					_lastKnownData ??= new byte[data.Count];
+					Array.Copy(data.Array!, data.Offset, _lastKnownData, 0, data.Count);
+				}
 			}
 		}
 
-		public void SendInitialState(uint to)
+		/// <summary>
+		/// called on the host to send the last known data to a new client
+		/// </summary>
+		public void SendInitialState(NetworkConnectionToClient target)
 		{
-			if (!hasAuthority)
+			if (_lastKnownData != null)
 			{
-				return;
+				TargetSendInitialData(target, new ArraySegment<byte>(_lastKnownData));
 			}
-
-			if (!NetworkClient.ready)
-			{
-				return;
-			}
-
-			_lastSendTime = NetworkTime.localTime;
-
-			using var writer = NetworkWriterPool.GetWriter();
-			Serialize(writer);
-			UpdatePrevData();
-
-			var data = writer.ToArraySegment();
-			CmdSendInitialData(to, data);
 		}
 
 		[Command(channel = Channels.Reliable, requiresAuthority = true)]
@@ -86,14 +77,17 @@ namespace QSB.Utility
 		[ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
 		private void RpcSendDataUnreliable(ArraySegment<byte> data) => OnData(data);
 
-		[Command(channel = Channels.Reliable, requiresAuthority = true)]
-		private void CmdSendInitialData(uint to, ArraySegment<byte> data) => TargetSendInitialData(to.GetNetworkConnection(), data);
-
 		[TargetRpc(channel = Channels.Reliable)]
 		private void TargetSendInitialData(NetworkConnection target, ArraySegment<byte> data) => OnData(data);
 
 		private void OnData(ArraySegment<byte> data)
 		{
+			if (QSBCore.IsHost)
+			{
+				_lastKnownData ??= new byte[data.Count];
+				Array.Copy(data.Array!, data.Offset, _lastKnownData, 0, data.Count);
+			}
+
 			using var reader = NetworkReaderPool.GetReader(data);
 			UpdatePrevData();
 			Deserialize(reader);
