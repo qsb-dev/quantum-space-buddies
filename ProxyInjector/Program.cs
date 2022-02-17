@@ -19,6 +19,7 @@ namespace ProxyInjector
 			var gameDll = args[1];
 
 			var resolver = new DefaultAssemblyResolver();
+			resolver.AddSearchDirectory(Path.GetDirectoryName(qsbDll));
 			resolver.AddSearchDirectory(Path.GetDirectoryName(gameDll));
 			using var qsbModule = ModuleDefinition.ReadModule(qsbDll, new ReaderParameters
 			{
