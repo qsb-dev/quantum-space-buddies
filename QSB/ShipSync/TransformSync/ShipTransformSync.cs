@@ -48,8 +48,8 @@ namespace QSB.ShipSync.TransformSync
 				AttachedRigidbody.SetRotation(targetRot);
 			}
 
-			var targetVelocity = ReferenceRigidbody.FromRelVel(_relativeVelocity, targetPos);
-			var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(_relativeAngularVelocity);
+			var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
+			var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
 
 			SetVelocity(AttachedRigidbody, targetVelocity);
 			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
