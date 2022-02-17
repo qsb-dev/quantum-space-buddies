@@ -119,9 +119,7 @@ namespace QSB.Syncs
 			+ $"{netId}:{GetType().Name} ({Name})";
 
 		protected virtual float DistanceChangeThreshold => 5f;
-		private const float AngleChangeThreshold = 90f;
-		private float _prevDistance = float.MinValue;
-		private float _prevAngle = float.MinValue;
+		private float _prevDistance;
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
@@ -265,16 +263,18 @@ namespace QSB.Syncs
 		private void Interpolate()
 		{
 			var distance = Vector3.Distance(SmoothPosition, transform.position);
-			SmoothPosition = Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold ?
-				transform.position :
-				Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-			_prevDistance = distance;
+			if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold)
+			{
+				SmoothPosition = transform.position;
+				SmoothRotation = transform.rotation;
+			}
+			else
+			{
+				SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+			}
 
-			var angle = Quaternion.Angle(SmoothRotation, transform.rotation);
-			SmoothRotation = Mathf.Abs(angle - _prevAngle) > AngleChangeThreshold ?
-				transform.rotation :
-				QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
-			_prevAngle = angle;
+			_prevDistance = distance;
 		}
 
 		public virtual void SetReferenceTransform(Transform referenceTransform)
