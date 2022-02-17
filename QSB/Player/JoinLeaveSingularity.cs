@@ -3,39 +3,53 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.Player
 {
-	public static class JoinLeaveSingularity
+	public class JoinLeaveSingularity : MonoBehaviour
 	{
-		public static async UniTaskVoid Create(PlayerInfo player, bool joining)
+		public static void Create(PlayerInfo player, bool joining)
 		{
 			if (player.IsLocalPlayer)
 			{
 				return;
 			}
 
-			if (joining)
+			if (joining &&
+				(PlayerTransformSync.LocalInstance == null ||
+				player.PlayerId < QSBPlayerManager.LocalPlayerId))
 			{
-				if (PlayerTransformSync.LocalInstance == null ||
-					player.PlayerId < QSBPlayerManager.LocalPlayerId)
-				{
-					// player was here before we joined
-					return;
-				}
-
-				await UniTask.WaitUntil(() => player.Body);
-				player.Body.SetActive(false);
-				await UniTask.WaitUntil(() => player.TransformSync.ReferenceTransform);
+				// player was here before we joined
+				return;
 			}
 
-			DebugLog.DebugWrite($"WARP {player.PlayerId}");
+			DebugLog.DebugWrite($"WARP TASK {player.PlayerId}");
 
-			var go = new GameObject(nameof(JoinLeaveSingularity));
-			go.transform.parent = player.TransformSync.ReferenceTransform;
-			go.transform.localPosition = player.TransformSync.transform.position;
-			go.transform.localRotation = player.TransformSync.transform.rotation;
+			var joinLeaveSingularity = new GameObject(nameof(JoinLeaveSingularity)).AddComponent<JoinLeaveSingularity>();
+			var ct = joinLeaveSingularity.GetCancellationTokenOnDestroy();
+			UniTask.Create(async () =>
+			{
+				await joinLeaveSingularity.Run(player, joining, ct).SuppressCancellationThrow();
+				Destroy(joinLeaveSingularity.gameObject);
+
+				DebugLog.DebugWrite($"WARP TASK DONE {player.PlayerId}");
+			});
+		}
+
+		private async UniTask Run(PlayerInfo player, bool joining, CancellationToken ct)
+		{
+			if (joining)
+			{
+				await UniTask.WaitUntil(() => player.Body, cancellationToken: ct);
+				player.Body.SetActive(false);
+				await UniTask.WaitUntil(() => player.TransformSync.ReferenceTransform, cancellationToken: ct);
+			}
+
+			transform.parent = player.TransformSync.ReferenceTransform;
+			transform.localPosition = player.TransformSync.transform.position;
+			transform.localRotation = player.TransformSync.transform.rotation;
 
 			#region fake player
 
@@ -45,7 +59,7 @@ namespace QSB.Player
 				player.Body.SetActive(false);
 
 				fakePlayer = player.Body.InstantiateInactive();
-				fakePlayer.transform.parent = go.transform;
+				fakePlayer.transform.parent = transform;
 				fakePlayer.transform.localPosition = Vector3.zero;
 				fakePlayer.transform.localRotation = Quaternion.identity;
 				fakePlayer.transform.localScale = Vector3.one;
@@ -57,7 +71,7 @@ namespace QSB.Player
 					}
 					else if (component is not (Transform or Renderer))
 					{
-						Object.Destroy(component);
+						Destroy(component);
 					}
 				}
 
@@ -70,7 +84,7 @@ namespace QSB.Player
 
 			var effect = QSBWorldSync.GetUnityObjects<GravityCannonController>().First()._warpEffect;
 			effect = effect.gameObject.InstantiateInactive().GetComponent<SingularityWarpEffect>();
-			effect.transform.parent = go.transform;
+			effect.transform.parent = transform;
 			effect.transform.localPosition = Vector3.zero;
 			effect.transform.localRotation = Quaternion.identity;
 			effect.transform.localScale = Vector3.one;
@@ -113,17 +127,15 @@ namespace QSB.Player
 
 			var tcs = new UniTaskCompletionSource();
 			effect.OnWarpComplete += () => tcs.TrySetResult();
-			await tcs.Task;
+			await tcs.Task.AttachExternalCancellation(ct);
 			DebugLog.DebugWrite($"WARP DONE {player.PlayerId}");
 
 			if (!joining)
 			{
-				Object.Destroy(fakePlayer);
+				Destroy(fakePlayer);
 			}
 
-			await UniTask.WaitUntil(() => !singularity._owOneShotSource.isPlaying);
-
-			Object.Destroy(go);
+			await UniTask.WaitUntil(() => !singularity._owOneShotSource.isPlaying, cancellationToken: ct);
 		}
 	}
 }
