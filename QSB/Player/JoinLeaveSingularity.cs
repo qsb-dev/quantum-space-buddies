@@ -25,12 +25,12 @@ namespace QSB.Player
 				return;
 			}
 
-			DebugLog.DebugWrite($"WARP TASK {player.PlayerId}");
-
 			var go = new GameObject(nameof(JoinLeaveSingularity));
 			var ct = go.GetCancellationTokenOnDestroy();
 			UniTask.Create(async () =>
 			{
+				DebugLog.DebugWrite($"WARP TASK {player.PlayerId}");
+
 				await Run(go.transform, player, joining, ct).SuppressCancellationThrow();
 				Object.Destroy(go);
 
@@ -125,17 +125,16 @@ namespace QSB.Player
 				effect.WarpObjectOut(0);
 			}
 
-			var tcs = new UniTaskCompletionSource();
-			effect.OnWarpComplete += () => tcs.TrySetResult();
-			await tcs.Task.AttachExternalCancellation(ct);
-			DebugLog.DebugWrite($"WARP DONE {player.PlayerId}");
-
-			if (!joining)
+			effect.OnWarpComplete += () =>
 			{
-				Object.Destroy(fakePlayer);
-			}
+				DebugLog.DebugWrite($"WARP DONE {player.PlayerId}");
 
-			await UniTask.WaitUntil(() => !singularity._owOneShotSource.isPlaying, cancellationToken: ct);
+				if (!joining)
+				{
+					Object.Destroy(fakePlayer);
+				}
+			};
+			await UniTask.WaitUntil(() => !effect.enabled && !singularity._owOneShotSource.isPlaying, cancellationToken: ct);
 		}
 	}
 }
