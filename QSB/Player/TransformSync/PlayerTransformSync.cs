@@ -89,6 +89,10 @@ namespace QSB.Player.TransformSync
 		protected override void GetFromAttached()
 		{
 			base.GetFromAttached();
+			if (!ReferenceTransform)
+			{
+				return;
+			}
 
 			GetFromChild(_visibleStickPivot, _networkStickPivot);
 			GetFromChild(_visibleStickTip, _networkStickTip);
@@ -99,6 +103,10 @@ namespace QSB.Player.TransformSync
 		protected override void ApplyToAttached()
 		{
 			base.ApplyToAttached();
+			if (!ReferenceTransform)
+			{
+				return;
+			}
 
 			ApplyToChild(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
 			ApplyToChild(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
