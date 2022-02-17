@@ -43,8 +43,8 @@ namespace QSB.QuantumSync.WorldObjects
 
 			if (HostControls)
 			{
-				// smallest player id is the host
-				ControllingPlayer = QSBPlayerManager.PlayerList.Min(x => x.PlayerId);
+				// first player is the host
+				ControllingPlayer = QSBPlayerManager.PlayerList[0].PlayerId;
 				IsEnabled = true;
 				return;
 			}
