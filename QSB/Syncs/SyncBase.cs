@@ -231,7 +231,6 @@ namespace QSB.Syncs
 			else if (IsInitialized && !CheckReady())
 			{
 				SafeUninit();
-				return;
 			}
 
 			IsValid = CheckValid();
@@ -245,17 +244,22 @@ namespace QSB.Syncs
 				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}", MessageType.Warning);
 			}
 
+			if (!hasAuthority && UseInterpolation)
+			{
+				Interpolate();
+			}
+
 			if (hasAuthority)
 			{
 				GetFromAttached();
-				base.Update();
 			}
 			else if (!OnlyApplyOnDeserialize || _shouldApply)
 			{
-				Interpolate();
 				_shouldApply = false;
 				ApplyToAttached();
 			}
+
+			base.Update();
 		}
 
 		private void Interpolate()
