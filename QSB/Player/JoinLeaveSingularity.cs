@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.Player
 {
-	public class JoinLeaveSingularity : MonoBehaviour
+	public static class JoinLeaveSingularity
 	{
 		public static void Create(PlayerInfo player, bool joining)
 		{
@@ -27,18 +27,18 @@ namespace QSB.Player
 
 			DebugLog.DebugWrite($"WARP TASK {player.PlayerId}");
 
-			var joinLeaveSingularity = new GameObject(nameof(JoinLeaveSingularity)).AddComponent<JoinLeaveSingularity>();
-			var ct = joinLeaveSingularity.GetCancellationTokenOnDestroy();
+			var go = new GameObject(nameof(JoinLeaveSingularity));
+			var ct = go.GetCancellationTokenOnDestroy();
 			UniTask.Create(async () =>
 			{
-				await joinLeaveSingularity.Run(player, joining, ct).SuppressCancellationThrow();
-				Destroy(joinLeaveSingularity.gameObject);
+				await Run(go.transform, player, joining, ct).SuppressCancellationThrow();
+				Object.Destroy(go);
 
 				DebugLog.DebugWrite($"WARP TASK DONE {player.PlayerId}");
 			});
 		}
 
-		private async UniTask Run(PlayerInfo player, bool joining, CancellationToken ct)
+		private static async UniTask Run(Transform transform, PlayerInfo player, bool joining, CancellationToken ct)
 		{
 			if (joining)
 			{
@@ -71,7 +71,7 @@ namespace QSB.Player
 					}
 					else if (component is not (Transform or Renderer))
 					{
-						Destroy(component);
+						Object.Destroy(component);
 					}
 				}
 
@@ -132,7 +132,7 @@ namespace QSB.Player
 
 			if (!joining)
 			{
-				Destroy(fakePlayer);
+				Object.Destroy(fakePlayer);
 			}
 
 			await UniTask.WaitUntil(() => !singularity._owOneShotSource.isPlaying, cancellationToken: ct);
