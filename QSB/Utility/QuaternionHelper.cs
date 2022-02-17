@@ -11,6 +11,7 @@ namespace QSB.Utility
 			{
 				return rot;
 			}
+
 			// account for double-cover
 			var dot = Quaternion.Dot(rot, target);
 			var multi = dot > 0f ? 1f : -1f;
