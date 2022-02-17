@@ -1,66 +1,46 @@
-﻿using QSB.Utility;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.Player
 {
-	public class JoinLeaveSingularity : MonoBehaviour
+	public static class JoinLeaveSingularity
 	{
-		public static void Create(PlayerInfo player, bool joining)
+		public static async UniTaskVoid Create(PlayerInfo player, bool joining)
 		{
-			return;
+			DebugLog.DebugWrite($"WARP {player.TransformSync}");
+
+			player.SetVisible(false);
+
+			bool Predicate() => player.TransformSync.IsValid && player.TransformSync.ReferenceTransform;
+			if (!Predicate())
+			{
+				await UniTask.WaitUntil(Predicate);
+			}
 
 			var go = new GameObject(nameof(JoinLeaveSingularity));
-			go.SetActive(false);
-			var joinLeaveSingularity = go.AddComponent<JoinLeaveSingularity>();
-			joinLeaveSingularity._player = player;
-			joinLeaveSingularity._joining = joining;
-			go.SetActive(true);
-		}
-
-		private PlayerInfo _player;
-		private bool _joining;
-
-		private void Awake()
-		{
-			DebugLog.DebugWrite($"WARP {_player.TransformSync}");
-
-			transform.parent = _player.Body.transform.parent;
-			transform.localPosition = _player.Body.transform.localPosition;
-			transform.localRotation = _player.Body.transform.localRotation;
-			transform.localScale = _player.Body.transform.localScale;
+			go.transform.parent = player.TransformSync.ReferenceTransform;
+			go.transform.localPosition = player.TransformSync.transform.position;
+			go.transform.localRotation = player.TransformSync.transform.rotation;
 
 			#region fake player
 
-			var fakePlayer = _player.Body.InstantiateInactive();
-			fakePlayer.transform.parent = transform;
-			fakePlayer.transform.localPosition = Vector3.zero;
-			fakePlayer.transform.localRotation = Quaternion.identity;
-			fakePlayer.transform.localScale = Vector3.one;
-			foreach (var component in fakePlayer.GetComponentsInChildren<Component>(true))
-			{
-				if (component is Behaviour behaviour)
-				{
-					behaviour.enabled = false;
-				}
-				else if (component is not (Transform or Renderer))
-				{
-					Destroy(component);
-				}
-			}
-
+			player.SetVisible(true);
+			var fakePlayer = player.Body.transform.Find("REMOTE_Traveller_HEA_Player_v2")
+				.gameObject.InstantiateInactive();
+			fakePlayer.transform.SetParent(go.transform, false);
 			fakePlayer.SetActive(true);
+			player.SetVisible(false);
 
 			#endregion
 
-			_player.SetVisible(false);
-
 			#region effect
 
-			var referenceEffect = QSBWorldSync.GetUnityObjects<GravityCannonController>().First()._warpEffect;
-			var effectGo = referenceEffect.gameObject.InstantiateInactive();
-			effectGo.transform.parent = transform;
+			var effectGo = QSBWorldSync.GetUnityObjects<GravityCannonController>().First()._warpEffect
+				.gameObject.InstantiateInactive();
+			effectGo.transform.parent = go.transform;
 			effectGo.transform.localPosition = Vector3.zero;
 			effectGo.transform.localRotation = Quaternion.identity;
 			effectGo.transform.localScale = Vector3.one;
@@ -68,7 +48,6 @@ namespace QSB.Player
 			var effect = effectGo.GetComponent<SingularityWarpEffect>();
 			effect.enabled = true;
 			effect._warpedObjectGeometry = fakePlayer;
-			effect.OnWarpComplete += OnWarpComplete;
 
 			effect._singularity.enabled = true;
 			effect._singularity._startActive = false;
@@ -78,52 +57,36 @@ namespace QSB.Player
 
 			var renderer = effectGo.GetComponent<Renderer>();
 			renderer.material.SetFloat("_DistortFadeDist", 3);
-			renderer.material.SetFloat("_MassScale", _joining ? -1 : 1);
+			renderer.material.SetFloat("_MassScale", joining ? -1 : 1);
 			renderer.material.SetFloat("_MaxDistortRadius", 10);
 			renderer.transform.localScale = Vector3.one * 10;
 			renderer.material.SetFloat("_Radius", 1);
-			renderer.material.SetColor("_Color", _joining ? Color.white : Color.black);
+			renderer.material.SetColor("_Color", joining ? Color.white : Color.black);
 
 			effectGo.SetActive(true);
 
 			#endregion
 
-			Delay.RunNextFrame(() =>
-			{
-				if (_joining)
-				{
-					DebugLog.DebugWrite($"WARP IN {_player.TransformSync}");
-					effect.WarpObjectIn(0);
-				}
-				else
-				{
-					DebugLog.DebugWrite($"WARP OUT {_player.TransformSync}");
-					effect.WarpObjectOut(0);
-				}
-			});
-		}
+			await UniTask.WaitForEndOfFrame();
 
-		private void Update()
-		{
-			if (!_player.Body)
+			effect.OnWarpComplete += () =>
 			{
-				enabled = false;
-				return;
+				DebugLog.DebugWrite($"WARP DONE {player.TransformSync}");
+
+				Object.Destroy(go);
+
+				player.SetVisible(true);
+			};
+			if (joining)
+			{
+				DebugLog.DebugWrite($"WARP IN {player.TransformSync}");
+				effect.WarpObjectIn(0);
 			}
-
-			transform.parent = _player.Body.transform.parent;
-			transform.localPosition = _player.Body.transform.localPosition;
-			transform.localRotation = _player.Body.transform.localRotation;
-			transform.localScale = _player.Body.transform.localScale;
-		}
-
-		private void OnWarpComplete()
-		{
-			DebugLog.DebugWrite($"WARP DONE {_player.TransformSync}");
-
-			Destroy(gameObject);
-
-			_player.SetVisible(true);
+			else
+			{
+				DebugLog.DebugWrite($"WARP OUT {player.TransformSync}");
+				effect.WarpObjectOut(0);
+			}
 		}
 	}
 }

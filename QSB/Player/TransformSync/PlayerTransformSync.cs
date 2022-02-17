@@ -52,7 +52,7 @@ namespace QSB.Player.TransformSync
 		{
 			if (!isLocalPlayer)
 			{
-				JoinLeaveSingularity.Create(Player, false);
+				JoinLeaveSingularity.Create(Player, false).Forget();
 			}
 
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
