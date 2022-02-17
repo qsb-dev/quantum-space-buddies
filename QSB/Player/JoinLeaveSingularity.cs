@@ -25,16 +25,17 @@ namespace QSB.Player
 				return;
 			}
 
-			var go = new GameObject(nameof(JoinLeaveSingularity));
+			var go = new GameObject($"player {player.PlayerId} JoinLeaveSingularity");
 			var ct = go.GetCancellationTokenOnDestroy();
 			UniTask.Create(async () =>
 			{
-				DebugLog.DebugWrite($"WARP TASK {player.PlayerId}");
+				DebugLog.DebugWrite($"{go.name}: WARP TASK");
 
-				await Run(go.transform, player, joining, ct).SuppressCancellationThrow();
+				await go.name.Try("running warp task",
+					() => Run(go.transform, player, joining, ct));
 				Object.Destroy(go);
 
-				DebugLog.DebugWrite($"WARP TASK DONE {player.PlayerId}");
+				DebugLog.DebugWrite($"{go.name}: WARP TASK DONE");
 			});
 		}
 
@@ -116,18 +117,18 @@ namespace QSB.Player
 			if (joining)
 			{
 				player.Body.SetActive(true);
-				DebugLog.DebugWrite($"WARP IN {player.PlayerId}");
+				DebugLog.DebugWrite($"{transform.name}: WARP IN");
 				effect.WarpObjectIn(0);
 			}
 			else
 			{
-				DebugLog.DebugWrite($"WARP OUT {player.PlayerId}");
+				DebugLog.DebugWrite($"{transform.name}: WARP OUT");
 				effect.WarpObjectOut(0);
 			}
 
 			effect.OnWarpComplete += () =>
 			{
-				DebugLog.DebugWrite($"WARP DONE {player.PlayerId}");
+				DebugLog.DebugWrite($"{transform.name}: WARP DONE");
 
 				if (!joining)
 				{
