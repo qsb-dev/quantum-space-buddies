@@ -52,11 +52,10 @@ namespace QSB.PlayerBodySetup.Remote
 			REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = player.Name;
 			player._ditheringAnimator = REMOTE_Player_Body.GetComponent<DitheringAnimator>();
 			// get inactive renderers too
-			Delay.RunNextFrame(() =>
-				player._ditheringAnimator._renderers = player._ditheringAnimator
-					.GetComponentsInChildren<Renderer>(true)
-					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
-					.ToArray());
+			player._ditheringAnimator._renderers = player._ditheringAnimator
+				.GetComponentsInChildren<Renderer>(true)
+				.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
+				.ToArray();
 			player.AudioController = REMOTE_Player_Body.transform.Find("REMOTE_Audio_Player").GetComponent<QSBPlayerAudioController>();
 
 			/*
