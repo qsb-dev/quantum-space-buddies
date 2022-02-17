@@ -70,6 +70,7 @@ namespace QSB.PlayerBodySetup.Remote
 
 		public static void ReplaceMaterials(Transform rootObject)
 		{
+			/*
 			if (_materialDefinitions.Count == 0)
 			{
 				GenerateMaterialDefinitions();
@@ -82,6 +83,7 @@ namespace QSB.PlayerBodySetup.Remote
 					ReplaceMaterials(renderer, materialName, replacementMaterial);
 				}
 			}
+			*/
 		}
 	}
 }
