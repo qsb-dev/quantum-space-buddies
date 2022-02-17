@@ -219,7 +219,6 @@ namespace QSB.Syncs
 			if (_pauseTimer > 0)
 			{
 				_pauseTimer = Mathf.Max(0, _pauseTimer - Time.unscaledDeltaTime);
-				base.Update();
 				return;
 			}
 
@@ -230,14 +229,12 @@ namespace QSB.Syncs
 			else if (IsInitialized && !CheckReady())
 			{
 				SafeUninit();
-				base.Update();
 				return;
 			}
 
 			IsValid = CheckValid();
 			if (!IsValid)
 			{
-				base.Update();
 				return;
 			}
 
@@ -255,14 +252,13 @@ namespace QSB.Syncs
 			if (hasAuthority)
 			{
 				GetFromAttached();
+				base.Update();
 			}
 			else if (!OnlyApplyOnDeserialize || _shouldApply)
 			{
 				_shouldApply = false;
 				ApplyToAttached();
 			}
-
-			base.Update();
 		}
 
 		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
