@@ -14,7 +14,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 		/// </summary>
 		protected override bool CheckValid() => AttachedTransform && base.CheckValid();
 
-		protected override float DistanceLeeway => 10f;
+		protected override float DistanceChangeThreshold => 10f;
 		protected override bool UseInterpolation => true;
 		protected override bool AllowInactiveAttachedObject => true;
 		protected override bool IsPlayerObject => true;

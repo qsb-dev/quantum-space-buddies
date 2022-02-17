@@ -118,10 +118,10 @@ namespace QSB.Syncs
 		public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
 			+ $"{netId}:{GetType().Name} ({Name})";
 
-		protected virtual float DistanceLeeway => 5f;
-		protected virtual float AngleLeeway => 5f;
-		private float _prevDistance;
-		private float _prevAngle;
+		protected virtual float DistanceChangeThreshold => 5f;
+		private const float AngleChangeThreshold = 90f;
+		private float _prevDistance = float.MinValue;
+		private float _prevAngle = float.MinValue;
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
@@ -265,13 +265,13 @@ namespace QSB.Syncs
 		private void Interpolate()
 		{
 			var distance = Vector3.Distance(SmoothPosition, transform.position);
-			SmoothPosition = Mathf.Abs(distance - _prevDistance) > DistanceLeeway ?
+			SmoothPosition = Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold ?
 				transform.position :
 				Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
 			_prevDistance = distance;
 
 			var angle = Quaternion.Angle(SmoothRotation, transform.rotation);
-			SmoothRotation = Mathf.Abs(angle - _prevAngle) > AngleLeeway ?
+			SmoothRotation = Mathf.Abs(angle - _prevAngle) > AngleChangeThreshold ?
 				transform.rotation :
 				QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
 			_prevAngle = angle;
