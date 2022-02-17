@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -10,15 +11,25 @@ namespace QSB.Player
 	{
 		public static async UniTaskVoid Create(PlayerInfo player, bool joining)
 		{
+			if (!player.IsLocalPlayer)
+			{
+				return;
+			}
+
+			if (joining)
+			{
+				if (PlayerTransformSync.LocalInstance == null ||
+					player.PlayerId < QSBPlayerManager.LocalPlayerId)
+				{
+					return;
+				}
+
+				await UniTask.WaitUntil(() => player.TransformSync.IsValid && player.TransformSync.ReferenceTransform);
+			}
+
 			DebugLog.DebugWrite($"WARP {player.TransformSync}");
 
 			player.SetVisible(false);
-
-			bool Predicate() => player.TransformSync.IsValid && player.TransformSync.ReferenceTransform;
-			if (!Predicate())
-			{
-				await UniTask.WaitUntil(Predicate);
-			}
 
 			var go = new GameObject(nameof(JoinLeaveSingularity));
 			go.transform.parent = player.TransformSync.ReferenceTransform;
