@@ -12,10 +12,10 @@ namespace QSB.Tools
 	{
 		public static void InitRemote(PlayerInfo player)
 		{
-			player.Try("creating flashlight", () => FlashlightCreator.CreateFlashlight(player));
-			player.Try("creating signalscope", () => SignalscopeCreator.CreateSignalscope(player));
-			player.Try("creating probe launcher", () => ProbeLauncherCreator.CreateProbeLauncher(player));
-			player.Try("creating translator", () => TranslatorCreator.CreateTranslator(player));
+			player.PlayerId.Try("creating flashlight", () => FlashlightCreator.CreateFlashlight(player));
+			player.PlayerId.Try("creating signalscope", () => SignalscopeCreator.CreateSignalscope(player));
+			player.PlayerId.Try("creating probe launcher", () => ProbeLauncherCreator.CreateProbeLauncher(player));
+			player.PlayerId.Try("creating translator", () => TranslatorCreator.CreateTranslator(player));
 		}
 
 		public static void InitLocal()
