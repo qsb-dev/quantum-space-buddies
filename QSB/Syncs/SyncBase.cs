@@ -119,7 +119,9 @@ namespace QSB.Syncs
 			+ $"{netId}:{GetType().Name} ({Name})";
 
 		protected virtual float DistanceLeeway => 5f;
-		private float _previousDistance;
+		protected virtual float AngleLeeway => 5f;
+		private float _prevDistance;
+		private float _prevAngle;
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
@@ -243,12 +245,6 @@ namespace QSB.Syncs
 				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}", MessageType.Warning);
 			}
 
-			if (!hasAuthority && UseInterpolation)
-			{
-				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
-				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
-			}
-
 			if (hasAuthority)
 			{
 				GetFromAttached();
@@ -256,22 +252,25 @@ namespace QSB.Syncs
 			}
 			else if (!OnlyApplyOnDeserialize || _shouldApply)
 			{
+				Interpolate();
 				_shouldApply = false;
 				ApplyToAttached();
 			}
 		}
 
-		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		private void Interpolate()
 		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (Mathf.Abs(distance - _previousDistance) > DistanceLeeway)
-			{
-				_previousDistance = distance;
-				return targetPosition;
-			}
+			var distance = Vector3.Distance(SmoothPosition, transform.position);
+			SmoothPosition = Mathf.Abs(distance - _prevDistance) > DistanceLeeway ?
+				transform.position :
+				Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+			_prevDistance = distance;
 
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
+			var angle = Quaternion.Angle(SmoothRotation, transform.rotation);
+			SmoothRotation = Mathf.Abs(angle - _prevAngle) > AngleLeeway ?
+				transform.rotation :
+				QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+			_prevAngle = angle;
 		}
 
 		public virtual void SetReferenceTransform(Transform referenceTransform)
