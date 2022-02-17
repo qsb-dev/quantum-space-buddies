@@ -60,6 +60,9 @@ namespace QSB.Syncs.Sectored
 			SetReferenceSector(_sectorId.GetWorldObject<QSBSector>());
 		}
 
+		/// <summary>
+		/// use this instead of SetReferenceTransform
+		/// </summary>
 		public void SetReferenceSector(QSBSector sector)
 		{
 			if (ReferenceSector == sector)
