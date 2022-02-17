@@ -43,7 +43,12 @@ namespace QSB.Player
 			if (!joining)
 			{
 				player.Body.SetActive(false);
-				fakePlayer = Object.Instantiate(player.Body, go.transform);
+
+				fakePlayer = player.Body.InstantiateInactive();
+				fakePlayer.transform.parent = go.transform;
+				fakePlayer.transform.localPosition = Vector3.zero;
+				fakePlayer.transform.localRotation = Quaternion.identity;
+				fakePlayer.transform.localScale = Vector3.one;
 				foreach (var component in fakePlayer.GetComponentsInChildren<Component>(true))
 				{
 					if (component is Behaviour behaviour)
