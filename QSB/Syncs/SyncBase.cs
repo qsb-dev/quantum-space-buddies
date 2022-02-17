@@ -286,7 +286,7 @@ namespace QSB.Syncs
 
 			ReferenceTransform = referenceTransform;
 
-			if (!hasAuthority && UseInterpolation)
+			if (!hasAuthority && UseInterpolation && AttachedTransform)
 			{
 				if (IsPlayerObject)
 				{
