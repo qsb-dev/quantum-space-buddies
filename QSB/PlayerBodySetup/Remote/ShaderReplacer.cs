@@ -1,42 +1,27 @@
-﻿using OWML.Common;
-using QSB.Utility;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.PlayerBodySetup.Remote
 {
 	public static class ShaderReplacer
 	{
+		/// <summary>
+		/// the materials on the prefabs have the exact same name as the ones in game.
+		/// if we just use Shader.Find, we can get the in-game ones instead of the prefab ones,
+		/// and replace the prefab ones with the in-game ones.
+		/// i am amazed that this works, and i hope it isn't super brittle.
+		/// </summary>
 		public static void ReplaceShaders(GameObject prefab)
 		{
 			foreach (var renderer in prefab.GetComponentsInChildren<Renderer>(true))
 			{
-				for (var i = 0; i < renderer.sharedMaterials.Length; i++)
+				foreach (var material in renderer.sharedMaterials)
 				{
-					var material = renderer.sharedMaterials[i];
 					if (material == null)
 					{
-						DebugLog.DebugWrite($"shared material {i} is null\n" +
-							$"{renderer} | {prefab}", MessageType.Warning);
 						continue;
 					}
 
-					if (!material.shader.name.StartsWith("PROXY/"))
-					{
-						DebugLog.DebugWrite("non-proxy shader found\n" +
-							$"{material.shader} | {material} | {renderer} | {prefab}", MessageType.Warning);
-						continue;
-					}
-
-					var replacementShaderName = material.shader.name.Substring("PROXY/".Length);
-					var replacementShader = Shader.Find(replacementShaderName);
-					if (replacementShader == null)
-					{
-						DebugLog.DebugWrite($"could not find replacement shader {replacementShaderName}\n" +
-							$"{material.shader} | {material} | {renderer} | {prefab}", MessageType.Error);
-						continue;
-					}
-
-					material.shader = replacementShader;
+					material.shader = Shader.Find(material.shader.name);
 				}
 			}
 		}
