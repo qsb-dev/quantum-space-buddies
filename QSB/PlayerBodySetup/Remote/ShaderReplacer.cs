@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using OWML.Common;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.PlayerBodySetup.Remote
@@ -7,15 +8,35 @@ namespace QSB.PlayerBodySetup.Remote
 	{
 		public static void ReplaceShaders(GameObject prefab)
 		{
-			DebugLog.DebugWrite($"TODO: replace shaders for prefab {prefab}");
-
-			foreach (var renderer in prefab.GetComponentsInChildren<Renderer>())
+			foreach (var renderer in prefab.GetComponentsInChildren<Renderer>(true))
 			{
-				DebugLog.DebugWrite($"found renderer {renderer}");
-				foreach (var material in renderer.sharedMaterials)
+				for (var i = 0; i < renderer.sharedMaterials.Length; i++)
 				{
-					DebugLog.DebugWrite($"found shared material {material}");
-					DebugLog.DebugWrite($"shader = {material.shader}");
+					var material = renderer.sharedMaterials[i];
+					if (material == null)
+					{
+						DebugLog.DebugWrite($"shared material {i} is null\n" +
+							$"{renderer} | {prefab}", MessageType.Warning);
+						continue;
+					}
+
+					if (!material.shader.name.StartsWith("PROXY/"))
+					{
+						DebugLog.DebugWrite("non-proxy shader found\n" +
+							$"{material.shader} | {material} | {renderer} | {prefab}", MessageType.Warning);
+						continue;
+					}
+
+					var replacementShaderName = material.shader.name.Substring("PROXY/".Length);
+					var replacementShader = Shader.Find(replacementShaderName);
+					if (replacementShader == null)
+					{
+						DebugLog.DebugWrite($"could not find replacement shader {replacementShaderName}\n" +
+							$"{material.shader} | {material} | {renderer} | {prefab}", MessageType.Error);
+						continue;
+					}
+
+					material.shader = replacementShader;
 				}
 			}
 		}
