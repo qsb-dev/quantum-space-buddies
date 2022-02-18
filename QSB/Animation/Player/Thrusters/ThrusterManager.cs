@@ -11,8 +11,6 @@ namespace QSB.Animation.Player.Thrusters
 
 			CreateThrusterWashController(newVfx.transform.Find("ThrusterWash").gameObject, player);
 			CreateThrusterFlameController(newVfx, player);
-
-			newVfx.SetActive(true);
 		}
 
 		private static void CreateThrusterFlameController(GameObject root, PlayerInfo player)

@@ -28,9 +28,6 @@ namespace QSB.PlayerBodySetup.Remote
 			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
 			var REMOTE_Player_Body = Object.Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Player_Body.prefab"));
-			REMOTE_Player_Body.transform.localPosition = Vector3.zero;
-			REMOTE_Player_Body.transform.localScale = Vector3.one;
-			REMOTE_Player_Body.transform.localRotation = Quaternion.identity;
 			var REMOTE_PlayerCamera = REMOTE_Player_Body.transform.Find("REMOTE_PlayerCamera").gameObject;
 			var REMOTE_RoastingSystem = REMOTE_Player_Body.transform.Find("REMOTE_RoastingSystem").gameObject;
 			var REMOTE_Stick_Root = REMOTE_RoastingSystem.transform.Find("REMOTE_Stick_Root").gameObject;
@@ -79,7 +76,6 @@ namespace QSB.PlayerBodySetup.Remote
 			DebugLog.DebugWrite($"SET UP ROASTING STICK");
 
 			var REMOTE_Stick_Pivot = REMOTE_Stick_Root.transform.GetChild(0);
-			REMOTE_Stick_Pivot.gameObject.SetActive(false);
 			var mallowRoot = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip/Mallow_Root");
 			var newSystem = mallowRoot.Find("MallowSmoke").gameObject.GetComponent<CustomRelativisticParticleSystem>();
 			newSystem.Init(player);
