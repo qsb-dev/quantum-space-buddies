@@ -1,5 +1,6 @@
 ﻿using QSB.Player;
 using QSB.Utility;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.Tools
@@ -15,11 +16,19 @@ namespace QSB.Tools
 			set
 			{
 				_toolGameObject = value;
-				Delay.RunFramesLater(5, () => DitheringAnimator = _toolGameObject.AddComponent<DitheringAnimator>());
+				Delay.RunFramesLater(5, () =>
+				{
+					_ditheringAnimator = _toolGameObject.AddComponent<DitheringAnimator>();
+					// get inactive renderers too
+					_ditheringAnimator._renderers = _ditheringAnimator
+						.GetComponentsInChildren<Renderer>(true)
+						.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
+						.ToArray();
+				});
 			}
 		}
 		private GameObject _toolGameObject;
-		public DitheringAnimator DitheringAnimator { get; set; }
+		private DitheringAnimator _ditheringAnimator;
 
 		public DampedSpringQuat MoveSpring
 		{
@@ -78,10 +87,10 @@ namespace QSB.Tools
 		{
 			base.EquipTool();
 
-			if (DitheringAnimator != null && DitheringAnimator._renderers != null)
+			if (_ditheringAnimator != null && _ditheringAnimator._renderers != null)
 			{
 				ToolGameObject?.SetActive(true);
-				DitheringAnimator.SetVisible(true, 5f);
+				_ditheringAnimator.SetVisible(true, 5f);
 			}
 
 			Player.AudioController.PlayEquipTool();
@@ -91,11 +100,11 @@ namespace QSB.Tools
 		{
 			base.UnequipTool();
 
-			if (DitheringAnimator != null && DitheringAnimator._renderers != null)
+			if (_ditheringAnimator != null && _ditheringAnimator._renderers != null)
 			{
 				_isDitheringOut = true;
-				DitheringAnimator.SetVisible(false, 5f);
-				Delay.RunWhen(() => DitheringAnimator._visibleFraction == 0, FinishDitherOut);
+				_ditheringAnimator.SetVisible(false, 5f);
+				Delay.RunWhen(() => _ditheringAnimator._visibleFraction == 0, FinishDitherOut);
 			}
 
 			Player.AudioController.PlayUnequipTool();
