@@ -1,8 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.Player.TransformSync;
 using QSB.Utility;
-using QSB.WorldSync;
-using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -17,12 +15,21 @@ namespace QSB.Player
 				return;
 			}
 
-			if (joining &&
-				(PlayerTransformSync.LocalInstance == null ||
-				player.PlayerId < QSBPlayerManager.LocalPlayerId))
+			if (joining)
 			{
-				// player was here before we joined
-				return;
+				if (PlayerTransformSync.LocalInstance == null ||
+					player.PlayerId < QSBPlayerManager.LocalPlayerId)
+				{
+					// player was here before we joined
+					return;
+				}
+			}
+			else
+			{
+				if (!player.Visible)
+				{
+					return;
+				}
 			}
 
 			var go = new GameObject($"player {player.PlayerId} JoinLeaveSingularity");
@@ -83,24 +90,20 @@ namespace QSB.Player
 
 			#region effect
 
-			var effect = QSBWorldSync.GetUnityObjects<GravityCannonController>().First()._warpEffect;
-			effect = effect.gameObject.InstantiateInactive().GetComponent<SingularityWarpEffect>();
-			effect.transform.parent = transform;
-			effect.transform.localPosition = Vector3.zero;
-			effect.transform.localRotation = Quaternion.identity;
-			effect.transform.localScale = Vector3.one;
+			var effectGo = player.Body.transform.Find("JoinLeaveSingularity").gameObject.InstantiateInactive();
+			effectGo.transform.parent = transform;
+			effectGo.transform.localPosition = Vector3.zero;
+			effectGo.transform.localRotation = Quaternion.identity;
+			effectGo.transform.localScale = Vector3.one;
 
-			effect.enabled = true;
+			var effect = effectGo.GetComponent<SingularityWarpEffect>();
 			effect._warpedObjectGeometry = joining ? player.Body : fakePlayer;
 
 			var singularity = effect._singularity;
-			singularity.enabled = true;
-			singularity._startActive = false;
-			singularity._muteSingularityEffectAudio = false;
 			singularity._creationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 			singularity._destructionCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
-			var renderer = effect.GetComponent<Renderer>();
+			var renderer = effectGo.GetComponent<Renderer>();
 			renderer.material.SetFloat("_DistortFadeDist", 3);
 			renderer.material.SetFloat("_MassScale", joining ? -1 : 1);
 			renderer.material.SetFloat("_MaxDistortRadius", 10);
@@ -108,7 +111,7 @@ namespace QSB.Player
 			renderer.material.SetFloat("_Radius", 1);
 			renderer.material.SetColor("_Color", joining ? Color.white : Color.black);
 
-			effect.gameObject.SetActive(true);
+			effectGo.SetActive(true);
 
 			#endregion
 
