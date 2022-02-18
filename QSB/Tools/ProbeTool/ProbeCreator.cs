@@ -6,15 +6,19 @@ namespace QSB.Tools.ProbeTool
 {
 	internal static class ProbeCreator
 	{
-		public static void CreateProbe(Transform newProbe, PlayerInfo player)
+		public static Transform CreateProbe(PlayerInfo player)
 		{
-			var qsbProbe = newProbe.gameObject.GetComponent<QSBProbe>();
+			var REMOTE_Probe_Body = Object.Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Probe_Body.prefab")).transform;
+
+			var qsbProbe = REMOTE_Probe_Body.gameObject.GetComponent<QSBProbe>();
 			player.Probe = qsbProbe;
 			qsbProbe.SetOwner(player);
 
-			FixMaterialsInAllChildren.ReplaceMaterials(newProbe);
+			FixMaterialsInAllChildren.ReplaceMaterials(REMOTE_Probe_Body);
 
-			newProbe.gameObject.SetActive(true);
+			player.ProbeBody = REMOTE_Probe_Body.gameObject;
+
+			return REMOTE_Probe_Body;
 		}
 	}
 }

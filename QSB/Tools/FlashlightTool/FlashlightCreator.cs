@@ -6,11 +6,11 @@ namespace QSB.Tools.FlashlightTool
 	{
 		internal static void CreateFlashlight(PlayerInfo player)
 		{
-			var flashlightRoot = player.CameraBody.transform.Find("REMOTE_FlashlightRoot");
+			var REMOTE_FlashlightRoot = player.CameraBody.transform.Find("REMOTE_FlashlightRoot");
 
-			var component = flashlightRoot.GetComponent<QSBFlashlight>();
-			component.Player = player;
-			component.Init();
+			var qsbFlashlight = REMOTE_FlashlightRoot.GetComponent<QSBFlashlight>();
+			qsbFlashlight.Player = player;
+			qsbFlashlight.Init();
 		}
 	}
 }

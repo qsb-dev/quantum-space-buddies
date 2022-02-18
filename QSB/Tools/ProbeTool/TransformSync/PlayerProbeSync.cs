@@ -46,15 +46,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 		}
 
 		protected override Transform InitRemoteTransform()
-		{
-			var body = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Probe_Body.prefab")).transform;
-
-			ProbeCreator.CreateProbe(body, Player);
-
-			Player.ProbeBody = body.gameObject;
-
-			return body;
-		}
+			=> ProbeCreator.CreateProbe(Player);
 
 		protected override void GetFromAttached()
 		{

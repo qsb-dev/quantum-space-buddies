@@ -1,5 +1,4 @@
 ﻿using QSB.Player;
-using QSB.PlayerBodySetup.Remote;
 
 namespace QSB.Tools.ProbeLauncherTool
 {
@@ -15,10 +14,6 @@ namespace QSB.Tools.ProbeLauncherTool
 			tool.Type = ToolType.ProbeLauncher;
 			tool.ToolGameObject = REMOTE_Props_HEA_ProbeLauncher.gameObject;
 			tool.Player = player;
-
-			FixMaterialsInAllChildren.ReplaceMaterials(REMOTE_ProbeLauncher.transform);
-
-			REMOTE_ProbeLauncher.SetActive(true);
 		}
 	}
 }
