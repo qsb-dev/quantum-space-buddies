@@ -9,25 +9,8 @@ namespace QSB.Tools
 	{
 		public PlayerInfo Player { get; set; }
 		public ToolType Type { get; set; }
-		public GameObject ToolGameObject
-		{
-			get => _toolGameObject;
-
-			set
-			{
-				_toolGameObject = value;
-				Delay.RunFramesLater(5, () =>
-				{
-					_ditheringAnimator = _toolGameObject.AddComponent<DitheringAnimator>();
-					// get inactive renderers too
-					_ditheringAnimator._renderers = _ditheringAnimator
-						.GetComponentsInChildren<Renderer>(true)
-						.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
-						.ToArray();
-				});
-			}
-		}
-		private GameObject _toolGameObject;
+		public GameObject ToolGameObject { get; set; }
+		[SerializeField]
 		private DitheringAnimator _ditheringAnimator;
 
 		public DampedSpringQuat MoveSpring
@@ -55,6 +38,15 @@ namespace QSB.Tools
 		}
 
 		protected bool _isDitheringOut;
+
+		private void Awake()
+		{
+			// get inactive renderers too
+			_ditheringAnimator._renderers = _ditheringAnimator
+				.GetComponentsInChildren<Renderer>(true)
+				.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
+				.ToArray();
+		}
 
 		public override void Start()
 		{
