@@ -10,6 +10,20 @@ namespace QSB.PlayerBodySetup.Remote
 {
 	public static class RemotePlayerCreation
 	{
+		private static GameObject _prefab;
+
+		private static GameObject GetPrefab()
+		{
+			if (_prefab != null)
+			{
+				return _prefab;
+			}
+
+			_prefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Player_Body.prefab");
+			ShaderReplacer.ReplaceShaders(_prefab);
+			return _prefab;
+		}
+
 		public static Transform CreatePlayer(
 			PlayerInfo player,
 			out Transform visibleCameraRoot,
@@ -27,7 +41,7 @@ namespace QSB.PlayerBodySetup.Remote
 
 			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
-			var REMOTE_Player_Body = Object.Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Player_Body.prefab"));
+			var REMOTE_Player_Body = Object.Instantiate(GetPrefab());
 			var REMOTE_PlayerCamera = REMOTE_Player_Body.transform.Find("REMOTE_PlayerCamera").gameObject;
 			var REMOTE_RoastingSystem = REMOTE_Player_Body.transform.Find("REMOTE_RoastingSystem").gameObject;
 			var REMOTE_Stick_Root = REMOTE_RoastingSystem.transform.Find("REMOTE_Stick_Root").gameObject;
@@ -40,8 +54,6 @@ namespace QSB.PlayerBodySetup.Remote
 			DebugLog.DebugWrite($"SET UP PLAYER BODY");
 
 			player.Body = REMOTE_Player_Body;
-
-			FixMaterialsInAllChildren.ReplaceMaterials(REMOTE_Player_Body.transform);
 
 			player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
 

@@ -6,7 +6,7 @@ namespace QSB.Tools.FlashlightTool
 	{
 		internal static void CreateFlashlight(PlayerInfo player)
 		{
-			var REMOTE_FlashlightRoot = player.CameraBody.transform.Find("REMOTE_FlashlightRoot");
+			var REMOTE_FlashlightRoot = player.CameraBody.transform.Find("REMOTE_FlashlightRoot").gameObject;
 
 			var qsbFlashlight = REMOTE_FlashlightRoot.GetComponent<QSBFlashlight>();
 			qsbFlashlight.Player = player;
