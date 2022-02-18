@@ -8,6 +8,7 @@ using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
+using QSB.PlayerBodySetup.Remote;
 using QSB.QuantumSync.WorldObjects;
 using QSB.RoastingSync;
 using QSB.Tools;
@@ -40,7 +41,7 @@ namespace QSB.Player
 		public bool IsInEyeShuttle { get; set; }
 		public IQSBQuantumObject EntangledObject { get; set; }
 		public QSBPlayerAudioController AudioController { get; set; }
-		internal DitheringAnimator _ditheringAnimator;
+		internal QSBDitheringAnimator _ditheringAnimator;
 
 		public bool IsLocalPlayer => TransformSync.isLocalPlayer;
 

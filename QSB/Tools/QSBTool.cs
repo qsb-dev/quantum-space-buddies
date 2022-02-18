@@ -1,6 +1,6 @@
 ﻿using QSB.Player;
+using QSB.PlayerBodySetup.Remote;
 using QSB.Utility;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Tools
@@ -11,7 +11,7 @@ namespace QSB.Tools
 		public ToolType Type { get; set; }
 		public GameObject ToolGameObject { get; set; }
 		[SerializeField]
-		private DitheringAnimator _ditheringAnimator;
+		private QSBDitheringAnimator _ditheringAnimator;
 
 		public DampedSpringQuat MoveSpring
 		{
@@ -38,15 +38,6 @@ namespace QSB.Tools
 		}
 
 		protected bool _isDitheringOut;
-
-		private void Awake()
-		{
-			// get inactive renderers too
-			_ditheringAnimator._renderers = _ditheringAnimator
-				.GetComponentsInChildren<Renderer>(true)
-				.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
-				.ToArray();
-		}
 
 		public override void Start()
 		{

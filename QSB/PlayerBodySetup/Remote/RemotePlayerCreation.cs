@@ -3,7 +3,6 @@ using QSB.Player;
 using QSB.RoastingSync;
 using QSB.Tools;
 using QSB.Utility;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.PlayerBodySetup.Remote
@@ -59,12 +58,7 @@ namespace QSB.PlayerBodySetup.Remote
 
 			REMOTE_Player_Body.GetComponent<PlayerHUDMarker>().Init(player);
 			REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = player.Name;
-			player._ditheringAnimator = REMOTE_Player_Body.GetComponent<DitheringAnimator>();
-			// get inactive renderers too
-			player._ditheringAnimator._renderers = player._ditheringAnimator
-				.GetComponentsInChildren<Renderer>(true)
-				.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
-				.ToArray();
+			player._ditheringAnimator = REMOTE_Player_Body.GetComponent<QSBDitheringAnimator>();
 			player.AudioController = REMOTE_Player_Body.transform.Find("REMOTE_Audio_Player").GetComponent<QSBPlayerAudioController>();
 
 			/*
