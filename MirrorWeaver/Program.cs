@@ -41,7 +41,6 @@ namespace MirrorWeaver
 			var assembly = AssemblyDefinition.ReadAssembly(qsbDll, new ReaderParameters
 			{
 				ReadWrite = true,
-				ReadSymbols = true,
 				AssemblyResolver = resolver
 			});
 
@@ -52,7 +51,7 @@ namespace MirrorWeaver
 				Environment.Exit(1);
 			}
 
-			assembly.Write(new WriterParameters { WriteSymbols = true });
+			assembly.Write();
 		}
 	}
 }

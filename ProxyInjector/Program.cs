@@ -24,7 +24,6 @@ namespace ProxyInjector
 			using var qsbModule = ModuleDefinition.ReadModule(qsbDll, new ReaderParameters
 			{
 				ReadWrite = true,
-				ReadSymbols = true,
 				AssemblyResolver = resolver
 			});
 			using var gameModule = ModuleDefinition.ReadModule(gameDll, new ReaderParameters { AssemblyResolver = resolver });
@@ -53,7 +52,7 @@ namespace ProxyInjector
 				count++;
 			}
 
-			qsbModule.Write(new WriterParameters { WriteSymbols = true });
+			qsbModule.Write();
 
 			Console.WriteLine($"injected {count} proxy scripts in {sw.ElapsedMilliseconds} ms");
 		}
