@@ -84,7 +84,7 @@ namespace QSB.Animation.Player
 		public void InitRemote(Transform body)
 		{
 			InitCommon(body);
-			SetSuitState(false);
+			SetSuitState(QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse);
 			InitCrouchSync();
 			InitAccelerationSync();
 			ThrusterManager.CreateRemotePlayerVFX(Player);
