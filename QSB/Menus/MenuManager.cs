@@ -386,6 +386,8 @@ namespace QSB.Menus
 
 		public void OnKicked(KickReason reason)
 		{
+			_intentionalDisconnect = true;
+
 			var text = reason switch
 			{
 				KickReason.QSBVersionNotMatching => "Server refused connection as QSB version does not match.",
@@ -408,8 +410,10 @@ namespace QSB.Menus
 
 			SetButtonActive(DisconnectButton, false);
 			SetButtonActive(ConnectButton, true);
-			SetButtonActive(HostButton, true);
 			SetButtonActive(QuitButton, true);
+			SetButtonActive(HostButton, true);
+			SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
+			SetButtonActive(NewGameButton, true);
 		}
 
 		private void OnDisconnected(string error)
