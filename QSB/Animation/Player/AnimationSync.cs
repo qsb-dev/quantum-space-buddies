@@ -89,8 +89,8 @@ namespace QSB.Animation.Player
 			InitAccelerationSync();
 			ThrusterManager.CreateRemotePlayerVFX(Player);
 
-			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
-			Delay.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
+			Delay.RunWhen(() => Player.CameraBody != null,
+				() => body.GetComponent<PlayerHeadRotationSync>().Init(Player.CameraBody.transform));
 		}
 
 		private void InitAccelerationSync()
