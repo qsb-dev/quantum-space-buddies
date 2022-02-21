@@ -18,8 +18,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicOnlineTransport", "Epic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicRerouter", "EpicRerouter\EpicRerouter.csproj", "{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyInjector", "ProxyInjector\ProxyInjector.csproj", "{2F24758A-7BD3-405F-8968-07F8D96C6DE4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,10 +40,6 @@ Global
 		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F24758A-7BD3-405F-8968-07F8D96C6DE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F24758A-7BD3-405F-8968-07F8D96C6DE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F24758A-7BD3-405F-8968-07F8D96C6DE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F24758A-7BD3-405F-8968-07F8D96C6DE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
