@@ -62,18 +62,18 @@ namespace QSB.Player
 
 			#region fake player
 
-			GameObject REMOTE_Traveller_HEA_Player_v2 = null;
+			GameObject fakePlayer = null;
 			if (!joining)
 			{
 				player.Body.SetActive(false);
 
-				REMOTE_Traveller_HEA_Player_v2 = player.Body.transform.Find("REMOTE_Traveller_HEA_Player_v2").gameObject.InstantiateInactive();
-				REMOTE_Traveller_HEA_Player_v2.transform.SetParent(transform, false);
+				fakePlayer = player.Body.transform.Find("REMOTE_Traveller_HEA_Player_v2").gameObject.InstantiateInactive();
+				fakePlayer.transform.SetParent(transform, false);
 
-				Object.Destroy(REMOTE_Traveller_HEA_Player_v2.GetComponent<Animator>());
-				Object.Destroy(REMOTE_Traveller_HEA_Player_v2.GetComponent<PlayerHeadRotationSync>());
+				Object.Destroy(fakePlayer.GetComponent<Animator>());
+				Object.Destroy(fakePlayer.GetComponent<PlayerHeadRotationSync>());
 
-				var REMOTE_ItemCarryTool = REMOTE_Traveller_HEA_Player_v2.transform.Find(
+				var REMOTE_ItemCarryTool = fakePlayer.transform.Find(
 					// TODO : kill me for my sins
 					"Traveller_Rig_v01:Traveller_Trajectory_Jnt/" +
 					"Traveller_Rig_v01:Traveller_ROOT_Jnt/" +
@@ -88,24 +88,24 @@ namespace QSB.Player
 				).gameObject;
 				Object.Destroy(REMOTE_ItemCarryTool);
 
-				REMOTE_Traveller_HEA_Player_v2.SetActive(true);
+				fakePlayer.SetActive(true);
 			}
 
 			#endregion
 
 			#region effect
 
-			var JoinLeaveSingularity = player.Body.transform.Find("JoinLeaveSingularity").gameObject.InstantiateInactive();
-			JoinLeaveSingularity.transform.SetParent(transform, false);
+			var effectGo = player.Body.transform.Find("JoinLeaveSingularity").gameObject.InstantiateInactive();
+			effectGo.transform.SetParent(transform, false);
 
-			var effect = JoinLeaveSingularity.GetComponent<SingularityWarpEffect>();
-			effect._warpedObjectGeometry = joining ? player.Body : REMOTE_Traveller_HEA_Player_v2;
+			var effect = effectGo.GetComponent<SingularityWarpEffect>();
+			effect._warpedObjectGeometry = joining ? player.Body : fakePlayer;
 
 			var singularity = effect._singularity;
 			singularity._creationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 			singularity._destructionCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
-			var renderer = JoinLeaveSingularity.GetComponent<Renderer>();
+			var renderer = effectGo.GetComponent<Renderer>();
 			renderer.material.SetFloat("_DistortFadeDist", 3);
 			renderer.material.SetFloat("_MassScale", joining ? -1 : 1);
 			renderer.material.SetFloat("_MaxDistortRadius", 10);
@@ -113,7 +113,7 @@ namespace QSB.Player
 			renderer.material.SetFloat("_Radius", 1);
 			renderer.material.SetColor("_Color", joining ? Color.white : Color.black);
 
-			JoinLeaveSingularity.SetActive(true);
+			effectGo.SetActive(true);
 
 			#endregion
 
@@ -137,7 +137,7 @@ namespace QSB.Player
 
 				if (!joining)
 				{
-					Object.Destroy(REMOTE_Traveller_HEA_Player_v2);
+					Object.Destroy(fakePlayer);
 				}
 			};
 			await UniTask.WaitUntil(() => !effect.enabled && !singularity._owOneShotSource.isPlaying, cancellationToken: ct);
