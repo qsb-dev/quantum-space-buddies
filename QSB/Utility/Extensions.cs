@@ -203,7 +203,7 @@ namespace QSB.Utility
 		{
 			try
 			{
-				await func();
+				await func().SuppressCancellationThrow();
 			}
 			catch (Exception e)
 			{
