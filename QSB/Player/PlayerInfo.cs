@@ -110,7 +110,9 @@ namespace QSB.Player
 			{
 				if (_handPivot == null)
 				{
-					_handPivot = Body.transform.Find("REMOTE_Traveller_HEA_Player_v2/" +
+					_handPivot = Body.transform.Find(
+						// TODO : kill me for my sins
+						"REMOTE_Traveller_HEA_Player_v2/" +
 						"Traveller_Rig_v01:Traveller_Trajectory_Jnt/" +
 						"Traveller_Rig_v01:Traveller_ROOT_Jnt/" +
 						"Traveller_Rig_v01:Traveller_Spine_01_Jnt/" +
@@ -121,7 +123,8 @@ namespace QSB.Player
 						"Traveller_Rig_v01:Traveller_RT_Arm_Elbow_Jnt/" +
 						"Traveller_Rig_v01:Traveller_RT_Arm_Wrist_Jnt/" +
 						"REMOTE_ItemCarryTool/" +
-						"HandPivot"); // TODO : kill me for my sins
+						"HandPivot"
+					);
 				}
 
 				return _handPivot;
