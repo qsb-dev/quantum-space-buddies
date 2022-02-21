@@ -1,5 +1,6 @@
 ﻿using Mirror.Weaver;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using System;
 using System.IO;
 
@@ -41,7 +42,8 @@ namespace MirrorWeaver
 			var assembly = AssemblyDefinition.ReadAssembly(qsbDll, new ReaderParameters
 			{
 				ReadWrite = true,
-				AssemblyResolver = resolver
+				AssemblyResolver = resolver,
+				SymbolReaderProvider = new DefaultSymbolReaderProvider(false)
 			});
 
 			var log = new ConsoleLogger();
@@ -51,7 +53,7 @@ namespace MirrorWeaver
 				Environment.Exit(1);
 			}
 
-			assembly.Write();
+			assembly.Write(new WriterParameters { WriteSymbols = assembly.MainModule.HasSymbols });
 		}
 	}
 }
