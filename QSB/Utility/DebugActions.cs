@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 
 namespace QSB.Utility
 {
-	public class DebugActions : MonoBehaviour
+	public class DebugActions : MonoBehaviour, IAddComponentOnStart
 	{
 		private void GoToVessel()
 		{
@@ -32,7 +32,7 @@ namespace QSB.Utility
 
 		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
-		private void Awake() => enabled = QSBCore.DebugMode;
+		private void Awake() => enabled = QSBCore.DebugSettings.DebugMode;
 
 		public void Update()
 		{

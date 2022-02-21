@@ -9,19 +9,16 @@ namespace QSB.ShipSync.WorldObjects
 	{
 		public override void SendInitialState(uint to)
 		{
-			if (QSBCore.IsHost)
+			if (AttachedObject._damaged)
 			{
-				if (AttachedObject._damaged)
-				{
-					this.SendMessage(new ComponentDamagedMessage());
-				}
-				else
-				{
-					this.SendMessage(new ComponentRepairedMessage());
-				}
-
-				this.SendMessage(new ComponentRepairTickMessage(AttachedObject._repairFraction));
+				this.SendMessage(new ComponentDamagedMessage());
 			}
+			else
+			{
+				this.SendMessage(new ComponentRepairedMessage());
+			}
+
+			this.SendMessage(new ComponentRepairTickMessage(AttachedObject._repairFraction));
 		}
 
 		public void SetDamaged()

@@ -55,7 +55,7 @@ namespace QSB.Animation.Player.Patches
 			__instance._animator.SetFloat("RunSpeedY", movementVector.z / 3f);
 			__instance._animator.SetFloat("TurnSpeed", __instance._playerController.GetTurning());
 			__instance._animator.SetBool("Grounded", isGrounded || isAttached || PlayerState.IsRecentlyDetached());
-			__instance._animator.SetLayerWeight(1, __instance._playerController.GetJumpCrouchFraction());
+			__instance._animator.SetLayerWeight(CrouchSync.CrouchLayerIndex, __instance._playerController.GetJumpCrouchFraction());
 			__instance._animator.SetFloat("FreefallSpeed", freefallMagnitude / 15f * (timeInFreefall / 3f));
 			__instance._animator.SetBool("InZeroG", isInZeroG || isFlying);
 			__instance._animator.SetBool("UsingJetpack", isInZeroG && PlayerState.IsWearingSuit());
@@ -69,7 +69,7 @@ namespace QSB.Animation.Player.Patches
 				else
 				{
 					__instance._animator.SetTrigger("Land");
-					new AnimationTriggerMessage( "Land").Send();
+					new AnimationTriggerMessage("Land").Send();
 				}
 			}
 

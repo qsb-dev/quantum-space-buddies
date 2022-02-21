@@ -1,10 +1,11 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Utility;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.SatelliteSync
 {
-	internal class SatelliteProjectorManager : MonoBehaviour
+	internal class SatelliteProjectorManager : MonoBehaviour, IAddComponentOnStart
 	{
 		public static SatelliteProjectorManager Instance { get; private set; }
 
@@ -29,7 +30,7 @@ namespace QSB.SatelliteSync
 
 		private static RenderTexture _satelliteCameraSnapshot;
 
-		public void Start()
+		private void Awake()
 		{
 			Instance = this;
 			QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;

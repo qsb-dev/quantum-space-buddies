@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.AuthoritySync;
 using QSB.Messaging;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.WorldObjects;
@@ -13,27 +14,55 @@ namespace QSB.OrbSync.Patches
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		[HarmonyPostfix]
+		[HarmonyPrefix]
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.StartDragFromPosition))]
-		public static void StartDragFromPosition(NomaiInterfaceOrb __instance)
+		private static bool StartDragFromPosition(NomaiInterfaceOrb __instance, ref bool __result,
+			Vector3 manipPos)
 		{
 			if (!QSBWorldSync.AllObjectsReady)
 			{
-				return;
+				return true;
 			}
 
-			if (!__instance._isBeingDragged)
+			if (__instance._orbBody.IsSuspended() || __instance._isBeingDragged)
 			{
-				return;
+				__result = false;
+				return false;
 			}
 
-			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-			qsbOrb.SendMessage(new OrbDragMessage(true));
+			if (__instance.RecentlyEnteredSlot())
+			{
+				__instance._loseFocusToStartDrag = true;
+			}
+
+			if (Vector3.Distance(manipPos, __instance.transform.position) < __instance._startDragDist)
+			{
+				if (!__instance._loseFocusToStartDrag)
+				{
+					__instance._isBeingDragged = true;
+					__instance._interactibleCollider.enabled = false;
+					if (__instance._orbAudio != null)
+					{
+						__instance._orbAudio.PlayStartDragClip();
+					}
+
+					var qsbOrb = __instance.GetWorldObject<QSBOrb>();
+					qsbOrb.SendMessage(new OrbDragMessage(true));
+					qsbOrb.TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+				}
+			}
+			else
+			{
+				__instance._loseFocusToStartDrag = false;
+			}
+
+			__result = __instance._isBeingDragged;
+			return false;
 		}
 
 		[HarmonyPrefix]
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.CancelDrag))]
-		public static bool CancelDrag(NomaiInterfaceOrb __instance)
+		private static bool CancelDrag(NomaiInterfaceOrb __instance)
 		{
 			if (!QSBWorldSync.AllObjectsReady)
 			{
@@ -57,7 +86,8 @@ namespace QSB.OrbSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(nameof(NomaiInterfaceOrb.CheckSlotCollision))]
-		public static bool CheckSlotCollision(NomaiInterfaceOrb __instance)
+		private static bool CheckSlotCollision(NomaiInterfaceOrb __instance,
+			bool playAudio)
 		{
 			if (!QSBWorldSync.AllObjectsReady)
 			{
@@ -65,39 +95,37 @@ namespace QSB.OrbSync.Patches
 			}
 
 			var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-			if (!qsbOrb.TransformSync.hasAuthority)
+			if (qsbOrb.TransformSync.hasAuthority)
 			{
-				return false;
-			}
-
-			if (__instance._occupiedSlot == null)
-			{
-				for (var slotIndex = 0; slotIndex < __instance._slots.Length; slotIndex++)
+				if (__instance._occupiedSlot == null)
 				{
-					var slot = __instance._slots[slotIndex];
-					if (slot != null && slot.CheckOrbCollision(__instance))
+					for (var slotIndex = 0; slotIndex < __instance._slots.Length; slotIndex++)
 					{
-						__instance._occupiedSlot = slot;
-						__instance._enterSlotTime = Time.time;
-						if (slot.CancelsDragOnCollision())
+						var slot = __instance._slots[slotIndex];
+						if (slot != null && slot.CheckOrbCollision(__instance))
 						{
-							__instance.CancelDrag();
-						}
+							__instance._occupiedSlot = slot;
+							__instance._enterSlotTime = Time.time;
+							if (slot.CancelsDragOnCollision())
+							{
+								__instance.CancelDrag();
+							}
 
-						if (__instance._orbAudio != null && slot.GetPlayActivationAudio())
-						{
-							__instance._orbAudio.PlaySlotActivatedClip();
-						}
+							if (playAudio && __instance._orbAudio != null && slot.GetPlayActivationAudio())
+							{
+								__instance._orbAudio.PlaySlotActivatedClip();
+							}
 
-						qsbOrb.SendMessage(new OrbSlotMessage(slotIndex));
-						break;
+							qsbOrb.SendMessage(new OrbSlotMessage(slotIndex, playAudio));
+							break;
+						}
 					}
 				}
-			}
-			else if ((!__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged) && !__instance._occupiedSlot.CheckOrbCollision(__instance))
-			{
-				__instance._occupiedSlot = null;
-				qsbOrb.SendMessage(new OrbSlotMessage(-1));
+				else if ((!__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged) && !__instance._occupiedSlot.CheckOrbCollision(__instance))
+				{
+					__instance._occupiedSlot = null;
+					qsbOrb.SendMessage(new OrbSlotMessage(-1, playAudio));
+				}
 			}
 
 			__instance._owCollider.SetActivation(__instance._occupiedSlot == null || !__instance._occupiedSlot.IsAttractive() || __instance._isBeingDragged);

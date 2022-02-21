@@ -43,8 +43,8 @@ namespace QSB.QuantumSync.WorldObjects
 
 			if (HostControls)
 			{
-				// smallest player id is the host
-				ControllingPlayer = QSBPlayerManager.PlayerList.Min(x => x.PlayerId);
+				// first player is the host
+				ControllingPlayer = QSBPlayerManager.PlayerList[0].PlayerId;
 				IsEnabled = true;
 				return;
 			}
@@ -73,13 +73,8 @@ namespace QSB.QuantumSync.WorldObjects
 			}
 		}
 
-		public override void SendInitialState(uint to)
-		{
-			if (QSBCore.IsHost)
-			{
-				((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(ControllingPlayer) { To = to });
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(ControllingPlayer) { To = to });
 
 		public List<Shape> GetAttachedShapes()
 		{

@@ -5,79 +5,75 @@
     <Product>Quantum Space Buddies</Product>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
-    <OutputPath Condition="Exists($(OwmlDir))">$(OwmlDir)\Mods\QSB</OutputPath>
-    <NoWarn>1998</NoWarn>
+    <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\QSB</OutputPath>
+    <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
-  <Target Name="weave qsb" BeforeTargets="PostBuildEvent" Condition="Exists($(GameDir))">
-    <Exec Command="&quot;$(SolutionDir)\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(OutputPath)\QSB.dll&quot; &quot;$(GameDir)&quot;" />
-  </Target>
-  <PropertyGroup>
-    <PostBuildEvent Condition="Exists($(UnityAssetsDir)) and Exists($(GameDir)) and Exists($(OwmlDir))">
-:: copy output to unity project
-copy /y "$(OutputPath)" "$(UnityAssetsDir)"
-:: copy game assembly to unity project
-copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp.dll" "$(UnityAssetsDir)"
-copy /y "$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp-firstpass.dll" "$(UnityAssetsDir)"
-copy /y "$(GameDir)\OuterWilds_Data\Managed\Unity.InputSystem.dll" "$(UnityAssetsDir)"
-copy /y "$(GameDir)\OuterWilds_Data\Managed\EOS-SDK.dll" "$(UnityAssetsDir)"
-copy /y "$(GameDir)\OuterWilds_Data\Managed\UniSense.dll" "$(UnityAssetsDir)"
 
-:: copy owml files to unity project
-copy /y "$(OwmlDir)\Autofac.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\Newtonsoft.Json.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\0Harmony.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\MonoMod.Utils.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\MonoMod.RuntimeDetour.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\Mono.Cecil.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\Mono.Cecil.Mdb.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\Mono.Cecil.Pdb.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\Mono.Cecil.Rocks.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\dnpatch.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\dnlib.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\Gameloop.Vdf.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\NAudio-Unity.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.Common.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.ModHelper.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.ModHelper.Assets.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.ModHelper.Events.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.ModHelper.Menus.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.ModHelper.Input.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.ModHelper.Interaction.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.Utils.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.Common.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.Logging.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.ModLoader.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.Patcher.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.GameFinder.dll" "$(UnityAssetsDir)"
-copy /y "$(OwmlDir)\OWML.Abstractions.dll" "$(UnityAssetsDir)"
-</PostBuildEvent>
+  <Target Name="clean before building" BeforeTargets="PreBuildEvent">
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.dll&quot;" IgnoreExitCode="true" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.exe&quot;" IgnoreExitCode="true" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.pdb&quot;" IgnoreExitCode="true" />
+    <Exec Command="del /f /q &quot;$(OutputPath)\AssetBundles\*&quot;" IgnoreExitCode="true" />
+  </Target>
+
+  <PropertyGroup>
+    <GameDllsDir Condition="Exists('$(GameDir)')">$(GameDir)\OuterWilds_Data\Managed</GameDllsDir>
+    <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
   </PropertyGroup>
+  <Target Name="remove dumb files" AfterTargets="PostBuildEvent">
+    <Exec Command="del /f /q &quot;$(OutputPath)\*.exe.config&quot;" />
+  </Target>
+  <Target Name="weave qsb" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;..\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; ..\GameDlls" />
+  </Target>
+  <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)') and Exists('$(GameDllsDir)')">
+    <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.dll&quot;" />
+    <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.exe&quot;" />
+    <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.pdb&quot;" />
+
+    <Exec Command="copy /y &quot;$(OutputPath)\*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(OutputPath)\*.exe&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(OutputPath)\*.pdb&quot; &quot;$(UnityDllsDir)&quot;" IgnoreExitCode="true" />
+
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Assembly-CSharp*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Unity.InputSystem.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\UnityEngine.UI.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\EOS-SDK.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\UniSense.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Autofac.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Newtonsoft.Json.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\0Harmony.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\MonoMod*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\Mono.Cecil.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\OWML*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+    <Exec Command="copy /y &quot;$(GameDllsDir)\NAudio-Unity.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+  </Target>
+
   <ItemGroup>
     <None Include="default-config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="manifest.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" IncludeAssets="compile" />
-    <Reference Include="..\Mirror\*.dll" />
-    <Reference Include="..\UniTask\*.dll" />
-    <ProjectReference Include="..\FizzyFacepunch\FizzyFacepunch.csproj" />
-    <ProjectReference Include="..\QSBPatcher\QSBPatcher.csproj" />
-    <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
-    <PackageReference Include="HarmonyX" Version="2.8.0" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.3.1" IncludeAssets="compile" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="AssetBundles\*">
+    <None Include="AssetBundles\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Remove="AssetBundles\AssetBundles" />
+    <None Remove="AssetBundles\*.manifest" />
+    <None Condition="Exists('debugsettings.json')" Include="debugsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Update="debugsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.168" IncludeAssets="compile" />
+    <Reference Include="..\Mirror\*.dll" />
+    <Reference Include="..\UniTask\*.dll" />
+    <Reference Include="..\ProxyScripts\*.dll" />
+    <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
+    <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
+    <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
+    <PackageReference Include="HarmonyX" Version="2.9.0" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.3.2" IncludeAssets="compile" />
   </ItemGroup>
 </Project>

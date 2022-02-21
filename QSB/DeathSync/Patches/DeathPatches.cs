@@ -24,7 +24,7 @@ namespace QSB.DeathSync.Patches
 		// TODO : Remove with future functionality.
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipDetachableLeg), nameof(ShipDetachableLeg.Detach))]
-		public static bool ShipDetachableLeg_Detach(ref OWRigidbody __result)
+		public static bool ShipDetachableLeg_Detach(out OWRigidbody __result)
 		{
 			__result = null;
 			return false;
@@ -33,7 +33,7 @@ namespace QSB.DeathSync.Patches
 		// TODO : Remove with future functionality.
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(ShipDetachableModule), nameof(ShipDetachableModule.Detach))]
-		public static bool ShipDetachableModule_Detach(ref OWRigidbody __result)
+		public static bool ShipDetachableModule_Detach(out OWRigidbody __result)
 		{
 			__result = null;
 			return false;
@@ -183,10 +183,17 @@ namespace QSB.DeathSync.Patches
 		[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 		public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
 		{
-			if (!QSBPlayerManager.LocalPlayer.IsDead)
+			if (QSBPlayerManager.LocalPlayer.IsDead)
 			{
-				QSBPlayerManager.LocalPlayer.IsDead = true;
-				new PlayerDeathMessage(deathType).Send();
+				return;
+			}
+
+			QSBPlayerManager.LocalPlayer.IsDead = true;
+			new PlayerDeathMessage(deathType).Send();
+
+			if (PlayerAttachWatcher.Current)
+			{
+				PlayerAttachWatcher.Current.DetachPlayer();
 			}
 		}
 

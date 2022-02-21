@@ -20,7 +20,7 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumObject), nameof(QuantumObject.IsLockedByPlayerContact))]
-		public static bool QuantumObject_IsLockedByPlayerContact(ref bool __result, QuantumObject __instance)
+		public static bool QuantumObject_IsLockedByPlayerContact(out bool __result, QuantumObject __instance)
 		{
 			var playersEntangled = QuantumManager.GetEntangledPlayers(__instance);
 			__result = playersEntangled.Count() != 0 && __instance.IsIlluminated();
@@ -308,7 +308,7 @@ namespace QSB.QuantumSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(QuantumShrine), nameof(QuantumShrine.IsPlayerInDarkness))]
-		public static bool QuantumShrine_IsPlayerInDarkness(QuantumShrine __instance, ref bool __result)
+		public static bool QuantumShrine_IsPlayerInDarkness(QuantumShrine __instance, out bool __result)
 		{
 			foreach (var lamp in __instance._lamps)
 			{
@@ -456,7 +456,7 @@ namespace QSB.QuantumSync.Patches
 				for (var i = 0; i < __instance._pointingSkeletons.Length; i++)
 				{
 					if (__instance._pointingSkeletons[i].gameObject.activeInHierarchy &&
-					    (!__instance._pointingSkeletons[i].IsVisible() || !__instance._pointingSkeletons[i].IsIlluminated()))
+						(!__instance._pointingSkeletons[i].IsVisible() || !__instance._pointingSkeletons[i].IsIlluminated()))
 					{
 						__instance._pointingSkeletons[i].gameObject.SetActive(false);
 

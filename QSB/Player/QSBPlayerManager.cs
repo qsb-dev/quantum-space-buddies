@@ -64,8 +64,8 @@ namespace QSB.Player
 		{
 			var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
 			if (includeLocalCamera
-			    && LocalPlayer != default
-			    && LocalPlayer.Camera != null)
+				&& LocalPlayer != default
+				&& LocalPlayer.Camera != null)
 			{
 				cameraList.Add(LocalPlayer);
 			}
@@ -94,8 +94,8 @@ namespace QSB.Player
 			=> PlayerList.ForEach(x => x.SetVisible(false, 2));
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
-				? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
-				: GetClosestPlayerToWorldPoint(PlayerList.Where(x => x != LocalPlayer).ToList(), worldPoint);
+			? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
+			: GetClosestPlayerToWorldPoint(PlayerList.Where(x => x != LocalPlayer).ToList(), worldPoint);
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(List<PlayerInfo> playerList, Vector3 worldPoint)
 		{
@@ -105,13 +105,15 @@ namespace QSB.Player
 				return null;
 			}
 
+			playerList = playerList.Where(x => x.IsReady && x.Body != null).ToList();
+
 			if (playerList.Count == 0)
 			{
-				DebugLog.ToConsole($"Error - Cannot get closest player from empty player list.", MessageType.Error);
+				DebugLog.ToConsole($"Error - Cannot get closest player from empty (ready) player list.", MessageType.Error);
 				return null;
 			}
 
-			return playerList.Where(x => x.IsReady && x.Body != null).OrderBy(x => Vector3.Distance(x.Body.transform.position, worldPoint)).FirstOrDefault();
+			return playerList.MinBy(x => Vector3.Distance(x.Body.transform.position, worldPoint));
 		}
 
 		public static IEnumerable<Tuple<PlayerInfo, IQSBItem>> GetPlayerCarryItems()

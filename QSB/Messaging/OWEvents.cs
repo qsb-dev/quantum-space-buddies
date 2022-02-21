@@ -2,7 +2,7 @@
 {
 	/// <summary>
 	/// global messenger events built into outer wilds
-	/// that are also listened to with network messages.
+	/// that are also used by qsb.
 	/// <para/>
 	/// don't change unless they change in-game!
 	/// </summary>

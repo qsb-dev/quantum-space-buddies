@@ -21,12 +21,22 @@ namespace QSB.Anglerfish.TransformSync
 		public override void OnStartClient()
 		{
 			_instances.Add(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.RegisterAuthQueue(false);
+			}
+
 			base.OnStartClient();
 		}
 
 		public override void OnStopClient()
 		{
 			_instances.Remove(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
 			base.OnStopClient();
 		}
 
@@ -41,35 +51,25 @@ namespace QSB.Anglerfish.TransformSync
 			base.Init();
 			SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
 
-			if (QSBCore.IsHost)
-			{
-				netIdentity.RegisterAuthQueue();
-			}
-
 			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
 		protected override void Uninit()
 		{
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
+			base.Uninit();
 
 			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
-
-			base.Uninit();
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug
+			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsValid
 				|| !ReferenceTransform)
 			{

@@ -26,6 +26,7 @@ namespace QSB.SectorSync.WorldObjects
 			}
 		}
 		public Vector3 Position => Transform.position;
+
 		public bool IsFakeSector => AttachedObject is FakeSector;
 		public FakeSector FakeSector => (FakeSector)AttachedObject;
 
@@ -47,7 +48,7 @@ namespace QSB.SectorSync.WorldObjects
 
 		public override void SendInitialState(uint to) { }
 
-		public bool ShouldSyncTo(TargetType targetType)
+		public bool ShouldSyncTo(DynamicOccupant occupantType)
 		{
 			if (AttachedObject == null)
 			{
@@ -60,7 +61,7 @@ namespace QSB.SectorSync.WorldObjects
 				return false;
 			}
 
-			if (targetType == TargetType.Ship && Type == Sector.Name.Ship)
+			if (occupantType == DynamicOccupant.Ship && Type == Sector.Name.Ship)
 			{
 				return false;
 			}

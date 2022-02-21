@@ -2,28 +2,35 @@
 
 namespace QSB.Utility
 {
-	internal class DebugCameraSettings : MonoBehaviour
+	internal class DebugCameraSettings : MonoBehaviour, IAddComponentOnStart
 	{
 		public static void UpdateFromDebugSetting()
 		{
-			if (QSBCore.GreySkybox)
+			if (QSBCore.DebugSettings.GreySkybox)
 			{
 				QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-				Camera.main.backgroundColor = Color.gray;
+				if (Camera.main)
+				{
+					Camera.main.backgroundColor = Color.gray;
+				}
 			}
 			else
 			{
 				QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-				Camera.main.backgroundColor = _origColor;
+				if (Camera.main)
+				{
+					Camera.main.backgroundColor = _origColor;
+				}
 			}
 		}
 
 		private static Color _origColor;
 
-		private void Start()
+		private void Awake()
 		{
 			_origColor = Camera.main.backgroundColor;
 			UpdateFromDebugSetting();
+			Destroy(this);
 		}
 
 		private static void OnSceneLoaded(OWScene arg1, OWScene arg2, bool arg3)

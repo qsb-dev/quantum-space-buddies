@@ -7,14 +7,10 @@ namespace Mirror.Weaver
 {
     public static class Extensions
     {
-        public static bool Is(this TypeReference td, Type t)
-        {
-            if (t.IsGenericType)
-            {
-                return td.GetElementType().FullName == t.FullName;
-            }
-            return td.FullName == t.FullName;
-        }
+        public static bool Is(this TypeReference td, Type type) =>
+            type.IsGenericType
+              ? td.GetElementType().FullName == type.FullName
+              : td.FullName == type.FullName;
 
         public static bool Is<T>(this TypeReference td) => Is(td, typeof(T));
 
@@ -25,8 +21,6 @@ namespace Mirror.Weaver
             if (tr == null)
                 return false;
             TypeDefinition td = tr.Resolve();
-            if (td == null)
-                return false;
             if (!td.IsClass)
                 return false;
 

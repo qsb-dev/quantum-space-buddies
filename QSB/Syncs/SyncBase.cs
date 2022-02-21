@@ -118,8 +118,8 @@ namespace QSB.Syncs
 		public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
 			+ $"{netId}:{GetType().Name} ({Name})";
 
-		protected virtual float DistanceLeeway => 5f;
-		private float _previousDistance;
+		protected virtual float DistanceChangeThreshold => 5f;
+		private float _prevDistance;
 		protected const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
@@ -138,7 +138,7 @@ namespace QSB.Syncs
 				// and use the closest one
 				_player = QSBPlayerManager.PlayerList
 					.Where(x => x.PlayerId <= netId)
-					.OrderBy(x => x.PlayerId).Last();
+					.MaxBy(x => x.PlayerId);
 			}
 
 			DontDestroyOnLoad(gameObject);
@@ -150,7 +150,7 @@ namespace QSB.Syncs
 			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 			if (IsInitialized)
 			{
-				this.Try("uninitializing (from object destroy)", Uninit);
+				SafeUninit();
 			}
 		}
 
@@ -158,15 +158,42 @@ namespace QSB.Syncs
 		{
 			if (IsInitialized)
 			{
-				this.Try("uninitializing (from scene change)", Uninit);
+				SafeUninit();
 			}
 		}
 
-		protected virtual void Init()
+		private const float _pauseTimerDelay = 1;
+		private float _pauseTimer;
+
+		private void SafeInit()
 		{
-			AttachedTransform = InitAttachedTransform();
-			IsInitialized = true;
+			this.Try("initializing", () =>
+			{
+				Init();
+				IsInitialized = true;
+			});
+			if (!IsInitialized)
+			{
+				_pauseTimer = _pauseTimerDelay;
+			}
 		}
+
+		private void SafeUninit()
+		{
+			this.Try("uninitializing", () =>
+			{
+				Uninit();
+				IsInitialized = false;
+				IsValid = false;
+			});
+			if (IsInitialized)
+			{
+				_pauseTimer = _pauseTimerDelay;
+			}
+		}
+
+		protected virtual void Init() =>
+			AttachedTransform = InitAttachedTransform();
 
 		protected virtual void Uninit()
 		{
@@ -174,11 +201,6 @@ namespace QSB.Syncs
 			{
 				Destroy(AttachedTransform.gameObject);
 			}
-
-			AttachedTransform = null;
-			ReferenceTransform = null;
-			IsInitialized = false;
-			IsValid = false;
 		}
 
 		private bool _shouldApply;
@@ -194,21 +216,24 @@ namespace QSB.Syncs
 
 		protected sealed override void Update()
 		{
+			if (_pauseTimer > 0)
+			{
+				_pauseTimer = Mathf.Max(0, _pauseTimer - Time.unscaledDeltaTime);
+				return;
+			}
+
 			if (!IsInitialized && CheckReady())
 			{
-				this.Try("initializing", Init);
+				SafeInit();
 			}
 			else if (IsInitialized && !CheckReady())
 			{
-				this.Try("uninitializing", Uninit);
-				base.Update();
-				return;
+				SafeUninit();
 			}
 
 			IsValid = CheckValid();
 			if (!IsValid)
 			{
-				base.Update();
 				return;
 			}
 
@@ -219,8 +244,7 @@ namespace QSB.Syncs
 
 			if (!hasAuthority && UseInterpolation)
 			{
-				SmoothPosition = SmartSmoothDamp(SmoothPosition, transform.position);
-				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+				Interpolate();
 			}
 
 			if (hasAuthority)
@@ -236,20 +260,24 @@ namespace QSB.Syncs
 			base.Update();
 		}
 
-		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
+		private void Interpolate()
 		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (Mathf.Abs(distance - _previousDistance) > DistanceLeeway)
+			var distance = Vector3.Distance(SmoothPosition, transform.position);
+			if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold)
 			{
-				_previousDistance = distance;
-				return targetPosition;
+				SmoothPosition = transform.position;
+				SmoothRotation = transform.rotation;
+			}
+			else
+			{
+				SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
 			}
 
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
+			_prevDistance = distance;
 		}
 
-		public void SetReferenceTransform(Transform referenceTransform)
+		public virtual void SetReferenceTransform(Transform referenceTransform)
 		{
 			if (ReferenceTransform == referenceTransform)
 			{
@@ -258,11 +286,12 @@ namespace QSB.Syncs
 
 			ReferenceTransform = referenceTransform;
 
-			if (!hasAuthority && UseInterpolation)
+			if (!hasAuthority && UseInterpolation && AttachedTransform)
 			{
 				if (IsPlayerObject)
 				{
-					AttachedTransform.SetParent(ReferenceTransform, true);
+					AttachedTransform.parent = ReferenceTransform;
+					AttachedTransform.localScale = Vector3.one;
 					SmoothPosition = AttachedTransform.localPosition;
 					SmoothRotation = AttachedTransform.localRotation;
 				}
@@ -276,7 +305,7 @@ namespace QSB.Syncs
 
 		protected virtual void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug
+			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsValid
 				|| !ReferenceTransform)
 			{
@@ -299,7 +328,7 @@ namespace QSB.Syncs
 
 		private void OnGUI()
 		{
-			if (!QSBCore.ShowDebugLabels
+			if (!QSBCore.DebugSettings.DrawLabels
 				|| Event.current.type != EventType.Repaint
 				|| !IsValid
 				|| !ReferenceTransform)

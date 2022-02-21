@@ -19,29 +19,42 @@ namespace QSB.Utility
 
 		public static GameObject InstantiateInactive(this GameObject original)
 		{
+			if (!original.activeSelf)
+			{
+				return Object.Instantiate(original);
+			}
+
 			original.SetActive(false);
 			var copy = Object.Instantiate(original);
 			original.SetActive(true);
 			return copy;
 		}
 
-		public static Transform InstantiateInactive(this Transform original) =>
-			original.gameObject.InstantiateInactive().transform;
-
 		#endregion
 
 		#region MIRROR
 
-		public static uint GetPlayerId(this NetworkConnection conn)
+		public static uint GetPlayerId(this NetworkConnectionToClient conn)
 		{
 			if (!conn.identity)
 			{
 				// wtf
-				DebugLog.ToConsole($"Error - GetPlayerId on {conn.address} has no identity\n{Environment.StackTrace}", MessageType.Error);
+				DebugLog.ToConsole($"Error - GetPlayerId on {conn} has no identity\n{Environment.StackTrace}", MessageType.Error);
 				return uint.MaxValue;
 			}
 
 			return conn.identity.netId;
+		}
+
+		public static NetworkConnectionToClient GetNetworkConnection(this uint playerId)
+		{
+			var conn = NetworkServer.connections.Values.FirstOrDefault(x => playerId == x.GetPlayerId());
+			if (conn == default)
+			{
+				DebugLog.ToConsole($"Error - GetNetworkConnection on {playerId} found no connection\n{Environment.StackTrace}", MessageType.Error);
+			}
+
+			return conn;
 		}
 
 		public static void SpawnWithServerAuthority(this GameObject go) =>
@@ -83,6 +96,66 @@ namespace QSB.Utility
 			}
 		}
 
+		public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+		{
+			var comparer = Comparer<TKey>.Default;
+			var yk = default(TKey);
+			var y = default(TSource);
+			var hasValue = false;
+			foreach (var x in source)
+			{
+				var xk = keySelector(x);
+				if (!hasValue)
+				{
+					hasValue = true;
+					yk = xk;
+					y = x;
+				}
+				else if (comparer.Compare(xk, yk) < 0)
+				{
+					yk = xk;
+					y = x;
+				}
+			}
+
+			if (!hasValue)
+			{
+				throw new InvalidOperationException("Sequence contains no elements");
+			}
+
+			return y;
+		}
+
+		public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+		{
+			var comparer = Comparer<TKey>.Default;
+			var yk = default(TKey);
+			var y = default(TSource);
+			var hasValue = false;
+			foreach (var x in source)
+			{
+				var xk = keySelector(x);
+				if (!hasValue)
+				{
+					hasValue = true;
+					yk = xk;
+					y = x;
+				}
+				else if (comparer.Compare(xk, yk) > 0)
+				{
+					yk = xk;
+					y = x;
+				}
+			}
+
+			if (!hasValue)
+			{
+				throw new InvalidOperationException("Sequence contains no elements");
+			}
+
+			return y;
+		}
+
 		public static int IndexOf<T>(this T[] array, T value) => Array.IndexOf(array, value);
 
 		public static bool IsInRange<T>(this IList<T> list, int index) => index >= 0 && index < list.Count;
@@ -114,7 +187,7 @@ namespace QSB.Utility
 			return new Guid(bytes);
 		}
 
-		public static void Try(this object self, string description, Action action)
+		public static void Try(this object self, string doingWhat, Action action)
 		{
 			try
 			{
@@ -122,19 +195,19 @@ namespace QSB.Utility
 			}
 			catch (Exception e)
 			{
-				DebugLog.ToConsole($"{self} - error {description} : {e}", MessageType.Error);
+				DebugLog.ToConsole($"{self} - error {doingWhat} : {e}", MessageType.Error);
 			}
 		}
 
-		public static async UniTask Try(this object self, string description, Func<UniTask> func)
+		public static async UniTask Try(this object self, string doingWhat, Func<UniTask> func)
 		{
 			try
 			{
-				await func();
+				await func().SuppressCancellationThrow();
 			}
 			catch (Exception e)
 			{
-				DebugLog.ToConsole($"{self} - error {description} : {e}", MessageType.Error);
+				DebugLog.ToConsole($"{self} - error {doingWhat} : {e}", MessageType.Error);
 			}
 		}
 

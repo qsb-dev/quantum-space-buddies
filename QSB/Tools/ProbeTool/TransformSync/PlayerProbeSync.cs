@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.SectorSync;
 using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
@@ -9,7 +8,13 @@ namespace QSB.Tools.ProbeTool.TransformSync
 {
 	public class PlayerProbeSync : SectoredTransformSync
 	{
-		protected override float DistanceLeeway => 10f;
+		/// <summary>
+		/// normally prints error when attached object is null.
+		/// this overrides it so that doesn't happen, since the probe can be destroyed.
+		/// </summary>
+		protected override bool CheckValid() => AttachedTransform && base.CheckValid();
+
+		protected override float DistanceChangeThreshold => 10f;
 		protected override bool UseInterpolation => true;
 		protected override bool AllowInactiveAttachedObject => true;
 		protected override bool IsPlayerObject => true;
@@ -20,7 +25,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 
 		protected override Transform InitLocalTransform()
 		{
-			SectorDetector.Init(Locator.GetProbe().GetSectorDetector(), TargetType.Probe);
+			SectorDetector.Init(Locator.GetProbe().GetSectorDetector());
 
 			var body = Locator.GetProbe().transform;
 			Player.ProbeBody = body.gameObject;
@@ -41,27 +46,7 @@ namespace QSB.Tools.ProbeTool.TransformSync
 		}
 
 		protected override Transform InitRemoteTransform()
-		{
-			var probe = Locator.GetProbe().transform;
-
-			if (!probe)
-			{
-				DebugLog.ToConsole("Error - Probe is null!", MessageType.Error);
-				return default;
-			}
-
-			var body = probe.gameObject.activeSelf
-				? probe.InstantiateInactive()
-				: Instantiate(probe);
-
-			body.name = "RemoteProbeTransform";
-
-			ProbeCreator.CreateProbe(body, Player);
-
-			Player.ProbeBody = body.gameObject;
-
-			return body;
-		}
+			=> ProbeCreator.CreateProbe(Player);
 
 		protected override void GetFromAttached()
 		{

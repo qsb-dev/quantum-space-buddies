@@ -10,7 +10,7 @@ namespace QSB.Utility
 {
 	public static class DeterministicManager
 	{
-		private static readonly Harmony _harmony = new(typeof(DeterministicManager).AssemblyQualifiedName);
+		private static readonly Harmony _harmony = new(typeof(DeterministicManager).FullName);
 		private static bool _patched;
 
 		private static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> _cache = new();
@@ -30,7 +30,7 @@ namespace QSB.Utility
 
 		public static void WorldObjectsReady()
 		{
-			if (QSBCore.DumpWorldObjects)
+			if (QSBCore.DebugSettings.DumpWorldObjects)
 			{
 				using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "world objects.csv")))
 				{

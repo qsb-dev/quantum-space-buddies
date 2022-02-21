@@ -48,10 +48,7 @@ namespace QSB.Syncs.Sectored
 			_sectorId = reader.ReadInt();
 		}
 
-		protected void GetFromSector()
-		{
-			_sectorId = ReferenceSector?.ObjectId ?? -1;
-		}
+		protected void GetFromSector() => _sectorId = ReferenceSector?.ObjectId ?? -1;
 
 		protected void ApplyToSector()
 		{
@@ -63,6 +60,9 @@ namespace QSB.Syncs.Sectored
 			SetReferenceSector(_sectorId.GetWorldObject<QSBSector>());
 		}
 
+		/// <summary>
+		/// use this instead of SetReferenceTransform
+		/// </summary>
 		public void SetReferenceSector(QSBSector sector)
 		{
 			if (ReferenceSector == sector)

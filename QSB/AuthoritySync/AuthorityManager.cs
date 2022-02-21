@@ -1,8 +1,8 @@
 ﻿using Mirror;
 using QSB.Messaging;
+using QSB.Player;
 using QSB.Utility;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace QSB.AuthoritySync
 {
@@ -13,15 +13,16 @@ namespace QSB.AuthoritySync
 		/// <summary>
 		/// whoever is first gets authority
 		/// </summary>
-		private static readonly Dictionary<NetworkIdentity, List<uint>> _authQueue = new();
+		private static readonly Dictionary<NetworkIdentity, (List<uint> AuthQueue, bool ServerIsDefaultOwner)> _authQueue = new();
 
-		public static void RegisterAuthQueue(this NetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
+		public static void RegisterAuthQueue(this NetworkIdentity identity, bool serverIsDefaultOwner) => _authQueue.Add(identity, (new List<uint>(), serverIsDefaultOwner));
 		public static void UnregisterAuthQueue(this NetworkIdentity identity) => _authQueue.Remove(identity);
 
-		public static void UpdateAuthQueue(this NetworkIdentity identity, uint id, AuthQueueAction action)
+		public static void ServerUpdateAuthQueue(this NetworkIdentity identity, uint id, AuthQueueAction action)
 		{
-			var authQueue = _authQueue[identity];
-			var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
+			var (authQueue, serverIsDefaultOwner) = _authQueue[identity];
+			var defaultOwner = serverIsDefaultOwner ? QSBPlayerManager.LocalPlayerId : uint.MaxValue;
+			var oldOwner = authQueue.Count != 0 ? authQueue[0] : defaultOwner;
 
 			switch (action)
 			{
@@ -39,7 +40,7 @@ namespace QSB.AuthoritySync
 					break;
 			}
 
-			var newOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
+			var newOwner = authQueue.Count != 0 ? authQueue[0] : defaultOwner;
 			if (oldOwner != newOwner)
 			{
 				SetAuthority(identity, newOwner);
@@ -49,21 +50,19 @@ namespace QSB.AuthoritySync
 		/// <summary>
 		/// transfer authority to a different client
 		/// </summary>
-		public static void OnDisconnect(NetworkConnection conn)
+		public static void OnDisconnect(NetworkConnectionToClient conn)
 		{
 			var id = conn.GetPlayerId();
 			foreach (var identity in _authQueue.Keys)
 			{
-				identity.UpdateAuthQueue(id, AuthQueueAction.Remove);
+				identity.ServerUpdateAuthQueue(id, AuthQueueAction.Remove);
 			}
 		}
 
 		public static void SetAuthority(this NetworkIdentity identity, uint id)
 		{
 			var oldConn = identity.connectionToClient;
-			var newConn = id != uint.MaxValue
-				? NetworkServer.connections.Values.FirstOrDefault(x => x.GetPlayerId() == id)
-				: null;
+			var newConn = id != uint.MaxValue ? id.GetNetworkConnection() : null;
 
 			if (oldConn == newConn)
 			{
@@ -85,7 +84,7 @@ namespace QSB.AuthoritySync
 
 		#region any client
 
-		public static void SendAuthQueueMessage(this NetworkIdentity identity, AuthQueueAction action) =>
+		public static void UpdateAuthQueue(this NetworkIdentity identity, AuthQueueAction action) =>
 			new AuthQueueMessage(identity.netId, action).Send();
 
 		#endregion

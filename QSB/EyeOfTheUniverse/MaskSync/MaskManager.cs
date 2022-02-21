@@ -9,14 +9,14 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.MaskSync
 {
-	internal class MaskManager : MonoBehaviour
+	internal class MaskManager : MonoBehaviour, IAddComponentOnStart
 	{
 		private static bool _flickering;
 		private static float _flickerOutTime;
 
 		public static List<PlayerInfo> WentOnSolanumsWildRide = new();
 
-		public void Awake() => QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+		private void Awake() => QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 
 		private static void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
 		{

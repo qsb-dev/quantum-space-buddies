@@ -97,7 +97,7 @@ namespace QSB.ConversationSync.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(RemoteDialogueTrigger), nameof(RemoteDialogueTrigger.ConversationTriggered))]
-		public static bool ConversationTriggeredReplacement(RemoteDialogueTrigger __instance, ref bool __result, out RemoteDialogueTrigger.RemoteDialogueCondition dialogue)
+		public static bool ConversationTriggeredReplacement(RemoteDialogueTrigger __instance, out bool __result, out RemoteDialogueTrigger.RemoteDialogueCondition dialogue)
 		{
 			dialogue = default;
 			var dialogueIndex = -1;

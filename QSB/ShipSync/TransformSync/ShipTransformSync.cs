@@ -1,4 +1,3 @@
-using QSB.SectorSync;
 using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using UnityEngine;
@@ -23,7 +22,7 @@ namespace QSB.ShipSync.TransformSync
 
 		protected override OWRigidbody InitAttachedRigidbody()
 		{
-			SectorDetector.Init(Locator.GetShipDetector().GetComponent<SectorDetector>(), TargetType.Ship);
+			SectorDetector.Init(Locator.GetShipDetector().GetComponent<SectorDetector>());
 			return Locator.GetShipBody();
 		}
 
@@ -49,8 +48,8 @@ namespace QSB.ShipSync.TransformSync
 				AttachedRigidbody.SetRotation(targetRot);
 			}
 
-			var targetVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, targetPos);
-			var targetAngularVelocity = ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity);
+			var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
+			var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
 
 			SetVelocity(AttachedRigidbody, targetVelocity);
 			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);

@@ -33,13 +33,8 @@ namespace QSB.JellyfishSync.WorldObjects
 			}
 		}
 
-		public override void SendInitialState(uint to)
-		{
-			if (TransformSync.hasAuthority)
-			{
-				this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });
 
 		public void SetIsRising(bool value)
 		{

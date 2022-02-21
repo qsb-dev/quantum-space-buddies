@@ -1,15 +1,26 @@
 ﻿using QSB.Player;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Tools.FlashlightTool
 {
 	public class QSBFlashlight : MonoBehaviour, ILightSource
 	{
+		[SerializeField]
 		private OWLight2[] _lights;
-		internal OWLight2 _illuminationCheckLight;
+
+		[SerializeField]
+		private OWLight2 _illuminationCheckLight;
+
+		[SerializeField]
 		private Transform _root;
+
+		[SerializeField]
 		private Transform _basePivot;
+
+		[SerializeField]
 		private Transform _wobblePivot;
+
 		private Vector3 _baseForward;
 		private Quaternion _baseRotation;
 		private LightSourceVolume _lightSourceVolume;
@@ -22,19 +33,18 @@ namespace QSB.Tools.FlashlightTool
 			_lightSourceVolume = this.GetRequiredComponentInChildren<LightSourceVolume>();
 			_lightSourceVolume.LinkLightSource(this);
 			_lightSourceVolume.SetVolumeActivation(FlashlightOn);
+			if (_basePivot == null)
+			{
+				DebugLog.DebugWrite($"Error - _basePivot is null!", OWML.Common.MessageType.Error);
+				return;
+			}
+
 			_baseForward = _basePivot.forward;
 			_baseRotation = _basePivot.rotation;
 		}
 
-		public void Init(Flashlight oldComponent)
+		public void Init()
 		{
-			_lights = oldComponent._lights;
-			_illuminationCheckLight = oldComponent._illuminationCheckLight;
-			_root = oldComponent._root;
-			_basePivot = oldComponent._basePivot;
-			_wobblePivot = oldComponent._wobblePivot;
-			Destroy(oldComponent.GetComponent<LightLOD>());
-
 			foreach (var light in _lights)
 			{
 				light.GetLight().enabled = false;

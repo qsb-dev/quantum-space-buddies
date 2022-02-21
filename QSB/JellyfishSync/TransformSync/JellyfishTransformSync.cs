@@ -24,12 +24,22 @@ namespace QSB.JellyfishSync.TransformSync
 		public override void OnStartClient()
 		{
 			_instances.Add(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.RegisterAuthQueue(false);
+			}
+
 			base.OnStartClient();
 		}
 
 		public override void OnStopClient()
 		{
 			_instances.Remove(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
 			base.OnStopClient();
 		}
 
@@ -44,31 +54,21 @@ namespace QSB.JellyfishSync.TransformSync
 			base.Init();
 			SetReferenceTransform(_qsbJellyfish.AttachedObject._planetBody.transform);
 
-			if (QSBCore.IsHost)
-			{
-				netIdentity.RegisterAuthQueue();
-			}
-
 			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-			netIdentity.SendAuthQueueMessage(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
 		protected override void Uninit()
 		{
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
+			base.Uninit();
 
 			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
 			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
-
-			base.Uninit();
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
 
 		protected override void Serialize(NetworkWriter writer)
 		{
@@ -95,15 +95,15 @@ namespace QSB.JellyfishSync.TransformSync
 			var pos = ReferenceTransform.FromRelPos(transform.position);
 			AttachedRigidbody.SetPosition(pos);
 			AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
-			AttachedRigidbody.SetVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelVel(_relativeVelocity, pos));
-			AttachedRigidbody.SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().FromRelAngVel(_relativeAngularVelocity));
+			AttachedRigidbody.SetVelocity(ReferenceRigidbody.FromRelVel(Velocity, pos));
+			AttachedRigidbody.SetAngularVelocity(ReferenceRigidbody.FromRelAngVel(AngularVelocity));
 
 			_qsbJellyfish.SetIsRising(_isRising);
 		}
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug
+			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsValid
 				|| !ReferenceTransform)
 			{

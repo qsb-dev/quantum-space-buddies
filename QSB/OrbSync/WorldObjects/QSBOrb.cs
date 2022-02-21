@@ -36,11 +36,9 @@ namespace QSB.OrbSync.WorldObjects
 
 		public override void SendInitialState(uint to)
 		{
-			if (TransformSync.hasAuthority)
-			{
-				this.SendMessage(new OrbDragMessage(AttachedObject._isBeingDragged) { To = to });
-				this.SendMessage(new OrbSlotMessage(AttachedObject._slots.IndexOf(AttachedObject._occupiedSlot)) { To = to });
-			}
+			this.SendMessage(new OrbDragMessage(AttachedObject._isBeingDragged) { To = to });
+			var slotIndex = AttachedObject._slots.IndexOf(AttachedObject._occupiedSlot);
+			this.SendMessage(new OrbSlotMessage(slotIndex, false) { To = to });
 		}
 
 		public void SetDragging(bool value)
@@ -66,7 +64,7 @@ namespace QSB.OrbSync.WorldObjects
 			}
 		}
 
-		public void SetSlot(int slotIndex)
+		public void SetSlot(int slotIndex, bool playAudio)
 		{
 			var oldSlot = AttachedObject._occupiedSlot;
 			var newSlot = slotIndex == -1 ? null : AttachedObject._slots[slotIndex];
@@ -98,7 +96,7 @@ namespace QSB.OrbSync.WorldObjects
 					AttachedObject.CancelDrag();
 				}
 
-				if (AttachedObject._orbAudio != null && newSlot.GetPlayActivationAudio())
+				if (playAudio && AttachedObject._orbAudio != null && newSlot.GetPlayActivationAudio())
 				{
 					AttachedObject._orbAudio.PlaySlotActivatedClip();
 				}

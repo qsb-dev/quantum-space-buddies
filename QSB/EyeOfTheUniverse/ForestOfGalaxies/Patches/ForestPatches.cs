@@ -15,7 +15,7 @@ namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(OldGrowthForestController), nameof(OldGrowthForestController.CheckIllumination))]
-		public static bool CheckIlluminationReplacement(Vector3 worldPosition, ref bool __result)
+		public static bool CheckIlluminationReplacement(Vector3 worldPosition, out bool __result)
 		{
 			if (Locator.GetFlashlight().IsFlashlightOn() || QSBPlayerManager.PlayerList.Any(x => x.FlashlightActive))
 			{

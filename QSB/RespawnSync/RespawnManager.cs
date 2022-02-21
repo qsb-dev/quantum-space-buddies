@@ -11,26 +11,32 @@ using UnityEngine;
 
 namespace QSB.RespawnSync
 {
-	internal class RespawnManager : MonoBehaviour
+	internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 	{
 		public static RespawnManager Instance;
 
 		public bool RespawnNeeded => _playersPendingRespawn.Count != 0;
 
-		private List<PlayerInfo> _playersPendingRespawn = new();
+		private readonly List<PlayerInfo> _playersPendingRespawn = new();
 		private NotificationData _previousNotification;
 		private GameObject _owRecoveryPoint;
 		private GameObject _qsbRecoveryPoint;
 
-		private void Start()
+		private void Awake()
 		{
 			Instance = this;
-			QSBSceneManager.OnSceneLoaded += (OWScene old, OWScene newScene, bool inUniverse)
+			QSBSceneManager.OnSceneLoaded += (_, newScene, inUniverse)
 				=> Delay.RunWhen(
 					() => Locator.GetMarkerManager() != null,
 					() => Init(newScene, inUniverse));
 			QSBNetworkManager.singleton.OnClientConnected += OnConnected;
 			QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
+
+			QSBPlayerManager.OnRemovePlayer += player =>
+			{
+				_playersPendingRespawn.Remove(player);
+				UpdateRespawnNotification();
+			};
 		}
 
 		private void OnConnected()

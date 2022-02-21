@@ -32,7 +32,7 @@ namespace QSB.AuthoritySync
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 		public override void OnReceiveLocal() => OnReceiveRemote();
-		public override void OnReceiveRemote() => NetworkServer.spawned[NetId].UpdateAuthQueue(From, Value);
+		public override void OnReceiveRemote() => NetworkServer.spawned[NetId].ServerUpdateAuthQueue(From, Value);
 	}
 
 	public enum AuthQueueAction

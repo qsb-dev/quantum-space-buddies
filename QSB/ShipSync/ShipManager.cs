@@ -24,6 +24,7 @@ namespace QSB.ShipSync
 		public ShipTractorBeamSwitch ShipTractorBeam;
 		public ShipCockpitController CockpitController;
 		public ShipElectricalComponent ShipElectricalComponent;
+		private GameObject _shipCustomAttach;
 		public uint CurrentFlyer
 		{
 			get => _currentFlyer;
@@ -38,7 +39,7 @@ namespace QSB.ShipSync
 			}
 		}
 
-		private List<PlayerInfo> _playersInShip = new();
+		private readonly List<PlayerInfo> _playersInShip = new();
 
 		private uint _currentFlyer = uint.MaxValue;
 
@@ -47,14 +48,14 @@ namespace QSB.ShipSync
 
 		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
-			var shipTransform = GameObject.Find("Ship_Body");
-			if (shipTransform == null)
+			var shipBody = Locator.GetShipBody();
+			if (shipBody == null)
 			{
 				DebugLog.ToConsole($"Error - Couldn't find ship!", MessageType.Error);
 				return;
 			}
 
-			HatchController = shipTransform.GetComponentInChildren<HatchController>();
+			HatchController = shipBody.GetComponentInChildren<HatchController>();
 			if (HatchController == null)
 			{
 				DebugLog.ToConsole($"Error - Couldn't find hatch controller!", MessageType.Error);
@@ -93,7 +94,13 @@ namespace QSB.ShipSync
 
 			QSBWorldSync.Init<QSBShipComponent, ShipComponent>();
 			QSBWorldSync.Init<QSBShipHull, ShipHull>();
+
+			_shipCustomAttach = new GameObject(nameof(ShipCustomAttach));
+			_shipCustomAttach.transform.SetParent(shipBody.transform, false);
+			_shipCustomAttach.AddComponent<ShipCustomAttach>();
 		}
+
+		public override void UnbuildWorldObjects() => Destroy(_shipCustomAttach);
 
 		public void AddPlayerToShip(PlayerInfo player)
 		{

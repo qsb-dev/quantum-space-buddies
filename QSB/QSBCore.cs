@@ -1,19 +1,12 @@
 ﻿using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
-using QSB.EyeOfTheUniverse.GalaxyMap;
-using QSB.EyeOfTheUniverse.MaskSync;
-using QSB.Inputs;
 using QSB.Menus;
 using QSB.Patches;
-using QSB.Player;
 using QSB.QuantumSync;
-using QSB.RespawnSync;
-using QSB.SatelliteSync;
-using QSB.StatueSync;
-using QSB.TimeSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -45,17 +38,7 @@ namespace QSB
 	{
 		public static IModHelper Helper { get; private set; }
 		public static string DefaultServerIP;
-		public static bool UseKcpTransport => DebugSettings.UseKcpTransport;
-		public static int OverrideAppId => DebugSettings.OverrideAppId;
-		public static bool DumpWorldObjects => DebugSettings.DumpWorldObjects;
-		public static bool DebugMode => DebugSettings.DebugMode;
-		public static bool ShowLinesInDebug => DebugMode && DebugSettings.DrawLines;
-		public static bool ShowQuantumVisibilityObjects => DebugMode && DebugSettings.ShowQuantumVisibilityObjects;
-		public static bool ShowDebugLabels => DebugMode && DebugSettings.ShowDebugLabels;
-		public static bool AvoidTimeSync => DebugMode && DebugSettings.AvoidTimeSync;
-		public static bool SkipTitleScreen => DebugMode && DebugSettings.SkipTitleScreen;
-		public static bool GreySkybox => DebugMode && DebugSettings.GreySkybox;
-		public static AssetBundle NetworkAssetBundle { get; internal set; }
+		public static AssetBundle NetworkAssetBundle { get; private set; }
 		public static AssetBundle InstrumentAssetBundle { get; private set; }
 		public static AssetBundle ConversationAssetBundle { get; private set; }
 		public static AssetBundle DebugAssetBundle { get; private set; }
@@ -66,14 +49,14 @@ namespace QSB
 		public static string GameVersion => Application.version;
 		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 		public static IMenuAPI MenuApi { get; private set; }
-
-		private static DebugSettings DebugSettings { get; set; } = new();
+		public static DebugSettings DebugSettings { get; private set; } = new();
 
 		public void Awake()
 		{
-			var instance = TextTranslation.Get().m_table;
-			instance.theUITable[(int)UITextType.PleaseUseController] =
-				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...";
+			EpicRerouter.ModSide.Interop.Go();
+
+			UIHelper.ReplaceUI(UITextType.PleaseUseController,
+				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
 		}
 
 		public void Start()
@@ -81,7 +64,25 @@ namespace QSB
 			Helper = ModHelper;
 			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>("_nebula.MenuFramework");
+			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
+
+			if (DebugSettings.HookDebugLogs)
+			{
+				Application.logMessageReceived += (condition, stackTrace, logType) =>
+					DebugLog.DebugWrite($"[Debug] {condition}\nStacktrace: {stackTrace}", logType switch
+					{
+						LogType.Error => MessageType.Error,
+						LogType.Assert => MessageType.Error,
+						LogType.Warning => MessageType.Warning,
+						LogType.Log => MessageType.Message,
+						LogType.Exception => MessageType.Error,
+						_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
+					});
+			}
+
+			InitializeAssemblies();
+
+			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
 			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
 			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
@@ -89,32 +90,14 @@ namespace QSB
 			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
 			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
 
-			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
-
-			InitializeAssemblies();
-
 			QSBPatchManager.Init();
 			DeterministicManager.Init();
 
-			gameObject.AddComponent<QSBNetworkManager>();
-			gameObject.AddComponent<DebugActions>();
-			gameObject.AddComponent<QSBInputManager>();
-			gameObject.AddComponent<TimeSyncUI>();
-			gameObject.AddComponent<PlayerEntanglementWatcher>();
-			gameObject.AddComponent<DebugGUI>();
-			gameObject.AddComponent<MenuManager>();
-			gameObject.AddComponent<RespawnManager>();
-			gameObject.AddComponent<SatelliteProjectorManager>();
-			gameObject.AddComponent<StatueManager>();
-			gameObject.AddComponent<GalaxyMapManager>();
-			gameObject.AddComponent<DebugCameraSettings>();
-			gameObject.AddComponent<MaskManager>();
-
-			// WorldObject managers
-			QSBWorldSync.Managers = typeof(WorldObjectManager).GetDerivedTypes()
-				.Select(x => (WorldObjectManager)gameObject.AddComponent(x))
+			var components = typeof(IAddComponentOnStart).GetDerivedTypes()
+				.Select(x => gameObject.AddComponent(x))
 				.ToArray();
 
+			QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 			QSBPatchManager.OnPatchType += OnPatchType;
 			QSBPatchManager.OnUnpatchType += OnUnpatchType;
 		}
@@ -144,17 +127,14 @@ namespace QSB
 				DebugLog.DebugWrite(assembly.ToString());
 				assembly.GetTypes()
 					.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
-					.Where(x => x.GetCustomAttribute<RuntimeInitializeOnLoadMethodAttribute>() != null)
+					.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
 					.ForEach(x => x.Invoke(null, null));
 			}
 
 			DebugLog.DebugWrite($"Assemblies initialized", MessageType.Success);
 		}
 
-		public override void Configure(IModConfig config)
-		{
-			DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
-		}
+		public override void Configure(IModConfig config) => DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 
 		private void Update()
 		{
@@ -162,12 +142,12 @@ namespace QSB
 			{
 				DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
-				GetComponent<DebugActions>().enabled = DebugMode;
-				GetComponent<DebugGUI>().enabled = DebugMode;
+				GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
+				GetComponent<DebugGUI>().enabled = DebugSettings.DrawGui;
 				QuantumManager.UpdateFromDebugSetting();
 				DebugCameraSettings.UpdateFromDebugSetting();
 
-				DebugLog.ToConsole($"DEBUG MODE = {DebugMode}");
+				DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 			}
 		}
 	}

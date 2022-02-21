@@ -1,6 +1,7 @@
 ﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
 
 namespace QSB.ItemSync.Messages
 {
@@ -26,6 +27,39 @@ namespace QSB.ItemSync.Messages
 				_ => player.ItemSocket,
 			};
 			WorldObject.PickUpItem(itemSocket);
+
+			switch (itemType)
+			{
+				case ItemType.Scroll:
+					player.AnimationSync.VisibleAnimator.SetTrigger("HoldScroll");
+					break;
+				case ItemType.WarpCore:
+					if (((QSBWarpCoreItem)WorldObject).IsVesselCoreType())
+					{
+						player.AnimationSync.VisibleAnimator.SetTrigger("HoldAdvWarpCore");
+					}
+					else
+					{
+						player.AnimationSync.VisibleAnimator.SetTrigger("HoldWarpCore");
+					}
+
+					break;
+				case ItemType.SharedStone:
+					player.AnimationSync.VisibleAnimator.SetTrigger("HoldSharedStone");
+					break;
+				case ItemType.ConversationStone:
+					player.AnimationSync.VisibleAnimator.SetTrigger("HoldItem");
+					break;
+				case ItemType.Lantern:
+					player.AnimationSync.VisibleAnimator.SetTrigger("HoldLantern");
+					break;
+				case ItemType.SlideReel:
+					break;
+				case ItemType.DreamLantern:
+					break;
+				case ItemType.VisionTorch:
+					break;
+			}
 		}
 	}
 }

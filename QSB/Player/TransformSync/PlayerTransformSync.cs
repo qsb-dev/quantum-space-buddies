@@ -1,14 +1,10 @@
 ﻿using OWML.Common;
-using QSB.Audio;
 using QSB.Messaging;
 using QSB.Player.Messages;
-using QSB.RoastingSync;
-using QSB.SectorSync;
+using QSB.PlayerBodySetup.Local;
+using QSB.PlayerBodySetup.Remote;
 using QSB.Syncs.Sectored.Transforms;
-using QSB.Tools;
 using QSB.Utility;
-using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Player.TransformSync
@@ -41,9 +37,6 @@ namespace QSB.Player.TransformSync
 		protected Vector3 _roastingPositionVelocity;
 		protected Quaternion _roastingRotationVelocity;
 
-		private Transform GetStickPivot()
-			=> QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
-
 		public override void OnStartClient()
 		{
 			var player = new PlayerInfo(this);
@@ -51,12 +44,16 @@ namespace QSB.Player.TransformSync
 			base.OnStartClient();
 			QSBPlayerManager.OnAddPlayer?.Invoke(Player);
 			DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
+
+			JoinLeaveSingularity.Create(Player, true);
 		}
 
 		public override void OnStartLocalPlayer() => LocalInstance = this;
 
 		public override void OnStopClient()
 		{
+			JoinLeaveSingularity.Create(Player, false);
+
 			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
 			QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
 			base.OnStopClient();
@@ -77,151 +74,29 @@ namespace QSB.Player.TransformSync
 		}
 
 		protected override Transform InitLocalTransform()
-		{
-			SectorDetector.Init(Locator.GetPlayerSectorDetector(), TargetType.Player);
-
-			// player body
-			var player = Locator.GetPlayerTransform();
-			var playerModel = player.Find("Traveller_HEA_Player_v2");
-			Player.AnimationSync.InitLocal(playerModel);
-			Player.InstrumentsManager.InitLocal(player);
-			Player.Body = player.gameObject;
-
-			// camera
-			var cameraBody = Locator.GetPlayerCamera().gameObject.transform;
-			Player.Camera = Locator.GetPlayerCamera();
-			Player.CameraBody = cameraBody.gameObject;
-			_visibleCameraRoot = cameraBody;
-
-			PlayerToolsManager.InitLocal();
-
-			// stick
-			var pivot = GetStickPivot();
-			Player.RoastingStick = pivot.parent.gameObject;
-			_visibleRoastingSystem = pivot.parent.parent;
-			_visibleStickPivot = pivot;
-			_visibleStickTip = pivot.Find("Stick_Tip");
-
-			Player.IsReady = true;
-			new PlayerReadyMessage(true).Send();
-
-			new RequestStateResyncMessage().Send();
-
-			return player;
-		}
+			=> LocalPlayerCreation.CreatePlayer(
+				Player,
+				SectorDetector,
+				out _visibleCameraRoot,
+				out _visibleRoastingSystem,
+				out _visibleStickPivot,
+				out _visibleStickTip);
 
 		protected override Transform InitRemoteTransform()
-		{
-			/*
-			 * CREATE PLAYER STRUCTURE
-			 */
-
-			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
-
-			var REMOTE_Player_Body = new GameObject("REMOTE_Player_Body");
-
-			var REMOTE_PlayerCamera = new GameObject("REMOTE_PlayerCamera");
-			REMOTE_PlayerCamera.transform.parent = REMOTE_Player_Body.transform;
-			REMOTE_PlayerCamera.transform.localPosition = new Vector3(0f, 0.8496093f, 0.1500003f);
-
-			var REMOTE_RoastingSystem = new GameObject("REMOTE_RoastingSystem");
-			REMOTE_RoastingSystem.transform.parent = REMOTE_Player_Body.transform;
-			REMOTE_RoastingSystem.transform.localPosition = new Vector3(0f, 0.4f, 0f);
-
-			var REMOTE_Stick_Root = new GameObject("REMOTE_Stick_Root");
-			REMOTE_Stick_Root.transform.parent = REMOTE_RoastingSystem.transform;
-			REMOTE_Stick_Root.transform.localPosition = new Vector3(0.25f, 0f, 0.08f);
-			REMOTE_Stick_Root.transform.localRotation = Quaternion.Euler(0f, -10f, 0f);
-
-			/*
-			 * SET UP PLAYER BODY
-			 */
-
-			var player = Locator.GetPlayerTransform();
-			var playerModel = player.Find("Traveller_HEA_Player_v2");
-
-			var REMOTE_Traveller_HEA_Player_v2 = Instantiate(playerModel);
-			REMOTE_Traveller_HEA_Player_v2.transform.parent = REMOTE_Player_Body.transform;
-			REMOTE_Traveller_HEA_Player_v2.transform.localPosition = new Vector3(0f, -1.03f, -0.2f);
-			REMOTE_Traveller_HEA_Player_v2.transform.localRotation = Quaternion.Euler(-1.500009f, 0f, 0f);
-			REMOTE_Traveller_HEA_Player_v2.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-
-			Player.Body = REMOTE_Player_Body;
-
-			Player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2);
-			Player.InstrumentsManager.InitRemote(REMOTE_Player_Body.transform);
-
-			REMOTE_Player_Body.AddComponent<PlayerHUDMarker>().Init(Player);
-			REMOTE_Player_Body.AddComponent<PlayerMapMarker>().PlayerName = Player.Name;
-			Player._ditheringAnimator = REMOTE_Player_Body.AddComponent<DitheringAnimator>();
-			// get inactive renderers too
-			Delay.RunNextFrame(() =>
-				Player._ditheringAnimator._renderers = Player._ditheringAnimator
-					.GetComponentsInChildren<Renderer>(true)
-					.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
-					.ToArray());
-			Player.AudioController = PlayerAudioManager.InitRemote(REMOTE_Player_Body.transform);
-
-			/*
-			 * SET UP PLAYER CAMERA
-			 */
-
-			var camera = REMOTE_PlayerCamera.AddComponent<Camera>();
-			camera.enabled = false;
-			var owcamera = REMOTE_PlayerCamera.AddComponent<OWCamera>();
-			owcamera.fieldOfView = 70;
-			owcamera.nearClipPlane = 0.1f;
-			owcamera.farClipPlane = 50000f;
-			Player.Camera = owcamera;
-			Player.CameraBody = REMOTE_PlayerCamera;
-			_visibleCameraRoot = REMOTE_PlayerCamera.transform;
-
-			PlayerToolsManager.InitRemote(Player);
-
-			/*
-			 * SET UP ROASTING STICK
-			 */
-
-			var REMOTE_Stick_Pivot = Instantiate(GetStickPivot());
-			REMOTE_Stick_Pivot.name = "REMOTE_Stick_Pivot";
-			REMOTE_Stick_Pivot.parent = REMOTE_Stick_Root.transform;
-			REMOTE_Stick_Pivot.gameObject.SetActive(false);
-
-			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm").gameObject);
-			Destroy(REMOTE_Stick_Pivot.Find("Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit").gameObject);
-
-			var mallowRoot = REMOTE_Stick_Pivot.Find("Stick_Tip/Mallow_Root");
-			mallowRoot.gameObject.SetActive(false);
-			var oldMarshmallow = mallowRoot.GetComponent<Marshmallow>();
-
-			// Recreate particle system
-			Destroy(mallowRoot.Find("MallowSmoke").GetComponent<RelativisticParticleSystem>());
-			var newSystem = mallowRoot.Find("MallowSmoke").gameObject.AddComponent<CustomRelativisticParticleSystem>();
-			newSystem.Init(Player);
-
-			// Create new marshmallow
-			var newMarshmallow = mallowRoot.gameObject.AddComponent<QSBMarshmallow>();
-			newMarshmallow._fireRenderer = oldMarshmallow._fireRenderer;
-			newMarshmallow._smokeParticles = oldMarshmallow._smokeParticles;
-			newMarshmallow._mallowRenderer = oldMarshmallow._mallowRenderer;
-			newMarshmallow._rawColor = oldMarshmallow._rawColor;
-			newMarshmallow._toastedColor = oldMarshmallow._toastedColor;
-			newMarshmallow._burntColor = oldMarshmallow._burntColor;
-			Destroy(oldMarshmallow);
-
-			Player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
-			Player.Marshmallow = newMarshmallow;
-			mallowRoot.gameObject.SetActive(true);
-			_visibleRoastingSystem = REMOTE_RoastingSystem.transform;
-			_visibleStickPivot = REMOTE_Stick_Pivot;
-			_visibleStickTip = REMOTE_Stick_Pivot.Find("Stick_Tip");
-
-			return REMOTE_Player_Body.transform;
-		}
+			=> RemotePlayerCreation.CreatePlayer(
+				Player,
+				out _visibleCameraRoot,
+				out _visibleRoastingSystem,
+				out _visibleStickPivot,
+				out _visibleStickTip);
 
 		protected override void GetFromAttached()
 		{
 			base.GetFromAttached();
+			if (!ReferenceTransform)
+			{
+				return;
+			}
 
 			GetFromChild(_visibleStickPivot, _networkStickPivot);
 			GetFromChild(_visibleStickTip, _networkStickTip);
@@ -232,6 +107,10 @@ namespace QSB.Player.TransformSync
 		protected override void ApplyToAttached()
 		{
 			base.ApplyToAttached();
+			if (!ReferenceTransform)
+			{
+				return;
+			}
 
 			ApplyToChild(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
 			ApplyToChild(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
@@ -253,7 +132,7 @@ namespace QSB.Player.TransformSync
 
 		protected override void OnRenderObject()
 		{
-			if (!QSBCore.ShowLinesInDebug
+			if (!QSBCore.DebugSettings.DrawLines
 				|| !IsValid
 				|| !ReferenceTransform)
 			{

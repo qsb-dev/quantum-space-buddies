@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.Utility;
 using System.Threading;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace QSB.WorldSync
 		Eye
 	}
 
-	public abstract class WorldObjectManager : MonoBehaviour
+	public abstract class WorldObjectManager : MonoBehaviour, IAddComponentOnStart
 	{
 		/// <summary>
 		/// when the scene does not match the type, this manager will not build its world objects

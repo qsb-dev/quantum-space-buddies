@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.ClientServerStateSync;
+using QSB.ClientServerStateSync.Messages;
 using QSB.DeathSync;
 using QSB.Inputs;
 using QSB.Messaging;
@@ -114,14 +115,14 @@ namespace QSB.TimeSync
 		{
 			new RequestStateResyncMessage().Send();
 			CurrentState = State.Loaded;
-			gameObject.GetRequiredComponent<PreserveTimeScale>();
+			gameObject.GetRequiredComponent<PreserveTimeScale>().Init();
 			if (isServer)
 			{
 				SendServerTime();
 			}
 			else
 			{
-				if (!QSBCore.AvoidTimeSync)
+				if (!QSBCore.DebugSettings.AvoidTimeSync)
 				{
 					WakeUpOrSleep();
 				}
@@ -250,7 +251,7 @@ namespace QSB.TimeSync
 			{
 				UpdateServer();
 			}
-			else if (isLocalPlayer && !QSBCore.AvoidTimeSync)
+			else if (isLocalPlayer && !QSBCore.DebugSettings.AvoidTimeSync)
 			{
 				UpdateClient();
 			}
@@ -297,7 +298,7 @@ namespace QSB.TimeSync
 				{
 					//?
 					DebugLog.ToConsole($"Warning - Server waiting for players to die, but players waiting for ready signal! Assume players correct.", MessageType.Warning);
-					ServerStateManager.Instance.SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToReady);
+					new ServerStateMessage(ServerState.WaitingForAllPlayersToReady).Send();
 				}
 			}
 

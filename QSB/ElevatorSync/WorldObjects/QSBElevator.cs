@@ -22,13 +22,8 @@ namespace QSB.ElevatorSync.WorldObjects
 			_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
 		}
 
-		public override void SendInitialState(uint to)
-		{
-			if (QSBCore.IsHost)
-			{
-				this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd));
-			}
-		}
+		public override void SendInitialState(uint to) =>
+			this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd));
 
 		public void RemoteCall(bool isGoingUp)
 		{

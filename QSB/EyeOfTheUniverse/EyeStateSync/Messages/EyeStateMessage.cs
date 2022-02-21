@@ -24,10 +24,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
-		public override void OnReceiveLocal()
-		{
-			QSBPlayerManager.LocalPlayer.EyeState = Value;
-		}
+		public override void OnReceiveLocal() => QSBPlayerManager.LocalPlayer.EyeState = Value;
 
 		public override void OnReceiveRemote()
 		{

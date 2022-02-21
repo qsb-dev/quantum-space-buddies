@@ -13,6 +13,9 @@ namespace QSB.WorldSync
 		string ReturnLabel();
 		void DisplayLines();
 
+		/// <summary>
+		/// called on the host to send over initial state messages
+		/// </summary>
 		void SendInitialState(uint to);
 	}
 }

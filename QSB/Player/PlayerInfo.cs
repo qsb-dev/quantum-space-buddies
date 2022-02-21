@@ -4,11 +4,11 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Audio;
 using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
-using QSB.Instruments;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
+using QSB.PlayerBodySetup.Remote;
 using QSB.QuantumSync.WorldObjects;
 using QSB.RoastingSync;
 using QSB.Tools;
@@ -31,7 +31,6 @@ namespace QSB.Player
 		public PlayerHUDMarker HudMarker { get; set; }
 		public PlayerTransformSync TransformSync { get; }
 		public AnimationSync AnimationSync { get; }
-		public InstrumentsManager InstrumentsManager { get; }
 		public ClientState State { get; set; }
 		public EyeState EyeState { get; set; }
 		public bool IsDead { get; set; }
@@ -42,7 +41,7 @@ namespace QSB.Player
 		public bool IsInEyeShuttle { get; set; }
 		public IQSBQuantumObject EntangledObject { get; set; }
 		public QSBPlayerAudioController AudioController { get; set; }
-		internal DitheringAnimator _ditheringAnimator;
+		internal QSBDitheringAnimator _ditheringAnimator;
 
 		public bool IsLocalPlayer => TransformSync.isLocalPlayer;
 
@@ -104,15 +103,42 @@ namespace QSB.Player
 		public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 		public QSBTool Translator => GetToolByType(ToolType.Translator);
 		public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
-		public Transform ItemSocket => CameraBody.transform.Find("REMOTE_ItemSocket");
-		public Transform ScrollSocket => CameraBody.transform.Find("REMOTE_ScrollSocket");
-		public Transform SharedStoneSocket => CameraBody.transform.Find("REMOTE_SharedStoneSocket");
-		public Transform WarpCoreSocket => CameraBody.transform.Find("REMOTE_WarpCoreSocket");
-		public Transform VesselCoreSocket => CameraBody.transform.Find("REMOTE_VesselCoreSocket");
-		public Transform SimpleLanternSocket => CameraBody.transform.Find("REMOTE_SimpleLanternSocket");
-		public Transform DreamLanternSocket => CameraBody.transform.Find("REMOTE_DreamLanternSocket");
-		public Transform SlideReelSocket => CameraBody.transform.Find("REMOTE_SlideReelSocket");
-		public Transform VisionTorchSocket => CameraBody.transform.Find("REMOTE_VisionTorchSocket");
+		private Transform _handPivot;
+		public Transform HandPivot
+		{
+			get
+			{
+				if (_handPivot == null)
+				{
+					_handPivot = Body.transform.Find(
+						// TODO : kill me for my sins
+						"REMOTE_Traveller_HEA_Player_v2/" +
+						"Traveller_Rig_v01:Traveller_Trajectory_Jnt/" +
+						"Traveller_Rig_v01:Traveller_ROOT_Jnt/" +
+						"Traveller_Rig_v01:Traveller_Spine_01_Jnt/" +
+						"Traveller_Rig_v01:Traveller_Spine_02_Jnt/" +
+						"Traveller_Rig_v01:Traveller_Spine_Top_Jnt/" +
+						"Traveller_Rig_v01:Traveller_RT_Arm_Clavicle_Jnt/" +
+						"Traveller_Rig_v01:Traveller_RT_Arm_Shoulder_Jnt/" +
+						"Traveller_Rig_v01:Traveller_RT_Arm_Elbow_Jnt/" +
+						"Traveller_Rig_v01:Traveller_RT_Arm_Wrist_Jnt/" +
+						"REMOTE_ItemCarryTool/" +
+						"HandPivot"
+					);
+				}
+
+				return _handPivot;
+			}
+		}
+		public Transform ItemSocket => HandPivot.Find("REMOTE_ItemSocket");
+		public Transform ScrollSocket => HandPivot.Find("REMOTE_ScrollSocket");
+		public Transform SharedStoneSocket => HandPivot.Find("REMOTE_SharedStoneSocket");
+		public Transform WarpCoreSocket => HandPivot.Find("REMOTE_WarpCoreSocket");
+		public Transform VesselCoreSocket => HandPivot.Find("REMOTE_VesselCoreSocket");
+		public Transform SimpleLanternSocket => HandPivot.Find("REMOTE_SimpleLanternSocket");
+		public Transform DreamLanternSocket => HandPivot.Find("REMOTE_DreamLanternSocket");
+		public Transform SlideReelSocket => HandPivot.Find("REMOTE_SlideReelSocket");
+		public Transform VisionTorchSocket => HandPivot.Find("REMOTE_VisionTorchSocket");
 		public QSBMarshmallow Marshmallow { get; set; }
 		public QSBCampfire Campfire { get; set; }
 		public IQSBItem HeldItem { get; set; }
@@ -128,9 +154,6 @@ namespace QSB.Player
 		public GameObject CurrentDialogueBox { get; set; }
 
 		// Animation
-		public bool PlayingInstrument => AnimationSync.CurrentType
-			is not AnimationType.PlayerSuited
-			and not AnimationType.PlayerUnsuited;
 		public JetpackAccelerationSync JetpackAcceleration { get; set; }
 
 		// Local only
@@ -195,7 +218,6 @@ namespace QSB.Player
 			PlayerId = transformSync.netId;
 			TransformSync = transformSync;
 			AnimationSync = transformSync.GetComponent<AnimationSync>();
-			InstrumentsManager = transformSync.GetComponent<InstrumentsManager>();
 		}
 
 		public void UpdateObjectsFromStates()

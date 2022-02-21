@@ -14,7 +14,7 @@ namespace QSB.Anglerfish.Patches
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(AnglerfishController), nameof(AnglerfishController.GetTargetPosition))]
-		public static bool GetTargetPosition(AnglerfishController __instance, ref Vector3 __result)
+		public static bool GetTargetPosition(AnglerfishController __instance, out Vector3 __result)
 		{
 			var qsbAngler = __instance.GetWorldObject<QSBAngler>();
 

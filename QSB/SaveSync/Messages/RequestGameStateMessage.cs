@@ -1,6 +1,8 @@
 ﻿using QSB.ConversationSync.Messages;
 using QSB.ConversationSync.Patches;
 using QSB.Messaging;
+using QSB.Player;
+using QSB.Utility;
 using System.Linq;
 
 namespace QSB.SaveSync.Messages
@@ -12,8 +14,14 @@ namespace QSB.SaveSync.Messages
 	{
 		public RequestGameStateMessage() => To = 0;
 
-		public override void OnReceiveRemote()
+		public override void OnReceiveRemote() => Delay.RunFramesLater(100, () =>
 		{
+			if (!QSBPlayerManager.PlayerExists(From))
+			{
+				// player was kicked
+				return;
+			}
+
 			new GameStateMessage(From).Send();
 
 			var gameSave = PlayerData._currentGameSave;
@@ -30,6 +38,6 @@ namespace QSB.SaveSync.Messages
 			{
 				new PersistentConditionMessage(item.Key, item.Value).Send();
 			}
-		}
+		});
 	}
 }

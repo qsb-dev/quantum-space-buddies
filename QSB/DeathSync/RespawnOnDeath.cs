@@ -68,8 +68,8 @@ namespace QSB.DeathSync
 			else
 			{
 				var allAstroobjects = QSBWorldSync.GetUnityObjects<AstroObject>().Where(x => x.GetAstroObjectName() != AstroObject.Name.None && x.GetAstroObjectType() != AstroObject.Type.Satellite);
-				var ordered = allAstroobjects.OrderBy(x => Vector3.SqrMagnitude(x.transform.position));
-				DeathClosestAstroObject = ordered.First().transform;
+				var closest = allAstroobjects.MinBy(x => Vector3.SqrMagnitude(x.transform.position));
+				DeathClosestAstroObject = closest.transform;
 			}
 
 			var deathPosition = Locator.GetPlayerTransform().position;

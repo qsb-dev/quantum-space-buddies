@@ -9,6 +9,7 @@ namespace QSB.Utility
 		protected virtual bool UseReliableRpc => false;
 
 		private double _lastSendTime;
+		private byte[] _lastKnownData;
 
 		protected abstract bool HasChanged();
 		protected abstract void UpdatePrevData();
@@ -17,17 +18,7 @@ namespace QSB.Utility
 
 		protected virtual void Update()
 		{
-			if (!isClient)
-			{
-				return;
-			}
-
 			if (!hasAuthority)
-			{
-				return;
-			}
-
-			if (!NetworkClient.ready)
 			{
 				return;
 			}
@@ -54,6 +45,23 @@ namespace QSB.Utility
 				{
 					CmdSendDataUnreliable(data);
 				}
+
+				if (QSBCore.IsHost)
+				{
+					_lastKnownData ??= new byte[data.Count];
+					Array.Copy(data.Array!, data.Offset, _lastKnownData, 0, data.Count);
+				}
+			}
+		}
+
+		/// <summary>
+		/// called on the host to send the last known data to a new client
+		/// </summary>
+		public void SendInitialState(NetworkConnectionToClient target)
+		{
+			if (_lastKnownData != null)
+			{
+				TargetSendInitialData(target, new ArraySegment<byte>(_lastKnownData));
 			}
 		}
 
@@ -69,8 +77,17 @@ namespace QSB.Utility
 		[ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
 		private void RpcSendDataUnreliable(ArraySegment<byte> data) => OnData(data);
 
+		[TargetRpc(channel = Channels.Reliable)]
+		private void TargetSendInitialData(NetworkConnection target, ArraySegment<byte> data) => OnData(data);
+
 		private void OnData(ArraySegment<byte> data)
 		{
+			if (QSBCore.IsHost)
+			{
+				_lastKnownData ??= new byte[data.Count];
+				Array.Copy(data.Array!, data.Offset, _lastKnownData, 0, data.Count);
+			}
+
 			using var reader = NetworkReaderPool.GetReader(data);
 			UpdatePrevData();
 			Deserialize(reader);

@@ -6,9 +6,16 @@ namespace QSB.Animation.Player.Thrusters
 {
 	internal class RemoteThrusterWashController : MonoBehaviour
 	{
+		[SerializeField]
 		private float _raycastDistance = 10f;
+
+		[SerializeField]
 		private AnimationCurve _emissionDistanceScale;
+
+		[SerializeField]
 		private AnimationCurve _emissionThrusterScale;
+
+		[SerializeField]
 		private ParticleSystem _defaultParticleSystem;
 
 		private ParticleSystem.MainModule _defaultMainModule;
@@ -17,20 +24,12 @@ namespace QSB.Animation.Player.Thrusters
 
 		private PlayerInfo _attachedPlayer;
 
-		private bool _isReady;
 		private bool _initialised;
 
-		public void InitFromOld(AnimationCurve distanceScale, AnimationCurve thrusterScale, ParticleSystem defaultParticleSystem, PlayerInfo player)
+		public void Init(PlayerInfo player)
 		{
-			_emissionDistanceScale = distanceScale;
-			_emissionThrusterScale = thrusterScale;
-			_defaultParticleSystem = defaultParticleSystem;
 			_attachedPlayer = player;
-			_isReady = true;
-		}
 
-		private void Init()
-		{
 			if (_defaultParticleSystem == null)
 			{
 				DebugLog.ToConsole($"Error - DefaultParticleSystem is null!", OWML.Common.MessageType.Error);
@@ -46,11 +45,6 @@ namespace QSB.Animation.Player.Thrusters
 
 		private void Update()
 		{
-			if (_isReady && !_initialised)
-			{
-				Init();
-			}
-
 			if (!_initialised)
 			{
 				return;

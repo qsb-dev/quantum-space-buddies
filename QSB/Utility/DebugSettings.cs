@@ -5,33 +5,46 @@ namespace QSB.Utility
 	public class DebugSettings
 	{
 		[JsonProperty("useKcpTransport")]
-		public bool UseKcpTransport { get; set; }
-
-		[JsonProperty("overrideAppId")]
-		public int OverrideAppId { get; set; } = -1;
+		public bool UseKcpTransport;
 
 		[JsonProperty("dumpWorldObjects")]
-		public bool DumpWorldObjects { get; set; }
+		public bool DumpWorldObjects;
+
+		[JsonProperty("playerIdInLogs")]
+		public bool PlayerIdInLogs;
+
+		[JsonProperty("hookDebugLogs")]
+		public bool HookDebugLogs;
 
 		[JsonProperty("debugMode")]
-		public bool DebugMode { get; set; }
+		public bool DebugMode;
+
+		[JsonProperty("drawGui")]
+		private bool _drawGui;
+		public bool DrawGui => DebugMode && _drawGui;
 
 		[JsonProperty("drawLines")]
-		public bool DrawLines { get; set; }
+		private bool _drawLines;
+		public bool DrawLines => DebugMode && _drawLines;
 
-		[JsonProperty("showQuantumVisibilityObjects")]
-		public bool ShowQuantumVisibilityObjects { get; set; }
+		[JsonProperty("drawLabels")]
+		private bool _drawLabels;
+		public bool DrawLabels => DebugMode && _drawLabels;
 
-		[JsonProperty("showDebugLabels")]
-		public bool ShowDebugLabels { get; set; }
+		[JsonProperty("drawQuantumVisibilityObjects")]
+		private bool _drawQuantumVisibilityObjects;
+		public bool DrawQuantumVisibilityObjects => DebugMode && _drawQuantumVisibilityObjects;
 
 		[JsonProperty("avoidTimeSync")]
-		public bool AvoidTimeSync { get; set; }
+		private bool _avoidTimeSync;
+		public bool AvoidTimeSync => DebugMode && _avoidTimeSync;
 
 		[JsonProperty("skipTitleScreen")]
-		public bool SkipTitleScreen { get; set; }
+		private bool _skipTitleScreen;
+		public bool SkipTitleScreen => DebugMode && _skipTitleScreen;
 
 		[JsonProperty("greySkybox")]
-		public bool GreySkybox { get; set; }
+		private bool _greySkybox;
+		public bool GreySkybox => DebugMode && _greySkybox;
 	}
 }

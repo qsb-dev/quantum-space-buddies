@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Inputs
 {
-	public class QSBInputManager : MonoBehaviour
+	public class QSBInputManager : MonoBehaviour, IAddComponentOnStart
 	{
 		// TODO : finish instruments - disabled for 0.7.0 release
 		/*
@@ -55,9 +56,6 @@ namespace QSB.Inputs
 
 		public bool InputsEnabled { get; private set; } = true;
 
-		public void SetInputsEnabled(bool enabled)
-		{
-			InputsEnabled = enabled;
-		}
+		public void SetInputsEnabled(bool enabled) => InputsEnabled = enabled;
 	}
 }

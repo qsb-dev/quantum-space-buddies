@@ -1,5 +1,6 @@
-﻿using Mirror;
-using Mirror.FizzySteam;
+﻿using Epic.OnlineServices.Logging;
+using EpicTransport;
+using Mirror;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -16,9 +17,9 @@ using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.ShipSync.TransformSync;
+using QSB.Syncs.Occasional;
 using QSB.TimeSync;
 using QSB.Tools.ProbeTool.TransformSync;
-using QSB.TornadoSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -28,9 +29,9 @@ using UnityEngine;
 
 namespace QSB
 {
-	public class QSBNetworkManager : NetworkManager
+	public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	{
-		public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
+		public static new QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
 		public event Action OnClientConnected;
 		public event Action<string> OnClientDisconnected;
@@ -40,10 +41,9 @@ namespace QSB
 		public GameObject AnglerPrefab { get; private set; }
 		public GameObject JellyfishPrefab { get; private set; }
 		public GameObject OccasionalPrefab { get; private set; }
-		public string PlayerName { get; private set; }
+		private string PlayerName { get; set; }
 
 		private const int MaxConnections = 128;
-		private const int MaxBufferedPackets = 64;
 
 		private GameObject _probePrefab;
 		private bool _everConnected;
@@ -54,24 +54,35 @@ namespace QSB
 			"KCP: received disconnect message",
 			"Failed to resolve host: .*"
 		};
-		private const int _defaultSteamAppID = 753640;
 
 		public override void Awake()
 		{
 			gameObject.SetActive(false);
 
-			if (QSBCore.UseKcpTransport)
+			if (QSBCore.DebugSettings.UseKcpTransport)
 			{
 				transport = gameObject.AddComponent<kcp2k.KcpTransport>();
 			}
 			else
 			{
-				var fizzy = gameObject.AddComponent<FizzyFacepunch>();
-				fizzy.SteamAppID = QSBCore.OverrideAppId == -1
-					? _defaultSteamAppID.ToString()
-					: QSBCore.OverrideAppId.ToString();
-				fizzy.SetTransportError = error => _lastTransportError = error;
-				transport = fizzy;
+				// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
+				var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
+				eosApiKey.epicProductName = "QSB";
+				eosApiKey.epicProductVersion = "1.0";
+				eosApiKey.epicProductId = "d4623220acb64419921c72047931b165";
+				eosApiKey.epicSandboxId = "d9bc4035269747668524931b0840ca29";
+				eosApiKey.epicDeploymentId = "1f164829371e4cdcb23efedce98d99ad";
+				eosApiKey.epicClientId = "xyza7891TmlpkaiDv6KAnJH0f07aAbTu";
+				eosApiKey.epicClientSecret = "ft17miukylHF877istFuhTgq+Kw1le3Pfigvf9Dtu20";
+
+				var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
+				eosSdkComponent.apiKeys = eosApiKey;
+				eosSdkComponent.epicLoggerLevel = LogLevel.Info;
+				eosSdkComponent.collectPlayerMetrics = false;
+
+				var eosTransport = gameObject.AddComponent<EosTransport>();
+				eosTransport.SetTransportError = error => _lastTransportError = error;
+				transport = eosTransport;
 			}
 
 			gameObject.SetActive(true);
@@ -104,8 +115,7 @@ namespace QSB
 			ConfigureNetworkManager();
 		}
 
-		private void InitPlayerName()
-		{
+		private void InitPlayerName() =>
 			Delay.RunWhen(PlayerData.IsLoaded, () =>
 			{
 				try
@@ -126,8 +136,12 @@ namespace QSB
 					DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 					PlayerName = "Player";
 				}
+
+				if (!QSBCore.DebugSettings.UseKcpTransport)
+				{
+					EOSSDKComponent.DisplayName = PlayerName;
+				}
 			});
-		}
 
 		/// create a new network prefab from the network object prefab template.
 		/// this works by calling Unload(false) and then reloading the AssetBundle,
@@ -135,14 +149,14 @@ namespace QSB
 		/// see https://docs.unity3d.com/Manual/AssetBundles-Native.html.
 		private static GameObject MakeNewNetworkObject(int assetId, string name, Type transformSyncType)
 		{
-			QSBCore.NetworkAssetBundle.Unload(false);
-			QSBCore.NetworkAssetBundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/network");
+			var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/empty");
+			var template = bundle.LoadAsset<GameObject>("Assets/Prefabs/Empty.prefab");
+			bundle.Unload(false);
 
-			var template = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NetworkObject.prefab");
 			DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
 				+ $"for {assetId} {name} {transformSyncType.Name}");
 			template.name = name;
-			template.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", assetId.ToGuid().ToString("N"));
+			template.AddComponent<NetworkIdentity>().SetValue("m_AssetId", assetId.ToGuid().ToString("N"));
 			template.AddComponent(transformSyncType);
 			return template;
 		}
@@ -152,7 +166,7 @@ namespace QSB
 			networkAddress = QSBCore.DefaultServerIP;
 			maxConnections = MaxConnections;
 
-			if (QSBCore.UseKcpTransport)
+			if (QSBCore.DebugSettings.UseKcpTransport)
 			{
 				kcp2k.Log.Info = s =>
 				{
@@ -177,7 +191,7 @@ namespace QSB
 			DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
 		}
 
-		public override void OnServerAddPlayer(NetworkConnection connection) // Called on the server when a client joins
+		public override void OnServerAddPlayer(NetworkConnectionToClient connection) // Called on the server when a client joins
 		{
 			DebugLog.DebugWrite($"OnServerAddPlayer", MessageType.Info);
 			base.OnServerAddPlayer(connection);
@@ -255,43 +269,48 @@ namespace QSB
 
 		public override void OnClientDisconnect()
 		{
+			DebugLog.DebugWrite("OnClientDisconnect");
 			base.OnClientDisconnect();
 			OnClientDisconnected?.SafeInvoke(_lastTransportError);
 			_lastTransportError = null;
 		}
 
-		public override void OnServerDisconnect(NetworkConnection conn) // Called on the server when any client disconnects
+		public override void OnServerDisconnect(NetworkConnectionToClient conn) // Called on the server when any client disconnects
 		{
 			DebugLog.DebugWrite("OnServerDisconnect", MessageType.Info);
 
-			// revert authority from ship
-			if (ShipTransformSync.LocalInstance != null)
+			// local conn = we are host, so skip
+			if (conn is not LocalConnectionToClient)
 			{
-				var identity = ShipTransformSync.LocalInstance.netIdentity;
-				if (identity != null && identity.connectionToClient == conn)
+				// revert authority from ship
+				if (ShipTransformSync.LocalInstance != null)
 				{
-					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+					var identity = ShipTransformSync.LocalInstance.netIdentity;
+					if (identity != null && identity.connectionToClient == conn)
+					{
+						identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+					}
 				}
+
+				// stop dragging for the orbs this player was dragging
+				foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
+				{
+					if (qsbOrb.TransformSync == null)
+					{
+						DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
+						continue;
+					}
+
+					var identity = qsbOrb.TransformSync.netIdentity;
+					if (identity.connectionToClient == conn)
+					{
+						qsbOrb.SetDragging(false);
+						qsbOrb.SendMessage(new OrbDragMessage(false));
+					}
+				}
+
+				AuthorityManager.OnDisconnect(conn);
 			}
-
-			// stop dragging for the orbs this player was dragging
-			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
-			{
-				if (qsbOrb.TransformSync == null)
-				{
-					DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
-					continue;
-				}
-
-				var identity = qsbOrb.TransformSync.netIdentity;
-				if (identity.connectionToClient == conn)
-				{
-					qsbOrb.SetDragging(false);
-					qsbOrb.SendMessage(new OrbDragMessage(false));
-				}
-			}
-
-			AuthorityManager.OnDisconnect(conn);
 
 			base.OnServerDisconnect(conn);
 		}

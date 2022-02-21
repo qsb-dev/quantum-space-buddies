@@ -1,4 +1,5 @@
 ﻿using QSB.ClientServerStateSync;
+using QSB.ClientServerStateSync.Messages;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Utility;
@@ -23,7 +24,7 @@ namespace QSB.DeathSync.Messages
 			Locator.GetDeathManager().KillPlayer(DeathType.TimeLoop);
 			if (QSBCore.IsHost)
 			{
-				ServerStateManager.Instance.SendChangeServerStateMessage(ServerState.WaitingForAllPlayersToDie);
+				new ServerStateMessage(ServerState.WaitingForAllPlayersToDie).Send();
 			}
 		}
 	}

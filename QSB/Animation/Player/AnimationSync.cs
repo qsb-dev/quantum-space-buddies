@@ -6,7 +6,7 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using System.Linq;
+using System;
 using UnityEngine;
 
 namespace QSB.Animation.Player
@@ -20,14 +20,8 @@ namespace QSB.Animation.Player
 		private PlayerCharacterController _playerController;
 		private CrouchSync _crouchSync;
 
-		private RuntimeAnimatorController _chertController;
-		//private readonly RuntimeAnimatorController _eskerController;
-		//private readonly RuntimeAnimatorController _feldsparController;
-		//private readonly RuntimeAnimatorController _gabbroController;
-		private RuntimeAnimatorController _riebeckController;
-
 		public AnimatorMirror Mirror { get; private set; }
-		public AnimationType CurrentType { get; set; }
+		public bool InSuitedUpState { get; set; }
 		public Animator VisibleAnimator { get; private set; }
 		public Animator InvisibleAnimator { get; private set; }
 		public NetworkAnimator NetworkAnimator { get; private set; }
@@ -37,50 +31,44 @@ namespace QSB.Animation.Player
 			InvisibleAnimator = gameObject.GetRequiredComponent<Animator>();
 			NetworkAnimator = gameObject.GetRequiredComponent<NetworkAnimator>();
 			NetworkAnimator.enabled = false;
-
-			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
 		}
 
-		protected void OnDestroy()
+		private void InitCommon(Transform modelRoot)
 		{
-			QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
-		}
-
-		private void OnUniverseSceneLoaded(OWScene oldScene, OWScene newScene) => LoadControllers();
-
-		private void LoadControllers()
-		{
-			var bundle = QSBCore.InstrumentAssetBundle;
-			_chertController = bundle.LoadAsset("assets/Chert/Traveller_Chert.controller") as RuntimeAnimatorController;
-			_riebeckController = bundle.LoadAsset("assets/Riebeck/Traveller_Riebeck.controller") as RuntimeAnimatorController;
-		}
-
-		private void InitCommon(Transform body)
-		{
-			if (QSBSceneManager.IsInUniverse)
+			try
 			{
-				LoadControllers();
-			}
 
-			VisibleAnimator = body.GetComponent<Animator>();
-			Mirror = body.gameObject.AddComponent<AnimatorMirror>();
-			if (isLocalPlayer)
+				if (modelRoot == null)
+				{
+					DebugLog.ToConsole($"Error - Trying to InitCommon with null body!", MessageType.Error);
+					return;
+				}
+
+				VisibleAnimator = modelRoot.GetComponent<Animator>();
+				Mirror = modelRoot.gameObject.AddComponent<AnimatorMirror>();
+				if (isLocalPlayer)
+				{
+					Mirror.Init(VisibleAnimator, InvisibleAnimator);
+				}
+				else
+				{
+					Mirror.Init(InvisibleAnimator, VisibleAnimator);
+				}
+
+				NetworkAnimator.enabled = true;
+				NetworkAnimator.Invoke("Awake");
+
+				_suitedAnimController = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<RuntimeAnimatorController>("Assets/GameAssets/AnimatorController/Player.controller"));
+				_unsuitedAnimController = Instantiate(QSBCore.NetworkAssetBundle.LoadAsset<AnimatorOverrideController>("Assets/GameAssets/AnimatorOverrideController/PlayerUnsuitedOverride.overrideController"));
+				_suitedGraphics = modelRoot.GetChild(1).gameObject;
+				_unsuitedGraphics = modelRoot.GetChild(0).gameObject;
+
+				VisibleAnimator.SetLayerWeight(2, 1f);
+			}
+			catch (Exception ex)
 			{
-				Mirror.Init(VisibleAnimator, InvisibleAnimator);
+				DebugLog.ToConsole($"Exception thrown when running InitCommon on {(modelRoot != null ? modelRoot.name : "NULL BODY")}. {ex.Message} Stacktrace: {ex.StackTrace}", MessageType.Error);
 			}
-			else
-			{
-				Mirror.Init(InvisibleAnimator, VisibleAnimator);
-			}
-
-			NetworkAnimator.enabled = true;
-			NetworkAnimator.Invoke("Awake");
-
-			var playerAnimController = body.GetComponent<PlayerAnimController>();
-			_suitedAnimController = playerAnimController._baseAnimController;
-			_unsuitedAnimController = playerAnimController._unsuitedAnimOverride;
-			_suitedGraphics = playerAnimController._suitedGroup;
-			_unsuitedGraphics = playerAnimController._unsuitedGroup;
 		}
 
 		public void InitLocal(Transform body)
@@ -96,30 +84,13 @@ namespace QSB.Animation.Player
 		public void InitRemote(Transform body)
 		{
 			InitCommon(body);
-
-			var playerAnimController = body.GetComponent<PlayerAnimController>();
-			playerAnimController.enabled = false;
-
-			playerAnimController._suitedGroup = new GameObject();
-			playerAnimController._unsuitedGroup = new GameObject();
-			playerAnimController._baseAnimController = null;
-			playerAnimController._unsuitedAnimOverride = null;
-			playerAnimController._rightArmHidden = false;
-
-			var rightArmObjects = playerAnimController._rightArmObjects.ToList();
-			rightArmObjects.ForEach(rightArmObject => rightArmObject.layer = LayerMask.NameToLayer("Default"));
-
-			body.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
-			body.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
-
-			SetAnimationType(AnimationType.PlayerUnsuited);
-
+			SetSuitState(QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse);
 			InitCrouchSync();
 			InitAccelerationSync();
 			ThrusterManager.CreateRemotePlayerVFX(Player);
 
-			var ikSync = body.gameObject.AddComponent<PlayerHeadRotationSync>();
-			Delay.RunWhen(() => Player.CameraBody != null, () => ikSync.Init(Player.CameraBody.transform));
+			Delay.RunWhen(() => Player.CameraBody != null,
+				() => body.GetComponent<PlayerHeadRotationSync>().Init(Player.CameraBody.transform));
 		}
 
 		private void InitAccelerationSync()
@@ -135,42 +106,24 @@ namespace QSB.Animation.Player
 			_crouchSync.Init(_playerController, VisibleAnimator);
 		}
 
-		private void SuitUp()
-		{
-			new ChangeAnimTypeMessage(AnimationType.PlayerSuited).Send();
-			SetAnimationType(AnimationType.PlayerSuited);
-		}
-
-		private void SuitDown()
-		{
-			new ChangeAnimTypeMessage(AnimationType.PlayerUnsuited).Send();
-			SetAnimationType(AnimationType.PlayerUnsuited);
-		}
-
-		public void SetSuitState(bool state)
+		public void SetSuitState(bool suitedUp)
 		{
 			if (!Player.IsReady)
 			{
 				return;
 			}
 
-			if (state)
+			if (Player == QSBPlayerManager.LocalPlayer)
 			{
-				SuitUp();
-				return;
+				new PlayerSuitMessage(suitedUp).Send();
 			}
 
-			SuitDown();
-		}
-
-		public void SetAnimationType(AnimationType type)
-		{
-			if (CurrentType == type)
+			if (InSuitedUpState == suitedUp)
 			{
 				return;
 			}
 
-			CurrentType = type;
+			InSuitedUpState = suitedUp;
 			if (_unsuitedAnimController == null)
 			{
 				DebugLog.ToConsole($"Error - Unsuited controller is null. ({PlayerId})", MessageType.Error);
@@ -191,56 +144,15 @@ namespace QSB.Animation.Player
 				DebugLog.ToConsole($"Warning - _suitedGraphics is null! ({PlayerId})", MessageType.Warning);
 			}
 
-			RuntimeAnimatorController controller = default;
-			switch (type)
+			var controller = suitedUp ? _suitedAnimController : _unsuitedAnimController;
+			if (_unsuitedGraphics != null)
 			{
-				case AnimationType.PlayerSuited:
-					controller = _suitedAnimController;
-					if (_unsuitedGraphics != null)
-					{
-						_unsuitedGraphics?.SetActive(false);
-					}
+				_unsuitedGraphics?.SetActive(!suitedUp);
+			}
 
-					if (_suitedGraphics != null)
-					{
-						_suitedGraphics?.SetActive(true);
-					}
-
-					break;
-
-				case AnimationType.PlayerUnsuited:
-					controller = _unsuitedAnimController;
-					if (_unsuitedGraphics != null)
-					{
-						_unsuitedGraphics?.SetActive(true);
-					}
-
-					if (_suitedGraphics != null)
-					{
-						_suitedGraphics?.SetActive(false);
-					}
-
-					break;
-
-				case AnimationType.Chert:
-					controller = _chertController;
-					break;
-
-				case AnimationType.Esker:
-					//controller = _eskerController;
-					break;
-
-				case AnimationType.Feldspar:
-					//controller = _feldsparController;
-					break;
-
-				case AnimationType.Gabbro:
-					//controller = _gabbroController;
-					break;
-
-				case AnimationType.Riebeck:
-					controller = _riebeckController;
-					break;
+			if (_suitedGraphics != null)
+			{
+				_suitedGraphics?.SetActive(suitedUp);
 			}
 
 			if (InvisibleAnimator == null)
@@ -261,30 +173,15 @@ namespace QSB.Animation.Player
 				VisibleAnimator.runtimeAnimatorController = controller;
 			}
 
-			if (type is not AnimationType.PlayerSuited and not AnimationType.PlayerUnsuited)
+			// Avoids "jumping" when putting on suit
+			if (VisibleAnimator != null)
 			{
-				if (VisibleAnimator != null)
-				{
-					VisibleAnimator.SetTrigger("Playing");
-				}
-
-				if (InvisibleAnimator != null)
-				{
-					InvisibleAnimator.SetTrigger("Playing");
-				}
+				VisibleAnimator.SetTrigger("Grounded");
 			}
-			else
-			{
-				// Avoids "jumping" when exiting instrument and putting on suit
-				if (VisibleAnimator != null)
-				{
-					VisibleAnimator.SetTrigger("Grounded");
-				}
 
-				if (InvisibleAnimator != null)
-				{
-					InvisibleAnimator.SetTrigger("Grounded");
-				}
+			if (InvisibleAnimator != null)
+			{
+				InvisibleAnimator.SetTrigger("Grounded");
 			}
 
 			if (NetworkAnimator == null)

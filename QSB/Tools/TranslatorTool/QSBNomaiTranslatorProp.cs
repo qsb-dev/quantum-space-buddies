@@ -10,8 +10,8 @@ namespace QSB.Tools.TranslatorTool
 		public GameObject TranslatorProp;
 		public MeshRenderer _leftPageArrowRenderer;
 		public MeshRenderer _rightPageArrowRenderer;
-		public Color _baseEmissionColor;
 
+		private Color _baseEmissionColor;
 		private TranslatorTargetBeam _targetBeam;
 		private QSBTranslatorScanBeam[] _scanBeams;
 		private bool _isTranslating;
@@ -26,13 +26,14 @@ namespace QSB.Tools.TranslatorTool
 				s_propID_EmissionColor = Shader.PropertyToID("_EmissionColor");
 			}
 
+			if (_rightPageArrowRenderer != null)
+			{
+				var sharedMaterial = _rightPageArrowRenderer.sharedMaterial;
+				_baseEmissionColor = sharedMaterial.GetColor(NomaiTranslatorProp.s_propID_EmissionColor);
+			}
+
 			TurnOffArrowEmission();
 
-			TranslatorProp.SetActive(false);
-		}
-
-		private void Start()
-		{
 			_scanBeams = transform.GetComponentsInChildren<QSBTranslatorScanBeam>();
 			for (var i = 0; i < _scanBeams.Length; i++)
 			{
@@ -40,6 +41,8 @@ namespace QSB.Tools.TranslatorTool
 			}
 
 			enabled = false;
+
+			TranslatorProp.SetActive(false);
 		}
 
 		private void TurnOffArrowEmission()

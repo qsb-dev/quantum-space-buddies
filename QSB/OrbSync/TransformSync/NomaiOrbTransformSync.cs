@@ -16,7 +16,7 @@ namespace QSB.OrbSync.TransformSync
 		protected override bool CheckValid() => AttachedTransform && base.CheckValid();
 
 		protected override bool UseInterpolation => true;
-		protected override float DistanceLeeway => 1f;
+		protected override float DistanceChangeThreshold => 1f;
 
 		protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
 		protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
@@ -27,12 +27,22 @@ namespace QSB.OrbSync.TransformSync
 		public override void OnStartClient()
 		{
 			_instances.Add(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.RegisterAuthQueue(true);
+			}
+
 			base.OnStartClient();
 		}
 
 		public override void OnStopClient()
 		{
 			_instances.Remove(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
 			base.OnStopClient();
 		}
 
@@ -45,22 +55,14 @@ namespace QSB.OrbSync.TransformSync
 			var body = AttachedTransform.GetAttachedOWRigidbody();
 			SetReferenceTransform(body.GetOrigParent());
 
-			if (QSBCore.IsHost)
-			{
-				netIdentity.RegisterAuthQueue();
-			}
-
 			body.OnUnsuspendOWRigidbody += OnUnsuspend;
 			body.OnSuspendOWRigidbody += OnSuspend;
-			netIdentity.SendAuthQueueMessage(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+			netIdentity.UpdateAuthQueue(body.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
 		}
 
 		protected override void Uninit()
 		{
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
+			base.Uninit();
 
 			// this is null sometimes on here, but not on other similar transforms syncs (like anglers)
 			// idk why, but whatever
@@ -73,11 +75,16 @@ namespace QSB.OrbSync.TransformSync
 					body.OnSuspendOWRigidbody -= OnSuspend;
 				}
 			}
-
-			base.Uninit();
 		}
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.SendAuthQueueMessage(AuthQueueAction.Remove);
+		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+
+		protected override void ApplyToAttached()
+		{
+			base.ApplyToAttached();
+
+			_qsbOrb.AttachedObject.SetTargetPosition(AttachedTransform.position);
+		}
 	}
 }
