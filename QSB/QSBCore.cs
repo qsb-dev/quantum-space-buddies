@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using HarmonyLib;
+using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
 using QSB.Menus;
@@ -123,12 +124,25 @@ namespace QSB
 			DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
 			foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
 			{
-				var assembly = Assembly.LoadFile(path);
-				DebugLog.DebugWrite(assembly.ToString());
-				assembly.GetTypes()
-					.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
-					.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
-					.ForEach(x => x.Invoke(null, null));
+				try
+				{
+					var assembly = Assembly.LoadFile(path);
+					DebugLog.DebugWrite(assembly.ToString());
+					assembly
+						.GetTypes()
+						.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
+						.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
+						.ForEach(x => x.Invoke(null, null));
+				}
+				catch (ReflectionTypeLoadException e)
+				{
+					DebugLog.DebugWrite(e.ToString(), MessageType.Error);
+					DebugLog.DebugWrite(e.LoaderExceptions.Join(x => "\t" + x, "\n"), MessageType.Error);
+				}
+				catch (Exception e)
+				{
+					DebugLog.DebugWrite(e.ToString(), MessageType.Error);
+				}
 			}
 
 			DebugLog.DebugWrite($"Assemblies initialized", MessageType.Success);
