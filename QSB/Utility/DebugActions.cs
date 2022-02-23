@@ -34,6 +34,8 @@ namespace QSB.Utility
 
 		private void Awake() => enabled = QSBCore.DebugSettings.DebugMode;
 
+		private int _otherPlayerToTeleportTo;
+
 		public void Update()
 		{
 			if (!Keyboard.current[Key.Q].isPressed)
@@ -57,7 +59,8 @@ namespace QSB.Utility
 			if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
 			{
 				var otherPlayers = QSBPlayerManager.PlayerList.Where(x => !x.IsLocalPlayer).ToList();
-				var otherPlayer = otherPlayers[Random.Range(0, otherPlayers.Count)];
+				_otherPlayerToTeleportTo = (_otherPlayerToTeleportTo + 1) % otherPlayers.Count;
+				var otherPlayer = otherPlayers[_otherPlayerToTeleportTo];
 				new DebugRequestTeleportInfoMessage(otherPlayer.PlayerId).Send();
 			}
 
