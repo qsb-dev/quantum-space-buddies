@@ -1,10 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyTitle>Quantum Space Buddies</AssemblyTitle>
-    <Description>Multiplayer mod for Outer Wilds</Description>
     <Product>Quantum Space Buddies</Product>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
+    <Description>Multiplayer mod for Outer Wilds</Description>
     <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\QSB</OutputPath>
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
