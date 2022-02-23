@@ -2,6 +2,7 @@
 
 namespace QSB.Utility
 {
+	[JsonObject(MemberSerialization.OptIn)]
 	public class DebugSettings
 	{
 		[JsonProperty("useKcpTransport")]
