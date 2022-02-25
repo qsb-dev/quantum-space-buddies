@@ -6,6 +6,7 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
+using Gizmos = Popcron.Gizmos;
 
 namespace QSB.Syncs;
 /*
@@ -259,11 +260,19 @@ public abstract class SyncBase : QSBNetworkTransform
 		base.Update();
 	}
 
+	private Vector3 _prevSmoothPosition;
+
 	private void Interpolate()
 	{
+		if (Vector3.Distance(SmoothPosition, _prevSmoothPosition) > DistanceChangeThreshold)
+		{
+			DebugLog.DebugWrite($"{this} POS teleport (change = {Vector3.Distance(SmoothPosition, _prevSmoothPosition):F4}");
+		}
+
 		var distance = Vector3.Distance(SmoothPosition, transform.position);
 		if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold)
 		{
+			DebugLog.DebugWrite($"{this} DIST teleport (change = {Mathf.Abs(distance - _prevDistance):F4}");
 			SmoothPosition = transform.position;
 			SmoothRotation = transform.rotation;
 		}
@@ -274,6 +283,7 @@ public abstract class SyncBase : QSBNetworkTransform
 		}
 
 		_prevDistance = distance;
+		_prevSmoothPosition = SmoothPosition;
 	}
 
 	public virtual void SetReferenceTransform(Transform referenceTransform)
@@ -283,6 +293,8 @@ public abstract class SyncBase : QSBNetworkTransform
 			return;
 		}
 
+		DebugLog.DebugWrite($"{this} sector {ReferenceTransform} -> {referenceTransform}");
+
 		ReferenceTransform = referenceTransform;
 
 		if (!hasAuthority && UseInterpolation && AttachedTransform)
@@ -291,13 +303,13 @@ public abstract class SyncBase : QSBNetworkTransform
 			{
 				AttachedTransform.parent = ReferenceTransform;
 				AttachedTransform.localScale = Vector3.one;
-				SmoothPosition = AttachedTransform.localPosition;
-				SmoothRotation = AttachedTransform.localRotation;
+				// SmoothPosition = AttachedTransform.localPosition;
+				// SmoothRotation = AttachedTransform.localRotation;
 			}
 			else
 			{
-				SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+				// SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
+				// SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 			}
 		}
 	}
@@ -318,11 +330,11 @@ public abstract class SyncBase : QSBNetworkTransform
 		 * Cyan Line = Connection between Green cube and reference transform
 		 */
 
-		Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
-		Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red);
-		Popcron.Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green);
-		Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
-		Popcron.Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan);
+		Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
+		Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red);
+		Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green);
+		Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
+		Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan);
 	}
 
 	private void OnGUI()
