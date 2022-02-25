@@ -287,19 +287,19 @@ public abstract class SyncBase : QSBNetworkTransform
 
 		ReferenceTransform = referenceTransform;
 
-		if (!hasAuthority && UseInterpolation && AttachedTransform)
+		if (!hasAuthority && AttachedTransform)
 		{
 			if (IsPlayerObject)
 			{
 				AttachedTransform.parent = ReferenceTransform;
 				AttachedTransform.localScale = Vector3.one;
-				// SmoothPosition = AttachedTransform.localPosition;
-				// SmoothRotation = AttachedTransform.localRotation;
+				transform.position = SmoothPosition = AttachedTransform.localPosition;
+				transform.rotation = SmoothRotation = AttachedTransform.localRotation;
 			}
 			else
 			{
-				// SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				// SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+				transform.position = SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
+				transform.rotation = SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 			}
 		}
 	}
