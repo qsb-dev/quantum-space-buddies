@@ -106,10 +106,6 @@ public static class QSBWorldSync
 			return;
 		}
 
-		_cts.Cancel();
-		_cts.Dispose();
-		_cts = null;
-
 		if (_managersBuilding.Count > 0)
 		{
 			DebugLog.DebugWrite($"{_managersBuilding.Count} managers still building", MessageType.Warning);
@@ -119,6 +115,10 @@ public static class QSBWorldSync
 		{
 			DebugLog.DebugWrite($"{_objectsIniting.Count} objects still initing", MessageType.Warning);
 		}
+
+		_cts.Cancel();
+		_cts.Dispose();
+		_cts = null;
 
 		_managersBuilding.Clear();
 		_objectsIniting.Clear();
