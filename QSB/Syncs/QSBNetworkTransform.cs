@@ -8,8 +8,8 @@ public class QSBNetworkTransform : QSBNetworkBehaviour
 {
 	protected override float SendInterval => 0.05f;
 
-	private const float PositionChangeThreshold = 0.05f;
-	private const float RotationChangeThreshold = 0.05f;
+	protected const float PositionChangeThreshold = 0.05f;
+	protected const float RotationChangeThreshold = 0.05f;
 
 	private Vector3 _prevPosition;
 	private Quaternion _prevRotation;

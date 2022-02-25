@@ -248,28 +248,28 @@ public abstract class SyncBase : QSBNetworkTransform
 			SafeUninit();
 		}
 
-		if (_interpolating)
+		base.Update();
+
+		if (IsValid && _interpolating)
 		{
 			Interpolate();
-
-			if (Vector3.Distance(SmoothPosition, transform.position) > 0.001f)
+			if (!hasAuthority)
 			{
-				SmoothPosition = transform.position;
-				SmoothRotation = transform.rotation;
-				_interpolating = false;
+				ApplyToAttached();
 			}
 		}
-
-		base.Update();
 	}
 
 	private void Interpolate()
 	{
 		var distance = Vector3.Distance(SmoothPosition, transform.position);
-		if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold)
+		var angle = Quaternion.Angle(SmoothRotation, transform.rotation);
+		if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold ||
+		    distance < PositionChangeThreshold && angle < RotationChangeThreshold)
 		{
 			SmoothPosition = transform.position;
 			SmoothRotation = transform.rotation;
+			_interpolating = false;
 		}
 		else
 		{
@@ -317,11 +317,12 @@ public abstract class SyncBase : QSBNetworkTransform
 		 * Cyan Line = Connection between Green cube and reference transform
 		 */
 
-		Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
-		Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red);
-		Popcron.Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green);
-		Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
-		Popcron.Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan);
+		var interpDiv = _interpolating ? 2 : 1;
+		Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red / interpDiv);
+		Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red / interpDiv);
+		Popcron.Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green / interpDiv);
+		Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta / interpDiv);
+		Popcron.Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan / interpDiv);
 	}
 
 	private void OnGUI()
