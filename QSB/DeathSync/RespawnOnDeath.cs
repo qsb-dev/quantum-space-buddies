@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.RespawnSync;
 using QSB.Utility;
@@ -102,6 +103,8 @@ public class RespawnOnDeath : MonoBehaviour
 				}
 			}
 		}
+
+		QSBPlayerManager.LocalPlayer.LocalFlashlight.TurnOff(false);
 	}
 
 	private SpawnPoint GetSpawnPoint()
