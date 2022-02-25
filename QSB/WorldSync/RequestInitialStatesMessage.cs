@@ -6,7 +6,9 @@ using QSB.Utility;
 namespace QSB.WorldSync;
 
 /// <summary>
-/// sent to the host to get initial object states
+/// sent to the host to get initial object states.
+/// <para/>
+/// world objects will be ready on both sides at this point
 /// </summary>
 public class RequestInitialStatesMessage : QSBMessage
 {

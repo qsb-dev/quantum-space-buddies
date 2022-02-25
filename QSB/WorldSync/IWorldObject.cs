@@ -15,6 +15,8 @@ public interface IWorldObject
 
 	/// <summary>
 	/// called on the host to send over initial state messages
+	/// <para/>
+	/// world objects will be ready on both sides at this point
 	/// </summary>
 	void SendInitialState(uint to);
 }

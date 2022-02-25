@@ -56,6 +56,8 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 
 	/// <summary>
 	/// called on the host to send the last known data to a new client
+	/// <para/>
+	/// world objects will be ready on both sides at this point
 	/// </summary>
 	public void SendInitialState(NetworkConnectionToClient target)
 	{
