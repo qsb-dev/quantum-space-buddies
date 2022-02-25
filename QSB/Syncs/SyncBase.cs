@@ -7,336 +7,334 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Syncs
+namespace QSB.Syncs;
+/*
+ * Rewrite number : 11
+ * God has cursed me for my hubris, and my work is never finished.
+ */
+
+public abstract class SyncBase : QSBNetworkTransform
 {
-	/*
-	 * Rewrite number : 11
-	 * God has cursed me for my hubris, and my work is never finished.
-	 */
-
-	public abstract class SyncBase : QSBNetworkTransform
+	/// <summary>
+	/// valid if IsPlayerObject, otherwise null
+	/// </summary>
+	public PlayerInfo Player
 	{
-		/// <summary>
-		/// valid if IsPlayerObject, otherwise null
-		/// </summary>
-		public PlayerInfo Player
+		get
 		{
-			get
+			if (_player == null)
 			{
-				if (_player == null)
-				{
-					DebugLog.ToConsole($"Error - trying to get SyncBase.Player for {netId} before Start has been called! "
-						+ "this really should not be happening!\n"
-						+ Environment.StackTrace,
-						MessageType.Error);
-				}
+				DebugLog.ToConsole($"Error - trying to get SyncBase.Player for {netId} before Start has been called! "
+				                   + "this really should not be happening!\n"
+				                   + Environment.StackTrace,
+					MessageType.Error);
+			}
 
-				return _player;
+			return _player;
+		}
+	}
+	private PlayerInfo _player;
+
+	private bool IsInitialized;
+
+	protected virtual bool CheckReady()
+	{
+		if (netId is uint.MaxValue or 0)
+		{
+			return false;
+		}
+
+		if (!QSBWorldSync.AllObjectsAdded)
+		{
+			return false;
+		}
+
+		if (IsPlayerObject)
+		{
+			if (_player == null)
+			{
+				return false;
+			}
+
+			if (!isLocalPlayer && !_player.IsReady)
+			{
+				return false;
 			}
 		}
-		private PlayerInfo _player;
 
-		private bool IsInitialized;
+		return true;
+	}
 
-		protected virtual bool CheckReady()
+	/// <summary>
+	/// can be true with null reference transform. <br/>
+	/// can be true with inactive attached object.
+	/// </summary>
+	public bool IsValid { get; private set; }
+
+	protected virtual bool CheckValid()
+	{
+		if (!IsInitialized)
 		{
-			if (netId is uint.MaxValue or 0)
-			{
-				return false;
-			}
+			return false;
+		}
 
-			if (!QSBWorldSync.AllObjectsAdded)
-			{
-				return false;
-			}
+		if (!AttachedTransform)
+		{
+			DebugLog.ToConsole($"Error - AttachedObject {this} is null!", MessageType.Error);
+			return false;
+		}
 
+		if (!AllowInactiveAttachedObject && !AttachedTransform.gameObject.activeInHierarchy)
+		{
+			return false;
+		}
+
+		if (!AllowNullReferenceTransform && !ReferenceTransform)
+		{
+			DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is null.", MessageType.Warning);
+			return false;
+		}
+
+		if (ReferenceTransform == Locator.GetRootTransform())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	protected abstract bool UseInterpolation { get; }
+	protected virtual bool AllowInactiveAttachedObject => false;
+	protected abstract bool AllowNullReferenceTransform { get; }
+	protected virtual bool IsPlayerObject => false;
+	protected virtual bool OnlyApplyOnDeserialize => false;
+
+	public Transform AttachedTransform { get; private set; }
+	public Transform ReferenceTransform { get; private set; }
+
+	public string Name => AttachedTransform ? AttachedTransform.name : "<NullObject!>";
+
+	public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
+	                                     + $"{netId}:{GetType().Name} ({Name})";
+
+	protected virtual float DistanceChangeThreshold => 5f;
+	private float _prevDistance;
+	protected const float SmoothTime = 0.1f;
+	private Vector3 _positionSmoothVelocity;
+	private Quaternion _rotationSmoothVelocity;
+	protected Vector3 SmoothPosition { get; private set; }
+	protected Quaternion SmoothRotation { get; private set; }
+
+	protected abstract Transform InitAttachedTransform();
+	protected abstract void GetFromAttached();
+	protected abstract void ApplyToAttached();
+
+	public override void OnStartClient()
+	{
+		if (IsPlayerObject)
+		{
+			// get player objects spawned before this object (or is this one)
+			// and use the closest one
+			_player = QSBPlayerManager.PlayerList
+				.Where(x => x.PlayerId <= netId)
+				.MaxBy(x => x.PlayerId);
+		}
+
+		DontDestroyOnLoad(gameObject);
+		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+	}
+
+	public override void OnStopClient()
+	{
+		QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+		if (IsInitialized)
+		{
+			SafeUninit();
+		}
+	}
+
+	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+	{
+		if (IsInitialized)
+		{
+			SafeUninit();
+		}
+	}
+
+	private const float _pauseTimerDelay = 1;
+	private float _pauseTimer;
+
+	private void SafeInit()
+	{
+		this.Try("initializing", () =>
+		{
+			Init();
+			IsInitialized = true;
+		});
+		if (!IsInitialized)
+		{
+			_pauseTimer = _pauseTimerDelay;
+		}
+	}
+
+	private void SafeUninit()
+	{
+		this.Try("uninitializing", () =>
+		{
+			Uninit();
+			IsInitialized = false;
+			IsValid = false;
+		});
+		if (IsInitialized)
+		{
+			_pauseTimer = _pauseTimerDelay;
+		}
+	}
+
+	protected virtual void Init() =>
+		AttachedTransform = InitAttachedTransform();
+
+	protected virtual void Uninit()
+	{
+		if (IsPlayerObject && !hasAuthority && AttachedTransform)
+		{
+			Destroy(AttachedTransform.gameObject);
+		}
+	}
+
+	private bool _shouldApply;
+
+	protected override void Deserialize(NetworkReader reader)
+	{
+		base.Deserialize(reader);
+		if (OnlyApplyOnDeserialize)
+		{
+			_shouldApply = true;
+		}
+	}
+
+	protected sealed override void Update()
+	{
+		if (_pauseTimer > 0)
+		{
+			_pauseTimer = Mathf.Max(0, _pauseTimer - Time.unscaledDeltaTime);
+			return;
+		}
+
+		if (!IsInitialized && CheckReady())
+		{
+			SafeInit();
+		}
+		else if (IsInitialized && !CheckReady())
+		{
+			SafeUninit();
+		}
+
+		IsValid = CheckValid();
+		if (!IsValid)
+		{
+			return;
+		}
+
+		if (ReferenceTransform && ReferenceTransform.position == Vector3.zero)
+		{
+			DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}", MessageType.Warning);
+		}
+
+		if (!hasAuthority && UseInterpolation)
+		{
+			Interpolate();
+		}
+
+		if (hasAuthority)
+		{
+			GetFromAttached();
+		}
+		else if (!OnlyApplyOnDeserialize || _shouldApply)
+		{
+			_shouldApply = false;
+			ApplyToAttached();
+		}
+
+		base.Update();
+	}
+
+	private void Interpolate()
+	{
+		var distance = Vector3.Distance(SmoothPosition, transform.position);
+		if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold)
+		{
+			SmoothPosition = transform.position;
+			SmoothRotation = transform.rotation;
+		}
+		else
+		{
+			SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+			SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+		}
+
+		_prevDistance = distance;
+	}
+
+	public virtual void SetReferenceTransform(Transform referenceTransform)
+	{
+		if (ReferenceTransform == referenceTransform)
+		{
+			return;
+		}
+
+		ReferenceTransform = referenceTransform;
+
+		if (!hasAuthority && UseInterpolation && AttachedTransform)
+		{
 			if (IsPlayerObject)
 			{
-				if (_player == null)
-				{
-					return false;
-				}
-
-				if (!isLocalPlayer && !_player.IsReady)
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// can be true with null reference transform. <br/>
-		/// can be true with inactive attached object.
-		/// </summary>
-		public bool IsValid { get; private set; }
-
-		protected virtual bool CheckValid()
-		{
-			if (!IsInitialized)
-			{
-				return false;
-			}
-
-			if (!AttachedTransform)
-			{
-				DebugLog.ToConsole($"Error - AttachedObject {this} is null!", MessageType.Error);
-				return false;
-			}
-
-			if (!AllowInactiveAttachedObject && !AttachedTransform.gameObject.activeInHierarchy)
-			{
-				return false;
-			}
-
-			if (!AllowNullReferenceTransform && !ReferenceTransform)
-			{
-				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is null.", MessageType.Warning);
-				return false;
-			}
-
-			if (ReferenceTransform == Locator.GetRootTransform())
-			{
-				return false;
-			}
-
-			return true;
-		}
-
-		protected abstract bool UseInterpolation { get; }
-		protected virtual bool AllowInactiveAttachedObject => false;
-		protected abstract bool AllowNullReferenceTransform { get; }
-		protected virtual bool IsPlayerObject => false;
-		protected virtual bool OnlyApplyOnDeserialize => false;
-
-		public Transform AttachedTransform { get; private set; }
-		public Transform ReferenceTransform { get; private set; }
-
-		public string Name => AttachedTransform ? AttachedTransform.name : "<NullObject!>";
-
-		public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
-			+ $"{netId}:{GetType().Name} ({Name})";
-
-		protected virtual float DistanceChangeThreshold => 5f;
-		private float _prevDistance;
-		protected const float SmoothTime = 0.1f;
-		private Vector3 _positionSmoothVelocity;
-		private Quaternion _rotationSmoothVelocity;
-		protected Vector3 SmoothPosition { get; private set; }
-		protected Quaternion SmoothRotation { get; private set; }
-
-		protected abstract Transform InitAttachedTransform();
-		protected abstract void GetFromAttached();
-		protected abstract void ApplyToAttached();
-
-		public override void OnStartClient()
-		{
-			if (IsPlayerObject)
-			{
-				// get player objects spawned before this object (or is this one)
-				// and use the closest one
-				_player = QSBPlayerManager.PlayerList
-					.Where(x => x.PlayerId <= netId)
-					.MaxBy(x => x.PlayerId);
-			}
-
-			DontDestroyOnLoad(gameObject);
-			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-		}
-
-		public override void OnStopClient()
-		{
-			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-			if (IsInitialized)
-			{
-				SafeUninit();
-			}
-		}
-
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
-		{
-			if (IsInitialized)
-			{
-				SafeUninit();
-			}
-		}
-
-		private const float _pauseTimerDelay = 1;
-		private float _pauseTimer;
-
-		private void SafeInit()
-		{
-			this.Try("initializing", () =>
-			{
-				Init();
-				IsInitialized = true;
-			});
-			if (!IsInitialized)
-			{
-				_pauseTimer = _pauseTimerDelay;
-			}
-		}
-
-		private void SafeUninit()
-		{
-			this.Try("uninitializing", () =>
-			{
-				Uninit();
-				IsInitialized = false;
-				IsValid = false;
-			});
-			if (IsInitialized)
-			{
-				_pauseTimer = _pauseTimerDelay;
-			}
-		}
-
-		protected virtual void Init() =>
-			AttachedTransform = InitAttachedTransform();
-
-		protected virtual void Uninit()
-		{
-			if (IsPlayerObject && !hasAuthority && AttachedTransform)
-			{
-				Destroy(AttachedTransform.gameObject);
-			}
-		}
-
-		private bool _shouldApply;
-
-		protected override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			if (OnlyApplyOnDeserialize)
-			{
-				_shouldApply = true;
-			}
-		}
-
-		protected sealed override void Update()
-		{
-			if (_pauseTimer > 0)
-			{
-				_pauseTimer = Mathf.Max(0, _pauseTimer - Time.unscaledDeltaTime);
-				return;
-			}
-
-			if (!IsInitialized && CheckReady())
-			{
-				SafeInit();
-			}
-			else if (IsInitialized && !CheckReady())
-			{
-				SafeUninit();
-			}
-
-			IsValid = CheckValid();
-			if (!IsValid)
-			{
-				return;
-			}
-
-			if (ReferenceTransform && ReferenceTransform.position == Vector3.zero)
-			{
-				DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}", MessageType.Warning);
-			}
-
-			if (!hasAuthority && UseInterpolation)
-			{
-				Interpolate();
-			}
-
-			if (hasAuthority)
-			{
-				GetFromAttached();
-			}
-			else if (!OnlyApplyOnDeserialize || _shouldApply)
-			{
-				_shouldApply = false;
-				ApplyToAttached();
-			}
-
-			base.Update();
-		}
-
-		private void Interpolate()
-		{
-			var distance = Vector3.Distance(SmoothPosition, transform.position);
-			if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold)
-			{
-				SmoothPosition = transform.position;
-				SmoothRotation = transform.rotation;
+				AttachedTransform.parent = ReferenceTransform;
+				AttachedTransform.localScale = Vector3.one;
+				SmoothPosition = AttachedTransform.localPosition;
+				SmoothRotation = AttachedTransform.localRotation;
 			}
 			else
 			{
-				SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-				SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+				SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
+				SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 			}
-
-			_prevDistance = distance;
 		}
+	}
 
-		public virtual void SetReferenceTransform(Transform referenceTransform)
+	protected virtual void OnRenderObject()
+	{
+		if (!QSBCore.DebugSettings.DrawLines
+		    || !IsValid
+		    || !ReferenceTransform)
 		{
-			if (ReferenceTransform == referenceTransform)
-			{
-				return;
-			}
-
-			ReferenceTransform = referenceTransform;
-
-			if (!hasAuthority && UseInterpolation && AttachedTransform)
-			{
-				if (IsPlayerObject)
-				{
-					AttachedTransform.parent = ReferenceTransform;
-					AttachedTransform.localScale = Vector3.one;
-					SmoothPosition = AttachedTransform.localPosition;
-					SmoothRotation = AttachedTransform.localRotation;
-				}
-				else
-				{
-					SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
-					SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
-				}
-			}
+			return;
 		}
 
-		protected virtual void OnRenderObject()
+		/* Red Cube = Where visible object should be
+		 * Green cube = Where visible object is
+		 * Magenta cube = Reference transform
+		 * Red Line = Connection between Red Cube and Green Cube
+		 * Cyan Line = Connection between Green cube and reference transform
+		 */
+
+		Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
+		Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red);
+		Popcron.Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green);
+		Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
+		Popcron.Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan);
+	}
+
+	private void OnGUI()
+	{
+		if (!QSBCore.DebugSettings.DrawLabels
+		    || Event.current.type != EventType.Repaint
+		    || !IsValid
+		    || !ReferenceTransform)
 		{
-			if (!QSBCore.DebugSettings.DrawLines
-				|| !IsValid
-				|| !ReferenceTransform)
-			{
-				return;
-			}
-
-			/* Red Cube = Where visible object should be
-			 * Green cube = Where visible object is
-			 * Magenta cube = Reference transform
-			 * Red Line = Connection between Red Cube and Green Cube
-			 * Cyan Line = Connection between Green cube and reference transform
-			 */
-
-			Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
-			Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red);
-			Popcron.Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green);
-			Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
-			Popcron.Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan);
+			return;
 		}
 
-		private void OnGUI()
-		{
-			if (!QSBCore.DebugSettings.DrawLabels
-				|| Event.current.type != EventType.Repaint
-				|| !IsValid
-				|| !ReferenceTransform)
-			{
-				return;
-			}
-
-			DebugGUI.DrawLabel(AttachedTransform.transform, ToString());
-		}
+		DebugGUI.DrawLabel(AttachedTransform.transform, ToString());
 	}
 }

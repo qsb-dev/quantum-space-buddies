@@ -3,13 +3,12 @@ using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.WorldSync;
 using System.Threading;
 
-namespace QSB.EchoesOfTheEye.LightSensorSync
-{
-	internal class LightSensorManager : WorldObjectManager
-	{
-		// see AirlockManager question
-		public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+namespace QSB.EchoesOfTheEye.LightSensorSync;
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) => QSBWorldSync.Init<QSBSingleLightSensor, SingleLightSensor>();
-	}
+internal class LightSensorManager : WorldObjectManager
+{
+	// see AirlockManager question
+	public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+
+	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) => QSBWorldSync.Init<QSBSingleLightSensor, SingleLightSensor>();
 }

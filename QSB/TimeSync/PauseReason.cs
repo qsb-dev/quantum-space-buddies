@@ -1,10 +1,9 @@
-﻿namespace QSB.TimeSync
+﻿namespace QSB.TimeSync;
+
+public enum PauseReason
 {
-	public enum PauseReason
-	{
-		TooFarAhead,
-		ServerNotStarted,
-		WaitingForAllPlayersToDie,
-		WaitingForAllPlayersToBeReady
-	}
+	TooFarAhead,
+	ServerNotStarted,
+	WaitingForAllPlayersToDie,
+	WaitingForAllPlayersToBeReady
 }

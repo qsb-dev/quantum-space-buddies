@@ -2,32 +2,31 @@
 using QSB.WorldSync;
 using System.Linq;
 
-namespace QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects
+namespace QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects;
+
+internal class QSBQuantumInstrument : WorldObject<QuantumInstrument>
 {
-	internal class QSBQuantumInstrument : WorldObject<QuantumInstrument>
+	public override void SendInitialState(uint to)
 	{
-		public override void SendInitialState(uint to)
-		{
-			// not needed since mid-game join is impossible here
-		}
+		// not needed since mid-game join is impossible here
+	}
 
-		public void Gather()
+	public void Gather()
+	{
+		var maskZoneController = QSBWorldSync.GetUnityObjects<MaskZoneController>().First();
+		if (maskZoneController._maskInstrument == AttachedObject)
 		{
-			var maskZoneController = QSBWorldSync.GetUnityObjects<MaskZoneController>().First();
-			if (maskZoneController._maskInstrument == AttachedObject)
+			var shuttleController = QSBWorldSync.GetUnityObjects<EyeShuttleController>().First();
+
+			foreach (var player in MaskManager.WentOnSolanumsWildRide)
 			{
-				var shuttleController = QSBWorldSync.GetUnityObjects<EyeShuttleController>().First();
-
-				foreach (var player in MaskManager.WentOnSolanumsWildRide)
-				{
-					player.SetVisible(true, 2);
-				}
-
-				maskZoneController._whiteSphere.SetActive(false);
-				shuttleController._maskObject.SetActive(true);
+				player.SetVisible(true, 2);
 			}
 
-			AttachedObject.Gather();
+			maskZoneController._whiteSphere.SetActive(false);
+			shuttleController._maskObject.SetActive(true);
 		}
+
+		AttachedObject.Gather();
 	}
 }

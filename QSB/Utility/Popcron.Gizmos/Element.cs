@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 
-namespace Popcron
+namespace Popcron;
+
+internal class Element
 {
-	internal class Element
-	{
-		public Vector3[] points = { };
-		public Color color = Color.white;
-	}
+	public Vector3[] points = { };
+	public Color color = Color.white;
 }

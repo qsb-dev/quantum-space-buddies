@@ -6,28 +6,27 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Threading;
 
-namespace QSB.ItemSync
+namespace QSB.ItemSync;
+
+internal class ItemManager : WorldObjectManager
 {
-	internal class ItemManager : WorldObjectManager
+	public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+
+	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+		DebugLog.DebugWrite("Building OWItems...", MessageType.Info);
 
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-		{
-			DebugLog.DebugWrite("Building OWItems...", MessageType.Info);
+		// Items
+		QSBWorldSync.Init<QSBDreamLanternItem, DreamLanternItem>();
+		QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
+		QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
+		QSBWorldSync.Init<QSBSharedStone, SharedStone>();
+		QSBWorldSync.Init<QSBSimpleLanternItem, SimpleLanternItem>();
+		QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
+		QSBWorldSync.Init<QSBVisionTorchItem, VisionTorchItem>();
+		QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
 
-			// Items
-			QSBWorldSync.Init<QSBDreamLanternItem, DreamLanternItem>();
-			QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
-			QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
-			QSBWorldSync.Init<QSBSharedStone, SharedStone>();
-			QSBWorldSync.Init<QSBSimpleLanternItem, SimpleLanternItem>();
-			QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
-			QSBWorldSync.Init<QSBVisionTorchItem, VisionTorchItem>();
-			QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
-
-			// Sockets
-			QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
-		}
+		// Sockets
+		QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
 	}
 }

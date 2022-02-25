@@ -1,10 +1,9 @@
-﻿namespace QSB.ConversationSync
+﻿namespace QSB.ConversationSync;
+
+public enum ConversationType
 {
-	public enum ConversationType
-	{
-		Character,
-		Player,
-		CloseCharacter,
-		ClosePlayer
-	}
+	Character,
+	Player,
+	CloseCharacter,
+	ClosePlayer
 }

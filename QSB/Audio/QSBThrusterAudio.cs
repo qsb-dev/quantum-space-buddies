@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 
-namespace QSB.Audio
+namespace QSB.Audio;
+
+internal class QSBThrusterAudio : MonoBehaviour
 {
-	internal class QSBThrusterAudio : MonoBehaviour
-	{
-		public OWAudioSource _translationalSource;
-		public OWAudioSource _rotationalSource;
-	}
+	public OWAudioSource _translationalSource;
+	public OWAudioSource _rotationalSource;
 }

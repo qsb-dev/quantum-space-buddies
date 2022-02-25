@@ -3,75 +3,74 @@ using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
 
-namespace QSB.Syncs.Sectored
+namespace QSB.Syncs.Sectored;
+
+public abstract class BaseSectoredSync : SyncBase
 {
-	public abstract class BaseSectoredSync : SyncBase
+	protected sealed override bool AllowNullReferenceTransform => true;
+
+	public QSBSector ReferenceSector { get; private set; }
+	public QSBSectorDetector SectorDetector { get; private set; }
+
+	private int _sectorId = -1;
+
+	public override void OnStartClient()
 	{
-		protected sealed override bool AllowNullReferenceTransform => true;
+		SectorDetector = gameObject.AddComponent<QSBSectorDetector>();
+		QSBSectorManager.Instance.SectoredSyncs.Add(this);
+		base.OnStartClient();
+	}
 
-		public QSBSector ReferenceSector { get; private set; }
-		public QSBSectorDetector SectorDetector { get; private set; }
+	public override void OnStopClient()
+	{
+		base.OnStopClient();
+		QSBSectorManager.Instance.SectoredSyncs.Remove(this);
+		Destroy(SectorDetector);
+	}
 
-		private int _sectorId = -1;
+	protected override void Uninit()
+	{
+		base.Uninit();
 
-		public override void OnStartClient()
+		SectorDetector.Uninit();
+		SetReferenceSector(null);
+	}
+
+	protected override void Serialize(NetworkWriter writer)
+	{
+		base.Serialize(writer);
+		writer.Write(_sectorId);
+	}
+
+	protected override void Deserialize(NetworkReader reader)
+	{
+		base.Deserialize(reader);
+		_sectorId = reader.ReadInt();
+	}
+
+	protected void GetFromSector() => _sectorId = ReferenceSector?.ObjectId ?? -1;
+
+	protected void ApplyToSector()
+	{
+		if (_sectorId == -1)
 		{
-			SectorDetector = gameObject.AddComponent<QSBSectorDetector>();
-			QSBSectorManager.Instance.SectoredSyncs.Add(this);
-			base.OnStartClient();
+			return;
 		}
 
-		public override void OnStopClient()
+		SetReferenceSector(_sectorId.GetWorldObject<QSBSector>());
+	}
+
+	/// <summary>
+	/// use this instead of SetReferenceTransform
+	/// </summary>
+	public void SetReferenceSector(QSBSector sector)
+	{
+		if (ReferenceSector == sector)
 		{
-			base.OnStopClient();
-			QSBSectorManager.Instance.SectoredSyncs.Remove(this);
-			Destroy(SectorDetector);
+			return;
 		}
 
-		protected override void Uninit()
-		{
-			base.Uninit();
-
-			SectorDetector.Uninit();
-			SetReferenceSector(null);
-		}
-
-		protected override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(_sectorId);
-		}
-
-		protected override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			_sectorId = reader.ReadInt();
-		}
-
-		protected void GetFromSector() => _sectorId = ReferenceSector?.ObjectId ?? -1;
-
-		protected void ApplyToSector()
-		{
-			if (_sectorId == -1)
-			{
-				return;
-			}
-
-			SetReferenceSector(_sectorId.GetWorldObject<QSBSector>());
-		}
-
-		/// <summary>
-		/// use this instead of SetReferenceTransform
-		/// </summary>
-		public void SetReferenceSector(QSBSector sector)
-		{
-			if (ReferenceSector == sector)
-			{
-				return;
-			}
-
-			ReferenceSector = sector;
-			SetReferenceTransform(sector?.Transform);
-		}
+		ReferenceSector = sector;
+		SetReferenceTransform(sector?.Transform);
 	}
 }

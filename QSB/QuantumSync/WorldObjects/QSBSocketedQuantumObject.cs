@@ -7,76 +7,75 @@ using System;
 using System.Threading;
 using UnityEngine;
 
-namespace QSB.QuantumSync.WorldObjects
+namespace QSB.QuantumSync.WorldObjects;
+
+internal class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
 {
-	internal class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
+	public override async UniTask Init(CancellationToken ct)
 	{
-		public override async UniTask Init(CancellationToken ct)
+		await base.Init(ct);
+		AttachedObject._randomYRotation = false;
+	}
+
+	public override string ReturnLabel()
+	{
+		var socket = AttachedObject.GetCurrentSocket();
+		if (socket != null)
 		{
-			await base.Init(ct);
-			AttachedObject._randomYRotation = false;
+			var socketObj = socket.GetWorldObject<QSBQuantumSocket>();
+			return $"{this}{Environment.NewLine}SocketId:{socketObj.ObjectId}";
+		}
+		else
+		{
+			return $"{this}{Environment.NewLine}SocketId:NULL";
+		}
+	}
+
+	public override void SendInitialState(uint to)
+	{
+		base.SendInitialState(to);
+
+		// todo SendInitialState
+	}
+
+	public void MoveToSocket(uint playerId, int socketId, Quaternion localRotation)
+	{
+		var qsbSocket = socketId.GetWorldObject<QSBQuantumSocket>();
+		if (qsbSocket == null)
+		{
+			DebugLog.ToConsole($"Couldn't find socket id {socketId}", MessageType.Error);
+			return;
 		}
 
-		public override string ReturnLabel()
+		var socket = qsbSocket.AttachedObject;
+		if (socket == null)
 		{
-			var socket = AttachedObject.GetCurrentSocket();
-			if (socket != null)
-			{
-				var socketObj = socket.GetWorldObject<QSBQuantumSocket>();
-				return $"{this}{Environment.NewLine}SocketId:{socketObj.ObjectId}";
-			}
-			else
-			{
-				return $"{this}{Environment.NewLine}SocketId:NULL";
-			}
+			DebugLog.ToConsole($"QSBSocket id {socketId} has no attached socket.", MessageType.Error);
+			return;
 		}
 
-		public override void SendInitialState(uint to)
-		{
-			base.SendInitialState(to);
+		var wasEntangled = AttachedObject.IsPlayerEntangled();
+		var component = Locator.GetPlayerTransform().GetComponent<OWRigidbody>();
+		var location = new RelativeLocationData(Locator.GetPlayerTransform().GetComponent<OWRigidbody>(), AttachedObject.transform);
 
-			// todo SendInitialState
+		AttachedObject.MoveToSocket(socket);
+
+		if (wasEntangled)
+		{
+			component.MoveToRelativeLocation(location, AttachedObject.transform);
 		}
 
-		public void MoveToSocket(uint playerId, int socketId, Quaternion localRotation)
+		if (QuantumManager.Shrine != AttachedObject)
 		{
-			var qsbSocket = socketId.GetWorldObject<QSBQuantumSocket>();
-			if (qsbSocket == null)
-			{
-				DebugLog.ToConsole($"Couldn't find socket id {socketId}", MessageType.Error);
-				return;
-			}
-
-			var socket = qsbSocket.AttachedObject;
-			if (socket == null)
-			{
-				DebugLog.ToConsole($"QSBSocket id {socketId} has no attached socket.", MessageType.Error);
-				return;
-			}
-
-			var wasEntangled = AttachedObject.IsPlayerEntangled();
-			var component = Locator.GetPlayerTransform().GetComponent<OWRigidbody>();
-			var location = new RelativeLocationData(Locator.GetPlayerTransform().GetComponent<OWRigidbody>(), AttachedObject.transform);
-
-			AttachedObject.MoveToSocket(socket);
-
-			if (wasEntangled)
-			{
-				component.MoveToRelativeLocation(location, AttachedObject.transform);
-			}
-
-			if (QuantumManager.Shrine != AttachedObject)
-			{
-				AttachedObject.transform.localRotation = localRotation;
-			}
-			else
-			{
-				var playerToShrine = QSBPlayerManager.GetPlayer(playerId).Body.transform.position - AttachedObject.transform.position;
-				var projectOnPlace = Vector3.ProjectOnPlane(playerToShrine, AttachedObject.transform.up);
-				var angle = OWMath.Angle(AttachedObject.transform.forward, projectOnPlace, AttachedObject.transform.up);
-				angle = OWMath.RoundToNearestMultiple(angle, 120f);
-				AttachedObject.transform.rotation = Quaternion.AngleAxis(angle, AttachedObject.transform.up) * AttachedObject.transform.rotation;
-			}
+			AttachedObject.transform.localRotation = localRotation;
+		}
+		else
+		{
+			var playerToShrine = QSBPlayerManager.GetPlayer(playerId).Body.transform.position - AttachedObject.transform.position;
+			var projectOnPlace = Vector3.ProjectOnPlane(playerToShrine, AttachedObject.transform.up);
+			var angle = OWMath.Angle(AttachedObject.transform.forward, projectOnPlace, AttachedObject.transform.up);
+			angle = OWMath.RoundToNearestMultiple(angle, 120f);
+			AttachedObject.transform.rotation = Quaternion.AngleAxis(angle, AttachedObject.transform.up) * AttachedObject.transform.rotation;
 		}
 	}
 }

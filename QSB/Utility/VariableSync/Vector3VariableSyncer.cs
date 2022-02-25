@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
-namespace QSB.Utility.VariableSync
+namespace QSB.Utility.VariableSync;
+
+public class Vector3VariableSyncer : BaseVariableSyncer<Vector3>
 {
-	public class Vector3VariableSyncer : BaseVariableSyncer<Vector3>
-	{
-	}
 }

@@ -1,12 +1,11 @@
 ﻿using QSB.Messaging;
 using QSB.ShipSync.WorldObjects;
 
-namespace QSB.ShipSync.Messages.Hull
-{
-	internal class HullChangeIntegrityMessage : QSBWorldObjectMessage<QSBShipHull, float>
-	{
-		public HullChangeIntegrityMessage(float integrity) => Value = integrity;
+namespace QSB.ShipSync.Messages.Hull;
 
-		public override void OnReceiveRemote() => WorldObject.ChangeIntegrity(Value);
-	}
+internal class HullChangeIntegrityMessage : QSBWorldObjectMessage<QSBShipHull, float>
+{
+	public HullChangeIntegrityMessage(float integrity) => Value = integrity;
+
+	public override void OnReceiveRemote() => WorldObject.ChangeIntegrity(Value);
 }

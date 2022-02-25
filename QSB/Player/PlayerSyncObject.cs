@@ -1,10 +1,9 @@
 ﻿using Mirror;
 
-namespace QSB.Player
+namespace QSB.Player;
+
+public abstract class PlayerSyncObject : NetworkBehaviour
 {
-	public abstract class PlayerSyncObject : NetworkBehaviour
-	{
-		protected uint PlayerId => netId;
-		protected PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-	}
+	protected uint PlayerId => netId;
+	protected PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
 }

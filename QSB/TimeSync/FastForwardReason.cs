@@ -1,7 +1,6 @@
-﻿namespace QSB.TimeSync
+﻿namespace QSB.TimeSync;
+
+public enum FastForwardReason
 {
-	public enum FastForwardReason
-	{
-		TooFarBehind
-	}
+	TooFarBehind
 }

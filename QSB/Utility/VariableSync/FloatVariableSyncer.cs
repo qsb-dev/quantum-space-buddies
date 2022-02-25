@@ -1,6 +1,5 @@
-﻿namespace QSB.Utility.VariableSync
+﻿namespace QSB.Utility.VariableSync;
+
+public class FloatVariableSyncer : BaseVariableSyncer<float>
 {
-	public class FloatVariableSyncer : BaseVariableSyncer<float>
-	{
-	}
 }

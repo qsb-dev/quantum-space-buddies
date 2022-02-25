@@ -5,40 +5,39 @@ using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.Player
+namespace QSB.Player;
+
+internal class PlayerEntanglementWatcher : MonoBehaviour, IAddComponentOnStart
 {
-	internal class PlayerEntanglementWatcher : MonoBehaviour, IAddComponentOnStart
+	private QuantumObject _previousCollidingQuantumObject;
+
+	private void Update()
 	{
-		private QuantumObject _previousCollidingQuantumObject;
-
-		private void Update()
+		if (!QSBCore.IsInMultiplayer)
 		{
-			if (!QSBCore.IsInMultiplayer)
-			{
-				return;
-			}
+			return;
+		}
 
-			if (!QSBWorldSync.AllObjectsReady)
-			{
-				return;
-			}
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
 
-			var controller = Locator.GetPlayerController();
-			if (controller == null)
-			{
-				return;
-			}
+		var controller = Locator.GetPlayerController();
+		if (controller == null)
+		{
+			return;
+		}
 
-			var collidingQuantumObject = controller._collidingQuantumObject;
-			if (_previousCollidingQuantumObject != collidingQuantumObject)
-			{
-				var objectId = collidingQuantumObject != null
-					? collidingQuantumObject.GetWorldObject<IQSBQuantumObject>().ObjectId
-					: -1;
+		var collidingQuantumObject = controller._collidingQuantumObject;
+		if (_previousCollidingQuantumObject != collidingQuantumObject)
+		{
+			var objectId = collidingQuantumObject != null
+				? collidingQuantumObject.GetWorldObject<IQSBQuantumObject>().ObjectId
+				: -1;
 
-				new PlayerEntangledMessage(objectId).Send();
-				_previousCollidingQuantumObject = collidingQuantumObject;
-			}
+			new PlayerEntangledMessage(objectId).Send();
+			_previousCollidingQuantumObject = collidingQuantumObject;
 		}
 	}
 }

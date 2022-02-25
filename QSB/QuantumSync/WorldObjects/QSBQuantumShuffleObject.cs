@@ -1,22 +1,21 @@
-﻿namespace QSB.QuantumSync.WorldObjects
+﻿namespace QSB.QuantumSync.WorldObjects;
+
+internal class QSBQuantumShuffleObject : QSBQuantumObject<QuantumShuffleObject>
 {
-	internal class QSBQuantumShuffleObject : QSBQuantumObject<QuantumShuffleObject>
+	public override void SendInitialState(uint to)
 	{
-		public override void SendInitialState(uint to)
-		{
-			base.SendInitialState(to);
+		base.SendInitialState(to);
 
-			// todo SendInitialState
-		}
+		// todo SendInitialState
+	}
 
-		public void ShuffleObjects(int[] indexArray)
+	public void ShuffleObjects(int[] indexArray)
+	{
+		var shuffledObjects = AttachedObject._shuffledObjects;
+		var localPositions = AttachedObject._localPositions;
+		for (var i = 0; i < shuffledObjects.Length; i++)
 		{
-			var shuffledObjects = AttachedObject._shuffledObjects;
-			var localPositions = AttachedObject._localPositions;
-			for (var i = 0; i < shuffledObjects.Length; i++)
-			{
-				shuffledObjects[i].localPosition = localPositions[indexArray[i]];
-			}
+			shuffledObjects[i].localPosition = localPositions[indexArray[i]];
 		}
 	}
 }

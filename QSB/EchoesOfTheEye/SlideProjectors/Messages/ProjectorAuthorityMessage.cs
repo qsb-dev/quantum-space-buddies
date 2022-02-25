@@ -2,54 +2,53 @@
 using QSB.EchoesOfTheEye.SlideProjectors.WorldObjects;
 using QSB.Messaging;
 
-namespace QSB.EchoesOfTheEye.SlideProjectors.Messages
+namespace QSB.EchoesOfTheEye.SlideProjectors.Messages;
+
+public class ProjectorAuthorityMessage : QSBWorldObjectMessage<QSBSlideProjector>
 {
-	public class ProjectorAuthorityMessage : QSBWorldObjectMessage<QSBSlideProjector>
+	private uint AuthorityOwner;
+
+	public ProjectorAuthorityMessage(uint authorityOwner) => AuthorityOwner = authorityOwner;
+
+	public override void Serialize(NetworkWriter writer)
 	{
-		private uint AuthorityOwner;
+		base.Serialize(writer);
+		writer.Write(AuthorityOwner);
+	}
 
-		public ProjectorAuthorityMessage(uint authorityOwner) => AuthorityOwner = authorityOwner;
+	public override void Deserialize(NetworkReader reader)
+	{
+		base.Deserialize(reader);
+		AuthorityOwner = reader.Read<uint>();
+	}
 
-		public override void Serialize(NetworkWriter writer)
+	public override bool ShouldReceive
+	{
+		get
 		{
-			base.Serialize(writer);
-			writer.Write(AuthorityOwner);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			AuthorityOwner = reader.Read<uint>();
-		}
-
-		public override bool ShouldReceive
-		{
-			get
+			if (!base.ShouldReceive)
 			{
-				if (!base.ShouldReceive)
-				{
-					return false;
-				}
-
-				// Deciding if to change the object's owner
-				//		  Message
-				//	   | = 0 | > 0 |
-				// = 0 | No  | Yes |
-				// > 0 | Yes | No  |
-				// if Obj==Message then No
-				// Obj
-
-				return (WorldObject.ControllingPlayer == 0 || AuthorityOwner == 0)
-					&& WorldObject.ControllingPlayer != AuthorityOwner;
+				return false;
 			}
-		}
 
-		public override void OnReceiveLocal() => OnReceiveRemote();
+			// Deciding if to change the object's owner
+			//		  Message
+			//	   | = 0 | > 0 |
+			// = 0 | No  | Yes |
+			// > 0 | Yes | No  |
+			// if Obj==Message then No
+			// Obj
 
-		public override void OnReceiveRemote()
-		{
-			WorldObject.ControllingPlayer = AuthorityOwner;
-			WorldObject.OnChangeAuthority(AuthorityOwner);
+			return (WorldObject.ControllingPlayer == 0 || AuthorityOwner == 0)
+			       && WorldObject.ControllingPlayer != AuthorityOwner;
 		}
+	}
+
+	public override void OnReceiveLocal() => OnReceiveRemote();
+
+	public override void OnReceiveRemote()
+	{
+		WorldObject.ControllingPlayer = AuthorityOwner;
+		WorldObject.OnChangeAuthority(AuthorityOwner);
 	}
 }

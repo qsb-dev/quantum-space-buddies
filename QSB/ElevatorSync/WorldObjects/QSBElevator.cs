@@ -5,78 +5,77 @@ using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;
 
-namespace QSB.ElevatorSync.WorldObjects
+namespace QSB.ElevatorSync.WorldObjects;
+
+public class QSBElevator : WorldObject<Elevator>
 {
-	public class QSBElevator : WorldObject<Elevator>
+	private OWTriggerVolume _elevatorTrigger;
+
+	public override async UniTask Init(CancellationToken ct)
 	{
-		private OWTriggerVolume _elevatorTrigger;
+		// BUG : This won't work for the log lift! need to make a different trigger for that
 
-		public override async UniTask Init(CancellationToken ct)
+		var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
+		boxShape.center = new Vector3(0, 1.75f, 0.25f);
+		boxShape.size = new Vector3(3, 3.5f, 3);
+
+		_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
+	}
+
+	public override void SendInitialState(uint to) =>
+		this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd));
+
+	public void RemoteCall(bool isGoingUp)
+	{
+		if (AttachedObject._goingToTheEnd == isGoingUp)
 		{
-			// BUG : This won't work for the log lift! need to make a different trigger for that
-
-			var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
-			boxShape.center = new Vector3(0, 1.75f, 0.25f);
-			boxShape.size = new Vector3(3, 3.5f, 3);
-
-			_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
+			return;
 		}
 
-		public override void SendInitialState(uint to) =>
-			this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd));
-
-		public void RemoteCall(bool isGoingUp)
+		if (_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
 		{
-			if (AttachedObject._goingToTheEnd == isGoingUp)
+			SetDirection(isGoingUp);
+
+			AttachedObject._attachPoint.AttachPlayer();
+			if (Locator.GetPlayerSuit().IsWearingSuit() && Locator.GetPlayerSuit().IsTrainingSuit())
 			{
-				return;
+				Locator.GetPlayerSuit().RemoveSuit();
 			}
 
-			if (_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
-			{
-				SetDirection(isGoingUp);
-
-				AttachedObject._attachPoint.AttachPlayer();
-				if (Locator.GetPlayerSuit().IsWearingSuit() && Locator.GetPlayerSuit().IsTrainingSuit())
-				{
-					Locator.GetPlayerSuit().RemoveSuit();
-				}
-
-				RemoteStartLift();
-			}
-			else
-			{
-				SetDirection(isGoingUp);
-				RemoteStartLift();
-			}
+			RemoteStartLift();
 		}
-
-		private void SetDirection(bool isGoingUp)
+		else
 		{
-			AttachedObject._interactVolume.transform.Rotate(0f, 180f, 0f);
-			AttachedObject._goingToTheEnd = isGoingUp;
-			AttachedObject._targetLocalPos = isGoingUp ? AttachedObject._endLocalPos : AttachedObject._startLocalPos;
+			SetDirection(isGoingUp);
+			RemoteStartLift();
 		}
+	}
 
-		private void RemoteStartLift()
-		{
-			AttachedObject.enabled = true;
-			AttachedObject._initLocalPos = AttachedObject.transform.localPosition;
-			AttachedObject._initLiftTime = Time.time;
-			AttachedObject._owAudioSourceOneShot.PlayOneShot(AudioType.TH_LiftActivate);
-			AttachedObject._owAudioSourceLP.FadeIn(0.5f);
-			AttachedObject._interactVolume.DisableInteraction();
-		}
+	private void SetDirection(bool isGoingUp)
+	{
+		AttachedObject._interactVolume.transform.Rotate(0f, 180f, 0f);
+		AttachedObject._goingToTheEnd = isGoingUp;
+		AttachedObject._targetLocalPos = isGoingUp ? AttachedObject._endLocalPos : AttachedObject._startLocalPos;
+	}
 
-		public override void DisplayLines()
-		{
-			var boxShape = (BoxShape)_elevatorTrigger._shape;
-			Popcron.Gizmos.Cube(
-				ShapeUtil.Box.CalcWorldSpaceCenter(boxShape),
-				boxShape.transform.rotation,
-				ShapeUtil.Box.CalcWorldSpaceSize(boxShape),
-				_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()) ? Color.green : Color.white
-			);
-		}
+	private void RemoteStartLift()
+	{
+		AttachedObject.enabled = true;
+		AttachedObject._initLocalPos = AttachedObject.transform.localPosition;
+		AttachedObject._initLiftTime = Time.time;
+		AttachedObject._owAudioSourceOneShot.PlayOneShot(AudioType.TH_LiftActivate);
+		AttachedObject._owAudioSourceLP.FadeIn(0.5f);
+		AttachedObject._interactVolume.DisableInteraction();
+	}
+
+	public override void DisplayLines()
+	{
+		var boxShape = (BoxShape)_elevatorTrigger._shape;
+		Popcron.Gizmos.Cube(
+			ShapeUtil.Box.CalcWorldSpaceCenter(boxShape),
+			boxShape.transform.rotation,
+			ShapeUtil.Box.CalcWorldSpaceSize(boxShape),
+			_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()) ? Color.green : Color.white
+		);
 	}
 }

@@ -1,10 +1,9 @@
 ﻿using QSB.Messaging;
 
-namespace QSB.Utility.Messages
+namespace QSB.Utility.Messages;
+
+public class DebugTriggerSupernovaMessage : QSBMessage
 {
-	public class DebugTriggerSupernovaMessage : QSBMessage
-	{
-		public override void OnReceiveLocal() => OnReceiveRemote();
-		public override void OnReceiveRemote() => TimeLoop.SetSecondsRemaining(0);
-	}
+	public override void OnReceiveLocal() => OnReceiveRemote();
+	public override void OnReceiveRemote() => TimeLoop.SetSecondsRemaining(0);
 }

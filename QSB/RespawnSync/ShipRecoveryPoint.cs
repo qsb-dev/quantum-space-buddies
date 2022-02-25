@@ -2,208 +2,207 @@
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.RespawnSync
+namespace QSB.RespawnSync;
+
+internal class ShipRecoveryPoint : MonoBehaviour
 {
-	internal class ShipRecoveryPoint : MonoBehaviour
+	private MultipleInteractionVolume _interactVolume;
+	private PlayerResources _playerResources;
+	private PlayerAudioController _playerAudioController;
+	private bool _recovering;
+	private int _refillIndex;
+	private int _respawnIndex;
+	private bool _wearingSuit;
+
+	private static readonly UITextType _respawnPlayerText = UIHelper.AddToUITable("Respawn Player");
+
+	private void Awake()
 	{
-		private MultipleInteractionVolume _interactVolume;
-		private PlayerResources _playerResources;
-		private PlayerAudioController _playerAudioController;
-		private bool _recovering;
-		private int _refillIndex;
-		private int _respawnIndex;
-		private bool _wearingSuit;
+		_interactVolume = this.GetRequiredComponent<MultipleInteractionVolume>();
+		_interactVolume.OnPressInteract += OnPressInteract;
+		_interactVolume.OnGainFocus += OnGainFocus;
 
-		private static readonly UITextType _respawnPlayerText = UIHelper.AddToUITable("Respawn Player");
+		_refillIndex = _interactVolume.AddInteraction(InputLibrary.interact, InputMode.Character, UITextType.None, true, true);
+		_respawnIndex = _interactVolume.AddInteraction(InputLibrary.interactSecondary, InputMode.Character, _respawnPlayerText, true, true);
 
-		private void Awake()
-		{
-			_interactVolume = this.GetRequiredComponent<MultipleInteractionVolume>();
-			_interactVolume.OnPressInteract += OnPressInteract;
-			_interactVolume.OnGainFocus += OnGainFocus;
+		GlobalMessenger.AddListener(OWEvents.SuitUp, OnSuitUp);
+		GlobalMessenger.AddListener(OWEvents.RemoveSuit, OnRemoveSuit);
+	}
 
-			_refillIndex = _interactVolume.AddInteraction(InputLibrary.interact, InputMode.Character, UITextType.None, true, true);
-			_respawnIndex = _interactVolume.AddInteraction(InputLibrary.interactSecondary, InputMode.Character, _respawnPlayerText, true, true);
+	private void Start()
+	{
+		_playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
+		_playerAudioController = Locator.GetPlayerAudioController();
+	}
 
-			GlobalMessenger.AddListener(OWEvents.SuitUp, OnSuitUp);
-			GlobalMessenger.AddListener(OWEvents.RemoveSuit, OnRemoveSuit);
-		}
+	private void OnDestroy()
+	{
+		_interactVolume.OnPressInteract -= OnPressInteract;
+		_interactVolume.OnGainFocus -= OnGainFocus;
+		GlobalMessenger.RemoveListener(OWEvents.SuitUp, OnSuitUp);
+		GlobalMessenger.RemoveListener(OWEvents.RemoveSuit, OnRemoveSuit);
+	}
 
-		private void Start()
+	private void OnSuitUp()
+		=> _wearingSuit = true;
+
+	private void OnRemoveSuit()
+		=> _wearingSuit = false;
+
+	private void OnGainFocus()
+	{
+		if (_playerResources == null)
 		{
 			_playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
-			_playerAudioController = Locator.GetPlayerAudioController();
 		}
 
-		private void OnDestroy()
+		if (RespawnManager.Instance.RespawnNeeded)
 		{
-			_interactVolume.OnPressInteract -= OnPressInteract;
-			_interactVolume.OnGainFocus -= OnGainFocus;
-			GlobalMessenger.RemoveListener(OWEvents.SuitUp, OnSuitUp);
-			GlobalMessenger.RemoveListener(OWEvents.RemoveSuit, OnRemoveSuit);
+			_interactVolume.EnableSingleInteraction(true, _respawnIndex);
+			_interactVolume.SetKeyCommandVisible(true, _respawnIndex);
+			_interactVolume.GetInteractionAt(_respawnIndex).cachedScreenPrompt.SetDisplayState(ScreenPrompt.DisplayState.Attention);
+		}
+		else
+		{
+			_interactVolume.EnableSingleInteraction(false, _respawnIndex);
+			_interactVolume.SetKeyCommandVisible(false, _respawnIndex);
+			_interactVolume.GetInteractionAt(_respawnIndex).cachedScreenPrompt.SetDisplayState(ScreenPrompt.DisplayState.GrayedOut);
 		}
 
-		private void OnSuitUp()
-			=> _wearingSuit = true;
+		var needsHealing = _playerResources.GetHealthFraction() != 1f;
+		var needsRefueling = _playerResources.GetFuelFraction() != 1f;
 
-		private void OnRemoveSuit()
-			=> _wearingSuit = false;
-
-		private void OnGainFocus()
+		UITextType uiTextType;
+		bool keyCommandVisible;
+		if (needsHealing && needsRefueling)
 		{
-			if (_playerResources == null)
-			{
-				_playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
-			}
-
-			if (RespawnManager.Instance.RespawnNeeded)
-			{
-				_interactVolume.EnableSingleInteraction(true, _respawnIndex);
-				_interactVolume.SetKeyCommandVisible(true, _respawnIndex);
-				_interactVolume.GetInteractionAt(_respawnIndex).cachedScreenPrompt.SetDisplayState(ScreenPrompt.DisplayState.Attention);
-			}
-			else
-			{
-				_interactVolume.EnableSingleInteraction(false, _respawnIndex);
-				_interactVolume.SetKeyCommandVisible(false, _respawnIndex);
-				_interactVolume.GetInteractionAt(_respawnIndex).cachedScreenPrompt.SetDisplayState(ScreenPrompt.DisplayState.GrayedOut);
-			}
-
-			var needsHealing = _playerResources.GetHealthFraction() != 1f;
-			var needsRefueling = _playerResources.GetFuelFraction() != 1f;
-
-			UITextType uiTextType;
-			bool keyCommandVisible;
-			if (needsHealing && needsRefueling)
-			{
-				uiTextType = UITextType.RefillPrompt_0;
-				keyCommandVisible = true;
-			}
-			else if (needsHealing)
-			{
-				uiTextType = UITextType.RefillPrompt_2;
-				keyCommandVisible = true;
-			}
-			else if (needsRefueling)
-			{
-				uiTextType = UITextType.RefillPrompt_4;
-				keyCommandVisible = true;
-			}
-			else
-			{
-				uiTextType = UITextType.RefillPrompt_7;
-				keyCommandVisible = false;
-			}
-
-			_interactVolume.ChangePrompt(uiTextType, _refillIndex);
-
-			if (_wearingSuit)
-			{
-				_interactVolume.EnableSingleInteraction(true, _refillIndex);
-				_interactVolume.SetKeyCommandVisible(keyCommandVisible, _refillIndex);
-				_interactVolume.GetInteractionAt(_refillIndex).cachedScreenPrompt.SetDisplayState(ScreenPrompt.DisplayState.Normal);
-			}
-			else
-			{
-				_interactVolume.EnableSingleInteraction(false, _refillIndex);
-				_interactVolume.SetKeyCommandVisible(false, _refillIndex);
-				_interactVolume.GetInteractionAt(_refillIndex).cachedScreenPrompt.SetDisplayState(ScreenPrompt.DisplayState.GrayedOut);
-			}
+			uiTextType = UITextType.RefillPrompt_0;
+			keyCommandVisible = true;
+		}
+		else if (needsHealing)
+		{
+			uiTextType = UITextType.RefillPrompt_2;
+			keyCommandVisible = true;
+		}
+		else if (needsRefueling)
+		{
+			uiTextType = UITextType.RefillPrompt_4;
+			keyCommandVisible = true;
+		}
+		else
+		{
+			uiTextType = UITextType.RefillPrompt_7;
+			keyCommandVisible = false;
 		}
 
-		private void OnPressInteract(IInputCommands inputCommand)
+		_interactVolume.ChangePrompt(uiTextType, _refillIndex);
+
+		if (_wearingSuit)
 		{
-			if (inputCommand == _interactVolume.GetInteractionAt(_refillIndex).inputCommand)
-			{
-				if (!_wearingSuit)
-				{
-					return;
-				}
-
-				HandleRecovery();
-			}
-			else if (inputCommand == _interactVolume.GetInteractionAt(_respawnIndex).inputCommand)
-			{
-				if (!RespawnManager.Instance.RespawnNeeded)
-				{
-					return;
-				}
-
-				RespawnManager.Instance.RespawnSomePlayer();
-			}
-			else
-			{
-				// the fuck????
-			}
+			_interactVolume.EnableSingleInteraction(true, _refillIndex);
+			_interactVolume.SetKeyCommandVisible(keyCommandVisible, _refillIndex);
+			_interactVolume.GetInteractionAt(_refillIndex).cachedScreenPrompt.SetDisplayState(ScreenPrompt.DisplayState.Normal);
 		}
-
-		private void HandleRecovery()
+		else
 		{
-			var needsRefueling = _playerResources.GetFuelFraction() != 1f;
-			var needsHealing = _playerResources.GetHealthFraction() != 1f;
-			var needsRefill = false;
+			_interactVolume.EnableSingleInteraction(false, _refillIndex);
+			_interactVolume.SetKeyCommandVisible(false, _refillIndex);
+			_interactVolume.GetInteractionAt(_refillIndex).cachedScreenPrompt.SetDisplayState(ScreenPrompt.DisplayState.GrayedOut);
+		}
+	}
 
-			if (needsRefueling)
+	private void OnPressInteract(IInputCommands inputCommand)
+	{
+		if (inputCommand == _interactVolume.GetInteractionAt(_refillIndex).inputCommand)
+		{
+			if (!_wearingSuit)
 			{
-				needsRefill = true;
-			}
-
-			if (needsHealing)
-			{
-				needsRefill = true;
-			}
-
-			if (needsRefill)
-			{
-				_playerResources.StartRefillResources(true, true);
-
-				if (_playerAudioController != null)
-				{
-					if (needsRefueling)
-					{
-						_playerAudioController.PlayRefuel();
-					}
-
-					if (needsHealing)
-					{
-						_playerAudioController.PlayMedkit();
-					}
-				}
-
-				_recovering = true;
-				enabled = true;
 				return;
 			}
 
-			_interactVolume.ResetInteraction();
+			HandleRecovery();
+		}
+		else if (inputCommand == _interactVolume.GetInteractionAt(_respawnIndex).inputCommand)
+		{
+			if (!RespawnManager.Instance.RespawnNeeded)
+			{
+				return;
+			}
+
+			RespawnManager.Instance.RespawnSomePlayer();
+		}
+		else
+		{
+			// the fuck????
+		}
+	}
+
+	private void HandleRecovery()
+	{
+		var needsRefueling = _playerResources.GetFuelFraction() != 1f;
+		var needsHealing = _playerResources.GetHealthFraction() != 1f;
+		var needsRefill = false;
+
+		if (needsRefueling)
+		{
+			needsRefill = true;
 		}
 
-		private void Update()
+		if (needsHealing)
 		{
-			if (_recovering)
+			needsRefill = true;
+		}
+
+		if (needsRefill)
+		{
+			_playerResources.StartRefillResources(true, true);
+
+			if (_playerAudioController != null)
 			{
-				var doneRecovering = true;
-				if (_playerResources.GetFuelFraction() < 1f)
+				if (needsRefueling)
 				{
-					doneRecovering = false;
+					_playerAudioController.PlayRefuel();
 				}
 
-				if (_playerResources.GetHealthFraction() < 1f)
+				if (needsHealing)
 				{
-					doneRecovering = false;
-				}
-
-				if (doneRecovering)
-				{
-					_playerResources.StopRefillResources();
-					_recovering = false;
+					_playerAudioController.PlayMedkit();
 				}
 			}
 
-			if (!_recovering)
+			_recovering = true;
+			enabled = true;
+			return;
+		}
+
+		_interactVolume.ResetInteraction();
+	}
+
+	private void Update()
+	{
+		if (_recovering)
+		{
+			var doneRecovering = true;
+			if (_playerResources.GetFuelFraction() < 1f)
 			{
-				enabled = false;
+				doneRecovering = false;
 			}
+
+			if (_playerResources.GetHealthFraction() < 1f)
+			{
+				doneRecovering = false;
+			}
+
+			if (doneRecovering)
+			{
+				_playerResources.StopRefillResources();
+				_recovering = false;
+			}
+		}
+
+		if (!_recovering)
+		{
+			enabled = false;
 		}
 	}
 }

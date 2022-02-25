@@ -5,48 +5,47 @@ using QSB.Player;
 using QSB.RespawnSync;
 using QSB.Utility;
 
-namespace QSB.DeathSync.Messages
+namespace QSB.DeathSync.Messages;
+
+public class PlayerDeathMessage : QSBMessage<DeathType>
 {
-	public class PlayerDeathMessage : QSBMessage<DeathType>
+	private int NecronomiconIndex;
+
+	public PlayerDeathMessage(DeathType type)
 	{
-		private int NecronomiconIndex;
+		Value = type;
+		NecronomiconIndex = Necronomicon.GetRandomIndex(type);
+	}
 
-		public PlayerDeathMessage(DeathType type)
+	public override void Serialize(NetworkWriter writer)
+	{
+		base.Serialize(writer);
+		writer.Write(NecronomiconIndex);
+	}
+
+	public override void Deserialize(NetworkReader reader)
+	{
+		base.Deserialize(reader);
+		NecronomiconIndex = reader.Read<int>();
+	}
+
+	public override void OnReceiveLocal()
+	{
+		var player = QSBPlayerManager.GetPlayer(From);
+		RespawnManager.Instance.OnPlayerDeath(player);
+		ClientStateManager.Instance.OnDeath();
+	}
+
+	public override void OnReceiveRemote()
+	{
+		var player = QSBPlayerManager.GetPlayer(From);
+		var playerName = player.Name;
+		var deathMessage = Necronomicon.GetPhrase(Value, NecronomiconIndex);
+		if (deathMessage != null)
 		{
-			Value = type;
-			NecronomiconIndex = Necronomicon.GetRandomIndex(type);
+			DebugLog.ToAll(string.Format(deathMessage, playerName));
 		}
 
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(NecronomiconIndex);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			NecronomiconIndex = reader.Read<int>();
-		}
-
-		public override void OnReceiveLocal()
-		{
-			var player = QSBPlayerManager.GetPlayer(From);
-			RespawnManager.Instance.OnPlayerDeath(player);
-			ClientStateManager.Instance.OnDeath();
-		}
-
-		public override void OnReceiveRemote()
-		{
-			var player = QSBPlayerManager.GetPlayer(From);
-			var playerName = player.Name;
-			var deathMessage = Necronomicon.GetPhrase(Value, NecronomiconIndex);
-			if (deathMessage != null)
-			{
-				DebugLog.ToAll(string.Format(deathMessage, playerName));
-			}
-
-			RespawnManager.Instance.OnPlayerDeath(player);
-		}
+		RespawnManager.Instance.OnPlayerDeath(player);
 	}
 }

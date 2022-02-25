@@ -2,22 +2,21 @@
 using QSB.Tools.ProbeLauncherTool.Messages;
 using UnityEngine;
 
-namespace QSB.Tools.ProbeLauncherTool
+namespace QSB.Tools.ProbeLauncherTool;
+
+internal class ProbeLauncherListener : MonoBehaviour
 {
-	internal class ProbeLauncherListener : MonoBehaviour
+	private PlayerProbeLauncher _attachedLauncher;
+
+	public void Init(PlayerProbeLauncher localLauncher)
 	{
-		private PlayerProbeLauncher _attachedLauncher;
-
-		public void Init(PlayerProbeLauncher localLauncher)
-		{
-			_attachedLauncher = localLauncher;
-			_attachedLauncher.OnLaunchProbe += OnLaunchProbe;
-		}
-
-		private void OnDestroy() =>
-			_attachedLauncher.OnLaunchProbe -= OnLaunchProbe;
-
-		private static void OnLaunchProbe(SurveyorProbe probe) =>
-			new PlayerLaunchProbeMessage().Send();
+		_attachedLauncher = localLauncher;
+		_attachedLauncher.OnLaunchProbe += OnLaunchProbe;
 	}
+
+	private void OnDestroy() =>
+		_attachedLauncher.OnLaunchProbe -= OnLaunchProbe;
+
+	private static void OnLaunchProbe(SurveyorProbe probe) =>
+		new PlayerLaunchProbeMessage().Send();
 }

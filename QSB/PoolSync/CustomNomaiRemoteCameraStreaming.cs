@@ -1,64 +1,63 @@
-﻿namespace QSB.PoolSync
+﻿namespace QSB.PoolSync;
+
+internal class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
 {
-	internal class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
+	private CustomNomaiRemoteCameraPlatform _remoteCameraPlatform;
+	private StreamingGroup _streamingGroup;
+	private NomaiRemoteCameraStreaming _oldStreaming;
+	private bool _hasLoadedAssets;
+
+	public override void Awake()
 	{
-		private CustomNomaiRemoteCameraPlatform _remoteCameraPlatform;
-		private StreamingGroup _streamingGroup;
-		private NomaiRemoteCameraStreaming _oldStreaming;
-		private bool _hasLoadedAssets;
+		base.Awake();
+		_oldStreaming = GetComponent<NomaiRemoteCameraStreaming>();
+		SetSector(_oldStreaming.GetSector());
+	}
 
-		public override void Awake()
+	private void Start()
+	{
+		_remoteCameraPlatform = _oldStreaming._remoteCameraPlatform.GetComponent<CustomNomaiRemoteCameraPlatform>();
+		enabled = false;
+	}
+
+	private void FixedUpdate()
+	{
+		var stone = _remoteCameraPlatform.GetSocketedStone();
+		if (stone == null)
 		{
-			base.Awake();
-			_oldStreaming = GetComponent<NomaiRemoteCameraStreaming>();
-			SetSector(_oldStreaming.GetSector());
+			if (_hasLoadedAssets)
+			{
+				_hasLoadedAssets = false;
+				_streamingGroup.ReleaseRequiredAssets();
+				_streamingGroup.ReleaseGeneralAssets();
+				_streamingGroup = null;
+			}
 		}
-
-		private void Start()
+		else
 		{
-			_remoteCameraPlatform = _oldStreaming._remoteCameraPlatform.GetComponent<CustomNomaiRemoteCameraPlatform>();
+			if (!_hasLoadedAssets)
+			{
+				_hasLoadedAssets = true;
+				_streamingGroup = StreamingGroup.GetStreamingGroup(NomaiRemoteCameraStreaming.NomaiRemoteCameraPlatformIDToSceneName(stone.GetRemoteCameraID()));
+				_streamingGroup.RequestRequiredAssets();
+				_streamingGroup.RequestGeneralAssets();
+			}
+		}
+	}
+
+	public override void OnSectorOccupantAdded(SectorDetector sectorDetector)
+	{
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && StreamingManager.isStreamingEnabled)
+		{
+			enabled = true;
+		}
+	}
+
+	public override void OnSectorOccupantRemoved(SectorDetector sectorDetector)
+	{
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player)
+		{
 			enabled = false;
-		}
-
-		private void FixedUpdate()
-		{
-			var stone = _remoteCameraPlatform.GetSocketedStone();
-			if (stone == null)
-			{
-				if (_hasLoadedAssets)
-				{
-					_hasLoadedAssets = false;
-					_streamingGroup.ReleaseRequiredAssets();
-					_streamingGroup.ReleaseGeneralAssets();
-					_streamingGroup = null;
-				}
-			}
-			else
-			{
-				if (!_hasLoadedAssets)
-				{
-					_hasLoadedAssets = true;
-					_streamingGroup = StreamingGroup.GetStreamingGroup(NomaiRemoteCameraStreaming.NomaiRemoteCameraPlatformIDToSceneName(stone.GetRemoteCameraID()));
-					_streamingGroup.RequestRequiredAssets();
-					_streamingGroup.RequestGeneralAssets();
-				}
-			}
-		}
-
-		public override void OnSectorOccupantAdded(SectorDetector sectorDetector)
-		{
-			if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && StreamingManager.isStreamingEnabled)
-			{
-				enabled = true;
-			}
-		}
-
-		public override void OnSectorOccupantRemoved(SectorDetector sectorDetector)
-		{
-			if (sectorDetector.GetOccupantType() == DynamicOccupant.Player)
-			{
-				enabled = false;
-			}
 		}
 	}
 }
