@@ -67,7 +67,6 @@ public class PlayerInfo
 			_camera = value;
 		}
 	}
-
 	private OWCamera _camera;
 
 	public GameObject CameraBody { get; set; }
@@ -93,7 +92,6 @@ public class PlayerInfo
 			_body = value;
 		}
 	}
-
 	private GameObject _body;
 
 	public GameObject RoastingStick { get; set; }
@@ -106,7 +104,6 @@ public class PlayerInfo
 	public QSBTool Translator => GetToolByType(ToolType.Translator);
 	public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
 	private Transform _handPivot;
-
 	public Transform HandPivot
 	{
 		get
@@ -133,7 +130,6 @@ public class PlayerInfo
 			return _handPivot;
 		}
 	}
-
 	public Transform ItemSocket => HandPivot.Find("REMOTE_ItemSocket");
 	public Transform ScrollSocket => HandPivot.Find("REMOTE_ScrollSocket");
 	public Transform SharedStoneSocket => HandPivot.Find("REMOTE_SharedStoneSocket");
