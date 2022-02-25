@@ -92,6 +92,11 @@ public class PlayerTransformSync : SectoredTransformSync
 
 	protected override void GetFromAttached()
 	{
+		if (Player.IsDead)
+		{
+			return;
+		}
+
 		base.GetFromAttached();
 		if (!ReferenceTransform)
 		{
