@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
+using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -22,6 +23,8 @@ public class QSBRaft : WorldObject<RaftController>
 		}
 
 		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
+
+		AttachedObject._interactReceiver.OnPressInteract += OnPressInteract;
 	}
 
 	public override void OnRemoval()
@@ -30,10 +33,15 @@ public class QSBRaft : WorldObject<RaftController>
 		{
 			NetworkServer.Destroy(TransformSync.gameObject);
 		}
+
+		AttachedObject._interactReceiver.OnPressInteract -= OnPressInteract;
 	}
 
 	public override void SendInitialState(uint to)
 	{
-		// todo SendInitialState
+		// todo?? SendInitialState
 	}
+
+	private void OnPressInteract() =>
+		TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
 }
