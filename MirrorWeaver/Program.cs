@@ -12,7 +12,10 @@ namespace MirrorWeaver
 
 		public void Warning(string message, MemberReference mr)
 		{
-			if (mr != null) message = $"{message} (at {mr})";
+			if (mr != null)
+			{
+				message = $"{message} (at {mr})";
+			}
 
 			Console.WriteLine(message);
 		}
@@ -21,7 +24,10 @@ namespace MirrorWeaver
 
 		public void Error(string message, MemberReference mr)
 		{
-			if (mr != null) message = $"{message} (at {mr})";
+			if (mr != null)
+			{
+				message = $"{message} (at {mr})";
+			}
 
 			Console.Error.WriteLine(message);
 		}
