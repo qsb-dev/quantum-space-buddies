@@ -14,12 +14,6 @@ public class QSBNetworkTransform : QSBNetworkBehaviour
 	private Vector3 _prevPosition;
 	private Quaternion _prevRotation;
 
-	protected override void UpdatePrevData()
-	{
-		_prevPosition = transform.position;
-		_prevRotation = transform.rotation;
-	}
-
 	protected override bool HasChanged() =>
 		Vector3.Distance(transform.position, _prevPosition) > PositionChangeThreshold ||
 		Quaternion.Angle(transform.rotation, _prevRotation) > RotationChangeThreshold;
@@ -28,6 +22,12 @@ public class QSBNetworkTransform : QSBNetworkBehaviour
 	{
 		writer.Write(transform.position);
 		writer.Write(transform.rotation);
+	}
+
+	protected override void UpdatePrevData()
+	{
+		_prevPosition = transform.position;
+		_prevRotation = transform.rotation;
 	}
 
 	protected override void Deserialize(NetworkReader reader)
