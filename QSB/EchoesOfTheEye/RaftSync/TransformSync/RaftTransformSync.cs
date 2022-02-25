@@ -8,7 +8,8 @@ namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
 
 public class RaftTransformSync : UnsectoredRigidbodySync
 {
-	protected override bool UseInterpolation => true;
+	protected override bool UseInterpolation => false;
+	protected override bool OnlyApplyOnDeserialize => true;
 
 	private QSBRaft _qsbRaft;
 	private static readonly List<RaftTransformSync> _instances = new();
