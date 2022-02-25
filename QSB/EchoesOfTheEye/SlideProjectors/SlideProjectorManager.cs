@@ -7,7 +7,7 @@ namespace QSB.EchoesOfTheEye.SlideProjectors;
 
 internal class SlideProjectorManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) => QSBWorldSync.Init<QSBSlideProjector, SlideProjector>();
 }

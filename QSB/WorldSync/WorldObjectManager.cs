@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.WorldSync;
 
-public enum WorldObjectType
+public enum WorldObjectScene
 {
 	Both,
 	SolarSystem,
@@ -14,10 +14,7 @@ public enum WorldObjectType
 
 public abstract class WorldObjectManager : MonoBehaviour, IAddComponentOnStart
 {
-	/// <summary>
-	/// when the scene does not match the type, this manager will not build its world objects
-	/// </summary>
-	public abstract WorldObjectType WorldObjectType { get; }
+	public abstract WorldObjectScene WorldObjectScene { get; }
 
 	public abstract UniTask BuildWorldObjects(OWScene scene, CancellationToken ct);
 

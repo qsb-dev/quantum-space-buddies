@@ -13,7 +13,7 @@ namespace QSB.SectorSync;
 
 public class QSBSectorManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
 	public static QSBSectorManager Instance { get; private set; }
 	private bool _isReady;

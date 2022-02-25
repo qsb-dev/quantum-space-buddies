@@ -9,7 +9,7 @@ namespace QSB.Syncs.Occasional;
 
 internal class OccasionalManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 
 	public static readonly List<(OWRigidbody Body, OWRigidbody RefBody)> Bodies = new();
 

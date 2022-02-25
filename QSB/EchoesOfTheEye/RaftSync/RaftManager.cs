@@ -9,7 +9,7 @@ namespace QSB.EchoesOfTheEye.RaftSync;
 
 public class RaftManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 
 	public static readonly List<RaftController> Rafts = new();
 

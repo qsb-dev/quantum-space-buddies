@@ -51,11 +51,10 @@ public static class QSBWorldSync
 
 		foreach (var manager in Managers)
 		{
-			switch (manager.WorldObjectType)
+			switch (manager.WorldObjectScene)
 			{
-				case WorldObjectType.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
-				case WorldObjectType.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
-					DebugLog.DebugWrite($"skipping {manager} as it is type {manager.WorldObjectType} and scene is {QSBSceneManager.CurrentScene}");
+				case WorldObjectScene.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
+				case WorldObjectScene.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
 					continue;
 			}
 

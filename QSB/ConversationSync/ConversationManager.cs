@@ -16,7 +16,7 @@ namespace QSB.ConversationSync;
 
 public class ConversationManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
 	public static ConversationManager Instance { get; private set; }
 	public Dictionary<CharacterDialogueTree, GameObject> BoxMappings { get; } = new Dictionary<CharacterDialogueTree, GameObject>();

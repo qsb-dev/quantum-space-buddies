@@ -7,7 +7,7 @@ namespace QSB.Tools.TranslatorTool.TranslationSync;
 
 internal class SpiralManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{

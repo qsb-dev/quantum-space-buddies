@@ -9,7 +9,7 @@ namespace QSB.Anglerfish;
 
 public class AnglerManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 
 	public static readonly List<AnglerfishController> Anglers = new();
 

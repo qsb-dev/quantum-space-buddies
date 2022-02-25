@@ -7,7 +7,7 @@ namespace QSB.CampfireSync;
 
 internal class CampfireManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.Both;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		=> QSBWorldSync.Init<QSBCampfire, Campfire>();

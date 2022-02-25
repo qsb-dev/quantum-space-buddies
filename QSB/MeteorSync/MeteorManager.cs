@@ -8,7 +8,7 @@ namespace QSB.MeteorSync;
 
 public class MeteorManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 
 	public static WhiteHoleVolume WhiteHoleVolume;
 

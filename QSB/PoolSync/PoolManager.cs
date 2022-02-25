@@ -7,7 +7,7 @@ namespace QSB.PoolSync;
 
 internal class PoolManager : WorldObjectManager
 {
-	public override WorldObjectType WorldObjectType => WorldObjectType.SolarSystem;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
