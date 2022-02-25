@@ -54,8 +54,8 @@ namespace EpicTransport
 {
 	public class BidirectionalDictionary<T1, T2> : IEnumerable
 	{
-		private Dictionary<T1, T2> t1ToT2Dict = new Dictionary<T1, T2>();
-		private Dictionary<T2, T1> t2ToT1Dict = new Dictionary<T2, T1>();
+		private Dictionary<T1, T2> t1ToT2Dict = new();
+		private Dictionary<T2, T1> t2ToT1Dict = new();
 
 		public IEnumerable<T1> FirstTypes => t1ToT2Dict.Keys;
 		public IEnumerable<T2> SecondTypes => t2ToT1Dict.Keys;
@@ -92,7 +92,7 @@ namespace EpicTransport
 		{
 			if (Contains(key))
 			{
-				T2 val = t1ToT2Dict[key];
+				var val = t1ToT2Dict[key];
 				t1ToT2Dict.Remove(key);
 				t2ToT1Dict.Remove(val);
 			}
@@ -102,7 +102,7 @@ namespace EpicTransport
 		{
 			if (Contains(key))
 			{
-				T1 val = t2ToT1Dict[key];
+				var val = t2ToT1Dict[key];
 				t1ToT2Dict.Remove(val);
 				t2ToT1Dict.Remove(key);
 			}

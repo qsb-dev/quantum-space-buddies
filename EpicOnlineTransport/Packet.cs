@@ -17,7 +17,7 @@ namespace EpicTransport
 
 		public byte[] ToBytes()
 		{
-			byte[] array = new byte[size];
+			var array = new byte[size];
 
 			// Copy id
 			array[0] = (byte)id;

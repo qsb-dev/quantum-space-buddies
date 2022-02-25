@@ -28,14 +28,11 @@ namespace EpicTransport
 		private TaskCompletionSource<Task> connectedComplete;
 		private CancellationTokenSource cancelToken;
 
-		private Client(EosTransport transport) : base(transport)
-		{
-			ConnectionTimeout = TimeSpan.FromSeconds(Math.Max(1, transport.timeout));
-		}
+		private Client(EosTransport transport) : base(transport) => ConnectionTimeout = TimeSpan.FromSeconds(Math.Max(1, transport.timeout));
 
 		public static Client CreateClient(EosTransport transport, string host)
 		{
-			Client c = new Client(transport);
+			var c = new Client(transport);
 
 			c.hostAddress = host;
 			c.socketId = new SocketId() { SocketName = RandomString.Generate(20) };

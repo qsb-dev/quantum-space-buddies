@@ -157,13 +157,13 @@ namespace EpicTransport
 				if (EOSSDKComponent.CollectPlayerMetrics)
 				{
 					// Start Metrics colletion session
-					BeginPlayerSessionOptions sessionOptions = new BeginPlayerSessionOptions();
+					var sessionOptions = new BeginPlayerSessionOptions();
 					sessionOptions.AccountId = EOSSDKComponent.LocalUserAccountId;
 					sessionOptions.ControllerType = UserControllerType.Unknown;
 					sessionOptions.DisplayName = EOSSDKComponent.DisplayName;
 					sessionOptions.GameSessionId = null;
 					sessionOptions.ServerIp = null;
-					Result result = EOSSDKComponent.GetMetricsInterface().BeginPlayerSession(sessionOptions);
+					var result = EOSSDKComponent.GetMetricsInterface().BeginPlayerSession(sessionOptions);
 
 					if (result == Result.Success)
 					{
@@ -180,7 +180,9 @@ namespace EpicTransport
 		public override void ClientConnect(Uri uri)
 		{
 			if (uri.Scheme != EPIC_SCHEME)
+			{
 				throw new ArgumentException($"Invalid url {uri}, use {EPIC_SCHEME}://EpicAccountId instead", nameof(uri));
+			}
 
 			ClientConnect(uri.Host);
 		}
@@ -228,13 +230,13 @@ namespace EpicTransport
 				if (EOSSDKComponent.CollectPlayerMetrics)
 				{
 					// Start Metrics colletion session
-					BeginPlayerSessionOptions sessionOptions = new BeginPlayerSessionOptions();
+					var sessionOptions = new BeginPlayerSessionOptions();
 					sessionOptions.AccountId = EOSSDKComponent.LocalUserAccountId;
 					sessionOptions.ControllerType = UserControllerType.Unknown;
 					sessionOptions.DisplayName = EOSSDKComponent.DisplayName;
 					sessionOptions.GameSessionId = null;
 					sessionOptions.ServerIp = null;
-					Result result = EOSSDKComponent.GetMetricsInterface().BeginPlayerSession(sessionOptions);
+					var result = EOSSDKComponent.GetMetricsInterface().BeginPlayerSession(sessionOptions);
 
 					if (result == Result.Success)
 					{
@@ -250,7 +252,7 @@ namespace EpicTransport
 
 		public override Uri ServerUri()
 		{
-			UriBuilder epicBuilder = new UriBuilder
+			var epicBuilder = new UriBuilder
 			{
 				Scheme = EPIC_SCHEME,
 				Host = EOSSDKComponent.LocalUserProductIdString
@@ -280,9 +282,9 @@ namespace EpicTransport
 
 		private void Send(int channelId, ArraySegment<byte> segment, int connectionId = int.MinValue)
 		{
-			Packet[] packets = GetPacketArray(channelId, segment);
+			var packets = GetPacketArray(channelId, segment);
 
-			for (int i = 0; i < packets.Length; i++)
+			for (var i = 0; i < packets.Length; i++)
 			{
 				if (connectionId == int.MinValue)
 				{
@@ -299,17 +301,17 @@ namespace EpicTransport
 
 		private Packet[] GetPacketArray(int channelId, ArraySegment<byte> segment)
 		{
-			int packetCount = Mathf.CeilToInt((float)segment.Count / (float)GetMaxSinglePacketSize(channelId));
-			Packet[] packets = new Packet[packetCount];
+			var packetCount = Mathf.CeilToInt((float)segment.Count / (float)GetMaxSinglePacketSize(channelId));
+			var packets = new Packet[packetCount];
 
-			for (int i = 0; i < segment.Count; i += GetMaxSinglePacketSize(channelId))
+			for (var i = 0; i < segment.Count; i += GetMaxSinglePacketSize(channelId))
 			{
-				int fragment = i / GetMaxSinglePacketSize(channelId);
+				var fragment = i / GetMaxSinglePacketSize(channelId);
 
 				packets[fragment] = new Packet();
 				packets[fragment].id = packetId;
 				packets[fragment].fragment = fragment;
-				packets[fragment].moreFragments = (segment.Count - i) > GetMaxSinglePacketSize(channelId);
+				packets[fragment].moreFragments = segment.Count - i > GetMaxSinglePacketSize(channelId);
 				packets[fragment].data = new byte[segment.Count - i > GetMaxSinglePacketSize(channelId) ? GetMaxSinglePacketSize(channelId) : segment.Count - i];
 				Array.Copy(segment.Array, i, packets[fragment].data, 0, packets[fragment].data.Length);
 			}
@@ -322,9 +324,9 @@ namespace EpicTransport
 			if (EOSSDKComponent.CollectPlayerMetrics)
 			{
 				// Stop Metrics collection session
-				EndPlayerSessionOptions endSessionOptions = new EndPlayerSessionOptions();
+				var endSessionOptions = new EndPlayerSessionOptions();
 				endSessionOptions.AccountId = EOSSDKComponent.LocalUserAccountId;
-				Result result = EOSSDKComponent.GetMetricsInterface().EndPlayerSession(endSessionOptions);
+				var result = EOSSDKComponent.GetMetricsInterface().EndPlayerSession(endSessionOptions);
 
 				if (result == Result.Success)
 				{
@@ -376,7 +378,7 @@ namespace EpicTransport
 				yield return null;
 			}
 
-			SetRelayControlOptions setRelayControlOptions = new SetRelayControlOptions();
+			var setRelayControlOptions = new SetRelayControlOptions();
 			setRelayControlOptions.RelayControl = relayControl;
 
 			EOSSDKComponent.GetP2PInterface().SetRelayControl(setRelayControlOptions);
