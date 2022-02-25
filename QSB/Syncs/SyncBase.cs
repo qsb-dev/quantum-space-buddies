@@ -116,8 +116,8 @@ public abstract class SyncBase : QSBNetworkTransform
 	protected const float SmoothTime = 0.1f;
 	private Vector3 _positionSmoothVelocity;
 	private Quaternion _rotationSmoothVelocity;
-	protected Vector3 SmoothPosition { get; private set; }
-	protected Quaternion SmoothRotation { get; private set; }
+	private Vector3 SmoothPosition { get; set; }
+	private Quaternion SmoothRotation { get; set; }
 
 	protected abstract Transform InitAttachedTransform();
 
@@ -193,16 +193,33 @@ public abstract class SyncBase : QSBNetworkTransform
 		}
 	}
 
-	private bool _shouldApply;
+	/// <summary>
+	/// call the base method FIRST
+	/// </summary>
+	protected override bool HasChanged()
+	{
+		GetFromAttached();
+		return base.HasChanged();
+	}
 
+	/// <summary>
+	/// called right before checking HasChanged
+	/// </summary>
+	protected abstract void GetFromAttached();
+
+	/// <summary>
+	/// call the base method LAST
+	/// </summary>
 	protected override void Deserialize(NetworkReader reader)
 	{
 		base.Deserialize(reader);
-		if (OnlyApplyOnDeserialize)
-		{
-			_shouldApply = true;
-		}
+		ApplyToAttached();
 	}
+
+	/// <summary>
+	/// called right after deserializing
+	/// </summary>
+	protected abstract void ApplyToAttached();
 
 	protected sealed override void Update()
 	{

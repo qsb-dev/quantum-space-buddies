@@ -16,19 +16,18 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 	/// checked before serializing
 	/// </summary>
 	protected abstract bool HasChanged();
+
 	protected abstract void Serialize(NetworkWriter writer);
+
 	/// <summary>
 	/// called right after serializing
 	/// </summary>
 	protected abstract void UpdatePrevData();
+
 	protected abstract void Deserialize(NetworkReader reader);
 
 	public bool IsValid { get; private set; }
-
-	protected virtual bool CheckValid()
-	{
-		return QSBWorldSync.AllObjectsReady;
-	}
+	protected virtual bool CheckValid() => QSBWorldSync.AllObjectsReady;
 
 	protected virtual void Update()
 	{

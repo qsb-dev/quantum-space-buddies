@@ -25,7 +25,7 @@ public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
 		return AttachedRigidbody ? AttachedRigidbody.transform : null;
 	}
 
-	public override void SetReferenceTransform(Transform referenceTransform)
+	public sealed override void SetReferenceTransform(Transform referenceTransform)
 	{
 		if (ReferenceTransform == referenceTransform)
 		{
@@ -36,27 +36,6 @@ public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
 		ReferenceRigidbody = ReferenceTransform ? ReferenceTransform.GetAttachedOWRigidbody() : null;
 	}
 
-	protected override void UpdatePrevData()
-	{
-		base.UpdatePrevData();
-		_prevVelocity = Velocity;
-		_prevAngularVelocity = AngularVelocity;
-	}
-
-	protected override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(Velocity);
-		writer.Write(AngularVelocity);
-	}
-
-	protected override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		Velocity = reader.ReadVector3();
-		AngularVelocity = reader.ReadVector3();
-	}
-
 	protected override void GetFromAttached()
 	{
 		transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());
@@ -65,22 +44,34 @@ public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
 		AngularVelocity = ReferenceRigidbody.ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
 	}
 
+	protected override void Serialize(NetworkWriter writer)
+	{
+		writer.Write(Velocity);
+		writer.Write(AngularVelocity);
+		base.Serialize(writer);
+	}
+
+	protected override void UpdatePrevData()
+	{
+		base.UpdatePrevData();
+		_prevVelocity = Velocity;
+		_prevAngularVelocity = AngularVelocity;
+	}
+
+	protected override void Deserialize(NetworkReader reader)
+	{
+		Velocity = reader.ReadVector3();
+		AngularVelocity = reader.ReadVector3();
+		base.Deserialize(reader);
+	}
+
 	protected override void ApplyToAttached()
 	{
 		var targetPos = ReferenceTransform.FromRelPos(transform.position);
 		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
-		var positionToSet = targetPos;
-		var rotationToSet = targetRot;
-
-		if (UseInterpolation)
-		{
-			positionToSet = ReferenceTransform.FromRelPos(SmoothPosition);
-			rotationToSet = ReferenceTransform.FromRelRot(SmoothRotation);
-		}
-
-		AttachedRigidbody.MoveToPosition(positionToSet);
-		AttachedRigidbody.MoveToRotation(rotationToSet);
+		AttachedRigidbody.MoveToPosition(targetPos);
+		AttachedRigidbody.MoveToRotation(targetRot);
 
 		var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
 		var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);

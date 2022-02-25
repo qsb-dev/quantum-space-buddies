@@ -36,19 +36,19 @@ public abstract class BaseSectoredSync : SyncBase
 		SetReferenceSector(null);
 	}
 
+	protected void GetFromSector() => _sectorId = ReferenceSector?.ObjectId ?? -1;
+
 	protected override void Serialize(NetworkWriter writer)
 	{
-		base.Serialize(writer);
 		writer.Write(_sectorId);
+		base.Serialize(writer);
 	}
 
 	protected override void Deserialize(NetworkReader reader)
 	{
-		base.Deserialize(reader);
 		_sectorId = reader.ReadInt();
+		base.Deserialize(reader);
 	}
-
-	protected void GetFromSector() => _sectorId = ReferenceSector?.ObjectId ?? -1;
 
 	protected void ApplyToSector()
 	{
@@ -62,7 +62,7 @@ public abstract class BaseSectoredSync : SyncBase
 
 	/// <summary>
 	/// use this instead of SetReferenceTransform
-	///
+	/// <para/>
 	/// called by QSBSectorManager (authority) and ApplyToSector (non authority)
 	/// </summary>
 	public void SetReferenceSector(QSBSector sector)
