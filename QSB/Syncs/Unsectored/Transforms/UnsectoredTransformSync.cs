@@ -34,31 +34,15 @@ public abstract class UnsectoredTransformSync : BaseUnsectoredSync
 
 	protected override void ApplyToAttached()
 	{
-		if (IsPlayerObject)
+		if (UseInterpolation)
 		{
-			if (UseInterpolation)
-			{
-				AttachedTransform.localPosition = SmoothPosition;
-				AttachedTransform.localRotation = SmoothRotation;
-			}
-			else
-			{
-				AttachedTransform.localPosition = transform.position;
-				AttachedTransform.localRotation = transform.rotation;
-			}
+			AttachedTransform.position = ReferenceTransform.FromRelPos(SmoothPosition);
+			AttachedTransform.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
 		}
 		else
 		{
-			if (UseInterpolation)
-			{
-				AttachedTransform.position = ReferenceTransform.FromRelPos(SmoothPosition);
-				AttachedTransform.rotation = ReferenceTransform.FromRelRot(SmoothRotation);
-			}
-			else
-			{
-				AttachedTransform.position = ReferenceTransform.FromRelPos(transform.position);
-				AttachedTransform.rotation = ReferenceTransform.FromRelRot(transform.rotation);
-			}
+			AttachedTransform.position = ReferenceTransform.FromRelPos(transform.position);
+			AttachedTransform.rotation = ReferenceTransform.FromRelRot(transform.rotation);
 		}
 	}
 }

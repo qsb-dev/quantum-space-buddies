@@ -297,16 +297,8 @@ public abstract class SyncBase : QSBNetworkTransform
 
 		if (UseInterpolation && !hasAuthority && AttachedTransform)
 		{
-			if (IsPlayerObject)
-			{
-				SmoothPosition = AttachedTransform.localPosition;
-				SmoothRotation = AttachedTransform.localRotation;
-			}
-			else
-			{
-				SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
-			}
+			SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
+			SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 		}
 	}
 
