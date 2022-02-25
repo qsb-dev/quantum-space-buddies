@@ -231,6 +231,11 @@ public abstract class SyncBase : QSBNetworkTransform
 			return;
 		}
 
+		if (UseInterpolation)
+		{
+			Interpolate();
+		}
+
 		if (hasAuthority)
 		{
 			GetFromAttached();
@@ -239,11 +244,6 @@ public abstract class SyncBase : QSBNetworkTransform
 		else if (!OnlyApplyOnDeserialize || _shouldApply)
 		{
 			_shouldApply = false;
-			if (UseInterpolation)
-			{
-				Interpolate();
-			}
-
 			ApplyToAttached();
 		}
 	}
@@ -279,7 +279,7 @@ public abstract class SyncBase : QSBNetworkTransform
 			AttachedTransform.localScale = Vector3.one;
 		}
 
-		if (UseInterpolation && !hasAuthority && AttachedTransform && ReferenceTransform)
+		if (UseInterpolation && AttachedTransform && ReferenceTransform)
 		{
 			SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
 			SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
