@@ -1,13 +1,11 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.Player;
-using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
-using Gizmos = Popcron.Gizmos;
 
 namespace QSB.Syncs;
 /*
@@ -115,6 +113,7 @@ public abstract class SyncBase : QSBNetworkTransform
 	                                     + $"{netId}:{GetType().Name} ({Name})";
 
 	protected virtual float DistanceChangeThreshold => 5f;
+	private float _prevDistance;
 	protected const float SmoothTime = 0.1f;
 	private Vector3 _positionSmoothVelocity;
 	private Quaternion _rotationSmoothVelocity;
@@ -249,36 +248,21 @@ public abstract class SyncBase : QSBNetworkTransform
 		}
 	}
 
-	private Vector3 _prevSmoothPosition;
-	private float _prevSmoothSpeed;
-
 	private void Interpolate()
 	{
-		var smoothPosition = SmoothPosition;
-		var smoothSpeed = Vector3.Distance(smoothPosition, _prevSmoothPosition);
-		var smoothAccel = smoothSpeed - _prevSmoothSpeed;
-
-		if (QSBCore.IsHost && this is PlayerProbeSync && !hasAuthority && smoothSpeed > 0.0100)
+		var distance = Vector3.Distance(SmoothPosition, transform.position);
+		if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold)
 		{
-			// DebugLog.DebugWrite($"speed {smoothSpeed:F4} accel {smoothAccel:F4}");
+			SmoothPosition = transform.position;
+			SmoothRotation = transform.rotation;
+		}
+		else
+		{
+			SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+			SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
 		}
 
-		_prevSmoothPosition = smoothPosition;
-		_prevSmoothSpeed = smoothSpeed;
-
-		if (smoothAccel > DistanceChangeThreshold)
-		{
-			if (QSBCore.IsHost && this is PlayerProbeSync && !hasAuthority)
-			{
-				// DebugLog.DebugWrite($"teleport", MessageType.Success);
-			}
-
-			// SmoothPosition = transform.position;
-			// SmoothRotation = transform.rotation;
-		}
-
-		SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-		SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+		_prevDistance = distance;
 	}
 
 	public virtual void SetReferenceTransform(Transform referenceTransform)
@@ -295,7 +279,7 @@ public abstract class SyncBase : QSBNetworkTransform
 			AttachedTransform.localScale = Vector3.one;
 		}
 
-		if (UseInterpolation && !hasAuthority && AttachedTransform)
+		if (UseInterpolation && !hasAuthority && AttachedTransform && ReferenceTransform)
 		{
 			SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
 			SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
@@ -318,11 +302,11 @@ public abstract class SyncBase : QSBNetworkTransform
 		 * Cyan Line = Connection between Green cube and reference transform
 		 */
 
-		Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
-		Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red);
-		Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green);
-		Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
-		Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan);
+		Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red);
+		Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red);
+		Popcron.Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green);
+		Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta);
+		Popcron.Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan);
 	}
 
 	private void OnGUI()
