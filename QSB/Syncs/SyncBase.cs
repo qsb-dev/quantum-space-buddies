@@ -78,6 +78,11 @@ public abstract class SyncBase : QSBNetworkTransform
 			return false;
 		}
 
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return false;
+		}
+
 		if (!AttachedTransform)
 		{
 			DebugLog.ToConsole($"Error - AttachedObject {this} is null!", MessageType.Error);
