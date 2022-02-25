@@ -12,9 +12,15 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 	private double _lastSendTime;
 	private byte[] _lastKnownData;
 
+	/// <summary>
+	/// checked before serializing
+	/// </summary>
 	protected abstract bool HasChanged();
-	protected abstract void UpdatePrevData();
 	protected abstract void Serialize(NetworkWriter writer);
+	/// <summary>
+	/// called right after serializing
+	/// </summary>
+	protected abstract void UpdatePrevData();
 	protected abstract void Deserialize(NetworkReader reader);
 
 	public bool IsValid { get; private set; }
