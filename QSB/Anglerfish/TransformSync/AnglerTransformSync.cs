@@ -10,6 +10,7 @@ namespace QSB.Anglerfish.TransformSync;
 public class AnglerTransformSync : UnsectoredRigidbodySync
 {
 	protected override bool UseInterpolation => false;
+	protected override bool AllowInactiveAttachedObject => true; // since they deactivate when suspended
 
 	private QSBAngler _qsbAngler;
 	private static readonly List<AnglerTransformSync> _instances = new();
@@ -70,7 +71,8 @@ public class AnglerTransformSync : UnsectoredRigidbodySync
 	{
 		if (!QSBCore.DebugSettings.DrawLines
 		    || !IsValid
-		    || !ReferenceTransform)
+		    || !ReferenceTransform
+		    || !AttachedTransform.gameObject.activeInHierarchy)
 		{
 			return;
 		}

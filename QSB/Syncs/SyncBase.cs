@@ -319,10 +319,10 @@ public abstract class SyncBase : QSBNetworkTransform
 
 		var interpDiv = _interpolating ? 2 : 1;
 		Popcron.Gizmos.Cube(ReferenceTransform.FromRelPos(transform.position), ReferenceTransform.FromRelRot(transform.rotation), Vector3.one / 8, Color.red / interpDiv);
-		Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.transform.position, Color.red / interpDiv);
-		Popcron.Gizmos.Cube(AttachedTransform.transform.position, AttachedTransform.transform.rotation, Vector3.one / 6, Color.green / interpDiv);
+		Popcron.Gizmos.Line(ReferenceTransform.FromRelPos(transform.position), AttachedTransform.position, Color.red / interpDiv);
+		Popcron.Gizmos.Cube(AttachedTransform.position, AttachedTransform.rotation, Vector3.one / 6, Color.green / interpDiv);
 		Popcron.Gizmos.Cube(ReferenceTransform.position, ReferenceTransform.rotation, Vector3.one / 8, Color.magenta / interpDiv);
-		Popcron.Gizmos.Line(AttachedTransform.transform.position, ReferenceTransform.position, Color.cyan / interpDiv);
+		Popcron.Gizmos.Line(AttachedTransform.position, ReferenceTransform.position, Color.cyan / interpDiv);
 	}
 
 	private void OnGUI()
@@ -335,6 +335,6 @@ public abstract class SyncBase : QSBNetworkTransform
 			return;
 		}
 
-		DebugGUI.DrawLabel(AttachedTransform.transform, ToString());
+		DebugGUI.DrawLabel(AttachedTransform, ToString());
 	}
 }

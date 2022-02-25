@@ -12,6 +12,7 @@ namespace QSB.JellyfishSync.TransformSync;
 public class JellyfishTransformSync : UnsectoredRigidbodySync
 {
 	protected override bool UseInterpolation => false;
+	protected override bool AllowInactiveAttachedObject => true; // since they deactivate when suspended
 
 	private QSBJellyfish _qsbJellyfish;
 	private bool _isRising;
@@ -104,7 +105,8 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync
 	{
 		if (!QSBCore.DebugSettings.DrawLines
 		    || !IsValid
-		    || !ReferenceTransform)
+		    || !ReferenceTransform
+		    || !AttachedTransform.gameObject.activeInHierarchy)
 		{
 			return;
 		}
