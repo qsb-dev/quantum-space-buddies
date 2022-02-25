@@ -7,8 +7,8 @@
 
   <PropertyGroup Label="Common Properties">
     <TargetFramework>net48</TargetFramework>
+    <LangVersion>default</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>9</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <Company>Henry Pointer, Aleksander Waage, Ricardo Lopes</Company>
