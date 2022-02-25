@@ -1,106 +1,74 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace QSB.PlayerBodySetup.Remote;
 
 public class QSBDitheringAnimator : MonoBehaviour
 {
-	[SerializeField]
-	private bool _toggleShadowCasting = true;
-	public bool _visible { get; private set; } = true;
-	public float _visibleFraction { get; private set; } = 1f;
-	private float _fadeRate = 1f;
-	public OWRenderer[] _renderers { get; private set; }
-	private bool[] _ignoreToggleShadows;
+	public bool FullyVisible => !enabled && OWMath.ApproxEquals(_visibleFraction, 1);
+	public bool FullyInvisible => !enabled && OWMath.ApproxEquals(_visibleFraction, 0);
+
+	private float _visibleTarget = 1;
+	private float _visibleFraction = 1;
+	private float _fadeRate;
+	private (OWRenderer Renderer, bool UpdateShadows)[] _renderers;
 
 	private void Awake()
 	{
-		var componentsInChildren = GetComponentsInChildren<Renderer>(true);
-		_renderers = new OWRenderer[componentsInChildren.Length];
-		_ignoreToggleShadows = new bool[componentsInChildren.Length];
-		for (var i = 0; i < _renderers.Length; i++)
-		{
-			_renderers[i] = componentsInChildren[i].GetComponent<OWRenderer>();
-			if (_renderers[i] == null)
-			{
-				_renderers[i] = componentsInChildren[i].gameObject.AddComponent<OWRenderer>();
-			}
-
-			_ignoreToggleShadows[i] = componentsInChildren[i].shadowCastingMode == ShadowCastingMode.Off;
-		}
+		_renderers = GetComponentsInChildren<Renderer>(true)
+			.Select(x => (x.gameObject.GetAddComponent<OWRenderer>(), x.shadowCastingMode != ShadowCastingMode.Off))
+			.ToArray();
+		enabled = false;
 	}
 
-	private void Start() => enabled = false;
-
-	public void SetVisibleImmediate(bool visible)
+	public void SetVisible(bool visible, float seconds = 0)
 	{
-		if (_visible != visible)
+		var visibleTarget = visible ? 1 : 0;
+		if (OWMath.ApproxEquals(visibleTarget, _visibleTarget))
 		{
-			_visible = visible;
-			_visibleFraction = _visible ? 1f : 0f;
-			UpdateDithering();
-			UpdateShadowCasting();
+			return;
 		}
-	}
 
-	public void SetVisible(bool visible, float fadeRate)
-	{
-		if (_visible != visible)
+		_visibleTarget = visibleTarget;
+		if (seconds != 0)
 		{
-			_visible = visible;
-			_fadeRate = fadeRate;
-			if (!_visible)
-			{
-				UpdateShadowCasting();
-			}
-
+			_fadeRate = 1 / seconds;
 			enabled = true;
+		}
+		else
+		{
+			_visibleFraction = _visibleTarget;
+			UpdateRenderers();
 		}
 	}
 
 	private void Update()
 	{
-		var target = _visible ? 1f : 0f;
-		_visibleFraction = Mathf.MoveTowards(_visibleFraction, target, _fadeRate * Time.deltaTime);
-		if (OWMath.ApproxEquals(_visibleFraction, target))
+		_visibleFraction = Mathf.MoveTowards(_visibleFraction, _visibleTarget, _fadeRate * Time.deltaTime);
+		if (OWMath.ApproxEquals(_visibleFraction, _visibleTarget))
 		{
-			_visibleFraction = target;
+			_visibleFraction = _visibleTarget;
 			enabled = false;
-			if (_visible)
-			{
-				UpdateShadowCasting();
-			}
 		}
 
-		UpdateDithering();
+		UpdateRenderers();
 	}
 
-	private void UpdateDithering()
+	private void UpdateRenderers()
 	{
-		foreach (var renderer in _renderers)
+		foreach (var (renderer, updateShadows) in _renderers)
 		{
-			if (renderer != null)
-			{
-				renderer.SetDitherFade(1f - _visibleFraction);
-			}
-		}
-	}
-
-	private void UpdateShadowCasting()
-	{
-		if (!_toggleShadowCasting)
-		{
-			return;
-		}
-
-		for (var i = 0; i < _renderers.Length; i++)
-		{
-			if (_ignoreToggleShadows[i])
+			if (renderer == null)
 			{
 				continue;
 			}
 
-			_renderers[i].GetRenderer().shadowCastingMode = _visible ? ShadowCastingMode.On : ShadowCastingMode.Off;
+			renderer.SetDitherFade(1 - _visibleFraction);
+			if (updateShadows)
+			{
+				renderer._renderer.shadowCastingMode = FullyVisible ? ShadowCastingMode.On : ShadowCastingMode.Off;
+			}
 		}
 	}
 }

@@ -43,6 +43,7 @@ public class QSBTool : PlayerTool
 	{
 		base.Start();
 		ToolGameObject?.SetActive(false);
+		_ditheringAnimator.SetVisible(false);
 	}
 
 	public virtual void OnEnable() => ToolGameObject?.SetActive(true);
@@ -70,10 +71,10 @@ public class QSBTool : PlayerTool
 	{
 		base.EquipTool();
 
-		if (_ditheringAnimator != null && _ditheringAnimator._renderers != null)
+		if (_ditheringAnimator != null)
 		{
 			ToolGameObject?.SetActive(true);
-			_ditheringAnimator.SetVisible(true, 5f);
+			_ditheringAnimator.SetVisible(true, .2f);
 		}
 
 		Player.AudioController.PlayEquipTool();
@@ -83,11 +84,11 @@ public class QSBTool : PlayerTool
 	{
 		base.UnequipTool();
 
-		if (_ditheringAnimator != null && _ditheringAnimator._renderers != null)
+		if (_ditheringAnimator != null)
 		{
 			_isDitheringOut = true;
-			_ditheringAnimator.SetVisible(false, 5f);
-			Delay.RunWhen(() => _ditheringAnimator._visibleFraction == 0, FinishDitherOut);
+			_ditheringAnimator.SetVisible(false, .2f);
+			Delay.RunWhen(() => _ditheringAnimator.FullyInvisible, FinishDitherOut);
 		}
 
 		Player.AudioController.PlayUnequipTool();

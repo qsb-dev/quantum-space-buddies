@@ -34,7 +34,7 @@ public class PlayerInfo
 	public ClientState State { get; set; }
 	public EyeState EyeState { get; set; }
 	public bool IsDead { get; set; }
-	public bool Visible => IsLocalPlayer || !_ditheringAnimator || _ditheringAnimator._visible;
+	public bool Visible => IsLocalPlayer || _ditheringAnimator == null || _ditheringAnimator.FullyVisible;
 	public bool IsReady { get; set; }
 	public bool IsInMoon { get; set; }
 	public bool IsInShrine { get; set; }
@@ -67,6 +67,7 @@ public class PlayerInfo
 			_camera = value;
 		}
 	}
+
 	private OWCamera _camera;
 
 	public GameObject CameraBody { get; set; }
@@ -92,6 +93,7 @@ public class PlayerInfo
 			_body = value;
 		}
 	}
+
 	private GameObject _body;
 
 	public GameObject RoastingStick { get; set; }
@@ -104,6 +106,7 @@ public class PlayerInfo
 	public QSBTool Translator => GetToolByType(ToolType.Translator);
 	public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
 	private Transform _handPivot;
+
 	public Transform HandPivot
 	{
 		get
@@ -130,6 +133,7 @@ public class PlayerInfo
 			return _handPivot;
 		}
 	}
+
 	public Transform ItemSocket => HandPivot.Find("REMOTE_ItemSocket");
 	public Transform ScrollSocket => HandPivot.Find("REMOTE_ScrollSocket");
 	public Transform SharedStoneSocket => HandPivot.Find("REMOTE_SharedStoneSocket");
@@ -295,13 +299,6 @@ public class PlayerInfo
 			return;
 		}
 
-		if (seconds == 0)
-		{
-			_ditheringAnimator.SetVisibleImmediate(visible);
-		}
-		else
-		{
-			_ditheringAnimator.SetVisible(visible, 1 / seconds);
-		}
+		_ditheringAnimator.SetVisible(visible, seconds);
 	}
 }
