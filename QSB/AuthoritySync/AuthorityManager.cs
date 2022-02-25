@@ -1,6 +1,5 @@
 ﻿using Mirror;
 using QSB.Messaging;
-using QSB.Player;
 using QSB.Utility;
 using System.Collections.Generic;
 
@@ -13,16 +12,15 @@ public static class AuthorityManager
 	/// <summary>
 	/// whoever is first gets authority
 	/// </summary>
-	private static readonly Dictionary<NetworkIdentity, (List<uint> AuthQueue, bool ServerIsDefaultOwner)> _authQueue = new();
+	private static readonly Dictionary<NetworkIdentity, List<uint>> _authQueue = new();
 
-	public static void RegisterAuthQueue(this NetworkIdentity identity, bool serverIsDefaultOwner) => _authQueue.Add(identity, (new List<uint>(), serverIsDefaultOwner));
+	public static void RegisterAuthQueue(this NetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
 	public static void UnregisterAuthQueue(this NetworkIdentity identity) => _authQueue.Remove(identity);
 
 	public static void ServerUpdateAuthQueue(this NetworkIdentity identity, uint id, AuthQueueAction action)
 	{
-		var (authQueue, serverIsDefaultOwner) = _authQueue[identity];
-		var defaultOwner = serverIsDefaultOwner ? QSBPlayerManager.LocalPlayerId : uint.MaxValue;
-		var oldOwner = authQueue.Count != 0 ? authQueue[0] : defaultOwner;
+		var authQueue = _authQueue[identity];
+		var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
 
 		switch (action)
 		{
@@ -40,7 +38,7 @@ public static class AuthorityManager
 				break;
 		}
 
-		var newOwner = authQueue.Count != 0 ? authQueue[0] : defaultOwner;
+		var newOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
 		if (oldOwner != newOwner)
 		{
 			SetAuthority(identity, newOwner);

@@ -25,7 +25,7 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync
 		_instances.Add(this);
 		if (QSBCore.IsHost)
 		{
-			netIdentity.RegisterAuthQueue(false);
+			netIdentity.RegisterAuthQueue();
 		}
 
 		base.OnStartClient();

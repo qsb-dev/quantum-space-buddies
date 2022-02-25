@@ -20,7 +20,7 @@ public class QSBOrb : WorldObject<NomaiInterfaceOrb>
 	{
 		if (QSBCore.IsHost)
 		{
-			Object.Instantiate(QSBNetworkManager.singleton.OrbPrefab).SpawnWithServerAuthority();
+			NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.OrbPrefab));
 		}
 
 		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);

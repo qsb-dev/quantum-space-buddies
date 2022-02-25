@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;
@@ -18,7 +17,7 @@ public class QSBRaft : WorldObject<RaftController>
 	{
 		if (QSBCore.IsHost)
 		{
-			Object.Instantiate(QSBNetworkManager.singleton.RaftPrefab).SpawnWithServerAuthority();
+			NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.RaftPrefab));
 		}
 
 		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);

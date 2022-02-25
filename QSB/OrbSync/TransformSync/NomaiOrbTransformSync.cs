@@ -29,7 +29,7 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync
 		_instances.Add(this);
 		if (QSBCore.IsHost)
 		{
-			netIdentity.RegisterAuthQueue(true);
+			netIdentity.RegisterAuthQueue();
 		}
 
 		base.OnStartClient();
