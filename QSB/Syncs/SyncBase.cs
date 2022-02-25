@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.Player;
+using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -114,7 +115,6 @@ public abstract class SyncBase : QSBNetworkTransform
 	                                     + $"{netId}:{GetType().Name} ({Name})";
 
 	protected virtual float DistanceChangeThreshold => 5f;
-	private float _prevDistance;
 	protected const float SmoothTime = 0.1f;
 	private Vector3 _positionSmoothVelocity;
 	private Quaternion _rotationSmoothVelocity;
@@ -232,48 +232,53 @@ public abstract class SyncBase : QSBNetworkTransform
 			return;
 		}
 
-		if (!hasAuthority && UseInterpolation)
-		{
-			Interpolate();
-		}
-
 		if (hasAuthority)
 		{
 			GetFromAttached();
+			base.Update();
 		}
 		else if (!OnlyApplyOnDeserialize || _shouldApply)
 		{
 			_shouldApply = false;
+			if (UseInterpolation)
+			{
+				Interpolate();
+			}
+
 			ApplyToAttached();
 		}
-
-		base.Update();
 	}
 
 	private Vector3 _prevSmoothPosition;
+	private float _prevSmoothSpeed;
 
 	private void Interpolate()
 	{
-		if (Vector3.Distance(SmoothPosition, _prevSmoothPosition) > DistanceChangeThreshold)
+		var smoothPosition = SmoothPosition;
+		var smoothSpeed = Vector3.Distance(smoothPosition, _prevSmoothPosition);
+		var smoothAccel = smoothSpeed - _prevSmoothSpeed;
+
+		if (QSBCore.IsHost && this is PlayerProbeSync && !hasAuthority && smoothSpeed > 0.0100)
 		{
-			DebugLog.DebugWrite($"{this} POS teleport (change = {Vector3.Distance(SmoothPosition, _prevSmoothPosition):F4}");
+			// DebugLog.DebugWrite($"speed {smoothSpeed:F4} accel {smoothAccel:F4}");
 		}
 
-		var distance = Vector3.Distance(SmoothPosition, transform.position);
-		if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold)
+		_prevSmoothPosition = smoothPosition;
+		_prevSmoothSpeed = smoothSpeed;
+
+		if (smoothAccel > DistanceChangeThreshold)
 		{
-			DebugLog.DebugWrite($"{this} DIST teleport (change = {Mathf.Abs(distance - _prevDistance):F4}");
-			SmoothPosition = transform.position;
-			SmoothRotation = transform.rotation;
-		}
-		else
-		{
-			SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
-			SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
+			if (QSBCore.IsHost && this is PlayerProbeSync && !hasAuthority)
+			{
+				// DebugLog.DebugWrite($"teleport", MessageType.Success);
+			}
+
+			// SmoothPosition = transform.position;
+			// SmoothRotation = transform.rotation;
 		}
 
-		_prevDistance = distance;
-		_prevSmoothPosition = SmoothPosition;
+		SmoothPosition = Vector3.SmoothDamp(SmoothPosition, transform.position, ref _positionSmoothVelocity, SmoothTime);
+		SmoothRotation = QuaternionHelper.SmoothDamp(SmoothRotation, transform.rotation, ref _rotationSmoothVelocity, SmoothTime);
 	}
 
 	public virtual void SetReferenceTransform(Transform referenceTransform)
@@ -283,23 +288,24 @@ public abstract class SyncBase : QSBNetworkTransform
 			return;
 		}
 
-		DebugLog.DebugWrite($"{this} sector {ReferenceTransform} -> {referenceTransform}");
-
 		ReferenceTransform = referenceTransform;
+		if (IsPlayerObject && !hasAuthority && AttachedTransform)
+		{
+			AttachedTransform.parent = ReferenceTransform;
+			AttachedTransform.localScale = Vector3.one;
+		}
 
-		if (!hasAuthority && AttachedTransform)
+		if (UseInterpolation && !hasAuthority && AttachedTransform)
 		{
 			if (IsPlayerObject)
 			{
-				AttachedTransform.parent = ReferenceTransform;
-				AttachedTransform.localScale = Vector3.one;
-				transform.position = SmoothPosition = AttachedTransform.localPosition;
-				transform.rotation = SmoothRotation = AttachedTransform.localRotation;
+				SmoothPosition = AttachedTransform.localPosition;
+				SmoothRotation = AttachedTransform.localRotation;
 			}
 			else
 			{
-				transform.position = SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
-				transform.rotation = SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
+				SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
+				SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 			}
 		}
 	}
