@@ -7,6 +7,7 @@ using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
+using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
 using QSB.OrbSync.Messages;
@@ -41,6 +42,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject AnglerPrefab { get; private set; }
 	public GameObject JellyfishPrefab { get; private set; }
 	public GameObject OccasionalPrefab { get; private set; }
+	public GameObject RaftPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
 	private const int MaxConnections = 128;
@@ -111,6 +113,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		OccasionalPrefab = MakeNewNetworkObject(7, "NetworkOccasional", typeof(OccasionalTransformSync));
 		spawnPrefabs.Add(OccasionalPrefab);
+
+		RaftPrefab = MakeNewNetworkObject(8, "NetworkRaft", typeof(RaftTransformSync));
+		spawnPrefabs.Add(RaftPrefab);
 
 		ConfigureNetworkManager();
 	}
