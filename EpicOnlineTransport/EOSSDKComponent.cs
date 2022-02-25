@@ -22,12 +22,14 @@ namespace EpicTransport
 
 		[Header("User Login")]
 		public bool authInterfaceLogin = false;
+
 		public Epic.OnlineServices.Auth.LoginCredentialType authInterfaceCredentialType = Epic.OnlineServices.Auth.LoginCredentialType.AccountPortal;
 		public uint devAuthToolPort = 7878;
 		public string devAuthToolCredentialName = "";
 		public ExternalCredentialType connectInterfaceCredentialType = ExternalCredentialType.DeviceidAccessToken;
 		public string deviceModel = "PC Windows 64bit";
 		[SerializeField] private string displayName = "User";
+
 		public static string DisplayName
 		{
 			get => Instance.displayName;
@@ -39,6 +41,7 @@ namespace EpicTransport
 
 		[SerializeField]
 		public bool collectPlayerMetrics = true;
+
 		public static bool CollectPlayerMetrics => Instance.collectPlayerMetrics;
 
 		public bool checkForEpicLauncherAndRestart = false;
@@ -97,6 +100,7 @@ namespace EpicTransport
 		public static bool IsConnecting => Instance.isConnecting;
 
 		protected static EOSSDKComponent instance;
+
 		protected static EOSSDKComponent Instance
 		{
 			get

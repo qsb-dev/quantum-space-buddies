@@ -39,6 +39,7 @@ namespace MirrorWeaver
 						{
 							continue;
 						}
+
 						foreach (var instruction in method.Body.Instructions)
 						{
 							if (instruction.Operand is not GenericInstanceMethod calledMethod)
@@ -47,7 +48,7 @@ namespace MirrorWeaver
 							}
 
 							if (calledMethod.DeclaringType.FullName == NetworkWriter_Write.DeclaringType.FullName &&
-								calledMethod.Name == NetworkWriter_Write.Name)
+							    calledMethod.Name == NetworkWriter_Write.Name)
 							{
 								var argType = calledMethod.GenericArguments[0];
 
@@ -60,7 +61,7 @@ namespace MirrorWeaver
 								count++;
 							}
 							else if (calledMethod.DeclaringType.FullName == NetworkReader_Read.DeclaringType.FullName &&
-								calledMethod.Name == NetworkReader_Read.Name)
+							         calledMethod.Name == NetworkReader_Read.Name)
 							{
 								var argType = calledMethod.GenericArguments[0];
 
