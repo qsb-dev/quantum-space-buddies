@@ -46,7 +46,8 @@ public class QSBSectorManager : WorldObjectManager
 		foreach (var sync in SectoredSyncs)
 		{
 			if (sync.hasAuthority
-			    && sync.IsValid)
+			    && sync.IsValid
+			    && sync.AttachedTransform.gameObject.activeInHierarchy)
 			{
 				UpdateReferenceSector(sync);
 			}

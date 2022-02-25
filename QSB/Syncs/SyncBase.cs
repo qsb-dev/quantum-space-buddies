@@ -96,11 +96,6 @@ public abstract class SyncBase : QSBNetworkTransform
 			return false;
 		}
 
-		if (ReferenceTransform == Locator.GetRootTransform())
-		{
-			return false;
-		}
-
 		return true;
 	}
 
@@ -235,11 +230,6 @@ public abstract class SyncBase : QSBNetworkTransform
 		if (!IsValid)
 		{
 			return;
-		}
-
-		if (ReferenceTransform && ReferenceTransform.position == Vector3.zero)
-		{
-			DebugLog.ToConsole($"Warning - {this}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}", MessageType.Warning);
 		}
 
 		if (!hasAuthority && UseInterpolation)
