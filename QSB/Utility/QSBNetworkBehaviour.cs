@@ -110,7 +110,6 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 		}
 
 		using var reader = NetworkReaderPool.GetReader(data);
-		UpdatePrevData();
 		Deserialize(reader);
 	}
 }
