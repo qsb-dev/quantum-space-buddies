@@ -10,7 +10,6 @@ namespace QSB.Anglerfish.TransformSync;
 public class AnglerTransformSync : UnsectoredRigidbodySync
 {
 	protected override bool UseInterpolation => false;
-	protected override bool OnlyApplyOnDeserialize => true;
 
 	private QSBAngler _qsbAngler;
 	private static readonly List<AnglerTransformSync> _instances = new();

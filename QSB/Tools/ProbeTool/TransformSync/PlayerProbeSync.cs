@@ -70,6 +70,7 @@ public class PlayerProbeSync : SectoredTransformSync
 		base.GetFromAttached();
 	}
 
-	protected override bool CheckReady() => base.CheckReady()
-	                                        && (Locator.GetProbe() || AttachedTransform);
+	protected override bool CheckReady() =>
+		base.CheckReady() &&
+		(Locator.GetProbe() || AttachedTransform);
 }

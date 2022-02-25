@@ -12,7 +12,6 @@ namespace QSB.Syncs.Occasional;
 public class OccasionalTransformSync : UnsectoredRigidbodySync
 {
 	protected override bool UseInterpolation => false;
-	protected override bool OnlyApplyOnDeserialize => true;
 
 	protected override OWRigidbody InitAttachedRigidbody() => OccasionalManager.Bodies[_instances.IndexOf(this)].Body;
 

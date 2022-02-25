@@ -8,11 +8,12 @@ public class ShipTransformSync : SectoredRigidbodySync
 {
 	public static ShipTransformSync LocalInstance { get; private set; }
 
-	private const int ForcePositionAfterUpdates = 50;
-	private int _updateCount;
+	private float _lastSetPositionTime;
+	private const float ForcePositionAfterTime = 1;
 
-	protected override bool CheckReady() => base.CheckReady()
-	                                        && Locator.GetShipBody();
+	protected override bool CheckReady() =>
+		base.CheckReady() &&
+		Locator.GetShipBody();
 
 	public override void OnStartClient()
 	{
@@ -37,10 +38,9 @@ public class ShipTransformSync : SectoredRigidbodySync
 
 		var targetPos = ReferenceTransform.FromRelPos(transform.position);
 
-		_updateCount++;
-		if (_updateCount >= ForcePositionAfterUpdates)
+		if (Time.unscaledTime >= _lastSetPositionTime + ForcePositionAfterTime)
 		{
-			_updateCount = 0;
+			_lastSetPositionTime = Time.unscaledTime;
 
 			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 

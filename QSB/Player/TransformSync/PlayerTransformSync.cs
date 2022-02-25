@@ -157,8 +157,9 @@ public class PlayerTransformSync : SectoredTransformSync
 		Popcron.Gizmos.Cube(_visibleCameraRoot.position, _visibleCameraRoot.rotation, Vector3.one / 4, Color.grey);
 	}
 
-	protected override bool CheckReady() => base.CheckReady()
-	                                        && (Locator.GetPlayerTransform() || AttachedTransform);
+	protected override bool CheckReady() =>
+		base.CheckReady() &&
+		(Locator.GetPlayerTransform() || AttachedTransform);
 
 	public static PlayerTransformSync LocalInstance { get; private set; }
 

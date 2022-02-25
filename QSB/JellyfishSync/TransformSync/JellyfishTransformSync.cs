@@ -12,7 +12,6 @@ namespace QSB.JellyfishSync.TransformSync;
 public class JellyfishTransformSync : UnsectoredRigidbodySync
 {
 	protected override bool UseInterpolation => false;
-	protected override bool OnlyApplyOnDeserialize => true;
 
 	private QSBJellyfish _qsbJellyfish;
 	private bool _isRising;
@@ -72,14 +71,14 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync
 
 	protected override void Serialize(NetworkWriter writer)
 	{
-		base.Serialize(writer);
 		writer.Write(_isRising);
+		base.Serialize(writer);
 	}
 
 	protected override void Deserialize(NetworkReader reader)
 	{
-		base.Deserialize(reader);
 		_isRising = reader.Read<bool>();
+		base.Deserialize(reader);
 	}
 
 	protected override void GetFromAttached()
