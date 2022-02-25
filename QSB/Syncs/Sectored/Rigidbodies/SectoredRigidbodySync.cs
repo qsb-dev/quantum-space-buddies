@@ -36,6 +36,32 @@ public abstract class SectoredRigidbodySync : BaseSectoredSync
 		ReferenceRigidbody = ReferenceTransform ? ReferenceTransform.GetAttachedOWRigidbody() : null;
 	}
 
+	protected override bool HasChanged() =>
+		base.HasChanged() ||
+		Vector3.Distance(Velocity, _prevVelocity) > VelocityChangeThreshold ||
+		Vector3.Distance(AngularVelocity, _prevAngularVelocity) > AngularVelocityChangeThreshold;
+
+	protected override void Serialize(NetworkWriter writer)
+	{
+		writer.Write(Velocity);
+		writer.Write(AngularVelocity);
+		base.Serialize(writer);
+	}
+
+	protected override void UpdatePrevData()
+	{
+		base.UpdatePrevData();
+		_prevVelocity = Velocity;
+		_prevAngularVelocity = AngularVelocity;
+	}
+
+	protected override void Deserialize(NetworkReader reader)
+	{
+		Velocity = reader.ReadVector3();
+		AngularVelocity = reader.ReadVector3();
+		base.Deserialize(reader);
+	}
+
 	protected override void GetFromAttached()
 	{
 		GetFromSector();
@@ -50,27 +76,6 @@ public abstract class SectoredRigidbodySync : BaseSectoredSync
 		AngularVelocity = ReferenceRigidbody.ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
 	}
 
-	protected override void UpdatePrevData()
-	{
-		base.UpdatePrevData();
-		_prevVelocity = Velocity;
-		_prevAngularVelocity = AngularVelocity;
-	}
-
-	protected override void Serialize(NetworkWriter writer)
-	{
-		writer.Write(Velocity);
-		writer.Write(AngularVelocity);
-		base.Serialize(writer);
-	}
-
-	protected override void Deserialize(NetworkReader reader)
-	{
-		Velocity = reader.ReadVector3();
-		AngularVelocity = reader.ReadVector3();
-		base.Deserialize(reader);
-	}
-
 	protected override void ApplyToAttached()
 	{
 		ApplyToSector();
@@ -79,8 +84,8 @@ public abstract class SectoredRigidbodySync : BaseSectoredSync
 			return;
 		}
 
-		var targetPos = ReferenceTransform.FromRelPos(transform.position);
-		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
+		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
+		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 
 		AttachedRigidbody.MoveToPosition(targetPos);
 		AttachedRigidbody.MoveToRotation(targetRot);
@@ -91,9 +96,4 @@ public abstract class SectoredRigidbodySync : BaseSectoredSync
 		AttachedRigidbody.SetVelocity(targetVelocity);
 		AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
 	}
-
-	protected override bool HasChanged() =>
-		base.HasChanged() ||
-		Vector3.Distance(Velocity, _prevVelocity) > VelocityChangeThreshold ||
-		Vector3.Distance(AngularVelocity, _prevAngularVelocity) > AngularVelocityChangeThreshold;
 }

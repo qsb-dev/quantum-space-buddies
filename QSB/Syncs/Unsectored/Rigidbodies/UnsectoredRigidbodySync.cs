@@ -36,13 +36,10 @@ public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
 		ReferenceRigidbody = ReferenceTransform ? ReferenceTransform.GetAttachedOWRigidbody() : null;
 	}
 
-	protected override void GetFromAttached()
-	{
-		transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());
-		transform.rotation = ReferenceTransform.ToRelRot(AttachedRigidbody.GetRotation());
-		Velocity = ReferenceRigidbody.ToRelVel(AttachedRigidbody.GetVelocity(), AttachedRigidbody.GetPosition());
-		AngularVelocity = ReferenceRigidbody.ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
-	}
+	protected override bool HasChanged() =>
+		base.HasChanged() ||
+		Vector3.Distance(Velocity, _prevVelocity) > VelocityChangeThreshold ||
+		Vector3.Distance(AngularVelocity, _prevAngularVelocity) > AngularVelocityChangeThreshold;
 
 	protected override void Serialize(NetworkWriter writer)
 	{
@@ -65,10 +62,18 @@ public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
 		base.Deserialize(reader);
 	}
 
+	protected override void GetFromAttached()
+	{
+		transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());
+		transform.rotation = ReferenceTransform.ToRelRot(AttachedRigidbody.GetRotation());
+		Velocity = ReferenceRigidbody.ToRelVel(AttachedRigidbody.GetVelocity(), AttachedRigidbody.GetPosition());
+		AngularVelocity = ReferenceRigidbody.ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
+	}
+
 	protected override void ApplyToAttached()
 	{
-		var targetPos = ReferenceTransform.FromRelPos(transform.position);
-		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
+		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
+		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 
 		AttachedRigidbody.MoveToPosition(targetPos);
 		AttachedRigidbody.MoveToRotation(targetRot);
@@ -79,9 +84,4 @@ public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
 		AttachedRigidbody.SetVelocity(targetVelocity);
 		AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
 	}
-
-	protected override bool HasChanged() =>
-		base.HasChanged() ||
-		Vector3.Distance(Velocity, _prevVelocity) > VelocityChangeThreshold ||
-		Vector3.Distance(AngularVelocity, _prevAngularVelocity) > AngularVelocityChangeThreshold;
 }

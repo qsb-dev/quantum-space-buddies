@@ -101,7 +101,6 @@ public abstract class SyncBase : QSBNetworkTransform
 	protected virtual bool AllowInactiveAttachedObject => false;
 	protected abstract bool AllowNullReferenceTransform { get; }
 	protected virtual bool IsPlayerObject => false;
-	protected virtual bool OnlyApplyOnDeserialize => false;
 
 	public Transform AttachedTransform { get; private set; }
 	public Transform ReferenceTransform { get; private set; }
@@ -116,8 +115,9 @@ public abstract class SyncBase : QSBNetworkTransform
 	protected const float SmoothTime = 0.1f;
 	private Vector3 _positionSmoothVelocity;
 	private Quaternion _rotationSmoothVelocity;
-	private Vector3 SmoothPosition { get; set; }
-	private Quaternion SmoothRotation { get; set; }
+	protected Vector3 SmoothPosition { get; private set; }
+	protected Quaternion SmoothRotation { get; private set; }
+	private bool _interpolating;
 
 	protected abstract Transform InitAttachedTransform();
 
@@ -199,6 +199,11 @@ public abstract class SyncBase : QSBNetworkTransform
 	protected override bool HasChanged()
 	{
 		GetFromAttached();
+		if (UseInterpolation)
+		{
+			_interpolating = true;
+		}
+
 		return base.HasChanged();
 	}
 
@@ -213,6 +218,11 @@ public abstract class SyncBase : QSBNetworkTransform
 	protected override void Deserialize(NetworkReader reader)
 	{
 		base.Deserialize(reader);
+		if (UseInterpolation)
+		{
+			_interpolating = true;
+		}
+
 		ApplyToAttached();
 	}
 
@@ -238,10 +248,17 @@ public abstract class SyncBase : QSBNetworkTransform
 			SafeUninit();
 		}
 
-		// if (UseInterpolation)
-		// {
-		// 	Interpolate();
-		// }
+		if (_interpolating)
+		{
+			Interpolate();
+
+			if (Vector3.Distance(SmoothPosition, transform.position) > 0.001f)
+			{
+				SmoothPosition = transform.position;
+				SmoothRotation = transform.rotation;
+				_interpolating = false;
+			}
+		}
 
 		base.Update();
 	}

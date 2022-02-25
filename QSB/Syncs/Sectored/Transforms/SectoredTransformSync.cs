@@ -31,7 +31,7 @@ public abstract class SectoredTransformSync : BaseSectoredSync
 			return;
 		}
 
-		AttachedTransform.position = ReferenceTransform.FromRelPos(transform.position);
-		AttachedTransform.rotation = ReferenceTransform.FromRelRot(transform.rotation);
+		AttachedTransform.position = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
+		AttachedTransform.rotation = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 	}
 }
