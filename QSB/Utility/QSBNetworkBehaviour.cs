@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using QSB.WorldSync;
 using System;
 
 namespace QSB.Utility;
@@ -18,7 +19,7 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 
 	protected virtual void Update()
 	{
-		if (!hasAuthority)
+		if (!hasAuthority || !QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
@@ -84,6 +85,11 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 
 	private void OnData(ArraySegment<byte> data)
 	{
+		if (hasAuthority || !QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
 		if (QSBCore.IsHost)
 		{
 			_lastKnownData ??= new byte[data.Count];
