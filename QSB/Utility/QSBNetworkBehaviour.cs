@@ -104,7 +104,12 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 
 	private void OnData(ArraySegment<byte> data)
 	{
-		if (hasAuthority || !IsValid)
+		if (!IsValid)
+		{
+			return;
+		}
+
+		if (hasAuthority)
 		{
 			return;
 		}
