@@ -65,20 +65,14 @@ public abstract class SyncBase : QSBNetworkTransform
 		return true;
 	}
 
-	/// <summary>
-	/// can be true with null reference transform. <br/>
-	/// can be true with inactive attached object.
-	/// </summary>
-	public bool IsValid { get; private set; }
-
-	protected virtual bool CheckValid()
+	protected override bool CheckValid()
 	{
 		if (!IsInitialized)
 		{
 			return false;
 		}
 
-		if (!QSBWorldSync.AllObjectsReady)
+		if (!base.CheckValid())
 		{
 			return false;
 		}
@@ -126,8 +120,6 @@ public abstract class SyncBase : QSBNetworkTransform
 	protected Quaternion SmoothRotation { get; private set; }
 
 	protected abstract Transform InitAttachedTransform();
-	protected abstract void GetFromAttached();
-	protected abstract void ApplyToAttached();
 
 	public override void OnStartClient()
 	{
@@ -183,7 +175,6 @@ public abstract class SyncBase : QSBNetworkTransform
 		{
 			Uninit();
 			IsInitialized = false;
-			IsValid = false;
 		});
 		if (IsInitialized)
 		{
@@ -230,27 +221,12 @@ public abstract class SyncBase : QSBNetworkTransform
 			SafeUninit();
 		}
 
-		IsValid = CheckValid();
-		if (!IsValid)
-		{
-			return;
-		}
+		// if (UseInterpolation)
+		// {
+		// 	Interpolate();
+		// }
 
-		if (UseInterpolation)
-		{
-			Interpolate();
-		}
-
-		if (hasAuthority)
-		{
-			GetFromAttached();
-			base.Update();
-		}
-		else if (!OnlyApplyOnDeserialize || _shouldApply)
-		{
-			_shouldApply = false;
-			ApplyToAttached();
-		}
+		base.Update();
 	}
 
 	private void Interpolate()

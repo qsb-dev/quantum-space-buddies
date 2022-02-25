@@ -17,9 +17,22 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 	protected abstract void Serialize(NetworkWriter writer);
 	protected abstract void Deserialize(NetworkReader reader);
 
+	public bool IsValid { get; private set; }
+
+	protected virtual bool CheckValid()
+	{
+		return QSBWorldSync.AllObjectsReady;
+	}
+
 	protected virtual void Update()
 	{
-		if (!hasAuthority || !QSBWorldSync.AllObjectsReady)
+		IsValid = CheckValid();
+		if (!IsValid)
+		{
+			return;
+		}
+
+		if (!hasAuthority)
 		{
 			return;
 		}
@@ -85,7 +98,7 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 
 	private void OnData(ArraySegment<byte> data)
 	{
-		if (hasAuthority || !QSBWorldSync.AllObjectsReady)
+		if (hasAuthority || !IsValid)
 		{
 			return;
 		}
