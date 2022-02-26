@@ -118,27 +118,27 @@ public class QSBCore : ModBehaviour
 		}
 	}
 
-		private static void InitializeAssemblies()
+	private static void InitializeAssemblies()
+	{
+		DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
+		foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
 		{
-			DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
-			foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
+			var assembly = Assembly.LoadFile(path);
+			if (Path.GetFileNameWithoutExtension(path) == "ProxyScripts")
 			{
-				var assembly = Assembly.LoadFile(path);
-				if (Path.GetFileNameWithoutExtension(path) == "ProxyScripts")
-				{
-					continue;
-				}
-
-				DebugLog.DebugWrite(assembly.ToString());
-				assembly
-					.GetTypes()
-					.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
-					.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
-					.ForEach(x => x.Invoke(null, null));
+				continue;
 			}
 
-			DebugLog.DebugWrite("Assemblies initialized", MessageType.Success);
+			DebugLog.DebugWrite(assembly.ToString());
+			assembly
+				.GetTypes()
+				.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
+				.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
+				.ForEach(x => x.Invoke(null, null));
 		}
+
+		DebugLog.DebugWrite("Assemblies initialized", MessageType.Success);
+	}
 
 	public override void Configure(IModConfig config) => DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 
