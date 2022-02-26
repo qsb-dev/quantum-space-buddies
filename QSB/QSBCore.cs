@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using Mirror;
+﻿using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
 using QSB.Menus;
@@ -124,30 +123,21 @@ namespace QSB
 			DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
 			foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
 			{
-				try
+				var assembly = Assembly.LoadFile(path);
+				if (Path.GetFileNameWithoutExtension(path) == "ProxyScripts")
 				{
-					var assembly = Assembly.LoadFile(path);
-					DebugLog.DebugWrite(assembly.ToString());
-					assembly
-						.GetTypes()
-						.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
-						.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
-						.ForEach(x => x.Invoke(null, null));
+					continue;
 				}
-				catch (ReflectionTypeLoadException e)
-				{
-				DebugLog.ToConsole($"InitializeAssemblies for {path}:", MessageType.Warning);
-				DebugLog.ToConsole(e.ToString(), MessageType.Warning);
-				DebugLog.ToConsole(e.LoaderExceptions.Join(x => "\t" + x, "\n"), MessageType.Warning);
-				}
-				catch (Exception e)
-				{
-				DebugLog.ToConsole($"InitializeAssemblies for {path}:", MessageType.Warning);
-				DebugLog.ToConsole(e.ToString(), MessageType.Warning);
-				}
+
+				DebugLog.DebugWrite(assembly.ToString());
+				assembly
+					.GetTypes()
+					.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
+					.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
+					.ForEach(x => x.Invoke(null, null));
 			}
 
-			DebugLog.DebugWrite($"Assemblies initialized", MessageType.Success);
+			DebugLog.DebugWrite("Assemblies initialized", MessageType.Success);
 		}
 
 		public override void Configure(IModConfig config) => DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
