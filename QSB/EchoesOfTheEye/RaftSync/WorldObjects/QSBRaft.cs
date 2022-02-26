@@ -1,7 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
+using QSB.AuthoritySync;
+using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.WorldSync;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -21,6 +24,11 @@ public class QSBRaft : WorldObject<RaftController>
 		}
 
 		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
+
+		foreach (var lightSensor in AttachedObject._lightSensors)
+		{
+			lightSensor.OnDetectLight += OnDetectLight;
+		}
 	}
 
 	public override void OnRemoval()
@@ -29,6 +37,26 @@ public class QSBRaft : WorldObject<RaftController>
 		{
 			NetworkServer.Destroy(TransformSync.gameObject);
 		}
+
+		foreach (var lightSensor in AttachedObject._lightSensors)
+		{
+			lightSensor.OnDetectLight -= OnDetectLight;
+		}
+	}
+
+	private void OnDetectLight()
+	{
+		if (!AttachedObject._fluidDetector.InFluidType(FluidVolume.Type.WATER))
+		{
+			return;
+		}
+
+		if (!AttachedObject._lightSensors.Any(x => x.GetWorldObject<QSBSingleLightSensor>().IlluminatedByLocalPlayer))
+		{
+			return;
+		}
+
+		TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
 	}
 
 	public override void SendInitialState(uint to)

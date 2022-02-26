@@ -82,8 +82,15 @@ public static class AuthorityManager
 
 	#region any client
 
-	public static void UpdateAuthQueue(this NetworkIdentity identity, AuthQueueAction action) =>
+	public static void UpdateAuthQueue(this NetworkIdentity identity, AuthQueueAction action)
+	{
+		if (action == AuthQueueAction.Force && identity.hasAuthority)
+		{
+			return;
+		}
+
 		new AuthQueueMessage(identity.netId, action).Send();
+	}
 
 	#endregion
 }

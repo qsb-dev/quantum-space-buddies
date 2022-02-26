@@ -6,4 +6,6 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 internal class QSBSingleLightSensor : WorldObject<SingleLightSensor>
 {
 	public override void SendInitialState(uint to) { }
+
+	public bool IlluminatedByLocalPlayer;
 }

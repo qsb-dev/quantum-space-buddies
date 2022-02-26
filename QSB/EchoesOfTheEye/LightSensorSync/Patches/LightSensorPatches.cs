@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
+using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Tools.FlashlightTool;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
@@ -16,6 +18,14 @@ internal class LightSensorPatches : QSBPatch
 	[HarmonyPatch(typeof(SingleLightSensor), nameof(SingleLightSensor.UpdateIllumination))]
 	public static bool UpdateIlluminationReplacement(SingleLightSensor __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		var qsbSingleLightSensor = __instance.GetWorldObject<QSBSingleLightSensor>();
+		qsbSingleLightSensor.IlluminatedByLocalPlayer = false;
+
 		__instance._illuminated = false;
 		if (__instance._illuminatingDreamLanternList != null)
 		{
@@ -68,11 +78,13 @@ internal class LightSensorPatches : QSBPatch
 								    && !__instance.CheckOcclusion(position, vector, sensorWorldDir))
 								{
 									__instance._illuminated = true;
+
+									qsbSingleLightSensor.IlluminatedByLocalPlayer = true;
 								}
 							}
 							else
 							{
-								var player = QSBPlayerManager.PlayerList.First(x => x.FlashLight == (QSBFlashlight)source /*bug ??? always invalid cast*/);
+								var player = QSBPlayerManager.PlayerList.First(x => x.FlashLight == source as QSBFlashlight);
 
 								var position = player.Camera.transform.position;
 								var to = __instance.transform.position - position;
@@ -95,6 +107,7 @@ internal class LightSensorPatches : QSBPatch
 							    && !__instance.CheckOcclusion(probe.GetLightSourcePosition(), vector, sensorWorldDir))
 							{
 								__instance._illuminated = true;
+								qsbSingleLightSensor.IlluminatedByLocalPlayer = true;
 							}
 
 							break;
@@ -114,6 +127,8 @@ internal class LightSensorPatches : QSBPatch
 							{
 								__instance._illuminatingDreamLanternList.Add(dreamLanternController);
 								__instance._illuminated = true;
+
+								qsbSingleLightSensor.IlluminatedByLocalPlayer = true;
 							}
 
 							break;
@@ -127,6 +142,8 @@ internal class LightSensorPatches : QSBPatch
 							if (light.CheckIlluminationAtPoint(vector, __instance._sensorRadius, maxDistance) && !__instance.CheckOcclusion(light.transform.position, vector, sensorWorldDir, occludableLight))
 							{
 								__instance._illuminated = true;
+
+								qsbSingleLightSensor.IlluminatedByLocalPlayer = true;
 								break;
 							}
 						}

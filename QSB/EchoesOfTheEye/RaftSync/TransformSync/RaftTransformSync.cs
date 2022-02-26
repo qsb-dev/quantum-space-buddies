@@ -1,5 +1,4 @@
-﻿using Mirror;
-using QSB.AuthoritySync;
+﻿using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
@@ -63,14 +62,8 @@ public class RaftTransformSync : UnsectoredRigidbodySync
 	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
 	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
 
-	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} - start authority");
-	public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - stop authority");
-
-	protected override void Deserialize(NetworkReader reader)
-	{
-		DebugLog.DebugWrite($"{this} - deserialize");
-		base.Deserialize(reader);
-	}
+	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} - authority = true");
+	public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - authority = false");
 
 	/// <summary>
 	/// replacement for base method
@@ -78,8 +71,8 @@ public class RaftTransformSync : UnsectoredRigidbodySync
 	/// </summary>
 	protected override void ApplyToAttached()
 	{
-		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
-		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
+		var targetPos = ReferenceTransform.FromRelPos(transform.position);
+		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
 		AttachedRigidbody.SetPosition(targetPos);
 		AttachedRigidbody.SetRotation(targetRot);
