@@ -51,7 +51,7 @@ public class QSBRaft : WorldObject<RaftController>
 
 	private void OnDetectLocalLight()
 	{
-		if (AttachedObject._fluidDetector.InFluidType(FluidVolume.Type.WATER))
+		if (AttachedObject.IsPlayerRiding())
 		{
 			TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
 		}
