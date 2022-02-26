@@ -72,7 +72,7 @@ internal class LightSensorPatches : QSBPatch
 							}
 							else
 							{
-								var player = QSBPlayerManager.PlayerList.First(x => x.FlashLight == (QSBFlashlight)source);
+								var player = QSBPlayerManager.PlayerList.First(x => x.FlashLight == (QSBFlashlight)source /*bug ??? always invalid cast*/);
 
 								var position = player.Camera.transform.position;
 								var to = __instance.transform.position - position;
