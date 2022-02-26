@@ -136,12 +136,14 @@ namespace QSB
 				}
 				catch (ReflectionTypeLoadException e)
 				{
-					DebugLog.DebugWrite(e.ToString(), MessageType.Error);
-					DebugLog.DebugWrite(e.LoaderExceptions.Join(x => "\t" + x, "\n"), MessageType.Error);
+				DebugLog.ToConsole($"InitializeAssemblies for {path}:", MessageType.Warning);
+				DebugLog.ToConsole(e.ToString(), MessageType.Warning);
+				DebugLog.ToConsole(e.LoaderExceptions.Join(x => "\t" + x, "\n"), MessageType.Warning);
 				}
 				catch (Exception e)
 				{
-					DebugLog.DebugWrite(e.ToString(), MessageType.Error);
+				DebugLog.ToConsole($"InitializeAssemblies for {path}:", MessageType.Warning);
+				DebugLog.ToConsole(e.ToString(), MessageType.Warning);
 				}
 			}
 
