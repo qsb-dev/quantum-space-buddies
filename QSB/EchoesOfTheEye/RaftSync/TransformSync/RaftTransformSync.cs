@@ -1,6 +1,8 @@
-﻿using QSB.AuthoritySync;
+﻿using Mirror;
+using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 
@@ -60,4 +62,32 @@ public class RaftTransformSync : UnsectoredRigidbodySync
 
 	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
 	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+
+	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} - start authority");
+	public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - stop authority");
+
+	protected override void Deserialize(NetworkReader reader)
+	{
+		DebugLog.DebugWrite($"{this} - deserialize");
+		base.Deserialize(reader);
+	}
+
+	/// <summary>
+	/// replacement for base method
+	/// using SetPos/Rot instead of Move
+	/// </summary>
+	protected override void ApplyToAttached()
+	{
+		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
+		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
+
+		AttachedRigidbody.SetPosition(targetPos);
+		AttachedRigidbody.SetRotation(targetRot);
+
+		var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
+		var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
+
+		AttachedRigidbody.SetVelocity(targetVelocity);
+		AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
+	}
 }
