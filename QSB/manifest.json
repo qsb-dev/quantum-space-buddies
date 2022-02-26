@@ -7,7 +7,7 @@
 		"body": "- Disable *all* other mods. (Can heavily affect performance)\n- Make sure you are not running any other network-intensive applications.\n- Make sure you have forwarded/opened the correct ports. (See the GitHub readme.)"
 	},
 	"uniqueName": "Raicuparta.QuantumSpaceBuddies",
-	"version": "0.17.1",
+	"version": "0.18.0",
 	"owmlVersion": "2.3.2",
 	"dependencies": [ "_nebula.MenuFramework" ]
 }
