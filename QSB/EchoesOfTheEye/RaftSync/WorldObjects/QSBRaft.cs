@@ -16,6 +16,8 @@ public class QSBRaft : WorldObject<RaftController>
 
 	public RaftTransformSync TransformSync;
 
+	private QSBLightSensor[] _lightSensors;
+
 	public override async UniTask Init(CancellationToken ct)
 	{
 		if (QSBCore.IsHost)
@@ -25,9 +27,12 @@ public class QSBRaft : WorldObject<RaftController>
 
 		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
 
-		foreach (var lightSensor in AttachedObject._lightSensors)
+		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
+		_lightSensors = AttachedObject._lightSensors.Select(x => x.GetWorldObject<QSBLightSensor>()).ToArray();
+
+		foreach (var lightSensor in _lightSensors)
 		{
-			lightSensor.OnDetectLight += OnDetectLight;
+			lightSensor.OnDetectLocalLight += OnDetectLocalLight;
 		}
 	}
 
@@ -38,25 +43,18 @@ public class QSBRaft : WorldObject<RaftController>
 			NetworkServer.Destroy(TransformSync.gameObject);
 		}
 
-		foreach (var lightSensor in AttachedObject._lightSensors)
+		foreach (var lightSensor in _lightSensors)
 		{
-			lightSensor.OnDetectLight -= OnDetectLight;
+			lightSensor.OnDetectLocalLight -= OnDetectLocalLight;
 		}
 	}
 
-	private void OnDetectLight()
+	private void OnDetectLocalLight()
 	{
-		if (!AttachedObject._fluidDetector.InFluidType(FluidVolume.Type.WATER))
+		if (AttachedObject._fluidDetector.InFluidType(FluidVolume.Type.WATER))
 		{
-			return;
+			TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
 		}
-
-		if (!AttachedObject._lightSensors.Any(x => x.GetWorldObject<QSBSingleLightSensor>().IlluminatedByLocalPlayer))
-		{
-			return;
-		}
-
-		TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
 	}
 
 	public override void SendInitialState(uint to)

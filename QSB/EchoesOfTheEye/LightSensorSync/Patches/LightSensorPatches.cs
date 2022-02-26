@@ -23,9 +23,8 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		var qsbSingleLightSensor = __instance.GetWorldObject<QSBSingleLightSensor>();
-		qsbSingleLightSensor.IlluminatedByLocalPlayer = false;
-
+		var qsbLightSensor = __instance.GetWorldObject<QSBLightSensor>();
+		qsbLightSensor._illuminatedByLocal = false;
 		__instance._illuminated = false;
 		if (__instance._illuminatingDreamLanternList != null)
 		{
@@ -64,6 +63,7 @@ internal class LightSensorPatches : QSBPatch
 							    && !__instance.CheckOcclusion(light.transform.position, vector, sensorWorldDir, occludableLight))
 							{
 								__instance._illuminated = true;
+								qsbLightSensor._illuminatedByLocal = true;
 							}
 
 							break;
@@ -78,8 +78,7 @@ internal class LightSensorPatches : QSBPatch
 								    && !__instance.CheckOcclusion(position, vector, sensorWorldDir))
 								{
 									__instance._illuminated = true;
-
-									qsbSingleLightSensor.IlluminatedByLocalPlayer = true;
+									qsbLightSensor._illuminatedByLocal = true;
 								}
 							}
 							else
@@ -107,7 +106,7 @@ internal class LightSensorPatches : QSBPatch
 							    && !__instance.CheckOcclusion(probe.GetLightSourcePosition(), vector, sensorWorldDir))
 							{
 								__instance._illuminated = true;
-								qsbSingleLightSensor.IlluminatedByLocalPlayer = true;
+								qsbLightSensor._illuminatedByLocal = true;
 							}
 
 							break;
@@ -127,8 +126,7 @@ internal class LightSensorPatches : QSBPatch
 							{
 								__instance._illuminatingDreamLanternList.Add(dreamLanternController);
 								__instance._illuminated = true;
-
-								qsbSingleLightSensor.IlluminatedByLocalPlayer = true;
+								qsbLightSensor._illuminatedByLocal = true;
 							}
 
 							break;
@@ -142,8 +140,7 @@ internal class LightSensorPatches : QSBPatch
 							if (light.CheckIlluminationAtPoint(vector, __instance._sensorRadius, maxDistance) && !__instance.CheckOcclusion(light.transform.position, vector, sensorWorldDir, occludableLight))
 							{
 								__instance._illuminated = true;
-
-								qsbSingleLightSensor.IlluminatedByLocalPlayer = true;
+								qsbLightSensor._illuminatedByLocal = true;
 								break;
 							}
 						}
@@ -153,6 +150,7 @@ internal class LightSensorPatches : QSBPatch
 						if (lightSourceType == LightSourceType.VOLUME_ONLY)
 						{
 							__instance._illuminated = true;
+							qsbLightSensor._illuminatedByLocal = true;
 						}
 
 						break;
