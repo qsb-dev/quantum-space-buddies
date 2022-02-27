@@ -3,17 +3,18 @@ using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.WorldSync;
 using System.Threading;
 
-namespace QSB.Tools.TranslatorTool.TranslationSync;
-
-internal class SpiralManager : WorldObjectManager
+namespace QSB.Tools.TranslatorTool.TranslationSync
 {
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
-
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+	internal class SpiralManager : WorldObjectManager
 	{
-		// wait for all late initializers (which includes nomai text) to finish
-		await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
+		public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
-		QSBWorldSync.Init<QSBNomaiText, NomaiText>(typeof(GhostWallText));
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		{
+			// wait for all late initializers (which includes nomai text) to finish
+			await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
+
+			QSBWorldSync.Init<QSBNomaiText, NomaiText>(typeof(GhostWallText));
+		}
 	}
 }

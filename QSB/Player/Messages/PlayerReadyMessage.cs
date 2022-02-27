@@ -2,42 +2,43 @@
 using QSB.Messaging;
 using QSB.Utility;
 
-namespace QSB.Player.Messages;
-
-public class PlayerReadyMessage : QSBMessage<bool>
+namespace QSB.Player.Messages
 {
-	public PlayerReadyMessage(bool ready) => Value = ready;
-
-	public override void OnReceiveRemote()
+	public class PlayerReadyMessage : QSBMessage<bool>
 	{
-		if (QSBCore.IsHost)
-		{
-			HandleServer();
-		}
-		else
-		{
-			HandleClient();
-		}
-	}
+		public PlayerReadyMessage(bool ready) => Value = ready;
 
-	private void HandleServer()
-	{
-		DebugLog.DebugWrite($"[SERVER] Get ready event from {From} (ready = {Value})", MessageType.Success);
-		QSBPlayerManager.GetPlayer(From).IsReady = Value;
-		new PlayerInformationMessage().Send();
-	}
-
-	private void HandleClient()
-	{
-		DebugLog.DebugWrite($"[CLIENT] Get ready event from {From} (ready = {Value})", MessageType.Success);
-		if (!QSBPlayerManager.PlayerExists(From))
+		public override void OnReceiveRemote()
 		{
-			DebugLog.ToConsole(
-				"Error - Got ready event for non-existent player! Did we not send a PlayerStatesRequestEvent? Or was it not handled?",
-				MessageType.Error);
-			return;
+			if (QSBCore.IsHost)
+			{
+				HandleServer();
+			}
+			else
+			{
+				HandleClient();
+			}
 		}
 
-		QSBPlayerManager.GetPlayer(From).IsReady = Value;
+		private void HandleServer()
+		{
+			DebugLog.DebugWrite($"[SERVER] Get ready event from {From} (ready = {Value})", MessageType.Success);
+			QSBPlayerManager.GetPlayer(From).IsReady = Value;
+			new PlayerInformationMessage().Send();
+		}
+
+		private void HandleClient()
+		{
+			DebugLog.DebugWrite($"[CLIENT] Get ready event from {From} (ready = {Value})", MessageType.Success);
+			if (!QSBPlayerManager.PlayerExists(From))
+			{
+				DebugLog.ToConsole(
+					"Error - Got ready event for non-existent player! Did we not send a PlayerStatesRequestEvent? Or was it not handled?",
+					MessageType.Error);
+				return;
+			}
+
+			QSBPlayerManager.GetPlayer(From).IsReady = Value;
+		}
 	}
 }

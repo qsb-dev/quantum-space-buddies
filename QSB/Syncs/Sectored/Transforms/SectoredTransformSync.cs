@@ -1,37 +1,38 @@
 ﻿using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Syncs.Sectored.Transforms;
-
-public abstract class SectoredTransformSync : BaseSectoredSync
+namespace QSB.Syncs.Sectored.Transforms
 {
-	protected abstract Transform InitLocalTransform();
-	protected abstract Transform InitRemoteTransform();
-
-	protected sealed override Transform InitAttachedTransform()
-		=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
-
-	protected override void GetFromAttached()
+	public abstract class SectoredTransformSync : BaseSectoredSync
 	{
-		GetFromSector();
-		if (!ReferenceTransform)
+		protected abstract Transform InitLocalTransform();
+		protected abstract Transform InitRemoteTransform();
+
+		protected sealed override Transform InitAttachedTransform()
+			=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
+
+		protected override void GetFromAttached()
 		{
-			return;
+			GetFromSector();
+			if (!ReferenceTransform)
+			{
+				return;
+			}
+
+			transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
+			transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
 		}
 
-		transform.position = ReferenceTransform.ToRelPos(AttachedTransform.position);
-		transform.rotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
-	}
-
-	protected override void ApplyToAttached()
-	{
-		ApplyToSector();
-		if (!ReferenceTransform)
+		protected override void ApplyToAttached()
 		{
-			return;
-		}
+			ApplyToSector();
+			if (!ReferenceTransform)
+			{
+				return;
+			}
 
-		AttachedTransform.position = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
-		AttachedTransform.rotation = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
+			AttachedTransform.position = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
+			AttachedTransform.rotation = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
+		}
 	}
 }

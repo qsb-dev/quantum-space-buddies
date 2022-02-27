@@ -1,14 +1,15 @@
 ﻿using Cysharp.Threading.Tasks;
 using System.Threading;
 
-namespace QSB.TriggerSync.WorldObjects;
-
-public class QSBCharacterTrigger : QSBTrigger<CharacterAnimController>
+namespace QSB.TriggerSync.WorldObjects
 {
-	public override async UniTask Init(CancellationToken ct)
+	public class QSBCharacterTrigger : QSBTrigger<CharacterAnimController>
 	{
-		await base.Init(ct);
-		AttachedObject.OnEntry -= TriggerOwner.OnZoneEntry;
-		AttachedObject.OnExit -= TriggerOwner.OnZoneExit;
+		public override async UniTask Init(CancellationToken ct)
+		{
+			await base.Init(ct);
+			AttachedObject.OnEntry -= TriggerOwner.OnZoneEntry;
+			AttachedObject.OnExit -= TriggerOwner.OnZoneExit;
+		}
 	}
 }

@@ -1,12 +1,13 @@
-﻿namespace QSB.Animation.NPC.WorldObjects;
-
-internal class QSBTravelerEyeController : NpcAnimController<TravelerEyeController>
+﻿namespace QSB.Animation.NPC.WorldObjects
 {
-	public override void SendInitialState(uint to)
+	internal class QSBTravelerEyeController : NpcAnimController<TravelerEyeController>
 	{
-		// todo SendInitialState
-	}
+		public override void SendInitialState(uint to)
+		{
+			// todo SendInitialState
+		}
 
-	public override CharacterDialogueTree GetDialogueTree()
-		=> AttachedObject._dialogueTree;
+		public override CharacterDialogueTree GetDialogueTree()
+			=> AttachedObject._dialogueTree;
+	}
 }

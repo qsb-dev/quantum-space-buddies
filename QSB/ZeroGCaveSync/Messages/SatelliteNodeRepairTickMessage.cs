@@ -1,11 +1,12 @@
 ﻿using QSB.Messaging;
 using QSB.ZeroGCaveSync.WorldObjects;
 
-namespace QSB.ZeroGCaveSync.Messages;
-
-internal class SatelliteNodeRepairTickMessage : QSBWorldObjectMessage<QSBSatelliteNode, float>
+namespace QSB.ZeroGCaveSync.Messages
 {
-	public SatelliteNodeRepairTickMessage(float repairFraction) => Value = repairFraction;
+	internal class SatelliteNodeRepairTickMessage : QSBWorldObjectMessage<QSBSatelliteNode, float>
+	{
+		public SatelliteNodeRepairTickMessage(float repairFraction) => Value = repairFraction;
 
-	public override void OnReceiveRemote() => WorldObject.RepairTick(Value);
+		public override void OnReceiveRemote() => WorldObject.RepairTick(Value);
+	}
 }

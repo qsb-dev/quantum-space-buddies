@@ -5,44 +5,45 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages;
-
-internal class KillGalaxiesMessage : QSBMessage
+namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 {
-	private List<float> _deathDelays;
-
-	public KillGalaxiesMessage(List<float> deathDelays) => _deathDelays = deathDelays;
-
-	public override void Serialize(NetworkWriter writer)
+	internal class KillGalaxiesMessage : QSBMessage
 	{
-		base.Serialize(writer);
-		writer.WriteList(_deathDelays);
-	}
+		private List<float> _deathDelays;
 
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		_deathDelays = reader.ReadList<float>();
-	}
+		public KillGalaxiesMessage(List<float> deathDelays) => _deathDelays = deathDelays;
 
-	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-	public override void OnReceiveRemote()
-	{
-		var galaxyController = QSBWorldSync.GetUnityObjects<MiniGalaxyController>().First();
-
-		galaxyController._killTrigger.OnEntry -= galaxyController.OnEnterKillTrigger;
-
-		galaxyController._galaxies = galaxyController.GetComponentsInChildren<MiniGalaxy>(true);
-		for (var i = 0; i < galaxyController._galaxies.Length; i++)
+		public override void Serialize(NetworkWriter writer)
 		{
-			galaxyController._galaxies[i].DieAfterSeconds(_deathDelays[i], true, AudioType.EyeGalaxyBlowAway);
+			base.Serialize(writer);
+			writer.WriteList(_deathDelays);
 		}
 
-		galaxyController._forestIsDarkTime = Time.time + 65f;
-		galaxyController.enabled = true;
+		public override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			_deathDelays = reader.ReadList<float>();
+		}
 
-		galaxyController._musicSource.SetLocalVolume(0f);
-		galaxyController._musicSource.FadeIn(5f);
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+		public override void OnReceiveRemote()
+		{
+			var galaxyController = QSBWorldSync.GetUnityObjects<MiniGalaxyController>().First();
+
+			galaxyController._killTrigger.OnEntry -= galaxyController.OnEnterKillTrigger;
+
+			galaxyController._galaxies = galaxyController.GetComponentsInChildren<MiniGalaxy>(true);
+			for (var i = 0; i < galaxyController._galaxies.Length; i++)
+			{
+				galaxyController._galaxies[i].DieAfterSeconds(_deathDelays[i], true, AudioType.EyeGalaxyBlowAway);
+			}
+
+			galaxyController._forestIsDarkTime = Time.time + 65f;
+			galaxyController.enabled = true;
+
+			galaxyController._musicSource.SetLocalVolume(0f);
+			galaxyController._musicSource.FadeIn(5f);
+		}
 	}
 }

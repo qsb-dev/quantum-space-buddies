@@ -5,18 +5,19 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace QSB.Anglerfish;
-
-public class AnglerManager : WorldObjectManager
+namespace QSB.Anglerfish
 {
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
-
-	public static readonly List<AnglerfishController> Anglers = new();
-
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+	public class AnglerManager : WorldObjectManager
 	{
-		Anglers.Clear();
-		Anglers.AddRange(QSBWorldSync.GetUnityObjects<AnglerfishController>().SortDeterministic());
-		QSBWorldSync.Init<QSBAngler, AnglerfishController>(Anglers);
+		public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+
+		public static readonly List<AnglerfishController> Anglers = new();
+
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		{
+			Anglers.Clear();
+			Anglers.AddRange(QSBWorldSync.GetUnityObjects<AnglerfishController>().SortDeterministic());
+			QSBWorldSync.Init<QSBAngler, AnglerfishController>(Anglers);
+		}
 	}
 }

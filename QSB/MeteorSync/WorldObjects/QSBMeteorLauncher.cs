@@ -1,34 +1,35 @@
 ﻿using QSB.WorldSync;
 
-namespace QSB.MeteorSync.WorldObjects;
-
-public class QSBMeteorLauncher : WorldObject<MeteorLauncher>
+namespace QSB.MeteorSync.WorldObjects
 {
-	public override void SendInitialState(uint to)
+	public class QSBMeteorLauncher : WorldObject<MeteorLauncher>
 	{
-		// todo SendInitialState
-	}
-
-	public int MeteorId;
-	public float LaunchSpeed;
-
-	public void PreLaunchMeteor()
-	{
-		foreach (var particleSystem in AttachedObject._launchParticles)
+		public override void SendInitialState(uint to)
 		{
-			particleSystem.Play();
+			// todo SendInitialState
 		}
-	}
 
-	public void LaunchMeteor(int meteorId, float launchSpeed)
-	{
-		MeteorId = meteorId;
-		LaunchSpeed = launchSpeed;
+		public int MeteorId;
+		public float LaunchSpeed;
 
-		AttachedObject.LaunchMeteor();
-		foreach (var particleSystem in AttachedObject._launchParticles)
+		public void PreLaunchMeteor()
 		{
-			particleSystem.Stop();
+			foreach (var particleSystem in AttachedObject._launchParticles)
+			{
+				particleSystem.Play();
+			}
+		}
+
+		public void LaunchMeteor(int meteorId, float launchSpeed)
+		{
+			MeteorId = meteorId;
+			LaunchSpeed = launchSpeed;
+
+			AttachedObject.LaunchMeteor();
+			foreach (var particleSystem in AttachedObject._launchParticles)
+			{
+				particleSystem.Stop();
+			}
 		}
 	}
 }

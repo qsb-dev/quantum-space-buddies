@@ -4,98 +4,99 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Animation.Player;
-
-public class AnimatorMirror : MonoBehaviour
+namespace QSB.Animation.Player
 {
-	private const float SmoothTime = 0.05f;
-
-	private Animator _from;
-	private Animator _to;
-
-	private readonly Dictionary<string, AnimFloatParam> _floatParams = new();
-
-	public void Init(Animator from, Animator to)
+	public class AnimatorMirror : MonoBehaviour
 	{
-		if (from == null)
-		{
-			DebugLog.ToConsole($"Error - Trying to init AnimatorMirror with null \"from\".", MessageType.Error);
-		}
+		private const float SmoothTime = 0.05f;
 
-		if (to == null)
-		{
-			DebugLog.ToConsole($"Error - Trying to init AnimatorMirror with null \"to\".", MessageType.Error);
-		}
+		private Animator _from;
+		private Animator _to;
 
-		if (to == null || from == null)
-		{
-			// Doing the return this way so you can see if one or both are null
-			return;
-		}
+		private readonly Dictionary<string, AnimFloatParam> _floatParams = new();
 
-		_from = from;
-		_to = to;
-		if (_from.runtimeAnimatorController == null)
+		public void Init(Animator from, Animator to)
 		{
-			_from.runtimeAnimatorController = _to.runtimeAnimatorController;
-		}
-		else if (_to.runtimeAnimatorController == null)
-		{
-			_to.runtimeAnimatorController = _from.runtimeAnimatorController;
-		}
+			if (from == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init AnimatorMirror with null \"from\".", MessageType.Error);
+			}
 
-		RebuildFloatParams();
-	}
+			if (to == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init AnimatorMirror with null \"to\".", MessageType.Error);
+			}
 
-	public void Update()
-	{
-		if (_to == null || _from == null)
-		{
-			return;
-		}
+			if (to == null || from == null)
+			{
+				// Doing the return this way so you can see if one or both are null
+				return;
+			}
 
-		if (_to.runtimeAnimatorController != _from.runtimeAnimatorController)
-		{
-			_to.runtimeAnimatorController = _from.runtimeAnimatorController;
+			_from = from;
+			_to = to;
+			if (_from.runtimeAnimatorController == null)
+			{
+				_from.runtimeAnimatorController = _to.runtimeAnimatorController;
+			}
+			else if (_to.runtimeAnimatorController == null)
+			{
+				_to.runtimeAnimatorController = _from.runtimeAnimatorController;
+			}
+
 			RebuildFloatParams();
 		}
 
-		SyncParams();
-		SmoothFloats();
-	}
-
-	private void SyncParams()
-	{
-		foreach (var fromParam in _from.parameters)
+		public void Update()
 		{
-			switch (fromParam.type)
+			if (_to == null || _from == null)
 			{
-				case AnimatorControllerParameterType.Float:
-					_floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
-					break;
+				return;
+			}
 
-				case AnimatorControllerParameterType.Bool:
-					_to.SetBool(fromParam.name, _from.GetBool(fromParam.name));
-					break;
+			if (_to.runtimeAnimatorController != _from.runtimeAnimatorController)
+			{
+				_to.runtimeAnimatorController = _from.runtimeAnimatorController;
+				RebuildFloatParams();
+			}
+
+			SyncParams();
+			SmoothFloats();
+		}
+
+		private void SyncParams()
+		{
+			foreach (var fromParam in _from.parameters)
+			{
+				switch (fromParam.type)
+				{
+					case AnimatorControllerParameterType.Float:
+						_floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
+						break;
+
+					case AnimatorControllerParameterType.Bool:
+						_to.SetBool(fromParam.name, _from.GetBool(fromParam.name));
+						break;
+				}
 			}
 		}
-	}
 
-	private void SmoothFloats()
-	{
-		foreach (var floatParam in _floatParams)
+		private void SmoothFloats()
 		{
-			var current = floatParam.Value.Smooth(SmoothTime);
-			_to.SetFloat(floatParam.Key, current);
+			foreach (var floatParam in _floatParams)
+			{
+				var current = floatParam.Value.Smooth(SmoothTime);
+				_to.SetFloat(floatParam.Key, current);
+			}
 		}
-	}
 
-	public void RebuildFloatParams()
-	{
-		_floatParams.Clear();
-		foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
+		public void RebuildFloatParams()
 		{
-			_floatParams.Add(param.name, new AnimFloatParam());
+			_floatParams.Clear();
+			foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
+			{
+				_floatParams.Add(param.name, new AnimFloatParam());
+			}
 		}
 	}
 }

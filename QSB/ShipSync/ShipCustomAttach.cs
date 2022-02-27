@@ -1,79 +1,80 @@
 ﻿using QSB.Player;
 using UnityEngine;
 
-namespace QSB.ShipSync;
-
-public class ShipCustomAttach : MonoBehaviour
+namespace QSB.ShipSync
 {
-	private static readonly ScreenPrompt _attachPrompt = new(InputLibrary.interactSecondary, InputLibrary.interact,
-		"Attach to ship" + "   <CMD>", ScreenPrompt.MultiCommandType.HOLD_ONE_AND_PRESS_2ND);
-	private static readonly ScreenPrompt _detachPrompt = new(InputLibrary.cancel, "Detach from ship" + "   <CMD>");
-	private PlayerAttachPoint _playerAttachPoint;
-
-	private void Awake()
+	public class ShipCustomAttach : MonoBehaviour
 	{
-		Locator.GetPromptManager().AddScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
-		Locator.GetPromptManager().AddScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
+		private static readonly ScreenPrompt _attachPrompt = new(InputLibrary.interactSecondary, InputLibrary.interact,
+			"Attach to ship" + "   <CMD>", ScreenPrompt.MultiCommandType.HOLD_ONE_AND_PRESS_2ND);
+		private static readonly ScreenPrompt _detachPrompt = new(InputLibrary.cancel, "Detach from ship" + "   <CMD>");
+		private PlayerAttachPoint _playerAttachPoint;
 
-		_playerAttachPoint = gameObject.AddComponent<PlayerAttachPoint>();
-		_playerAttachPoint._lockPlayerTurning = false;
-		_playerAttachPoint._matchRotation = false;
-		_playerAttachPoint._centerCamera = false;
-	}
-
-	private void OnDestroy()
-	{
-		if (Locator.GetPromptManager())
+		private void Awake()
 		{
-			Locator.GetPromptManager().RemoveScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
-			Locator.GetPromptManager().RemoveScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
-		}
-	}
+			Locator.GetPromptManager().AddScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
+			Locator.GetPromptManager().AddScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
 
-	private void Update()
-	{
-		_attachPrompt.SetVisibility(false);
-		_detachPrompt.SetVisibility(false);
-		if (!PlayerState.IsInsideShip())
-		{
-			return;
+			_playerAttachPoint = gameObject.AddComponent<PlayerAttachPoint>();
+			_playerAttachPoint._lockPlayerTurning = false;
+			_playerAttachPoint._matchRotation = false;
+			_playerAttachPoint._centerCamera = false;
 		}
 
-		var attachedToUs = PlayerAttachWatcher.Current == _playerAttachPoint;
-		_detachPrompt.SetVisibility(attachedToUs);
-		if (attachedToUs && OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Character))
+		private void OnDestroy()
 		{
-			_playerAttachPoint.DetachPlayer();
-			ShipManager.Instance.CockpitController._shipAudioController.PlayUnbuckle();
-		}
-
-		if (!attachedToUs)
-		{
-			if (_playerAttachPoint.enabled)
+			if (Locator.GetPromptManager())
 			{
-				// attached to us, then attached to something else
-				_playerAttachPoint.enabled = false;
+				Locator.GetPromptManager().RemoveScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
+				Locator.GetPromptManager().RemoveScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
 			}
+		}
 
-			if (PlayerState.IsAttached())
+		private void Update()
+		{
+			_attachPrompt.SetVisibility(false);
+			_detachPrompt.SetVisibility(false);
+			if (!PlayerState.IsInsideShip())
 			{
 				return;
 			}
 
-			if (Locator.GetPlayerController() && !Locator.GetPlayerController().IsGrounded())
+			var attachedToUs = PlayerAttachWatcher.Current == _playerAttachPoint;
+			_detachPrompt.SetVisibility(attachedToUs);
+			if (attachedToUs && OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Character))
 			{
-				return;
+				_playerAttachPoint.DetachPlayer();
+				ShipManager.Instance.CockpitController._shipAudioController.PlayUnbuckle();
 			}
-		}
 
-		_attachPrompt.SetVisibility(!attachedToUs);
-		if (!attachedToUs &&
-		    OWInput.IsPressed(InputLibrary.interactSecondary, InputMode.Character) &&
-		    OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Character))
-		{
-			transform.position = Locator.GetPlayerTransform().position;
-			_playerAttachPoint.AttachPlayer();
-			ShipManager.Instance.CockpitController._shipAudioController.PlayBuckle();
+			if (!attachedToUs)
+			{
+				if (_playerAttachPoint.enabled)
+				{
+					// attached to us, then attached to something else
+					_playerAttachPoint.enabled = false;
+				}
+
+				if (PlayerState.IsAttached())
+				{
+					return;
+				}
+
+				if (Locator.GetPlayerController() && !Locator.GetPlayerController().IsGrounded())
+				{
+					return;
+				}
+			}
+
+			_attachPrompt.SetVisibility(!attachedToUs);
+			if (!attachedToUs &&
+			    OWInput.IsPressed(InputLibrary.interactSecondary, InputMode.Character) &&
+			    OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Character))
+			{
+				transform.position = Locator.GetPlayerTransform().position;
+				_playerAttachPoint.AttachPlayer();
+				ShipManager.Instance.CockpitController._shipAudioController.PlayBuckle();
+			}
 		}
 	}
 }

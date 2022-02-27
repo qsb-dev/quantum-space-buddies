@@ -2,22 +2,23 @@
 using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.RespawnSync.Messages;
-
-internal class PlayerRespawnMessage : QSBMessage<uint>
+namespace QSB.RespawnSync.Messages
 {
-	public PlayerRespawnMessage(uint playerId) => Value = playerId;
-
-	public override void OnReceiveLocal() => OnReceiveRemote();
-
-	public override void OnReceiveRemote()
+	internal class PlayerRespawnMessage : QSBMessage<uint>
 	{
-		if (Value == QSBPlayerManager.LocalPlayerId)
-		{
-			RespawnManager.Instance.Respawn();
-			ClientStateManager.Instance.OnRespawn();
-		}
+		public PlayerRespawnMessage(uint playerId) => Value = playerId;
 
-		RespawnManager.Instance.OnPlayerRespawn(QSBPlayerManager.GetPlayer(Value));
+		public override void OnReceiveLocal() => OnReceiveRemote();
+
+		public override void OnReceiveRemote()
+		{
+			if (Value == QSBPlayerManager.LocalPlayerId)
+			{
+				RespawnManager.Instance.Respawn();
+				ClientStateManager.Instance.OnRespawn();
+			}
+
+			RespawnManager.Instance.OnPlayerRespawn(QSBPlayerManager.GetPlayer(Value));
+		}
 	}
 }

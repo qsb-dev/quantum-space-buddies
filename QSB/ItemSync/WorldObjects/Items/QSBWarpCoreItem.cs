@@ -1,6 +1,7 @@
-﻿namespace QSB.ItemSync.WorldObjects.Items;
-
-internal class QSBWarpCoreItem : QSBItem<WarpCoreItem>
+﻿namespace QSB.ItemSync.WorldObjects.Items
 {
-	public bool IsVesselCoreType() => AttachedObject.IsVesselCoreType();
+	internal class QSBWarpCoreItem : QSBItem<WarpCoreItem>
+	{
+		public bool IsVesselCoreType() => AttachedObject.IsVesselCoreType();
+	}
 }

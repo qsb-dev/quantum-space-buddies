@@ -2,19 +2,20 @@
 using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.ConversationSync.WorldObjects;
-
-internal class QSBRemoteDialogueTrigger : WorldObject<RemoteDialogueTrigger>
+namespace QSB.ConversationSync.WorldObjects
 {
-	public override void SendInitialState(uint to) =>
-		this.SendMessage(new RemoteDialogueInitialStateMessage(AttachedObject) { To = to });
-
-	public void RemoteEnterDialogue(int dialogueIndex)
+	internal class QSBRemoteDialogueTrigger : WorldObject<RemoteDialogueTrigger>
 	{
-		var dialogueCondition = AttachedObject._listDialogues[dialogueIndex];
-		AttachedObject._activeRemoteDialogue = dialogueCondition.dialogue;
-		AttachedObject._inRemoteDialogue = true;
+		public override void SendInitialState(uint to) =>
+			this.SendMessage(new RemoteDialogueInitialStateMessage(AttachedObject) { To = to });
 
-		AttachedObject._activatedDialogues[dialogueIndex] = true;
+		public void RemoteEnterDialogue(int dialogueIndex)
+		{
+			var dialogueCondition = AttachedObject._listDialogues[dialogueIndex];
+			AttachedObject._activeRemoteDialogue = dialogueCondition.dialogue;
+			AttachedObject._inRemoteDialogue = true;
+
+			AttachedObject._activatedDialogues[dialogueIndex] = true;
+		}
 	}
 }

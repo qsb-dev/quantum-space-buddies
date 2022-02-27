@@ -2,43 +2,44 @@
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Animation.Player;
-
-public class PlayerHeadRotationSync : MonoBehaviour
+namespace QSB.Animation.Player
 {
-	private Animator _attachedAnimator;
-	private Transform _lookBase;
-	private bool _isSetUp;
-
-	public void Init(Transform lookBase)
+	public class PlayerHeadRotationSync : MonoBehaviour
 	{
-		_attachedAnimator = GetComponent<Animator>();
-		_lookBase = lookBase;
-		_isSetUp = true;
-	}
+		private Animator _attachedAnimator;
+		private Transform _lookBase;
+		private bool _isSetUp;
 
-	private void LateUpdate()
-	{
-		if (!_isSetUp)
+		public void Init(Transform lookBase)
 		{
-			return;
+			_attachedAnimator = GetComponent<Animator>();
+			_lookBase = lookBase;
+			_isSetUp = true;
 		}
 
-		if (_attachedAnimator == null)
+		private void LateUpdate()
 		{
-			DebugLog.ToConsole($"Error - _attachedAnimator is null!", MessageType.Error);
-			return;
-		}
+			if (!_isSetUp)
+			{
+				return;
+			}
 
-		if (_lookBase == null)
-		{
-			DebugLog.ToConsole($"Error - _lookBase is null!", MessageType.Error);
-			return;
-		}
+			if (_attachedAnimator == null)
+			{
+				DebugLog.ToConsole($"Error - _attachedAnimator is null!", MessageType.Error);
+				return;
+			}
 
-		var bone = _attachedAnimator.GetBoneTransform(HumanBodyBones.Head);
-		// Get the camera's local rotation with respect to the player body
-		var lookLocalRotation = Quaternion.Inverse(_attachedAnimator.transform.rotation) * _lookBase.rotation;
-		bone.localRotation = Quaternion.Euler(0f, 0f, lookLocalRotation.eulerAngles.x);
+			if (_lookBase == null)
+			{
+				DebugLog.ToConsole($"Error - _lookBase is null!", MessageType.Error);
+				return;
+			}
+
+			var bone = _attachedAnimator.GetBoneTransform(HumanBodyBones.Head);
+			// Get the camera's local rotation with respect to the player body
+			var lookLocalRotation = Quaternion.Inverse(_attachedAnimator.transform.rotation) * _lookBase.rotation;
+			bone.localRotation = Quaternion.Euler(0f, 0f, lookLocalRotation.eulerAngles.x);
+		}
 	}
 }

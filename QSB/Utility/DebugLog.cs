@@ -3,47 +3,48 @@ using OWML.Common;
 using System.Diagnostics;
 using System.Linq;
 
-namespace QSB.Utility;
-
-public static class DebugLog
+namespace QSB.Utility
 {
-	public static void ToConsole(string message, MessageType type = MessageType.Message)
+	public static class DebugLog
 	{
-		if (QSBCore.DebugSettings.PlayerIdInLogs && NetworkClient.localPlayer)
+		public static void ToConsole(string message, MessageType type = MessageType.Message)
 		{
-			message = $"[{NetworkClient.localPlayer.netId}] " + message;
+			if (QSBCore.DebugSettings.PlayerIdInLogs && NetworkClient.localPlayer)
+			{
+				message = $"[{NetworkClient.localPlayer.netId}] " + message;
+			}
+
+			QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));
 		}
 
-		QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));
-	}
-
-	public static void ToHud(string message)
-	{
-		if (Locator.GetPlayerBody() == null)
+		public static void ToHud(string message)
 		{
-			return;
+			if (Locator.GetPlayerBody() == null)
+			{
+				return;
+			}
+
+			var data = new NotificationData(NotificationTarget.Player, message.ToUpper());
+			NotificationManager.SharedInstance.PostNotification(data);
 		}
 
-		var data = new NotificationData(NotificationTarget.Player, message.ToUpper());
-		NotificationManager.SharedInstance.PostNotification(data);
-	}
-
-	public static void ToAll(string message, MessageType type = MessageType.Message)
-	{
-		ToConsole(message, type);
-		ToHud(message);
-	}
-
-	public static void DebugWrite(string message, MessageType type = MessageType.Message)
-	{
-		if (QSBCore.DebugSettings.DebugMode)
+		public static void ToAll(string message, MessageType type = MessageType.Message)
 		{
 			ToConsole(message, type);
+			ToHud(message);
 		}
-	}
 
-	private static string GetCallingType(StackTrace frame) =>
-		frame.GetFrames()!
-			.Select(x => x.GetMethod().DeclaringType!.Name)
-			.First(x => x != nameof(DebugLog));
+		public static void DebugWrite(string message, MessageType type = MessageType.Message)
+		{
+			if (QSBCore.DebugSettings.DebugMode)
+			{
+				ToConsole(message, type);
+			}
+		}
+
+		private static string GetCallingType(StackTrace frame) =>
+			frame.GetFrames()!
+				.Select(x => x.GetMethod().DeclaringType!.Name)
+				.First(x => x != nameof(DebugLog));
+	}
 }

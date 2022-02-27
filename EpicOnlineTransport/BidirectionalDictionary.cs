@@ -50,81 +50,82 @@ using System.Collections.Generic;
 /// MIT License
 /// </summary>
 
-namespace EpicTransport;
-
-public class BidirectionalDictionary<T1, T2> : IEnumerable
+namespace EpicTransport
 {
-	private Dictionary<T1, T2> t1ToT2Dict = new();
-	private Dictionary<T2, T1> t2ToT1Dict = new();
-
-	public IEnumerable<T1> FirstTypes => t1ToT2Dict.Keys;
-	public IEnumerable<T2> SecondTypes => t2ToT1Dict.Keys;
-
-	public IEnumerator GetEnumerator() => t1ToT2Dict.GetEnumerator();
-
-	public int Count => t1ToT2Dict.Count;
-
-	public void Add(T1 key, T2 value)
+	public class BidirectionalDictionary<T1, T2> : IEnumerable
 	{
-		t1ToT2Dict[key] = value;
-		t2ToT1Dict[value] = key;
-	}
+		private Dictionary<T1, T2> t1ToT2Dict = new();
+		private Dictionary<T2, T1> t2ToT1Dict = new();
 
-	public void Add(T2 key, T1 value)
-	{
-		t2ToT1Dict[key] = value;
-		t1ToT2Dict[value] = key;
-	}
+		public IEnumerable<T1> FirstTypes => t1ToT2Dict.Keys;
+		public IEnumerable<T2> SecondTypes => t2ToT1Dict.Keys;
 
-	public T2 Get(T1 key) => t1ToT2Dict[key];
+		public IEnumerator GetEnumerator() => t1ToT2Dict.GetEnumerator();
 
-	public T1 Get(T2 key) => t2ToT1Dict[key];
+		public int Count => t1ToT2Dict.Count;
 
-	public bool TryGetValue(T1 key, out T2 value) => t1ToT2Dict.TryGetValue(key, out value);
-
-	public bool TryGetValue(T2 key, out T1 value) => t2ToT1Dict.TryGetValue(key, out value);
-
-	public bool Contains(T1 key) => t1ToT2Dict.ContainsKey(key);
-
-	public bool Contains(T2 key) => t2ToT1Dict.ContainsKey(key);
-
-	public void Remove(T1 key)
-	{
-		if (Contains(key))
+		public void Add(T1 key, T2 value)
 		{
-			var val = t1ToT2Dict[key];
-			t1ToT2Dict.Remove(key);
-			t2ToT1Dict.Remove(val);
+			t1ToT2Dict[key] = value;
+			t2ToT1Dict[value] = key;
 		}
-	}
 
-	public void Remove(T2 key)
-	{
-		if (Contains(key))
-		{
-			var val = t2ToT1Dict[key];
-			t1ToT2Dict.Remove(val);
-			t2ToT1Dict.Remove(key);
-		}
-	}
-
-	public T1 this[T2 key]
-	{
-		get => t2ToT1Dict[key];
-		set
+		public void Add(T2 key, T1 value)
 		{
 			t2ToT1Dict[key] = value;
 			t1ToT2Dict[value] = key;
 		}
-	}
 
-	public T2 this[T1 key]
-	{
-		get => t1ToT2Dict[key];
-		set
+		public T2 Get(T1 key) => t1ToT2Dict[key];
+
+		public T1 Get(T2 key) => t2ToT1Dict[key];
+
+		public bool TryGetValue(T1 key, out T2 value) => t1ToT2Dict.TryGetValue(key, out value);
+
+		public bool TryGetValue(T2 key, out T1 value) => t2ToT1Dict.TryGetValue(key, out value);
+
+		public bool Contains(T1 key) => t1ToT2Dict.ContainsKey(key);
+
+		public bool Contains(T2 key) => t2ToT1Dict.ContainsKey(key);
+
+		public void Remove(T1 key)
 		{
-			t1ToT2Dict[key] = value;
-			t2ToT1Dict[value] = key;
+			if (Contains(key))
+			{
+				var val = t1ToT2Dict[key];
+				t1ToT2Dict.Remove(key);
+				t2ToT1Dict.Remove(val);
+			}
+		}
+
+		public void Remove(T2 key)
+		{
+			if (Contains(key))
+			{
+				var val = t2ToT1Dict[key];
+				t1ToT2Dict.Remove(val);
+				t2ToT1Dict.Remove(key);
+			}
+		}
+
+		public T1 this[T2 key]
+		{
+			get => t2ToT1Dict[key];
+			set
+			{
+				t2ToT1Dict[key] = value;
+				t1ToT2Dict[value] = key;
+			}
+		}
+
+		public T2 this[T1 key]
+		{
+			get => t1ToT2Dict[key];
+			set
+			{
+				t1ToT2Dict[key] = value;
+				t2ToT1Dict[value] = key;
+			}
 		}
 	}
 }

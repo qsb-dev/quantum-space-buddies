@@ -1,21 +1,22 @@
 ﻿using QSB.Animation.NPC.WorldObjects;
 using QSB.Messaging;
 
-namespace QSB.Animation.NPC.Messages;
-
-internal class NpcAnimationMessage : QSBWorldObjectMessage<INpcAnimController, bool>
+namespace QSB.Animation.NPC.Messages
 {
-	public NpcAnimationMessage(bool start) => Value = start;
-
-	public override void OnReceiveRemote()
+	internal class NpcAnimationMessage : QSBWorldObjectMessage<INpcAnimController, bool>
 	{
-		if (Value)
+		public NpcAnimationMessage(bool start) => Value = start;
+
+		public override void OnReceiveRemote()
 		{
-			WorldObject.StartConversation();
-		}
-		else
-		{
-			WorldObject.EndConversation();
+			if (Value)
+			{
+				WorldObject.StartConversation();
+			}
+			else
+			{
+				WorldObject.EndConversation();
+			}
 		}
 	}
 }

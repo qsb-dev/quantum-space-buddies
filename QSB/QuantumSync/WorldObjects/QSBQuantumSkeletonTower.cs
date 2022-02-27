@@ -1,17 +1,18 @@
-﻿namespace QSB.QuantumSync.WorldObjects;
-
-internal class QSBQuantumSkeletonTower : QSBQuantumObject<QuantumSkeletonTower>
+﻿namespace QSB.QuantumSync.WorldObjects
 {
-	public override string ReturnLabel() => $"{base.ReturnLabel()}\n"
-	                                        + $"{AttachedObject._index} {AttachedObject._waitForPlayerToLookAtTower}\n"
-	                                        + $"{AttachedObject._waitForFlicker} {AttachedObject._flickering}";
-
-	public void MoveSkeleton(int index)
+	internal class QSBQuantumSkeletonTower : QSBQuantumObject<QuantumSkeletonTower>
 	{
-		AttachedObject._pointingSkeletons[index].gameObject.SetActive(false);
+		public override string ReturnLabel() => $"{base.ReturnLabel()}\n"
+		                                        + $"{AttachedObject._index} {AttachedObject._waitForPlayerToLookAtTower}\n"
+		                                        + $"{AttachedObject._waitForFlicker} {AttachedObject._flickering}";
 
-		AttachedObject._towerSkeletons[AttachedObject._index].SetActive(true);
-		AttachedObject._index++;
-		AttachedObject._waitForPlayerToLookAtTower = true;
+		public void MoveSkeleton(int index)
+		{
+			AttachedObject._pointingSkeletons[index].gameObject.SetActive(false);
+
+			AttachedObject._towerSkeletons[AttachedObject._index].SetActive(true);
+			AttachedObject._index++;
+			AttachedObject._waitForPlayerToLookAtTower = true;
+		}
 	}
 }

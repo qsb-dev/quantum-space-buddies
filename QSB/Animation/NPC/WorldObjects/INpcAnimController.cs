@@ -1,10 +1,11 @@
 ﻿using QSB.WorldSync;
 
-namespace QSB.Animation.NPC.WorldObjects;
-
-public interface INpcAnimController : IWorldObject
+namespace QSB.Animation.NPC.WorldObjects
 {
-	CharacterDialogueTree GetDialogueTree();
-	void StartConversation();
-	void EndConversation();
+	public interface INpcAnimController : IWorldObject
+	{
+		CharacterDialogueTree GetDialogueTree();
+		void StartConversation();
+		void EndConversation();
+	}
 }

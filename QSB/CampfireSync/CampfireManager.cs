@@ -3,12 +3,13 @@ using QSB.CampfireSync.WorldObjects;
 using QSB.WorldSync;
 using System.Threading;
 
-namespace QSB.CampfireSync;
-
-internal class CampfireManager : WorldObjectManager
+namespace QSB.CampfireSync
 {
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
+	internal class CampfireManager : WorldObjectManager
+	{
+		public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-		=> QSBWorldSync.Init<QSBCampfire, Campfire>();
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+			=> QSBWorldSync.Init<QSBCampfire, Campfire>();
+	}
 }

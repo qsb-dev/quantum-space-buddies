@@ -3,61 +3,62 @@ using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
 
-namespace QSB.Player.Messages;
-
-/// <summary>
-/// always sent by host
-/// </summary>
-internal class PlayerKickMessage : QSBMessage<KickReason>
+namespace QSB.Player.Messages
 {
-	private uint PlayerId;
-
-	public PlayerKickMessage(uint playerId, KickReason reason)
+	/// <summary>
+	/// always sent by host
+	/// </summary>
+	internal class PlayerKickMessage : QSBMessage<KickReason>
 	{
-		PlayerId = playerId;
-		Value = reason;
-	}
+		private uint PlayerId;
 
-	public override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(PlayerId);
-	}
-
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		PlayerId = reader.Read<uint>();
-	}
-
-	public override void OnReceiveLocal()
-	{
-		if (!QSBCore.IsHost)
+		public PlayerKickMessage(uint playerId, KickReason reason)
 		{
-			return;
+			PlayerId = playerId;
+			Value = reason;
 		}
 
-		Delay.RunFramesLater(10, KickPlayer);
-	}
-
-	private void KickPlayer()
-		=> PlayerId.GetNetworkConnection().Disconnect();
-
-	public override void OnReceiveRemote()
-	{
-		if (PlayerId != QSBPlayerManager.LocalPlayerId)
+		public override void Serialize(NetworkWriter writer)
 		{
-			if (QSBPlayerManager.PlayerExists(PlayerId))
+			base.Serialize(writer);
+			writer.Write(PlayerId);
+		}
+
+		public override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			PlayerId = reader.Read<uint>();
+		}
+
+		public override void OnReceiveLocal()
+		{
+			if (!QSBCore.IsHost)
 			{
-				DebugLog.ToAll($"{QSBPlayerManager.GetPlayer(PlayerId).Name} was kicked.");
 				return;
 			}
 
-			DebugLog.ToAll($"Player id:{PlayerId} was kicked.");
-			return;
+			Delay.RunFramesLater(10, KickPlayer);
 		}
 
-		DebugLog.ToAll($"Kicked from server. Reason : {Value}");
-		MenuManager.Instance.OnKicked(Value);
+		private void KickPlayer()
+			=> PlayerId.GetNetworkConnection().Disconnect();
+
+		public override void OnReceiveRemote()
+		{
+			if (PlayerId != QSBPlayerManager.LocalPlayerId)
+			{
+				if (QSBPlayerManager.PlayerExists(PlayerId))
+				{
+					DebugLog.ToAll($"{QSBPlayerManager.GetPlayer(PlayerId).Name} was kicked.");
+					return;
+				}
+
+				DebugLog.ToAll($"Player id:{PlayerId} was kicked.");
+				return;
+			}
+
+			DebugLog.ToAll($"Kicked from server. Reason : {Value}");
+			MenuManager.Instance.OnKicked(Value);
+		}
 	}
 }

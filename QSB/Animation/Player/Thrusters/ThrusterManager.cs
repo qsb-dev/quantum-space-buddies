@@ -1,30 +1,31 @@
 ﻿using QSB.Player;
 using UnityEngine;
 
-namespace QSB.Animation.Player.Thrusters;
-
-internal static class ThrusterManager
+namespace QSB.Animation.Player.Thrusters
 {
-	public static void CreateRemotePlayerVFX(PlayerInfo player)
+	internal static class ThrusterManager
 	{
-		var newVfx = player.Body.transform.Find("REMOTE_PlayerVFX").gameObject;
-
-		CreateThrusterWashController(newVfx.transform.Find("ThrusterWash").gameObject, player);
-		CreateThrusterFlameController(newVfx, player);
-	}
-
-	private static void CreateThrusterFlameController(GameObject root, PlayerInfo player)
-	{
-		var existingControllers = root.GetComponentsInChildren<RemoteThrusterFlameController>(true);
-		foreach (var controller in existingControllers)
+		public static void CreateRemotePlayerVFX(PlayerInfo player)
 		{
-			controller.Init(player);
-		}
-	}
+			var newVfx = player.Body.transform.Find("REMOTE_PlayerVFX").gameObject;
 
-	private static void CreateThrusterWashController(GameObject root, PlayerInfo player)
-	{
-		var newObj = root.GetComponent<RemoteThrusterWashController>();
-		newObj.Init(player);
+			CreateThrusterWashController(newVfx.transform.Find("ThrusterWash").gameObject, player);
+			CreateThrusterFlameController(newVfx, player);
+		}
+
+		private static void CreateThrusterFlameController(GameObject root, PlayerInfo player)
+		{
+			var existingControllers = root.GetComponentsInChildren<RemoteThrusterFlameController>(true);
+			foreach (var controller in existingControllers)
+			{
+				controller.Init(player);
+			}
+		}
+
+		private static void CreateThrusterWashController(GameObject root, PlayerInfo player)
+		{
+			var newObj = root.GetComponent<RemoteThrusterWashController>();
+			newObj.Init(player);
+		}
 	}
 }

@@ -2,86 +2,87 @@
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Animation.Player.Thrusters;
-
-internal class RemoteThrusterWashController : MonoBehaviour
+namespace QSB.Animation.Player.Thrusters
 {
-	[SerializeField]
-	private float _raycastDistance = 10f;
-
-	[SerializeField]
-	private AnimationCurve _emissionDistanceScale;
-
-	[SerializeField]
-	private AnimationCurve _emissionThrusterScale;
-
-	[SerializeField]
-	private ParticleSystem _defaultParticleSystem;
-
-	private ParticleSystem.MainModule _defaultMainModule;
-	private ParticleSystem.EmissionModule _defaultEmissionModule;
-	private float _baseDefaultEmissionRate;
-
-	private PlayerInfo _attachedPlayer;
-
-	private bool _initialised;
-
-	public void Init(PlayerInfo player)
+	internal class RemoteThrusterWashController : MonoBehaviour
 	{
-		_attachedPlayer = player;
+		[SerializeField]
+		private float _raycastDistance = 10f;
 
-		if (_defaultParticleSystem == null)
+		[SerializeField]
+		private AnimationCurve _emissionDistanceScale;
+
+		[SerializeField]
+		private AnimationCurve _emissionThrusterScale;
+
+		[SerializeField]
+		private ParticleSystem _defaultParticleSystem;
+
+		private ParticleSystem.MainModule _defaultMainModule;
+		private ParticleSystem.EmissionModule _defaultEmissionModule;
+		private float _baseDefaultEmissionRate;
+
+		private PlayerInfo _attachedPlayer;
+
+		private bool _initialised;
+
+		public void Init(PlayerInfo player)
 		{
-			DebugLog.ToConsole($"Error - DefaultParticleSystem is null!", OWML.Common.MessageType.Error);
-			return;
-		}
+			_attachedPlayer = player;
 
-		_defaultMainModule = _defaultParticleSystem.main;
-		_defaultEmissionModule = _defaultParticleSystem.emission;
-		_baseDefaultEmissionRate = _defaultEmissionModule.rateOverTime.constant;
-
-		_initialised = true;
-	}
-
-	private void Update()
-	{
-		if (!_initialised)
-		{
-			return;
-		}
-
-		RaycastHit hitInfo = default;
-		var aboveSurface = false;
-		var emissionThrusterScale = _emissionThrusterScale.Evaluate(_attachedPlayer.JetpackAcceleration.AccelerationVariableSyncer.Value.y);
-		if (emissionThrusterScale > 0f)
-		{
-			aboveSurface = Physics.Raycast(transform.position, transform.forward, out hitInfo, _raycastDistance, OWLayerMask.physicalMask);
-		}
-
-		emissionThrusterScale = (!aboveSurface) ? 0f : (emissionThrusterScale * _emissionDistanceScale.Evaluate(hitInfo.distance));
-
-		if (emissionThrusterScale > 0f)
-		{
-			var position = hitInfo.point + (hitInfo.normal * 0.25f);
-			var rotation = Quaternion.LookRotation(hitInfo.normal);
-			if (!_defaultParticleSystem.isPlaying)
+			if (_defaultParticleSystem == null)
 			{
-				_defaultParticleSystem.Play();
+				DebugLog.ToConsole($"Error - DefaultParticleSystem is null!", OWML.Common.MessageType.Error);
+				return;
 			}
 
-			_defaultEmissionModule.rateOverTimeMultiplier = _baseDefaultEmissionRate * emissionThrusterScale;
-			_defaultParticleSystem.transform.SetPositionAndRotation(position, rotation);
-			if (_defaultMainModule.customSimulationSpace != hitInfo.transform)
-			{
-				_defaultMainModule.customSimulationSpace = hitInfo.transform;
-				_defaultParticleSystem.Clear();
-			}
+			_defaultMainModule = _defaultParticleSystem.main;
+			_defaultEmissionModule = _defaultParticleSystem.emission;
+			_baseDefaultEmissionRate = _defaultEmissionModule.rateOverTime.constant;
+
+			_initialised = true;
 		}
-		else
+
+		private void Update()
 		{
-			if (_defaultParticleSystem.isPlaying)
+			if (!_initialised)
 			{
-				_defaultParticleSystem.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+				return;
+			}
+
+			RaycastHit hitInfo = default;
+			var aboveSurface = false;
+			var emissionThrusterScale = _emissionThrusterScale.Evaluate(_attachedPlayer.JetpackAcceleration.AccelerationVariableSyncer.Value.y);
+			if (emissionThrusterScale > 0f)
+			{
+				aboveSurface = Physics.Raycast(transform.position, transform.forward, out hitInfo, _raycastDistance, OWLayerMask.physicalMask);
+			}
+
+			emissionThrusterScale = (!aboveSurface) ? 0f : (emissionThrusterScale * _emissionDistanceScale.Evaluate(hitInfo.distance));
+
+			if (emissionThrusterScale > 0f)
+			{
+				var position = hitInfo.point + (hitInfo.normal * 0.25f);
+				var rotation = Quaternion.LookRotation(hitInfo.normal);
+				if (!_defaultParticleSystem.isPlaying)
+				{
+					_defaultParticleSystem.Play();
+				}
+
+				_defaultEmissionModule.rateOverTimeMultiplier = _baseDefaultEmissionRate * emissionThrusterScale;
+				_defaultParticleSystem.transform.SetPositionAndRotation(position, rotation);
+				if (_defaultMainModule.customSimulationSpace != hitInfo.transform)
+				{
+					_defaultMainModule.customSimulationSpace = hitInfo.transform;
+					_defaultParticleSystem.Clear();
+				}
+			}
+			else
+			{
+				if (_defaultParticleSystem.isPlaying)
+				{
+					_defaultParticleSystem.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+				}
 			}
 		}
 	}

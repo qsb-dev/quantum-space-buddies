@@ -5,82 +5,83 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 
-namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
-
-public class RaftTransformSync : UnsectoredRigidbodySync
+namespace QSB.EchoesOfTheEye.RaftSync.TransformSync
 {
-	protected override bool UseInterpolation => false;
-
-	private QSBRaft _qsbRaft;
-	private static readonly List<RaftTransformSync> _instances = new();
-
-	protected override OWRigidbody InitAttachedRigidbody() => _qsbRaft.AttachedObject._raftBody;
-
-	public override void OnStartClient()
+	public class RaftTransformSync : UnsectoredRigidbodySync
 	{
-		_instances.Add(this);
-		if (QSBCore.IsHost)
+		protected override bool UseInterpolation => false;
+
+		private QSBRaft _qsbRaft;
+		private static readonly List<RaftTransformSync> _instances = new();
+
+		protected override OWRigidbody InitAttachedRigidbody() => _qsbRaft.AttachedObject._raftBody;
+
+		public override void OnStartClient()
 		{
-			netIdentity.RegisterAuthQueue();
+			_instances.Add(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.RegisterAuthQueue();
+			}
+
+			base.OnStartClient();
 		}
 
-		base.OnStartClient();
-	}
-
-	public override void OnStopClient()
-	{
-		_instances.Remove(this);
-		if (QSBCore.IsHost)
+		public override void OnStopClient()
 		{
-			netIdentity.UnregisterAuthQueue();
+			_instances.Remove(this);
+			if (QSBCore.IsHost)
+			{
+				netIdentity.UnregisterAuthQueue();
+			}
+
+			base.OnStopClient();
 		}
 
-		base.OnStopClient();
-	}
+		protected override void Init()
+		{
+			_qsbRaft = RaftManager.Rafts[_instances.IndexOf(this)].GetWorldObject<QSBRaft>();
+			_qsbRaft.TransformSync = this;
 
-	protected override void Init()
-	{
-		_qsbRaft = RaftManager.Rafts[_instances.IndexOf(this)].GetWorldObject<QSBRaft>();
-		_qsbRaft.TransformSync = this;
+			base.Init();
+			SetReferenceTransform(AttachedRigidbody.GetOrigParent());
 
-		base.Init();
-		SetReferenceTransform(AttachedRigidbody.GetOrigParent());
+			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
+			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
+			netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+		}
 
-		AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
-		AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-		netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
-	}
+		protected override void Uninit()
+		{
+			base.Uninit();
 
-	protected override void Uninit()
-	{
-		base.Uninit();
+			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
+		}
 
-		AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
-		AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
-	}
+		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
+		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
 
-	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
-	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+		public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} - authority = true");
+		public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - authority = false");
 
-	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} - authority = true");
-	public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - authority = false");
+		/// <summary>
+		/// replacement for base method
+		/// using SetPos/Rot instead of Move
+		/// </summary>
+		protected override void ApplyToAttached()
+		{
+			var targetPos = ReferenceTransform.FromRelPos(transform.position);
+			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
-	/// <summary>
-	/// replacement for base method
-	/// using SetPos/Rot instead of Move
-	/// </summary>
-	protected override void ApplyToAttached()
-	{
-		var targetPos = ReferenceTransform.FromRelPos(transform.position);
-		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
+			AttachedRigidbody.SetPosition(targetPos);
+			AttachedRigidbody.SetRotation(targetRot);
 
-		AttachedRigidbody.SetPosition(targetPos);
-		AttachedRigidbody.SetRotation(targetRot);
+			var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
+			var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
 
-		var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
-		var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
-
-		AttachedRigidbody.SetVelocity(targetVelocity);
-		AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
+			AttachedRigidbody.SetVelocity(targetVelocity);
+			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
+		}
 	}
 }

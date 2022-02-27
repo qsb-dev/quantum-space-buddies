@@ -7,122 +7,123 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Syncs.Occasional;
-
-public class OccasionalTransformSync : UnsectoredRigidbodySync
+namespace QSB.Syncs.Occasional
 {
-	protected override bool UseInterpolation => false;
-
-	protected override OWRigidbody InitAttachedRigidbody() => OccasionalManager.Bodies[_instances.IndexOf(this)].Body;
-
-	private static readonly List<OccasionalTransformSync> _instances = new();
-
-	public override void OnStartClient()
+	public class OccasionalTransformSync : UnsectoredRigidbodySync
 	{
-		_instances.Add(this);
-		base.OnStartClient();
-	}
+		protected override bool UseInterpolation => false;
 
-	public override void OnStopClient()
-	{
-		_instances.Remove(this);
-		base.OnStopClient();
-	}
+		protected override OWRigidbody InitAttachedRigidbody() => OccasionalManager.Bodies[_instances.IndexOf(this)].Body;
 
-	private Sector[] _sectors;
-	private OWRigidbody[] _childBodies;
+		private static readonly List<OccasionalTransformSync> _instances = new();
 
-	protected override float SendInterval => 20;
-	protected override bool UseReliableRpc => true;
-
-	protected override void Init()
-	{
-		base.Init();
-		SetReferenceTransform(OccasionalManager.Bodies[_instances.IndexOf(this)].RefBody.transform);
-
-		_sectors = SectorManager.s_sectors
-			.Where(x => x._attachedOWRigidbody == AttachedRigidbody).ToArray();
-		_childBodies = CenterOfTheUniverse.s_rigidbodies
-			.Where(x => x._origParentBody == AttachedRigidbody).ToArray();
-	}
-
-	protected override void ApplyToAttached()
-	{
-		if (_sectors.Contains(PlayerTransformSync.LocalInstance?.ReferenceSector?.AttachedObject))
+		public override void OnStartClient()
 		{
-			QueueMove(Locator._playerBody);
+			_instances.Add(this);
+			base.OnStartClient();
 		}
 
-		if (_sectors.Contains(ShipTransformSync.LocalInstance?.ReferenceSector?.AttachedObject))
+		public override void OnStopClient()
 		{
-			QueueMove(Locator._shipBody);
+			_instances.Remove(this);
+			base.OnStopClient();
 		}
 
-		if (_sectors.Contains(PlayerProbeSync.LocalInstance?.ReferenceSector?.AttachedObject))
+		private Sector[] _sectors;
+		private OWRigidbody[] _childBodies;
+
+		protected override float SendInterval => 20;
+		protected override bool UseReliableRpc => true;
+
+		protected override void Init()
 		{
-			QueueMove(Locator._probe._owRigidbody);
+			base.Init();
+			SetReferenceTransform(OccasionalManager.Bodies[_instances.IndexOf(this)].RefBody.transform);
+
+			_sectors = SectorManager.s_sectors
+				.Where(x => x._attachedOWRigidbody == AttachedRigidbody).ToArray();
+			_childBodies = CenterOfTheUniverse.s_rigidbodies
+				.Where(x => x._origParentBody == AttachedRigidbody).ToArray();
 		}
 
-		foreach (var child in _childBodies)
+		protected override void ApplyToAttached()
 		{
-			QueueMove(child);
+			if (_sectors.Contains(PlayerTransformSync.LocalInstance?.ReferenceSector?.AttachedObject))
+			{
+				QueueMove(Locator._playerBody);
+			}
+
+			if (_sectors.Contains(ShipTransformSync.LocalInstance?.ReferenceSector?.AttachedObject))
+			{
+				QueueMove(Locator._shipBody);
+			}
+
+			if (_sectors.Contains(PlayerProbeSync.LocalInstance?.ReferenceSector?.AttachedObject))
+			{
+				QueueMove(Locator._probe._owRigidbody);
+			}
+
+			foreach (var child in _childBodies)
+			{
+				QueueMove(child);
+			}
+
+			var pos = ReferenceTransform.FromRelPos(transform.position);
+			AttachedRigidbody.SetPosition(pos);
+			AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
+			AttachedRigidbody.SetVelocity(ReferenceRigidbody.FromRelVel(Velocity, pos));
+			AttachedRigidbody.SetAngularVelocity(ReferenceRigidbody.FromRelAngVel(AngularVelocity));
+
+			Move();
 		}
 
-		var pos = ReferenceTransform.FromRelPos(transform.position);
-		AttachedRigidbody.SetPosition(pos);
-		AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
-		AttachedRigidbody.SetVelocity(ReferenceRigidbody.FromRelVel(Velocity, pos));
-		AttachedRigidbody.SetAngularVelocity(ReferenceRigidbody.FromRelAngVel(AngularVelocity));
+		private readonly List<MoveData> _toMove = new();
 
-		Move();
-	}
-
-	private readonly List<MoveData> _toMove = new();
-
-	private struct MoveData
-	{
-		public OWRigidbody Child;
-		public Vector3 RelPos;
-		public Quaternion RelRot;
-		public Vector3 RelVel;
-		public Vector3 RelAngVel;
-	}
-
-	private void QueueMove(OWRigidbody child)
-	{
-		if (!child)
+		private struct MoveData
 		{
-			return; // wtf
+			public OWRigidbody Child;
+			public Vector3 RelPos;
+			public Quaternion RelRot;
+			public Vector3 RelVel;
+			public Vector3 RelAngVel;
 		}
 
-		if (child.transform.parent)
+		private void QueueMove(OWRigidbody child)
 		{
-			// it's parented to AttachedObject or one of its children
-			return;
+			if (!child)
+			{
+				return; // wtf
+			}
+
+			if (child.transform.parent)
+			{
+				// it's parented to AttachedObject or one of its children
+				return;
+			}
+
+			var pos = child.GetPosition();
+			_toMove.Add(new MoveData
+			{
+				Child = child,
+				RelPos = AttachedRigidbody.transform.ToRelPos(pos),
+				RelRot = AttachedRigidbody.transform.ToRelRot(child.GetRotation()),
+				RelVel = AttachedRigidbody.ToRelVel(child.GetVelocity(), pos),
+				RelAngVel = AttachedRigidbody.ToRelAngVel(child.GetAngularVelocity())
+			});
 		}
 
-		var pos = child.GetPosition();
-		_toMove.Add(new MoveData
+		private void Move()
 		{
-			Child = child,
-			RelPos = AttachedRigidbody.transform.ToRelPos(pos),
-			RelRot = AttachedRigidbody.transform.ToRelRot(child.GetRotation()),
-			RelVel = AttachedRigidbody.ToRelVel(child.GetVelocity(), pos),
-			RelAngVel = AttachedRigidbody.ToRelAngVel(child.GetAngularVelocity())
-		});
-	}
+			foreach (var data in _toMove)
+			{
+				var pos = AttachedRigidbody.transform.FromRelPos(data.RelPos);
+				data.Child.SetPosition(pos);
+				data.Child.SetRotation(AttachedRigidbody.transform.FromRelRot(data.RelRot));
+				data.Child.SetVelocity(AttachedRigidbody.FromRelVel(data.RelVel, pos));
+				data.Child.SetAngularVelocity(AttachedRigidbody.FromRelAngVel(data.RelAngVel));
+			}
 
-	private void Move()
-	{
-		foreach (var data in _toMove)
-		{
-			var pos = AttachedRigidbody.transform.FromRelPos(data.RelPos);
-			data.Child.SetPosition(pos);
-			data.Child.SetRotation(AttachedRigidbody.transform.FromRelRot(data.RelRot));
-			data.Child.SetVelocity(AttachedRigidbody.FromRelVel(data.RelVel, pos));
-			data.Child.SetAngularVelocity(AttachedRigidbody.FromRelAngVel(data.RelAngVel));
+			_toMove.Clear();
 		}
-
-		_toMove.Clear();
 	}
 }

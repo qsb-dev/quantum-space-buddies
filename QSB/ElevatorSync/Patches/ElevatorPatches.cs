@@ -5,19 +5,20 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
 
-namespace QSB.ElevatorSync.Patches;
-
-[HarmonyPatch]
-public class ElevatorPatches : QSBPatch
+namespace QSB.ElevatorSync.Patches
 {
-	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
-
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(Elevator), nameof(Elevator.StartLift))]
-	public static void Elevator_StartLift(Elevator __instance)
+	[HarmonyPatch]
+	public class ElevatorPatches : QSBPatch
 	{
-		var isGoingUp = __instance._goingToTheEnd;
-		var qsbElevator = __instance.GetWorldObject<QSBElevator>();
-		qsbElevator.SendMessage(new ElevatorMessage(isGoingUp));
+		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(Elevator), nameof(Elevator.StartLift))]
+		public static void Elevator_StartLift(Elevator __instance)
+		{
+			var isGoingUp = __instance._goingToTheEnd;
+			var qsbElevator = __instance.GetWorldObject<QSBElevator>();
+			qsbElevator.SendMessage(new ElevatorMessage(isGoingUp));
+		}
 	}
 }

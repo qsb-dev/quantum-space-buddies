@@ -1,3 +1,4 @@
-﻿namespace QSB.Utility;
-
-public interface IAddComponentOnStart { }
+﻿namespace QSB.Utility
+{
+	public interface IAddComponentOnStart { }
+}

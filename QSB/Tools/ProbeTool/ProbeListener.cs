@@ -2,53 +2,54 @@
 using QSB.Tools.ProbeTool.Messages;
 using UnityEngine;
 
-namespace QSB.Tools.ProbeTool;
-
-internal class ProbeListener : MonoBehaviour
+namespace QSB.Tools.ProbeTool
 {
-	private SurveyorProbe _attachedProbe;
-
-	public void Init(SurveyorProbe localProbe)
+	internal class ProbeListener : MonoBehaviour
 	{
-		_attachedProbe = localProbe;
-		_attachedProbe.OnLaunchProbe += OnLaunchProbe;
-		_attachedProbe.OnAnchorProbe += OnAnchorProbe;
-		_attachedProbe.OnUnanchorProbe += OnUnanchorProbe;
-		_attachedProbe.OnRetrieveProbe += OnRetrieveProbe;
-		_attachedProbe.OnProbeDestroyed += OnProbeDestroyed;
-		_attachedProbe.OnStartRetrieveProbe += OnStartRetrieveProbe;
-	}
+		private SurveyorProbe _attachedProbe;
 
-	private void OnDestroy()
-	{
-		if (_attachedProbe == null)
+		public void Init(SurveyorProbe localProbe)
 		{
-			return;
+			_attachedProbe = localProbe;
+			_attachedProbe.OnLaunchProbe += OnLaunchProbe;
+			_attachedProbe.OnAnchorProbe += OnAnchorProbe;
+			_attachedProbe.OnUnanchorProbe += OnUnanchorProbe;
+			_attachedProbe.OnRetrieveProbe += OnRetrieveProbe;
+			_attachedProbe.OnProbeDestroyed += OnProbeDestroyed;
+			_attachedProbe.OnStartRetrieveProbe += OnStartRetrieveProbe;
 		}
 
-		_attachedProbe.OnLaunchProbe -= OnLaunchProbe;
-		_attachedProbe.OnAnchorProbe -= OnAnchorProbe;
-		_attachedProbe.OnUnanchorProbe -= OnUnanchorProbe;
-		_attachedProbe.OnRetrieveProbe -= OnRetrieveProbe;
-		_attachedProbe.OnProbeDestroyed -= OnProbeDestroyed;
-		_attachedProbe.OnStartRetrieveProbe -= OnStartRetrieveProbe;
+		private void OnDestroy()
+		{
+			if (_attachedProbe == null)
+			{
+				return;
+			}
+
+			_attachedProbe.OnLaunchProbe -= OnLaunchProbe;
+			_attachedProbe.OnAnchorProbe -= OnAnchorProbe;
+			_attachedProbe.OnUnanchorProbe -= OnUnanchorProbe;
+			_attachedProbe.OnRetrieveProbe -= OnRetrieveProbe;
+			_attachedProbe.OnProbeDestroyed -= OnProbeDestroyed;
+			_attachedProbe.OnStartRetrieveProbe -= OnStartRetrieveProbe;
+		}
+
+		private static void OnLaunchProbe()
+			=> new PlayerProbeEventMessage(ProbeEvent.Launch).Send();
+
+		private static void OnAnchorProbe()
+			=> new PlayerProbeEventMessage(ProbeEvent.Anchor).Send();
+
+		private static void OnUnanchorProbe()
+			=> new PlayerProbeEventMessage(ProbeEvent.Unanchor).Send();
+
+		private static void OnRetrieveProbe()
+			=> new PlayerProbeEventMessage(ProbeEvent.Retrieve).Send();
+
+		private static void OnProbeDestroyed()
+			=> new PlayerProbeEventMessage(ProbeEvent.Destroy).Send();
+
+		private static void OnStartRetrieveProbe(float length)
+			=> new ProbeStartRetrieveMessage(length).Send();
 	}
-
-	private static void OnLaunchProbe()
-		=> new PlayerProbeEventMessage(ProbeEvent.Launch).Send();
-
-	private static void OnAnchorProbe()
-		=> new PlayerProbeEventMessage(ProbeEvent.Anchor).Send();
-
-	private static void OnUnanchorProbe()
-		=> new PlayerProbeEventMessage(ProbeEvent.Unanchor).Send();
-
-	private static void OnRetrieveProbe()
-		=> new PlayerProbeEventMessage(ProbeEvent.Retrieve).Send();
-
-	private static void OnProbeDestroyed()
-		=> new PlayerProbeEventMessage(ProbeEvent.Destroy).Send();
-
-	private static void OnStartRetrieveProbe(float length)
-		=> new ProbeStartRetrieveMessage(length).Send();
 }

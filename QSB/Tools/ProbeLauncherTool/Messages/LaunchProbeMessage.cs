@@ -1,11 +1,12 @@
 ﻿using QSB.Messaging;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
 
-namespace QSB.Tools.ProbeLauncherTool.Messages;
-
-internal class LaunchProbeMessage : QSBWorldObjectMessage<QSBProbeLauncher, bool>
+namespace QSB.Tools.ProbeLauncherTool.Messages
 {
-	public LaunchProbeMessage(bool playEffects) => Value = playEffects;
+	internal class LaunchProbeMessage : QSBWorldObjectMessage<QSBProbeLauncher, bool>
+	{
+		public LaunchProbeMessage(bool playEffects) => Value = playEffects;
 
-	public override void OnReceiveRemote() => WorldObject.LaunchProbe(Value);
+		public override void OnReceiveRemote() => WorldObject.LaunchProbe(Value);
+	}
 }

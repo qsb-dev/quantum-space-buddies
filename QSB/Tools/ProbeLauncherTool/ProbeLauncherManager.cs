@@ -4,21 +4,22 @@ using QSB.WorldSync;
 using System.Linq;
 using System.Threading;
 
-namespace QSB.Tools.ProbeLauncherTool;
-
-internal class ProbeLauncherManager : WorldObjectManager
+namespace QSB.Tools.ProbeLauncherTool
 {
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
-
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+	internal class ProbeLauncherManager : WorldObjectManager
 	{
-		QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher));
-		if (scene == OWScene.SolarSystem)
+		public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
+
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
-			QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(new[]
+			QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher));
+			if (scene == OWScene.SolarSystem)
 			{
-				QSBWorldSync.GetUnityObjects<ShipCockpitController>().First().GetShipProbeLauncher()
-			});
+				QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(new[]
+				{
+					QSBWorldSync.GetUnityObjects<ShipCockpitController>().First().GetShipProbeLauncher()
+				});
+			}
 		}
 	}
 }

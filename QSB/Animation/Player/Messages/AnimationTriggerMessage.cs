@@ -2,27 +2,28 @@
 using QSB.Player;
 using QSB.WorldSync;
 
-namespace QSB.Animation.Player.Messages;
-
-internal class AnimationTriggerMessage : QSBMessage<string>
+namespace QSB.Animation.Player.Messages
 {
-	public AnimationTriggerMessage(string name) => Value = name;
-
-	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-	public override void OnReceiveRemote()
+	internal class AnimationTriggerMessage : QSBMessage<string>
 	{
-		var animationSync = QSBPlayerManager.GetPlayer(From).AnimationSync;
-		if (animationSync == null)
-		{
-			return;
-		}
+		public AnimationTriggerMessage(string name) => Value = name;
 
-		if (animationSync.VisibleAnimator == null)
-		{
-			return;
-		}
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
-		animationSync.VisibleAnimator.SetTrigger(Value);
+		public override void OnReceiveRemote()
+		{
+			var animationSync = QSBPlayerManager.GetPlayer(From).AnimationSync;
+			if (animationSync == null)
+			{
+				return;
+			}
+
+			if (animationSync.VisibleAnimator == null)
+			{
+				return;
+			}
+
+			animationSync.VisibleAnimator.SetTrigger(Value);
+		}
 	}
 }

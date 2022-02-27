@@ -1,6 +1,7 @@
-﻿namespace QSB.Syncs.Unsectored;
-
-public abstract class BaseUnsectoredSync : SyncBase
+﻿namespace QSB.Syncs.Unsectored
 {
-	protected sealed override bool AllowNullReferenceTransform => false;
+	public abstract class BaseUnsectoredSync : SyncBase
+	{
+		protected sealed override bool AllowNullReferenceTransform => false;
+	}
 }

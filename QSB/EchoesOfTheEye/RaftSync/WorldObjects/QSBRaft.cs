@@ -8,57 +8,58 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
-
-public class QSBRaft : WorldObject<RaftController>
+namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects
 {
-	public override bool ShouldDisplayDebug() => false;
-
-	public RaftTransformSync TransformSync;
-
-	private QSBLightSensor[] _lightSensors;
-
-	public override async UniTask Init(CancellationToken ct)
+	public class QSBRaft : WorldObject<RaftController>
 	{
-		if (QSBCore.IsHost)
+		public override bool ShouldDisplayDebug() => false;
+
+		public RaftTransformSync TransformSync;
+
+		private QSBLightSensor[] _lightSensors;
+
+		public override async UniTask Init(CancellationToken ct)
 		{
-			NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.RaftPrefab));
+			if (QSBCore.IsHost)
+			{
+				NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.RaftPrefab));
+			}
+
+			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
+
+			await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
+			_lightSensors = AttachedObject._lightSensors.Select(x => x.GetWorldObject<QSBLightSensor>()).ToArray();
+
+			foreach (var lightSensor in _lightSensors)
+			{
+				lightSensor.OnDetectLocalLight += OnDetectLocalLight;
+			}
 		}
 
-		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
-
-		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
-		_lightSensors = AttachedObject._lightSensors.Select(x => x.GetWorldObject<QSBLightSensor>()).ToArray();
-
-		foreach (var lightSensor in _lightSensors)
+		public override void OnRemoval()
 		{
-			lightSensor.OnDetectLocalLight += OnDetectLocalLight;
-		}
-	}
+			if (QSBCore.IsHost)
+			{
+				NetworkServer.Destroy(TransformSync.gameObject);
+			}
 
-	public override void OnRemoval()
-	{
-		if (QSBCore.IsHost)
-		{
-			NetworkServer.Destroy(TransformSync.gameObject);
+			foreach (var lightSensor in _lightSensors)
+			{
+				lightSensor.OnDetectLocalLight -= OnDetectLocalLight;
+			}
 		}
 
-		foreach (var lightSensor in _lightSensors)
+		private void OnDetectLocalLight()
 		{
-			lightSensor.OnDetectLocalLight -= OnDetectLocalLight;
+			if (AttachedObject.IsPlayerRiding())
+			{
+				TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+			}
 		}
-	}
 
-	private void OnDetectLocalLight()
-	{
-		if (AttachedObject.IsPlayerRiding())
+		public override void SendInitialState(uint to)
 		{
-			TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+			// todo?? SendInitialState
 		}
-	}
-
-	public override void SendInitialState(uint to)
-	{
-		// todo?? SendInitialState
 	}
 }

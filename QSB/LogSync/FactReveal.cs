@@ -1,7 +1,8 @@
-﻿namespace QSB.LogSync;
-
-public struct FactReveal
+﻿namespace QSB.LogSync
 {
-	public string Id;
-	public bool SaveGame;
+	public struct FactReveal
+	{
+		public string Id;
+		public bool SaveGame;
+	}
 }

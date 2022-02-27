@@ -5,41 +5,42 @@ using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.QuantumSync.Messages;
-
-internal class SocketStateChangeMessage : QSBWorldObjectMessage<QSBSocketedQuantumObject>
+namespace QSB.QuantumSync.Messages
 {
-	private int SocketId;
-	private Quaternion LocalRotation;
-
-	public SocketStateChangeMessage(int socketId, Quaternion localRotation)
+	internal class SocketStateChangeMessage : QSBWorldObjectMessage<QSBSocketedQuantumObject>
 	{
-		SocketId = socketId;
-		LocalRotation = localRotation;
-	}
+		private int SocketId;
+		private Quaternion LocalRotation;
 
-	public override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(SocketId);
-		writer.Write(LocalRotation);
-	}
-
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		SocketId = reader.Read<int>();
-		LocalRotation = reader.ReadQuaternion();
-	}
-
-	public override void OnReceiveRemote()
-	{
-		if (WorldObject.ControllingPlayer != From)
+		public SocketStateChangeMessage(int socketId, Quaternion localRotation)
 		{
-			DebugLog.ToConsole($"Error - Got SocketStateChangeEvent for {WorldObject.Name} from {From}, but it's currently controlled by {WorldObject.ControllingPlayer}!", MessageType.Error);
-			return;
+			SocketId = socketId;
+			LocalRotation = localRotation;
 		}
 
-		WorldObject.MoveToSocket(From, SocketId, LocalRotation);
+		public override void Serialize(NetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(SocketId);
+			writer.Write(LocalRotation);
+		}
+
+		public override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			SocketId = reader.Read<int>();
+			LocalRotation = reader.ReadQuaternion();
+		}
+
+		public override void OnReceiveRemote()
+		{
+			if (WorldObject.ControllingPlayer != From)
+			{
+				DebugLog.ToConsole($"Error - Got SocketStateChangeEvent for {WorldObject.Name} from {From}, but it's currently controlled by {WorldObject.ControllingPlayer}!", MessageType.Error);
+				return;
+			}
+
+			WorldObject.MoveToSocket(From, SocketId, LocalRotation);
+		}
 	}
 }

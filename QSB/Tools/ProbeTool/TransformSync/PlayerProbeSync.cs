@@ -4,73 +4,74 @@ using QSB.Tools.ProbeLauncherTool;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Tools.ProbeTool.TransformSync;
-
-public class PlayerProbeSync : SectoredTransformSync
+namespace QSB.Tools.ProbeTool.TransformSync
 {
-	/// <summary>
-	/// normally prints error when attached object is null.
-	/// this overrides it so that doesn't happen, since the probe can be destroyed.
-	/// </summary>
-	protected override bool CheckValid() => AttachedTransform && base.CheckValid();
-
-	protected override float DistanceChangeThreshold => 10f;
-	protected override bool UseInterpolation => true;
-	protected override bool AllowInactiveAttachedObject => true;
-	protected override bool IsPlayerObject => true;
-
-	public static PlayerProbeSync LocalInstance { get; private set; }
-
-	public override void OnStartAuthority() => LocalInstance = this;
-
-	protected override Transform InitLocalTransform()
+	public class PlayerProbeSync : SectoredTransformSync
 	{
-		SectorDetector.Init(Locator.GetProbe().GetSectorDetector());
+		/// <summary>
+		/// normally prints error when attached object is null.
+		/// this overrides it so that doesn't happen, since the probe can be destroyed.
+		/// </summary>
+		protected override bool CheckValid() => AttachedTransform && base.CheckValid();
 
-		var body = Locator.GetProbe().transform;
-		Player.ProbeBody = body.gameObject;
+		protected override float DistanceChangeThreshold => 10f;
+		protected override bool UseInterpolation => true;
+		protected override bool AllowInactiveAttachedObject => true;
+		protected override bool IsPlayerObject => true;
 
-		if (!Player.Body)
+		public static PlayerProbeSync LocalInstance { get; private set; }
+
+		public override void OnStartAuthority() => LocalInstance = this;
+
+		protected override Transform InitLocalTransform()
 		{
-			DebugLog.ToConsole($"Warning - Player.Body is null!", MessageType.Warning);
-			return null;
-		}
+			SectorDetector.Init(Locator.GetProbe().GetSectorDetector());
 
-		var listener = Player.Body.AddComponent<ProbeListener>();
-		listener.Init(Locator.GetProbe());
+			var body = Locator.GetProbe().transform;
+			Player.ProbeBody = body.gameObject;
 
-		var launcherListener = Player.Body.AddComponent<ProbeLauncherListener>();
-		launcherListener.Init(Player.LocalProbeLauncher);
-
-		return body;
-	}
-
-	protected override Transform InitRemoteTransform()
-		=> ProbeCreator.CreateProbe(Player);
-
-	protected override void GetFromAttached()
-	{
-		if (!AttachedTransform.gameObject.activeInHierarchy)
-		{
-			var probeBody = Locator.GetProbe().GetOWRigidbody();
-			if (!probeBody)
+			if (!Player.Body)
 			{
-				DebugLog.ToConsole($"Warning - Could not find OWRigidbody of local probe.", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Player.Body is null!", MessageType.Warning);
+				return null;
 			}
 
-			var probeLauncher = Player.LocalProbeLauncher;
-			// TODO : make this sync to the *active* probe launcher's _launcherTransform
-			var launcherTransform = probeLauncher._launcherTransform;
-			probeBody.SetPosition(launcherTransform.position);
-			probeBody.SetRotation(launcherTransform.rotation);
+			var listener = Player.Body.AddComponent<ProbeListener>();
+			listener.Init(Locator.GetProbe());
 
-			SetReferenceSector(Player.TransformSync.ReferenceSector);
+			var launcherListener = Player.Body.AddComponent<ProbeLauncherListener>();
+			launcherListener.Init(Player.LocalProbeLauncher);
+
+			return body;
 		}
 
-		base.GetFromAttached();
-	}
+		protected override Transform InitRemoteTransform()
+			=> ProbeCreator.CreateProbe(Player);
 
-	protected override bool CheckReady() =>
-		base.CheckReady() &&
-		(Locator.GetProbe() || AttachedTransform);
+		protected override void GetFromAttached()
+		{
+			if (!AttachedTransform.gameObject.activeInHierarchy)
+			{
+				var probeBody = Locator.GetProbe().GetOWRigidbody();
+				if (!probeBody)
+				{
+					DebugLog.ToConsole($"Warning - Could not find OWRigidbody of local probe.", MessageType.Warning);
+				}
+
+				var probeLauncher = Player.LocalProbeLauncher;
+				// TODO : make this sync to the *active* probe launcher's _launcherTransform
+				var launcherTransform = probeLauncher._launcherTransform;
+				probeBody.SetPosition(launcherTransform.position);
+				probeBody.SetRotation(launcherTransform.rotation);
+
+				SetReferenceSector(Player.TransformSync.ReferenceSector);
+			}
+
+			base.GetFromAttached();
+		}
+
+		protected override bool CheckReady() =>
+			base.CheckReady() &&
+			(Locator.GetProbe() || AttachedTransform);
+	}
 }

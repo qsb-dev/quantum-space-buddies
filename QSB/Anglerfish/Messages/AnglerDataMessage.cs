@@ -4,71 +4,72 @@ using QSB.Messaging;
 using QSB.Player;
 using UnityEngine;
 
-namespace QSB.Anglerfish.Messages;
-
-/// <summary>
-/// angler state, target transform, and local disturbance pos
-/// </summary>
-public class AnglerDataMessage : QSBWorldObjectMessage<QSBAngler, AnglerfishController.AnglerState>
+namespace QSB.Anglerfish.Messages
 {
-	private uint TargetId;
-	private Vector3 LocalDisturbancePos;
-
-	public AnglerDataMessage(QSBAngler qsbAngler)
+	/// <summary>
+	/// angler state, target transform, and local disturbance pos
+	/// </summary>
+	public class AnglerDataMessage : QSBWorldObjectMessage<QSBAngler, AnglerfishController.AnglerState>
 	{
-		Value = qsbAngler.AttachedObject._currentState;
-		TargetId = TargetToId(qsbAngler.TargetTransform);
-		LocalDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos;
-	}
+		private uint TargetId;
+		private Vector3 LocalDisturbancePos;
 
-	public override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(TargetId);
-		writer.Write(LocalDisturbancePos);
-	}
-
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		TargetId = reader.Read<uint>();
-		LocalDisturbancePos = reader.ReadVector3();
-	}
-
-	public override void OnReceiveRemote()
-	{
-		WorldObject.TargetTransform = IdToTarget(TargetId);
-		WorldObject.AttachedObject._localDisturbancePos = LocalDisturbancePos;
-		WorldObject.AttachedObject.ChangeState(Value);
-	}
-
-	private static uint TargetToId(Transform transform)
-	{
-		if (transform == null)
+		public AnglerDataMessage(QSBAngler qsbAngler)
 		{
-			return uint.MaxValue;
+			Value = qsbAngler.AttachedObject._currentState;
+			TargetId = TargetToId(qsbAngler.TargetTransform);
+			LocalDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos;
 		}
 
-		if (transform == Locator.GetShipTransform())
+		public override void Serialize(NetworkWriter writer)
 		{
-			return uint.MaxValue - 1;
+			base.Serialize(writer);
+			writer.Write(TargetId);
+			writer.Write(LocalDisturbancePos);
 		}
 
-		return QSBPlayerManager.LocalPlayerId;
-	}
-
-	private static Transform IdToTarget(uint id)
-	{
-		if (id == uint.MaxValue)
+		public override void Deserialize(NetworkReader reader)
 		{
-			return null;
+			base.Deserialize(reader);
+			TargetId = reader.Read<uint>();
+			LocalDisturbancePos = reader.ReadVector3();
 		}
 
-		if (id == uint.MaxValue - 1)
+		public override void OnReceiveRemote()
 		{
-			return Locator.GetShipTransform();
+			WorldObject.TargetTransform = IdToTarget(TargetId);
+			WorldObject.AttachedObject._localDisturbancePos = LocalDisturbancePos;
+			WorldObject.AttachedObject.ChangeState(Value);
 		}
 
-		return QSBPlayerManager.GetPlayer(id).Body.transform;
+		private static uint TargetToId(Transform transform)
+		{
+			if (transform == null)
+			{
+				return uint.MaxValue;
+			}
+
+			if (transform == Locator.GetShipTransform())
+			{
+				return uint.MaxValue - 1;
+			}
+
+			return QSBPlayerManager.LocalPlayerId;
+		}
+
+		private static Transform IdToTarget(uint id)
+		{
+			if (id == uint.MaxValue)
+			{
+				return null;
+			}
+
+			if (id == uint.MaxValue - 1)
+			{
+				return Locator.GetShipTransform();
+			}
+
+			return QSBPlayerManager.GetPlayer(id).Body.transform;
+		}
 	}
 }

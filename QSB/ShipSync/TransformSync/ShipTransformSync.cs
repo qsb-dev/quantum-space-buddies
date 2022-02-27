@@ -2,74 +2,75 @@ using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.ShipSync.TransformSync;
-
-public class ShipTransformSync : SectoredRigidbodySync
+namespace QSB.ShipSync.TransformSync
 {
-	public static ShipTransformSync LocalInstance { get; private set; }
-
-	private float _lastSetPositionTime;
-	private const float ForcePositionAfterTime = 1;
-
-	protected override bool CheckReady() =>
-		base.CheckReady() &&
-		Locator.GetShipBody();
-
-	public override void OnStartClient()
+	public class ShipTransformSync : SectoredRigidbodySync
 	{
-		base.OnStartClient();
-		LocalInstance = this;
-	}
+		public static ShipTransformSync LocalInstance { get; private set; }
 
-	protected override OWRigidbody InitAttachedRigidbody()
-	{
-		SectorDetector.Init(Locator.GetShipDetector().GetComponent<SectorDetector>());
-		return Locator.GetShipBody();
-	}
+		private float _lastSetPositionTime;
+		private const float ForcePositionAfterTime = 1;
 
-	/// Dont do base... this is a replacement!
-	protected override void ApplyToAttached()
-	{
-		ApplyToSector();
-		if (!ReferenceTransform)
+		protected override bool CheckReady() =>
+			base.CheckReady() &&
+			Locator.GetShipBody();
+
+		public override void OnStartClient()
 		{
-			return;
+			base.OnStartClient();
+			LocalInstance = this;
 		}
 
-		var targetPos = ReferenceTransform.FromRelPos(transform.position);
-
-		if (Time.unscaledTime >= _lastSetPositionTime + ForcePositionAfterTime)
+		protected override OWRigidbody InitAttachedRigidbody()
 		{
-			_lastSetPositionTime = Time.unscaledTime;
-
-			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
-
-			AttachedRigidbody.SetPosition(targetPos);
-			AttachedRigidbody.SetRotation(targetRot);
+			SectorDetector.Init(Locator.GetShipDetector().GetComponent<SectorDetector>());
+			return Locator.GetShipBody();
 		}
 
-		var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
-		var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
+		/// Dont do base... this is a replacement!
+		protected override void ApplyToAttached()
+		{
+			ApplyToSector();
+			if (!ReferenceTransform)
+			{
+				return;
+			}
 
-		SetVelocity(AttachedRigidbody, targetVelocity);
-		AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
+			var targetPos = ReferenceTransform.FromRelPos(transform.position);
+
+			if (Time.unscaledTime >= _lastSetPositionTime + ForcePositionAfterTime)
+			{
+				_lastSetPositionTime = Time.unscaledTime;
+
+				var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
+
+				AttachedRigidbody.SetPosition(targetPos);
+				AttachedRigidbody.SetRotation(targetRot);
+			}
+
+			var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
+			var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
+
+			SetVelocity(AttachedRigidbody, targetVelocity);
+			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
+		}
+
+		/// use OWRigidbody version instead of ShipBody override
+		private static void SetVelocity(OWRigidbody rigidbody, Vector3 newVelocity)
+		{
+			if (rigidbody.RunningKinematicSimulation())
+			{
+				rigidbody._kinematicRigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			}
+			else
+			{
+				rigidbody._rigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			}
+
+			rigidbody._lastVelocity = rigidbody._currentVelocity;
+			rigidbody._currentVelocity = newVelocity;
+		}
+
+		protected override bool UseInterpolation => false;
 	}
-
-	/// use OWRigidbody version instead of ShipBody override
-	private static void SetVelocity(OWRigidbody rigidbody, Vector3 newVelocity)
-	{
-		if (rigidbody.RunningKinematicSimulation())
-		{
-			rigidbody._kinematicRigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
-		}
-		else
-		{
-			rigidbody._rigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
-		}
-
-		rigidbody._lastVelocity = rigidbody._currentVelocity;
-		rigidbody._currentVelocity = newVelocity;
-	}
-
-	protected override bool UseInterpolation => false;
 }

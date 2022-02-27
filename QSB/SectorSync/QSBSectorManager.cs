@@ -9,91 +9,92 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace QSB.SectorSync;
-
-public class QSBSectorManager : WorldObjectManager
+namespace QSB.SectorSync
 {
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
-
-	public static QSBSectorManager Instance { get; private set; }
-	private bool _isReady;
-	public readonly List<QSBSector> FakeSectors = new();
-
-	public readonly List<BaseSectoredSync> SectoredSyncs = new();
-
-	private const float UpdateInterval = 0.4f;
-	private float _timer = UpdateInterval;
-
-	private void Update()
+	public class QSBSectorManager : WorldObjectManager
 	{
-		_timer += Time.unscaledDeltaTime;
-		if (_timer < UpdateInterval)
-		{
-			return;
-		}
+		public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
-		_timer = 0;
-		UpdateReferenceSectors();
-	}
+		public static QSBSectorManager Instance { get; private set; }
+		private bool _isReady;
+		public readonly List<QSBSector> FakeSectors = new();
 
-	public void UpdateReferenceSectors()
-	{
-		if (!Instance._isReady || !QSBWorldSync.AllObjectsReady)
-		{
-			return;
-		}
+		public readonly List<BaseSectoredSync> SectoredSyncs = new();
 
-		foreach (var sync in SectoredSyncs)
+		private const float UpdateInterval = 0.4f;
+		private float _timer = UpdateInterval;
+
+		private void Update()
 		{
-			if (sync.hasAuthority
-			    && sync.IsValid
-			    && sync.AttachedTransform.gameObject.activeInHierarchy)
+			_timer += Time.unscaledDeltaTime;
+			if (_timer < UpdateInterval)
 			{
-				UpdateReferenceSector(sync);
+				return;
 			}
-		}
-	}
 
-	private static void UpdateReferenceSector(BaseSectoredSync sync)
-	{
-		var closestSector = sync.SectorDetector.GetClosestSector();
-		if (closestSector == null)
-		{
-			return;
+			_timer = 0;
+			UpdateReferenceSectors();
 		}
 
-		sync.SetReferenceSector(closestSector);
-	}
-
-	public void Awake()
-	{
-		Instance = this;
-		DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
-	}
-
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-	{
-		DebugLog.DebugWrite("Building sectors...", MessageType.Info);
-		if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+		public void UpdateReferenceSectors()
 		{
-			var timeLoopRing = GameObject.Find("TimeLoopRing_Body");
-			if (timeLoopRing != null)
+			if (!Instance._isReady || !QSBWorldSync.AllObjectsReady)
 			{
-				if (timeLoopRing.GetComponent<FakeSector>() == null)
+				return;
+			}
+
+			foreach (var sync in SectoredSyncs)
+			{
+				if (sync.hasAuthority
+				    && sync.IsValid
+				    && sync.AttachedTransform.gameObject.activeInHierarchy)
 				{
-					timeLoopRing.AddComponent<FakeSector>().AttachedSector = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
+					UpdateReferenceSector(sync);
 				}
 			}
-			else
-			{
-				DebugLog.ToConsole($"Error - TimeLoopRing_Body not found!", MessageType.Error);
-			}
 		}
 
-		QSBWorldSync.Init<QSBSector, Sector>();
-		_isReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
-	}
+		private static void UpdateReferenceSector(BaseSectoredSync sync)
+		{
+			var closestSector = sync.SectorDetector.GetClosestSector();
+			if (closestSector == null)
+			{
+				return;
+			}
 
-	public override void UnbuildWorldObjects() =>
-		_isReady = false;
+			sync.SetReferenceSector(closestSector);
+		}
+
+		public void Awake()
+		{
+			Instance = this;
+			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
+		}
+
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+		{
+			DebugLog.DebugWrite("Building sectors...", MessageType.Info);
+			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
+			{
+				var timeLoopRing = GameObject.Find("TimeLoopRing_Body");
+				if (timeLoopRing != null)
+				{
+					if (timeLoopRing.GetComponent<FakeSector>() == null)
+					{
+						timeLoopRing.AddComponent<FakeSector>().AttachedSector = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
+					}
+				}
+				else
+				{
+					DebugLog.ToConsole($"Error - TimeLoopRing_Body not found!", MessageType.Error);
+				}
+			}
+
+			QSBWorldSync.Init<QSBSector, Sector>();
+			_isReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
+		}
+
+		public override void UnbuildWorldObjects() =>
+			_isReady = false;
+	}
 }

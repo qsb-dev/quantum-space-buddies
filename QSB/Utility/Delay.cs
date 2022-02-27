@@ -1,29 +1,30 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
 
-namespace QSB.Utility;
-
-public static class Delay
+namespace QSB.Utility
 {
-	public static void RunNextFrame(Action action) => UniTask.Create(async () =>
+	public static class Delay
 	{
-		await UniTask.WaitForEndOfFrame();
-		action();
-	});
-
-	public static void RunFramesLater(int n, Action action) => UniTask.Create(async () =>
-	{
-		for (var i = 0; i < n; i++)
+		public static void RunNextFrame(Action action) => UniTask.Create(async () =>
 		{
 			await UniTask.WaitForEndOfFrame();
-		}
+			action();
+		});
 
-		action();
-	});
+		public static void RunFramesLater(int n, Action action) => UniTask.Create(async () =>
+		{
+			for (var i = 0; i < n; i++)
+			{
+				await UniTask.WaitForEndOfFrame();
+			}
 
-	public static void RunWhen(Func<bool> predicate, Action action) => UniTask.Create(async () =>
-	{
-		await UniTask.WaitUntil(predicate);
-		action();
-	});
+			action();
+		});
+
+		public static void RunWhen(Func<bool> predicate, Action action) => UniTask.Create(async () =>
+		{
+			await UniTask.WaitUntil(predicate);
+			action();
+		});
+	}
 }

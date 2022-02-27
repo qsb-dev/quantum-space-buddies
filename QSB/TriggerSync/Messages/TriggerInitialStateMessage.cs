@@ -4,27 +4,28 @@ using QSB.TriggerSync.WorldObjects;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QSB.TriggerSync.Messages;
-
-/// <summary>
-/// always sent by host
-/// </summary>
-public class TriggerInitialStateMessage : QSBWorldObjectMessage<IQSBTrigger, uint[]>
+namespace QSB.TriggerSync.Messages
 {
-	public TriggerInitialStateMessage(IEnumerable<PlayerInfo> occupants) =>
-		Value = occupants.Select(x => x.PlayerId).ToArray();
-
-	public override void OnReceiveRemote()
+	/// <summary>
+	/// always sent by host
+	/// </summary>
+	public class TriggerInitialStateMessage : QSBWorldObjectMessage<IQSBTrigger, uint[]>
 	{
-		var serverOccupants = Value.Select(QSBPlayerManager.GetPlayer).ToList();
-		foreach (var added in serverOccupants.Except(WorldObject.Occupants))
-		{
-			WorldObject.Enter(added);
-		}
+		public TriggerInitialStateMessage(IEnumerable<PlayerInfo> occupants) =>
+			Value = occupants.Select(x => x.PlayerId).ToArray();
 
-		foreach (var removed in WorldObject.Occupants.Except(serverOccupants))
+		public override void OnReceiveRemote()
 		{
-			WorldObject.Exit(removed);
+			var serverOccupants = Value.Select(QSBPlayerManager.GetPlayer).ToList();
+			foreach (var added in serverOccupants.Except(WorldObject.Occupants))
+			{
+				WorldObject.Enter(added);
+			}
+
+			foreach (var removed in WorldObject.Occupants.Except(serverOccupants))
+			{
+				WorldObject.Exit(removed);
+			}
 		}
 	}
 }

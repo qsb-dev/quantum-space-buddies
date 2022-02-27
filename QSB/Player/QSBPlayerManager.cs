@@ -8,114 +8,115 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.Player;
-
-public static class QSBPlayerManager
+namespace QSB.Player
 {
-	public static PlayerInfo LocalPlayer
+	public static class QSBPlayerManager
 	{
-		get
+		public static PlayerInfo LocalPlayer
 		{
-			var localInstance = PlayerTransformSync.LocalInstance;
-			if (localInstance == null)
+			get
 			{
-				DebugLog.ToConsole("Error - Trying to get LocalPlayer when the local PlayerTransformSync instance is null." +
-				                   $"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
+				var localInstance = PlayerTransformSync.LocalInstance;
+				if (localInstance == null)
+				{
+					DebugLog.ToConsole("Error - Trying to get LocalPlayer when the local PlayerTransformSync instance is null." +
+					                   $"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
+					return null;
+				}
+
+				return localInstance.Player;
+			}
+		}
+		public static uint LocalPlayerId => LocalPlayer?.PlayerId ?? uint.MaxValue;
+
+		/// <summary>
+		/// called right after player is added
+		/// </summary>
+		public static Action<PlayerInfo> OnAddPlayer;
+		/// <summary>
+		/// called right before player is removed
+		/// </summary>
+		public static Action<PlayerInfo> OnRemovePlayer;
+
+		public static readonly List<PlayerInfo> PlayerList = new();
+
+		public static PlayerInfo GetPlayer(uint id)
+		{
+			if (id is uint.MaxValue or 0)
+			{
+				return default;
+			}
+
+			var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
+			if (player == null)
+			{
+				DebugLog.ToConsole($"Error - Player with id {id} does not exist! Stacktrace : {Environment.StackTrace}", MessageType.Error);
+				return default;
+			}
+
+			return player;
+		}
+
+		public static bool PlayerExists(uint id) =>
+			id is not (uint.MaxValue or 0) && PlayerList.Any(x => x.PlayerId == id);
+
+		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
+		{
+			var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
+			if (includeLocalCamera
+			    && LocalPlayer != default
+			    && LocalPlayer.Camera != null)
+			{
+				cameraList.Add(LocalPlayer);
+			}
+			else if (includeLocalCamera && (LocalPlayer == default || LocalPlayer.Camera == null))
+			{
+				if (LocalPlayer == default)
+				{
+					DebugLog.ToConsole($"Error - LocalPlayer is null.", MessageType.Error);
+					return cameraList;
+				}
+
+				DebugLog.ToConsole($"Error - LocalPlayer.Camera is null.", MessageType.Error);
+				LocalPlayer.Camera = Locator.GetPlayerCamera();
+			}
+
+			return cameraList;
+		}
+
+		public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
+			=> new(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
+
+		public static void ShowAllPlayers()
+			=> PlayerList.ForEach(x => x.SetVisible(true, 2));
+
+		public static void HideAllPlayers()
+			=> PlayerList.ForEach(x => x.SetVisible(false, 2));
+
+		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
+			? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
+			: GetClosestPlayerToWorldPoint(PlayerList.Where(x => x != LocalPlayer).ToList(), worldPoint);
+
+		public static PlayerInfo GetClosestPlayerToWorldPoint(List<PlayerInfo> playerList, Vector3 worldPoint)
+		{
+			if (playerList == null)
+			{
+				DebugLog.ToConsole($"Error - Cannot get closest player from null player list.", MessageType.Error);
 				return null;
 			}
 
-			return localInstance.Player;
-		}
-	}
-	public static uint LocalPlayerId => LocalPlayer?.PlayerId ?? uint.MaxValue;
+			playerList = playerList.Where(x => x.IsReady && x.Body != null).ToList();
 
-	/// <summary>
-	/// called right after player is added
-	/// </summary>
-	public static Action<PlayerInfo> OnAddPlayer;
-	/// <summary>
-	/// called right before player is removed
-	/// </summary>
-	public static Action<PlayerInfo> OnRemovePlayer;
-
-	public static readonly List<PlayerInfo> PlayerList = new();
-
-	public static PlayerInfo GetPlayer(uint id)
-	{
-		if (id is uint.MaxValue or 0)
-		{
-			return default;
-		}
-
-		var player = PlayerList.FirstOrDefault(x => x.PlayerId == id);
-		if (player == null)
-		{
-			DebugLog.ToConsole($"Error - Player with id {id} does not exist! Stacktrace : {Environment.StackTrace}", MessageType.Error);
-			return default;
-		}
-
-		return player;
-	}
-
-	public static bool PlayerExists(uint id) =>
-		id is not (uint.MaxValue or 0) && PlayerList.Any(x => x.PlayerId == id);
-
-	public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
-	{
-		var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
-		if (includeLocalCamera
-		    && LocalPlayer != default
-		    && LocalPlayer.Camera != null)
-		{
-			cameraList.Add(LocalPlayer);
-		}
-		else if (includeLocalCamera && (LocalPlayer == default || LocalPlayer.Camera == null))
-		{
-			if (LocalPlayer == default)
+			if (playerList.Count == 0)
 			{
-				DebugLog.ToConsole($"Error - LocalPlayer is null.", MessageType.Error);
-				return cameraList;
+				DebugLog.ToConsole($"Error - Cannot get closest player from empty (ready) player list.", MessageType.Error);
+				return null;
 			}
 
-			DebugLog.ToConsole($"Error - LocalPlayer.Camera is null.", MessageType.Error);
-			LocalPlayer.Camera = Locator.GetPlayerCamera();
+			return playerList.MinBy(x => Vector3.Distance(x.Body.transform.position, worldPoint));
 		}
 
-		return cameraList;
+		public static IEnumerable<Tuple<PlayerInfo, IQSBItem>> GetPlayerCarryItems()
+			=> PlayerList.Select(x => new Tuple<PlayerInfo, IQSBItem>(x, x.HeldItem));
 	}
-
-	public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
-		=> new(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
-
-	public static void ShowAllPlayers()
-		=> PlayerList.ForEach(x => x.SetVisible(true, 2));
-
-	public static void HideAllPlayers()
-		=> PlayerList.ForEach(x => x.SetVisible(false, 2));
-
-	public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
-		? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
-		: GetClosestPlayerToWorldPoint(PlayerList.Where(x => x != LocalPlayer).ToList(), worldPoint);
-
-	public static PlayerInfo GetClosestPlayerToWorldPoint(List<PlayerInfo> playerList, Vector3 worldPoint)
-	{
-		if (playerList == null)
-		{
-			DebugLog.ToConsole($"Error - Cannot get closest player from null player list.", MessageType.Error);
-			return null;
-		}
-
-		playerList = playerList.Where(x => x.IsReady && x.Body != null).ToList();
-
-		if (playerList.Count == 0)
-		{
-			DebugLog.ToConsole($"Error - Cannot get closest player from empty (ready) player list.", MessageType.Error);
-			return null;
-		}
-
-		return playerList.MinBy(x => Vector3.Distance(x.Body.transform.position, worldPoint));
-	}
-
-	public static IEnumerable<Tuple<PlayerInfo, IQSBItem>> GetPlayerCarryItems()
-		=> PlayerList.Select(x => new Tuple<PlayerInfo, IQSBItem>(x, x.HeldItem));
 }

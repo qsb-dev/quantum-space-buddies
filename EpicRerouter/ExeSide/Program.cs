@@ -3,54 +3,55 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace EpicRerouter.ExeSide;
-
-public static class Program
+namespace EpicRerouter.ExeSide
 {
-	public static string ProductName;
-	public static string Version;
-
-	private static void Main(string[] args)
+	public static class Program
 	{
-		ProductName = args[0];
-		Log($"product name = {ProductName}");
-		Version = args[1];
-		Log($"version = {Version}");
-		var managedDir = args[2];
-		Log($"managed dir = {managedDir}");
-		var gameArgs = args.Skip(3).ToArray();
-		Log($"game args = {string.Join(", ", gameArgs)}");
+		public static string ProductName;
+		public static string Version;
 
-		AppDomain.CurrentDomain.AssemblyResolve += (_, e) =>
+		private static void Main(string[] args)
 		{
-			var name = new AssemblyName(e.Name).Name + ".dll";
-			var path = Path.Combine(managedDir, name);
-			return File.Exists(path) ? Assembly.LoadFile(path) : null;
-		};
+			ProductName = args[0];
+			Log($"product name = {ProductName}");
+			Version = args[1];
+			Log($"version = {Version}");
+			var managedDir = args[2];
+			Log($"managed dir = {managedDir}");
+			var gameArgs = args.Skip(3).ToArray();
+			Log($"game args = {string.Join(", ", gameArgs)}");
 
-		Go();
-	}
-
-	private static void Go()
-	{
-		try
-		{
-			EpicPlatformManager.Init();
-			EpicEntitlementRetriever.Init();
-
-			while (EpicEntitlementRetriever.GetOwnershipStatus() == EntitlementsManager.AsyncOwnershipStatus.NotReady)
+			AppDomain.CurrentDomain.AssemblyResolve += (_, e) =>
 			{
-				EpicPlatformManager.Tick();
+				var name = new AssemblyName(e.Name).Name + ".dll";
+				var path = Path.Combine(managedDir, name);
+				return File.Exists(path) ? Assembly.LoadFile(path) : null;
+			};
+
+			Go();
+		}
+
+		private static void Go()
+		{
+			try
+			{
+				EpicPlatformManager.Init();
+				EpicEntitlementRetriever.Init();
+
+				while (EpicEntitlementRetriever.GetOwnershipStatus() == EntitlementsManager.AsyncOwnershipStatus.NotReady)
+				{
+					EpicPlatformManager.Tick();
+				}
+			}
+			finally
+			{
+				EpicEntitlementRetriever.Uninit();
+				EpicPlatformManager.Uninit();
+
+				Environment.Exit((int)EpicEntitlementRetriever.GetOwnershipStatus());
 			}
 		}
-		finally
-		{
-			EpicEntitlementRetriever.Uninit();
-			EpicPlatformManager.Uninit();
 
-			Environment.Exit((int)EpicEntitlementRetriever.GetOwnershipStatus());
-		}
+		public static void Log(object msg) => Console.Error.WriteLine(msg);
 	}
-
-	public static void Log(object msg) => Console.Error.WriteLine(msg);
 }

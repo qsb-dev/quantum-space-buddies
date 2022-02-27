@@ -4,27 +4,28 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Utility;
 
-namespace QSB.DeathSync.Messages;
-
-// when all players die
-internal class EndLoopMessage : QSBMessage
+namespace QSB.DeathSync.Messages
 {
-	public override void OnReceiveLocal() => OnReceiveRemote();
-
-	public override void OnReceiveRemote()
+	// when all players die
+	internal class EndLoopMessage : QSBMessage
 	{
-		DebugLog.DebugWrite($" ~~~~ END LOOP - all players are dead ~~~~ ");
-		if (ServerStateManager.Instance.GetServerState() == ServerState.WaitingForAllPlayersToDie)
-		{
-			return;
-		}
+		public override void OnReceiveLocal() => OnReceiveRemote();
 
-		QSBPatchManager.DoUnpatchType(QSBPatchTypes.RespawnTime);
-
-		Locator.GetDeathManager().KillPlayer(DeathType.TimeLoop);
-		if (QSBCore.IsHost)
+		public override void OnReceiveRemote()
 		{
-			new ServerStateMessage(ServerState.WaitingForAllPlayersToDie).Send();
+			DebugLog.DebugWrite($" ~~~~ END LOOP - all players are dead ~~~~ ");
+			if (ServerStateManager.Instance.GetServerState() == ServerState.WaitingForAllPlayersToDie)
+			{
+				return;
+			}
+
+			QSBPatchManager.DoUnpatchType(QSBPatchTypes.RespawnTime);
+
+			Locator.GetDeathManager().KillPlayer(DeathType.TimeLoop);
+			if (QSBCore.IsHost)
+			{
+				new ServerStateMessage(ServerState.WaitingForAllPlayersToDie).Send();
+			}
 		}
 	}
 }

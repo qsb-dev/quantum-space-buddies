@@ -1,53 +1,54 @@
 ﻿using Mirror;
 using QSB.Messaging;
 
-namespace QSB.SaveSync.Messages;
-
-internal class ShipLogFactSaveMessage : QSBMessage
+namespace QSB.SaveSync.Messages
 {
-	private string _id;
-	private int _revealOrder;
-	private bool _read;
-	private bool _newlyRevealed;
-
-	public ShipLogFactSaveMessage(ShipLogFactSave save)
+	internal class ShipLogFactSaveMessage : QSBMessage
 	{
-		_id = save.id;
-		_revealOrder = save.revealOrder;
-		_read = save.read;
-		_newlyRevealed = save.newlyRevealed;
-	}
+		private string _id;
+		private int _revealOrder;
+		private bool _read;
+		private bool _newlyRevealed;
 
-	public override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(_id);
-		writer.Write(_revealOrder);
-		writer.Write(_read);
-		writer.Write(_newlyRevealed);
-	}
-
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		_id = reader.ReadString();
-		_revealOrder = reader.ReadInt();
-		_read = reader.ReadBool();
-		_newlyRevealed = reader.ReadBool();
-	}
-
-	public override void OnReceiveRemote()
-	{
-		var save = PlayerData.GetShipLogFactSave(_id);
-
-		if (save == null)
+		public ShipLogFactSaveMessage(ShipLogFactSave save)
 		{
-			save = new ShipLogFactSave(_id);
-			PlayerData.AddShipLogFactSave(save);
+			_id = save.id;
+			_revealOrder = save.revealOrder;
+			_read = save.read;
+			_newlyRevealed = save.newlyRevealed;
 		}
 
-		save.revealOrder = _revealOrder;
-		save.read = _read;
-		save.newlyRevealed = _newlyRevealed;
+		public override void Serialize(NetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(_id);
+			writer.Write(_revealOrder);
+			writer.Write(_read);
+			writer.Write(_newlyRevealed);
+		}
+
+		public override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			_id = reader.ReadString();
+			_revealOrder = reader.ReadInt();
+			_read = reader.ReadBool();
+			_newlyRevealed = reader.ReadBool();
+		}
+
+		public override void OnReceiveRemote()
+		{
+			var save = PlayerData.GetShipLogFactSave(_id);
+
+			if (save == null)
+			{
+				save = new ShipLogFactSave(_id);
+				PlayerData.AddShipLogFactSave(save);
+			}
+
+			save.revealOrder = _revealOrder;
+			save.read = _read;
+			save.newlyRevealed = _newlyRevealed;
+		}
 	}
 }

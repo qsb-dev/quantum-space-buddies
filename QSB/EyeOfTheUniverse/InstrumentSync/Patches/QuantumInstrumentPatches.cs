@@ -6,42 +6,43 @@ using QSB.Patches;
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches;
-
-internal class QuantumInstrumentPatches : QSBPatch
+namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches
 {
-	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
-
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.OnPressInteract))]
-	public static void OnPressInteract(QuantumInstrument __instance)
-		=> __instance.GetWorldObject<QSBQuantumInstrument>().SendMessage(new GatherInstrumentMessage());
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.Update))]
-	public static bool Update(QuantumInstrument __instance)
+	internal class QuantumInstrumentPatches : QSBPatch
 	{
-		if (__instance._gatherWithScope && !__instance._waitToFlickerOut)
+		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.OnPressInteract))]
+		public static void OnPressInteract(QuantumInstrument __instance)
+			=> __instance.GetWorldObject<QSBQuantumInstrument>().SendMessage(new GatherInstrumentMessage());
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(QuantumInstrument), nameof(QuantumInstrument.Update))]
+		public static bool Update(QuantumInstrument __instance)
 		{
-			__instance._scopeGatherPrompt.SetVisibility(false);
-			if (Locator.GetToolModeSwapper().GetSignalScope().InZoomMode()
-			    && Vector3.Angle(__instance.transform.position - Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward) < 1f)
+			if (__instance._gatherWithScope && !__instance._waitToFlickerOut)
 			{
-				__instance._scopeGatherPrompt.SetVisibility(true);
-				if (OWInput.IsNewlyPressed(InputLibrary.interact))
+				__instance._scopeGatherPrompt.SetVisibility(false);
+				if (Locator.GetToolModeSwapper().GetSignalScope().InZoomMode()
+				    && Vector3.Angle(__instance.transform.position - Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward) < 1f)
 				{
-					__instance.Gather();
-					__instance.GetWorldObject<QSBQuantumInstrument>().SendMessage(new GatherInstrumentMessage());
-					Locator.GetPromptManager().RemoveScreenPrompt(__instance._scopeGatherPrompt);
+					__instance._scopeGatherPrompt.SetVisibility(true);
+					if (OWInput.IsNewlyPressed(InputLibrary.interact))
+					{
+						__instance.Gather();
+						__instance.GetWorldObject<QSBQuantumInstrument>().SendMessage(new GatherInstrumentMessage());
+						Locator.GetPromptManager().RemoveScreenPrompt(__instance._scopeGatherPrompt);
+					}
 				}
 			}
-		}
 
-		if (__instance._waitToFlickerOut && Time.time > __instance._flickerOutTime)
-		{
-			__instance.FinishGather();
-		}
+			if (__instance._waitToFlickerOut && Time.time > __instance._flickerOutTime)
+			{
+				__instance.FinishGather();
+			}
 
-		return false;
+			return false;
+		}
 	}
 }

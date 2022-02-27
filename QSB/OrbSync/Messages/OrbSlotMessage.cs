@@ -2,29 +2,30 @@
 using QSB.Messaging;
 using QSB.OrbSync.WorldObjects;
 
-namespace QSB.OrbSync.Messages;
-
-public class OrbSlotMessage : QSBWorldObjectMessage<QSBOrb, int>
+namespace QSB.OrbSync.Messages
 {
-	private bool _playAudio;
-
-	public OrbSlotMessage(int slotIndex, bool playAudio)
+	public class OrbSlotMessage : QSBWorldObjectMessage<QSBOrb, int>
 	{
-		Value = slotIndex;
-		_playAudio = playAudio;
-	}
+		private bool _playAudio;
 
-	public override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(_playAudio);
-	}
+		public OrbSlotMessage(int slotIndex, bool playAudio)
+		{
+			Value = slotIndex;
+			_playAudio = playAudio;
+		}
 
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		_playAudio = reader.Read<bool>();
-	}
+		public override void Serialize(NetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(_playAudio);
+		}
 
-	public override void OnReceiveRemote() => WorldObject.SetSlot(Value, _playAudio);
+		public override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			_playAudio = reader.Read<bool>();
+		}
+
+		public override void OnReceiveRemote() => WorldObject.SetSlot(Value, _playAudio);
+	}
 }

@@ -1,20 +1,21 @@
 ﻿using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.Tools.SignalscopeTool.FrequencySync.Messages;
-
-public class IdentifySignalMessage : QSBMessage<SignalName>
+namespace QSB.Tools.SignalscopeTool.FrequencySync.Messages
 {
-	public IdentifySignalMessage(SignalName name) => Value = name;
-
-	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-	public override void OnReceiveRemote()
+	public class IdentifySignalMessage : QSBMessage<SignalName>
 	{
-		PlayerData.LearnSignal(Value);
-		GlobalMessenger.FireEvent("IdentifySignal");
-		var displayMsg = $"{UITextLibrary.GetString(UITextType.NotificationSignalIdentified)} <color=orange>{AudioSignal.SignalNameToString(Value)}</color>";
-		var data = new NotificationData(NotificationTarget.All, displayMsg, 10f);
-		NotificationManager.SharedInstance.PostNotification(data);
+		public IdentifySignalMessage(SignalName name) => Value = name;
+
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+		public override void OnReceiveRemote()
+		{
+			PlayerData.LearnSignal(Value);
+			GlobalMessenger.FireEvent("IdentifySignal");
+			var displayMsg = $"{UITextLibrary.GetString(UITextType.NotificationSignalIdentified)} <color=orange>{AudioSignal.SignalNameToString(Value)}</color>";
+			var data = new NotificationData(NotificationTarget.All, displayMsg, 10f);
+			NotificationManager.SharedInstance.PostNotification(data);
+		}
 	}
 }

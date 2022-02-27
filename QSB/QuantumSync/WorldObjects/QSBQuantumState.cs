@@ -1,18 +1,19 @@
 ﻿using QSB.WorldSync;
 
-namespace QSB.QuantumSync.WorldObjects;
-
-internal class QSBQuantumState : WorldObject<QuantumState>
+namespace QSB.QuantumSync.WorldObjects
 {
-	public bool IsMeantToBeEnabled;
-
-	public void SetVisible(bool visible)
+	internal class QSBQuantumState : WorldObject<QuantumState>
 	{
-		IsMeantToBeEnabled = visible;
-		AttachedObject.SetVisible(visible);
+		public bool IsMeantToBeEnabled;
+
+		public void SetVisible(bool visible)
+		{
+			IsMeantToBeEnabled = visible;
+			AttachedObject.SetVisible(visible);
+		}
+
+		public override bool ShouldDisplayDebug() => false;
+
+		public override void SendInitialState(uint to) { }
 	}
-
-	public override bool ShouldDisplayDebug() => false;
-
-	public override void SendInitialState(uint to) { }
 }

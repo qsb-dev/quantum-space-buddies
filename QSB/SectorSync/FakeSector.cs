@@ -1,8 +1,9 @@
-﻿namespace QSB.SectorSync;
-
-public class FakeSector : Sector
+﻿namespace QSB.SectorSync
 {
-	public Sector AttachedSector;
+	public class FakeSector : Sector
+	{
+		public Sector AttachedSector;
 
-	public override void Awake() { }
+		public override void Awake() { }
+	}
 }

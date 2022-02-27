@@ -3,12 +3,13 @@ using QSB.WorldSync;
 using QSB.ZeroGCaveSync.WorldObjects;
 using System.Threading;
 
-namespace QSB.ZeroGCaveSync;
-
-internal class ZeroGCaveManager : WorldObjectManager
+namespace QSB.ZeroGCaveSync
 {
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+	internal class ZeroGCaveManager : WorldObjectManager
+	{
+		public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-		=> QSBWorldSync.Init<QSBSatelliteNode, SatelliteNode>();
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+			=> QSBWorldSync.Init<QSBSatelliteNode, SatelliteNode>();
+	}
 }

@@ -1,24 +1,25 @@
 ﻿using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.ShipSync.Messages;
-
-internal class HatchMessage : QSBMessage<bool>
+namespace QSB.ShipSync.Messages
 {
-	public HatchMessage(bool open) => Value = open;
-
-	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-	public override void OnReceiveRemote()
+	internal class HatchMessage : QSBMessage<bool>
 	{
-		if (Value)
+		public HatchMessage(bool open) => Value = open;
+
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+		public override void OnReceiveRemote()
 		{
-			ShipManager.Instance.HatchController.OpenHatch();
-		}
-		else
-		{
-			ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
-			ShipManager.Instance.HatchController.CloseHatch();
+			if (Value)
+			{
+				ShipManager.Instance.HatchController.OpenHatch();
+			}
+			else
+			{
+				ShipManager.Instance.ShipTractorBeam.DeactivateTractorBeam();
+				ShipManager.Instance.HatchController.CloseHatch();
+			}
 		}
 	}
 }

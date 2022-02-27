@@ -1,18 +1,19 @@
 ﻿using QSB.Player;
 
-namespace QSB.Tools.TranslatorTool;
-
-internal static class TranslatorCreator
+namespace QSB.Tools.TranslatorTool
 {
-	internal static void CreateTranslator(PlayerInfo player)
+	internal static class TranslatorCreator
 	{
-		var REMOTE_NomaiTranslatorProp = player.CameraBody.transform.Find("REMOTE_NomaiTranslatorProp").gameObject;
+		internal static void CreateTranslator(PlayerInfo player)
+		{
+			var REMOTE_NomaiTranslatorProp = player.CameraBody.transform.Find("REMOTE_NomaiTranslatorProp").gameObject;
 
-		var REMOTE_TranslatorGroup = REMOTE_NomaiTranslatorProp.transform.Find("TranslatorGroup");
+			var REMOTE_TranslatorGroup = REMOTE_NomaiTranslatorProp.transform.Find("TranslatorGroup");
 
-		var tool = REMOTE_NomaiTranslatorProp.GetComponent<QSBNomaiTranslator>();
-		tool.Type = ToolType.Translator;
-		tool.ToolGameObject = REMOTE_TranslatorGroup.gameObject;
-		tool.Player = player;
+			var tool = REMOTE_NomaiTranslatorProp.GetComponent<QSBNomaiTranslator>();
+			tool.Type = ToolType.Translator;
+			tool.ToolGameObject = REMOTE_TranslatorGroup.gameObject;
+			tool.Player = player;
+		}
 	}
 }

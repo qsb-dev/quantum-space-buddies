@@ -1,32 +1,33 @@
 ﻿using Mirror;
 
-namespace QSB.TimeSync;
-
-public class PreserveTimeScale : NetworkBehaviour
+namespace QSB.TimeSync
 {
-	public void Init()
+	public class PreserveTimeScale : NetworkBehaviour
 	{
-		if (!isServer)
+		public void Init()
 		{
-			var campfires = FindObjectsOfType<Campfire>();
-			foreach (var campfire in campfires)
+			if (!isServer)
 			{
-				campfire._canSleepHere = false;
+				var campfires = FindObjectsOfType<Campfire>();
+				foreach (var campfire in campfires)
+				{
+					campfire._canSleepHere = false;
+				}
 			}
+
+			var menuManager = Locator.GetSceneMenuManager();
+
+			if (menuManager == null)
+			{
+				return;
+			}
+
+			if (menuManager._pauseMenu == null || menuManager.pauseMenu._skipToNextLoopButton == null)
+			{
+				return;
+			}
+
+			menuManager.pauseMenu._skipToNextLoopButton.SetActive(false);
 		}
-
-		var menuManager = Locator.GetSceneMenuManager();
-
-		if (menuManager == null)
-		{
-			return;
-		}
-
-		if (menuManager._pauseMenu == null || menuManager.pauseMenu._skipToNextLoopButton == null)
-		{
-			return;
-		}
-
-		menuManager.pauseMenu._skipToNextLoopButton.SetActive(false);
 	}
 }

@@ -1,15 +1,16 @@
-﻿namespace QSB.Animation.NPC.WorldObjects;
-
-internal class QSBCharacterAnimController : NpcAnimController<CharacterAnimController>
+﻿namespace QSB.Animation.NPC.WorldObjects
 {
-	public override void SendInitialState(uint to)
+	internal class QSBCharacterAnimController : NpcAnimController<CharacterAnimController>
 	{
-		// todo SendInitialState
+		public override void SendInitialState(uint to)
+		{
+			// todo SendInitialState
+		}
+
+		public override CharacterDialogueTree GetDialogueTree()
+			=> AttachedObject._dialogueTree;
+
+		public bool InConversation()
+			=> AttachedObject._inConversation;
 	}
-
-	public override CharacterDialogueTree GetDialogueTree()
-		=> AttachedObject._dialogueTree;
-
-	public bool InConversation()
-		=> AttachedObject._inConversation;
 }

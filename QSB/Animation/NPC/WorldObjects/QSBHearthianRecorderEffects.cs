@@ -1,12 +1,13 @@
-﻿namespace QSB.Animation.NPC.WorldObjects;
-
-internal class QSBHearthianRecorderEffects : NpcAnimController<HearthianRecorderEffects>
+﻿namespace QSB.Animation.NPC.WorldObjects
 {
-	public override void SendInitialState(uint to)
+	internal class QSBHearthianRecorderEffects : NpcAnimController<HearthianRecorderEffects>
 	{
-		// todo SendInitialState
-	}
+		public override void SendInitialState(uint to)
+		{
+			// todo SendInitialState
+		}
 
-	public override CharacterDialogueTree GetDialogueTree()
-		=> AttachedObject._characterDialogueTree;
+		public override CharacterDialogueTree GetDialogueTree()
+			=> AttachedObject._characterDialogueTree;
+	}
 }

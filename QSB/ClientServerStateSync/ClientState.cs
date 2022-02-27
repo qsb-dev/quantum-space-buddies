@@ -1,13 +1,14 @@
-﻿namespace QSB.ClientServerStateSync;
-
-public enum ClientState
+﻿namespace QSB.ClientServerStateSync
 {
-	NotLoaded,
-	InTitleScreen,
-	AliveInSolarSystem,
-	DeadInSolarSystem,
-	AliveInEye,
-	WaitingForOthersToBeReady,
-	WatchingLongCredits,
-	WatchingShortCredits
+	public enum ClientState
+	{
+		NotLoaded,
+		InTitleScreen,
+		AliveInSolarSystem,
+		DeadInSolarSystem,
+		AliveInEye,
+		WaitingForOthersToBeReady,
+		WatchingLongCredits,
+		WatchingShortCredits
+	}
 }

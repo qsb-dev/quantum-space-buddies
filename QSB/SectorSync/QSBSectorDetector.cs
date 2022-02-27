@@ -6,174 +6,175 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.SectorSync;
-
-public class QSBSectorDetector : MonoBehaviour
+namespace QSB.SectorSync
 {
-	public readonly List<QSBSector> SectorList = new();
-
-	private SectorDetector _sectorDetector;
-
-	public void Init(SectorDetector detector)
+	public class QSBSectorDetector : MonoBehaviour
 	{
-		if (_sectorDetector)
+		public readonly List<QSBSector> SectorList = new();
+
+		private SectorDetector _sectorDetector;
+
+		public void Init(SectorDetector detector)
 		{
-			return;
+			if (_sectorDetector)
+			{
+				return;
+			}
+
+			if (!detector)
+			{
+				DebugLog.ToConsole("Error - Trying to init QSBSectorDetector with null SectorDetector!", MessageType.Error);
+				return;
+			}
+
+			_sectorDetector = detector;
+			_sectorDetector.OnEnterSector += AddSector;
+			_sectorDetector.OnExitSector += RemoveSector;
+
+			_sectorDetector._sectorList.ForEach(AddSector);
 		}
 
-		if (!detector)
+		public void Uninit()
 		{
-			DebugLog.ToConsole("Error - Trying to init QSBSectorDetector with null SectorDetector!", MessageType.Error);
-			return;
+			if (!_sectorDetector)
+			{
+				return;
+			}
+
+			_sectorDetector.OnEnterSector -= AddSector;
+			_sectorDetector.OnExitSector -= RemoveSector;
+			_sectorDetector = null;
+
+			SectorList.Clear();
 		}
 
-		_sectorDetector = detector;
-		_sectorDetector.OnEnterSector += AddSector;
-		_sectorDetector.OnExitSector += RemoveSector;
-
-		_sectorDetector._sectorList.ForEach(AddSector);
-	}
-
-	public void Uninit()
-	{
-		if (!_sectorDetector)
+		private void AddSector(Sector sector)
 		{
-			return;
+			if (!sector)
+			{
+				// wtf
+				DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
+				return;
+			}
+
+			var worldObject = sector.GetWorldObject<QSBSector>();
+			if (worldObject == null)
+			{
+				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
+				return;
+			}
+
+			if (SectorList.Contains(worldObject))
+			{
+				DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but is already in list", MessageType.Warning);
+				return;
+			}
+
+			SectorList.Add(worldObject);
 		}
 
-		_sectorDetector.OnEnterSector -= AddSector;
-		_sectorDetector.OnExitSector -= RemoveSector;
-		_sectorDetector = null;
-
-		SectorList.Clear();
-	}
-
-	private void AddSector(Sector sector)
-	{
-		if (!sector)
+		private void RemoveSector(Sector sector)
 		{
-			// wtf
-			DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
-			return;
+			if (!sector)
+			{
+				// wtf
+				DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
+				return;
+			}
+
+			var worldObject = sector.GetWorldObject<QSBSector>();
+			if (worldObject == null)
+			{
+				DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
+				return;
+			}
+
+			if (!SectorList.Contains(worldObject))
+			{
+				DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but is not in list!", MessageType.Warning);
+				return;
+			}
+
+			SectorList.Remove(worldObject);
 		}
 
-		var worldObject = sector.GetWorldObject<QSBSector>();
-		if (worldObject == null)
+		/// <summary>
+		/// called only by the sector manager
+		/// </summary>
+		public QSBSector GetClosestSector()
 		{
-			DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
-			return;
+			var type = _sectorDetector._occupantType;
+
+			var validSectors = SectorList.Where(x => x.ShouldSyncTo(type)).ToList();
+			var inASector = validSectors.Count > 0;
+
+			if (!inASector)
+			{
+				validSectors = QSBWorldSync.GetWorldObjects<QSBSector>()
+					.Where(x => !x.IsFakeSector && x.Type != Sector.Name.Unnamed && x.ShouldSyncTo(type))
+					.ToList();
+			}
+
+			if (validSectors.Count == 0)
+			{
+				return null;
+			}
+
+			var closest = validSectors
+				.MinBy(sector => CalculateSectorScore(sector, _sectorDetector._attachedRigidbody));
+
+			if (inASector)
+			{
+				var pos = _sectorDetector._attachedRigidbody.GetPosition();
+
+				bool IsSameDistanceAsClosest(QSBSector fakeSector)
+					=> OWMath.ApproxEquals(
+						Vector3.Distance(fakeSector.Position, pos),
+						Vector3.Distance(closest.Position, pos),
+						0.01f);
+
+				bool IsAttachedValid(QSBSector fakeSector)
+					=> validSectors.Any(x => x.AttachedObject == fakeSector.FakeSector.AttachedSector);
+
+				var fakeToSyncTo = QSBSectorManager.Instance.FakeSectors
+					.FirstOrDefault(x => IsSameDistanceAsClosest(x) && IsAttachedValid(x));
+				return fakeToSyncTo ?? closest;
+			}
+
+			return closest;
 		}
 
-		if (SectorList.Contains(worldObject))
+		private static float CalculateSectorScore(QSBSector sector, OWRigidbody rigidbody)
 		{
-			DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but is already in list", MessageType.Warning);
-			return;
+			var distance = (sector.Position - rigidbody.GetPosition()).sqrMagnitude;
+			var radius = GetRadius(sector);
+			var velocity = GetRelativeVelocity(sector, rigidbody);
+
+			return distance + Mathf.Pow(radius, 2) + velocity;
 		}
 
-		SectorList.Add(worldObject);
-	}
-
-	private void RemoveSector(Sector sector)
-	{
-		if (!sector)
+		private static float GetRadius(QSBSector sector)
 		{
-			// wtf
-			DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
-			return;
+			// TODO : make this work for other stuff, not just shaped triggervolumes
+			var trigger = sector.AttachedObject.GetTriggerVolume();
+			if (trigger && trigger.GetShape())
+			{
+				return trigger.GetShape().CalcWorldBounds().radius;
+			}
+
+			return 0f;
 		}
 
-		var worldObject = sector.GetWorldObject<QSBSector>();
-		if (worldObject == null)
+		private static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
 		{
-			DebugLog.ToConsole($"Error - Can't find QSBSector for sector {sector.name}!", MessageType.Error);
-			return;
+			var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
+			if (sectorRigidBody && rigidbody)
+			{
+				var relativeVelocity = sectorRigidBody.GetRelativeVelocity(rigidbody);
+				return relativeVelocity.sqrMagnitude;
+			}
+
+			return 0;
 		}
-
-		if (!SectorList.Contains(worldObject))
-		{
-			DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but is not in list!", MessageType.Warning);
-			return;
-		}
-
-		SectorList.Remove(worldObject);
-	}
-
-	/// <summary>
-	/// called only by the sector manager
-	/// </summary>
-	public QSBSector GetClosestSector()
-	{
-		var type = _sectorDetector._occupantType;
-
-		var validSectors = SectorList.Where(x => x.ShouldSyncTo(type)).ToList();
-		var inASector = validSectors.Count > 0;
-
-		if (!inASector)
-		{
-			validSectors = QSBWorldSync.GetWorldObjects<QSBSector>()
-				.Where(x => !x.IsFakeSector && x.Type != Sector.Name.Unnamed && x.ShouldSyncTo(type))
-				.ToList();
-		}
-
-		if (validSectors.Count == 0)
-		{
-			return null;
-		}
-
-		var closest = validSectors
-			.MinBy(sector => CalculateSectorScore(sector, _sectorDetector._attachedRigidbody));
-
-		if (inASector)
-		{
-			var pos = _sectorDetector._attachedRigidbody.GetPosition();
-
-			bool IsSameDistanceAsClosest(QSBSector fakeSector)
-				=> OWMath.ApproxEquals(
-					Vector3.Distance(fakeSector.Position, pos),
-					Vector3.Distance(closest.Position, pos),
-					0.01f);
-
-			bool IsAttachedValid(QSBSector fakeSector)
-				=> validSectors.Any(x => x.AttachedObject == fakeSector.FakeSector.AttachedSector);
-
-			var fakeToSyncTo = QSBSectorManager.Instance.FakeSectors
-				.FirstOrDefault(x => IsSameDistanceAsClosest(x) && IsAttachedValid(x));
-			return fakeToSyncTo ?? closest;
-		}
-
-		return closest;
-	}
-
-	private static float CalculateSectorScore(QSBSector sector, OWRigidbody rigidbody)
-	{
-		var distance = (sector.Position - rigidbody.GetPosition()).sqrMagnitude;
-		var radius = GetRadius(sector);
-		var velocity = GetRelativeVelocity(sector, rigidbody);
-
-		return distance + Mathf.Pow(radius, 2) + velocity;
-	}
-
-	private static float GetRadius(QSBSector sector)
-	{
-		// TODO : make this work for other stuff, not just shaped triggervolumes
-		var trigger = sector.AttachedObject.GetTriggerVolume();
-		if (trigger && trigger.GetShape())
-		{
-			return trigger.GetShape().CalcWorldBounds().radius;
-		}
-
-		return 0f;
-	}
-
-	private static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
-	{
-		var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
-		if (sectorRigidBody && rigidbody)
-		{
-			var relativeVelocity = sectorRigidBody.GetRelativeVelocity(rigidbody);
-			return relativeVelocity.sqrMagnitude;
-		}
-
-		return 0;
 	}
 }

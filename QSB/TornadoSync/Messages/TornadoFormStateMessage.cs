@@ -1,11 +1,12 @@
 ﻿using QSB.Messaging;
 using QSB.TornadoSync.WorldObjects;
 
-namespace QSB.TornadoSync.Messages;
-
-public class TornadoFormStateMessage : QSBWorldObjectMessage<QSBTornado, bool>
+namespace QSB.TornadoSync.Messages
 {
-	public TornadoFormStateMessage(bool formState) => Value = formState;
+	public class TornadoFormStateMessage : QSBWorldObjectMessage<QSBTornado, bool>
+	{
+		public TornadoFormStateMessage(bool formState) => Value = formState;
 
-	public override void OnReceiveRemote() => WorldObject.FormState = Value;
+		public override void OnReceiveRemote() => WorldObject.FormState = Value;
+	}
 }

@@ -2,65 +2,66 @@
 using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.ConversationSync.Messages;
-
-internal class PersistentConditionMessage : QSBMessage
+namespace QSB.ConversationSync.Messages
 {
-	private string _conditionName;
-	private bool _conditionState;
-
-	public PersistentConditionMessage(string condition, bool state)
+	internal class PersistentConditionMessage : QSBMessage
 	{
-		_conditionName = condition;
-		_conditionState = state;
-	}
+		private string _conditionName;
+		private bool _conditionState;
 
-	public override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(_conditionName);
-		writer.Write(_conditionState);
-	}
-
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		_conditionName = reader.ReadString();
-		_conditionState = reader.ReadBool();
-	}
-
-	public override void OnReceiveRemote()
-	{
-		if (QSBCore.IsHost)
+		public PersistentConditionMessage(string condition, bool state)
 		{
-			QSBWorldSync.SetPersistentCondition(_conditionName, _conditionState);
+			_conditionName = condition;
+			_conditionState = state;
 		}
 
-		var gameSave = PlayerData._currentGameSave;
-		if (gameSave.dictConditions.ContainsKey(_conditionName))
+		public override void Serialize(NetworkWriter writer)
 		{
-			gameSave.dictConditions[_conditionName] = _conditionState;
-		}
-		else
-		{
-			gameSave.dictConditions.Add(_conditionName, _conditionState);
+			base.Serialize(writer);
+			writer.Write(_conditionName);
+			writer.Write(_conditionState);
 		}
 
-		if (_conditionName
-		    is not "LAUNCH_CODES_GIVEN"
-		    and not "PLAYER_ENTERED_TIMELOOPCORE"
-		    and not "PROBE_ENTERED_TIMELOOPCORE"
-		    and not "PLAYER_ENTERED_TIMELOOPCORE_MULTIPLE")
+		public override void Deserialize(NetworkReader reader)
 		{
-			PlayerData.SaveCurrentGame();
+			base.Deserialize(reader);
+			_conditionName = reader.ReadString();
+			_conditionState = reader.ReadBool();
 		}
-	}
 
-	public override void OnReceiveLocal()
-	{
-		if (QSBCore.IsHost)
+		public override void OnReceiveRemote()
 		{
-			QSBWorldSync.SetPersistentCondition(_conditionName, _conditionState);
+			if (QSBCore.IsHost)
+			{
+				QSBWorldSync.SetPersistentCondition(_conditionName, _conditionState);
+			}
+
+			var gameSave = PlayerData._currentGameSave;
+			if (gameSave.dictConditions.ContainsKey(_conditionName))
+			{
+				gameSave.dictConditions[_conditionName] = _conditionState;
+			}
+			else
+			{
+				gameSave.dictConditions.Add(_conditionName, _conditionState);
+			}
+
+			if (_conditionName
+			    is not "LAUNCH_CODES_GIVEN"
+			    and not "PLAYER_ENTERED_TIMELOOPCORE"
+			    and not "PROBE_ENTERED_TIMELOOPCORE"
+			    and not "PLAYER_ENTERED_TIMELOOPCORE_MULTIPLE")
+			{
+				PlayerData.SaveCurrentGame();
+			}
+		}
+
+		public override void OnReceiveLocal()
+		{
+			if (QSBCore.IsHost)
+			{
+				QSBWorldSync.SetPersistentCondition(_conditionName, _conditionState);
+			}
 		}
 	}
 }

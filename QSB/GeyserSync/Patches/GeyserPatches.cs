@@ -1,15 +1,16 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
 
-namespace QSB.GeyserSync.Patches;
-
-[HarmonyPatch]
-internal class GeyserPatches : QSBPatch
+namespace QSB.GeyserSync.Patches
 {
-	public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
+	[HarmonyPatch]
+	internal class GeyserPatches : QSBPatch
+	{
+		public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(GeyserController), nameof(GeyserController.Update))]
-	public static bool Empty()
-		=> false;
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(GeyserController), nameof(GeyserController.Update))]
+		public static bool Empty()
+			=> false;
+	}
 }

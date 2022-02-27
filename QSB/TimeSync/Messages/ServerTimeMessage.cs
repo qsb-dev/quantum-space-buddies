@@ -1,33 +1,34 @@
 ﻿using Mirror;
 using QSB.Messaging;
 
-namespace QSB.TimeSync.Messages;
-
-public class ServerTimeMessage : QSBMessage
+namespace QSB.TimeSync.Messages
 {
-	private float ServerTime;
-	private int LoopCount;
-
-	public ServerTimeMessage(float time, int count)
+	public class ServerTimeMessage : QSBMessage
 	{
-		ServerTime = time;
-		LoopCount = count;
-	}
+		private float ServerTime;
+		private int LoopCount;
 
-	public override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(ServerTime);
-		writer.Write(LoopCount);
-	}
+		public ServerTimeMessage(float time, int count)
+		{
+			ServerTime = time;
+			LoopCount = count;
+		}
 
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		ServerTime = reader.Read<float>();
-		LoopCount = reader.Read<int>();
-	}
+		public override void Serialize(NetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(ServerTime);
+			writer.Write(LoopCount);
+		}
 
-	public override void OnReceiveRemote()
-		=> WakeUpSync.LocalInstance.OnClientReceiveMessage(ServerTime, LoopCount);
+		public override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			ServerTime = reader.Read<float>();
+			LoopCount = reader.Read<int>();
+		}
+
+		public override void OnReceiveRemote()
+			=> WakeUpSync.LocalInstance.OnClientReceiveMessage(ServerTime, LoopCount);
+	}
 }

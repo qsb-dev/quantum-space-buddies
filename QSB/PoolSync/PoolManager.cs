@@ -3,45 +3,46 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Threading;
 
-namespace QSB.PoolSync;
-
-internal class PoolManager : WorldObjectManager
+namespace QSB.PoolSync
 {
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
-
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+	internal class PoolManager : WorldObjectManager
 	{
-		foreach (var streaming in QSBWorldSync.GetUnityObjects<NomaiRemoteCameraStreaming>().SortDeterministic())
+		public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+
+		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		{
-			streaming.gameObject.AddComponent<CustomNomaiRemoteCameraStreaming>();
+			foreach (var streaming in QSBWorldSync.GetUnityObjects<NomaiRemoteCameraStreaming>().SortDeterministic())
+			{
+				streaming.gameObject.AddComponent<CustomNomaiRemoteCameraStreaming>();
+			}
+
+			foreach (var camera in QSBWorldSync.GetUnityObjects<NomaiRemoteCamera>().SortDeterministic())
+			{
+				camera.gameObject.AddComponent<CustomNomaiRemoteCamera>();
+			}
+
+			foreach (var platform in QSBWorldSync.GetUnityObjects<NomaiRemoteCameraPlatform>().SortDeterministic())
+			{
+				platform.gameObject.AddComponent<CustomNomaiRemoteCameraPlatform>();
+			}
 		}
 
-		foreach (var camera in QSBWorldSync.GetUnityObjects<NomaiRemoteCamera>().SortDeterministic())
+		public override void UnbuildWorldObjects()
 		{
-			camera.gameObject.AddComponent<CustomNomaiRemoteCamera>();
-		}
+			foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())
+			{
+				Destroy(platform);
+			}
 
-		foreach (var platform in QSBWorldSync.GetUnityObjects<NomaiRemoteCameraPlatform>().SortDeterministic())
-		{
-			platform.gameObject.AddComponent<CustomNomaiRemoteCameraPlatform>();
-		}
-	}
+			foreach (var camera in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCamera>())
+			{
+				Destroy(camera);
+			}
 
-	public override void UnbuildWorldObjects()
-	{
-		foreach (var platform in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraPlatform>())
-		{
-			Destroy(platform);
-		}
-
-		foreach (var camera in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCamera>())
-		{
-			Destroy(camera);
-		}
-
-		foreach (var streaming in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraStreaming>())
-		{
-			Destroy(streaming);
+			foreach (var streaming in QSBWorldSync.GetUnityObjects<CustomNomaiRemoteCameraStreaming>())
+			{
+				Destroy(streaming);
+			}
 		}
 	}
 }

@@ -1,87 +1,88 @@
 ﻿using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.Player;
-
-public class PlayerHUDMarker : HUDDistanceMarker
+namespace QSB.Player
 {
-	private PlayerInfo _player;
-	private bool _needsInitializing;
-	private bool _isReady;
-
-	public override void InitCanvasMarker()
+	public class PlayerHUDMarker : HUDDistanceMarker
 	{
-		_markerRadius = 2f;
+		private PlayerInfo _player;
+		private bool _needsInitializing;
+		private bool _isReady;
 
-		_markerTarget = new GameObject().transform;
-		_markerTarget.parent = transform;
-
-		_markerTarget.localPosition = Vector3.up * 0.25f;
-	}
-
-	public void Init(PlayerInfo player)
-	{
-		_player = player;
-		_player.HudMarker = this;
-		_needsInitializing = true;
-	}
-
-	private void Update()
-	{
-		if (_needsInitializing)
+		public override void InitCanvasMarker()
 		{
-			Initialize();
+			_markerRadius = 2f;
+
+			_markerTarget = new GameObject().transform;
+			_markerTarget.parent = transform;
+
+			_markerTarget.localPosition = Vector3.up * 0.25f;
 		}
 
-		if (!_isReady || !_player.IsReady)
+		public void Init(PlayerInfo player)
 		{
-			return;
+			_player = player;
+			_player.HudMarker = this;
+			_needsInitializing = true;
 		}
 
-		if (_canvasMarker != null)
+		private void Update()
 		{
-			var isVisible = _canvasMarker.IsVisible();
-
-			if (_player.Visible != isVisible)
+			if (_needsInitializing)
 			{
-				_canvasMarker.SetVisibility(_player.Visible);
+				Initialize();
+			}
+
+			if (!_isReady || !_player.IsReady)
+			{
+				return;
+			}
+
+			if (_canvasMarker != null)
+			{
+				var isVisible = _canvasMarker.IsVisible();
+
+				if (_player.Visible != isVisible)
+				{
+					_canvasMarker.SetVisibility(_player.Visible);
+				}
+			}
+			else
+			{
+				DebugLog.ToConsole($"Warning - _canvasMarker for {_player.PlayerId} is null!", OWML.Common.MessageType.Warning);
 			}
 		}
-		else
+
+		private void Initialize()
 		{
-			DebugLog.ToConsole($"Warning - _canvasMarker for {_player.PlayerId} is null!", OWML.Common.MessageType.Warning);
-		}
-	}
+			if (_player.Name == null)
+			{
+				DebugLog.ToConsole($"Error - {_player.PlayerId} has a null name!", OWML.Common.MessageType.Error);
+				_player.Name = "NULL";
+			}
 
-	private void Initialize()
-	{
-		if (_player.Name == null)
-		{
-			DebugLog.ToConsole($"Error - {_player.PlayerId} has a null name!", OWML.Common.MessageType.Error);
-			_player.Name = "NULL";
-		}
+			_markerLabel = _player.Name.ToUpper();
+			_needsInitializing = false;
+			_isReady = true;
 
-		_markerLabel = _player.Name.ToUpper();
-		_needsInitializing = false;
-		_isReady = true;
-
-		base.InitCanvasMarker();
-	}
-
-	public void Remove()
-	{
-		_isReady = false;
-		// do N O T destroy the parent - it completely breaks the ENTIRE GAME
-		if (_canvasMarker != null)
-		{
-			_canvasMarker.DestroyMarker();
+			base.InitCanvasMarker();
 		}
 
-		if (_markerTarget != null)
+		public void Remove()
 		{
-			Destroy(_markerTarget.gameObject);
-		}
+			_isReady = false;
+			// do N O T destroy the parent - it completely breaks the ENTIRE GAME
+			if (_canvasMarker != null)
+			{
+				_canvasMarker.DestroyMarker();
+			}
 
-		Destroy(this);
+			if (_markerTarget != null)
+			{
+				Destroy(_markerTarget.gameObject);
+			}
+
+			Destroy(this);
+		}
 	}
 }

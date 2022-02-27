@@ -5,27 +5,28 @@ using QSB.Tools.TranslatorTool.TranslationSync.Messages;
 using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 using QSB.WorldSync;
 
-namespace QSB.Tools.TranslatorTool.TranslationSync.Patches;
-
-internal class SpiralPatches : QSBPatch
+namespace QSB.Tools.TranslatorTool.TranslationSync.Patches
 {
-	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(NomaiText), nameof(NomaiText.SetAsTranslated))]
-	public static void SetAsTranslated(NomaiText __instance, int id)
+	internal class SpiralPatches : QSBPatch
 	{
-		if (__instance is GhostWallText)
-		{
-			return;
-		}
+		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		if (__instance.IsTranslated(id))
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(NomaiText), nameof(NomaiText.SetAsTranslated))]
+		public static void SetAsTranslated(NomaiText __instance, int id)
 		{
-			return;
-		}
+			if (__instance is GhostWallText)
+			{
+				return;
+			}
 
-		__instance.GetWorldObject<QSBNomaiText>()
-			.SendMessage(new SetAsTranslatedMessage(id));
+			if (__instance.IsTranslated(id))
+			{
+				return;
+			}
+
+			__instance.GetWorldObject<QSBNomaiText>()
+				.SendMessage(new SetAsTranslatedMessage(id));
+		}
 	}
 }

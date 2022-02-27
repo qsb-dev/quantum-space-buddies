@@ -1,13 +1,14 @@
-﻿namespace QSB.QuantumSync.WorldObjects;
-
-internal class QSBEyeProxyQuantumMoon : QSBQuantumObject<EyeProxyQuantumMoon>
+﻿namespace QSB.QuantumSync.WorldObjects
 {
-	protected override bool HostControls => true;
-
-	public override void SendInitialState(uint to)
+	internal class QSBEyeProxyQuantumMoon : QSBQuantumObject<EyeProxyQuantumMoon>
 	{
-		base.SendInitialState(to);
+		protected override bool HostControls => true;
 
-		// todo SendInitialState
+		public override void SendInitialState(uint to)
+		{
+			base.SendInitialState(to);
+
+			// todo SendInitialState
+		}
 	}
 }

@@ -1,10 +1,11 @@
-﻿namespace QSB.Player;
-
-public enum KickReason
+﻿namespace QSB.Player
 {
-	None,
-	QSBVersionNotMatching,
-	GameVersionNotMatching,
-	DLCNotMatching,
-	InEye
+	public enum KickReason
+	{
+		None,
+		QSBVersionNotMatching,
+		GameVersionNotMatching,
+		DLCNotMatching,
+		InEye
+	}
 }

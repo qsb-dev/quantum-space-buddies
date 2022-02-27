@@ -1,39 +1,40 @@
 ﻿using UnityEngine;
 
-namespace QSB.Tools.ProbeLauncherTool;
-
-public class QSBProbeLauncherTool : QSBTool
+namespace QSB.Tools.ProbeLauncherTool
 {
-	public GameObject PreLaunchProbeProxy;
-	public ProbeLauncherEffects Effects;
-	public SingularityWarpEffect ProbeRetrievalEffect;
-
-	public void RetrieveProbe(bool playEffects)
+	public class QSBProbeLauncherTool : QSBTool
 	{
-		if (Effects._owAudioSource == null)
+		public GameObject PreLaunchProbeProxy;
+		public ProbeLauncherEffects Effects;
+		public SingularityWarpEffect ProbeRetrievalEffect;
+
+		public void RetrieveProbe(bool playEffects)
 		{
-			Effects._owAudioSource = Player.AudioController._repairToolSource;
+			if (Effects._owAudioSource == null)
+			{
+				Effects._owAudioSource = Player.AudioController._repairToolSource;
+			}
+
+			PreLaunchProbeProxy.SetActive(true);
+			if (playEffects)
+			{
+				Effects.PlayRetrievalClip();
+				ProbeRetrievalEffect.WarpObjectIn(0.3f);
+			}
 		}
 
-		PreLaunchProbeProxy.SetActive(true);
-		if (playEffects)
+		public void LaunchProbe()
 		{
-			Effects.PlayRetrievalClip();
-			ProbeRetrievalEffect.WarpObjectIn(0.3f);
+			PreLaunchProbeProxy.SetActive(false);
+
+			if (Effects._owAudioSource == null)
+			{
+				Effects._owAudioSource = Player.AudioController._repairToolSource;
+			}
+
+			// TODO : make this do underwater stuff correctly
+			Effects.PlayLaunchClip(false);
+			Effects.PlayLaunchParticles(false);
 		}
-	}
-
-	public void LaunchProbe()
-	{
-		PreLaunchProbeProxy.SetActive(false);
-
-		if (Effects._owAudioSource == null)
-		{
-			Effects._owAudioSource = Player.AudioController._repairToolSource;
-		}
-
-		// TODO : make this do underwater stuff correctly
-		Effects.PlayLaunchClip(false);
-		Effects.PlayLaunchParticles(false);
 	}
 }

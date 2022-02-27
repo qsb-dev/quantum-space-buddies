@@ -2,34 +2,35 @@
 using QSB.PlayerBodySetup.Remote;
 using UnityEngine;
 
-namespace QSB.Tools.ProbeTool;
-
-internal static class ProbeCreator
+namespace QSB.Tools.ProbeTool
 {
-	private static GameObject _prefab;
-
-	private static GameObject GetPrefab()
+	internal static class ProbeCreator
 	{
-		if (_prefab != null)
+		private static GameObject _prefab;
+
+		private static GameObject GetPrefab()
 		{
+			if (_prefab != null)
+			{
+				return _prefab;
+			}
+
+			_prefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Probe_Body.prefab");
+			ShaderReplacer.ReplaceShaders(_prefab);
 			return _prefab;
 		}
 
-		_prefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Probe_Body.prefab");
-		ShaderReplacer.ReplaceShaders(_prefab);
-		return _prefab;
-	}
+		public static Transform CreateProbe(PlayerInfo player)
+		{
+			var REMOTE_Probe_Body = Object.Instantiate(GetPrefab());
 
-	public static Transform CreateProbe(PlayerInfo player)
-	{
-		var REMOTE_Probe_Body = Object.Instantiate(GetPrefab());
+			var qsbProbe = REMOTE_Probe_Body.GetComponent<QSBProbe>();
+			player.Probe = qsbProbe;
+			qsbProbe.SetOwner(player);
 
-		var qsbProbe = REMOTE_Probe_Body.GetComponent<QSBProbe>();
-		player.Probe = qsbProbe;
-		qsbProbe.SetOwner(player);
+			player.ProbeBody = REMOTE_Probe_Body;
 
-		player.ProbeBody = REMOTE_Probe_Body;
-
-		return REMOTE_Probe_Body.transform;
+			return REMOTE_Probe_Body.transform;
+		}
 	}
 }

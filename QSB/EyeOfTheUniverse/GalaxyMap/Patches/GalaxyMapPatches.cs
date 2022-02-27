@@ -5,33 +5,34 @@ using QSB.Patches;
 using QSB.Player;
 using System.Linq;
 
-namespace QSB.EyeOfTheUniverse.GalaxyMap.Patches;
-
-internal class GalaxyMapPatches : QSBPatch
+namespace QSB.EyeOfTheUniverse.GalaxyMap.Patches
 {
-	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(GalaxyMapController), nameof(GalaxyMapController.OnPressInteract))]
-	public static bool OnPressInteractPrefix()
+	internal class GalaxyMapPatches : QSBPatch
 	{
-		var allInObservatory = QSBPlayerManager.PlayerList.All(x => x.EyeState == EyeState.Observatory);
+		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		if (!allInObservatory)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(GalaxyMapController), nameof(GalaxyMapController.OnPressInteract))]
+		public static bool OnPressInteractPrefix()
 		{
-			GalaxyMapManager.Instance.Tree.StartConversation();
+			var allInObservatory = QSBPlayerManager.PlayerList.All(x => x.EyeState == EyeState.Observatory);
+
+			if (!allInObservatory)
+			{
+				GalaxyMapManager.Instance.Tree.StartConversation();
+			}
+
+			return allInObservatory;
 		}
 
-		return allInObservatory;
-	}
-
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(GalaxyMapController), nameof(GalaxyMapController.OnPressInteract))]
-	public static void OnPressInteractPostfix()
-	{
-		if (QSBPlayerManager.PlayerList.All(x => x.EyeState == EyeState.Observatory))
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(GalaxyMapController), nameof(GalaxyMapController.OnPressInteract))]
+		public static void OnPressInteractPostfix()
 		{
-			new ZoomOutMessage().Send();
+			if (QSBPlayerManager.PlayerList.All(x => x.EyeState == EyeState.Observatory))
+			{
+				new ZoomOutMessage().Send();
+			}
 		}
 	}
 }

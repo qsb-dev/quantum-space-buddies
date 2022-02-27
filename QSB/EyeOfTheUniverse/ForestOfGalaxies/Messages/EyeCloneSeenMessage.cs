@@ -3,18 +3,19 @@ using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages;
-
-internal class EyeCloneSeenMessage : QSBMessage
+namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages
 {
-
-	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-	public override void OnReceiveRemote()
+	internal class EyeCloneSeenMessage : QSBMessage
 	{
-		var controller = QSBWorldSync.GetUnityObjects<PlayerCloneController>().First();
 
-		controller._warpFlickerActivated = true;
-		controller._warpTime = Time.time + 0.5f;
+		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+		public override void OnReceiveRemote()
+		{
+			var controller = QSBWorldSync.GetUnityObjects<PlayerCloneController>().First();
+
+			controller._warpFlickerActivated = true;
+			controller._warpTime = Time.time + 0.5f;
+		}
 	}
 }

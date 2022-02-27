@@ -5,94 +5,95 @@ using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.PlayerBodySetup.Remote;
-
-public static class RemotePlayerCreation
+namespace QSB.PlayerBodySetup.Remote
 {
-	private static GameObject _prefab;
-
-	private static GameObject GetPrefab()
+	public static class RemotePlayerCreation
 	{
-		if (_prefab != null)
+		private static GameObject _prefab;
+
+		private static GameObject GetPrefab()
 		{
+			if (_prefab != null)
+			{
+				return _prefab;
+			}
+
+			_prefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Player_Body.prefab");
+			ShaderReplacer.ReplaceShaders(_prefab);
 			return _prefab;
 		}
 
-		_prefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Player_Body.prefab");
-		ShaderReplacer.ReplaceShaders(_prefab);
-		return _prefab;
-	}
+		public static Transform CreatePlayer(
+			PlayerInfo player,
+			out Transform visibleCameraRoot,
+			out Transform visibleRoastingSystem,
+			out Transform visibleStickPivot,
+			out Transform visibleStickTip)
+		{
+			DebugLog.DebugWrite($"CREATE PLAYER");
 
-	public static Transform CreatePlayer(
-		PlayerInfo player,
-		out Transform visibleCameraRoot,
-		out Transform visibleRoastingSystem,
-		out Transform visibleStickPivot,
-		out Transform visibleStickTip)
-	{
-		DebugLog.DebugWrite($"CREATE PLAYER");
+			/*
+			 * CREATE PLAYER STRUCTURE
+			 */
 
-		/*
-		 * CREATE PLAYER STRUCTURE
-		 */
+			DebugLog.DebugWrite($"CREATE PLAYER STRUCTURE");
 
-		DebugLog.DebugWrite($"CREATE PLAYER STRUCTURE");
+			// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
-		// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
+			var REMOTE_Player_Body = Object.Instantiate(GetPrefab());
+			var REMOTE_PlayerCamera = REMOTE_Player_Body.transform.Find("REMOTE_PlayerCamera").gameObject;
+			var REMOTE_RoastingSystem = REMOTE_Player_Body.transform.Find("REMOTE_RoastingSystem").gameObject;
+			var REMOTE_Stick_Root = REMOTE_RoastingSystem.transform.Find("REMOTE_Stick_Root").gameObject;
+			var REMOTE_Traveller_HEA_Player_v2 = REMOTE_Player_Body.transform.Find("REMOTE_Traveller_HEA_Player_v2").gameObject;
 
-		var REMOTE_Player_Body = Object.Instantiate(GetPrefab());
-		var REMOTE_PlayerCamera = REMOTE_Player_Body.transform.Find("REMOTE_PlayerCamera").gameObject;
-		var REMOTE_RoastingSystem = REMOTE_Player_Body.transform.Find("REMOTE_RoastingSystem").gameObject;
-		var REMOTE_Stick_Root = REMOTE_RoastingSystem.transform.Find("REMOTE_Stick_Root").gameObject;
-		var REMOTE_Traveller_HEA_Player_v2 = REMOTE_Player_Body.transform.Find("REMOTE_Traveller_HEA_Player_v2").gameObject;
+			/*
+			 * SET UP PLAYER BODY
+			 */
 
-		/*
-		 * SET UP PLAYER BODY
-		 */
+			DebugLog.DebugWrite($"SET UP PLAYER BODY");
 
-		DebugLog.DebugWrite($"SET UP PLAYER BODY");
+			player.Body = REMOTE_Player_Body;
 
-		player.Body = REMOTE_Player_Body;
+			player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
 
-		player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
+			REMOTE_Player_Body.GetComponent<PlayerHUDMarker>().Init(player);
+			REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = player.Name;
+			player._ditheringAnimator = REMOTE_Player_Body.GetComponent<QSBDitheringAnimator>();
+			player.AudioController = REMOTE_Player_Body.transform.Find("REMOTE_Audio_Player").GetComponent<QSBPlayerAudioController>();
 
-		REMOTE_Player_Body.GetComponent<PlayerHUDMarker>().Init(player);
-		REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = player.Name;
-		player._ditheringAnimator = REMOTE_Player_Body.GetComponent<QSBDitheringAnimator>();
-		player.AudioController = REMOTE_Player_Body.transform.Find("REMOTE_Audio_Player").GetComponent<QSBPlayerAudioController>();
+			/*
+			 * SET UP PLAYER CAMERA
+			 */
 
-		/*
-		 * SET UP PLAYER CAMERA
-		 */
+			DebugLog.DebugWrite($"SET UP PLAYER CAMERA");
 
-		DebugLog.DebugWrite($"SET UP PLAYER CAMERA");
+			REMOTE_PlayerCamera.GetComponent<Camera>().enabled = false;
+			var owcamera = REMOTE_PlayerCamera.GetComponent<OWCamera>();
+			player.Camera = owcamera;
+			player.CameraBody = REMOTE_PlayerCamera;
+			visibleCameraRoot = REMOTE_PlayerCamera.transform;
 
-		REMOTE_PlayerCamera.GetComponent<Camera>().enabled = false;
-		var owcamera = REMOTE_PlayerCamera.GetComponent<OWCamera>();
-		player.Camera = owcamera;
-		player.CameraBody = REMOTE_PlayerCamera;
-		visibleCameraRoot = REMOTE_PlayerCamera.transform;
+			PlayerToolsManager.InitRemote(player);
 
-		PlayerToolsManager.InitRemote(player);
+			/*
+			 * SET UP ROASTING STICK
+			 */
 
-		/*
-		 * SET UP ROASTING STICK
-		 */
+			DebugLog.DebugWrite($"SET UP ROASTING STICK");
 
-		DebugLog.DebugWrite($"SET UP ROASTING STICK");
+			var REMOTE_Stick_Pivot = REMOTE_Stick_Root.transform.GetChild(0);
+			var mallowRoot = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip/Mallow_Root");
+			var newSystem = mallowRoot.Find("MallowSmoke").gameObject.GetComponent<CustomRelativisticParticleSystem>();
+			newSystem.Init(player);
+			player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
+			var marshmallow = mallowRoot.GetComponent<QSBMarshmallow>();
+			player.Marshmallow = marshmallow;
 
-		var REMOTE_Stick_Pivot = REMOTE_Stick_Root.transform.GetChild(0);
-		var mallowRoot = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip/Mallow_Root");
-		var newSystem = mallowRoot.Find("MallowSmoke").gameObject.GetComponent<CustomRelativisticParticleSystem>();
-		newSystem.Init(player);
-		player.RoastingStick = REMOTE_Stick_Pivot.gameObject;
-		var marshmallow = mallowRoot.GetComponent<QSBMarshmallow>();
-		player.Marshmallow = marshmallow;
+			visibleRoastingSystem = REMOTE_RoastingSystem.transform;
+			visibleStickPivot = REMOTE_Stick_Pivot;
+			visibleStickTip = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip");
 
-		visibleRoastingSystem = REMOTE_RoastingSystem.transform;
-		visibleStickPivot = REMOTE_Stick_Pivot;
-		visibleStickTip = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip");
-
-		return REMOTE_Player_Body.transform;
+			return REMOTE_Player_Body.transform;
+		}
 	}
 }

@@ -1,9 +1,10 @@
-﻿namespace QSB.Patches;
-
-public enum QSBPatchTypes
+﻿namespace QSB.Patches
 {
-	OnClientConnect,
-	OnNonServerClientConnect,
-	OnServerClientConnect,
-	RespawnTime
+	public enum QSBPatchTypes
+	{
+		OnClientConnect,
+		OnNonServerClientConnect,
+		OnServerClientConnect,
+		RespawnTime
+	}
 }

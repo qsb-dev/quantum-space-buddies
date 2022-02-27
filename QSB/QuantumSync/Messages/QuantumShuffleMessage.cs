@@ -1,11 +1,12 @@
 ﻿using QSB.Messaging;
 using QSB.QuantumSync.WorldObjects;
 
-namespace QSB.QuantumSync.Messages;
-
-internal class QuantumShuffleMessage : QSBWorldObjectMessage<QSBQuantumShuffleObject, int[]>
+namespace QSB.QuantumSync.Messages
 {
-	public QuantumShuffleMessage(int[] indexArray) => Value = indexArray;
+	internal class QuantumShuffleMessage : QSBWorldObjectMessage<QSBQuantumShuffleObject, int[]>
+	{
+		public QuantumShuffleMessage(int[] indexArray) => Value = indexArray;
 
-	public override void OnReceiveRemote() => WorldObject.ShuffleObjects(Value);
+		public override void OnReceiveRemote() => WorldObject.ShuffleObjects(Value);
+	}
 }

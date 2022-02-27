@@ -3,65 +3,66 @@ using QSB.Utility;
 using QSB.WorldSync;
 using QSB.ZeroGCaveSync.Messages;
 
-namespace QSB.ZeroGCaveSync.WorldObjects;
-
-internal class QSBSatelliteNode : WorldObject<SatelliteNode>
+namespace QSB.ZeroGCaveSync.WorldObjects
 {
-	public override void SendInitialState(uint to)
+	internal class QSBSatelliteNode : WorldObject<SatelliteNode>
 	{
-		if (!AttachedObject._damaged)
+		public override void SendInitialState(uint to)
 		{
-			this.SendMessage(new SatelliteNodeRepairedMessage());
+			if (!AttachedObject._damaged)
+			{
+				this.SendMessage(new SatelliteNodeRepairedMessage());
+			}
+
+			this.SendMessage(new SatelliteNodeRepairTickMessage(AttachedObject._repairFraction));
 		}
 
-		this.SendMessage(new SatelliteNodeRepairTickMessage(AttachedObject._repairFraction));
-	}
-
-	public void SetRepaired()
-	{
-		if (!AttachedObject._damaged)
+		public void SetRepaired()
 		{
-			return;
+			if (!AttachedObject._damaged)
+			{
+				return;
+			}
+
+			DebugLog.DebugWrite($"[SATELLITE NODE] {AttachedObject} Set repaired.");
+			AttachedObject._damaged = false;
+			var component = Locator.GetPlayerTransform().GetComponent<ReferenceFrameTracker>();
+			if (component.GetReferenceFrame() == AttachedObject._rfVolume.GetReferenceFrame())
+			{
+				component.UntargetReferenceFrame();
+			}
+
+			if (AttachedObject._rfVolume != null)
+			{
+				AttachedObject._rfVolume.gameObject.SetActive(false);
+			}
+
+			if (AttachedObject._lanternLight != null)
+			{
+				AttachedObject._lanternLight.color = AttachedObject._lightRepairedColor;
+			}
+
+			if (AttachedObject._lanternEmissiveRenderer != null)
+			{
+				AttachedObject._lanternEmissiveRenderer.sharedMaterials.CopyTo(AttachedObject._lanternMaterials, 0);
+				AttachedObject._lanternMaterials[AttachedObject._lanternMaterialIndex] = AttachedObject._lanternRepairedMaterial;
+				AttachedObject._lanternEmissiveRenderer.sharedMaterials = AttachedObject._lanternMaterials;
+			}
+
+			AttachedObject.RaiseEvent(nameof(AttachedObject.OnRepaired), AttachedObject);
 		}
 
-		DebugLog.DebugWrite($"[SATELLITE NODE] {AttachedObject} Set repaired.");
-		AttachedObject._damaged = false;
-		var component = Locator.GetPlayerTransform().GetComponent<ReferenceFrameTracker>();
-		if (component.GetReferenceFrame() == AttachedObject._rfVolume.GetReferenceFrame())
+		public void RepairTick(float repairFraction)
 		{
-			component.UntargetReferenceFrame();
+			if (OWMath.ApproxEquals(AttachedObject._repairFraction, repairFraction))
+			{
+				return;
+			}
+
+			DebugLog.DebugWrite($"[SATELLITE NODE] {AttachedObject} repair tick {repairFraction}");
+			AttachedObject._repairFraction = repairFraction;
+			var damageEffect = AttachedObject._damageEffect;
+			damageEffect.SetEffectBlend(1f - repairFraction);
 		}
-
-		if (AttachedObject._rfVolume != null)
-		{
-			AttachedObject._rfVolume.gameObject.SetActive(false);
-		}
-
-		if (AttachedObject._lanternLight != null)
-		{
-			AttachedObject._lanternLight.color = AttachedObject._lightRepairedColor;
-		}
-
-		if (AttachedObject._lanternEmissiveRenderer != null)
-		{
-			AttachedObject._lanternEmissiveRenderer.sharedMaterials.CopyTo(AttachedObject._lanternMaterials, 0);
-			AttachedObject._lanternMaterials[AttachedObject._lanternMaterialIndex] = AttachedObject._lanternRepairedMaterial;
-			AttachedObject._lanternEmissiveRenderer.sharedMaterials = AttachedObject._lanternMaterials;
-		}
-
-		AttachedObject.RaiseEvent(nameof(AttachedObject.OnRepaired), AttachedObject);
-	}
-
-	public void RepairTick(float repairFraction)
-	{
-		if (OWMath.ApproxEquals(AttachedObject._repairFraction, repairFraction))
-		{
-			return;
-		}
-
-		DebugLog.DebugWrite($"[SATELLITE NODE] {AttachedObject} repair tick {repairFraction}");
-		AttachedObject._repairFraction = repairFraction;
-		var damageEffect = AttachedObject._damageEffect;
-		damageEffect.SetEffectBlend(1f - repairFraction);
 	}
 }

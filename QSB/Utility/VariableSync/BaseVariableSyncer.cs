@@ -2,18 +2,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace QSB.Utility.VariableSync;
-
-public abstract class BaseVariableSyncer<T> : QSBNetworkBehaviour
+namespace QSB.Utility.VariableSync
 {
-	protected override float SendInterval => 0.1f;
+	public abstract class BaseVariableSyncer<T> : QSBNetworkBehaviour
+	{
+		protected override float SendInterval => 0.1f;
 
-	private T _prevValue;
-	[NonSerialized]
-	public T Value;
+		private T _prevValue;
+		[NonSerialized]
+		public T Value;
 
-	protected override bool HasChanged() => !EqualityComparer<T>.Default.Equals(_prevValue, Value);
-	protected override void UpdatePrevData() => _prevValue = Value;
-	protected override void Serialize(NetworkWriter writer) => writer.Write(Value);
-	protected override void Deserialize(NetworkReader reader) => Value = reader.Read<T>();
+		protected override bool HasChanged() => !EqualityComparer<T>.Default.Equals(_prevValue, Value);
+		protected override void UpdatePrevData() => _prevValue = Value;
+		protected override void Serialize(NetworkWriter writer) => writer.Write(Value);
+		protected override void Deserialize(NetworkReader reader) => Value = reader.Read<T>();
+	}
 }

@@ -1,9 +1,10 @@
 ﻿using QSB.Messaging;
 using QSB.ShipSync.WorldObjects;
 
-namespace QSB.ShipSync.Messages.Component;
-
-internal class ComponentDamagedMessage : QSBWorldObjectMessage<QSBShipComponent>
+namespace QSB.ShipSync.Messages.Component
 {
-	public override void OnReceiveRemote() => WorldObject.SetDamaged();
+	internal class ComponentDamagedMessage : QSBWorldObjectMessage<QSBShipComponent>
+	{
+		public override void OnReceiveRemote() => WorldObject.SetDamaged();
+	}
 }

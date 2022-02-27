@@ -2,24 +2,25 @@
 using QSB.Player;
 using QSB.TriggerSync.WorldObjects;
 
-namespace QSB.TriggerSync.Messages;
-
-public class TriggerMessage : QSBWorldObjectMessage<IQSBTrigger, bool>
+namespace QSB.TriggerSync.Messages
 {
-	public TriggerMessage(bool entered) => Value = entered;
-
-	public override void OnReceiveLocal() => OnReceiveRemote();
-
-	public override void OnReceiveRemote()
+	public class TriggerMessage : QSBWorldObjectMessage<IQSBTrigger, bool>
 	{
-		var player = QSBPlayerManager.GetPlayer(From);
-		if (Value)
+		public TriggerMessage(bool entered) => Value = entered;
+
+		public override void OnReceiveLocal() => OnReceiveRemote();
+
+		public override void OnReceiveRemote()
 		{
-			WorldObject.Enter(player);
-		}
-		else
-		{
-			WorldObject.Exit(player);
+			var player = QSBPlayerManager.GetPlayer(From);
+			if (Value)
+			{
+				WorldObject.Enter(player);
+			}
+			else
+			{
+				WorldObject.Exit(player);
+			}
 		}
 	}
 }

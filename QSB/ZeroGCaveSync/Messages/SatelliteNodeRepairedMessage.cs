@@ -1,9 +1,10 @@
 ﻿using QSB.Messaging;
 using QSB.ZeroGCaveSync.WorldObjects;
 
-namespace QSB.ZeroGCaveSync.Messages;
-
-internal class SatelliteNodeRepairedMessage : QSBWorldObjectMessage<QSBSatelliteNode>
+namespace QSB.ZeroGCaveSync.Messages
 {
-	public override void OnReceiveRemote() => WorldObject.SetRepaired();
+	internal class SatelliteNodeRepairedMessage : QSBWorldObjectMessage<QSBSatelliteNode>
+	{
+		public override void OnReceiveRemote() => WorldObject.SetRepaired();
+	}
 }

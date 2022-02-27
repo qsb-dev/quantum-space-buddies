@@ -5,49 +5,50 @@ using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.EyeOfTheUniverse.MaskSync.Patches;
-
-internal class MaskPatches : QSBPatch
+namespace QSB.EyeOfTheUniverse.MaskSync.Patches
 {
-	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(EyeShuttleController), nameof(EyeShuttleController.OnLaunchSlotActivated))]
-	public static bool DontLaunch(EyeShuttleController __instance)
+	internal class MaskPatches : QSBPatch
 	{
-		QSBPlayerManager.PlayerList.Where(x => x.IsInEyeShuttle).ForEach(x => MaskManager.WentOnSolanumsWildRide.Add(x));
+		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-		if (__instance._isPlayerInside)
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(EyeShuttleController), nameof(EyeShuttleController.OnLaunchSlotActivated))]
+		public static bool DontLaunch(EyeShuttleController __instance)
 		{
-			return true;
+			QSBPlayerManager.PlayerList.Where(x => x.IsInEyeShuttle).ForEach(x => MaskManager.WentOnSolanumsWildRide.Add(x));
+
+			if (__instance._isPlayerInside)
+			{
+				return true;
+			}
+
+			MaskManager.FlickerOutShuttle();
+			__instance._hasLaunched = true;
+			__instance._hasArrivedAtMask = true;
+			__instance._hasPlayedOneShot = true;
+			__instance.enabled = false;
+
+			return false;
 		}
 
-		MaskManager.FlickerOutShuttle();
-		__instance._hasLaunched = true;
-		__instance._hasArrivedAtMask = true;
-		__instance._hasPlayedOneShot = true;
-		__instance.enabled = false;
-
-		return false;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(MaskZoneController), nameof(MaskZoneController.OnFinishGather))]
-	public static bool FinishGather(MaskZoneController __instance)
-	{
-		__instance._shuttle.OnFinishGather();
-
-		if (MaskManager.WentOnSolanumsWildRide.Contains(QSBPlayerManager.LocalPlayer))
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(MaskZoneController), nameof(MaskZoneController.OnFinishGather))]
+		public static bool FinishGather(MaskZoneController __instance)
 		{
-			Locator.GetPlayerBody().SetPosition(__instance._returnSocket.position);
-			Locator.GetPlayerBody().SetRotation(__instance._returnSocket.rotation);
-			Locator.GetPlayerBody().SetVelocity(Vector3.zero);
-			var component = Locator.GetPlayerCamera().GetComponent<PlayerCameraController>();
-			component.SetDegreesY(component.GetMinDegreesY());
+			__instance._shuttle.OnFinishGather();
+
+			if (MaskManager.WentOnSolanumsWildRide.Contains(QSBPlayerManager.LocalPlayer))
+			{
+				Locator.GetPlayerBody().SetPosition(__instance._returnSocket.position);
+				Locator.GetPlayerBody().SetRotation(__instance._returnSocket.rotation);
+				Locator.GetPlayerBody().SetVelocity(Vector3.zero);
+				var component = Locator.GetPlayerCamera().GetComponent<PlayerCameraController>();
+				component.SetDegreesY(component.GetMinDegreesY());
+			}
+
+			__instance.enabled = false;
+
+			return false;
 		}
-
-		__instance.enabled = false;
-
-		return false;
 	}
 }

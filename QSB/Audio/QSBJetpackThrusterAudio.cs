@@ -1,8 +1,9 @@
-﻿namespace QSB.Audio;
-
-internal class QSBJetpackThrusterAudio : QSBThrusterAudio
+﻿namespace QSB.Audio
 {
-	public OWAudioSource _underwaterSource;
-	public OWAudioSource _oxygenSource;
-	public OWAudioSource _boostSource;
+	internal class QSBJetpackThrusterAudio : QSBThrusterAudio
+	{
+		public OWAudioSource _underwaterSource;
+		public OWAudioSource _oxygenSource;
+		public OWAudioSource _boostSource;
+	}
 }
