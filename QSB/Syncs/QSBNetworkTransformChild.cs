@@ -16,9 +16,11 @@ public class QSBNetworkTransformChild : QSBNetworkBehaviour
 	private Vector3 _prevPosition;
 	private Quaternion _prevRotation;
 
-	protected override bool HasChanged() =>
+	public bool HasChildChanged() =>
 		Vector3.Distance(Target.localPosition, _prevPosition) > PositionChangeThreshold ||
 		Quaternion.Angle(Target.localRotation, _prevRotation) > RotationChangeThreshold;
+
+	protected override bool HasChanged() => HasChildChanged();
 
 	protected override void Serialize(NetworkWriter writer)
 	{

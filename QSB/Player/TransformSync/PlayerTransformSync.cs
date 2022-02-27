@@ -3,9 +3,12 @@ using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.PlayerBodySetup.Local;
 using QSB.PlayerBodySetup.Remote;
+using QSB.Syncs;
 using QSB.Syncs.Sectored.Transforms;
 using QSB.Utility;
+using System.Linq;
 using UnityEngine;
+using Gizmos = Popcron.Gizmos;
 
 namespace QSB.Player.TransformSync;
 
@@ -17,7 +20,6 @@ public class PlayerTransformSync : SectoredTransformSync
 	private Transform _visibleCameraRoot;
 	private Transform _networkCameraRoot => gameObject.transform.GetChild(0);
 
-	// todo? stick root might be the thing that moves instead of roasting system. one of them doesn't, i just don't know which
 	private Transform _visibleRoastingSystem;
 	private Transform _networkRoastingSystem => gameObject.transform.GetChild(1);
 	private Transform _networkStickRoot => _networkRoastingSystem.GetChild(0);
@@ -28,14 +30,17 @@ public class PlayerTransformSync : SectoredTransformSync
 	private Transform _visibleStickTip;
 	private Transform _networkStickTip => _networkStickPivot.GetChild(0);
 
-	protected Vector3 _cameraPositionVelocity;
-	protected Quaternion _cameraRotationVelocity;
-	protected Vector3 _pivotPositionVelocity;
-	protected Quaternion _pivotRotationVelocity;
-	protected Vector3 _tipPositionVelocity;
-	protected Quaternion _tipRotationVelocity;
-	protected Vector3 _roastingPositionVelocity;
-	protected Quaternion _roastingRotationVelocity;
+	private Vector3 _cameraPositionVelocity;
+	private Quaternion _cameraRotationVelocity;
+	private Vector3 _pivotPositionVelocity;
+	private Quaternion _pivotRotationVelocity;
+	private Vector3 _tipPositionVelocity;
+	private Quaternion _tipRotationVelocity;
+	private Vector3 _roastingPositionVelocity;
+	private Quaternion _roastingRotationVelocity;
+
+	private QSBNetworkTransformChild[] _children;
+	private void Awake() => _children = GetComponents<QSBNetworkTransformChild>();
 
 	public override void OnStartClient()
 	{
@@ -90,13 +95,12 @@ public class PlayerTransformSync : SectoredTransformSync
 			out _visibleStickPivot,
 			out _visibleStickTip);
 
+	protected override bool HasChanged() =>
+		base.HasChanged() ||
+		_children.Any(x => x.HasChildChanged());
+
 	protected override void GetFromAttached()
 	{
-		if (Player.IsDead)
-		{
-			return;
-		}
-
 		base.GetFromAttached();
 		if (!ReferenceTransform)
 		{
@@ -146,20 +150,22 @@ public class PlayerTransformSync : SectoredTransformSync
 
 		base.OnRenderObject();
 
-		Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkRoastingSystem.position), ReferenceTransform.TransformRotation(_networkRoastingSystem.rotation), Vector3.one / 4, Color.red);
-		Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickPivot.position), ReferenceTransform.TransformRotation(_networkStickPivot.rotation), Vector3.one / 4, Color.red);
-		Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickTip.position), ReferenceTransform.TransformRotation(_networkStickTip.rotation), Vector3.one / 4, Color.red);
-		Popcron.Gizmos.Cube(ReferenceTransform.TransformPoint(_networkCameraRoot.position), ReferenceTransform.TransformRotation(_networkCameraRoot.rotation), Vector3.one / 4, Color.red);
+		Gizmos.Cube(ReferenceTransform.TransformPoint(_networkRoastingSystem.position), ReferenceTransform.TransformRotation(_networkRoastingSystem.rotation), Vector3.one / 4, Color.red);
+		Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickPivot.position), ReferenceTransform.TransformRotation(_networkStickPivot.rotation), Vector3.one / 4, Color.red);
+		Gizmos.Cube(ReferenceTransform.TransformPoint(_networkStickTip.position), ReferenceTransform.TransformRotation(_networkStickTip.rotation), Vector3.one / 4, Color.red);
+		Gizmos.Cube(ReferenceTransform.TransformPoint(_networkCameraRoot.position), ReferenceTransform.TransformRotation(_networkCameraRoot.rotation), Vector3.one / 4, Color.red);
 
-		Popcron.Gizmos.Cube(_visibleRoastingSystem.position, _visibleRoastingSystem.rotation, Vector3.one / 4, Color.magenta);
-		Popcron.Gizmos.Cube(_visibleStickPivot.position, _visibleStickPivot.rotation, Vector3.one / 4, Color.blue);
-		Popcron.Gizmos.Cube(_visibleStickTip.position, _visibleStickTip.rotation, Vector3.one / 4, Color.yellow);
-		Popcron.Gizmos.Cube(_visibleCameraRoot.position, _visibleCameraRoot.rotation, Vector3.one / 4, Color.grey);
+		Gizmos.Cube(_visibleRoastingSystem.position, _visibleRoastingSystem.rotation, Vector3.one / 4, Color.magenta);
+		Gizmos.Cube(_visibleStickPivot.position, _visibleStickPivot.rotation, Vector3.one / 4, Color.blue);
+		Gizmos.Cube(_visibleStickTip.position, _visibleStickTip.rotation, Vector3.one / 4, Color.yellow);
+		Gizmos.Cube(_visibleCameraRoot.position, _visibleCameraRoot.rotation, Vector3.one / 4, Color.grey);
 	}
 
 	protected override bool CheckReady() =>
 		base.CheckReady() &&
 		(Locator.GetPlayerTransform() || AttachedTransform);
+
+	protected override bool CheckValid() => base.CheckValid() && !Player.IsDead;
 
 	public static PlayerTransformSync LocalInstance { get; private set; }
 
