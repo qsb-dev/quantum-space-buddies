@@ -39,9 +39,6 @@ namespace QSB.Player.TransformSync
 		private Vector3 _roastingPositionVelocity;
 		private Quaternion _roastingRotationVelocity;
 
-		private QSBNetworkTransformChild[] _children;
-		private void Awake() => _children = GetComponents<QSBNetworkTransformChild>();
-
 		public override void OnStartClient()
 		{
 			var player = new PlayerInfo(this);
@@ -94,10 +91,6 @@ namespace QSB.Player.TransformSync
 				out _visibleRoastingSystem,
 				out _visibleStickPivot,
 				out _visibleStickTip);
-
-		protected override bool HasChanged() =>
-			base.HasChanged() ||
-			_children.Any(x => x.HasChildChanged());
 
 		protected override void GetFromAttached()
 		{
