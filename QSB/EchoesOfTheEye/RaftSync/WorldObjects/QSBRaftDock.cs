@@ -9,7 +9,7 @@ namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects
 			// todo SendInitialState
 		}
 
-		public void UndockFromRaftDock()
+		public void OnPressInteract()
 		{
 			if (AttachedObject._raft != null && AttachedObject._state == RaftCarrier.DockState.Docked)
 			{
