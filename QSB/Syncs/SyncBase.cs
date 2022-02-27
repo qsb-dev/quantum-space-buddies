@@ -236,7 +236,7 @@ public abstract class SyncBase : QSBNetworkTransform
 	{
 		if (_pauseTimer > 0)
 		{
-			_pauseTimer = Mathf.Max(0, _pauseTimer - Time.unscaledDeltaTime);
+			_pauseTimer -= Time.unscaledDeltaTime;
 			return;
 		}
 
