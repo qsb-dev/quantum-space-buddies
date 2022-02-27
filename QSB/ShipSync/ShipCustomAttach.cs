@@ -1,5 +1,4 @@
-﻿using QSB.Player;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.ShipSync
 {
@@ -39,7 +38,7 @@ namespace QSB.ShipSync
 				return;
 			}
 
-			var attachedToUs = PlayerAttachWatcher.Current == _playerAttachPoint;
+			var attachedToUs = _playerAttachPoint.enabled;
 			_detachPrompt.SetVisibility(attachedToUs);
 			if (attachedToUs && OWInput.IsNewlyPressed(InputLibrary.cancel, InputMode.Character))
 			{
@@ -49,12 +48,6 @@ namespace QSB.ShipSync
 
 			if (!attachedToUs)
 			{
-				if (_playerAttachPoint.enabled)
-				{
-					// attached to us, then attached to something else
-					_playerAttachPoint.enabled = false;
-				}
-
 				if (PlayerState.IsAttached())
 				{
 					return;
