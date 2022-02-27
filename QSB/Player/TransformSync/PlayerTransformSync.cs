@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using HarmonyLib;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.PlayerBodySetup.Local;
@@ -22,22 +23,12 @@ namespace QSB.Player.TransformSync
 
 		private Transform _visibleRoastingSystem;
 		private Transform _networkRoastingSystem => gameObject.transform.GetChild(1);
-		private Transform _networkStickRoot => _networkRoastingSystem.GetChild(0);
 
 		private Transform _visibleStickPivot;
-		private Transform _networkStickPivot => _networkStickRoot.GetChild(0);
+		private Transform _networkStickPivot => _networkRoastingSystem.GetChild(0).GetChild(0);
 
 		private Transform _visibleStickTip;
 		private Transform _networkStickTip => _networkStickPivot.GetChild(0);
-
-		private Vector3 _cameraPositionVelocity;
-		private Quaternion _cameraRotationVelocity;
-		private Vector3 _pivotPositionVelocity;
-		private Quaternion _pivotRotationVelocity;
-		private Vector3 _tipPositionVelocity;
-		private Quaternion _tipRotationVelocity;
-		private Vector3 _roastingPositionVelocity;
-		private Quaternion _roastingRotationVelocity;
 
 		public override void OnStartClient()
 		{
@@ -75,6 +66,18 @@ namespace QSB.Player.TransformSync
 			}
 		}
 
+		protected override void Init()
+		{
+			base.Init();
+
+			var comps = GetComponents<QSBNetworkTransformChild>();
+			comps.First(x => x.Target == _networkCameraRoot).AttachedTransform = _visibleCameraRoot;
+			comps.First(x => x.Target == _networkRoastingSystem).AttachedTransform = _visibleRoastingSystem;
+			comps.First(x => x.Target == _networkStickPivot).AttachedTransform = _visibleStickPivot;
+			comps.First(x => x.Target == _networkStickTip).AttachedTransform = _visibleStickTip;
+			DebugLog.DebugWrite($"{this} - \n{comps.Join(x => $"{x} | {x.Target} | {x.AttachedTransform}", "\n")}", MessageType.Info);
+		}
+
 		protected override Transform InitLocalTransform()
 			=> LocalPlayerCreation.CreatePlayer(
 				Player,
@@ -91,46 +94,6 @@ namespace QSB.Player.TransformSync
 				out _visibleRoastingSystem,
 				out _visibleStickPivot,
 				out _visibleStickTip);
-
-		protected override void GetFromAttached()
-		{
-			base.GetFromAttached();
-			if (!ReferenceTransform)
-			{
-				return;
-			}
-
-			GetFromChild(_visibleStickPivot, _networkStickPivot);
-			GetFromChild(_visibleStickTip, _networkStickTip);
-			GetFromChild(_visibleCameraRoot, _networkCameraRoot);
-			GetFromChild(_visibleRoastingSystem, _networkRoastingSystem);
-		}
-
-		protected override void ApplyToAttached()
-		{
-			base.ApplyToAttached();
-			if (!ReferenceTransform)
-			{
-				return;
-			}
-
-			ApplyToChild(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
-			ApplyToChild(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
-			ApplyToChild(_visibleCameraRoot, _networkCameraRoot, ref _cameraPositionVelocity, ref _cameraRotationVelocity);
-			ApplyToChild(_visibleRoastingSystem, _networkRoastingSystem, ref _roastingPositionVelocity, ref _roastingRotationVelocity);
-		}
-
-		private static void GetFromChild(Transform visible, Transform network)
-		{
-			network.localPosition = visible.localPosition;
-			network.localRotation = visible.localRotation;
-		}
-
-		private static void ApplyToChild(Transform visible, Transform network, ref Vector3 positionVelocity, ref Quaternion rotationVelocity)
-		{
-			visible.localPosition = Vector3.SmoothDamp(visible.localPosition, network.localPosition, ref positionVelocity, SmoothTime);
-			visible.localRotation = QuaternionHelper.SmoothDamp(visible.localRotation, network.localRotation, ref rotationVelocity, SmoothTime);
-		}
 
 		protected override void OnRenderObject()
 		{

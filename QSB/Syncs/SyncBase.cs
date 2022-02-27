@@ -113,7 +113,7 @@ namespace QSB.Syncs
 
 		protected virtual float DistanceChangeThreshold => 5f;
 		private float _prevDistance;
-		protected const float SmoothTime = 0.1f;
+		private const float SmoothTime = 0.1f;
 		private Vector3 _positionSmoothVelocity;
 		private Quaternion _rotationSmoothVelocity;
 		protected Vector3 SmoothPosition { get; private set; }

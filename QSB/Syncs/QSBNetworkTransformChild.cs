@@ -37,5 +37,30 @@ namespace QSB.Syncs
 			Target.localPosition = reader.ReadVector3();
 			Target.localRotation = reader.ReadQuaternion();
 		}
+
+		public Transform AttachedTransform { get; internal set; }
+
+		private const float SmoothTime = 0.1f;
+		private Vector3 _positionSmoothVelocity;
+		private Quaternion _rotationSmoothVelocity;
+
+		protected override void Update()
+		{
+			if (AttachedTransform)
+			{
+				if (hasAuthority)
+				{
+					Target.localPosition = AttachedTransform.localPosition;
+					Target.localRotation = AttachedTransform.localRotation;
+				}
+				else
+				{
+					AttachedTransform.localPosition = Vector3.SmoothDamp(AttachedTransform.localPosition, Target.localPosition, ref _positionSmoothVelocity, SmoothTime);
+					AttachedTransform.localRotation = QuaternionHelper.SmoothDamp(AttachedTransform.localRotation, Target.localRotation, ref _rotationSmoothVelocity, SmoothTime);
+				}
+			}
+
+			base.Update();
+		}
 	}
 }
