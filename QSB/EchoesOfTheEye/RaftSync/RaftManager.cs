@@ -18,6 +18,9 @@ namespace QSB.EchoesOfTheEye.RaftSync
 			Rafts.Clear();
 			Rafts.AddRange(QSBWorldSync.GetUnityObjects<RaftController>().SortDeterministic());
 			QSBWorldSync.Init<QSBRaft, RaftController>(Rafts);
+
+			QSBWorldSync.Init<QSBRaftDock, RaftDock>();
+			QSBWorldSync.Init<QSBDamRaftLift, DamRaftLift>();
 		}
 	}
 }
