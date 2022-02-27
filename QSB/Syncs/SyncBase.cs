@@ -270,7 +270,7 @@ namespace QSB.Syncs
 			var distance = Vector3.Distance(SmoothPosition, transform.position);
 			var angle = Quaternion.Angle(SmoothRotation, transform.rotation);
 			if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold ||
-			    distance < PositionChangeThreshold && angle < RotationChangeThreshold)
+			    distance < .001f && angle < .001f)
 			{
 				SmoothPosition = transform.position;
 				SmoothRotation = transform.rotation;
