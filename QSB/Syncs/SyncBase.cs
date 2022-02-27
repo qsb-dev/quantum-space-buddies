@@ -299,7 +299,7 @@ namespace QSB.Syncs
 				AttachedTransform.localScale = Vector3.one;
 			}
 
-			if (UseInterpolation && AttachedTransform && ReferenceTransform)
+			if (UseInterpolation && !hasAuthority && AttachedTransform && ReferenceTransform)
 			{
 				SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
 				SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);
