@@ -33,7 +33,7 @@ namespace QSB.ConversationSync.Messages
 					break;
 
 				case ConversationType.CloseCharacter:
-					if (Id == -1)
+					if (Value2 == -1)
 					{
 						break;
 					}
