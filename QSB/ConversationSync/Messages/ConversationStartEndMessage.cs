@@ -7,43 +7,29 @@ using QSB.WorldSync;
 
 namespace QSB.ConversationSync.Messages
 {
-	public class ConversationStartEndMessage : QSBMessage<bool>
+	public class ConversationStartEndMessage : QSBMessage<bool, int>
 	{
-		private int TreeId;
-
 		public ConversationStartEndMessage(int treeId, bool start)
 		{
-			TreeId = treeId;
-			Value = start;
-		}
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(TreeId);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			TreeId = reader.Read<int>();
+			Value2 = treeId;
+			Value1 = start;
 		}
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{
-			if (TreeId == -1)
+			if (Value2 == -1)
 			{
 				DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
 
-			var dialogueTree = QSBWorldSync.OldDialogueTrees[TreeId];
+			var dialogueTree = QSBWorldSync.OldDialogueTrees[Value2];
 
-			if (Value)
+			if (Value1)
 			{
-				StartConversation(From, TreeId, dialogueTree);
+				StartConversation(From, Value2, dialogueTree);
 			}
 			else
 			{

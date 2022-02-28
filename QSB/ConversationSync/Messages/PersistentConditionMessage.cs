@@ -4,50 +4,33 @@ using QSB.WorldSync;
 
 namespace QSB.ConversationSync.Messages
 {
-	internal class PersistentConditionMessage : QSBMessage
+	internal class PersistentConditionMessage : QSBMessage<string, bool>
 	{
-		private string _conditionName;
-		private bool _conditionState;
-
 		public PersistentConditionMessage(string condition, bool state)
 		{
-			_conditionName = condition;
-			_conditionState = state;
-		}
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(_conditionName);
-			writer.Write(_conditionState);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			_conditionName = reader.ReadString();
-			_conditionState = reader.ReadBool();
+			Value1 = condition;
+			Value2 = state;
 		}
 
 		public override void OnReceiveRemote()
 		{
 			if (QSBCore.IsHost)
 			{
-				QSBWorldSync.SetPersistentCondition(_conditionName, _conditionState);
+				QSBWorldSync.SetPersistentCondition(Value1, Value2);
 			}
 
 			var gameSave = PlayerData._currentGameSave;
-			if (gameSave.dictConditions.ContainsKey(_conditionName))
+			if (gameSave.dictConditions.ContainsKey(Value1))
 			{
-				gameSave.dictConditions[_conditionName] = _conditionState;
+				gameSave.dictConditions[Value1] = Value2;
 			}
 			else
 			{
-				gameSave.dictConditions.Add(_conditionName, _conditionState);
+				gameSave.dictConditions.Add(Value1, Value2);
 			}
 
-			if (_conditionName
-			    is not "LAUNCH_CODES_GIVEN"
+			if (Value1
+				is not "LAUNCH_CODES_GIVEN"
 			    and not "PLAYER_ENTERED_TIMELOOPCORE"
 			    and not "PROBE_ENTERED_TIMELOOPCORE"
 			    and not "PLAYER_ENTERED_TIMELOOPCORE_MULTIPLE")
@@ -60,7 +43,7 @@ namespace QSB.ConversationSync.Messages
 		{
 			if (QSBCore.IsHost)
 			{
-				QSBWorldSync.SetPersistentCondition(_conditionName, _conditionState);
+				QSBWorldSync.SetPersistentCondition(Value1, Value2);
 			}
 		}
 	}

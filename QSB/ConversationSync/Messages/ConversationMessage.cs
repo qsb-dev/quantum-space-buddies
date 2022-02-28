@@ -7,46 +7,29 @@ using UnityEngine;
 
 namespace QSB.ConversationSync.Messages
 {
-	public class ConversationMessage : QSBMessage<ConversationType>
+	public class ConversationMessage : QSBMessage<ConversationType, int, string>
 	{
-		private int Id;
-		private string Message;
-
 		public ConversationMessage(ConversationType type, int id, string message = "")
 		{
-			Value = type;
-			Id = id;
-			Message = message;
-		}
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(Id);
-			writer.Write(Message);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Id = reader.Read<int>();
-			Message = reader.ReadString();
+			Value1 = type;
+			Value2 = id;
+			Value3 = message;
 		}
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{
-			switch (Value)
+			switch (Value1)
 			{
 				case ConversationType.Character:
-					var translated = TextTranslation.Translate(Message).Trim();
+					var translated = TextTranslation.Translate(Value3).Trim();
 					translated = Regex.Replace(translated, @"<[Pp]ause=?\d*\.?\d*\s?\/?>", "");
-					ConversationManager.Instance.DisplayCharacterConversationBox(Id, translated);
+					ConversationManager.Instance.DisplayCharacterConversationBox(Value2, translated);
 					break;
 
 				case ConversationType.Player:
-					ConversationManager.Instance.DisplayPlayerConversationBox((uint)Id, Message);
+					ConversationManager.Instance.DisplayPlayerConversationBox((uint)Value2, Value3);
 					break;
 
 				case ConversationType.CloseCharacter:
@@ -55,12 +38,12 @@ namespace QSB.ConversationSync.Messages
 						break;
 					}
 
-					var tree = QSBWorldSync.OldDialogueTrees[Id];
+					var tree = QSBWorldSync.OldDialogueTrees[Value2];
 					Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
 					break;
 
 				case ConversationType.ClosePlayer:
-					Object.Destroy(QSBPlayerManager.GetPlayer((uint)Id).CurrentDialogueBox);
+					Object.Destroy(QSBPlayerManager.GetPlayer((uint)Value2).CurrentDialogueBox);
 					break;
 			}
 		}

@@ -8,30 +8,13 @@ using QSB.WorldSync;
 
 namespace QSB.ItemSync.Messages
 {
-	internal class SocketItemMessage : QSBMessage<SocketMessageType>
+	internal class SocketItemMessage : QSBMessage<SocketMessageType, int, int>
 	{
-		private int SocketId;
-		private int ItemId;
-
 		public SocketItemMessage(SocketMessageType type, int socketId = -1, int itemId = -1)
 		{
-			Value = type;
-			SocketId = socketId;
-			ItemId = itemId;
-		}
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(SocketId);
-			writer.Write(ItemId);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			SocketId = reader.Read<int>();
-			ItemId = reader.Read<int>();
+			Value1 = type;
+			Value2 = socketId;
+			Value3 = itemId;
 		}
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
@@ -46,16 +29,16 @@ namespace QSB.ItemSync.Messages
 			DebugLog.DebugWrite("DROP HELD ITEM");
 			player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
 
-			switch (Value)
+			switch (Value1)
 			{
 				case SocketMessageType.Socket:
-					socketWorldObject = SocketId.GetWorldObject<QSBItemSocket>();
-					itemWorldObject = ItemId.GetWorldObject<IQSBItem>();
+					socketWorldObject = Value2.GetWorldObject<QSBItemSocket>();
+					itemWorldObject = Value3.GetWorldObject<IQSBItem>();
 
 					socketWorldObject.PlaceIntoSocket(itemWorldObject);
 					return;
 				case SocketMessageType.StartUnsocket:
-					socketWorldObject = SocketId.GetWorldObject<QSBItemSocket>();
+					socketWorldObject = Value2.GetWorldObject<QSBItemSocket>();
 
 					if (!socketWorldObject.IsSocketOccupied())
 					{
@@ -66,7 +49,7 @@ namespace QSB.ItemSync.Messages
 					socketWorldObject.RemoveFromSocket();
 					return;
 				case SocketMessageType.CompleteUnsocket:
-					itemWorldObject = ItemId.GetWorldObject<IQSBItem>();
+					itemWorldObject = Value3.GetWorldObject<IQSBItem>();
 
 					itemWorldObject.OnCompleteUnsocket();
 					return;
