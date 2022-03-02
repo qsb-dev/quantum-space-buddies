@@ -79,6 +79,13 @@ internal class DreamLanternPatches : QSBPatch
 	public static bool UpdateFocusReplacement(DreamLanternController __instance, float targetFocus, float rate)
 	{
 		var value = Mathf.MoveTowards(__instance._focus, targetFocus, rate * Time.deltaTime);
+
+		if (__instance._focus == value)
+		{
+			__instance.SetFocus(value);
+			return false;
+		}
+
 		__instance.SetFocus(value);
 		new DreamLanternStateMessage(DreamLanternActionType.FOCUS, floatValue: value).Send();
 
