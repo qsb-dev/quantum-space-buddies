@@ -8,6 +8,7 @@ namespace QSB.ItemSync.WorldObjects.Items
 		ItemType GetItemType();
 		void PickUpItem(Transform itemSocket);
 		void DropItem(Vector3 position, Vector3 normal, Sector sector);
+		void SocketItem(Transform socketTransform, Sector sector);
 		void OnCompleteUnsocket();
 	}
 }
