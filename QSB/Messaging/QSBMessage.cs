@@ -45,9 +45,9 @@ namespace QSB.Messaging
 		public override string ToString() => GetType().Name;
 	}
 
-	public abstract class QSBMessage<V> : QSBMessage
+	public abstract class QSBMessage<T> : QSBMessage
 	{
-		protected V Value;
+		protected T Value;
 
 		public override void Serialize(NetworkWriter writer)
 		{
@@ -58,7 +58,50 @@ namespace QSB.Messaging
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<V>();
+			Value = reader.Read<T>();
+		}
+	}
+
+	public abstract class QSBMessage<T, U> : QSBMessage
+	{
+		protected T Value1;
+		protected U Value2;
+
+		public override void Serialize(NetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(Value1);
+			writer.Write(Value2);
+		}
+
+		public override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			Value1 = reader.Read<T>();
+			Value2 = reader.Read<U>();
+		}
+	}
+
+	public abstract class QSBMessage<T, U, V> : QSBMessage
+	{
+		protected T Value1;
+		protected U Value2;
+		protected V Value3;
+
+		public override void Serialize(NetworkWriter writer)
+		{
+			base.Serialize(writer);
+			writer.Write(Value1);
+			writer.Write(Value2);
+			writer.Write(Value3);
+		}
+
+		public override void Deserialize(NetworkReader reader)
+		{
+			base.Deserialize(reader);
+			Value1 = reader.Read<T>();
+			Value2 = reader.Read<U>();
+			Value3 = reader.Read<V>();
 		}
 	}
 }

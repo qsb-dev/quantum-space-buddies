@@ -1,20 +1,11 @@
-﻿using Mirror;
+﻿using UnityEngine;
 
 namespace QSB.TimeSync
 {
-	public class PreserveTimeScale : NetworkBehaviour
+	public class StopMeditation : MonoBehaviour
 	{
 		public void Init()
 		{
-			if (!isServer)
-			{
-				var campfires = FindObjectsOfType<Campfire>();
-				foreach (var campfire in campfires)
-				{
-					campfire._canSleepHere = false;
-				}
-			}
-
 			var menuManager = Locator.GetSceneMenuManager();
 
 			if (menuManager == null)

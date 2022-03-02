@@ -46,7 +46,6 @@ namespace QSB.ItemSync.Messages
 			var player = QSBPlayerManager.GetPlayer(From);
 			player.HeldItem = WorldObject;
 
-			DebugLog.DebugWrite("DROP HELD ITEM");
 			player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
 		}
 	}

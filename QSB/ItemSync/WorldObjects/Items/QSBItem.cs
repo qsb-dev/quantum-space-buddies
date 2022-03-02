@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items
 {
-	internal class QSBItem<T> : WorldObject<T>, IQSBItem
+	public class QSBItem<T> : WorldObject<T>, IQSBItem
 		where T : OWItem
 	{
 		private QSBItemSocket InitialSocket { get; set; }
@@ -85,17 +85,21 @@ namespace QSB.ItemSync.WorldObjects.Items
 		public void PickUpItem(Transform holdTransform)
 			=> AttachedObject.PickUpItem(holdTransform);
 
-		public void DropItem(Vector3 position, Vector3 normal, Sector sector)
+		public virtual void DropItem(Vector3 position, Vector3 normal, Sector sector)
 		{
 			AttachedObject.transform.SetParent(sector.transform);
 			AttachedObject.transform.localScale = Vector3.one;
-			var localDropNormal = AttachedObject._localDropNormal;
-			var lhs = Quaternion.FromToRotation(AttachedObject.transform.TransformDirection(localDropNormal), normal);
+			var lhs = Quaternion.FromToRotation(AttachedObject.transform.TransformDirection(AttachedObject._localDropNormal), normal);
 			AttachedObject.transform.rotation = lhs * AttachedObject.transform.rotation;
-			var localDropOffset = AttachedObject._localDropOffset;
-			AttachedObject.transform.position = sector.transform.TransformPoint(position) + AttachedObject.transform.TransformDirection(localDropOffset);
+			AttachedObject.transform.position = position + AttachedObject.transform.TransformDirection(AttachedObject._localDropOffset);
 			AttachedObject.SetSector(sector);
 			AttachedObject.SetColliderActivation(true);
+		}
+
+		public virtual void SocketItem(Transform socketTransform, Sector sector)
+		{
+			AttachedObject.SetSector(sector);
+			AttachedObject.MoveAndChildToTransform(socketTransform);
 		}
 
 		public void OnCompleteUnsocket()
