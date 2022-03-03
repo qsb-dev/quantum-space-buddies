@@ -6,27 +6,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects
+namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
+
+internal class QSBNomaiText : WorldObject<NomaiText>
 {
-	internal class QSBNomaiText : WorldObject<NomaiText>
+	public override void SendInitialState(uint to) =>
+		GetTranslatedIds().ForEach(id =>
+			this.SendMessage(new SetAsTranslatedMessage(id) { To = to }));
+
+	public void SetAsTranslated(int id) => AttachedObject.SetAsTranslated(id);
+
+	public IEnumerable<int> GetTranslatedIds()
 	{
-		public override void SendInitialState(uint to) =>
-			GetTranslatedIds().ForEach(id =>
-				this.SendMessage(new SetAsTranslatedMessage(id) { To = to }));
-
-		public void SetAsTranslated(int id) => AttachedObject.SetAsTranslated(id);
-
-		public IEnumerable<int> GetTranslatedIds()
+		if (!AttachedObject._initialized)
 		{
-			if (!AttachedObject._initialized)
-			{
-				// shouldn't happen, but does anyway sometimes. whatever lol
-				return Array.Empty<int>();
-			}
-
-			return AttachedObject._dictNomaiTextData
-				.Where(x => x.Value.IsTranslated)
-				.Select(x => x.Key);
+			// shouldn't happen, but does anyway sometimes. whatever lol
+			return Array.Empty<int>();
 		}
+
+		return AttachedObject._dictNomaiTextData
+			.Where(x => x.Value.IsTranslated)
+			.Select(x => x.Key);
 	}
 }

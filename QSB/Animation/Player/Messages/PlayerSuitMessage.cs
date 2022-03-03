@@ -3,47 +3,46 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.WorldSync;
 
-namespace QSB.Animation.Player.Messages
+namespace QSB.Animation.Player.Messages;
+
+public class PlayerSuitMessage : QSBMessage<bool>
 {
-	public class PlayerSuitMessage : QSBMessage<bool>
+	static PlayerSuitMessage()
 	{
-		static PlayerSuitMessage()
+		GlobalMessenger.AddListener(OWEvents.SuitUp, () => Handle(true));
+		GlobalMessenger.AddListener(OWEvents.RemoveSuit, () => Handle(false));
+	}
+
+	private static void Handle(bool on)
+	{
+		if (PlayerTransformSync.LocalInstance)
 		{
-			GlobalMessenger.AddListener(OWEvents.SuitUp, () => Handle(true));
-			GlobalMessenger.AddListener(OWEvents.RemoveSuit, () => Handle(false));
+			new PlayerSuitMessage(on).Send();
+		}
+	}
+
+	public PlayerSuitMessage(bool on) => Data = on;
+
+	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+	public override void OnReceiveRemote()
+	{
+		var player = QSBPlayerManager.GetPlayer(From);
+		player.SuitedUp = Data;
+
+		if (!player.IsReady)
+		{
+			return;
 		}
 
-		private static void Handle(bool on)
-		{
-			if (PlayerTransformSync.LocalInstance)
-			{
-				new PlayerSuitMessage(on).Send();
-			}
-		}
+		var animator = player.AnimationSync;
+		animator.SetSuitState(Data);
+	}
 
-		public PlayerSuitMessage(bool on) => Data = on;
-
-		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-		public override void OnReceiveRemote()
-		{
-			var player = QSBPlayerManager.GetPlayer(From);
-			player.SuitedUp = Data;
-
-			if (!player.IsReady)
-			{
-				return;
-			}
-
-			var animator = player.AnimationSync;
-			animator.SetSuitState(Data);
-		}
-
-		public override void OnReceiveLocal()
-		{
-			QSBPlayerManager.LocalPlayer.SuitedUp = Data;
-			var animator = QSBPlayerManager.LocalPlayer.AnimationSync;
-			animator.InSuitedUpState = Data;
-		}
+	public override void OnReceiveLocal()
+	{
+		QSBPlayerManager.LocalPlayer.SuitedUp = Data;
+		var animator = QSBPlayerManager.LocalPlayer.AnimationSync;
+		animator.InSuitedUpState = Data;
 	}
 }

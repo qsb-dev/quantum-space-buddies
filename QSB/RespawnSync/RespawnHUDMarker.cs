@@ -1,47 +1,46 @@
 ﻿using UnityEngine;
 
-namespace QSB.RespawnSync
+namespace QSB.RespawnSync;
+
+public class RespawnHUDMarker : HUDDistanceMarker
 {
-	public class RespawnHUDMarker : HUDDistanceMarker
+	private bool _isReady;
+
+	public override void InitCanvasMarker()
 	{
-		private bool _isReady;
+		_markerRadius = 0.2f;
+		_markerTarget = transform;
+		_markerLabel = "RESPAWN PLAYER";
+		_isReady = true;
 
-		public override void InitCanvasMarker()
+		base.InitCanvasMarker();
+	}
+
+	private void Update()
+	{
+		if (!_isReady)
 		{
-			_markerRadius = 0.2f;
-			_markerTarget = transform;
-			_markerLabel = "RESPAWN PLAYER";
-			_isReady = true;
-
-			base.InitCanvasMarker();
+			return;
 		}
 
-		private void Update()
+		if (_canvasMarker != null)
 		{
-			if (!_isReady)
-			{
-				return;
-			}
+			var isVisible = _canvasMarker.IsVisible();
 
-			if (_canvasMarker != null)
+			if (RespawnManager.Instance.RespawnNeeded != isVisible)
 			{
-				var isVisible = _canvasMarker.IsVisible();
-
-				if (RespawnManager.Instance.RespawnNeeded != isVisible)
-				{
-					_isVisible = RespawnManager.Instance.RespawnNeeded;
-					_canvasMarker.SetVisibility(_isVisible);
-				}
+				_isVisible = RespawnManager.Instance.RespawnNeeded;
+				_canvasMarker.SetVisibility(_isVisible);
 			}
+		}
 
-			if (_isVisible && _canvasMarker != null)
-			{
-				var color = (Mathf.Sin(Time.unscaledTime * 10f) > 0f)
-					? Color.white
-					: new Color(1f, 1f, 1f, 0.1f);
-				_canvasMarker._mainTextField.color = color;
-				_canvasMarker._offScreenIndicator._textField.color = color;
-			}
+		if (_isVisible && _canvasMarker != null)
+		{
+			var color = (Mathf.Sin(Time.unscaledTime * 10f) > 0f)
+				? Color.white
+				: new Color(1f, 1f, 1f, 0.1f);
+			_canvasMarker._mainTextField.color = color;
+			_canvasMarker._offScreenIndicator._textField.color = color;
 		}
 	}
 }

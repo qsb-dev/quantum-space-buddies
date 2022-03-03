@@ -1,16 +1,15 @@
 ﻿using QSB.Player;
 
-namespace QSB.Tools.FlashlightTool
-{
-	internal static class FlashlightCreator
-	{
-		internal static void CreateFlashlight(PlayerInfo player)
-		{
-			var REMOTE_FlashlightRoot = player.CameraBody.transform.Find("REMOTE_FlashlightRoot").gameObject;
+namespace QSB.Tools.FlashlightTool;
 
-			var qsbFlashlight = REMOTE_FlashlightRoot.GetComponent<QSBFlashlight>();
-			qsbFlashlight.Player = player;
-			qsbFlashlight.Init();
-		}
+internal static class FlashlightCreator
+{
+	internal static void CreateFlashlight(PlayerInfo player)
+	{
+		var REMOTE_FlashlightRoot = player.CameraBody.transform.Find("REMOTE_FlashlightRoot").gameObject;
+
+		var qsbFlashlight = REMOTE_FlashlightRoot.GetComponent<QSBFlashlight>();
+		qsbFlashlight.Player = player;
+		qsbFlashlight.Init();
 	}
 }

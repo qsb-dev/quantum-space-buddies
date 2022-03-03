@@ -1,51 +1,50 @@
 ﻿using Newtonsoft.Json;
 
-namespace QSB.Utility
+namespace QSB.Utility;
+
+[JsonObject(MemberSerialization.OptIn)]
+public class DebugSettings
 {
-	[JsonObject(MemberSerialization.OptIn)]
-	public class DebugSettings
-	{
-		[JsonProperty("useKcpTransport")]
-		public bool UseKcpTransport;
+	[JsonProperty("useKcpTransport")]
+	public bool UseKcpTransport;
 
-		[JsonProperty("dumpWorldObjects")]
-		public bool DumpWorldObjects;
+	[JsonProperty("dumpWorldObjects")]
+	public bool DumpWorldObjects;
 
-		[JsonProperty("playerIdInLogs")]
-		public bool PlayerIdInLogs;
+	[JsonProperty("playerIdInLogs")]
+	public bool PlayerIdInLogs;
 
-		[JsonProperty("hookDebugLogs")]
-		public bool HookDebugLogs;
+	[JsonProperty("hookDebugLogs")]
+	public bool HookDebugLogs;
 
-		[JsonProperty("debugMode")]
-		public bool DebugMode;
+	[JsonProperty("debugMode")]
+	public bool DebugMode;
 
-		[JsonProperty("drawGui")]
-		private bool _drawGui;
-		public bool DrawGui => DebugMode && _drawGui;
+	[JsonProperty("drawGui")]
+	private bool _drawGui;
+	public bool DrawGui => DebugMode && _drawGui;
 
-		[JsonProperty("drawLines")]
-		private bool _drawLines;
-		public bool DrawLines => DebugMode && _drawLines;
+	[JsonProperty("drawLines")]
+	private bool _drawLines;
+	public bool DrawLines => DebugMode && _drawLines;
 
-		[JsonProperty("drawLabels")]
-		private bool _drawLabels;
-		public bool DrawLabels => DebugMode && _drawLabels;
+	[JsonProperty("drawLabels")]
+	private bool _drawLabels;
+	public bool DrawLabels => DebugMode && _drawLabels;
 
-		[JsonProperty("drawQuantumVisibilityObjects")]
-		private bool _drawQuantumVisibilityObjects;
-		public bool DrawQuantumVisibilityObjects => DebugMode && _drawQuantumVisibilityObjects;
+	[JsonProperty("drawQuantumVisibilityObjects")]
+	private bool _drawQuantumVisibilityObjects;
+	public bool DrawQuantumVisibilityObjects => DebugMode && _drawQuantumVisibilityObjects;
 
-		[JsonProperty("avoidTimeSync")]
-		private bool _avoidTimeSync;
-		public bool AvoidTimeSync => DebugMode && _avoidTimeSync;
+	[JsonProperty("avoidTimeSync")]
+	private bool _avoidTimeSync;
+	public bool AvoidTimeSync => DebugMode && _avoidTimeSync;
 
-		[JsonProperty("skipTitleScreen")]
-		private bool _skipTitleScreen;
-		public bool SkipTitleScreen => DebugMode && _skipTitleScreen;
+	[JsonProperty("skipTitleScreen")]
+	private bool _skipTitleScreen;
+	public bool SkipTitleScreen => DebugMode && _skipTitleScreen;
 
-		[JsonProperty("greySkybox")]
-		private bool _greySkybox;
-		public bool GreySkybox => DebugMode && _greySkybox;
-	}
+	[JsonProperty("greySkybox")]
+	private bool _greySkybox;
+	public bool GreySkybox => DebugMode && _greySkybox;
 }

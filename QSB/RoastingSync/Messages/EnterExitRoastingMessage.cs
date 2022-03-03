@@ -7,66 +7,65 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 
-namespace QSB.RoastingSync.Messages
+namespace QSB.RoastingSync.Messages;
+
+internal class EnterExitRoastingMessage : QSBMessage<bool>
 {
-	internal class EnterExitRoastingMessage : QSBMessage<bool>
+	static EnterExitRoastingMessage()
 	{
-		static EnterExitRoastingMessage()
-		{
-			GlobalMessenger<Campfire>.AddListener(OWEvents.EnterRoastingMode, campfire => Handler(campfire, true));
-			GlobalMessenger.AddListener(OWEvents.ExitRoastingMode, () => Handler(null, false));
-		}
+		GlobalMessenger<Campfire>.AddListener(OWEvents.EnterRoastingMode, campfire => Handler(campfire, true));
+		GlobalMessenger.AddListener(OWEvents.ExitRoastingMode, () => Handler(null, false));
+	}
 
-		private static void Handler(Campfire campfire, bool roasting)
+	private static void Handler(Campfire campfire, bool roasting)
+	{
+		if (PlayerTransformSync.LocalInstance)
 		{
-			if (PlayerTransformSync.LocalInstance)
+			if (campfire == null)
 			{
-				if (campfire == null)
-				{
-					new EnterExitRoastingMessage(-1, roasting).Send();
-					return;
-				}
-
-				var qsbObj = campfire.GetWorldObject<QSBCampfire>();
-				new EnterExitRoastingMessage(qsbObj.ObjectId, roasting).Send();
-			}
-		}
-
-		private int ObjectId;
-
-		private EnterExitRoastingMessage(int objectId, bool roasting)
-		{
-			ObjectId = objectId;
-			Data = roasting;
-		}
-
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(ObjectId);
-		}
-
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			ObjectId = reader.Read<int>();
-		}
-
-		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-		public override void OnReceiveRemote()
-		{
-			if (Data && ObjectId == -1)
-			{
-				DebugLog.ToConsole($"Error - Null campfire supplied for start roasting event!", MessageType.Error);
+				new EnterExitRoastingMessage(-1, roasting).Send();
 				return;
 			}
 
-			var player = QSBPlayerManager.GetPlayer(From);
-			player.RoastingStick.SetActive(Data);
-			player.Campfire = Data
-				? ObjectId.GetWorldObject<QSBCampfire>()
-				: null;
+			var qsbObj = campfire.GetWorldObject<QSBCampfire>();
+			new EnterExitRoastingMessage(qsbObj.ObjectId, roasting).Send();
 		}
+	}
+
+	private int ObjectId;
+
+	private EnterExitRoastingMessage(int objectId, bool roasting)
+	{
+		ObjectId = objectId;
+		Data = roasting;
+	}
+
+	public override void Serialize(NetworkWriter writer)
+	{
+		base.Serialize(writer);
+		writer.Write(ObjectId);
+	}
+
+	public override void Deserialize(NetworkReader reader)
+	{
+		base.Deserialize(reader);
+		ObjectId = reader.Read<int>();
+	}
+
+	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+	public override void OnReceiveRemote()
+	{
+		if (Data && ObjectId == -1)
+		{
+			DebugLog.ToConsole($"Error - Null campfire supplied for start roasting event!", MessageType.Error);
+			return;
+		}
+
+		var player = QSBPlayerManager.GetPlayer(From);
+		player.RoastingStick.SetActive(Data);
+		player.Campfire = Data
+			? ObjectId.GetWorldObject<QSBCampfire>()
+			: null;
 	}
 }

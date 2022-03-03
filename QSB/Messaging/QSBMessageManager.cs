@@ -13,141 +13,140 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
-namespace QSB.Messaging
+namespace QSB.Messaging;
+
+public static class QSBMessageManager
 {
-	public static class QSBMessageManager
+	#region inner workings
+
+	internal static readonly Type[] _types;
+	internal static readonly Dictionary<Type, ushort> _typeToId = new();
+
+	static QSBMessageManager()
 	{
-		#region inner workings
-
-		internal static readonly Type[] _types;
-		internal static readonly Dictionary<Type, ushort> _typeToId = new();
-
-		static QSBMessageManager()
+		_types = typeof(QSBMessage).GetDerivedTypes().ToArray();
+		for (ushort i = 0; i < _types.Length; i++)
 		{
-			_types = typeof(QSBMessage).GetDerivedTypes().ToArray();
-			for (ushort i = 0; i < _types.Length; i++)
+			_typeToId.Add(_types[i], i);
+			// call static constructor of message if needed
+			RuntimeHelpers.RunClassConstructor(_types[i].TypeHandle);
+		}
+	}
+
+	public static void Init()
+	{
+		NetworkServer.RegisterHandler<Wrapper>((_, wrapper) => OnServerReceive(wrapper));
+		NetworkClient.RegisterHandler<Wrapper>(wrapper => OnClientReceive(wrapper));
+	}
+
+	private static void OnServerReceive(QSBMessage msg)
+	{
+		if (msg.To == uint.MaxValue)
+		{
+			NetworkServer.SendToAll<Wrapper>(msg);
+		}
+		else if (msg.To == 0)
+		{
+			NetworkServer.localConnection.Send<Wrapper>(msg);
+		}
+		else
+		{
+			msg.To.GetNetworkConnection().Send<Wrapper>(msg);
+		}
+	}
+
+	private static void OnClientReceive(QSBMessage msg)
+	{
+		if (PlayerTransformSync.LocalInstance == null)
+		{
+			DebugLog.ToConsole($"Warning - Tried to handle message {msg} before local player was established.", MessageType.Warning);
+			return;
+		}
+
+		if (QSBPlayerManager.PlayerExists(msg.From))
+		{
+			var player = QSBPlayerManager.GetPlayer(msg.From);
+
+			if (!player.IsReady
+			    && player.PlayerId != QSBPlayerManager.LocalPlayerId
+			    && player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
+			    && msg is not (PlayerInformationMessage or PlayerReadyMessage or RequestStateResyncMessage or ServerStateMessage))
 			{
-				_typeToId.Add(_types[i], i);
-				// call static constructor of message if needed
-				RuntimeHelpers.RunClassConstructor(_types[i].TypeHandle);
+				DebugLog.ToConsole($"Warning - Got message {msg} from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
+				new RequestStateResyncMessage().Send();
 			}
 		}
 
-		public static void Init()
+		try
 		{
-			NetworkServer.RegisterHandler<Wrapper>((_, wrapper) => OnServerReceive(wrapper));
-			NetworkClient.RegisterHandler<Wrapper>(wrapper => OnClientReceive(wrapper));
-		}
-
-		private static void OnServerReceive(QSBMessage msg)
-		{
-			if (msg.To == uint.MaxValue)
+			if (!msg.ShouldReceive)
 			{
-				NetworkServer.SendToAll<Wrapper>(msg);
+				return;
 			}
-			else if (msg.To == 0)
+
+			if (msg.From != QSBPlayerManager.LocalPlayerId)
 			{
-				NetworkServer.localConnection.Send<Wrapper>(msg);
+				msg.OnReceiveRemote();
 			}
 			else
 			{
-				msg.To.GetNetworkConnection().Send<Wrapper>(msg);
+				msg.OnReceiveLocal();
 			}
 		}
-
-		private static void OnClientReceive(QSBMessage msg)
+		catch (Exception ex)
 		{
-			if (PlayerTransformSync.LocalInstance == null)
-			{
-				DebugLog.ToConsole($"Warning - Tried to handle message {msg} before local player was established.", MessageType.Warning);
-				return;
-			}
-
-			if (QSBPlayerManager.PlayerExists(msg.From))
-			{
-				var player = QSBPlayerManager.GetPlayer(msg.From);
-
-				if (!player.IsReady
-				    && player.PlayerId != QSBPlayerManager.LocalPlayerId
-				    && player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-				    && msg is not (PlayerInformationMessage or PlayerReadyMessage or RequestStateResyncMessage or ServerStateMessage))
-				{
-					DebugLog.ToConsole($"Warning - Got message {msg} from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
-					new RequestStateResyncMessage().Send();
-				}
-			}
-
-			try
-			{
-				if (!msg.ShouldReceive)
-				{
-					return;
-				}
-
-				if (msg.From != QSBPlayerManager.LocalPlayerId)
-				{
-					msg.OnReceiveRemote();
-				}
-				else
-				{
-					msg.OnReceiveLocal();
-				}
-			}
-			catch (Exception ex)
-			{
-				DebugLog.ToConsole($"Error - Exception handling message {msg} : {ex}", MessageType.Error);
-			}
-		}
-
-		#endregion
-
-		public static void Send<M>(this M msg)
-			where M : QSBMessage
-		{
-			if (PlayerTransformSync.LocalInstance == null)
-			{
-				DebugLog.ToConsole($"Warning - Tried to send message {msg} before local player was established.", MessageType.Warning);
-				return;
-			}
-
-			msg.From = QSBPlayerManager.LocalPlayerId;
-			NetworkClient.Send<Wrapper>(msg);
-		}
-
-		public static void SendMessage<T, M>(this T worldObject, M msg)
-			where T : IWorldObject
-			where M : QSBWorldObjectMessage<T>
-		{
-			msg.ObjectId = worldObject.ObjectId;
-			Send(msg);
+			DebugLog.ToConsole($"Error - Exception handling message {msg} : {ex}", MessageType.Error);
 		}
 	}
 
-	internal struct Wrapper : NetworkMessage
-	{
-		public QSBMessage Msg;
+	#endregion
 
-		public static implicit operator QSBMessage(Wrapper wrapper) => wrapper.Msg;
-		public static implicit operator Wrapper(QSBMessage msg) => new() { Msg = msg };
+	public static void Send<M>(this M msg)
+		where M : QSBMessage
+	{
+		if (PlayerTransformSync.LocalInstance == null)
+		{
+			DebugLog.ToConsole($"Warning - Tried to send message {msg} before local player was established.", MessageType.Warning);
+			return;
+		}
+
+		msg.From = QSBPlayerManager.LocalPlayerId;
+		NetworkClient.Send<Wrapper>(msg);
 	}
 
-	internal static class ReaderWriterExtensions
+	public static void SendMessage<T, M>(this T worldObject, M msg)
+		where T : IWorldObject
+		where M : QSBWorldObjectMessage<T>
 	{
-		private static QSBMessage ReadQSBMessage(this NetworkReader reader)
-		{
-			var id = reader.ReadUShort();
-			var type = QSBMessageManager._types[id];
-			var msg = (QSBMessage)FormatterServices.GetUninitializedObject(type);
-			msg.Deserialize(reader);
-			return msg;
-		}
+		msg.ObjectId = worldObject.ObjectId;
+		Send(msg);
+	}
+}
 
-		private static void WriteQSBMessage(this NetworkWriter writer, QSBMessage msg)
-		{
-			var type = msg.GetType();
-			var id = QSBMessageManager._typeToId[type];
-			writer.Write(id);
-			msg.Serialize(writer);
-		}
+internal struct Wrapper : NetworkMessage
+{
+	public QSBMessage Msg;
+
+	public static implicit operator QSBMessage(Wrapper wrapper) => wrapper.Msg;
+	public static implicit operator Wrapper(QSBMessage msg) => new() { Msg = msg };
+}
+
+internal static class ReaderWriterExtensions
+{
+	private static QSBMessage ReadQSBMessage(this NetworkReader reader)
+	{
+		var id = reader.ReadUShort();
+		var type = QSBMessageManager._types[id];
+		var msg = (QSBMessage)FormatterServices.GetUninitializedObject(type);
+		msg.Deserialize(reader);
+		return msg;
+	}
+
+	private static void WriteQSBMessage(this NetworkWriter writer, QSBMessage msg)
+	{
+		var type = msg.GetType();
+		var id = QSBMessageManager._typeToId[type];
+		writer.Write(id);
+		msg.Serialize(writer);
 	}
 }

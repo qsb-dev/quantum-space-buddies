@@ -2,34 +2,33 @@
 using QSB.TornadoSync.Messages;
 using QSB.WorldSync;
 
-namespace QSB.TornadoSync.WorldObjects
+namespace QSB.TornadoSync.WorldObjects;
+
+public class QSBTornado : WorldObject<TornadoController>
 {
-	public class QSBTornado : WorldObject<TornadoController>
+	public override void SendInitialState(uint to) =>
+		this.SendMessage(new TornadoFormStateMessage(FormState) { To = to });
+
+	public bool FormState
 	{
-		public override void SendInitialState(uint to) =>
-			this.SendMessage(new TornadoFormStateMessage(FormState) { To = to });
-
-		public bool FormState
+		get => AttachedObject._tornadoRoot.activeSelf // forming or formed or collapsing
+		       && !AttachedObject._tornadoCollapsing; // and not collapsing
+		set
 		{
-			get => AttachedObject._tornadoRoot.activeSelf // forming or formed or collapsing
-			       && !AttachedObject._tornadoCollapsing; // and not collapsing
-			set
+			if (FormState == value)
 			{
-				if (FormState == value)
-				{
-					return;
-				}
+				return;
+			}
 
-				if (value)
-				{
-					AttachedObject._tornadoCollapsing = false;
-					AttachedObject.StartFormation();
-				}
-				else
-				{
-					AttachedObject._secondsUntilFormation = 0;
-					AttachedObject.StartCollapse();
-				}
+			if (value)
+			{
+				AttachedObject._tornadoCollapsing = false;
+				AttachedObject.StartFormation();
+			}
+			else
+			{
+				AttachedObject._secondsUntilFormation = 0;
+				AttachedObject.StartCollapse();
 			}
 		}
 	}

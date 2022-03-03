@@ -5,22 +5,21 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace QSB.EchoesOfTheEye.RaftSync
+namespace QSB.EchoesOfTheEye.RaftSync;
+
+public class RaftManager : WorldObjectManager
 {
-	public class RaftManager : WorldObjectManager
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+
+	public static readonly List<RaftController> Rafts = new();
+
+	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+		Rafts.Clear();
+		Rafts.AddRange(QSBWorldSync.GetUnityObjects<RaftController>().SortDeterministic());
+		QSBWorldSync.Init<QSBRaft, RaftController>(Rafts);
 
-		public static readonly List<RaftController> Rafts = new();
-
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-		{
-			Rafts.Clear();
-			Rafts.AddRange(QSBWorldSync.GetUnityObjects<RaftController>().SortDeterministic());
-			QSBWorldSync.Init<QSBRaft, RaftController>(Rafts);
-
-			QSBWorldSync.Init<QSBRaftDock, RaftDock>();
-			QSBWorldSync.Init<QSBDamRaftLift, DamRaftLift>();
-		}
+		QSBWorldSync.Init<QSBRaftDock, RaftDock>();
+		QSBWorldSync.Init<QSBDamRaftLift, DamRaftLift>();
 	}
 }

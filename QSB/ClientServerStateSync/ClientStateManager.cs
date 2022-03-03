@@ -5,182 +5,181 @@ using QSB.Player.TransformSync;
 using QSB.Utility;
 using UnityEngine;
 
-namespace QSB.ClientServerStateSync
+namespace QSB.ClientServerStateSync;
+
+internal class ClientStateManager : MonoBehaviour
 {
-	internal class ClientStateManager : MonoBehaviour
+	public static ClientStateManager Instance { get; private set; }
+
+	public event ChangeStateEvent OnChangeState;
+	public delegate void ChangeStateEvent(ClientState newState);
+
+	private void Awake()
+		=> Instance = this;
+
+	private void Start()
 	{
-		public static ClientStateManager Instance { get; private set; }
+		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+		Delay.RunWhen(() => PlayerTransformSync.LocalInstance != null,
+			() => new ClientStateMessage(ForceGetCurrentState()).Send());
+	}
 
-		public event ChangeStateEvent OnChangeState;
-		public delegate void ChangeStateEvent(ClientState newState);
+	private void OnDestroy() =>
+		QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 
-		private void Awake()
-			=> Instance = this;
-
-		private void Start()
+	public void ChangeClientState(ClientState newState)
+	{
+		if (PlayerTransformSync.LocalInstance == null || QSBPlayerManager.LocalPlayer.State == newState)
 		{
-			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-			Delay.RunWhen(() => PlayerTransformSync.LocalInstance != null,
-				() => new ClientStateMessage(ForceGetCurrentState()).Send());
+			return;
 		}
 
-		private void OnDestroy() =>
-			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+		QSBPlayerManager.LocalPlayer.State = newState;
+		OnChangeState?.Invoke(newState);
+	}
 
-		public void ChangeClientState(ClientState newState)
+	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
+	{
+		var serverState = ServerStateManager.Instance.GetServerState();
+
+		ClientState newState;
+
+		if (QSBCore.IsHost)
 		{
-			if (PlayerTransformSync.LocalInstance == null || QSBPlayerManager.LocalPlayer.State == newState)
-			{
-				return;
-			}
 
-			QSBPlayerManager.LocalPlayer.State = newState;
-			OnChangeState?.Invoke(newState);
+			switch (newScene)
+			{
+				case OWScene.TitleScreen:
+					newState = ClientState.InTitleScreen;
+					break;
+				case OWScene.Credits_Fast:
+					newState = ClientState.WatchingShortCredits;
+					break;
+				case OWScene.Credits_Final:
+				case OWScene.PostCreditsScene:
+					newState = ClientState.WatchingLongCredits;
+					break;
+				case OWScene.SolarSystem:
+					if (oldScene == OWScene.SolarSystem)
+					{
+						// reloading scene
+						newState = ClientState.WaitingForOthersToBeReady;
+					}
+					else
+					{
+						// loading in from title screen
+						newState = ClientState.AliveInSolarSystem;
+					}
+
+					break;
+				case OWScene.EyeOfTheUniverse:
+					newState = ClientState.AliveInEye;
+					break;
+				default:
+					newState = ClientState.NotLoaded;
+					break;
+			}
 		}
-
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
+		else
 		{
-			var serverState = ServerStateManager.Instance.GetServerState();
-
-			ClientState newState;
-
-			if (QSBCore.IsHost)
+			switch (newScene)
 			{
+				case OWScene.TitleScreen:
+					newState = ClientState.InTitleScreen;
+					break;
+				case OWScene.Credits_Fast:
+					newState = ClientState.WatchingShortCredits;
+					break;
+				case OWScene.Credits_Final:
+				case OWScene.PostCreditsScene:
+					newState = ClientState.WatchingLongCredits;
+					break;
+				case OWScene.SolarSystem:
+					if (serverState == ServerState.WaitingForAllPlayersToDie)
+					{
+						newState = ClientState.WaitingForOthersToBeReady;
+						break;
+					}
 
-				switch (newScene)
-				{
-					case OWScene.TitleScreen:
-						newState = ClientState.InTitleScreen;
-						break;
-					case OWScene.Credits_Fast:
-						newState = ClientState.WatchingShortCredits;
-						break;
-					case OWScene.Credits_Final:
-					case OWScene.PostCreditsScene:
-						newState = ClientState.WatchingLongCredits;
-						break;
-					case OWScene.SolarSystem:
-						if (oldScene == OWScene.SolarSystem)
-						{
-							// reloading scene
-							newState = ClientState.WaitingForOthersToBeReady;
-						}
-						else
-						{
-							// loading in from title screen
-							newState = ClientState.AliveInSolarSystem;
-						}
-
-						break;
-					case OWScene.EyeOfTheUniverse:
-						newState = ClientState.AliveInEye;
-						break;
-					default:
-						newState = ClientState.NotLoaded;
-						break;
-				}
-			}
-			else
-			{
-				switch (newScene)
-				{
-					case OWScene.TitleScreen:
-						newState = ClientState.InTitleScreen;
-						break;
-					case OWScene.Credits_Fast:
-						newState = ClientState.WatchingShortCredits;
-						break;
-					case OWScene.Credits_Final:
-					case OWScene.PostCreditsScene:
-						newState = ClientState.WatchingLongCredits;
-						break;
-					case OWScene.SolarSystem:
-						if (serverState == ServerState.WaitingForAllPlayersToDie)
-						{
-							newState = ClientState.WaitingForOthersToBeReady;
-							break;
-						}
-
-						if (oldScene == OWScene.SolarSystem)
-						{
-							// reloading scene
-							newState = ClientState.WaitingForOthersToBeReady;
-						}
-						else
-						{
-							// loading in from title screen
-							if (serverState == ServerState.WaitingForAllPlayersToReady)
-							{
-								newState = ClientState.WaitingForOthersToBeReady;
-							}
-							else
-							{
-								newState = ClientState.AliveInSolarSystem;
-							}
-						}
-
-						break;
-					case OWScene.EyeOfTheUniverse:
+					if (oldScene == OWScene.SolarSystem)
+					{
+						// reloading scene
+						newState = ClientState.WaitingForOthersToBeReady;
+					}
+					else
+					{
+						// loading in from title screen
 						if (serverState == ServerState.WaitingForAllPlayersToReady)
 						{
 							newState = ClientState.WaitingForOthersToBeReady;
 						}
 						else
 						{
-							newState = ClientState.AliveInEye;
+							newState = ClientState.AliveInSolarSystem;
 						}
+					}
 
-						break;
-					default:
-						newState = ClientState.NotLoaded;
-						break;
-				}
-			}
+					break;
+				case OWScene.EyeOfTheUniverse:
+					if (serverState == ServerState.WaitingForAllPlayersToReady)
+					{
+						newState = ClientState.WaitingForOthersToBeReady;
+					}
+					else
+					{
+						newState = ClientState.AliveInEye;
+					}
 
-			new ClientStateMessage(newState).Send();
-		}
-
-		public void OnDeath()
-		{
-			var currentScene = QSBSceneManager.CurrentScene;
-			if (currentScene == OWScene.SolarSystem)
-			{
-				new ClientStateMessage(ClientState.DeadInSolarSystem).Send();
-			}
-			else if (currentScene == OWScene.EyeOfTheUniverse)
-			{
-				DebugLog.ToConsole($"Error - You died in the Eye? HOW DID YOU DO THAT?!", OWML.Common.MessageType.Error);
-			}
-			else
-			{
-				// whaaaaaaaaa
-				DebugLog.ToConsole($"Error - You died... in a menu? In the credits? In any case, you should never see this. :P", OWML.Common.MessageType.Error);
+					break;
+				default:
+					newState = ClientState.NotLoaded;
+					break;
 			}
 		}
 
-		public void OnRespawn()
-		{
-			var currentScene = QSBSceneManager.CurrentScene;
-			if (currentScene == OWScene.SolarSystem)
-			{
-				DebugLog.DebugWrite($"RESPAWN!");
-				new ClientStateMessage(ClientState.AliveInSolarSystem).Send();
-			}
-			else
-			{
-				DebugLog.ToConsole($"Error - Player tried to respawn in scene {currentScene}", OWML.Common.MessageType.Error);
-			}
-		}
-
-		private static ClientState ForceGetCurrentState()
-			=> QSBSceneManager.CurrentScene switch
-			{
-				OWScene.TitleScreen => ClientState.InTitleScreen,
-				OWScene.Credits_Fast => ClientState.WatchingShortCredits,
-				OWScene.Credits_Final or OWScene.PostCreditsScene => ClientState.WatchingLongCredits,
-				OWScene.SolarSystem => ClientState.AliveInSolarSystem,
-				OWScene.EyeOfTheUniverse => ClientState.AliveInEye,
-				_ => ClientState.NotLoaded
-			};
+		new ClientStateMessage(newState).Send();
 	}
+
+	public void OnDeath()
+	{
+		var currentScene = QSBSceneManager.CurrentScene;
+		if (currentScene == OWScene.SolarSystem)
+		{
+			new ClientStateMessage(ClientState.DeadInSolarSystem).Send();
+		}
+		else if (currentScene == OWScene.EyeOfTheUniverse)
+		{
+			DebugLog.ToConsole($"Error - You died in the Eye? HOW DID YOU DO THAT?!", OWML.Common.MessageType.Error);
+		}
+		else
+		{
+			// whaaaaaaaaa
+			DebugLog.ToConsole($"Error - You died... in a menu? In the credits? In any case, you should never see this. :P", OWML.Common.MessageType.Error);
+		}
+	}
+
+	public void OnRespawn()
+	{
+		var currentScene = QSBSceneManager.CurrentScene;
+		if (currentScene == OWScene.SolarSystem)
+		{
+			DebugLog.DebugWrite($"RESPAWN!");
+			new ClientStateMessage(ClientState.AliveInSolarSystem).Send();
+		}
+		else
+		{
+			DebugLog.ToConsole($"Error - Player tried to respawn in scene {currentScene}", OWML.Common.MessageType.Error);
+		}
+	}
+
+	private static ClientState ForceGetCurrentState()
+		=> QSBSceneManager.CurrentScene switch
+		{
+			OWScene.TitleScreen => ClientState.InTitleScreen,
+			OWScene.Credits_Fast => ClientState.WatchingShortCredits,
+			OWScene.Credits_Final or OWScene.PostCreditsScene => ClientState.WatchingLongCredits,
+			OWScene.SolarSystem => ClientState.AliveInSolarSystem,
+			OWScene.EyeOfTheUniverse => ClientState.AliveInEye,
+			_ => ClientState.NotLoaded
+		};
 }

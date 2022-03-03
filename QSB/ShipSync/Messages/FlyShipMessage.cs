@@ -6,56 +6,55 @@ using QSB.ShipSync.TransformSync;
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.ShipSync.Messages
+namespace QSB.ShipSync.Messages;
+
+internal class FlyShipMessage : QSBMessage<bool>
 {
-	internal class FlyShipMessage : QSBMessage<bool>
+	static FlyShipMessage()
 	{
-		static FlyShipMessage()
+		GlobalMessenger<OWRigidbody>.AddListener(OWEvents.EnterFlightConsole, _ => Handler(true));
+		GlobalMessenger.AddListener(OWEvents.ExitFlightConsole, () => Handler(false));
+	}
+
+	private static void Handler(bool flying)
+	{
+		if (PlayerTransformSync.LocalInstance)
 		{
-			GlobalMessenger<OWRigidbody>.AddListener(OWEvents.EnterFlightConsole, _ => Handler(true));
-			GlobalMessenger.AddListener(OWEvents.ExitFlightConsole, () => Handler(false));
+			new FlyShipMessage(flying).Send();
 		}
+	}
 
-		private static void Handler(bool flying)
+	private FlyShipMessage(bool flying) => Data = flying;
+
+	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+	public override void OnReceiveLocal() => SetCurrentFlyer(From, Data);
+
+	public override void OnReceiveRemote()
+	{
+		SetCurrentFlyer(From, Data);
+		var shipCockpitController = GameObject.Find("ShipCockpitController").GetComponent<ShipCockpitController>();
+		if (Data)
 		{
-			if (PlayerTransformSync.LocalInstance)
-			{
-				new FlyShipMessage(flying).Send();
-			}
+			shipCockpitController._interactVolume.DisableInteraction();
 		}
-
-		private FlyShipMessage(bool flying) => Data = flying;
-
-		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-		public override void OnReceiveLocal() => SetCurrentFlyer(From, Data);
-
-		public override void OnReceiveRemote()
+		else
 		{
-			SetCurrentFlyer(From, Data);
-			var shipCockpitController = GameObject.Find("ShipCockpitController").GetComponent<ShipCockpitController>();
-			if (Data)
-			{
-				shipCockpitController._interactVolume.DisableInteraction();
-			}
-			else
-			{
-				shipCockpitController._interactVolume.EnableInteraction();
-			}
+			shipCockpitController._interactVolume.EnableInteraction();
 		}
+	}
 
-		private static void SetCurrentFlyer(uint id, bool isFlying)
+	private static void SetCurrentFlyer(uint id, bool isFlying)
+	{
+		ShipManager.Instance.CurrentFlyer = isFlying
+			? id
+			: uint.MaxValue;
+
+		if (QSBCore.IsHost)
 		{
-			ShipManager.Instance.CurrentFlyer = isFlying
+			ShipTransformSync.LocalInstance.netIdentity.SetAuthority(isFlying
 				? id
-				: uint.MaxValue;
-
-			if (QSBCore.IsHost)
-			{
-				ShipTransformSync.LocalInstance.netIdentity.SetAuthority(isFlying
-					? id
-					: QSBPlayerManager.LocalPlayerId);
-			}
+				: QSBPlayerManager.LocalPlayerId);
 		}
 	}
 }

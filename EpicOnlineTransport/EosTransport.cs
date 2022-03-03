@@ -6,395 +6,394 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace EpicTransport
+namespace EpicTransport;
+
+/// <summary>
+/// EOS Transport following the Mirror transport standard
+/// </summary>
+public class EosTransport : Transport
 {
-	/// <summary>
-	/// EOS Transport following the Mirror transport standard
-	/// </summary>
-	public class EosTransport : Transport
+	private const string EPIC_SCHEME = "epic";
+
+	private Client client;
+	private Server server;
+
+	private Common activeNode;
+
+	[SerializeField]
+	public PacketReliability[] Channels = new PacketReliability[2] { PacketReliability.ReliableOrdered, PacketReliability.UnreliableUnordered };
+
+	[Tooltip("Timeout for connecting in seconds.")]
+	public int timeout = 25;
+
+	[Tooltip("The max fragments used in fragmentation before throwing an error.")]
+	public int maxFragments = 55;
+
+	public float ignoreCachedMessagesAtStartUpInSeconds = 2.0f;
+	private float ignoreCachedMessagesTimer = 0.0f;
+
+	public RelayControl relayControl = RelayControl.AllowRelays;
+
+	[Header("Info")]
+	[Tooltip("This will display your Epic Account ID when you start or connect to a server.")]
+	public ProductUserId productUserId;
+
+	private int packetId = 0;
+
+	public Action<string> SetTransportError;
+
+	private void Awake()
 	{
-		private const string EPIC_SCHEME = "epic";
+		Debug.Assert(Channels != null && Channels.Length > 0, "No channel configured for EOS Transport.");
+		Debug.Assert(Channels.Length < byte.MaxValue, "Too many channels configured for EOS Transport");
 
-		private Client client;
-		private Server server;
-
-		private Common activeNode;
-
-		[SerializeField]
-		public PacketReliability[] Channels = new PacketReliability[2] { PacketReliability.ReliableOrdered, PacketReliability.UnreliableUnordered };
-
-		[Tooltip("Timeout for connecting in seconds.")]
-		public int timeout = 25;
-
-		[Tooltip("The max fragments used in fragmentation before throwing an error.")]
-		public int maxFragments = 55;
-
-		public float ignoreCachedMessagesAtStartUpInSeconds = 2.0f;
-		private float ignoreCachedMessagesTimer = 0.0f;
-
-		public RelayControl relayControl = RelayControl.AllowRelays;
-
-		[Header("Info")]
-		[Tooltip("This will display your Epic Account ID when you start or connect to a server.")]
-		public ProductUserId productUserId;
-
-		private int packetId = 0;
-
-		public Action<string> SetTransportError;
-
-		private void Awake()
+		if (Channels[0] != PacketReliability.ReliableOrdered)
 		{
-			Debug.Assert(Channels != null && Channels.Length > 0, "No channel configured for EOS Transport.");
-			Debug.Assert(Channels.Length < byte.MaxValue, "Too many channels configured for EOS Transport");
-
-			if (Channels[0] != PacketReliability.ReliableOrdered)
-			{
-				Debug.LogWarning("EOS Transport Channel[0] is not ReliableOrdered, Mirror expects Channel 0 to be ReliableOrdered, only change this if you know what you are doing.");
-			}
-
-			if (Channels[1] != PacketReliability.UnreliableUnordered)
-			{
-				Debug.LogWarning("EOS Transport Channel[1] is not UnreliableUnordered, Mirror expects Channel 1 to be UnreliableUnordered, only change this if you know what you are doing.");
-			}
-
-			StartCoroutine("FetchEpicAccountId");
-			StartCoroutine("ChangeRelayStatus");
+			Debug.LogWarning("EOS Transport Channel[0] is not ReliableOrdered, Mirror expects Channel 0 to be ReliableOrdered, only change this if you know what you are doing.");
 		}
 
-		public override void ClientEarlyUpdate()
+		if (Channels[1] != PacketReliability.UnreliableUnordered)
 		{
-			EOSSDKComponent.Tick();
-
-			if (activeNode != null)
-			{
-				ignoreCachedMessagesTimer += Time.deltaTime;
-
-				if (ignoreCachedMessagesTimer <= ignoreCachedMessagesAtStartUpInSeconds)
-				{
-					activeNode.ignoreAllMessages = true;
-				}
-				else
-				{
-					activeNode.ignoreAllMessages = false;
-
-					if (client != null && !client.isConnecting)
-					{
-						if (EOSSDKComponent.Initialized)
-						{
-							client.Connect(client.hostAddress);
-						}
-						else
-						{
-							Debug.LogError("EOS not initialized");
-							client.EosNotInitialized();
-						}
-
-						client.isConnecting = true;
-					}
-				}
-			}
-
-			if (enabled)
-			{
-				activeNode?.ReceiveData();
-			}
+			Debug.LogWarning("EOS Transport Channel[1] is not UnreliableUnordered, Mirror expects Channel 1 to be UnreliableUnordered, only change this if you know what you are doing.");
 		}
 
-		public override void ClientLateUpdate() { }
+		StartCoroutine("FetchEpicAccountId");
+		StartCoroutine("ChangeRelayStatus");
+	}
 
-		public override void ServerEarlyUpdate()
+	public override void ClientEarlyUpdate()
+	{
+		EOSSDKComponent.Tick();
+
+		if (activeNode != null)
 		{
-			EOSSDKComponent.Tick();
+			ignoreCachedMessagesTimer += Time.deltaTime;
 
-			if (activeNode != null)
+			if (ignoreCachedMessagesTimer <= ignoreCachedMessagesAtStartUpInSeconds)
 			{
-				ignoreCachedMessagesTimer += Time.deltaTime;
-
-				if (ignoreCachedMessagesTimer <= ignoreCachedMessagesAtStartUpInSeconds)
-				{
-					activeNode.ignoreAllMessages = true;
-				}
-				else
-				{
-					activeNode.ignoreAllMessages = false;
-				}
-			}
-
-			if (enabled)
-			{
-				activeNode?.ReceiveData();
-			}
-		}
-
-		public override void ServerLateUpdate() { }
-
-		public override bool ClientConnected() => ClientActive() && client.Connected;
-
-		public override void ClientConnect(string address)
-		{
-			if (!EOSSDKComponent.Initialized)
-			{
-				Debug.LogError("EOS not initialized. Client could not be started.");
-				OnClientDisconnected.Invoke();
-				return;
-			}
-
-			StartCoroutine("FetchEpicAccountId");
-
-			if (ServerActive())
-			{
-				Debug.LogError("Transport already running as server!");
-				return;
-			}
-
-			if (!ClientActive() || client.Error)
-			{
-				Debug.Log($"Starting client, target address {address}.");
-
-				client = Client.CreateClient(this, address);
-				activeNode = client;
-
-				if (EOSSDKComponent.CollectPlayerMetrics)
-				{
-					// Start Metrics colletion session
-					var sessionOptions = new BeginPlayerSessionOptions();
-					sessionOptions.AccountId = EOSSDKComponent.LocalUserAccountId;
-					sessionOptions.ControllerType = UserControllerType.Unknown;
-					sessionOptions.DisplayName = EOSSDKComponent.DisplayName;
-					sessionOptions.GameSessionId = null;
-					sessionOptions.ServerIp = null;
-					var result = EOSSDKComponent.GetMetricsInterface().BeginPlayerSession(sessionOptions);
-
-					if (result == Result.Success)
-					{
-						Debug.Log("Started Metric Session");
-					}
-				}
+				activeNode.ignoreAllMessages = true;
 			}
 			else
 			{
-				Debug.LogError("Client already running!");
-			}
-		}
+				activeNode.ignoreAllMessages = false;
 
-		public override void ClientConnect(Uri uri)
-		{
-			if (uri.Scheme != EPIC_SCHEME)
-			{
-				throw new ArgumentException($"Invalid url {uri}, use {EPIC_SCHEME}://EpicAccountId instead", nameof(uri));
-			}
-
-			ClientConnect(uri.Host);
-		}
-
-		public override void ClientSend(ArraySegment<byte> segment, int channelId)
-		{
-			Send(channelId, segment);
-		}
-
-		public override void ClientDisconnect()
-		{
-			if (ClientActive())
-			{
-				Shutdown();
-			}
-		}
-
-		public bool ClientActive() => client != null;
-
-		public override bool ServerActive() => server != null;
-
-		public override void ServerStart()
-		{
-			if (!EOSSDKComponent.Initialized)
-			{
-				Debug.LogError("EOS not initialized. Server could not be started.");
-				return;
-			}
-
-			StartCoroutine("FetchEpicAccountId");
-
-			if (ClientActive())
-			{
-				Debug.LogError("Transport already running as client!");
-				return;
-			}
-
-			if (!ServerActive())
-			{
-				Debug.Log("Starting server.");
-
-				server = Server.CreateServer(this, NetworkManager.singleton.maxConnections);
-				activeNode = server;
-
-				if (EOSSDKComponent.CollectPlayerMetrics)
+				if (client != null && !client.isConnecting)
 				{
-					// Start Metrics colletion session
-					var sessionOptions = new BeginPlayerSessionOptions();
-					sessionOptions.AccountId = EOSSDKComponent.LocalUserAccountId;
-					sessionOptions.ControllerType = UserControllerType.Unknown;
-					sessionOptions.DisplayName = EOSSDKComponent.DisplayName;
-					sessionOptions.GameSessionId = null;
-					sessionOptions.ServerIp = null;
-					var result = EOSSDKComponent.GetMetricsInterface().BeginPlayerSession(sessionOptions);
-
-					if (result == Result.Success)
+					if (EOSSDKComponent.Initialized)
 					{
-						Debug.Log("Started Metric Session");
+						client.Connect(client.hostAddress);
 					}
+					else
+					{
+						Debug.LogError("EOS not initialized");
+						client.EosNotInitialized();
+					}
+
+					client.isConnecting = true;
 				}
+			}
+		}
+
+		if (enabled)
+		{
+			activeNode?.ReceiveData();
+		}
+	}
+
+	public override void ClientLateUpdate() { }
+
+	public override void ServerEarlyUpdate()
+	{
+		EOSSDKComponent.Tick();
+
+		if (activeNode != null)
+		{
+			ignoreCachedMessagesTimer += Time.deltaTime;
+
+			if (ignoreCachedMessagesTimer <= ignoreCachedMessagesAtStartUpInSeconds)
+			{
+				activeNode.ignoreAllMessages = true;
 			}
 			else
 			{
-				Debug.LogError("Server already started!");
+				activeNode.ignoreAllMessages = false;
 			}
 		}
 
-		public override Uri ServerUri()
+		if (enabled)
 		{
-			var epicBuilder = new UriBuilder
-			{
-				Scheme = EPIC_SCHEME,
-				Host = EOSSDKComponent.LocalUserProductIdString
-			};
+			activeNode?.ReceiveData();
+		}
+	}
 
-			return epicBuilder.Uri;
+	public override void ServerLateUpdate() { }
+
+	public override bool ClientConnected() => ClientActive() && client.Connected;
+
+	public override void ClientConnect(string address)
+	{
+		if (!EOSSDKComponent.Initialized)
+		{
+			Debug.LogError("EOS not initialized. Client could not be started.");
+			OnClientDisconnected.Invoke();
+			return;
 		}
 
-		public override void ServerSend(int connectionId, ArraySegment<byte> segment, int channelId)
+		StartCoroutine("FetchEpicAccountId");
+
+		if (ServerActive())
 		{
-			if (ServerActive())
-			{
-				Send(channelId, segment, connectionId);
-			}
+			Debug.LogError("Transport already running as server!");
+			return;
 		}
 
-		public override void ServerDisconnect(int connectionId) => server.Disconnect(connectionId);
-		public override string ServerGetClientAddress(int connectionId) => ServerActive() ? server.ServerGetClientAddress(connectionId) : string.Empty;
-
-		public override void ServerStop()
+		if (!ClientActive() || client.Error)
 		{
-			if (ServerActive())
-			{
-				Shutdown();
-			}
-		}
+			Debug.Log($"Starting client, target address {address}.");
 
-		private void Send(int channelId, ArraySegment<byte> segment, int connectionId = int.MinValue)
-		{
-			var packets = GetPacketArray(channelId, segment);
+			client = Client.CreateClient(this, address);
+			activeNode = client;
 
-			for (var i = 0; i < packets.Length; i++)
-			{
-				if (connectionId == int.MinValue)
-				{
-					client.Send(packets[i].ToBytes(), channelId);
-				}
-				else
-				{
-					server.SendAll(connectionId, packets[i].ToBytes(), channelId);
-				}
-			}
-
-			packetId++;
-		}
-
-		private Packet[] GetPacketArray(int channelId, ArraySegment<byte> segment)
-		{
-			var packetCount = Mathf.CeilToInt((float)segment.Count / (float)GetMaxSinglePacketSize(channelId));
-			var packets = new Packet[packetCount];
-
-			for (var i = 0; i < segment.Count; i += GetMaxSinglePacketSize(channelId))
-			{
-				var fragment = i / GetMaxSinglePacketSize(channelId);
-
-				packets[fragment] = new Packet();
-				packets[fragment].id = packetId;
-				packets[fragment].fragment = fragment;
-				packets[fragment].moreFragments = segment.Count - i > GetMaxSinglePacketSize(channelId);
-				packets[fragment].data = new byte[segment.Count - i > GetMaxSinglePacketSize(channelId) ? GetMaxSinglePacketSize(channelId) : segment.Count - i];
-				Array.Copy(segment.Array, i, packets[fragment].data, 0, packets[fragment].data.Length);
-			}
-
-			return packets;
-		}
-
-		public override void Shutdown()
-		{
 			if (EOSSDKComponent.CollectPlayerMetrics)
 			{
-				// Stop Metrics collection session
-				var endSessionOptions = new EndPlayerSessionOptions();
-				endSessionOptions.AccountId = EOSSDKComponent.LocalUserAccountId;
-				var result = EOSSDKComponent.GetMetricsInterface().EndPlayerSession(endSessionOptions);
+				// Start Metrics colletion session
+				var sessionOptions = new BeginPlayerSessionOptions();
+				sessionOptions.AccountId = EOSSDKComponent.LocalUserAccountId;
+				sessionOptions.ControllerType = UserControllerType.Unknown;
+				sessionOptions.DisplayName = EOSSDKComponent.DisplayName;
+				sessionOptions.GameSessionId = null;
+				sessionOptions.ServerIp = null;
+				var result = EOSSDKComponent.GetMetricsInterface().BeginPlayerSession(sessionOptions);
 
 				if (result == Result.Success)
 				{
-					Debug.LogError("Stopped Metric Session");
+					Debug.Log("Started Metric Session");
 				}
 			}
+		}
+		else
+		{
+			Debug.LogError("Client already running!");
+		}
+	}
 
-			server?.Shutdown();
-			client?.Disconnect();
-
-			server = null;
-			client = null;
-			activeNode = null;
-			Debug.Log("Transport shut down.");
+	public override void ClientConnect(Uri uri)
+	{
+		if (uri.Scheme != EPIC_SCHEME)
+		{
+			throw new ArgumentException($"Invalid url {uri}, use {EPIC_SCHEME}://EpicAccountId instead", nameof(uri));
 		}
 
-		public int GetMaxSinglePacketSize(int channelId) => P2PInterface.MaxPacketSize - 10; // 1159 bytes, we need to remove 10 bytes for the packet header (id (4 bytes) + fragment (4 bytes) + more fragments (1 byte))
+		ClientConnect(uri.Host);
+	}
 
-		public override int GetMaxPacketSize(int channelId) => P2PInterface.MaxPacketSize * maxFragments;
+	public override void ClientSend(ArraySegment<byte> segment, int channelId)
+	{
+		Send(channelId, segment);
+	}
 
-		public override int GetBatchThreshold(int channelId) => P2PInterface.MaxPacketSize; // Use P2PInterface.MaxPacketSize as everything above will get fragmentated and will be counter effective to batching
-
-		public override bool Available()
+	public override void ClientDisconnect()
+	{
+		if (ClientActive())
 		{
-			try
+			Shutdown();
+		}
+	}
+
+	public bool ClientActive() => client != null;
+
+	public override bool ServerActive() => server != null;
+
+	public override void ServerStart()
+	{
+		if (!EOSSDKComponent.Initialized)
+		{
+			Debug.LogError("EOS not initialized. Server could not be started.");
+			return;
+		}
+
+		StartCoroutine("FetchEpicAccountId");
+
+		if (ClientActive())
+		{
+			Debug.LogError("Transport already running as client!");
+			return;
+		}
+
+		if (!ServerActive())
+		{
+			Debug.Log("Starting server.");
+
+			server = Server.CreateServer(this, NetworkManager.singleton.maxConnections);
+			activeNode = server;
+
+			if (EOSSDKComponent.CollectPlayerMetrics)
 			{
-				return EOSSDKComponent.Initialized;
+				// Start Metrics colletion session
+				var sessionOptions = new BeginPlayerSessionOptions();
+				sessionOptions.AccountId = EOSSDKComponent.LocalUserAccountId;
+				sessionOptions.ControllerType = UserControllerType.Unknown;
+				sessionOptions.DisplayName = EOSSDKComponent.DisplayName;
+				sessionOptions.GameSessionId = null;
+				sessionOptions.ServerIp = null;
+				var result = EOSSDKComponent.GetMetricsInterface().BeginPlayerSession(sessionOptions);
+
+				if (result == Result.Success)
+				{
+					Debug.Log("Started Metric Session");
+				}
 			}
-			catch
+		}
+		else
+		{
+			Debug.LogError("Server already started!");
+		}
+	}
+
+	public override Uri ServerUri()
+	{
+		var epicBuilder = new UriBuilder
+		{
+			Scheme = EPIC_SCHEME,
+			Host = EOSSDKComponent.LocalUserProductIdString
+		};
+
+		return epicBuilder.Uri;
+	}
+
+	public override void ServerSend(int connectionId, ArraySegment<byte> segment, int channelId)
+	{
+		if (ServerActive())
+		{
+			Send(channelId, segment, connectionId);
+		}
+	}
+
+	public override void ServerDisconnect(int connectionId) => server.Disconnect(connectionId);
+	public override string ServerGetClientAddress(int connectionId) => ServerActive() ? server.ServerGetClientAddress(connectionId) : string.Empty;
+
+	public override void ServerStop()
+	{
+		if (ServerActive())
+		{
+			Shutdown();
+		}
+	}
+
+	private void Send(int channelId, ArraySegment<byte> segment, int connectionId = int.MinValue)
+	{
+		var packets = GetPacketArray(channelId, segment);
+
+		for (var i = 0; i < packets.Length; i++)
+		{
+			if (connectionId == int.MinValue)
 			{
-				return false;
+				client.Send(packets[i].ToBytes(), channelId);
+			}
+			else
+			{
+				server.SendAll(connectionId, packets[i].ToBytes(), channelId);
 			}
 		}
 
-		private IEnumerator FetchEpicAccountId()
-		{
-			while (!EOSSDKComponent.Initialized)
-			{
-				yield return null;
-			}
+		packetId++;
+	}
 
-			productUserId = EOSSDKComponent.LocalUserProductId;
+	private Packet[] GetPacketArray(int channelId, ArraySegment<byte> segment)
+	{
+		var packetCount = Mathf.CeilToInt((float)segment.Count / (float)GetMaxSinglePacketSize(channelId));
+		var packets = new Packet[packetCount];
+
+		for (var i = 0; i < segment.Count; i += GetMaxSinglePacketSize(channelId))
+		{
+			var fragment = i / GetMaxSinglePacketSize(channelId);
+
+			packets[fragment] = new Packet();
+			packets[fragment].id = packetId;
+			packets[fragment].fragment = fragment;
+			packets[fragment].moreFragments = segment.Count - i > GetMaxSinglePacketSize(channelId);
+			packets[fragment].data = new byte[segment.Count - i > GetMaxSinglePacketSize(channelId) ? GetMaxSinglePacketSize(channelId) : segment.Count - i];
+			Array.Copy(segment.Array, i, packets[fragment].data, 0, packets[fragment].data.Length);
 		}
 
-		private IEnumerator ChangeRelayStatus()
+		return packets;
+	}
+
+	public override void Shutdown()
+	{
+		if (EOSSDKComponent.CollectPlayerMetrics)
 		{
-			while (!EOSSDKComponent.Initialized)
+			// Stop Metrics collection session
+			var endSessionOptions = new EndPlayerSessionOptions();
+			endSessionOptions.AccountId = EOSSDKComponent.LocalUserAccountId;
+			var result = EOSSDKComponent.GetMetricsInterface().EndPlayerSession(endSessionOptions);
+
+			if (result == Result.Success)
 			{
-				yield return null;
+				Debug.LogError("Stopped Metric Session");
 			}
-
-			var setRelayControlOptions = new SetRelayControlOptions();
-			setRelayControlOptions.RelayControl = relayControl;
-
-			EOSSDKComponent.GetP2PInterface().SetRelayControl(setRelayControlOptions);
 		}
 
-		public void ResetIgnoreMessagesAtStartUpTimer()
+		server?.Shutdown();
+		client?.Disconnect();
+
+		server = null;
+		client = null;
+		activeNode = null;
+		Debug.Log("Transport shut down.");
+	}
+
+	public int GetMaxSinglePacketSize(int channelId) => P2PInterface.MaxPacketSize - 10; // 1159 bytes, we need to remove 10 bytes for the packet header (id (4 bytes) + fragment (4 bytes) + more fragments (1 byte))
+
+	public override int GetMaxPacketSize(int channelId) => P2PInterface.MaxPacketSize * maxFragments;
+
+	public override int GetBatchThreshold(int channelId) => P2PInterface.MaxPacketSize; // Use P2PInterface.MaxPacketSize as everything above will get fragmentated and will be counter effective to batching
+
+	public override bool Available()
+	{
+		try
 		{
-			ignoreCachedMessagesTimer = 0;
+			return EOSSDKComponent.Initialized;
+		}
+		catch
+		{
+			return false;
+		}
+	}
+
+	private IEnumerator FetchEpicAccountId()
+	{
+		while (!EOSSDKComponent.Initialized)
+		{
+			yield return null;
 		}
 
-		private void OnDestroy()
+		productUserId = EOSSDKComponent.LocalUserProductId;
+	}
+
+	private IEnumerator ChangeRelayStatus()
+	{
+		while (!EOSSDKComponent.Initialized)
 		{
-			if (activeNode != null)
-			{
-				Shutdown();
-			}
+			yield return null;
+		}
+
+		var setRelayControlOptions = new SetRelayControlOptions();
+		setRelayControlOptions.RelayControl = relayControl;
+
+		EOSSDKComponent.GetP2PInterface().SetRelayControl(setRelayControlOptions);
+	}
+
+	public void ResetIgnoreMessagesAtStartUpTimer()
+	{
+		ignoreCachedMessagesTimer = 0;
+	}
+
+	private void OnDestroy()
+	{
+		if (activeNode != null)
+		{
+			Shutdown();
 		}
 	}
 }

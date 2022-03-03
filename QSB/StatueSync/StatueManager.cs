@@ -4,61 +4,60 @@ using QSB.Utility;
 using System.Collections;
 using UnityEngine;
 
-namespace QSB.StatueSync
+namespace QSB.StatueSync;
+
+internal class StatueManager : MonoBehaviour, IAddComponentOnStart
 {
-	internal class StatueManager : MonoBehaviour, IAddComponentOnStart
+	public static StatueManager Instance { get; private set; }
+	public bool HasStartedStatueLocally;
+
+	private void Awake()
 	{
-		public static StatueManager Instance { get; private set; }
-		public bool HasStartedStatueLocally;
+		Instance = this;
+		QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
+	}
 
-		private void Awake()
+	private void OnDestroy()
+		=> QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
+
+	private void OnUniverseSceneLoaded(OWScene oldScene, OWScene newScene)
+	{
+		if (!QSBCore.IsInMultiplayer)
 		{
-			Instance = this;
-			QSBSceneManager.OnUniverseSceneLoaded += OnUniverseSceneLoaded;
+			return;
 		}
 
-		private void OnDestroy()
-			=> QSBSceneManager.OnUniverseSceneLoaded -= OnUniverseSceneLoaded;
-
-		private void OnUniverseSceneLoaded(OWScene oldScene, OWScene newScene)
+		if (PlayerTransformSync.LocalInstance == null)
 		{
-			if (!QSBCore.IsInMultiplayer)
-			{
-				return;
-			}
-
-			if (PlayerTransformSync.LocalInstance == null)
-			{
-				DebugLog.ToConsole($"Error - Tried to run OnUniverseSceneLoaded when PlayerTransformSync.LocalInstance was null!", OWML.Common.MessageType.Error);
-				return;
-			}
-
-			QSBPlayerManager.ShowAllPlayers();
-			QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
+			DebugLog.ToConsole($"Error - Tried to run OnUniverseSceneLoaded when PlayerTransformSync.LocalInstance was null!", OWML.Common.MessageType.Error);
+			return;
 		}
 
-		public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees) => StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
+		QSBPlayerManager.ShowAllPlayers();
+		QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
+	}
 
-		private IEnumerator BeginRemoteUplinkSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
-		{
-			HasStartedStatueLocally = true;
-			var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
-			cameraEffectController.CloseEyes(0.5f);
-			OWInput.ChangeInputMode(InputMode.None);
-			Locator.GetPauseCommandListener().AddPauseCommandLock();
-			Locator.GetToolModeSwapper().UnequipTool();
-			Locator.GetFlashlight().TurnOff(false);
-			yield return new WaitForSeconds(0.5f);
-			// go to position
-			QSBPlayerManager.HideAllPlayers();
-			var timberHearth = Locator.GetAstroObject(AstroObject.Name.TimberHearth).GetAttachedOWRigidbody();
-			Locator.GetPlayerBody().transform.position = timberHearth.transform.TransformPoint(position);
-			Locator.GetPlayerBody().transform.rotation = timberHearth.transform.rotation * rotation;
-			Locator.GetPlayerCamera().GetComponent<PlayerCameraController>().SetDegreesY(cameraDegrees);
-			cameraEffectController.OpenEyes(1f, true);
-			var uplinkTrigger = FindObjectOfType<MemoryUplinkTrigger>();
-			uplinkTrigger.StartCoroutine("BeginUplinkSequence");
-			yield break;
-		}
+	public void BeginSequence(Vector3 position, Quaternion rotation, float cameraDegrees) => StartCoroutine(BeginRemoteUplinkSequence(position, rotation, cameraDegrees));
+
+	private IEnumerator BeginRemoteUplinkSequence(Vector3 position, Quaternion rotation, float cameraDegrees)
+	{
+		HasStartedStatueLocally = true;
+		var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
+		cameraEffectController.CloseEyes(0.5f);
+		OWInput.ChangeInputMode(InputMode.None);
+		Locator.GetPauseCommandListener().AddPauseCommandLock();
+		Locator.GetToolModeSwapper().UnequipTool();
+		Locator.GetFlashlight().TurnOff(false);
+		yield return new WaitForSeconds(0.5f);
+		// go to position
+		QSBPlayerManager.HideAllPlayers();
+		var timberHearth = Locator.GetAstroObject(AstroObject.Name.TimberHearth).GetAttachedOWRigidbody();
+		Locator.GetPlayerBody().transform.position = timberHearth.transform.TransformPoint(position);
+		Locator.GetPlayerBody().transform.rotation = timberHearth.transform.rotation * rotation;
+		Locator.GetPlayerCamera().GetComponent<PlayerCameraController>().SetDegreesY(cameraDegrees);
+		cameraEffectController.OpenEyes(1f, true);
+		var uplinkTrigger = FindObjectOfType<MemoryUplinkTrigger>();
+		uplinkTrigger.StartCoroutine("BeginUplinkSequence");
+		yield break;
 	}
 }

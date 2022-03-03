@@ -8,49 +8,48 @@ using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.PlayerBodySetup.Local
+namespace QSB.PlayerBodySetup.Local;
+
+public static class LocalPlayerCreation
 {
-	public static class LocalPlayerCreation
+	public static Transform CreatePlayer(
+		PlayerInfo player,
+		QSBSectorDetector sectorDetector,
+		out Transform visibleCameraRoot,
+		out Transform visibleRoastingSystem,
+		out Transform visibleStickPivot,
+		out Transform visibleStickTip)
 	{
-		public static Transform CreatePlayer(
-			PlayerInfo player,
-			QSBSectorDetector sectorDetector,
-			out Transform visibleCameraRoot,
-			out Transform visibleRoastingSystem,
-			out Transform visibleStickPivot,
-			out Transform visibleStickTip)
-		{
-			DebugLog.DebugWrite($"CREATE PLAYER");
+		DebugLog.DebugWrite($"CREATE PLAYER");
 
-			sectorDetector.Init(Locator.GetPlayerSectorDetector());
+		sectorDetector.Init(Locator.GetPlayerSectorDetector());
 
-			// player body
-			var playerBody = Locator.GetPlayerTransform();
-			var playerModel = playerBody.Find("Traveller_HEA_Player_v2");
-			player.AnimationSync.InitLocal(playerModel);
-			player.Body = playerBody.gameObject;
+		// player body
+		var playerBody = Locator.GetPlayerTransform();
+		var playerModel = playerBody.Find("Traveller_HEA_Player_v2");
+		player.AnimationSync.InitLocal(playerModel);
+		player.Body = playerBody.gameObject;
 
-			// camera
-			var cameraBody = Locator.GetPlayerCamera().gameObject.transform;
-			player.Camera = Locator.GetPlayerCamera();
-			player.CameraBody = cameraBody.gameObject;
-			visibleCameraRoot = cameraBody;
+		// camera
+		var cameraBody = Locator.GetPlayerCamera().gameObject.transform;
+		player.Camera = Locator.GetPlayerCamera();
+		player.CameraBody = cameraBody.gameObject;
+		visibleCameraRoot = cameraBody;
 
-			PlayerToolsManager.InitLocal();
+		PlayerToolsManager.InitLocal();
 
-			// stick
-			var pivot = QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
-			player.RoastingStick = pivot.parent.gameObject;
-			visibleRoastingSystem = pivot.parent.parent;
-			visibleStickPivot = pivot;
-			visibleStickTip = pivot.Find("Stick_Tip");
+		// stick
+		var pivot = QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
+		player.RoastingStick = pivot.parent.gameObject;
+		visibleRoastingSystem = pivot.parent.parent;
+		visibleStickPivot = pivot;
+		visibleStickTip = pivot.Find("Stick_Tip");
 
-			player.IsReady = true;
-			new PlayerReadyMessage(true).Send();
+		player.IsReady = true;
+		new PlayerReadyMessage(true).Send();
 
-			new RequestStateResyncMessage().Send();
+		new RequestStateResyncMessage().Send();
 
-			return playerBody;
-		}
+		return playerBody;
 	}
 }

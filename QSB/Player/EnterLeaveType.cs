@@ -1,12 +1,11 @@
-﻿namespace QSB.Player
+﻿namespace QSB.Player;
+
+public enum EnterLeaveType
 {
-	public enum EnterLeaveType
-	{
-		EnterMoon,
-		ExitMoon,
-		EnterPlatform,
-		ExitPlatform,
-		EnterShip,
-		ExitShip,
-	}
+	EnterMoon,
+	ExitMoon,
+	EnterPlatform,
+	ExitPlatform,
+	EnterShip,
+	ExitShip,
 }

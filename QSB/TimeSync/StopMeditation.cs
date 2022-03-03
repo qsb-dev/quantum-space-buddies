@@ -1,24 +1,23 @@
 ﻿using UnityEngine;
 
-namespace QSB.TimeSync
+namespace QSB.TimeSync;
+
+public class StopMeditation : MonoBehaviour
 {
-	public class StopMeditation : MonoBehaviour
+	public void Init()
 	{
-		public void Init()
+		var menuManager = Locator.GetSceneMenuManager();
+
+		if (menuManager == null)
 		{
-			var menuManager = Locator.GetSceneMenuManager();
-
-			if (menuManager == null)
-			{
-				return;
-			}
-
-			if (menuManager._pauseMenu == null || menuManager.pauseMenu._skipToNextLoopButton == null)
-			{
-				return;
-			}
-
-			menuManager.pauseMenu._skipToNextLoopButton.SetActive(false);
+			return;
 		}
+
+		if (menuManager._pauseMenu == null || menuManager.pauseMenu._skipToNextLoopButton == null)
+		{
+			return;
+		}
+
+		menuManager.pauseMenu._skipToNextLoopButton.SetActive(false);
 	}
 }

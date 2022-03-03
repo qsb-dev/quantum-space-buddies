@@ -1,12 +1,11 @@
-﻿namespace QSB.Tools.ProbeTool
+﻿namespace QSB.Tools.ProbeTool;
+
+public enum ProbeEvent
 {
-	public enum ProbeEvent
-	{
-		Invalid,
-		Launch,
-		Anchor,
-		Unanchor,
-		Retrieve,
-		Destroy
-	}
+	Invalid,
+	Launch,
+	Anchor,
+	Unanchor,
+	Retrieve,
+	Destroy
 }

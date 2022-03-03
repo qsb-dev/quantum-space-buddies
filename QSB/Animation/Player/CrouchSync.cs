@@ -2,59 +2,58 @@
 using QSB.Utility.VariableSync;
 using UnityEngine;
 
-namespace QSB.Animation.Player
+namespace QSB.Animation.Player;
+
+public class CrouchSync : NetworkBehaviour
 {
-	public class CrouchSync : NetworkBehaviour
+	public AnimFloatParam CrouchParam { get; } = new AnimFloatParam();
+
+	private const float CrouchSmoothTime = 0.05f;
+	public const int CrouchLayerIndex = 1;
+
+	private PlayerCharacterController _playerController;
+	private Animator _bodyAnim;
+
+	public FloatVariableSyncer CrouchVariableSyncer;
+
+	public void Init(PlayerCharacterController playerController, Animator bodyAnim)
 	{
-		public AnimFloatParam CrouchParam { get; } = new AnimFloatParam();
+		_playerController = playerController;
+		_bodyAnim = bodyAnim;
+	}
 
-		private const float CrouchSmoothTime = 0.05f;
-		public const int CrouchLayerIndex = 1;
-
-		private PlayerCharacterController _playerController;
-		private Animator _bodyAnim;
-
-		public FloatVariableSyncer CrouchVariableSyncer;
-
-		public void Init(PlayerCharacterController playerController, Animator bodyAnim)
+	public void Update()
+	{
+		if (isLocalPlayer)
 		{
-			_playerController = playerController;
-			_bodyAnim = bodyAnim;
+			SyncLocalCrouch();
+			return;
 		}
 
-		public void Update()
-		{
-			if (isLocalPlayer)
-			{
-				SyncLocalCrouch();
-				return;
-			}
+		SyncRemoteCrouch();
+	}
 
-			SyncRemoteCrouch();
+	private void SyncLocalCrouch()
+	{
+		if (_playerController == null)
+		{
+			return;
 		}
 
-		private void SyncLocalCrouch()
-		{
-			if (_playerController == null)
-			{
-				return;
-			}
+		var jumpChargeFraction = _playerController.GetJumpCrouchFraction();
+		CrouchVariableSyncer.Value = jumpChargeFraction;
+	}
 
-			var jumpChargeFraction = _playerController.GetJumpCrouchFraction();
-			CrouchVariableSyncer.Value = jumpChargeFraction;
+	private void SyncRemoteCrouch()
+	{
+		if (_bodyAnim == null)
+		{
+			return;
 		}
 
-		private void SyncRemoteCrouch()
-		{
-			if (_bodyAnim == null)
-			{
-				return;
-			}
-
-			CrouchParam.Target = CrouchVariableSyncer.Value;
-			CrouchParam.Smooth(CrouchSmoothTime);
-			var jumpChargeFraction = CrouchParam.Current;
-			_bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
-		}
+		CrouchParam.Target = CrouchVariableSyncer.Value;
+		CrouchParam.Smooth(CrouchSmoothTime);
+		var jumpChargeFraction = CrouchParam.Current;
+		_bodyAnim.SetLayerWeight(CrouchLayerIndex, jumpChargeFraction);
 	}
 }

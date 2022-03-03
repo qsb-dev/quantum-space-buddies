@@ -5,83 +5,82 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 
-namespace QSB.EchoesOfTheEye.RaftSync.TransformSync
+namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
+
+public class RaftTransformSync : UnsectoredRigidbodySync
 {
-	public class RaftTransformSync : UnsectoredRigidbodySync
+	protected override bool UseInterpolation => false;
+
+	private QSBRaft _qsbRaft;
+	private static readonly List<RaftTransformSync> _instances = new();
+
+	protected override OWRigidbody InitAttachedRigidbody() => _qsbRaft.AttachedObject._raftBody;
+
+	public override void OnStartClient()
 	{
-		protected override bool UseInterpolation => false;
-
-		private QSBRaft _qsbRaft;
-		private static readonly List<RaftTransformSync> _instances = new();
-
-		protected override OWRigidbody InitAttachedRigidbody() => _qsbRaft.AttachedObject._raftBody;
-
-		public override void OnStartClient()
+		_instances.Add(this);
+		if (QSBCore.IsHost)
 		{
-			_instances.Add(this);
-			if (QSBCore.IsHost)
-			{
-				netIdentity.RegisterAuthQueue();
-			}
-
-			base.OnStartClient();
+			netIdentity.RegisterAuthQueue();
 		}
 
-		public override void OnStopClient()
-		{
-			_instances.Remove(this);
-			if (QSBCore.IsHost)
-			{
-				netIdentity.UnregisterAuthQueue();
-			}
+		base.OnStartClient();
+	}
 
-			base.OnStopClient();
+	public override void OnStopClient()
+	{
+		_instances.Remove(this);
+		if (QSBCore.IsHost)
+		{
+			netIdentity.UnregisterAuthQueue();
 		}
 
-		protected override void Init()
-		{
-			_qsbRaft = RaftManager.Rafts[_instances.IndexOf(this)].GetWorldObject<QSBRaft>();
-			_qsbRaft.TransformSync = this;
+		base.OnStopClient();
+	}
 
-			base.Init();
-			SetReferenceTransform(AttachedRigidbody.GetOrigParent());
+	protected override void Init()
+	{
+		_qsbRaft = RaftManager.Rafts[_instances.IndexOf(this)].GetWorldObject<QSBRaft>();
+		_qsbRaft.TransformSync = this;
 
-			AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
-			AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-			netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
-		}
+		base.Init();
+		SetReferenceTransform(AttachedRigidbody.GetOrigParent());
 
-		protected override void Uninit()
-		{
-			base.Uninit();
+		AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
+		AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
+		netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+	}
 
-			AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
-			AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
-		}
+	protected override void Uninit()
+	{
+		base.Uninit();
 
-		private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
-		private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+		AttachedRigidbody.OnUnsuspendOWRigidbody -= OnUnsuspend;
+		AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
+	}
 
-		public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} - authority = true");
-		public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - authority = false");
+	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
+	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
 
-		/// <summary>
-		/// replacement for base method
-		/// using SetPos/Rot instead of Move
-		/// </summary>
-		protected override void ApplyToAttached()
-		{
-			var targetPos = ReferenceTransform.FromRelPos(transform.position);
-			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
+	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} - authority = true");
+	public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - authority = false");
 
-			AttachedRigidbody.SetPosition(targetPos);
-			AttachedRigidbody.SetRotation(targetRot);
+	/// <summary>
+	/// replacement for base method
+	/// using SetPos/Rot instead of Move
+	/// </summary>
+	protected override void ApplyToAttached()
+	{
+		var targetPos = ReferenceTransform.FromRelPos(transform.position);
+		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
-			var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
-			var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
+		AttachedRigidbody.SetPosition(targetPos);
+		AttachedRigidbody.SetRotation(targetRot);
 
-			AttachedRigidbody.SetVelocity(targetVelocity);
-			AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
-		}
+		var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
+		var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
+
+		AttachedRigidbody.SetVelocity(targetVelocity);
+		AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
 	}
 }

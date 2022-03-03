@@ -1,9 +1,8 @@
-﻿namespace QSB.TimeSync
+﻿namespace QSB.TimeSync;
+
+public enum TimeSyncType
 {
-	public enum TimeSyncType
-	{
-		None,
-		Pausing,
-		FastForwarding
-	}
+	None,
+	Pausing,
+	FastForwarding
 }

@@ -1,182 +1,181 @@
 ﻿using UnityEngine;
 
-namespace QSB.Tools.TranslatorTool
+namespace QSB.Tools.TranslatorTool;
+
+internal class QSBNomaiTranslatorProp : MonoBehaviour
 {
-	internal class QSBNomaiTranslatorProp : MonoBehaviour
+	private static MaterialPropertyBlock s_matPropBlock;
+	private static int s_propID_EmissionColor;
+
+	public GameObject TranslatorProp;
+	public MeshRenderer _leftPageArrowRenderer;
+	public MeshRenderer _rightPageArrowRenderer;
+
+	private Color _baseEmissionColor;
+	private TranslatorTargetBeam _targetBeam;
+	private QSBTranslatorScanBeam[] _scanBeams;
+	private bool _isTranslating;
+
+	private void Awake()
 	{
-		private static MaterialPropertyBlock s_matPropBlock;
-		private static int s_propID_EmissionColor;
+		_targetBeam = transform.GetComponentInChildren<TranslatorTargetBeam>();
 
-		public GameObject TranslatorProp;
-		public MeshRenderer _leftPageArrowRenderer;
-		public MeshRenderer _rightPageArrowRenderer;
-
-		private Color _baseEmissionColor;
-		private TranslatorTargetBeam _targetBeam;
-		private QSBTranslatorScanBeam[] _scanBeams;
-		private bool _isTranslating;
-
-		private void Awake()
+		if (s_matPropBlock == null)
 		{
-			_targetBeam = transform.GetComponentInChildren<TranslatorTargetBeam>();
-
-			if (s_matPropBlock == null)
-			{
-				s_matPropBlock = new MaterialPropertyBlock();
-				s_propID_EmissionColor = Shader.PropertyToID("_EmissionColor");
-			}
-
-			if (_rightPageArrowRenderer != null)
-			{
-				var sharedMaterial = _rightPageArrowRenderer.sharedMaterial;
-				_baseEmissionColor = sharedMaterial.GetColor(NomaiTranslatorProp.s_propID_EmissionColor);
-			}
-
-			TurnOffArrowEmission();
-
-			_scanBeams = transform.GetComponentsInChildren<QSBTranslatorScanBeam>();
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].enabled = false;
-			}
-
-			enabled = false;
-
-			TranslatorProp.SetActive(false);
+			s_matPropBlock = new MaterialPropertyBlock();
+			s_propID_EmissionColor = Shader.PropertyToID("_EmissionColor");
 		}
 
-		private void TurnOffArrowEmission()
+		if (_rightPageArrowRenderer != null)
 		{
-			if (_leftPageArrowRenderer != null)
-			{
-				SetMaterialEmissionEnabled(_leftPageArrowRenderer, false);
-			}
-
-			if (_rightPageArrowRenderer != null)
-			{
-				SetMaterialEmissionEnabled(_rightPageArrowRenderer, false);
-			}
+			var sharedMaterial = _rightPageArrowRenderer.sharedMaterial;
+			_baseEmissionColor = sharedMaterial.GetColor(NomaiTranslatorProp.s_propID_EmissionColor);
 		}
 
-		private void SetMaterialEmissionEnabled(MeshRenderer emissiveRenderer, bool emissionEnabled)
-		{
-			if (emissionEnabled)
-			{
-				s_matPropBlock.SetColor(s_propID_EmissionColor, _baseEmissionColor * 1f);
-				emissiveRenderer.SetPropertyBlock(s_matPropBlock);
-				return;
-			}
+		TurnOffArrowEmission();
 
-			s_matPropBlock.SetColor(s_propID_EmissionColor, _baseEmissionColor * 0f);
+		_scanBeams = transform.GetComponentsInChildren<QSBTranslatorScanBeam>();
+		for (var i = 0; i < _scanBeams.Length; i++)
+		{
+			_scanBeams[i].enabled = false;
+		}
+
+		enabled = false;
+
+		TranslatorProp.SetActive(false);
+	}
+
+	private void TurnOffArrowEmission()
+	{
+		if (_leftPageArrowRenderer != null)
+		{
+			SetMaterialEmissionEnabled(_leftPageArrowRenderer, false);
+		}
+
+		if (_rightPageArrowRenderer != null)
+		{
+			SetMaterialEmissionEnabled(_rightPageArrowRenderer, false);
+		}
+	}
+
+	private void SetMaterialEmissionEnabled(MeshRenderer emissiveRenderer, bool emissionEnabled)
+	{
+		if (emissionEnabled)
+		{
+			s_matPropBlock.SetColor(s_propID_EmissionColor, _baseEmissionColor * 1f);
 			emissiveRenderer.SetPropertyBlock(s_matPropBlock);
+			return;
 		}
 
-		public void OnEquipTool()
+		s_matPropBlock.SetColor(s_propID_EmissionColor, _baseEmissionColor * 0f);
+		emissiveRenderer.SetPropertyBlock(s_matPropBlock);
+	}
+
+	public void OnEquipTool()
+	{
+		enabled = true;
+		if (_targetBeam)
 		{
-			enabled = true;
-			if (_targetBeam)
-			{
-				_targetBeam.Activate();
-			}
-
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].enabled = true;
-			}
-
-			TranslatorProp.SetActive(true);
+			_targetBeam.Activate();
 		}
 
-		public void OnUnequipTool()
+		for (var i = 0; i < _scanBeams.Length; i++)
 		{
-			enabled = false;
-			StopTranslating();
-			TurnOffArrowEmission();
+			_scanBeams[i].enabled = true;
 		}
 
-		public void OnFinishUnequipAnimation()
+		TranslatorProp.SetActive(true);
+	}
+
+	public void OnUnequipTool()
+	{
+		enabled = false;
+		StopTranslating();
+		TurnOffArrowEmission();
+	}
+
+	public void OnFinishUnequipAnimation()
+	{
+		if (_targetBeam)
 		{
-			if (_targetBeam)
-			{
-				_targetBeam.Deactivate();
-			}
-
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].enabled = false;
-			}
-
-			TranslatorProp.SetActive(false);
+			_targetBeam.Deactivate();
 		}
 
-		public void SetTooCloseToTarget(bool value)
+		for (var i = 0; i < _scanBeams.Length; i++)
 		{
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].SetTooCloseToTarget(value);
-			}
+			_scanBeams[i].enabled = false;
 		}
 
-		public void SetNomaiTextLine(NomaiTextLine line)
-		{
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].SetNomaiTextLine(line);
-				_scanBeams[i].SetNomaiComputerRing(null);
-				_scanBeams[i].SetNomaiVesselComputerRing(null);
-			}
-		}
+		TranslatorProp.SetActive(false);
+	}
 
-		public void ClearNomaiTextLine()
+	public void SetTooCloseToTarget(bool value)
+	{
+		for (var i = 0; i < _scanBeams.Length; i++)
 		{
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].SetNomaiTextLine(null);
-			}
+			_scanBeams[i].SetTooCloseToTarget(value);
 		}
+	}
 
-		public void SetNomaiComputerRing(NomaiComputerRing ring)
+	public void SetNomaiTextLine(NomaiTextLine line)
+	{
+		for (var i = 0; i < _scanBeams.Length; i++)
 		{
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].SetNomaiTextLine(null);
-				_scanBeams[i].SetNomaiComputerRing(ring);
-				_scanBeams[i].SetNomaiVesselComputerRing(null);
-			}
+			_scanBeams[i].SetNomaiTextLine(line);
+			_scanBeams[i].SetNomaiComputerRing(null);
+			_scanBeams[i].SetNomaiVesselComputerRing(null);
 		}
+	}
 
-		public void ClearNomaiComputerRing()
+	public void ClearNomaiTextLine()
+	{
+		for (var i = 0; i < _scanBeams.Length; i++)
 		{
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].SetNomaiComputerRing(null);
-			}
+			_scanBeams[i].SetNomaiTextLine(null);
 		}
+	}
 
-		public void SetNomaiVesselComputerRing(NomaiVesselComputerRing ring)
+	public void SetNomaiComputerRing(NomaiComputerRing ring)
+	{
+		for (var i = 0; i < _scanBeams.Length; i++)
 		{
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].SetNomaiTextLine(null);
-				_scanBeams[i].SetNomaiComputerRing(null);
-				_scanBeams[i].SetNomaiVesselComputerRing(ring);
-			}
+			_scanBeams[i].SetNomaiTextLine(null);
+			_scanBeams[i].SetNomaiComputerRing(ring);
+			_scanBeams[i].SetNomaiVesselComputerRing(null);
 		}
+	}
 
-		public void ClearNomaiVesselComputerRing()
+	public void ClearNomaiComputerRing()
+	{
+		for (var i = 0; i < _scanBeams.Length; i++)
 		{
-			for (var i = 0; i < _scanBeams.Length; i++)
-			{
-				_scanBeams[i].SetNomaiVesselComputerRing(null);
-			}
+			_scanBeams[i].SetNomaiComputerRing(null);
 		}
+	}
 
-		private void StopTranslating()
+	public void SetNomaiVesselComputerRing(NomaiVesselComputerRing ring)
+	{
+		for (var i = 0; i < _scanBeams.Length; i++)
 		{
-			if (_isTranslating)
-			{
-				_isTranslating = false;
-			}
+			_scanBeams[i].SetNomaiTextLine(null);
+			_scanBeams[i].SetNomaiComputerRing(null);
+			_scanBeams[i].SetNomaiVesselComputerRing(ring);
+		}
+	}
+
+	public void ClearNomaiVesselComputerRing()
+	{
+		for (var i = 0; i < _scanBeams.Length; i++)
+		{
+			_scanBeams[i].SetNomaiVesselComputerRing(null);
+		}
+	}
+
+	private void StopTranslating()
+	{
+		if (_isTranslating)
+		{
+			_isTranslating = false;
 		}
 	}
 }

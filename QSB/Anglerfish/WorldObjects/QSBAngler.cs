@@ -7,48 +7,47 @@ using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;
 
-namespace QSB.Anglerfish.WorldObjects
+namespace QSB.Anglerfish.WorldObjects;
+
+public class QSBAngler : WorldObject<AnglerfishController>
 {
-	public class QSBAngler : WorldObject<AnglerfishController>
+	public override bool ShouldDisplayDebug() => false;
+
+	public AnglerTransformSync TransformSync;
+	public Transform TargetTransform;
+	public Vector3 TargetVelocity { get; private set; }
+
+	private Vector3 _lastTargetPosition;
+
+	public override async UniTask Init(CancellationToken ct)
 	{
-		public override bool ShouldDisplayDebug() => false;
-
-		public AnglerTransformSync TransformSync;
-		public Transform TargetTransform;
-		public Vector3 TargetVelocity { get; private set; }
-
-		private Vector3 _lastTargetPosition;
-
-		public override async UniTask Init(CancellationToken ct)
+		if (QSBCore.IsHost)
 		{
-			if (QSBCore.IsHost)
-			{
-				NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab));
-			}
-
-			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
+			NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab));
 		}
 
-		public override void OnRemoval()
+		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
+	}
+
+	public override void OnRemoval()
+	{
+		if (QSBCore.IsHost)
 		{
-			if (QSBCore.IsHost)
-			{
-				NetworkServer.Destroy(TransformSync.gameObject);
-			}
+			NetworkServer.Destroy(TransformSync.gameObject);
+		}
+	}
+
+	public override void SendInitialState(uint to) =>
+		this.SendMessage(new AnglerDataMessage(this) { To = to });
+
+	public void UpdateTargetVelocity()
+	{
+		if (TargetTransform == null)
+		{
+			return;
 		}
 
-		public override void SendInitialState(uint to) =>
-			this.SendMessage(new AnglerDataMessage(this) { To = to });
-
-		public void UpdateTargetVelocity()
-		{
-			if (TargetTransform == null)
-			{
-				return;
-			}
-
-			TargetVelocity = TargetTransform.position - _lastTargetPosition;
-			_lastTargetPosition = TargetTransform.position;
-		}
+		TargetVelocity = TargetTransform.position - _lastTargetPosition;
+		_lastTargetPosition = TargetTransform.position;
 	}
 }
