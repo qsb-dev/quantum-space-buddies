@@ -6,7 +6,7 @@ namespace QSB.QuantumSync.Messages
 {
 	public class QuantumAuthorityMessage : QSBWorldObjectMessage<IQSBQuantumObject, uint>
 	{
-		public QuantumAuthorityMessage(uint authorityOwner) => Value = authorityOwner;
+		public QuantumAuthorityMessage(uint authorityOwner) => Data = authorityOwner;
 
 		public override bool ShouldReceive
 		{
@@ -25,16 +25,16 @@ namespace QSB.QuantumSync.Messages
 				// if Obj==Message then No
 				// Obj
 
-				return (WorldObject.ControllingPlayer == 0 || Value == 0)
-				       && WorldObject.ControllingPlayer != Value;
+				return (WorldObject.ControllingPlayer == 0 || Data == 0)
+				       && WorldObject.ControllingPlayer != Data;
 			}
 		}
 
-		public override void OnReceiveLocal() => WorldObject.ControllingPlayer = Value;
+		public override void OnReceiveLocal() => WorldObject.ControllingPlayer = Data;
 
 		public override void OnReceiveRemote()
 		{
-			WorldObject.ControllingPlayer = Value;
+			WorldObject.ControllingPlayer = Data;
 			if (WorldObject.ControllingPlayer == 00 && WorldObject.IsEnabled)
 			{
 				// object has no owner, but is still active for this player. request ownership

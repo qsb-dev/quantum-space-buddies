@@ -5,8 +5,8 @@ namespace QSB.ShipSync.Messages.Hull
 {
 	internal class HullChangeIntegrityMessage : QSBWorldObjectMessage<QSBShipHull, float>
 	{
-		public HullChangeIntegrityMessage(float integrity) => Value = integrity;
+		public HullChangeIntegrityMessage(float integrity) => Data = integrity;
 
-		public override void OnReceiveRemote() => WorldObject.ChangeIntegrity(Value);
+		public override void OnReceiveRemote() => WorldObject.ChangeIntegrity(Data);
 	}
 }

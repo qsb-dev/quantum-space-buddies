@@ -10,10 +10,10 @@ namespace QSB.ClientServerStateSync.Messages
 	/// </summary>
 	internal class ClientStateMessage : QSBMessage<ClientState>
 	{
-		public ClientStateMessage(ClientState state) => Value = state;
+		public ClientStateMessage(ClientState state) => Data = state;
 
 		public override void OnReceiveLocal()
-			=> ClientStateManager.Instance.ChangeClientState(Value);
+			=> ClientStateManager.Instance.ChangeClientState(Data);
 
 		public override void OnReceiveRemote()
 		{
@@ -24,7 +24,7 @@ namespace QSB.ClientServerStateSync.Messages
 			}
 
 			var player = QSBPlayerManager.GetPlayer(From);
-			player.State = Value;
+			player.State = Data;
 		}
 	}
 }

@@ -8,46 +8,46 @@ namespace QSB.Player.Messages
 	// almost a world object message, but supports null (-1) as well
 	internal class PlayerEntangledMessage : QSBMessage<int>
 	{
-		public PlayerEntangledMessage(int objectId) => Value = objectId;
+		public PlayerEntangledMessage(int objectId) => Data = objectId;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveLocal()
 		{
 			var player = QSBPlayerManager.LocalPlayer;
-			if (Value == -1)
+			if (Data == -1)
 			{
 				player.EntangledObject = null;
 				return;
 			}
 
-			var quantumObject = Value.GetWorldObject<IQSBQuantumObject>();
+			var quantumObject = Data.GetWorldObject<IQSBQuantumObject>();
 			player.EntangledObject = quantumObject;
 		}
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
-			if (Value == -1)
+			if (Data == -1)
 			{
 				player.EntangledObject = null;
 				return;
 			}
 
-			var quantumObject = Value.GetWorldObject<IQSBQuantumObject>();
+			var quantumObject = Data.GetWorldObject<IQSBQuantumObject>();
 			player.EntangledObject = quantumObject;
 		}
 
 		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(Value);
+			writer.Write(Data);
 		}
 
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<int>();
+			Data = reader.Read<int>();
 		}
 	}
 }

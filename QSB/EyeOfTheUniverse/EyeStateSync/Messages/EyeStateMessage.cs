@@ -20,16 +20,16 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages
 			}
 		}
 
-		private EyeStateMessage(EyeState state) => Value = state;
+		private EyeStateMessage(EyeState state) => Data = state;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
-		public override void OnReceiveLocal() => QSBPlayerManager.LocalPlayer.EyeState = Value;
+		public override void OnReceiveLocal() => QSBPlayerManager.LocalPlayer.EyeState = Data;
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
-			player.EyeState = Value;
+			player.EyeState = Data;
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace QSB.Player.Messages
 		public PlayerKickMessage(uint playerId, KickReason reason)
 		{
 			PlayerId = playerId;
-			Value = reason;
+			Data = reason;
 		}
 
 		public override void Serialize(NetworkWriter writer)
@@ -57,8 +57,8 @@ namespace QSB.Player.Messages
 				return;
 			}
 
-			DebugLog.ToAll($"Kicked from server. Reason : {Value}");
-			MenuManager.Instance.OnKicked(Value);
+			DebugLog.ToAll($"Kicked from server. Reason : {Data}");
+			MenuManager.Instance.OnKicked(Data);
 		}
 	}
 }

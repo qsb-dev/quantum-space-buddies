@@ -5,8 +5,8 @@ namespace QSB.QuantumSync.Messages
 {
 	public class SetIsQuantumMessage : QSBWorldObjectMessage<IQSBQuantumObject, bool>
 	{
-		public SetIsQuantumMessage(bool isQuantum) => Value = isQuantum;
+		public SetIsQuantumMessage(bool isQuantum) => Data = isQuantum;
 
-		public override void OnReceiveRemote() => WorldObject.SetIsQuantum(Value);
+		public override void OnReceiveRemote() => WorldObject.SetIsQuantum(Data);
 	}
 }

@@ -41,20 +41,20 @@ namespace QSB.Messaging
 		}
 	}
 
-	public abstract class QSBWorldObjectMessage<T, V> : QSBWorldObjectMessage<T> where T : IWorldObject
+	public abstract class QSBWorldObjectMessage<T, D> : QSBWorldObjectMessage<T> where T : IWorldObject
 	{
-		protected V Value;
+		protected D Data;
 
 		public override void Serialize(NetworkWriter writer)
 		{
 			base.Serialize(writer);
-			writer.Write(Value);
+			writer.Write(Data);
 		}
 
 		public override void Deserialize(NetworkReader reader)
 		{
 			base.Deserialize(reader);
-			Value = reader.Read<V>();
+			Data = reader.Read<D>();
 		}
 	}
 }

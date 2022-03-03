@@ -6,7 +6,7 @@ namespace QSB.Player.Messages
 {
 	public class PlayerReadyMessage : QSBMessage<bool>
 	{
-		public PlayerReadyMessage(bool ready) => Value = ready;
+		public PlayerReadyMessage(bool ready) => Data = ready;
 
 		public override void OnReceiveRemote()
 		{
@@ -22,14 +22,14 @@ namespace QSB.Player.Messages
 
 		private void HandleServer()
 		{
-			DebugLog.DebugWrite($"[SERVER] Get ready event from {From} (ready = {Value})", MessageType.Success);
-			QSBPlayerManager.GetPlayer(From).IsReady = Value;
+			DebugLog.DebugWrite($"[SERVER] Get ready event from {From} (ready = {Data})", MessageType.Success);
+			QSBPlayerManager.GetPlayer(From).IsReady = Data;
 			new PlayerInformationMessage().Send();
 		}
 
 		private void HandleClient()
 		{
-			DebugLog.DebugWrite($"[CLIENT] Get ready event from {From} (ready = {Value})", MessageType.Success);
+			DebugLog.DebugWrite($"[CLIENT] Get ready event from {From} (ready = {Data})", MessageType.Success);
 			if (!QSBPlayerManager.PlayerExists(From))
 			{
 				DebugLog.ToConsole(
@@ -38,7 +38,7 @@ namespace QSB.Player.Messages
 				return;
 			}
 
-			QSBPlayerManager.GetPlayer(From).IsReady = Value;
+			QSBPlayerManager.GetPlayer(From).IsReady = Data;
 		}
 	}
 }

@@ -6,9 +6,9 @@ namespace QSB.ConversationSync.Messages
 	internal class EnterRemoteDialogueMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger, int>
 	{
 		public EnterRemoteDialogueMessage(int dialogueIndex)
-			=> Value = dialogueIndex;
+			=> Data = dialogueIndex;
 
 		public override void OnReceiveRemote()
-			=> WorldObject.RemoteEnterDialogue(Value);
+			=> WorldObject.RemoteEnterDialogue(Data);
 	}
 }

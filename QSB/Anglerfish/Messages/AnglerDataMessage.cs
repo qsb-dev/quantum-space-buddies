@@ -16,7 +16,7 @@ namespace QSB.Anglerfish.Messages
 
 		public AnglerDataMessage(QSBAngler qsbAngler)
 		{
-			Value = qsbAngler.AttachedObject._currentState;
+			Data = qsbAngler.AttachedObject._currentState;
 			TargetId = TargetToId(qsbAngler.TargetTransform);
 			LocalDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos;
 		}
@@ -39,7 +39,7 @@ namespace QSB.Anglerfish.Messages
 		{
 			WorldObject.TargetTransform = IdToTarget(TargetId);
 			WorldObject.AttachedObject._localDisturbancePos = LocalDisturbancePos;
-			WorldObject.AttachedObject.ChangeState(Value);
+			WorldObject.AttachedObject.ChangeState(Data);
 		}
 
 		private static uint TargetToId(Transform transform)

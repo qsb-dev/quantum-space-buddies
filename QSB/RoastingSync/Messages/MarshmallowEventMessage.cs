@@ -10,7 +10,7 @@ namespace QSB.RoastingSync.Messages
 {
 	internal class MarshmallowEventMessage : QSBMessage<MarshmallowMessageType>
 	{
-		public MarshmallowEventMessage(MarshmallowMessageType type) => Value = type;
+		public MarshmallowEventMessage(MarshmallowMessageType type) => Data = type;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
@@ -23,7 +23,7 @@ namespace QSB.RoastingSync.Messages
 				return;
 			}
 
-			switch (Value)
+			switch (Data)
 			{
 				case MarshmallowMessageType.Burn:
 					player.Marshmallow.Burn();

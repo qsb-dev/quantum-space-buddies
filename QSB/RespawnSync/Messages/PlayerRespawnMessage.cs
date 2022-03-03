@@ -6,19 +6,19 @@ namespace QSB.RespawnSync.Messages
 {
 	internal class PlayerRespawnMessage : QSBMessage<uint>
 	{
-		public PlayerRespawnMessage(uint playerId) => Value = playerId;
+		public PlayerRespawnMessage(uint playerId) => Data = playerId;
 
 		public override void OnReceiveLocal() => OnReceiveRemote();
 
 		public override void OnReceiveRemote()
 		{
-			if (Value == QSBPlayerManager.LocalPlayerId)
+			if (Data == QSBPlayerManager.LocalPlayerId)
 			{
 				RespawnManager.Instance.Respawn();
 				ClientStateManager.Instance.OnRespawn();
 			}
 
-			RespawnManager.Instance.OnPlayerRespawn(QSBPlayerManager.GetPlayer(Value));
+			RespawnManager.Instance.OnPlayerRespawn(QSBPlayerManager.GetPlayer(Data));
 		}
 	}
 }

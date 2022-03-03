@@ -13,7 +13,7 @@ namespace QSB.DeathSync.Messages
 
 		public PlayerDeathMessage(DeathType type)
 		{
-			Value = type;
+			Data = type;
 			NecronomiconIndex = Necronomicon.GetRandomIndex(type);
 		}
 
@@ -40,7 +40,7 @@ namespace QSB.DeathSync.Messages
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
 			var playerName = player.Name;
-			var deathMessage = Necronomicon.GetPhrase(Value, NecronomiconIndex);
+			var deathMessage = Necronomicon.GetPhrase(Data, NecronomiconIndex);
 			if (deathMessage != null)
 			{
 				DebugLog.ToAll(string.Format(deathMessage, playerName));

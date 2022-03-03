@@ -5,14 +5,14 @@ namespace QSB.Tools.SignalscopeTool.FrequencySync.Messages
 {
 	public class IdentifyFrequencyMessage : QSBMessage<SignalFrequency>
 	{
-		public IdentifyFrequencyMessage(SignalFrequency frequency) => Value = frequency;
+		public IdentifyFrequencyMessage(SignalFrequency frequency) => Data = frequency;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{
-			PlayerData.LearnFrequency(Value);
-			var displayMsg = $"{UITextLibrary.GetString(UITextType.NotificationNewFreq)} <color=orange>{AudioSignal.FrequencyToString(Value, false)}</color>";
+			PlayerData.LearnFrequency(Data);
+			var displayMsg = $"{UITextLibrary.GetString(UITextType.NotificationNewFreq)} <color=orange>{AudioSignal.FrequencyToString(Data, false)}</color>";
 			var data = new NotificationData(NotificationTarget.All, displayMsg, 10f);
 			NotificationManager.SharedInstance.PostNotification(data);
 		}

@@ -10,7 +10,7 @@ namespace QSB.OrbSync.Messages
 
 		public OrbSlotMessage(int slotIndex, bool playAudio)
 		{
-			Value = slotIndex;
+			Data = slotIndex;
 			_playAudio = playAudio;
 		}
 
@@ -26,6 +26,6 @@ namespace QSB.OrbSync.Messages
 			_playAudio = reader.Read<bool>();
 		}
 
-		public override void OnReceiveRemote() => WorldObject.SetSlot(Value, _playAudio);
+		public override void OnReceiveRemote() => WorldObject.SetSlot(Data, _playAudio);
 	}
 }

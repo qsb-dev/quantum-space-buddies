@@ -5,8 +5,8 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 {
 	internal class LaunchProbeMessage : QSBWorldObjectMessage<QSBProbeLauncher, bool>
 	{
-		public LaunchProbeMessage(bool playEffects) => Value = playEffects;
+		public LaunchProbeMessage(bool playEffects) => Data = playEffects;
 
-		public override void OnReceiveRemote() => WorldObject.LaunchProbe(Value);
+		public override void OnReceiveRemote() => WorldObject.LaunchProbe(Data);
 	}
 }

@@ -5,13 +5,13 @@ namespace QSB.ShipSync.Messages
 {
 	internal class HatchMessage : QSBMessage<bool>
 	{
-		public HatchMessage(bool open) => Value = open;
+		public HatchMessage(bool open) => Data = open;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{
-			if (Value)
+			if (Data)
 			{
 				ShipManager.Instance.HatchController.OpenHatch();
 			}

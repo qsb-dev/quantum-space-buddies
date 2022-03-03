@@ -12,11 +12,11 @@ namespace QSB.TriggerSync.Messages
 	public class TriggerInitialStateMessage : QSBWorldObjectMessage<IQSBTrigger, uint[]>
 	{
 		public TriggerInitialStateMessage(IEnumerable<PlayerInfo> occupants) =>
-			Value = occupants.Select(x => x.PlayerId).ToArray();
+			Data = occupants.Select(x => x.PlayerId).ToArray();
 
 		public override void OnReceiveRemote()
 		{
-			var serverOccupants = Value.Select(QSBPlayerManager.GetPlayer).ToList();
+			var serverOccupants = Data.Select(QSBPlayerManager.GetPlayer).ToList();
 			foreach (var added in serverOccupants.Except(WorldObject.Occupants))
 			{
 				WorldObject.Enter(added);

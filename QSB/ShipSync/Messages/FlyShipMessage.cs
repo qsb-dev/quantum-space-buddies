@@ -24,17 +24,17 @@ namespace QSB.ShipSync.Messages
 			}
 		}
 
-		private FlyShipMessage(bool flying) => Value = flying;
+		private FlyShipMessage(bool flying) => Data = flying;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
-		public override void OnReceiveLocal() => SetCurrentFlyer(From, Value);
+		public override void OnReceiveLocal() => SetCurrentFlyer(From, Data);
 
 		public override void OnReceiveRemote()
 		{
-			SetCurrentFlyer(From, Value);
+			SetCurrentFlyer(From, Data);
 			var shipCockpitController = GameObject.Find("ShipCockpitController").GetComponent<ShipCockpitController>();
-			if (Value)
+			if (Data)
 			{
 				shipCockpitController._interactVolume.DisableInteraction();
 			}

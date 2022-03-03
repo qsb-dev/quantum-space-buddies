@@ -37,7 +37,7 @@ namespace QSB.RoastingSync.Messages
 		private EnterExitRoastingMessage(int objectId, bool roasting)
 		{
 			ObjectId = objectId;
-			Value = roasting;
+			Data = roasting;
 		}
 
 		public override void Serialize(NetworkWriter writer)
@@ -56,15 +56,15 @@ namespace QSB.RoastingSync.Messages
 
 		public override void OnReceiveRemote()
 		{
-			if (Value && ObjectId == -1)
+			if (Data && ObjectId == -1)
 			{
 				DebugLog.ToConsole($"Error - Null campfire supplied for start roasting event!", MessageType.Error);
 				return;
 			}
 
 			var player = QSBPlayerManager.GetPlayer(From);
-			player.RoastingStick.SetActive(Value);
-			player.Campfire = Value
+			player.RoastingStick.SetActive(Data);
+			player.Campfire = Data
 				? ObjectId.GetWorldObject<QSBCampfire>()
 				: null;
 		}

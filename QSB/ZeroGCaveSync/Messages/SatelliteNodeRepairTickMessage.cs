@@ -5,8 +5,8 @@ namespace QSB.ZeroGCaveSync.Messages
 {
 	internal class SatelliteNodeRepairTickMessage : QSBWorldObjectMessage<QSBSatelliteNode, float>
 	{
-		public SatelliteNodeRepairTickMessage(float repairFraction) => Value = repairFraction;
+		public SatelliteNodeRepairTickMessage(float repairFraction) => Data = repairFraction;
 
-		public override void OnReceiveRemote() => WorldObject.RepairTick(Value);
+		public override void OnReceiveRemote() => WorldObject.RepairTick(Data);
 	}
 }

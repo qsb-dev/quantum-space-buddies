@@ -5,8 +5,8 @@ namespace QSB.ShipSync.Messages.Component
 {
 	internal class ComponentRepairTickMessage : QSBWorldObjectMessage<QSBShipComponent, float>
 	{
-		public ComponentRepairTickMessage(float repairFraction) => Value = repairFraction;
+		public ComponentRepairTickMessage(float repairFraction) => Data = repairFraction;
 
-		public override void OnReceiveRemote() => WorldObject.RepairTick(Value);
+		public override void OnReceiveRemote() => WorldObject.RepairTick(Data);
 	}
 }

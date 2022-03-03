@@ -5,8 +5,8 @@ namespace QSB.QuantumSync.Messages
 {
 	internal class QuantumShuffleMessage : QSBWorldObjectMessage<QSBQuantumShuffleObject, int[]>
 	{
-		public QuantumShuffleMessage(int[] indexArray) => Value = indexArray;
+		public QuantumShuffleMessage(int[] indexArray) => Data = indexArray;
 
-		public override void OnReceiveRemote() => WorldObject.ShuffleObjects(Value);
+		public override void OnReceiveRemote() => WorldObject.ShuffleObjects(Data);
 	}
 }

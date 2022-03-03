@@ -36,16 +36,16 @@ namespace QSB.Tools.ProbeLauncherTool.Messages
 			}
 		}
 
-		private EquipProbeLauncherMessage(bool equipped) => Value = equipped;
+		private EquipProbeLauncherMessage(bool equipped) => Data = equipped;
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
-			player.ProbeLauncherEquipped = Value;
-			player.ProbeLauncher?.ChangeEquipState(Value);
+			player.ProbeLauncherEquipped = Data;
+			player.ProbeLauncher?.ChangeEquipState(Data);
 		}
 
 		public override void OnReceiveLocal() =>
-			QSBPlayerManager.LocalPlayer.ProbeLauncherEquipped = Value;
+			QSBPlayerManager.LocalPlayer.ProbeLauncherEquipped = Data;
 	}
 }

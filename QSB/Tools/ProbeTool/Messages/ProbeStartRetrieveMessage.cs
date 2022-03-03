@@ -6,7 +6,7 @@ namespace QSB.Tools.ProbeTool.Messages
 {
 	internal class ProbeStartRetrieveMessage : QSBMessage<float>
 	{
-		public ProbeStartRetrieveMessage(float duration) => Value = duration;
+		public ProbeStartRetrieveMessage(float duration) => Data = duration;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
@@ -19,7 +19,7 @@ namespace QSB.Tools.ProbeTool.Messages
 			}
 
 			var probe = player.Probe;
-			probe.OnStartRetrieve(Value);
+			probe.OnStartRetrieve(Data);
 		}
 	}
 }

@@ -20,16 +20,16 @@ namespace QSB.Tools.SignalscopeTool.Messages
 			}
 		}
 
-		private PlayerSignalscopeMessage(bool equipped) => Value = equipped;
+		private PlayerSignalscopeMessage(bool equipped) => Data = equipped;
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
-			player.SignalscopeEquipped = Value;
-			player.Signalscope?.ChangeEquipState(Value);
+			player.SignalscopeEquipped = Data;
+			player.Signalscope?.ChangeEquipState(Data);
 		}
 
 		public override void OnReceiveLocal() =>
-			QSBPlayerManager.LocalPlayer.SignalscopeEquipped = Value;
+			QSBPlayerManager.LocalPlayer.SignalscopeEquipped = Data;
 	}
 }

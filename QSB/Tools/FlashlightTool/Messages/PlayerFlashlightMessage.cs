@@ -20,16 +20,16 @@ namespace QSB.Tools.FlashlightTool.Messages
 			}
 		}
 
-		private PlayerFlashlightMessage(bool on) => Value = on;
+		private PlayerFlashlightMessage(bool on) => Data = on;
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
-			player.FlashlightActive = Value;
-			player.FlashLight?.UpdateState(Value);
+			player.FlashlightActive = Data;
+			player.FlashLight?.UpdateState(Data);
 		}
 
 		public override void OnReceiveLocal() =>
-			QSBPlayerManager.LocalPlayer.FlashlightActive = Value;
+			QSBPlayerManager.LocalPlayer.FlashlightActive = Data;
 	}
 }

@@ -5,8 +5,8 @@ namespace QSB.GeyserSync.Messages
 {
 	public class GeyserMessage : QSBWorldObjectMessage<QSBGeyser, bool>
 	{
-		public GeyserMessage(bool state) => Value = state;
+		public GeyserMessage(bool state) => Data = state;
 
-		public override void OnReceiveRemote() => WorldObject.SetState(Value);
+		public override void OnReceiveRemote() => WorldObject.SetState(Data);
 	}
 }

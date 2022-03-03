@@ -34,7 +34,7 @@ namespace QSB.Player.Messages
 
 		public EnterLeaveMessage(EnterLeaveType type, int objectId = -1)
 		{
-			Value = type;
+			Data = type;
 			ObjectId = objectId;
 		}
 
@@ -57,7 +57,7 @@ namespace QSB.Player.Messages
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
-			switch (Value)
+			switch (Data)
 			{
 				case EnterLeaveType.EnterMoon:
 					player.IsInMoon = true;
@@ -80,7 +80,7 @@ namespace QSB.Player.Messages
 					ShipManager.Instance.RemovePlayerFromShip(player);
 					break;
 				default:
-					DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {Value}", MessageType.Warning);
+					DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {Data}", MessageType.Warning);
 					break;
 			}
 		}

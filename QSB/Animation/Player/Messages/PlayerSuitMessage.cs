@@ -21,14 +21,14 @@ namespace QSB.Animation.Player.Messages
 			}
 		}
 
-		public PlayerSuitMessage(bool on) => Value = on;
+		public PlayerSuitMessage(bool on) => Data = on;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
-			player.SuitedUp = Value;
+			player.SuitedUp = Data;
 
 			if (!player.IsReady)
 			{
@@ -36,14 +36,14 @@ namespace QSB.Animation.Player.Messages
 			}
 
 			var animator = player.AnimationSync;
-			animator.SetSuitState(Value);
+			animator.SetSuitState(Data);
 		}
 
 		public override void OnReceiveLocal()
 		{
-			QSBPlayerManager.LocalPlayer.SuitedUp = Value;
+			QSBPlayerManager.LocalPlayer.SuitedUp = Data;
 			var animator = QSBPlayerManager.LocalPlayer.AnimationSync;
-			animator.InSuitedUpState = Value;
+			animator.InSuitedUpState = Data;
 		}
 	}
 }

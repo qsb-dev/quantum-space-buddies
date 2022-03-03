@@ -5,8 +5,8 @@ namespace QSB.QuantumSync.Messages
 {
 	internal class MoveSkeletonMessage : QSBWorldObjectMessage<QSBQuantumSkeletonTower, int>
 	{
-		public MoveSkeletonMessage(int index) => Value = index;
+		public MoveSkeletonMessage(int index) => Data = index;
 
-		public override void OnReceiveRemote() => WorldObject.MoveSkeleton(Value);
+		public override void OnReceiveRemote() => WorldObject.MoveSkeleton(Data);
 	}
 }

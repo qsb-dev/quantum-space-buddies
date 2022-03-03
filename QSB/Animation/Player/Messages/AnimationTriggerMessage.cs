@@ -6,7 +6,7 @@ namespace QSB.Animation.Player.Messages
 {
 	internal class AnimationTriggerMessage : QSBMessage<string>
 	{
-		public AnimationTriggerMessage(string name) => Value = name;
+		public AnimationTriggerMessage(string name) => Data = name;
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
@@ -23,7 +23,7 @@ namespace QSB.Animation.Player.Messages
 				return;
 			}
 
-			animationSync.VisibleAnimator.SetTrigger(Value);
+			animationSync.VisibleAnimator.SetTrigger(Data);
 		}
 	}
 }

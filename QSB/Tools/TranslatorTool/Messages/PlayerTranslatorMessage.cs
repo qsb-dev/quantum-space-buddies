@@ -20,16 +20,16 @@ namespace QSB.Tools.TranslatorTool.Messages
 			}
 		}
 
-		private PlayerTranslatorMessage(bool equipped) => Value = equipped;
+		private PlayerTranslatorMessage(bool equipped) => Data = equipped;
 
 		public override void OnReceiveRemote()
 		{
 			var player = QSBPlayerManager.GetPlayer(From);
-			player.TranslatorEquipped = Value;
-			player.Translator?.ChangeEquipState(Value);
+			player.TranslatorEquipped = Data;
+			player.Translator?.ChangeEquipState(Data);
 		}
 
 		public override void OnReceiveLocal() =>
-			QSBPlayerManager.LocalPlayer.TranslatorEquipped = Value;
+			QSBPlayerManager.LocalPlayer.TranslatorEquipped = Data;
 	}
 }
