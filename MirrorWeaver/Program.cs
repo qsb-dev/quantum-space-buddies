@@ -37,14 +37,10 @@ namespace MirrorWeaver
 	{
 		public static void Main(string[] args)
 		{
-			var qsbDll = Path.GetFullPath(args[0]);
-			var unityDir = Path.GetFullPath(args[1]);
-
-			var qsbDir = Path.GetDirectoryName(qsbDll)!;
+			var qsbDll = args[0];
 
 			var resolver = new DefaultAssemblyResolver();
-			resolver.AddSearchDirectory(qsbDir);
-			resolver.AddSearchDirectory(unityDir);
+			resolver.AddSearchDirectory(Path.GetDirectoryName(qsbDll));
 			var assembly = AssemblyDefinition.ReadAssembly(qsbDll, new ReaderParameters
 			{
 				ReadWrite = true,
