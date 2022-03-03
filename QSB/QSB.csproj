@@ -49,18 +49,16 @@
       <_Files Include="$(OutputPath)\*.exe" />
       <_Files Include="$(OutputPath)\*.pdb" />
 
-      <_Files Include="$(GameDllsDir)\Assembly-CSharp*.dll" />
-      <_Files Include="$(GameDllsDir)\Unity.InputSystem.dll" />
-      <_Files Include="$(GameDllsDir)\UnityEngine.UI.dll" />
       <_Files Include="$(GameDllsDir)\EOS-SDK.dll" />
-      <_Files Include="$(GameDllsDir)\UniSense.dll" />
       <_Files Include="$(GameDllsDir)\Autofac.dll" />
       <_Files Include="$(GameDllsDir)\Newtonsoft.Json.dll" />
       <_Files Include="$(GameDllsDir)\0Harmony.dll" />
       <_Files Include="$(GameDllsDir)\MonoMod*.dll" />
       <_Files Include="$(GameDllsDir)\Mono.Cecil.dll" />
-      <_Files Include="$(GameDllsDir)\OWML*.dll" />
-      <_Files Include="$(GameDllsDir)\NAudio-Unity.dll" />
+      <_Files Include="$(GameDllsDir)\OWML.Common.dll" />
+      <_Files Include="$(GameDllsDir)\OWML.Logging.dll" />
+      <_Files Include="$(GameDllsDir)\OWML.ModHelper.dll" />
+      <_Files Include="$(GameDllsDir)\OWML.Utils.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(_Files)" DestinationFolder="$(UnityDllsDir)" />
   </Target>
