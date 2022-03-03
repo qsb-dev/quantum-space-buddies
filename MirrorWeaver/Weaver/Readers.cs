@@ -1,3 +1,4 @@
+using MirrorWeaver;
 using System;
 using System.Collections.Generic;
 using Mono.Cecil;
@@ -137,12 +138,14 @@ namespace Mirror.Weaver
                 WeavingFailed = true;
                 return null;
             }
+            /*
             if (variableDefinition.HasGenericParameters)
             {
                 Log.Error($"Cannot generate reader for generic variable {variableReference.Name}. Use a supported type or provide a custom reader", variableReference);
                 WeavingFailed = true;
                 return null;
             }
+            */
             if (variableDefinition.IsInterface)
             {
                 Log.Error($"Cannot generate reader for interface {variableReference.Name}. Use a supported type or provide a custom reader", variableReference);
@@ -326,7 +329,7 @@ namespace Mirror.Weaver
 
         void ReadAllFields(TypeReference variable, ILProcessor worker, ref bool WeavingFailed)
         {
-            foreach (FieldDefinition field in variable.FindAllPublicFields())
+            foreach (FieldDefinition field in variable.FindAllPublicFields_Improved())
             {
                 // mismatched ldloca/ldloc for struct/class combinations is invalid IL, which causes crash at runtime
                 OpCode opcode = variable.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc;

@@ -1,3 +1,4 @@
+using MirrorWeaver;
 using System;
 using System.Collections.Generic;
 using Mono.Cecil;
@@ -138,10 +139,12 @@ namespace Mirror.Weaver
             {
                 throw new GenerateWriterException($"Cannot generate writer for {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
             }
+            /*
             if (variableDefinition.HasGenericParameters)
             {
                 throw new GenerateWriterException($"Cannot generate writer for generic type {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
             }
+            */
             if (variableDefinition.IsInterface)
             {
                 throw new GenerateWriterException($"Cannot generate writer for interface {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
@@ -250,7 +253,7 @@ namespace Mirror.Weaver
         // Find all fields in type and write them
         bool WriteAllFields(TypeReference variable, ILProcessor worker, ref bool WeavingFailed)
         {
-            foreach (FieldDefinition field in variable.FindAllPublicFields())
+            foreach (FieldDefinition field in variable.FindAllPublicFields_Improved())
             {
                 MethodReference writeFunc = GetWriteFunc(field.FieldType, ref WeavingFailed);
                 // need this null check till later PR when GetWriteFunc throws exception instead

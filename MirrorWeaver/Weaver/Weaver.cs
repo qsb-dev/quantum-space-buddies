@@ -1,3 +1,4 @@
+using MirrorWeaver;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -199,7 +200,7 @@ namespace Mirror.Weaver
                 ModuleDefinition moduleDefinition = CurrentAssembly.MainModule;
                 Console.WriteLine($"Script Module: {moduleDefinition.Name}");
 
-                MirrorWeaver.QSBReaderWriterProcessor.Process(moduleDefinition, writers, readers, ref WeavingFailed);
+                QSBReaderWriterProcessor.Process(moduleDefinition, writers, readers, ref WeavingFailed);
 
                 modified |= WeaveModule(moduleDefinition);
 
