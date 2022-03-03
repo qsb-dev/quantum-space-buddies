@@ -1,27 +1,25 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using QSB.EchoesOfTheEye.SlideProjectors.Messages;
+using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Threading;
 
 namespace QSB.EchoesOfTheEye.SlideProjectors.WorldObjects;
 
 public class QSBSlideProjector : WorldObject<SlideProjector>
 {
-	public uint ControllingPlayer;
+	private uint _user;
 
-	public override async UniTask Init(CancellationToken ct)
-	{
-		DebugLog.DebugWrite($"Init {this}");
-	}
+	public override void SendInitialState(uint to) =>
+		new UseSlideProjectorMessage(_user) { To = to }.Send();
 
-	public override void SendInitialState(uint to)
+	/// <summary>
+	/// called both locally and remotely
+	/// </summary>
+	public void SetUser(uint user)
 	{
-		// todo SendInitialState
-	}
-
-	public void OnChangeAuthority(uint newOwner)
-	{
-		DebugLog.DebugWrite($"{this} change ControllingPlayer to {newOwner}");
+		DebugLog.DebugWrite($"{this} - user = {user}");
+		AttachedObject._interactReceiver.SetInteractionEnabled(user == 0 || user == _user);
+		_user = user;
 	}
 
 	public void NextSlide()
