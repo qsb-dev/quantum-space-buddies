@@ -124,11 +124,6 @@ namespace QSB
 			foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
 			{
 				var assembly = Assembly.LoadFile(path);
-				if (Path.GetFileNameWithoutExtension(path) == "ProxyScripts")
-				{
-					continue;
-				}
-
 				DebugLog.DebugWrite(assembly.ToString());
 				assembly
 					.GetTypes()
