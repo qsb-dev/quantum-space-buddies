@@ -1,5 +1,4 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
@@ -7,29 +6,29 @@ using QSB.WorldSync;
 
 namespace QSB.ConversationSync.Messages
 {
-	public class ConversationStartEndMessage : QSBMessage<bool, int>
+	public class ConversationStartEndMessage : QSBMessage<(int TreeId, bool Start)>
 	{
 		public ConversationStartEndMessage(int treeId, bool start)
 		{
-			Value2 = treeId;
-			Value1 = start;
+			Data.TreeId = treeId;
+			Data.Start = start;
 		}
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 		public override void OnReceiveRemote()
 		{
-			if (Value2 == -1)
+			if (Data.TreeId == -1)
 			{
 				DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
 				return;
 			}
 
-			var dialogueTree = QSBWorldSync.OldDialogueTrees[Value2];
+			var dialogueTree = QSBWorldSync.OldDialogueTrees[Data.TreeId];
 
-			if (Value1)
+			if (Data.Start)
 			{
-				StartConversation(From, Value2, dialogueTree);
+				StartConversation(From, Data.TreeId, dialogueTree);
 			}
 			else
 			{

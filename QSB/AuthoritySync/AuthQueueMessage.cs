@@ -7,18 +7,18 @@ namespace QSB.AuthoritySync
 	/// <summary>
 	/// always sent to host
 	/// </summary>
-	public class AuthQueueMessage : QSBMessage<AuthQueueAction, uint>
+	public class AuthQueueMessage : QSBMessage<(uint NetId, AuthQueueAction Action)>
 	{
 		public AuthQueueMessage(uint netId, AuthQueueAction action)
 		{
 			To = 0;
-			Value1 = action;
-			Value2 = netId;
+			Data.NetId = netId;
+			Data.Action = action;
 		}
 
 		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 		public override void OnReceiveLocal() => OnReceiveRemote();
-		public override void OnReceiveRemote() => NetworkServer.spawned[Value2].ServerUpdateAuthQueue(From, Value1);
+		public override void OnReceiveRemote() => NetworkServer.spawned[Data.NetId].ServerUpdateAuthQueue(From, Data.Action);
 	}
 
 	public enum AuthQueueAction

@@ -1,47 +1,46 @@
-using Mirror;
 using QSB.Messaging;
 using QSB.WorldSync;
 
 namespace QSB.ConversationSync.Messages
 {
-	public class DialogueConditionMessage : QSBMessage<string, bool>
+	public class DialogueConditionMessage : QSBMessage<(string Name, bool State)>
 	{
 		public DialogueConditionMessage(string name, bool state)
 		{
-			Value1 = name;
-			Value2 = state;
+			Data.Name = name;
+			Data.State = state;
 		}
 
 		public override void OnReceiveRemote()
 		{
 			if (QSBCore.IsHost)
 			{
-				QSBWorldSync.SetDialogueCondition(Value1, Value2);
+				QSBWorldSync.SetDialogueCondition(Data.Name, Data.State);
 			}
 
 			var sharedInstance = DialogueConditionManager.SharedInstance;
 
 			var flag = true;
-			if (sharedInstance.ConditionExists(Value1))
+			if (sharedInstance.ConditionExists(Data.Name))
 			{
-				if (sharedInstance._dictConditions[Value1] == Value2)
+				if (sharedInstance._dictConditions[Data.Name] == Data.State)
 				{
 					flag = false;
 				}
 
-				sharedInstance._dictConditions[Value1] = Value2;
+				sharedInstance._dictConditions[Data.Name] = Data.State;
 			}
 			else
 			{
-				sharedInstance.AddCondition(Value1, Value2);
+				sharedInstance.AddCondition(Data.Name, Data.State);
 			}
 
 			if (flag)
 			{
-				GlobalMessenger<string, bool>.FireEvent("DialogueConditionChanged", Value1, Value2);
+				GlobalMessenger<string, bool>.FireEvent("DialogueConditionChanged", Data.Name, Data.State);
 			}
 
-			if (Value1 == "LAUNCH_CODES_GIVEN")
+			if (Data.Name == "LAUNCH_CODES_GIVEN")
 			{
 				PlayerData.LearnLaunchCodes();
 			}
@@ -51,7 +50,7 @@ namespace QSB.ConversationSync.Messages
 		{
 			if (QSBCore.IsHost)
 			{
-				QSBWorldSync.SetDialogueCondition(Value1, Value2);
+				QSBWorldSync.SetDialogueCondition(Data.Name, Data.State);
 			}
 		}
 	}

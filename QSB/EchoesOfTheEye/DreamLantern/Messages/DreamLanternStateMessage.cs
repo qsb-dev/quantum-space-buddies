@@ -5,18 +5,18 @@ using QSB.Utility;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.Messages;
 
-internal class DreamLanternStateMessage : QSBMessage<DreamLanternActionType, bool, float>
+internal class DreamLanternStateMessage : QSBMessage<(DreamLanternActionType Type, bool BoolValue, float FloatValue)>
 {
 	public DreamLanternStateMessage(DreamLanternActionType actionType, bool state = false, float floatValue = 0f)
 	{
-		Value1 = actionType;
-		Value2 = state;
-		Value3 = floatValue;
+		Data.Type = actionType;
+		Data.BoolValue = state;
+		Data.FloatValue = floatValue;
 	}
 
 	public override void OnReceiveRemote()
 	{
-		DebugLog.DebugWrite($"{From} Action:{Value1} Value:{Value2} FloatValue:{Value3}");
+		DebugLog.DebugWrite($"{From} Action:{Data.Type} BoolValue:{Data.BoolValue} FloatValue:{Data.FloatValue}");
 
 		var heldItem = QSBPlayerManager.GetPlayer(From).HeldItem;
 
@@ -28,13 +28,13 @@ internal class DreamLanternStateMessage : QSBMessage<DreamLanternActionType, boo
 
 		var controller = lantern.AttachedObject._lanternController;
 
-		switch (Value1)
+		switch (Data.Type)
 		{
 			case DreamLanternActionType.CONCEAL:
-				controller.SetConcealed(Value2);
+				controller.SetConcealed(Data.BoolValue);
 				break;
 			case DreamLanternActionType.FOCUS:
-				controller.SetFocus(Value3);
+				controller.SetFocus(Data.FloatValue);
 				break;
 		}
 	}
