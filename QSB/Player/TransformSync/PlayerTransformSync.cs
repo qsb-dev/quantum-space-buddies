@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.PlayerBodySetup.Local;
@@ -75,7 +74,6 @@ public class PlayerTransformSync : SectoredTransformSync
 		comps.First(x => x.Target == _networkRoastingSystem).AttachedTransform = _visibleRoastingSystem;
 		comps.First(x => x.Target == _networkStickPivot).AttachedTransform = _visibleStickPivot;
 		comps.First(x => x.Target == _networkStickTip).AttachedTransform = _visibleStickTip;
-		DebugLog.DebugWrite($"{this} - \n{comps.Join(x => $"{x} | {x.Target} | {x.AttachedTransform}", "\n")}", MessageType.Info);
 	}
 
 	protected override Transform InitLocalTransform()
