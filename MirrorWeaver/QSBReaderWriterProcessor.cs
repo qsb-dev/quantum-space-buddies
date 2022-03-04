@@ -52,9 +52,11 @@ public static class QSBReaderWriterProcessor
 						{
 							var argType = calledMethod.GenericArguments[0];
 
-							if (argType is GenericParameter genericParameter && genericParameter.Owner == currentTypeDef)
+							if (currentType is GenericInstanceType genericInstanceType &&
+								argType is GenericParameter genericParameter &&
+								genericParameter.Owner == currentTypeDef)
 							{
-								argType = ((GenericInstanceType)currentType).GenericArguments[genericParameter.Position];
+								argType = genericInstanceType.GenericArguments[genericParameter.Position];
 							}
 
 							writers.GetWriteFunc(argType, ref weavingFailed);
@@ -65,9 +67,11 @@ public static class QSBReaderWriterProcessor
 						{
 							var argType = calledMethod.GenericArguments[0];
 
-							if (argType is GenericParameter genericParameter && genericParameter.Owner == currentTypeDef)
+							if (currentType is GenericInstanceType genericInstanceType &&
+							    argType is GenericParameter genericParameter &&
+							    genericParameter.Owner == currentTypeDef)
 							{
-								argType = ((GenericInstanceType)currentType).GenericArguments[genericParameter.Position];
+								argType = genericInstanceType.GenericArguments[genericParameter.Position];
 							}
 
 							readers.GetReadFunc(argType, ref weavingFailed);
@@ -76,7 +80,7 @@ public static class QSBReaderWriterProcessor
 					}
 				}
 
-				currentType = currentTypeDef.BaseType;
+				currentType = currentTypeDef.BaseType?.ApplyGenericParameters(currentType);
 			}
 		}
 
