@@ -1,3 +1,4 @@
+using MirrorWeaver;
 using System;
 using System.Collections.Generic;
 using Mono.Cecil;
@@ -18,7 +19,7 @@ namespace Mirror.Weaver
         AssemblyDefinition assembly;
         WeaverTypes weaverTypes;
         TypeDefinition GeneratedCodeClass;
-        Logger Log;
+        internal Logger Log;
 
         Dictionary<TypeReference, MethodReference> readFuncs =
             new Dictionary<TypeReference, MethodReference>(new TypeReferenceComparer());
@@ -269,7 +270,7 @@ namespace Mirror.Weaver
                 GenerateNullCheck(worker, ref WeavingFailed);
 
             CreateNew(variable, worker, td, ref WeavingFailed);
-            ReadAllFields(variable, worker, ref WeavingFailed);
+            this.ReadAllFieldsGeneric(variable, worker, ref WeavingFailed);
 
             worker.Emit(OpCodes.Ldloc_0);
             worker.Emit(OpCodes.Ret);

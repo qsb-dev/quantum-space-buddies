@@ -1,3 +1,4 @@
+using MirrorWeaver;
 using System;
 using System.Collections.Generic;
 using Mono.Cecil;
@@ -218,7 +219,7 @@ namespace Mirror.Weaver
             if (!variable.Resolve().IsValueType)
                 WriteNullCheck(worker, ref WeavingFailed);
 
-            if (!WriteAllFields(variable, worker, ref WeavingFailed))
+            if (!this.WriteAllFieldsGeneric(variable, worker, ref WeavingFailed))
                 return null;
 
             worker.Emit(OpCodes.Ret);
