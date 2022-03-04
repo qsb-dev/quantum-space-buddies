@@ -160,7 +160,6 @@ It is also recommended to lower all graphics settings to minimum, be in windowed
     - [where-allocation](https://github.com/vis2k/where-allocation)
 - [EpicOnlineTransport](https://github.com/FakeByte/EpicOnlineTransport)
 - [HarmonyX](https://github.com/BepInEx/HarmonyX)
-- [Mono.Cecil](https://github.com/jbevain/cecil)
 - [UniTask](https://github.com/Cysharp/UniTask)
 
 ## Help / Discuss development / Whatever
