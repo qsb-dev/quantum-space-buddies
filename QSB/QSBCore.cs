@@ -83,6 +83,11 @@ public class QSBCore : ModBehaviour
 
 		MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
+		DebugLog.DebugWrite("loading network-big bundle", MessageType.Info);
+		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/network-big");
+		var request = AssetBundle.LoadFromFileAsync(path);
+		request.completed += _ => DebugLog.DebugWrite("network-big bundle loaded", MessageType.Success);
+
 		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
 		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
 		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
