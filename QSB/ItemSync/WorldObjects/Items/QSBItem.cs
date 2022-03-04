@@ -96,12 +96,6 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 		AttachedObject.SetColliderActivation(true);
 	}
 
-	public virtual void SocketItem(Transform socketTransform, Sector sector)
-	{
-		AttachedObject.SetSector(sector);
-		AttachedObject.MoveAndChildToTransform(socketTransform);
-	}
-
 	public void OnCompleteUnsocket()
 		=> AttachedObject.OnCompleteUnsocket();
 }
