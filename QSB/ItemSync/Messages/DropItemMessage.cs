@@ -3,7 +3,6 @@ using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
