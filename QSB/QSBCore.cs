@@ -39,7 +39,6 @@ public class QSBCore : ModBehaviour
 	public static IModHelper Helper { get; private set; }
 	public static string DefaultServerIP;
 	public static AssetBundle NetworkAssetBundle { get; private set; }
-	public static AssetBundle InstrumentAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
 	public static AssetBundle TextAssetsBundle { get; private set; }
@@ -85,7 +84,6 @@ public class QSBCore : ModBehaviour
 		MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
 		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
-		InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
 		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
 		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
 		TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
