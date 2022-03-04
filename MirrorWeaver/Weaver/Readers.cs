@@ -1,4 +1,3 @@
-using MirrorWeaver;
 using System;
 using System.Collections.Generic;
 using Mono.Cecil;
@@ -329,7 +328,7 @@ namespace Mirror.Weaver
 
         void ReadAllFields(TypeReference variable, ILProcessor worker, ref bool WeavingFailed)
         {
-            foreach (FieldDefinition field in variable.FindAllPublicFields_Improved())
+            foreach (FieldDefinition field in variable.FindAllPublicFields())
             {
                 // mismatched ldloca/ldloc for struct/class combinations is invalid IL, which causes crash at runtime
                 OpCode opcode = variable.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc;

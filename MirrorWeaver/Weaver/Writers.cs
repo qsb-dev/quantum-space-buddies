@@ -1,4 +1,3 @@
-using MirrorWeaver;
 using System;
 using System.Collections.Generic;
 using Mono.Cecil;
@@ -253,7 +252,7 @@ namespace Mirror.Weaver
         // Find all fields in type and write them
         bool WriteAllFields(TypeReference variable, ILProcessor worker, ref bool WeavingFailed)
         {
-            foreach (FieldDefinition field in variable.FindAllPublicFields_Improved())
+            foreach (FieldDefinition field in variable.FindAllPublicFields())
             {
                 MethodReference writeFunc = GetWriteFunc(field.FieldType, ref WeavingFailed);
                 // need this null check till later PR when GetWriteFunc throws exception instead
