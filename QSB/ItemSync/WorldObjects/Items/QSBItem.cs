@@ -85,18 +85,8 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 	public void PickUpItem(Transform holdTransform)
 		=> AttachedObject.PickUpItem(holdTransform);
 
-	public void DropItem(Vector3 position, Vector3 normal, Sector sector)
-	{
-		AttachedObject.transform.SetParent(sector.transform);
-		AttachedObject.transform.localScale = Vector3.one;
-		var localDropNormal = AttachedObject._localDropNormal;
-		var lhs = Quaternion.FromToRotation(AttachedObject.transform.TransformDirection(localDropNormal), normal);
-		AttachedObject.transform.rotation = lhs * AttachedObject.transform.rotation;
-		var localDropOffset = AttachedObject._localDropOffset;
-		AttachedObject.transform.position = sector.transform.TransformPoint(position) + AttachedObject.transform.TransformDirection(localDropOffset);
-		AttachedObject.SetSector(sector);
-		AttachedObject.SetColliderActivation(true);
-	}
+	public void DropItem(Vector3 position, Vector3 normal, Sector sector) =>
+		AttachedObject.DropItem(sector.transform.TransformPoint(position), normal, sector.transform, sector, null);
 
 	public void OnCompleteUnsocket()
 		=> AttachedObject.OnCompleteUnsocket();
