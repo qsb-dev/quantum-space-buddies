@@ -86,7 +86,7 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 		=> AttachedObject.PickUpItem(holdTransform);
 
 	public void DropItem(Vector3 position, Vector3 normal, Sector sector) =>
-		AttachedObject.DropItem(sector.transform.TransformPoint(position), normal, sector.transform, sector, null);
+		AttachedObject.DropItem(position, normal, sector.transform, sector, null);
 
 	public void OnCompleteUnsocket()
 		=> AttachedObject.OnCompleteUnsocket();

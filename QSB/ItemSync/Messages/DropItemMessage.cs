@@ -41,7 +41,7 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem>
 	public override void OnReceiveRemote()
 	{
 		var sector = SectorId.GetWorldObject<QSBSector>().AttachedObject;
-		WorldObject.DropItem(Position, Normal, sector);
+		WorldObject.DropItem(sector.transform.TransformPoint(Position), Normal, sector);
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.HeldItem = WorldObject;
