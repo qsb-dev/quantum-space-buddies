@@ -10,7 +10,7 @@ public class QSBSlideProjector : WorldObject<SlideProjector>
 	private uint _user;
 
 	public override void SendInitialState(uint to) =>
-		new UseSlideProjectorMessage(_user) { To = to }.Send();
+		this.SendMessage(new UseSlideProjectorMessage(_user) { To = to });
 
 	/// <summary>
 	/// called both locally and remotely
