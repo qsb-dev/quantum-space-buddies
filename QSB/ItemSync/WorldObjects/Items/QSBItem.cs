@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items;
 
-public class QSBItem<T> : WorldObject<T>, IQSBItem
+internal class QSBItem<T> : WorldObject<T>, IQSBItem
 	where T : OWItem
 {
 	private QSBItemSocket InitialSocket { get; set; }
@@ -85,13 +85,15 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 	public void PickUpItem(Transform holdTransform)
 		=> AttachedObject.PickUpItem(holdTransform);
 
-	public virtual void DropItem(Vector3 position, Vector3 normal, Sector sector)
+	public void DropItem(Vector3 position, Vector3 normal, Sector sector)
 	{
 		AttachedObject.transform.SetParent(sector.transform);
 		AttachedObject.transform.localScale = Vector3.one;
-		var lhs = Quaternion.FromToRotation(AttachedObject.transform.TransformDirection(AttachedObject._localDropNormal), normal);
+		var localDropNormal = AttachedObject._localDropNormal;
+		var lhs = Quaternion.FromToRotation(AttachedObject.transform.TransformDirection(localDropNormal), normal);
 		AttachedObject.transform.rotation = lhs * AttachedObject.transform.rotation;
-		AttachedObject.transform.position = position + AttachedObject.transform.TransformDirection(AttachedObject._localDropOffset);
+		var localDropOffset = AttachedObject._localDropOffset;
+		AttachedObject.transform.position = sector.transform.TransformPoint(position) + AttachedObject.transform.TransformDirection(localDropOffset);
 		AttachedObject.SetSector(sector);
 		AttachedObject.SetColliderActivation(true);
 	}
