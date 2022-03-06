@@ -74,8 +74,8 @@ public class PlayerJoinMessage : QSBMessage
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.Name = PlayerName;
-		DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
-		DebugLog.DebugWrite($"{player.Name} joined. id:{player.PlayerId}, qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
+		DebugLog.ToAll($"{player} joined!", MessageType.Info);
+		DebugLog.DebugWrite($"{player} joined. qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
 	}
 
 	public override void OnReceiveLocal()

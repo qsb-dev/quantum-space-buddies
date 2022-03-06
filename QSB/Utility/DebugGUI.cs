@@ -133,7 +133,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		WriteLine(2, $"Player data :");
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
-			WriteLine(2, $"{player.PlayerId}.{player.Name}");
+			WriteLine(2, player.ToString());
 			WriteLine(2, $"State : {player.State}");
 			WriteLine(2, $"Eye State : {player.EyeState}");
 			WriteLine(2, $"Dead : {player.IsDead}");
@@ -217,7 +217,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
-			WriteLine(4, $"- {player.PlayerId}.{player.Name}");
+			WriteLine(4, $"- {player}");
 			var allQuantumObjects = QSBWorldSync.GetWorldObjects<IQSBQuantumObject>();
 			var ownedQuantumObjects = allQuantumObjects.Where(x => x.ControllingPlayer == player.PlayerId);
 

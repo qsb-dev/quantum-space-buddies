@@ -19,7 +19,7 @@ internal class MarshmallowEventMessage : QSBMessage<MarshmallowMessageType>
 		var player = QSBPlayerManager.GetPlayer(From);
 		if (player.Marshmallow == null)
 		{
-			DebugLog.ToConsole($"Warning - Marshmallow is null for player {player.PlayerId}.", MessageType.Warning);
+			DebugLog.ToConsole($"Warning - Marshmallow is null for {player}.", MessageType.Warning);
 			return;
 		}
 
@@ -57,7 +57,7 @@ internal class MarshmallowEventMessage : QSBMessage<MarshmallowMessageType>
 		var rigidbody = tossedMallow.GetComponent<OWRigidbody>();
 		if (player.Campfire == null)
 		{
-			DebugLog.ToConsole($"Error - Campfire for {player.PlayerId} is null.", MessageType.Error);
+			DebugLog.ToConsole($"Error - Campfire for {player} is null.", MessageType.Error);
 			return;
 		}
 
@@ -65,7 +65,7 @@ internal class MarshmallowEventMessage : QSBMessage<MarshmallowMessageType>
 		rigidbody.SetAngularVelocity(stickTip.right * 10f);
 		if (player.Marshmallow == null)
 		{
-			DebugLog.ToConsole($"Error - Marshmallow for {player.PlayerId} is null.", MessageType.Error);
+			DebugLog.ToConsole($"Error - Marshmallow for {player} is null.", MessageType.Error);
 			return;
 		}
 

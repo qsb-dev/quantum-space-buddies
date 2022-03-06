@@ -35,7 +35,7 @@ public class PlayerTransformSync : SectoredTransformSync
 		QSBPlayerManager.PlayerList.SafeAdd(player);
 		base.OnStartClient();
 		QSBPlayerManager.OnAddPlayer?.Invoke(Player);
-		DebugLog.DebugWrite($"Create Player : id<{Player.PlayerId}>", MessageType.Info);
+		DebugLog.DebugWrite($"Create Player : {Player}", MessageType.Info);
 
 		JoinLeaveSingularity.Create(Player, true);
 	}
@@ -51,7 +51,7 @@ public class PlayerTransformSync : SectoredTransformSync
 		base.OnStopClient();
 		Player.HudMarker?.Remove();
 		QSBPlayerManager.PlayerList.Remove(Player);
-		DebugLog.DebugWrite($"Remove Player : id<{Player.PlayerId}>", MessageType.Info);
+		DebugLog.DebugWrite($"Remove Player : {Player}", MessageType.Info);
 	}
 
 	protected override void Uninit()

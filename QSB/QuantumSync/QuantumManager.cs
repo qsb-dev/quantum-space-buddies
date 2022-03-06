@@ -95,7 +95,7 @@ internal class QuantumManager : WorldObjectManager
 		{
 			if (player.Camera == null)
 			{
-				DebugLog.ToConsole($"Warning - Camera is null for id:{player.PlayerId}!", MessageType.Warning);
+				DebugLog.ToConsole($"Warning - Camera is null for id:{player}!", MessageType.Warning);
 				continue;
 			}
 

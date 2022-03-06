@@ -297,4 +297,6 @@ public class PlayerInfo
 
 		_ditheringAnimator.SetVisible(visible, seconds);
 	}
+
+	public override string ToString() => $"{PlayerId}:{GetType().Name} ({Name})";
 }

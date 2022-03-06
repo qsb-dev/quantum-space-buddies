@@ -104,14 +104,14 @@ internal class ShipManager : WorldObjectManager
 
 	public void AddPlayerToShip(PlayerInfo player)
 	{
-		DebugLog.DebugWrite($"{player.PlayerId} enter ship.");
+		DebugLog.DebugWrite($"{player} enter ship.");
 		_playersInShip.Add(player);
 		UpdateElectricalComponent();
 	}
 
 	public void RemovePlayerFromShip(PlayerInfo player)
 	{
-		DebugLog.DebugWrite($"{player.PlayerId} leave ship.");
+		DebugLog.DebugWrite($"{player} leave ship.");
 		_playersInShip.Remove(player);
 		UpdateElectricalComponent();
 	}

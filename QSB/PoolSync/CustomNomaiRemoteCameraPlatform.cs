@@ -356,7 +356,7 @@ internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 		{
 			if (item.Value == null)
 			{
-				DebugLog.ToConsole($"Error - Gameobject for {item.Key.PlayerId} in _playerToHologram is null!", MessageType.Error);
+				DebugLog.ToConsole($"Error - Gameobject for {item.Key} in _playerToHologram is null!", MessageType.Error);
 				continue;
 			}
 

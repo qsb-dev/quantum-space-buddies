@@ -33,7 +33,7 @@ public static class JoinLeaveSingularity
 			}
 		}
 
-		var go = new GameObject($"player {player.PlayerId} JoinLeaveSingularity");
+		var go = new GameObject($"player {player} JoinLeaveSingularity");
 		var ct = go.GetCancellationTokenOnDestroy();
 		UniTask.Create(async () =>
 		{

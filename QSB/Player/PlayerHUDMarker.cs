@@ -49,7 +49,7 @@ public class PlayerHUDMarker : HUDDistanceMarker
 		}
 		else
 		{
-			DebugLog.ToConsole($"Warning - _canvasMarker for {_player.PlayerId} is null!", OWML.Common.MessageType.Warning);
+			DebugLog.ToConsole($"Warning - _canvasMarker for {_player} is null!", OWML.Common.MessageType.Warning);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class PlayerHUDMarker : HUDDistanceMarker
 	{
 		if (_player.Name == null)
 		{
-			DebugLog.ToConsole($"Error - {_player.PlayerId} has a null name!", OWML.Common.MessageType.Error);
+			DebugLog.ToConsole($"Error - {_player} has a null name!", OWML.Common.MessageType.Error);
 			_player.Name = "NULL";
 		}
 
