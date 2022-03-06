@@ -109,7 +109,7 @@ public abstract class SyncBase : QSBNetworkTransform
 	public string Name => AttachedTransform ? AttachedTransform.name : "<NullObject!>";
 
 	public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
-	                                     + $"{netId}:{GetType().Name} ({Name})";
+	                                     + $"{netId}:{GetType()} ({Name})";
 
 	protected virtual float DistanceChangeThreshold => 5f;
 	private float _prevDistance;

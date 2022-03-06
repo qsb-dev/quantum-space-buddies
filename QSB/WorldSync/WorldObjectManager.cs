@@ -19,6 +19,4 @@ public abstract class WorldObjectManager : MonoBehaviour, IAddComponentOnStart
 	public abstract UniTask BuildWorldObjects(OWScene scene, CancellationToken ct);
 
 	public virtual void UnbuildWorldObjects() { }
-
-	public override string ToString() => GetType().Name;
 }
