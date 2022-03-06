@@ -41,8 +41,6 @@ public abstract class QSBMessage
 	public virtual bool ShouldReceive => true;
 	public virtual void OnReceiveLocal() { }
 	public virtual void OnReceiveRemote() { }
-
-	public override string ToString() => GetType().Name;
 }
 
 public abstract class QSBMessage<D> : QSBMessage
