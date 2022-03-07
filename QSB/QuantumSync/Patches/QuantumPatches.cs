@@ -325,7 +325,7 @@ public class QuantumPatches : QSBPatch
 			}
 		}
 
-		var playersInMoon = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
+		var playersInMoon = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon).ToList();
 
 		if (playersInMoon.Any(player => !player.IsInShrine))
 		{
@@ -339,7 +339,7 @@ public class QuantumPatches : QSBPatch
 			return false;
 		}
 
-		if (playersInMoon.Count() == 0)
+		if (playersInMoon.Count == 0)
 		{
 			__result = false;
 			return false;
