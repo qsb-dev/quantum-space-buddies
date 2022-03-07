@@ -1,11 +1,9 @@
 ﻿using HarmonyLib;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Patches;
-using QSB.Player;
 using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeTool;
 using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
