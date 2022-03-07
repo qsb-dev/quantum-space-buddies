@@ -85,6 +85,7 @@ internal class LightSensorPatches : QSBPatch
 							else if (lightSource is QSBFlashlight qsbFlashlight)
 							{
 								var playerCamera = qsbFlashlight.Player.Camera;
+
 								var position = playerCamera.transform.position;
 								var to = __instance.transform.position - position;
 								if (Vector3.Angle(playerCamera.transform.forward, to) <= __instance._maxSpotHalfAngle
