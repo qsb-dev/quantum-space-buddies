@@ -154,7 +154,7 @@ internal class LightSensorPatches : QSBPatch
 								&& !__instance.CheckOcclusion(owlight.transform.position, vector, sensorWorldDir, occludableLight))
 							{
 								__instance._illuminated = true;
-								qsbLightSensor.IlluminatedByLocal = true;
+								qsbLightSensor.IlluminatedByLocal = true; // todo remote dream lanterns
 								break;
 							}
 						}
