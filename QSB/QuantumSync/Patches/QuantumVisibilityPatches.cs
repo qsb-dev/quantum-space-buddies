@@ -68,9 +68,7 @@ public class QuantumVisibilityPatches : QSBPatch
 		var point = __instance.transform.TransformPoint(__instance._localIlluminationOffset);
 		var (localFlashlight, playerFlashlights) = QSBPlayerManager.GetPlayerFlashlights();
 
-		var tupleProbes = QSBPlayerManager.GetPlayerProbes();
-		var localProbe = tupleProbes.Item1;
-		var playerProbes = tupleProbes.Item2;
+		var (localProbe, playerProbes) = QSBPlayerManager.GetPlayerProbes();
 
 		if (localFlashlight.CheckIlluminationAtPoint(point, __instance._illuminationRadius))
 		{
