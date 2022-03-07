@@ -2,6 +2,7 @@
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Player.TransformSync;
 using QSB.Tools.FlashlightTool;
+using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -86,6 +87,9 @@ public static class QSBPlayerManager
 
 	public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
 		=> new(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
+
+	public static Tuple<SurveyorProbe, IEnumerable<QSBProbe>> GetPlayerProbes()
+		=> new(Locator.GetProbe(), PlayerList.Where(x => x.Probe != null).Select(x => x.Probe));
 
 	public static void ShowAllPlayers()
 		=> PlayerList.ForEach(x => x.SetVisible(true, 2));

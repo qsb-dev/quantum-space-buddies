@@ -114,6 +114,8 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 
 	public void SetIsQuantum(bool isQuantum) => AttachedObject._isQuantum = isQuantum;
 
+	public VisibilityObject GetVisibilityObject() => AttachedObject;
+
 	private void OnEnable(Shape s)
 	{
 		if (IsEnabled)
@@ -217,5 +219,16 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		Popcron.Gizmos.Line(AttachedObject.transform.position,
 			playerBody.transform.position,
 			Color.magenta);
+	}
+
+	public override string ReturnLabel()
+	{
+		var label = $"{this}\r\n";
+		foreach (var tracker in AttachedObject._visibilityTrackers)
+		{
+			label += $"{tracker.name}:\r\n  IsVisible:{tracker.IsVisible()}\r\n  VisibleUsingCamera:{tracker.IsVisibleUsingCameraFrustum()}\r\n";
+		}
+
+		return label;
 	}
 }

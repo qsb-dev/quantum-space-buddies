@@ -28,7 +28,7 @@ internal class QSBMultiStateQuantumObject : QSBQuantumObject<MultiStateQuantumOb
 	}
 
 	public override string ReturnLabel()
-		=> $"{this}{Environment.NewLine}StateIndex:{AttachedObject._stateIndex}";
+		=> $"{base.ReturnLabel()}StateIndex:{AttachedObject._stateIndex}";
 
 	public override void SendInitialState(uint to)
 	{

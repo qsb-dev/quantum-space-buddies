@@ -110,10 +110,11 @@ internal class QuantumManager : WorldObjectManager
 		return new Tuple<bool, List<PlayerInfo>>(foundPlayers, playersWhoCanSee);
 	}
 
-	public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera) => tracker.gameObject.activeInHierarchy
-	                                                                                        && IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).Item1
-	                                                                                        && QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
-		                                                                                        .Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
+	public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera) 
+		=> tracker.gameObject.activeInHierarchy
+			&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).Item1
+			&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
+				.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
 
 	public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 	{

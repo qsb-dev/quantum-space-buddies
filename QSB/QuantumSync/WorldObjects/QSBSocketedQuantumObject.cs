@@ -23,11 +23,11 @@ internal class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject
 		if (socket != null)
 		{
 			var socketObj = socket.GetWorldObject<QSBQuantumSocket>();
-			return $"{this}{Environment.NewLine}SocketId:{socketObj.ObjectId}";
+			return $"{base.ReturnLabel()}SocketId:{socketObj.ObjectId}";
 		}
 		else
 		{
-			return $"{this}{Environment.NewLine}SocketId:NULL";
+			return $"{base.ReturnLabel()}SocketId:NULL";
 		}
 	}
 

@@ -9,6 +9,9 @@ public class QSBProbe : MonoBehaviour
 	public delegate void SurveyorProbeEvent();
 	public delegate void RetrieveEvent(float retrieveLength);
 
+	[SerializeField]
+	private OWLight2[] _illuminationCheckLights;
+
 	public event SurveyorProbeEvent OnLaunchProbe;
 	public event SurveyorProbeEvent OnAnchorProbe;
 	public event SurveyorProbeEvent OnUnanchorProbe;
@@ -151,5 +154,18 @@ public class QSBProbe : MonoBehaviour
 
 			OnStartRetrieveProbe(duration);
 		}
+	}
+
+	public bool CheckIlluminationAtPoint(Vector3 point, float buffer = 0f, float maxDistance = float.PositiveInfinity)
+	{
+		for (var i = 0; i < _illuminationCheckLights.Length; i++)
+		{
+			if (_illuminationCheckLights[i].CheckIlluminationAtPoint(point, buffer, maxDistance))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
