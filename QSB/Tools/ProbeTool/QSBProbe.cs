@@ -25,6 +25,7 @@ public class QSBProbe : MonoBehaviour, ILightSource
 	private bool _isRetrieving;
 	private PlayerInfo _owner;
 	private bool _anchored;
+	private LightSourceVolume _lightSourceVol;
 
 	public RulesetDetector GetRulesetDetector()
 		=> _rulesetDetector;
@@ -38,7 +39,14 @@ public class QSBProbe : MonoBehaviour, ILightSource
 		_isRetrieving = false;
 	}
 
-	private void Start() => gameObject.SetActive(false);
+	private void Start()
+	{
+		_lightSourceVol = this.GetRequiredComponentInChildren<LightSourceVolume>();
+		_lightSourceVol.LinkLightSource(this);
+		_lightSourceVol.SetVolumeActivation(false);
+
+		gameObject.SetActive(false);
+	}
 
 	protected void OnDestroy() => _warpEffect.OnWarpComplete -= OnWarpComplete;
 
@@ -77,6 +85,7 @@ public class QSBProbe : MonoBehaviour, ILightSource
 				_anchored = false;
 
 				gameObject.SetActive(true);
+				_lightSourceVol.SetVolumeActivation(true);
 				transform.position = _owner.ProbeLauncher.transform.position;
 				transform.rotation = _owner.ProbeLauncher.transform.rotation;
 
@@ -135,6 +144,7 @@ public class QSBProbe : MonoBehaviour, ILightSource
 	private void Deactivate()
 	{
 		transform.localScale = Vector3.one;
+		_lightSourceVol.SetVolumeActivation(false);
 		gameObject.SetActive(false);
 		_isRetrieving = false;
 	}
@@ -171,4 +181,5 @@ public class QSBProbe : MonoBehaviour, ILightSource
 
 	public LightSourceType GetLightSourceType() => LightSourceType.PROBE;
 	public OWLight2[] GetLights() => _illuminationCheckLights;
+	public Vector3 GetLightSourcePosition() => _lightSourceVol.transform.position;
 }
