@@ -19,6 +19,10 @@ public class QuantumPatches : QSBPatch
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
+	[HarmonyPatch(typeof(QuantumSocketCollapseTrigger), nameof(QuantumSocketCollapseTrigger.OnTriggerEnter))]
+	public static bool QuantumSocketCollapseTrigger_OnTriggerEnter() => false;
+
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(QuantumObject), nameof(QuantumObject.IsLockedByPlayerContact))]
 	public static bool QuantumObject_IsLockedByPlayerContact(out bool __result, QuantumObject __instance)
 	{
