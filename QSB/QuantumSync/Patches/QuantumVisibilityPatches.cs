@@ -28,7 +28,7 @@ public class QuantumVisibilityPatches : QSBPatch
 	[HarmonyPatch(typeof(ShapeVisibilityTracker), nameof(ShapeVisibilityTracker.IsVisibleUsingCameraFrustum))]
 	public static bool ShapeVisibilityTracker_IsVisibleUsingCameraFrustum(ShapeVisibilityTracker __instance, out bool __result)
 	{
-		__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false).Item1;
+		__result = QuantumManager.IsVisibleUsingCameraFrustum(__instance, false).FoundPlayers;
 		return false;
 	}
 
@@ -66,9 +66,7 @@ public class QuantumVisibilityPatches : QSBPatch
 		}
 
 		var point = __instance.transform.TransformPoint(__instance._localIlluminationOffset);
-		var tupleFlashlights = QSBPlayerManager.GetPlayerFlashlights();
-		var localFlashlight = tupleFlashlights.Item1;
-		var playerFlashlights = tupleFlashlights.Item2;
+		var (localFlashlight, playerFlashlights) = QSBPlayerManager.GetPlayerFlashlights();
 
 		// local player flashlight
 		if (localFlashlight.CheckIlluminationAtPoint(point, __instance._illuminationRadius))

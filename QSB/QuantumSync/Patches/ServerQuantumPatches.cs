@@ -64,10 +64,9 @@ public class ServerQuantumPatches : QSBPatch
 		var foundNewPosition = false;
 
 		var playersInQuantumMoon = QSBPlayerManager.PlayerList.Where(x => x.IsInMoon);
-		var isVisibleOutput = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, skipInstantVisibilityCheck);
+		var (_, playersWhoCanSeeQuantumMoon) = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, skipInstantVisibilityCheck);
 		var shrineLit = QuantumManager.Shrine != null && QuantumManager.Shrine.IsPlayerInDarkness();
 		var playersInQuantumShrine = QSBPlayerManager.PlayerList.Where(x => x.IsInShrine);
-		var playersWhoCanSeeQuantumMoon = isVisibleOutput.Item2;
 		var playersNotInQuantumShrine = QSBPlayerManager.PlayerList.Where(x => !x.IsInShrine);
 
 		// If any of the players in the moon are not in the shrine

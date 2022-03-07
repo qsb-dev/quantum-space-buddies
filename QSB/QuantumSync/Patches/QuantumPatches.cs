@@ -376,7 +376,7 @@ public class QuantumPatches : QSBPatch
 			fogAlpha = Mathf.InverseLerp(__instance._fogThickness + __instance._fogRolloffDistance, __instance._fogThickness, distanceFromFog);
 			if (distanceFromFog < 0f)
 			{
-				if (__instance.IsLockedByProbeSnapshot() || QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, true).Item1)
+				if (__instance.IsLockedByProbeSnapshot() || QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, true).FoundPlayers)
 				{
 					__instance._isPlayerInside = true;
 					__instance.SetSurfaceState(__instance._stateIndex);
@@ -397,7 +397,7 @@ public class QuantumPatches : QSBPatch
 				if (__instance._stateIndex != 5)
 				{
 					__instance._isPlayerInside = false;
-					if (!__instance.IsLockedByProbeSnapshot() && !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, true).Item1)
+					if (!__instance.IsLockedByProbeSnapshot() && !QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, true).FoundPlayers)
 					{
 						__instance.Collapse(true);
 					}

@@ -53,7 +53,7 @@ public class SolanumPatches : QSBPatch
 
 		//var heldItem = Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItem();
 		//var holdingConversationStone = heldItem != null && heldItem is NomaiConversationStone;
-		var holdingConversationStone = QSBPlayerManager.GetPlayerCarryItems().Any(x => x.Item2 != null && x.Item2.GetItemType() == ItemType.ConversationStone);
+		var holdingConversationStone = QSBPlayerManager.GetPlayerCarryItems().Any(x => x.HeldItem != null && x.HeldItem.GetItemType() == ItemType.ConversationStone);
 
 		switch (__instance._state)
 		{

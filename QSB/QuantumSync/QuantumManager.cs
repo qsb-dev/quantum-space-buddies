@@ -6,7 +6,6 @@ using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -70,23 +69,23 @@ internal class QuantumManager : WorldObjectManager
 		}
 	}
 
-	public static Tuple<bool, List<PlayerInfo>> IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
+	public static (bool FoundPlayers, List<PlayerInfo> PlayersWhoCanSee) IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 	{
 		if (!QSBWorldSync.AllObjectsReady)
 		{
-			return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
+			return (false, new List<PlayerInfo>());
 		}
 
 		var playersWithCameras = QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera);
 		if (playersWithCameras.Count == 0)
 		{
 			DebugLog.ToConsole($"Warning - Could not find any players with cameras!", MessageType.Warning);
-			return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
+			return (false, new List<PlayerInfo>());
 		}
 
 		if (!tracker.gameObject.activeInHierarchy)
 		{
-			return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
+			return (false, new List<PlayerInfo>());
 		}
 
 		var playersWhoCanSee = new List<PlayerInfo>();
@@ -107,12 +106,12 @@ internal class QuantumManager : WorldObjectManager
 			}
 		}
 
-		return new Tuple<bool, List<PlayerInfo>>(foundPlayers, playersWhoCanSee);
+		return (foundPlayers, playersWhoCanSee);
 	}
 
 	public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera) =>
 		tracker.gameObject.activeInHierarchy
-		&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).Item1
+		&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).FoundPlayers
 		&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 			.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
 

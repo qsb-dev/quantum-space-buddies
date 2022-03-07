@@ -84,8 +84,8 @@ public static class QSBPlayerManager
 		return cameraList;
 	}
 
-	public static Tuple<Flashlight, IEnumerable<QSBFlashlight>> GetPlayerFlashlights()
-		=> new(Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
+	public static (Flashlight LocalFlashlight, IEnumerable<QSBFlashlight> RemoteFlashlights) GetPlayerFlashlights()
+		=> (Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 
 	public static void ShowAllPlayers()
 		=> PlayerList.ForEach(x => x.SetVisible(true, 2));
@@ -116,6 +116,6 @@ public static class QSBPlayerManager
 		return playerList.MinBy(x => Vector3.Distance(x.Body.transform.position, worldPoint));
 	}
 
-	public static IEnumerable<Tuple<PlayerInfo, IQSBItem>> GetPlayerCarryItems()
-		=> PlayerList.Select(x => new Tuple<PlayerInfo, IQSBItem>(x, x.HeldItem));
+	public static IEnumerable<(PlayerInfo Player, IQSBItem HeldItem)> GetPlayerCarryItems()
+		=> PlayerList.Select(x => (x, x.HeldItem));
 }
