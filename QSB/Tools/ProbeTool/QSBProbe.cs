@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool;
 
-public class QSBProbe : MonoBehaviour
+public class QSBProbe : MonoBehaviour, ILightSource
 {
 	public delegate void SurveyorProbeEvent();
 	public delegate void RetrieveEvent(float retrieveLength);
@@ -168,4 +168,7 @@ public class QSBProbe : MonoBehaviour
 
 		return false;
 	}
+
+	public LightSourceType GetLightSourceType() => LightSourceType.PROBE;
+	public OWLight2[] GetLights() => _illuminationCheckLights;
 }
