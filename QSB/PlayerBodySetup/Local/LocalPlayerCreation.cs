@@ -29,6 +29,7 @@ public static class LocalPlayerCreation
 		var playerModel = playerBody.Find("Traveller_HEA_Player_v2");
 		player.AnimationSync.InitLocal(playerModel);
 		player.Body = playerBody.gameObject;
+		player.ThrusterLightTracker = player.Body.GetComponentInChildren<ThrusterLightTracker>();
 
 		// camera
 		var cameraBody = Locator.GetPlayerCamera().gameObject.transform;

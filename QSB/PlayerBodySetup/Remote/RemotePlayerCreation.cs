@@ -53,6 +53,7 @@ public static class RemotePlayerCreation
 		DebugLog.DebugWrite($"SET UP PLAYER BODY");
 
 		player.Body = REMOTE_Player_Body;
+		player.ThrusterLightTracker = player.Body.GetComponentInChildren<ThrusterLightTracker>();
 
 		player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
 

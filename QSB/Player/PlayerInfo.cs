@@ -94,6 +94,8 @@ public class PlayerInfo
 	}
 	private GameObject _body;
 
+	public ThrusterLightTracker ThrusterLightTracker;
+
 	public GameObject RoastingStick { get; set; }
 
 	// Tools

@@ -68,8 +68,6 @@ public class QuantumVisibilityPatches : QSBPatch
 		var point = __instance.transform.TransformPoint(__instance._localIlluminationOffset);
 		var (localFlashlight, playerFlashlights) = QSBPlayerManager.GetPlayerFlashlights();
 
-		var (localProbe, playerProbes) = QSBPlayerManager.GetPlayerProbes();
-
 		if (localFlashlight.CheckIlluminationAtPoint(point, __instance._illuminationRadius))
 		{
 			__result = true;
@@ -81,6 +79,8 @@ public class QuantumVisibilityPatches : QSBPatch
 			__result = true;
 			return false;
 		}
+
+		var (localProbe, playerProbes) = QSBPlayerManager.GetPlayerProbes();
 
 		if (localProbe != null
 			&& localProbe.IsLaunched()
@@ -97,7 +97,8 @@ public class QuantumVisibilityPatches : QSBPatch
 		}
 
 		// BUG : Implement checking for other player's thrusters!
-		if (Locator.GetThrusterLightTracker().CheckIlluminationAtPoint(point, __instance._illuminationRadius))
+		if (QSBPlayerManager.GetThrusterLightTrackers()
+			.Any(x => x.CheckIlluminationAtPoint(point, __instance._illuminationRadius)))
 		{
 			__result = true;
 			return false;

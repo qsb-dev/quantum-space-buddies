@@ -89,7 +89,10 @@ public static class QSBPlayerManager
 		=> (Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 
 	public static (SurveyorProbe LocalProbe, IEnumerable<QSBProbe> RemoteProbes) GetPlayerProbes()
-		=> new(Locator.GetProbe(), PlayerList.Where(x => x.Probe != null).Select(x => x.Probe));
+		=> (Locator.GetProbe(), PlayerList.Where(x => x.Probe != null).Select(x => x.Probe));
+
+	public static IEnumerable<ThrusterLightTracker> GetThrusterLightTrackers()
+		=> PlayerList.Select(x => x.ThrusterLightTracker).Where(x => x != null);
 
 	public static void ShowAllPlayers()
 		=> PlayerList.ForEach(x => x.SetVisible(true, 2));
