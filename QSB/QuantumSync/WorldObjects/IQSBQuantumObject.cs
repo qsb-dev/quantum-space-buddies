@@ -11,4 +11,5 @@ public interface IQSBQuantumObject : IWorldObject
 	List<Shape> GetAttachedShapes();
 
 	void SetIsQuantum(bool isQuantum);
+	VisibilityObject GetVisibilityObject();
 }

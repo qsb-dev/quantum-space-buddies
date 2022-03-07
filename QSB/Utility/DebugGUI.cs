@@ -224,6 +224,14 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			foreach (var quantumObject in ownedQuantumObjects)
 			{
 				WriteLine(4, $"{quantumObject.Name} ({quantumObject.ObjectId})");
+				WriteLine(4, $" - IsIlluminated{quantumObject.GetVisibilityObject().IsIlluminated()}");
+				WriteLine(4, $" - IsVisible{quantumObject.GetVisibilityObject().IsVisible()}");
+				foreach (var tracker in quantumObject.GetVisibilityObject()._visibilityTrackers)
+				{
+					WriteLine(4, $" - {tracker.name}");
+					WriteLine(4, $"    - IsVisible:{tracker.IsVisible()}");
+					WriteLine(4, $"    - IsVisibleUsingCameraFrustum:{tracker.IsVisibleUsingCameraFrustum()}");
+				}
 			}
 		}
 

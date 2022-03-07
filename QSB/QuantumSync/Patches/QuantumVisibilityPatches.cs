@@ -68,22 +68,31 @@ public class QuantumVisibilityPatches : QSBPatch
 		var point = __instance.transform.TransformPoint(__instance._localIlluminationOffset);
 		var (localFlashlight, playerFlashlights) = QSBPlayerManager.GetPlayerFlashlights();
 
-		// local player flashlight
+		var tupleProbes = QSBPlayerManager.GetPlayerProbes();
+		var localProbe = tupleProbes.Item1;
+		var playerProbes = tupleProbes.Item2;
+
 		if (localFlashlight.CheckIlluminationAtPoint(point, __instance._illuminationRadius))
 		{
 			__result = true;
 			return false;
 		}
 
-		// all other player flashlights
 		if (playerFlashlights.Any(x => x.CheckIlluminationAtPoint(point, __instance._illuminationRadius)))
 		{
 			__result = true;
 			return false;
 		}
 
-		// BUG : Implement checking for other probes!
-		if (Locator.GetProbe() != null && Locator.GetProbe().IsLaunched() && Locator.GetProbe().CheckIlluminationAtPoint(point, __instance._illuminationRadius))
+		if (localProbe != null
+			&& localProbe.IsLaunched()
+			&& localProbe.CheckIlluminationAtPoint(point, __instance._illuminationRadius))
+		{
+			__result = true;
+			return false;
+		}
+
+		if (playerProbes.Any(x => x.IsLaunched() && x.CheckIlluminationAtPoint(point, __instance._illuminationRadius)))
 		{
 			__result = true;
 			return false;
