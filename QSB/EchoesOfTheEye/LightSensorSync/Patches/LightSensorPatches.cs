@@ -70,7 +70,7 @@ internal class LightSensorPatches : QSBPatch
 						}
 					case LightSourceType.FLASHLIGHT:
 						{
-							if (source is Flashlight light && light == Locator.GetFlashlight())
+							if (Locator.GetFlashlight() == source as Flashlight)
 							{
 								var position = Locator.GetPlayerCamera().transform.position;
 								var to = __instance.transform.position - position;
