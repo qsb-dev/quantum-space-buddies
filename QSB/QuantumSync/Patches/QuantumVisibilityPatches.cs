@@ -96,7 +96,6 @@ public class QuantumVisibilityPatches : QSBPatch
 			return false;
 		}
 
-		// BUG : Implement checking for other player's thrusters!
 		if (QSBPlayerManager.GetThrusterLightTrackers()
 			.Any(x => x.CheckIlluminationAtPoint(point, __instance._illuminationRadius)))
 		{
