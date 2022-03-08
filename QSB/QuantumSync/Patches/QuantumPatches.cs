@@ -48,8 +48,6 @@ public class QuantumPatches : QSBPatch
 		ref bool __result,
 		bool skipInstantVisibilityCheck)
 	{
-		DebugLog.DebugWrite($"SocketedQuantumObject {__instance.name} - ChangeQuantumState");
-
 		if (QSBWorldSync.AllObjectsReady)
 		{
 			var socketedWorldObject = __instance.GetWorldObject<QSBSocketedQuantumObject>();
