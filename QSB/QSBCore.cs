@@ -10,6 +10,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -68,15 +69,19 @@ public class QSBCore : ModBehaviour
 		if (DebugSettings.HookDebugLogs)
 		{
 			Application.logMessageReceived += (condition, stackTrace, logType) =>
-				DebugLog.DebugWrite($"[Debug] {condition}\nStacktrace: {stackTrace}", logType switch
-				{
-					LogType.Error => MessageType.Error,
-					LogType.Assert => MessageType.Error,
-					LogType.Warning => MessageType.Warning,
-					LogType.Log => MessageType.Message,
-					LogType.Exception => MessageType.Error,
-					_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
-				});
+				DebugLog.ToConsole(
+					$"[Debug] {condition}" +
+					(stackTrace != string.Empty ? $"\nStacktrace: {stackTrace}" : string.Empty),
+					logType switch
+					{
+						LogType.Error => MessageType.Error,
+						LogType.Assert => MessageType.Error,
+						LogType.Warning => MessageType.Warning,
+						LogType.Log => MessageType.Message,
+						LogType.Exception => MessageType.Error,
+						_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
+					}
+				);
 		}
 
 		InitializeAssemblies();
