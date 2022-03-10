@@ -58,16 +58,10 @@
       <_Files Include="$(GameDllsDir)\Mono.Cecil.dll" />
       <_Files Include="$(GameDllsDir)\OWML*.dll" />
       <_Files Include="$(GameDllsDir)\NAudio-Unity.dll" />
+      <_Files Include="$(GameDllsDir)\com.rlabrecque.steamworks.net.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(_Files)" DestinationFolder="$(UnityDllsDir)" />
   </Target>
-
-	<Target Name="Copy Steam DLL to Unity" AfterTargets="PostBuildEvent" Condition="Exists('$(GameDllsDir)\com.rlabrecque.steamworks.net.dll')">
-		<ItemGroup>
-			<_Files Include="$(GameDllsDir)\com.rlabrecque.steamworks.net.dll"/>
-		</ItemGroup>
-		<Copy SourceFiles="@(_Files)" DestinationFolder="$(UnityDllsDir)" />
-	</Target>
 
   <ItemGroup>
     <None Include="default-config.json">
