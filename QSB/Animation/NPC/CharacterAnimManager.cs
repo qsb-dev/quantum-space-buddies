@@ -7,7 +7,6 @@ namespace QSB.Animation.NPC;
 
 internal class CharacterAnimManager : WorldObjectManager
 {
-	// im assuming this is used in the eye as well
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
