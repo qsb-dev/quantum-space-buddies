@@ -7,8 +7,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 
 internal class LightSensorManager : WorldObjectManager
 {
-	// see AirlockManager question
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) => QSBWorldSync.Init<QSBLightSensor, SingleLightSensor>();
 }
