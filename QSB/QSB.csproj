@@ -58,7 +58,7 @@
       <_Files Include="$(GameDllsDir)\Mono.Cecil.dll" />
       <_Files Include="$(GameDllsDir)\OWML*.dll" />
       <_Files Include="$(GameDllsDir)\NAudio-Unity.dll" />
-      <_Files Condition="Exists('$(GameDllsDir)\com.rlabrecque.steamworks.net.dll')" Include="$(GameDllsDir)\com.rlabrecque.steamworks.net.dll" />
+      <_Files Include="$(GameDllsDir)\com.rlabrecque.steamworks.net.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(_Files)" DestinationFolder="$(UnityDllsDir)" />
   </Target>
