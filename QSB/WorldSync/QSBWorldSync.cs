@@ -51,6 +51,11 @@ public static class QSBWorldSync
 
 		foreach (var manager in Managers)
 		{
+			if (manager.DlcOnly && !QSBCore.DLCInstalled)
+			{
+				continue;
+			}
+
 			switch (manager.WorldObjectScene)
 			{
 				case WorldObjectScene.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:

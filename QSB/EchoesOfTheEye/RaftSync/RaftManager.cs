@@ -10,6 +10,7 @@ namespace QSB.EchoesOfTheEye.RaftSync;
 public class RaftManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+	public override bool DlcOnly => true;
 
 	public static readonly List<RaftController> Rafts = new();
 

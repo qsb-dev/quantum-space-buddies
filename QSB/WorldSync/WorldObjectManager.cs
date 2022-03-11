@@ -15,6 +15,7 @@ public enum WorldObjectScene
 public abstract class WorldObjectManager : MonoBehaviour, IAddComponentOnStart
 {
 	public abstract WorldObjectScene WorldObjectScene { get; }
+	public virtual bool DlcOnly => false;
 
 	public abstract UniTask BuildWorldObjects(OWScene scene, CancellationToken ct);
 

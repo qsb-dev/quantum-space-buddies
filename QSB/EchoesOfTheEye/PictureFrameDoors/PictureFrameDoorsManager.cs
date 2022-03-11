@@ -8,6 +8,7 @@ namespace QSB.EchoesOfTheEye.PictureFrameDoors;
 internal class PictureFrameDoorsManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+	public override bool DlcOnly => true;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{

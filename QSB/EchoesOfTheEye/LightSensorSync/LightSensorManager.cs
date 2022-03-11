@@ -8,6 +8,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 internal class LightSensorManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
+	public override bool DlcOnly => true;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) => QSBWorldSync.Init<QSBLightSensor, SingleLightSensor>();
 }
