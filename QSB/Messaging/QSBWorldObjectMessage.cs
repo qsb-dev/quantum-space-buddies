@@ -43,7 +43,7 @@ public abstract class QSBWorldObjectMessage<T> : QSBMessage where T : IWorldObje
 
 public abstract class QSBWorldObjectMessage<T, D> : QSBWorldObjectMessage<T> where T : IWorldObject
 {
-	protected D Data;
+	protected D Data { get; private set; }
 	protected QSBWorldObjectMessage(D data) => Data = data;
 
 	public override void Serialize(NetworkWriter writer)
