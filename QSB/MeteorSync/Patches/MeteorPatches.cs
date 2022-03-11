@@ -23,6 +23,11 @@ public class MeteorServerPatches : QSBPatch
 	[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
 	public static bool MeteorLauncher_FixedUpdate(MeteorLauncher __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		if (__instance._launchedMeteors != null)
 		{
 			for (var i = __instance._launchedMeteors.Count - 1; i >= 0; i--)
