@@ -60,5 +60,10 @@ public class QSBRaft : WorldObject<RaftController>
 	public override void SendInitialState(uint to)
 	{
 		// todo?? SendInitialState
+
+		if (AttachedObject._dock != null)
+		{
+			var qsbRaftCarrier = AttachedObject._dock.GetWorldObject<IQSBRaftCarrier>();
+		}
 	}
 }

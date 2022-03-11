@@ -2,7 +2,7 @@
 
 namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 
-public class QSBRaftDock : WorldObject<RaftDock>
+public class QSBRaftDock : WorldObject<RaftDock>, IQSBRaftCarrier
 {
 	public override void SendInitialState(uint to)
 	{
