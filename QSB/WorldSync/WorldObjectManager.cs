@@ -20,5 +20,5 @@ public abstract class WorldObjectManager : MonoBehaviour, IAddComponentOnStart
 
 	public virtual void UnbuildWorldObjects() { }
 
-	public override string ToString() => GetType().ToString();
+	public override string ToString() => GetType().Name;
 }
