@@ -149,7 +149,7 @@ public class MeteorServerPatches : QSBPatch
 		}
 
 		__instance.GetWorldObject<QSBFragment>()
-			.SendMessage(new FragmentDamageMessage(damage));
+			.SendMessage(new FragmentIntegrityEvent(damage));
 	}
 }
 
