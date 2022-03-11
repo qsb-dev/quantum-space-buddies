@@ -1,17 +1,12 @@
 ﻿using HarmonyLib;
-using QSB.Utility;
-using UnityEngine;
+using QSB.Patches;
 
 namespace QSB.Player;
 
 [HarmonyPatch(typeof(PlayerAttachPoint))]
-internal class PlayerAttachWatcher : MonoBehaviour, IAddComponentOnStart
+internal class PlayerAttachWatcher : QSBPatch
 {
-	private void Awake()
-	{
-		Harmony.CreateAndPatchAll(typeof(PlayerAttachWatcher));
-		Destroy(this);
-	}
+	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 
 	public static PlayerAttachPoint Current { get; private set; }
 

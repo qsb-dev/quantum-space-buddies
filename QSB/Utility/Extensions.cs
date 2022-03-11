@@ -156,8 +156,6 @@ public static class Extensions
 		return y;
 	}
 
-    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> source) => source ?? Enumerable.Empty<T>();
-
 	public static bool IsInRange<T>(this IList<T> list, int index) => index >= 0 && index < list.Count;
 
 	public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)

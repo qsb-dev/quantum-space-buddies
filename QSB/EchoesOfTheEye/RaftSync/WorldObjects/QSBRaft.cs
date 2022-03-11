@@ -2,7 +2,9 @@
 using Mirror;
 using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
+using QSB.EchoesOfTheEye.RaftSync.Messages;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
+using QSB.Messaging;
 using QSB.WorldSync;
 using System.Linq;
 using System.Threading;
@@ -17,6 +19,8 @@ public class QSBRaft : WorldObject<RaftController>
 	public RaftTransformSync TransformSync;
 
 	private QSBLightSensor[] _lightSensors;
+
+	private readonly CancellationTokenSource _cts = new();
 
 	public override async UniTask Init(CancellationToken ct)
 	{
@@ -47,6 +51,8 @@ public class QSBRaft : WorldObject<RaftController>
 		{
 			lightSensor.OnDetectLocalLight -= OnDetectLocalLight;
 		}
+
+		_cts.Cancel();
 	}
 
 	private void OnDetectLocalLight()
@@ -57,8 +63,26 @@ public class QSBRaft : WorldObject<RaftController>
 		}
 	}
 
-	public override void SendInitialState(uint to)
+	public override void SendInitialState(uint to) =>
+		this.SendMessage(new RaftSetDockMessage(AttachedObject._dock));
+
+	public async UniTaskVoid SetDock(IQSBRaftCarrier qsbRaftCarrier)
 	{
-		// todo?? SendInitialState
+		if (qsbRaftCarrier?.AttachedObject == AttachedObject._dock)
+		{
+			return;
+		}
+
+		// undock from current dock
+		if (AttachedObject._dock != null)
+		{
+			await AttachedObject._dock.GetWorldObject<IQSBRaftCarrier>().Undock(_cts.Token);
+		}
+
+		// dock to new dock
+		if (qsbRaftCarrier != null)
+		{
+			await qsbRaftCarrier.Dock(this, _cts.Token);
+		}
 	}
 }

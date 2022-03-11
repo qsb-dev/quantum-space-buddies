@@ -17,6 +17,9 @@ public class DebugSettings
 	[JsonProperty("hookDebugLogs")]
 	public bool HookDebugLogs;
 
+	[JsonProperty("avoidTimeSync")]
+	public bool AvoidTimeSync;
+
 	[JsonProperty("debugMode")]
 	public bool DebugMode;
 
@@ -35,10 +38,6 @@ public class DebugSettings
 	[JsonProperty("drawQuantumVisibilityObjects")]
 	private bool _drawQuantumVisibilityObjects;
 	public bool DrawQuantumVisibilityObjects => DebugMode && _drawQuantumVisibilityObjects;
-
-	[JsonProperty("avoidTimeSync")]
-	private bool _avoidTimeSync;
-	public bool AvoidTimeSync => DebugMode && _avoidTimeSync;
 
 	[JsonProperty("skipTitleScreen")]
 	private bool _skipTitleScreen;
