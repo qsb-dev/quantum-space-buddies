@@ -46,6 +46,7 @@ public abstract class QSBMessage
 public abstract class QSBMessage<D> : QSBMessage
 {
 	protected D Data;
+	protected QSBMessage(D data) => Data = data;
 
 	public override void Serialize(NetworkWriter writer)
 	{
