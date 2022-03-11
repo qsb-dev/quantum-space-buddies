@@ -10,5 +10,5 @@ public class RaftSetDockMessage : QSBWorldObjectMessage<QSBRaft, int>
 		base(raftCarrier != null ? raftCarrier.GetWorldObject<IQSBRaftCarrier>().ObjectId : -1) { }
 
 	public override void OnReceiveRemote() =>
-		WorldObject.SetDock(Data != -1 ? Data.GetWorldObject<IQSBRaftCarrier>() : null);
+		WorldObject.SetDock(Data != -1 ? Data.GetWorldObject<IQSBRaftCarrier>() : null).Forget();
 }
