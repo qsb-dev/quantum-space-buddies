@@ -1,11 +1,9 @@
 ﻿using HarmonyLib;
 using OWML.Common;
-using QSB.ClientServerStateSync;
 using QSB.Messaging;
 using QSB.MeteorSync.Messages;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
-using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
@@ -219,79 +217,4 @@ public class MeteorPatches : QSBPatch
 			DebugLog.ToConsole($"DebrisLeash.Init called for {qsbFragment} before LeashLength was set", MessageType.Warning);
 		}
 	}
-
-	#region nre bug hunting
-
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.OnDestroy))]
-	public static void MeteorController_OnDestroy(MeteorController __instance)
-	{
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return;
-		}
-
-		if (QSBPlayerManager.LocalPlayer.State != ClientState.AliveInSolarSystem)
-		{
-			return;
-		}
-
-		var qsbMeteor = __instance.GetWorldObject<QSBMeteor>();
-		DebugLog.DebugWrite($"{qsbMeteor} destroyed!!!!!", MessageType.Error);
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(BlackHoleVolume), nameof(BlackHoleVolume.Vanish))]
-	public static bool BlackHoleVolume_Vanish(BlackHoleVolume __instance,
-		OWRigidbody bodyToVanish, RelativeLocationData entryLocation)
-	{
-		if (__instance._audioSector.ContainsOccupant(DynamicOccupant.Player))
-		{
-			__instance._emissionSource.PlayOneShot(AudioType.BH_BlackHoleEmission);
-		}
-
-		if (__instance._singularityController != null)
-		{
-			__instance._singularityController.PlayEntryAudio();
-		}
-
-		var component = bodyToVanish.GetComponent<MeteorController>();
-		if (component != null && (__instance._whiteHole == null || Random.value > 0.1f))
-		{
-			component.transform.localScale = Vector3.one;
-			component.Suspend();
-			DebugLog.DebugWrite($"{component.GetWorldObject<QSBMeteor>()} - suspended");
-			return false;
-		}
-
-		if (__instance._whiteHole == null || bodyToVanish.GetMass() < 0.05f)
-		{
-			if (component != null)
-			{
-				DebugLog.DebugWrite($"{component.GetWorldObject<QSBMeteor>()} - DESTROY", MessageType.Error);
-			}
-			else
-			{
-				DebugLog.DebugWrite($"{bodyToVanish.name} - destroy");
-			}
-
-			Object.Destroy(bodyToVanish.gameObject);
-			return false;
-		}
-
-		if (component != null)
-		{
-			DebugLog.DebugWrite($"{component.GetWorldObject<QSBMeteor>()} - move to white hole");
-		}
-		else
-		{
-			DebugLog.DebugWrite($"{bodyToVanish.name} - move to white hole");
-		}
-
-		__instance._whiteHole.ReceiveWarpedBody(bodyToVanish, entryLocation);
-
-		return false;
-	}
-
-	#endregion
 }
