@@ -65,7 +65,7 @@ public class RaftPatches : QSBPatch
 	{
 		if (__instance._state == RaftCarrier.DockState.ResettingHook)
 		{
-			new StopLiftingRaftMessage().Send();
+			new StopLiftingRaftMessage(false).Send();
 		}
 	}
 
@@ -75,7 +75,7 @@ public class RaftPatches : QSBPatch
 	{
 		if (__instance._raft != null)
 		{
-			new StopLiftingRaftMessage().Send();
+			new StopLiftingRaftMessage(true).Send();
 		}
 	}
 }

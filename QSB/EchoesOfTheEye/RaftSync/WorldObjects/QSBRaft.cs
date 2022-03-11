@@ -94,7 +94,7 @@ public class QSBRaft : WorldObject<RaftController>
 		// dock to new dock
 		if (qsbRaftDock != null)
 		{
-			qsbRaftDock.SendMessage(new DockRaftMessage(this));
+			qsbRaftDock.Dock(this);
 			await UniTask.WaitUntil(() => AttachedObject._dock == qsbRaftDock.AttachedObject, cancellationToken: ct);
 		}
 	}
