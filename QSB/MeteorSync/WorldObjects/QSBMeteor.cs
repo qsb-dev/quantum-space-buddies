@@ -1,10 +1,21 @@
-﻿using QSB.WorldSync;
+﻿using Cysharp.Threading.Tasks;
+using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.MeteorSync.WorldObjects;
 
 public class QSBMeteor : WorldObject<MeteorController>
 {
+	private QSBMeteorLauncher _qsbMeteorLauncher;
+
+	public override async UniTask Init(CancellationToken ct)
+	{
+		var meteorLauncher = AttachedObject._suspendRoot.GetComponent<MeteorLauncher>();
+		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
+		_qsbMeteorLauncher = meteorLauncher.GetWorldObject<QSBMeteorLauncher>();
+	}
+
 	public override void SendInitialState(uint to)
 	{
 		// todo SendInitialState

@@ -29,7 +29,9 @@ public class QSBFragment : WorldObject<FragmentIntegrity>
 	public OWRigidbody RefBody => IsThruWhiteHole ? MeteorManager.WhiteHoleVolume._whiteHoleBody : Locator._brittleHollow._owRigidbody;
 	public OWRigidbody Body => IsDetached ? AttachedObject.transform.parent.parent.GetAttachedOWRigidbody() : null;
 
+	/// <summary>
 	/// what the leash length will be when we eventually detach and fall thru white hole
+	/// </summary>
 	public float LeashLength;
 
 	public void AddDamage(float damage)

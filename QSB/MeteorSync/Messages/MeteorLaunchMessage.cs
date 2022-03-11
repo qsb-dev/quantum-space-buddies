@@ -1,33 +1,18 @@
-﻿using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.MeteorSync.WorldObjects;
+using QSB.WorldSync;
 
 namespace QSB.MeteorSync.Messages;
 
-public class MeteorLaunchMessage : QSBWorldObjectMessage<QSBMeteorLauncher>
+public class MeteorLaunchMessage : QSBWorldObjectMessage<QSBMeteorLauncher, (int MeteorId, float LaunchSpeed)>
 {
-	private int MeteorId;
-	private float LaunchSpeed;
+	public MeteorLaunchMessage(MeteorController meteor, float launchSpeed) : base((
+		meteor.GetWorldObject<QSBMeteor>().ObjectId,
+		launchSpeed
+	)) { }
 
-	public MeteorLaunchMessage(QSBMeteorLauncher qsbMeteorLauncher)
-	{
-		MeteorId = qsbMeteorLauncher.MeteorId;
-		LaunchSpeed = qsbMeteorLauncher.LaunchSpeed;
-	}
-
-	public override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(MeteorId);
-		writer.Write(LaunchSpeed);
-	}
-
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		MeteorId = reader.Read<int>();
-		LaunchSpeed = reader.Read<float>();
-	}
-
-	public override void OnReceiveRemote() => WorldObject.LaunchMeteor(MeteorId, LaunchSpeed);
+	public override void OnReceiveRemote() => WorldObject.LaunchMeteor(
+		Data.MeteorId.GetWorldObject<QSBMeteor>().AttachedObject,
+		Data.LaunchSpeed
+	);
 }
