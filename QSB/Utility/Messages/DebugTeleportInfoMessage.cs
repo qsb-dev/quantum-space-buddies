@@ -71,8 +71,10 @@ public class DebugTeleportInfoMessage : QSBMessage
 		var refBody = qsbSector.AttachedObject.GetOWRigidbody();
 
 		var pos = refBody.transform.FromRelPos(RelPos);
-		body.SetPosition(pos);
-		body.SetRotation(refBody.transform.FromRelRot(RelRot));
+		body.WarpToPositionRotation(
+			pos,
+			refBody.transform.FromRelRot(RelRot)
+		);
 		Locator.GetPlayerCameraController().SetDegreesY(DegreesY);
 		body.SetVelocity(refBody.FromRelVel(RelVel, pos));
 		body.SetAngularVelocity(refBody.FromRelAngVel(RelAngVel));
