@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.Utility;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -13,8 +13,7 @@ public class QSBMeteorLauncher : WorldObject<MeteorLauncher>
 
 	public override async UniTask Init(CancellationToken ct)
 	{
-		var meteors = (AttachedObject._meteorPool ?? new List<MeteorController>())
-			.Concat(AttachedObject._dynamicMeteorPool ?? new List<MeteorController>());
+		var meteors = AttachedObject._meteorPool.EmptyIfNull().Concat(AttachedObject._dynamicMeteorPool.EmptyIfNull());
 		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
 		_qsbMeteors = meteors.Select(x => x.GetWorldObject<QSBMeteor>()).ToArray();
 	}
@@ -32,13 +31,13 @@ public class QSBMeteorLauncher : WorldObject<MeteorLauncher>
 		}
 	}
 
-	public void LaunchMeteor(MeteorController meteorController, float launchSpeed)
+	public void LaunchMeteor(MeteorController meteor, float launchSpeed)
 	{
-		meteorController.Initialize(AttachedObject.transform, AttachedObject._detectableField, AttachedObject._detectableFluid);
+		meteor.Initialize(AttachedObject.transform, AttachedObject._detectableField, AttachedObject._detectableFluid);
 
 		var linearVelocity = AttachedObject._parentBody.GetPointVelocity(AttachedObject.transform.position) + AttachedObject.transform.TransformDirection(AttachedObject._launchDirection) * launchSpeed;
 		var angularVelocity = AttachedObject.transform.forward * 2f;
-		meteorController.Launch(null, AttachedObject.transform.position, AttachedObject.transform.rotation, linearVelocity, angularVelocity);
+		meteor.Launch(null, AttachedObject.transform.position, AttachedObject.transform.rotation, linearVelocity, angularVelocity);
 		if (AttachedObject._audioSector.ContainsOccupant(DynamicOccupant.Player))
 		{
 			AttachedObject._launchSource.pitch = Random.Range(0.4f, 0.6f);

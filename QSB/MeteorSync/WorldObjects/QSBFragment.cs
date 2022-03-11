@@ -14,6 +14,7 @@ public class QSBFragment : WorldObject<FragmentIntegrity>
 		if (QSBCore.IsHost)
 		{
 			LeashLength = Random.Range(MeteorManager.WhiteHoleVolume._debrisDistMin, MeteorManager.WhiteHoleVolume._debrisDistMax);
+			// SetIntegrity(0);
 		}
 	}
 
