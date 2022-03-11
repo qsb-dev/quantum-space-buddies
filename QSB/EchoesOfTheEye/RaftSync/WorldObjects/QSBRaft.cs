@@ -67,7 +67,7 @@ public class QSBRaft : WorldObject<RaftController>
 	{
 		if (RaftManager.DamRaftLift._raft == AttachedObject)
 		{
-			// todo dam raft lift
+			new StartLiftingRaftMessage(this).Send();
 		}
 		else
 		{

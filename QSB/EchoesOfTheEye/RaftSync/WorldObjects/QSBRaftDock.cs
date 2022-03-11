@@ -28,5 +28,5 @@ public class QSBRaftDock : WorldObject<RaftDock>
 		}
 	}
 
-	public void Dock(QSBRaft qsbRaft) { }
+	public void Dock(RaftController raft) { }
 }

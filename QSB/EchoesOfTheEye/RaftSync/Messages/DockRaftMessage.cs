@@ -4,8 +4,11 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.RaftSync.Messages;
 
-public class RaftDockMessage : QSBWorldObjectMessage<QSBRaftDock, int>
+public class DockRaftMessage : QSBWorldObjectMessage<QSBRaftDock, int>
 {
-	public RaftDockMessage(QSBRaft qsbRaft) : base(qsbRaft.ObjectId) { }
-	public override void OnReceiveRemote() => WorldObject.Dock(Data.GetWorldObject<QSBRaft>());
+	public DockRaftMessage(RaftController raft) :
+		base(raft.GetWorldObject<QSBRaft>().ObjectId) { }
+
+	public override void OnReceiveRemote() =>
+		WorldObject.Dock(Data.GetWorldObject<QSBRaft>().AttachedObject);
 }
