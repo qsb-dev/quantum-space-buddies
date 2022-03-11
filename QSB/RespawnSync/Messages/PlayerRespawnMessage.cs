@@ -6,7 +6,7 @@ namespace QSB.RespawnSync.Messages;
 
 internal class PlayerRespawnMessage : QSBMessage<uint>
 {
-	public PlayerRespawnMessage(uint playerId) => Data = playerId;
+	public PlayerRespawnMessage(uint playerId) : base(playerId) { }
 
 	public override void OnReceiveLocal() => OnReceiveRemote();
 

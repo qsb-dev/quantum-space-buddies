@@ -20,7 +20,7 @@ internal class EyeStateMessage : QSBMessage<EyeState>
 		}
 	}
 
-	private EyeStateMessage(EyeState state) => Data = state;
+	private EyeStateMessage(EyeState state) : base(state) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

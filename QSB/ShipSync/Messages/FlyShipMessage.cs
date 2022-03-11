@@ -24,7 +24,7 @@ internal class FlyShipMessage : QSBMessage<bool>
 		}
 	}
 
-	private FlyShipMessage(bool flying) => Data = flying;
+	private FlyShipMessage(bool flying) : base(flying) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

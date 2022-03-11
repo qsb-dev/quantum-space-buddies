@@ -20,7 +20,7 @@ public class PlayerTranslatorMessage : QSBMessage<bool>
 		}
 	}
 
-	private PlayerTranslatorMessage(bool equipped) => Data = equipped;
+	private PlayerTranslatorMessage(bool equipped) : base(equipped) { }
 
 	public override void OnReceiveRemote()
 	{

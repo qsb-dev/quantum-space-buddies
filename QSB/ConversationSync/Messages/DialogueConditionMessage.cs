@@ -5,11 +5,7 @@ namespace QSB.ConversationSync.Messages;
 
 public class DialogueConditionMessage : QSBMessage<(string Name, bool State)>
 {
-	public DialogueConditionMessage(string name, bool state)
-	{
-		Data.Name = name;
-		Data.State = state;
-	}
+	public DialogueConditionMessage(string name, bool state) : base((name, state)) { }
 
 	public override void OnReceiveRemote()
 	{

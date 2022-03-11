@@ -32,11 +32,8 @@ internal class EnterLeaveMessage : QSBMessage<EnterLeaveType>
 
 	private int ObjectId;
 
-	public EnterLeaveMessage(EnterLeaveType type, int objectId = -1)
-	{
-		Data = type;
+	public EnterLeaveMessage(EnterLeaveType type, int objectId = -1) : base(type) =>
 		ObjectId = objectId;
-	}
 
 	public override void Serialize(NetworkWriter writer)
 	{

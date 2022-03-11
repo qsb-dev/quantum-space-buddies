@@ -12,11 +12,8 @@ internal class PlayerKickMessage : QSBMessage<KickReason>
 {
 	private uint PlayerId;
 
-	public PlayerKickMessage(uint playerId, KickReason reason)
-	{
+	public PlayerKickMessage(uint playerId, KickReason reason) : base(reason) =>
 		PlayerId = playerId;
-		Data = reason;
-	}
 
 	public override void Serialize(NetworkWriter writer)
 	{

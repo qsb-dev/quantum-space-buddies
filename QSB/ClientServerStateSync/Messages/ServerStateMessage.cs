@@ -7,7 +7,7 @@ namespace QSB.ClientServerStateSync.Messages;
 /// </summary>
 internal class ServerStateMessage : QSBMessage<ServerState>
 {
-	public ServerStateMessage(ServerState state) => Data = state;
+	public ServerStateMessage(ServerState state) : base(state) { }
 
 	public override void OnReceiveLocal() => OnReceiveRemote();
 	public override void OnReceiveRemote()

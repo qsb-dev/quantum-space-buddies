@@ -10,7 +10,7 @@ namespace QSB.RoastingSync.Messages;
 
 internal class MarshmallowEventMessage : QSBMessage<MarshmallowMessageType>
 {
-	public MarshmallowEventMessage(MarshmallowMessageType type) => Data = type;
+	public MarshmallowEventMessage(MarshmallowMessageType type) : base(type) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

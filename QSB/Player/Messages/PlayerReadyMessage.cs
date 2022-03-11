@@ -6,7 +6,7 @@ namespace QSB.Player.Messages;
 
 public class PlayerReadyMessage : QSBMessage<bool>
 {
-	public PlayerReadyMessage(bool ready) => Data = ready;
+	public PlayerReadyMessage(bool ready) : base(ready) { }
 
 	public override void OnReceiveRemote()
 	{

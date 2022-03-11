@@ -21,7 +21,7 @@ public class PlayerSuitMessage : QSBMessage<bool>
 		}
 	}
 
-	public PlayerSuitMessage(bool on) => Data = on;
+	public PlayerSuitMessage(bool on) : base(on) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

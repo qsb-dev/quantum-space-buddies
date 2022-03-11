@@ -5,7 +5,7 @@ namespace QSB.OrbSync.Messages;
 
 public class OrbDragMessage : QSBWorldObjectMessage<QSBOrb, bool>
 {
-	public OrbDragMessage(bool isDragging) => Data = isDragging;
+	public OrbDragMessage(bool isDragging) : base(isDragging) { }
 
 	public override void OnReceiveRemote() => WorldObject.SetDragging(Data);
 }

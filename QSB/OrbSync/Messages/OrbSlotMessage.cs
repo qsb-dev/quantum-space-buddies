@@ -8,11 +8,8 @@ public class OrbSlotMessage : QSBWorldObjectMessage<QSBOrb, int>
 {
 	private bool _playAudio;
 
-	public OrbSlotMessage(int slotIndex, bool playAudio)
-	{
-		Data = slotIndex;
+	public OrbSlotMessage(int slotIndex, bool playAudio) : base(slotIndex) =>
 		_playAudio = playAudio;
-	}
 
 	public override void Serialize(NetworkWriter writer)
 	{

@@ -6,7 +6,7 @@ namespace QSB.TriggerSync.Messages;
 
 public class TriggerMessage : QSBWorldObjectMessage<IQSBTrigger, bool>
 {
-	public TriggerMessage(bool entered) => Data = entered;
+	public TriggerMessage(bool entered) : base(entered) { }
 
 	public override void OnReceiveLocal() => OnReceiveRemote();
 

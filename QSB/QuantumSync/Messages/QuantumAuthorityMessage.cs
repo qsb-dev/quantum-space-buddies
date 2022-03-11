@@ -6,7 +6,7 @@ namespace QSB.QuantumSync.Messages;
 
 public class QuantumAuthorityMessage : QSBWorldObjectMessage<IQSBQuantumObject, uint>
 {
-	public QuantumAuthorityMessage(uint authorityOwner) => Data = authorityOwner;
+	public QuantumAuthorityMessage(uint authorityOwner) : base(authorityOwner) { }
 
 	public override bool ShouldReceive
 	{

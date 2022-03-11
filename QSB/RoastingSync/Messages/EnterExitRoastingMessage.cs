@@ -34,11 +34,8 @@ internal class EnterExitRoastingMessage : QSBMessage<bool>
 
 	private int ObjectId;
 
-	private EnterExitRoastingMessage(int objectId, bool roasting)
-	{
+	private EnterExitRoastingMessage(int objectId, bool roasting) : base(roasting) =>
 		ObjectId = objectId;
-		Data = roasting;
-	}
 
 	public override void Serialize(NetworkWriter writer)
 	{

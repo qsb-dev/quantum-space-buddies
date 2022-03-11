@@ -7,12 +7,8 @@ namespace QSB.EchoesOfTheEye.DreamLantern.Messages;
 
 internal class DreamLanternStateMessage : QSBMessage<(DreamLanternActionType Type, bool BoolValue, float FloatValue)>
 {
-	public DreamLanternStateMessage(DreamLanternActionType actionType, bool state = false, float floatValue = 0f)
-	{
-		Data.Type = actionType;
-		Data.BoolValue = state;
-		Data.FloatValue = floatValue;
-	}
+	public DreamLanternStateMessage(DreamLanternActionType actionType, bool boolValue = false, float floatValue = 0f)
+		: base((actionType, boolValue, floatValue)) { }
 
 	public override void OnReceiveRemote()
 	{

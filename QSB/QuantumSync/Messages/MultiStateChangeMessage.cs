@@ -7,7 +7,7 @@ namespace QSB.QuantumSync.Messages;
 
 internal class MultiStateChangeMessage : QSBWorldObjectMessage<QSBMultiStateQuantumObject, int>
 {
-	public MultiStateChangeMessage(int stateIndex) => Data = stateIndex;
+	public MultiStateChangeMessage(int stateIndex) : base(stateIndex) { }
 
 	public override void OnReceiveRemote()
 	{

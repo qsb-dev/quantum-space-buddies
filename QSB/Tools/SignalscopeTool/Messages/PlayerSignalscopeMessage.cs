@@ -20,7 +20,7 @@ public class PlayerSignalscopeMessage : QSBMessage<bool>
 		}
 	}
 
-	private PlayerSignalscopeMessage(bool equipped) => Data = equipped;
+	private PlayerSignalscopeMessage(bool equipped) : base(equipped) { }
 
 	public override void OnReceiveRemote()
 	{
