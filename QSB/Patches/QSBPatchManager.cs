@@ -55,14 +55,14 @@ public static class QSBPatchManager
 		//DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 		foreach (var patch in _patchList.Where(x => x.Type == type))
 		{
-			//DebugLog.DebugWrite($" - Patching in {patch}", MessageType.Info);
+			//DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
 			try
 			{
 				patch.DoPatches(TypeToInstance[type]);
 			}
 			catch (Exception ex)
 			{
-				DebugLog.ToConsole($"Error while patching {patch} :\r\n{ex}", MessageType.Error);
+				DebugLog.ToConsole($"Error while patching {patch.GetType().Name} :\r\n{ex}", MessageType.Error);
 			}
 		}
 

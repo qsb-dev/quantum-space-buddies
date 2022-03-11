@@ -22,7 +22,7 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 	{
 		if (AttachedObject == null)
 		{
-			DebugLog.ToConsole($"Error - AttachedObject is null! Type:{GetType()}", OWML.Common.MessageType.Error);
+			DebugLog.ToConsole($"Error - AttachedObject is null! Type:{GetType().Name}", OWML.Common.MessageType.Error);
 			return;
 		}
 

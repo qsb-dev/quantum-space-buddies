@@ -203,13 +203,13 @@ public static class QSBWorldSync
 	{
 		if (!WorldObjects.IsInRange(objectId))
 		{
-			DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject)} id {objectId}. Count is {WorldObjects.Count}.", MessageType.Warning);
+			DebugLog.ToConsole($"Warning - Tried to find {typeof(TWorldObject).Name} id {objectId}. Count is {WorldObjects.Count}.", MessageType.Warning);
 			return default;
 		}
 
 		if (WorldObjects[objectId] is not TWorldObject worldObject)
 		{
-			DebugLog.ToConsole($"Error - {typeof(TWorldObject)} id {objectId} is actually {WorldObjects[objectId].GetType()}.", MessageType.Error);
+			DebugLog.ToConsole($"Error - {typeof(TWorldObject).Name} id {objectId} is actually {WorldObjects[objectId].GetType().Name}.", MessageType.Error);
 			return default;
 		}
 
@@ -221,13 +221,13 @@ public static class QSBWorldSync
 	{
 		if (!unityObject)
 		{
-			DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject)}, TUnityObject:NULL, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
+			DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:NULL, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 			return default;
 		}
 
 		if (!UnityObjectsToWorldObjects.TryGetValue(unityObject, out var worldObject))
 		{
-			DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject)}, TUnityObject:{unityObject.GetType()}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
+			DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 			return default;
 		}
 
