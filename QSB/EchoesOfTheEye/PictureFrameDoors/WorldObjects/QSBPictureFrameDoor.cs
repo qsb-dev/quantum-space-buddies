@@ -6,10 +6,10 @@ using UnityEngine;
 namespace QSB.EchoesOfTheEye.PictureFrameDoors.WorldObjects;
 
 public abstract class QSBPictureFrameDoor<T> : WorldObject<T>, IQSBPictureFrameDoor
-	where T : MonoBehaviour
+	where T : PictureFrameDoorInterface
 {
 	public override void SendInitialState(uint to)
-		=> (this as IQSBPictureFrameDoor).SendMessage(new PictureFrameDoorMessage((AttachedObject as PictureFrameDoorInterface)._door.IsOpen()));
+		=> ((IQSBPictureFrameDoor)this).SendMessage(new PictureFrameDoorMessage(AttachedObject._door.IsOpen()));
 
 	public abstract void SetOpenState(bool open);
 }
