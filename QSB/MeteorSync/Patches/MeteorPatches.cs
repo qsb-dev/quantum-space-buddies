@@ -158,36 +158,9 @@ public class MeteorClientPatches : QSBPatch
 		=> false;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
-	public static bool MeteorController_Impact(MeteorController __instance,
-		GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
-	{
-		__instance._intactRenderer.enabled = false;
-		__instance._impactLight.enabled = true;
-		__instance._impactLight.intensity = __instance._impactLightCurve.Evaluate(0f);
-		var rotation = Quaternion.LookRotation(impactVel);
-		foreach (var impactParticle in __instance._impactParticles)
-		{
-			impactParticle.transform.rotation = rotation;
-			impactParticle.Play();
-		}
-
-		__instance._impactSource.PlayOneShot(AudioType.BH_MeteorImpact);
-		foreach (var owCollider in __instance._owColliders)
-		{
-			owCollider.SetActivation(false);
-		}
-
-		__instance._owRigidbody.MakeKinematic();
-		__instance.transform.SetParent(hitObject.GetAttachedOWRigidbody().transform);
-		FragmentSurfaceProxy.UntrackMeteor(__instance);
-		FragmentCollisionProxy.UntrackMeteor(__instance);
-		__instance._ignoringCollisions = false;
-		__instance._hasImpacted = true;
-		__instance._impactTime = Time.time;
-
-		return false;
-	}
+	[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
+	public static bool FragmentIntegrity_AddDamage()
+		=> false;
 }
 
 /// <summary>
