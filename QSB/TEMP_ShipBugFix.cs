@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.Patches;
 using QSB.Utility;
 using UnityEngine;
 
@@ -8,13 +9,9 @@ namespace QSB;
 /// TODO: remove this when the bug is fixed in vanilla
 /// </summary>
 [HarmonyPatch(typeof(StreamingGroup))]
-internal class TEMP_ShipBugFix : MonoBehaviour, IAddComponentOnStart
+internal class TEMP_ShipBugFix : QSBPatch
 {
-	private void Awake()
-	{
-		Harmony.CreateAndPatchAll(typeof(TEMP_ShipBugFix));
-		Destroy(this);
-	}
+	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(StreamingGroup.LoadRequiredColliders))]

@@ -9,6 +9,7 @@ using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using UnityEngine;
 
@@ -125,6 +126,13 @@ public class WakeUpSync : NetworkBehaviour
 			if (!QSBCore.DebugSettings.AvoidTimeSync)
 			{
 				WakeUpOrSleep();
+			}
+			else
+			{
+				if (!_hasWokenUp)
+				{
+					Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
+				}
 			}
 		}
 	}

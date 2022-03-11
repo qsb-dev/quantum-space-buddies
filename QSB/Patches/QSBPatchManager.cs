@@ -24,21 +24,10 @@ public static class QSBPatchManager
 			_patchList.Add((QSBPatch)Activator.CreateInstance(type));
 		}
 
-		TypeToInstance = new Dictionary<QSBPatchTypes, Harmony>
+		foreach (QSBPatchTypes type in Enum.GetValues(typeof(QSBPatchTypes)))
 		{
-			{
-				QSBPatchTypes.OnClientConnect, new Harmony("QSB.Client")
-			},
-			{
-				QSBPatchTypes.OnServerClientConnect, new Harmony("QSB.Server")
-			},
-			{
-				QSBPatchTypes.OnNonServerClientConnect, new Harmony("QSB.NonServer")
-			},
-			{
-				QSBPatchTypes.RespawnTime, new Harmony("QSB.Death")
-			}
-		};
+			TypeToInstance.Add(type, new Harmony(type.ToString()));
+		}
 
 		DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
 	}
