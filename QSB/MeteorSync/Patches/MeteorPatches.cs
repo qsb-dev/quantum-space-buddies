@@ -149,7 +149,7 @@ public class MeteorServerPatches : QSBPatch
 		}
 
 		__instance.GetWorldObject<QSBFragment>()
-			.SendMessage(new FragmentIntegrityEvent(damage));
+			.SendMessage(new FragmentIntegrityEvent(__instance._integrity));
 	}
 }
 
@@ -240,7 +240,7 @@ public class MeteorPatches : QSBPatch
 		var qsbFragment = __instance._detachableFragment._fragmentIntegrity.GetWorldObject<QSBFragment>();
 		if (qsbFragment.LeashLength == null)
 		{
-			DebugLog.ToConsole($"DebrisLeash.Init for {qsbFragment} before LeashLength was set", MessageType.Warning);
+			DebugLog.ToConsole($"DebrisLeash.Init called for {qsbFragment} before LeashLength was set", MessageType.Warning);
 			return;
 		}
 
