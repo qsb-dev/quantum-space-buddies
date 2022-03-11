@@ -40,7 +40,7 @@ public class RaftPatches : QSBPatch
 		if (__instance._state == RaftCarrier.DockState.AligningBelow)
 		{
 			__instance.GetWorldObject<QSBRaftDock>()
-				.SendMessage(new DockRaftMessage(__instance._raft));
+				.SendMessage(new DockRaftMessage(__instance._raft.GetWorldObject<QSBRaft>()));
 		}
 	}
 

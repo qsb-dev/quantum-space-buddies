@@ -75,23 +75,27 @@ public class QSBRaft : WorldObject<RaftController>
 		}
 	}
 
-	public void SetDock(RaftDock raftDock)
+	public async UniTaskVoid SetDock(QSBRaftDock qsbRaftDock)
 	{
-		if (raftDock == AttachedObject._dock)
+		if (qsbRaftDock?.AttachedObject == AttachedObject._dock)
 		{
 			return;
 		}
 
+		var ct = _cts.Token;
+
 		// undock from current dock
 		if (AttachedObject._dock != null)
 		{
-			// todo
+			AttachedObject._dock.GetWorldObject<QSBRaftDock>().Undock();
+			await UniTask.WaitUntil(() => AttachedObject._dock == null, cancellationToken: ct);
 		}
 
 		// dock to new dock
-		if (raftDock != null)
+		if (qsbRaftDock != null)
 		{
-			// todo
+			qsbRaftDock.SendMessage(new DockRaftMessage(this));
+			await UniTask.WaitUntil(() => AttachedObject._dock == qsbRaftDock.AttachedObject, cancellationToken: ct);
 		}
 	}
 }

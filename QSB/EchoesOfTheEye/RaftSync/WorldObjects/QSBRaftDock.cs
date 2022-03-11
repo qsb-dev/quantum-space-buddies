@@ -6,6 +6,11 @@ public class QSBRaftDock : WorldObject<RaftDock>
 {
 	public override void SendInitialState(uint to) { }
 
+	public void Dock(QSBRaft qsbRaft)
+	{
+		// todo
+	}
+
 	public void Undock()
 	{
 		if (AttachedObject._raft != null && AttachedObject._state == RaftCarrier.DockState.Docked)
@@ -27,6 +32,4 @@ public class QSBRaftDock : WorldObject<RaftDock>
 			AttachedObject._gearInterface.PlayFailure();
 		}
 	}
-
-	public void Dock(RaftController raft) { }
 }

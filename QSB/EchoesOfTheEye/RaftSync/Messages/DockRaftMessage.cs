@@ -6,9 +6,9 @@ namespace QSB.EchoesOfTheEye.RaftSync.Messages;
 
 public class DockRaftMessage : QSBWorldObjectMessage<QSBRaftDock, int>
 {
-	public DockRaftMessage(RaftController raft) :
-		base(raft.GetWorldObject<QSBRaft>().ObjectId) { }
+	public DockRaftMessage(QSBRaft qsbRaft) :
+		base(qsbRaft.ObjectId) { }
 
 	public override void OnReceiveRemote() =>
-		WorldObject.Dock(Data.GetWorldObject<QSBRaft>().AttachedObject);
+		WorldObject.Dock(Data.GetWorldObject<QSBRaft>());
 }
