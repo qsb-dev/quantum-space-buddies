@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
+using OWML.Common;
 using QSB.Messaging;
 using QSB.MeteorSync.Messages;
 using QSB.MeteorSync.WorldObjects;
 using QSB.Patches;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -19,11 +21,6 @@ public class MeteorServerPatches : QSBPatch
 	[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
 	public static bool MeteorLauncher_FixedUpdate(MeteorLauncher __instance)
 	{
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return true;
-		}
-
 		if (__instance._launchedMeteors != null)
 		{
 			for (var i = __instance._launchedMeteors.Count - 1; i >= 0; i--)
@@ -231,75 +228,22 @@ public class MeteorPatches : QSBPatch
 	public static void DetachableFragment_Detach_Postfix(DetachableFragment __instance, FragmentIntegrity __state) =>
 		__instance._fragmentIntegrity = __state;
 
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.MoveByDistance))]
-	public static bool DebrisLeash_MoveByDistance(DebrisLeash __instance,
-		float distance)
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.Init))]
+	public static void DebrisLeash_Init(DebrisLeash __instance)
 	{
 		if (__instance._detachableFragment == null || __instance._detachableFragment._fragmentIntegrity == null)
 		{
-			return true;
+			return;
 		}
 
 		var qsbFragment = __instance._detachableFragment._fragmentIntegrity.GetWorldObject<QSBFragment>();
-
-		if (__instance.enabled)
+		if (qsbFragment.LeashLength == null)
 		{
-			var vector = __instance._attachedBody.GetPosition() - __instance._anchorBody.GetPosition();
-			var d = Mathf.Min(distance, qsbFragment.LeashLength - vector.magnitude);
-			__instance._attachedBody.SetPosition(__instance._anchorBody.GetPosition() + vector.normalized * d);
+			DebugLog.ToConsole($"DebrisLeash.Init for {qsbFragment} before LeashLength was set", MessageType.Warning);
+			return;
 		}
 
-		return false;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.FixedUpdate))]
-	public static bool DebrisLeash_FixedUpdate(DebrisLeash __instance)
-	{
-		if (__instance._detachableFragment == null || __instance._detachableFragment._fragmentIntegrity == null)
-		{
-			return true;
-		}
-
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return true;
-		}
-
-		var qsbFragment = __instance._detachableFragment._fragmentIntegrity.GetWorldObject<QSBFragment>();
-
-		if (!__instance._deccelerating)
-		{
-			var num = Vector3.Distance(__instance._attachedBody.GetPosition(), __instance._anchorBody.GetPosition());
-			var num2 = Mathf.Pow(__instance._attachedBody.GetVelocity().magnitude, 2f) / (2f * __instance._deccel);
-			var vector = __instance._attachedBody.GetVelocity() - __instance._anchorBody.GetVelocity();
-			if (num >= qsbFragment.LeashLength - num2 && vector.magnitude > 0.1f)
-			{
-				__instance._deccelerating = true;
-				return false;
-			}
-		}
-		else
-		{
-			var vector2 = __instance._attachedBody.GetVelocity() - __instance._anchorBody.GetVelocity();
-			var velocityChange = -vector2.normalized * Mathf.Min(__instance._deccel * Time.deltaTime, vector2.magnitude);
-			if (velocityChange.magnitude < 0.01f)
-			{
-				__instance._attachedBody.SetVelocity(__instance._anchorBody.GetVelocity());
-				__instance._deccelerating = false;
-				if (__instance._detachableFragment != null)
-				{
-					__instance._detachableFragment.ComeToRest(__instance._anchorBody);
-				}
-
-				__instance.enabled = false;
-				return false;
-			}
-
-			__instance._attachedBody.AddVelocityChange(velocityChange);
-		}
-
-		return false;
+		__instance._leashLength = (float)qsbFragment.LeashLength;
 	}
 }

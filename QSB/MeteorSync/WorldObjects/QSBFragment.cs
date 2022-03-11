@@ -32,7 +32,7 @@ public class QSBFragment : WorldObject<FragmentIntegrity>
 	/// <summary>
 	/// what the leash length will be when we eventually detach and fall thru white hole
 	/// </summary>
-	public float LeashLength;
+	public float? LeashLength;
 
 	public void AddDamage(float damage)
 		=> AttachedObject.AddDamage(damage);
