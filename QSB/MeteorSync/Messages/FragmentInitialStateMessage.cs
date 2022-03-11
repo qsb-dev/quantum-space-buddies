@@ -5,25 +5,23 @@ using QSB.Utility;
 
 namespace QSB.MeteorSync.Messages;
 
-public class FragmentInitialStateMessage : QSBWorldObjectMessage<QSBFragment,
-	(float OrigIntegrity, float Integrity, float LeashLength)>
+/// <summary>
+/// original integrity, leash length
+/// </summary>
+public class FragmentInitialStateMessage : QSBWorldObjectMessage<QSBFragment, (float OrigIntegrity, float LeashLength)>
 {
-	public FragmentInitialStateMessage(QSBFragment qsbFragment) : base((
-		qsbFragment.AttachedObject._origIntegrity,
-		qsbFragment.AttachedObject._integrity,
-		(float)qsbFragment.LeashLength // will have a value at this point, so cast is okay
-	)) { }
+	public FragmentInitialStateMessage(float origIntegrity, float leashLength) : base((origIntegrity, leashLength)) { }
 
 	public override void OnReceiveRemote()
 	{
 		WorldObject.AttachedObject._origIntegrity = Data.OrigIntegrity;
-		WorldObject.SetIntegrity(Data.Integrity);
-		if (WorldObject.LeashLength != null)
+		if (WorldObject.LeashLength == null)
+		{
+			WorldObject.LeashLength = Data.LeashLength;
+		}
+		else
 		{
 			DebugLog.ToConsole($"leash length for {WorldObject} already set", MessageType.Warning);
-			return;
 		}
-
-		WorldObject.LeashLength = Data.LeashLength;
 	}
 }

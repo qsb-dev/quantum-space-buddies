@@ -17,17 +17,15 @@ public class QSBFragment : WorldObject<FragmentIntegrity>
 		}
 	}
 
-	public override void SendInitialState(uint to) =>
-		this.SendMessage(new FragmentInitialStateMessage(this) { To = to });
+	public override void SendInitialState(uint to)
+	{
+		this.SendMessage(new FragmentInitialStateMessage(AttachedObject._origIntegrity, (float)LeashLength) { To = to });
+		this.SendMessage(new FragmentIntegrityMessage(AttachedObject._integrity));
+	}
 
 	public void SetIntegrity(float integrity)
 	{
 		if (OWMath.ApproxEquals(AttachedObject._integrity, integrity))
-		{
-			return;
-		}
-
-		if (AttachedObject._integrity <= 0f)
 		{
 			return;
 		}
