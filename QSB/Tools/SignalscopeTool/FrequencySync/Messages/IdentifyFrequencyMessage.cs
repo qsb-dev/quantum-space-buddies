@@ -5,7 +5,7 @@ namespace QSB.Tools.SignalscopeTool.FrequencySync.Messages;
 
 public class IdentifyFrequencyMessage : QSBMessage<SignalFrequency>
 {
-	public IdentifyFrequencyMessage(SignalFrequency frequency) => Data = frequency;
+	public IdentifyFrequencyMessage(SignalFrequency frequency) : base(frequency) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

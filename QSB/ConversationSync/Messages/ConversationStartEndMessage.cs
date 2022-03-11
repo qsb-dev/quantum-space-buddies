@@ -8,11 +8,7 @@ namespace QSB.ConversationSync.Messages;
 
 public class ConversationStartEndMessage : QSBMessage<(int TreeId, bool Start)>
 {
-	public ConversationStartEndMessage(int treeId, bool start)
-	{
-		Data.TreeId = treeId;
-		Data.Start = start;
-	}
+	public ConversationStartEndMessage(int treeId, bool start) : base((treeId, start)) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

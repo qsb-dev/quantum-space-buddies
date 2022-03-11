@@ -5,7 +5,7 @@ namespace QSB.Animation.NPC.Messages;
 
 internal class NpcAnimationMessage : QSBWorldObjectMessage<INpcAnimController, bool>
 {
-	public NpcAnimationMessage(bool start) => Data = start;
+	public NpcAnimationMessage(bool start) : base(start) { }
 
 	public override void OnReceiveRemote()
 	{

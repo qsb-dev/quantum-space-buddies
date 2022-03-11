@@ -5,7 +5,7 @@ namespace QSB.ShipSync.Messages;
 
 internal class HatchMessage : QSBMessage<bool>
 {
-	public HatchMessage(bool open) => Data = open;
+	public HatchMessage(bool open) : base(open) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

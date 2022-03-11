@@ -6,7 +6,7 @@ namespace QSB.Tools.ProbeTool.Messages;
 
 internal class PlayerProbeEventMessage : QSBMessage<ProbeEvent>
 {
-	public PlayerProbeEventMessage(ProbeEvent probeEvent) => Data = probeEvent;
+	public PlayerProbeEventMessage(ProbeEvent probeEvent) : base(probeEvent) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

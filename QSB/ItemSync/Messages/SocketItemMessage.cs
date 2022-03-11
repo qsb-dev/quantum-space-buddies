@@ -9,12 +9,7 @@ namespace QSB.ItemSync.Messages;
 
 internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int SocketId, int ItemId)>
 {
-	public SocketItemMessage(SocketMessageType type, int socketId = -1, int itemId = -1)
-	{
-		Data.Type = type;
-		Data.SocketId = socketId;
-		Data.ItemId = itemId;
-	}
+	public SocketItemMessage(SocketMessageType type, int socketId = -1, int itemId = -1) : base((type, socketId, itemId)) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

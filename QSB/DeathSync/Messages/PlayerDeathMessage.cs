@@ -11,11 +11,8 @@ public class PlayerDeathMessage : QSBMessage<DeathType>
 {
 	private int NecronomiconIndex;
 
-	public PlayerDeathMessage(DeathType type)
-	{
-		Data = type;
+	public PlayerDeathMessage(DeathType type) : base(type) =>
 		NecronomiconIndex = Necronomicon.GetRandomIndex(type);
-	}
 
 	public override void Serialize(NetworkWriter writer)
 	{

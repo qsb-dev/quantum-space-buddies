@@ -14,9 +14,8 @@ public class AnglerDataMessage : QSBWorldObjectMessage<QSBAngler, AnglerfishCont
 	private uint TargetId;
 	private Vector3 LocalDisturbancePos;
 
-	public AnglerDataMessage(QSBAngler qsbAngler)
+	public AnglerDataMessage(QSBAngler qsbAngler) : base(qsbAngler.AttachedObject._currentState)
 	{
-		Data = qsbAngler.AttachedObject._currentState;
 		TargetId = TargetToId(qsbAngler.TargetTransform);
 		LocalDisturbancePos = qsbAngler.AttachedObject._localDisturbancePos;
 	}

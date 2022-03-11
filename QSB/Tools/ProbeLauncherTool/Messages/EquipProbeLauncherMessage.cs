@@ -36,7 +36,7 @@ public class EquipProbeLauncherMessage : QSBMessage<bool>
 		}
 	}
 
-	private EquipProbeLauncherMessage(bool equipped) => Data = equipped;
+	private EquipProbeLauncherMessage(bool equipped) : base(equipped) { }
 
 	public override void OnReceiveRemote()
 	{

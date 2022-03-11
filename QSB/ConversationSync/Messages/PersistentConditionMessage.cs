@@ -5,11 +5,7 @@ namespace QSB.ConversationSync.Messages;
 
 internal class PersistentConditionMessage : QSBMessage<(string Condition, bool State)>
 {
-	public PersistentConditionMessage(string condition, bool state)
-	{
-		Data.Condition = condition;
-		Data.State = state;
-	}
+	public PersistentConditionMessage(string condition, bool state) : base((condition, state)) { }
 
 	public override void OnReceiveRemote()
 	{

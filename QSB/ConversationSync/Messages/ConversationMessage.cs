@@ -8,12 +8,7 @@ namespace QSB.ConversationSync.Messages;
 
 public class ConversationMessage : QSBMessage<(ConversationType Type, int Id, string Message)>
 {
-	public ConversationMessage(ConversationType type, int id, string message = "")
-	{
-		Data.Type = type;
-		Data.Id = id;
-		Data.Message = message;
-	}
+	public ConversationMessage(ConversationType type, int id, string message = "") : base((type, id, message)) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

@@ -6,7 +6,7 @@ namespace QSB.Tools.ProbeLauncherTool.Messages;
 
 internal class PlayerRetrieveProbeMessage : QSBMessage<bool>
 {
-	public PlayerRetrieveProbeMessage(bool playEffects) => Data = playEffects;
+	public PlayerRetrieveProbeMessage(bool playEffects) : base(playEffects) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

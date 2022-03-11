@@ -4,7 +4,7 @@ namespace QSB.SatelliteSync.Messages;
 
 internal class SatelliteProjectorMessage : QSBMessage<bool>
 {
-	public SatelliteProjectorMessage(bool usingProjector) => Data = usingProjector;
+	public SatelliteProjectorMessage(bool usingProjector) : base(usingProjector) { }
 
 	public override void OnReceiveRemote()
 	{

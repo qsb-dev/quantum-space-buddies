@@ -20,7 +20,7 @@ public class PlayerFlashlightMessage : QSBMessage<bool>
 		}
 	}
 
-	private PlayerFlashlightMessage(bool on) => Data = on;
+	private PlayerFlashlightMessage(bool on) : base(on) { }
 
 	public override void OnReceiveRemote()
 	{
