@@ -62,9 +62,6 @@ public class RaftTransformSync : UnsectoredRigidbodySync
 	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
 	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
 
-	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} - authority = true");
-	public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - authority = false");
-
 	/// <summary>
 	/// replacement for base method
 	/// using SetPos/Rot instead of Move
