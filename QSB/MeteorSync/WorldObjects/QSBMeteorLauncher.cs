@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.WorldSync;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -12,7 +13,8 @@ public class QSBMeteorLauncher : WorldObject<MeteorLauncher>
 
 	public override async UniTask Init(CancellationToken ct)
 	{
-		var meteors = AttachedObject._meteorPool.Concat(AttachedObject._dynamicMeteorPool);
+		var meteors = (AttachedObject._meteorPool ?? new List<MeteorController>())
+			.Concat(AttachedObject._dynamicMeteorPool ?? new List<MeteorController>());
 		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
 		_qsbMeteors = meteors.Select(x => x.GetWorldObject<QSBMeteor>()).ToArray();
 	}
