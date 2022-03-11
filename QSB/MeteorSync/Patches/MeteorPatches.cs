@@ -140,17 +140,9 @@ public class MeteorServerPatches : QSBPatch
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
-	public static void FragmentIntegrity_AddDamage(FragmentIntegrity __instance,
-		float damage)
-	{
-		if (__instance._integrity <= 0f)
-		{
-			return;
-		}
-
+	public static void FragmentIntegrity_AddDamage(FragmentIntegrity __instance) =>
 		__instance.GetWorldObject<QSBFragment>()
 			.SendMessage(new FragmentIntegrityEvent(__instance._integrity));
-	}
 }
 
 /// <summary>
