@@ -1,14 +1,7 @@
-﻿using QSB.WorldSync;
+﻿namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 
-namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
-
-public class QSBRaftDock : WorldObject<RaftDock>, IQSBRaftCarrier
+public class QSBRaftDock : QSBRaftCarrier<RaftDock>
 {
-	public override void SendInitialState(uint to)
-	{
-		// todo SendInitialState
-	}
-
 	public void OnPressInteract()
 	{
 		if (AttachedObject._raft != null && AttachedObject._state == RaftCarrier.DockState.Docked)

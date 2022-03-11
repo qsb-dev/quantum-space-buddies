@@ -2,7 +2,10 @@
 using Mirror;
 using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
+using QSB.EchoesOfTheEye.RaftSync.Messages;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
+using QSB.Messaging;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using System.Threading;
@@ -57,13 +60,11 @@ public class QSBRaft : WorldObject<RaftController>
 		}
 	}
 
-	public override void SendInitialState(uint to)
-	{
-		// todo?? SendInitialState
+	public override void SendInitialState(uint to) =>
+		this.SendMessage(new RaftSetDockMessage(AttachedObject._dock));
 
-		if (AttachedObject._dock != null)
-		{
-			var qsbRaftCarrier = AttachedObject._dock.GetWorldObject<IQSBRaftCarrier>();
-		}
+	public void SetDock(IQSBRaftCarrier qsbRaftCarrier)
+	{
+		DebugLog.DebugWrite($"TODO: {this} dock = {qsbRaftCarrier}");
 	}
 }

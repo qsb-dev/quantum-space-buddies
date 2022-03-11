@@ -16,7 +16,7 @@ public class RaftPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(RaftController), nameof(RaftController.OnPressInteract))]
-	private static bool OnPressInteract(RaftController __instance)
+	private static bool RaftController_OnPressInteract(RaftController __instance)
 	{
 		__instance._interactReceiver.SetInteractionEnabled(false);
 
@@ -35,6 +35,6 @@ public class RaftPatches : QSBPatch
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(RaftDock), nameof(RaftDock.OnPressInteract))]
-	private static void OnPressInteract(RaftDock __instance) =>
+	private static void RaftDock_OnPressInteract(RaftDock __instance) =>
 		__instance.GetWorldObject<QSBRaftDock>().SendMessage(new RaftDockOnPressInteractMessage());
 }
