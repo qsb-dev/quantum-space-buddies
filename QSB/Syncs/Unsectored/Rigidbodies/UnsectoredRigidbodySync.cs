@@ -64,9 +64,10 @@ public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
 
 	protected override void GetFromAttached()
 	{
-		transform.position = ReferenceTransform.ToRelPos(AttachedRigidbody.GetPosition());
+		var pos = AttachedRigidbody.GetPosition();
+		transform.position = ReferenceTransform.ToRelPos(pos);
 		transform.rotation = ReferenceTransform.ToRelRot(AttachedRigidbody.GetRotation());
-		Velocity = ReferenceRigidbody.ToRelVel(AttachedRigidbody.GetVelocity(), AttachedRigidbody.GetPosition());
+		Velocity = ReferenceRigidbody.ToRelVel(AttachedRigidbody.GetVelocity(), pos);
 		AngularVelocity = ReferenceRigidbody.ToRelAngVel(AttachedRigidbody.GetAngularVelocity());
 	}
 
