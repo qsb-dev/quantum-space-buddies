@@ -13,21 +13,23 @@ public abstract class QSBRaftCarrier<T> : WorldObject<T>, IQSBRaftCarrier where 
 		// todo SendInitialState
 	}
 
-	public async UniTask Undock(QSBRaft qsbRaft, CancellationToken ct)
+	public async UniTask Undock(CancellationToken ct)
 	{
+		var qsbRaft = AttachedObject._raft.GetWorldObject<QSBRaft>();
+
 		DebugLog.DebugWrite($"TODO: {this} undock {qsbRaft}");
 		await UniTask.Delay(TimeSpan.FromSeconds(3), cancellationToken: ct);
 	}
 
 	public async UniTask Dock(QSBRaft qsbRaft, CancellationToken ct)
 	{
-		DebugLog.DebugWrite($"TODO: {this} undock {qsbRaft}");
+		DebugLog.DebugWrite($"TODO: {this} dock {qsbRaft}");
 		await UniTask.Delay(TimeSpan.FromSeconds(3), cancellationToken: ct);
 	}
 }
 
 public interface IQSBRaftCarrier : IWorldObject
 {
-	UniTask Undock(QSBRaft qsbRaft, CancellationToken ct);
+	UniTask Undock(CancellationToken ct);
 	UniTask Dock(QSBRaft qsbRaft, CancellationToken ct);
 }

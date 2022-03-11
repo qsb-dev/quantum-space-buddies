@@ -5,7 +5,6 @@ using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.EchoesOfTheEye.RaftSync.Messages;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using System.Threading;
@@ -74,12 +73,10 @@ public class QSBRaft : WorldObject<RaftController>
 			return;
 		}
 
-		DebugLog.DebugWrite($"TODO: {this} dock = {qsbRaftCarrier}");
-
 		// undock from current dock
 		if (AttachedObject._dock != null)
 		{
-			await AttachedObject._dock.GetWorldObject<IQSBRaftCarrier>().Undock(this, _cts.Token);
+			await AttachedObject._dock.GetWorldObject<IQSBRaftCarrier>().Undock(_cts.Token);
 		}
 
 		// dock to new dock
