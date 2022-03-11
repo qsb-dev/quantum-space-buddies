@@ -5,8 +5,10 @@ using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Threading;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace QSB.OrbSync.WorldObjects;
 
@@ -37,7 +39,7 @@ public class QSBOrb : WorldObject<NomaiInterfaceOrb>
 	public override void SendInitialState(uint to)
 	{
 		this.SendMessage(new OrbDragMessage(AttachedObject._isBeingDragged) { To = to });
-		var slotIndex = AttachedObject._slots.IndexOf(AttachedObject._occupiedSlot);
+		var slotIndex = Array.IndexOf(AttachedObject._slots, AttachedObject._occupiedSlot);
 		this.SendMessage(new OrbSlotMessage(slotIndex, false) { To = to });
 	}
 

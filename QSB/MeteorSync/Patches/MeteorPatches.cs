@@ -19,13 +19,8 @@ public class MeteorServerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
-	public static bool FixedUpdate(MeteorLauncher __instance)
+	public static bool MeteorLauncher_FixedUpdate(MeteorLauncher __instance)
 	{
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return true;
-		}
-
 		if (__instance._launchedMeteors != null)
 		{
 			for (var i = __instance._launchedMeteors.Count - 1; i >= 0; i--)
@@ -63,13 +58,13 @@ public class MeteorServerPatches : QSBPatch
 			if (!__instance._areParticlesPlaying)
 			{
 				__instance._areParticlesPlaying = true;
-				foreach (var particleSystem in __instance._launchParticles)
+				foreach (var launchParticle in __instance._launchParticles)
 				{
-					particleSystem.Play();
+					launchParticle.Play();
 				}
 
-				var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
-				qsbMeteorLauncher.SendMessage(new MeteorPreLaunchMessage());
+				__instance.GetWorldObject<QSBMeteorLauncher>()
+					.SendMessage(new MeteorPreLaunchMessage());
 			}
 
 			if (Time.time > __instance._lastLaunchTime + __instance._launchDelay + 2.3f)
@@ -78,9 +73,9 @@ public class MeteorServerPatches : QSBPatch
 				__instance._lastLaunchTime = Time.time;
 				__instance._launchDelay = Random.Range(__instance._minInterval, __instance._maxInterval);
 				__instance._areParticlesPlaying = false;
-				foreach (var particleSystem in __instance._launchParticles)
+				foreach (var launchParticle in __instance._launchParticles)
 				{
-					particleSystem.Stop();
+					launchParticle.Stop();
 				}
 			}
 		}
@@ -90,7 +85,7 @@ public class MeteorServerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
-	public static bool LaunchMeteor(MeteorLauncher __instance)
+	public static bool MeteorLauncher_LaunchMeteor(MeteorLauncher __instance)
 	{
 		var flag = __instance._dynamicMeteorPool != null && (__instance._meteorPool == null || Random.value < __instance._dynamicProbability);
 		MeteorController meteorController = null;
@@ -125,13 +120,9 @@ public class MeteorServerPatches : QSBPatch
 
 		if (meteorController != null)
 		{
-			var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
-			var qsbMeteor = meteorController.GetWorldObject<QSBMeteor>();
+			var launchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
 
-			qsbMeteorLauncher.MeteorId = qsbMeteor.ObjectId;
-			qsbMeteorLauncher.LaunchSpeed = Random.Range(__instance._minLaunchSpeed, __instance._maxLaunchSpeed);
-
-			var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + (__instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed);
+			var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + __instance.transform.TransformDirection(__instance._launchDirection) * launchSpeed;
 			var angularVelocity = __instance.transform.forward * 2f;
 			meteorController.Launch(null, __instance.transform.position, __instance.transform.rotation, linearVelocity, angularVelocity);
 			if (__instance._audioSector.ContainsOccupant(DynamicOccupant.Player))
@@ -140,32 +131,18 @@ public class MeteorServerPatches : QSBPatch
 				__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
 			}
 
-			qsbMeteorLauncher.SendMessage(new MeteorLaunchMessage(qsbMeteorLauncher));
+			__instance.GetWorldObject<QSBMeteorLauncher>()
+				.SendMessage(new MeteorLaunchMessage(meteorController, launchSpeed));
 		}
 
 		return false;
 	}
 
 	[HarmonyPostfix]
-	[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
-	public static void Impact(MeteorController __instance,
-		GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
-	{
-		var qsbMeteor = __instance.GetWorldObject<QSBMeteor>();
-		if (QSBMeteor.IsSpecialImpact(hitObject))
-		{
-			qsbMeteor.SendMessage(new MeteorSpecialImpactMessage());
-		}
-	}
-
-	[HarmonyPostfix]
 	[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
-	public static void AddDamage(FragmentIntegrity __instance,
-		float damage)
-	{
-		var qsbFragment = __instance.GetWorldObject<QSBFragment>();
-		qsbFragment.SendMessage(new FragmentDamageMessage(damage));
-	}
+	public static void FragmentIntegrity_AddDamage(FragmentIntegrity __instance) =>
+		__instance.GetWorldObject<QSBFragment>()
+			.SendMessage(new FragmentIntegrityMessage(__instance._integrity));
 }
 
 /// <summary>
@@ -177,97 +154,13 @@ public class MeteorClientPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
-	public static bool FixedUpdate(MeteorLauncher __instance)
+	public static bool MeteorLauncher_FixedUpdate()
 		=> false;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
-	public static bool LaunchMeteor(MeteorLauncher __instance)
-	{
-		var qsbMeteorLauncher = __instance.GetWorldObject<QSBMeteorLauncher>();
-
-		MeteorController meteorController = null;
-		QSBMeteor qsbMeteor;
-
-		bool MeteorMatches(MeteorController x)
-		{
-			qsbMeteor = x.GetWorldObject<QSBMeteor>();
-			return qsbMeteor.ObjectId == qsbMeteorLauncher.MeteorId;
-		}
-
-		if (__instance._meteorPool != null)
-		{
-			meteorController = __instance._meteorPool.Find(MeteorMatches);
-			if (meteorController != null)
-			{
-				meteorController.Initialize(__instance.transform, __instance._detectableField, __instance._detectableFluid);
-			}
-		}
-		else if (__instance._dynamicMeteorPool != null)
-		{
-			meteorController = __instance._dynamicMeteorPool.Find(MeteorMatches);
-			if (meteorController != null)
-			{
-				meteorController.Initialize(__instance.transform, null, null);
-			}
-		}
-
-		if (meteorController != null)
-		{
-			var linearVelocity = __instance._parentBody.GetPointVelocity(__instance.transform.position) + (__instance.transform.TransformDirection(__instance._launchDirection) * qsbMeteorLauncher.LaunchSpeed);
-			var angularVelocity = __instance.transform.forward * 2f;
-			meteorController.Launch(null, __instance.transform.position, __instance.transform.rotation, linearVelocity, angularVelocity);
-			if (__instance._audioSector.ContainsOccupant(DynamicOccupant.Player))
-			{
-				__instance._launchSource.pitch = Random.Range(0.4f, 0.6f);
-				__instance._launchSource.PlayOneShot(AudioType.BH_MeteorLaunch);
-			}
-		}
-		else
-		{
-			DebugLog.ToConsole($"{qsbMeteorLauncher} - could not find meteor {qsbMeteorLauncher.MeteorId} in pool", MessageType.Warning);
-		}
-
-		return false;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
-	public static bool Impact(MeteorController __instance,
-		GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
-	{
-		__instance._intactRenderer.enabled = false;
-		__instance._impactLight.enabled = true;
-		__instance._impactLight.intensity = __instance._impactLightCurve.Evaluate(0f);
-		var rotation = Quaternion.LookRotation(impactVel);
-		foreach (var particleSystem in __instance._impactParticles)
-		{
-			particleSystem.transform.rotation = rotation;
-			particleSystem.Play();
-		}
-
-		__instance._impactSource.PlayOneShot(AudioType.BH_MeteorImpact);
-		foreach (var owCollider in __instance._owColliders)
-		{
-			owCollider.SetActivation(false);
-		}
-
-		__instance._owRigidbody.MakeKinematic();
-		__instance.transform.SetParent(hitObject.GetAttachedOWRigidbody().transform);
-		FragmentSurfaceProxy.UntrackMeteor(__instance);
-		FragmentCollisionProxy.UntrackMeteor(__instance);
-		__instance._ignoringCollisions = false;
-		__instance._hasImpacted = true;
-		__instance._impactTime = Time.time;
-
-		var qsbMeteor = __instance.GetWorldObject<QSBMeteor>();
-		if (QSBMeteor.IsSpecialImpact(hitObject))
-		{
-			qsbMeteor.SendMessage(new MeteorSpecialImpactMessage());
-		}
-
-		return false;
-	}
+	[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
+	public static bool FragmentIntegrity_AddDamage()
+		=> false;
 }
 
 /// <summary>
@@ -277,86 +170,46 @@ public class MeteorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(MeteorController), nameof(MeteorController.Impact))]
+	public static void MeteorController_Impact(MeteorController __instance,
+		GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
+	{
+		if (QSBMeteor.IsSpecialImpact(hitObject))
+		{
+			__instance.GetWorldObject<QSBMeteor>()
+				.SendMessage(new MeteorSpecialImpactMessage());
+		}
+	}
+
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
-	public static void Detach_Prefix(DetachableFragment __instance, out FragmentIntegrity __state) =>
+	public static void DetachableFragment_Detach_Prefix(DetachableFragment __instance, out FragmentIntegrity __state) =>
 		// this gets set to null in Detach, so store it here and and then restore it in postfix
 		__state = __instance._fragmentIntegrity;
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(DetachableFragment), nameof(DetachableFragment.Detach))]
-	public static void Detach_Postfix(DetachableFragment __instance, FragmentIntegrity __state) =>
+	public static void DetachableFragment_Detach_Postfix(DetachableFragment __instance, FragmentIntegrity __state) =>
 		__instance._fragmentIntegrity = __state;
 
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.MoveByDistance))]
-	public static bool MoveByDistance(DebrisLeash __instance,
-		float distance)
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.Init))]
+	public static void DebrisLeash_Init(DebrisLeash __instance)
 	{
 		if (__instance._detachableFragment == null || __instance._detachableFragment._fragmentIntegrity == null)
 		{
-			return true;
+			return;
 		}
 
 		var qsbFragment = __instance._detachableFragment._fragmentIntegrity.GetWorldObject<QSBFragment>();
-
-		if (__instance.enabled)
+		if (qsbFragment.LeashLength != null)
 		{
-			var vector = __instance._attachedBody.GetPosition() - __instance._anchorBody.GetPosition();
-			var d = Mathf.Min(distance, qsbFragment.LeashLength - vector.magnitude);
-			__instance._attachedBody.SetPosition(__instance._anchorBody.GetPosition() + (vector.normalized * d));
-		}
-
-		return false;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DebrisLeash), nameof(DebrisLeash.FixedUpdate))]
-	public static bool FixedUpdate(DebrisLeash __instance)
-	{
-		if (__instance._detachableFragment == null || __instance._detachableFragment._fragmentIntegrity == null)
-		{
-			return true;
-		}
-
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return true;
-		}
-
-		var qsbFragment = __instance._detachableFragment._fragmentIntegrity.GetWorldObject<QSBFragment>();
-
-		if (!__instance._deccelerating)
-		{
-			var num = Vector3.Distance(__instance._attachedBody.GetPosition(), __instance._anchorBody.GetPosition());
-			var num2 = Mathf.Pow(__instance._attachedBody.GetVelocity().magnitude, 2f) / (2f * __instance._deccel);
-			var vector = __instance._attachedBody.GetVelocity() - __instance._anchorBody.GetVelocity();
-			if (num >= qsbFragment.LeashLength - num2 && vector.magnitude > 0.1f)
-			{
-				__instance._deccelerating = true;
-				return false;
-			}
+			__instance._leashLength = (float)qsbFragment.LeashLength;
 		}
 		else
 		{
-			var vector2 = __instance._attachedBody.GetVelocity() - __instance._anchorBody.GetVelocity();
-			var velocityChange = -vector2.normalized * Mathf.Min(__instance._deccel * Time.deltaTime, vector2.magnitude);
-			if (velocityChange.magnitude < 0.01f)
-			{
-				__instance._attachedBody.SetVelocity(__instance._anchorBody.GetVelocity());
-				__instance._deccelerating = false;
-				if (__instance._detachableFragment != null)
-				{
-					__instance._detachableFragment.ComeToRest(__instance._anchorBody);
-				}
-
-				__instance.enabled = false;
-				return false;
-			}
-
-			__instance._attachedBody.AddVelocityChange(velocityChange);
+			DebugLog.ToConsole($"DebrisLeash.Init called for {qsbFragment} before LeashLength was set", MessageType.Warning);
 		}
-
-		return false;
 	}
 }

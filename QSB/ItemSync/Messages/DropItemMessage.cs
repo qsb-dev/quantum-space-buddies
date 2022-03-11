@@ -1,5 +1,4 @@
-﻿using Mirror;
-using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
@@ -8,39 +7,21 @@ using UnityEngine;
 
 namespace QSB.ItemSync.Messages;
 
-internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem>
+internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
+	(Vector3 LocalPos, Vector3 LocalNorm, int SectorId)>
 {
-	private Vector3 Position;
-	private Vector3 Normal;
-	private int SectorId;
-
-	public DropItemMessage(Vector3 position, Vector3 normal, Sector sector)
-	{
-		Position = position;
-		Normal = normal;
-		SectorId = sector.GetWorldObject<QSBSector>().ObjectId;
-	}
-
-	public override void Serialize(NetworkWriter writer)
-	{
-		base.Serialize(writer);
-		writer.Write(Position);
-		writer.Write(Normal);
-		writer.Write(SectorId);
-	}
-
-	public override void Deserialize(NetworkReader reader)
-	{
-		base.Deserialize(reader);
-		Position = reader.ReadVector3();
-		Normal = reader.ReadVector3();
-		SectorId = reader.Read<int>();
-	}
+	public DropItemMessage(Vector3 position, Vector3 normal, Sector sector) : base((
+		sector.transform.InverseTransformPoint(position),
+		sector.transform.InverseTransformDirection(normal),
+		sector.GetWorldObject<QSBSector>().ObjectId
+	)) { }
 
 	public override void OnReceiveRemote()
 	{
-		var sector = SectorId.GetWorldObject<QSBSector>().AttachedObject;
-		WorldObject.DropItem(sector.transform.TransformPoint(Position), Normal, sector);
+		var sector = Data.SectorId.GetWorldObject<QSBSector>().AttachedObject;
+		var position = sector.transform.TransformPoint(Data.LocalPos);
+		var normal = sector.transform.TransformDirection(Data.LocalNorm);
+		WorldObject.DropItem(position, normal, sector);
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.HeldItem = WorldObject;

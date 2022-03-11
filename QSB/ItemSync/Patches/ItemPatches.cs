@@ -90,7 +90,7 @@ internal class ItemPatches : QSBPatch
 		var parent = (customDropTarget == null)
 			? targetRigidbody.transform
 			: customDropTarget.GetItemDropTargetTransform(hit.collider.gameObject);
-		var IQSBItem = __instance._heldItem.GetWorldObject<IQSBItem>();
+		var qsbItem = __instance._heldItem.GetWorldObject<IQSBItem>();
 		__instance._heldItem.DropItem(hit.point, hit.normal, parent, sector, customDropTarget);
 		__instance._heldItem = null;
 		QSBPlayerManager.LocalPlayer.HeldItem = null;
@@ -98,12 +98,13 @@ internal class ItemPatches : QSBPatch
 		var parentSector = parent.GetComponentInChildren<Sector>();
 		if (parentSector != null)
 		{
-			var localPos = parentSector.transform.InverseTransformPoint(hit.point);
-			IQSBItem.SendMessage(new DropItemMessage(localPos, hit.normal, parentSector));
-			return false;
+			qsbItem.SendMessage(new DropItemMessage(hit.point, hit.normal, parentSector));
+		}
+		else
+		{
+			DebugLog.ToConsole($"Error - No sector found for rigidbody {targetRigidbody.name}!.", MessageType.Error);
 		}
 
-		DebugLog.ToConsole($"Error - No sector found for rigidbody {targetRigidbody.name}!.", MessageType.Error);
 		return false;
 	}
 }
