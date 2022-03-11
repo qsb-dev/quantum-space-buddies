@@ -2,9 +2,7 @@
 using Mirror;
 using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
-using QSB.EchoesOfTheEye.RaftSync.Messages;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
-using QSB.Messaging;
 using QSB.WorldSync;
 using System.Linq;
 using System.Threading;
@@ -38,8 +36,6 @@ public class QSBRaft : WorldObject<RaftController>
 		}
 	}
 
-	private readonly CancellationTokenSource _cts = new();
-
 	public override void OnRemoval()
 	{
 		if (QSBCore.IsHost)
@@ -51,8 +47,6 @@ public class QSBRaft : WorldObject<RaftController>
 		{
 			lightSensor.OnDetectLocalLight -= OnDetectLocalLight;
 		}
-
-		_cts.Cancel();
 	}
 
 	private void OnDetectLocalLight()
@@ -65,37 +59,6 @@ public class QSBRaft : WorldObject<RaftController>
 
 	public override void SendInitialState(uint to)
 	{
-		if (RaftManager.DamRaftLift._raft == AttachedObject)
-		{
-			new StartLiftingRaftMessage(this).Send();
-		}
-		else
-		{
-			this.SendMessage(new RaftSetDockMessage(AttachedObject._dock));
-		}
-	}
-
-	public async UniTaskVoid SetDock(QSBRaftDock qsbRaftDock)
-	{
-		if (qsbRaftDock?.AttachedObject == AttachedObject._dock)
-		{
-			return;
-		}
-
-		var ct = _cts.Token;
-
-		// undock from current dock
-		if (AttachedObject._dock != null)
-		{
-			AttachedObject._dock.GetWorldObject<QSBRaftDock>().Undock();
-			await UniTask.WaitUntil(() => AttachedObject._dock == null, cancellationToken: ct);
-		}
-
-		// dock to new dock
-		if (qsbRaftDock != null)
-		{
-			qsbRaftDock.Dock(this);
-			await UniTask.WaitUntil(() => AttachedObject._dock == qsbRaftDock.AttachedObject, cancellationToken: ct);
-		}
+		// not really needed. things work fine without it
 	}
 }

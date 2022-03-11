@@ -34,48 +34,7 @@ public class RaftPatches : QSBPatch
 	}
 
 	[HarmonyPostfix]
-	[HarmonyPatch(typeof(RaftDock), nameof(RaftDock.OnEntry))]
-	private static void RaftDock_OnEntry(RaftDock __instance)
-	{
-		if (__instance._state == RaftCarrier.DockState.AligningBelow)
-		{
-			__instance.GetWorldObject<QSBRaftDock>()
-				.SendMessage(new DockRaftMessage(__instance._raft.GetWorldObject<QSBRaft>()));
-		}
-	}
-
-	[HarmonyPostfix]
 	[HarmonyPatch(typeof(RaftDock), nameof(RaftDock.OnPressInteract))]
 	private static void RaftDock_OnPressInteract(RaftDock __instance) =>
-		__instance.GetWorldObject<QSBRaftDock>().SendMessage(new UndockRaftMessage());
-
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(DamRaftLift), nameof(DamRaftLift.OnEntry))]
-	private static void DamRaftLift_OnEntry(DamRaftLift __instance)
-	{
-		if (__instance._state == RaftCarrier.DockState.AligningBelow)
-		{
-			new StartLiftingRaftMessage(__instance._raft.GetWorldObject<QSBRaft>()).Send();
-		}
-	}
-
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(DamRaftLift), nameof(DamRaftLift.MoveRaftToNextNode))]
-	private static void DamRaftLift_MoveRaftToNextNode(DamRaftLift __instance)
-	{
-		if (__instance._state == RaftCarrier.DockState.ResettingHook)
-		{
-			new StopLiftingRaftMessage(false).Send();
-		}
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DamRaftLift), nameof(DamRaftLift.OnDamBroken))]
-	private static void DamRaftLift_OnDamBroken(DamRaftLift __instance)
-	{
-		if (__instance._raft != null)
-		{
-			new StopLiftingRaftMessage(true).Send();
-		}
-	}
+		__instance.GetWorldObject<QSBRaftDock>().SendMessage(new RaftDockOnPressInteractMessage());
 }
