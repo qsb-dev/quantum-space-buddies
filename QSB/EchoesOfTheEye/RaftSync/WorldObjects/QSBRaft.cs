@@ -20,8 +20,6 @@ public class QSBRaft : WorldObject<RaftController>
 
 	private QSBLightSensor[] _lightSensors;
 
-	private readonly CancellationTokenSource _cts = new();
-
 	public override async UniTask Init(CancellationToken ct)
 	{
 		if (QSBCore.IsHost)
@@ -39,6 +37,8 @@ public class QSBRaft : WorldObject<RaftController>
 			lightSensor.OnDetectLocalLight += OnDetectLocalLight;
 		}
 	}
+
+	private readonly CancellationTokenSource _cts = new();
 
 	public override void OnRemoval()
 	{
@@ -63,12 +63,21 @@ public class QSBRaft : WorldObject<RaftController>
 		}
 	}
 
-	public override void SendInitialState(uint to) =>
-		this.SendMessage(new RaftSetDockMessage(AttachedObject._dock));
-
-	public async UniTaskVoid SetDock(IQSBRaftCarrier qsbRaftCarrier)
+	public override void SendInitialState(uint to)
 	{
-		if (qsbRaftCarrier?.AttachedObject == AttachedObject._dock)
+		if (RaftManager.DamRaftLift._raft == AttachedObject)
+		{
+			// todo dam raft lift
+		}
+		else
+		{
+			this.SendMessage(new RaftSetDockMessage(AttachedObject._dock));
+		}
+	}
+
+	public void SetDock(RaftDock raftDock)
+	{
+		if (raftDock == AttachedObject._dock)
 		{
 			return;
 		}
@@ -76,13 +85,13 @@ public class QSBRaft : WorldObject<RaftController>
 		// undock from current dock
 		if (AttachedObject._dock != null)
 		{
-			await AttachedObject._dock.GetWorldObject<IQSBRaftCarrier>().Undock(_cts.Token);
+			// todo
 		}
 
 		// dock to new dock
-		if (qsbRaftCarrier != null)
+		if (raftDock != null)
 		{
-			await qsbRaftCarrier.Dock(this, _cts.Token);
+			// todo
 		}
 	}
 }

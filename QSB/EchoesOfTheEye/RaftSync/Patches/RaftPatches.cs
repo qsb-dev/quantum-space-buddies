@@ -36,5 +36,5 @@ public class RaftPatches : QSBPatch
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(RaftDock), nameof(RaftDock.OnPressInteract))]
 	private static void RaftDock_OnPressInteract(RaftDock __instance) =>
-		__instance.GetWorldObject<QSBRaftDock>().SendMessage(new RaftDockOnPressInteractMessage());
+		__instance.GetWorldObject<QSBRaftDock>().SendMessage(new UndockRaftMessage());
 }

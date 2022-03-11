@@ -1,8 +1,12 @@
-﻿namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
+﻿using QSB.WorldSync;
 
-public class QSBRaftDock : QSBRaftCarrier<RaftDock>
+namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
+
+public class QSBRaftDock : WorldObject<RaftDock>
 {
-	public void OnPressInteract()
+	public override void SendInitialState(uint to) { }
+
+	public void Undock()
 	{
 		if (AttachedObject._raft != null && AttachedObject._state == RaftCarrier.DockState.Docked)
 		{
@@ -23,4 +27,6 @@ public class QSBRaftDock : QSBRaftCarrier<RaftDock>
 			AttachedObject._gearInterface.PlayFailure();
 		}
 	}
+
+	public void Dock(QSBRaft qsbRaft) { }
 }

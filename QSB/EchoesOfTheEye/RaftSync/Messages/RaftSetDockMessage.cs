@@ -6,9 +6,9 @@ namespace QSB.EchoesOfTheEye.RaftSync.Messages;
 
 public class RaftSetDockMessage : QSBWorldObjectMessage<QSBRaft, int>
 {
-	public RaftSetDockMessage(RaftCarrier raftCarrier) :
-		base(raftCarrier != null ? raftCarrier.GetWorldObject<IQSBRaftCarrier>().ObjectId : -1) { }
+	public RaftSetDockMessage(RaftDock raftDock) :
+		base(raftDock != null ? raftDock.GetWorldObject<QSBRaftDock>().ObjectId : -1) { }
 
 	public override void OnReceiveRemote() =>
-		WorldObject.SetDock(Data != -1 ? Data.GetWorldObject<IQSBRaftCarrier>() : null).Forget();
+		WorldObject.SetDock(Data != -1 ? Data.GetWorldObject<QSBRaftDock>().AttachedObject : null);
 }
