@@ -14,7 +14,7 @@ namespace QSB.PlayerBodySetup.Remote;
 public class QSBDopplerFixer : MonoBehaviour
 {
 	public static void AddDopplerFixers(GameObject prefab) =>
-		prefab.GetComponentsInChildren<OWAudioSource>()
+		prefab.GetComponentsInChildren<OWAudioSource>(true)
 			.ForEach(x => x.gameObject.AddComponent<QSBDopplerFixer>());
 }
 
