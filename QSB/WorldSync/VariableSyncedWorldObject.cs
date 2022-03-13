@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.WorldSync;
 
-internal abstract class VariableSyncedWorldObject<T, U> : WorldObject<T>
+public abstract class VariableSyncedWorldObject<T, U> : WorldObject<T>
 	where T : MonoBehaviour
 	where U : IWorldObjectVariableSyncer
 {

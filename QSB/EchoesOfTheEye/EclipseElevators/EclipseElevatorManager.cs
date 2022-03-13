@@ -21,32 +21,8 @@ internal class EclipseElevatorManager : WorldObjectManager
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;
 
-	public static readonly List<EclipseElevatorController> Elevators = new();
-
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		Elevators.Clear();
-		Elevators.AddRange(QSBWorldSync.GetUnityObjects<EclipseElevatorController>().SortDeterministic());
-		QSBWorldSync.Init<QSBEclipseElevatorController, EclipseElevatorController>();
-
-		var allElevators = QSBWorldSync.GetWorldObjects<QSBEclipseElevatorController>().ToArray();
-
-		if (QSBCore.IsHost)
-		{
-			foreach (var item in allElevators)
-			{
-				var networkObject = Instantiate(QSBNetworkManager.singleton.ElevatorPrefab);
-				networkObject.SpawnWithServerAuthority();
-			}
-		}
-
-		await UniTask.WaitUntil(() => EclipseDoorVariableSyncer.GetSpecificSyncers<EclipseElevatorVariableSyncer>().Count == Elevators.Count, cancellationToken: ct);
-
-		foreach (var item in allElevators)
-		{
-			var index = Elevators.IndexOf(item.AttachedObject);
-			var syncer = EclipseDoorVariableSyncer.GetSpecificSyncers<EclipseElevatorVariableSyncer>()[index];
-			item.SetSyncer(syncer);
-		}
+		await QSBWorldSync.InitWithVariableSync<QSBEclipseElevatorController, EclipseElevatorController, EclipseElevatorVariableSyncer>(ct);
 	}
 }

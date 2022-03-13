@@ -1,9 +1,12 @@
-﻿using QSB.WorldSync;
+﻿using QSB.EchoesOfTheEye.AirlockSync.VariableSync;
+using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
 
-// will be implemented when eote
-internal class QSBGhostAirlock : WorldObject<GhostAirlock>
+internal class QSBGhostAirlock : VariableSyncedWorldObject<GhostAirlock, AirlockVariableSyncer>
 {
-	public override void SendInitialState(uint to) { }
+	public override void SendInitialState(uint to)
+	{
+
+	}
 }
