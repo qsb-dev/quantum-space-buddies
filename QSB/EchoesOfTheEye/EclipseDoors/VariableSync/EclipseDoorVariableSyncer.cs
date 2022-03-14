@@ -1,7 +1,9 @@
 ﻿using QSB.EchoesOfTheEye.EclipseDoors.WorldObjects;
-using QSB.Utility.LinkedWorldObject;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
 
-internal class EclipseDoorVariableSyncer : LinkedVariableSyncer<Vector3, QSBEclipseDoorController> { }
+internal class EclipseDoorVariableSyncer : RotatingElementsVariableSyncer<QSBEclipseDoorController>
+{
+	protected override Transform[] RotatingElements => WorldObject.AttachedObject._rotatingElements;
+}

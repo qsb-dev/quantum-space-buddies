@@ -1,8 +1,9 @@
 ﻿using QSB.EchoesOfTheEye.EclipseElevators.WorldObjects;
-using QSB.Utility.LinkedWorldObject;
-using QSB.Utility.VariableSync;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 
-internal class EclipseElevatorVariableSyncer : LinkedVariableSyncer<Vector3, QSBEclipseElevatorController> { }
+internal class EclipseElevatorVariableSyncer : RotatingElementsVariableSyncer<QSBEclipseElevatorController>
+{
+	protected override Transform[] RotatingElements => WorldObject.AttachedObject._rotatingElements;
+}
