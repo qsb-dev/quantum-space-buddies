@@ -47,4 +47,6 @@ internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 
 	private void OnDetectLocalLight() => NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
 	private void OnDetectLocalDarkness() => NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+
+	protected override bool SpawnWithServerAuthority => false;
 }

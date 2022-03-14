@@ -13,5 +13,4 @@ internal class QSBEclipseElevatorController : QSBRotatingElements<EclipseElevato
 		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value.Join()}\r\n- HasAuth:{NetworkBehaviour.hasAuthority}";
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.ElevatorPrefab;
-	protected override bool SpawnWithServerAuthority => false;
 }

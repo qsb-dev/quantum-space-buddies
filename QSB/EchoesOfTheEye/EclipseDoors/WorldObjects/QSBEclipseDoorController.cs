@@ -13,5 +13,4 @@ internal class QSBEclipseDoorController : QSBRotatingElements<EclipseDoorControl
 		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value.Join()}\r\n- HasAuth:{NetworkBehaviour.hasAuthority}";
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.DoorPrefab;
-	protected override bool SpawnWithServerAuthority => false;
 }

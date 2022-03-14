@@ -9,5 +9,4 @@ internal class QSBGhostAirlock : QSBRotatingElements<GhostAirlock, AirlockVariab
 	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._interface._lightSensors;
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.AirlockPrefab;
-	protected override bool SpawnWithServerAuthority => false;
 }
