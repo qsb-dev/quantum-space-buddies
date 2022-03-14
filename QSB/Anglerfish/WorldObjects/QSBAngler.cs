@@ -1,41 +1,22 @@
-﻿using Cysharp.Threading.Tasks;
-using Mirror;
-using QSB.Anglerfish.Messages;
+﻿using QSB.Anglerfish.Messages;
 using QSB.Anglerfish.TransformSync;
 using QSB.Messaging;
-using QSB.WorldSync;
-using System.Threading;
+using QSB.Utility.LinkedWorldObject;
 using UnityEngine;
 
 namespace QSB.Anglerfish.WorldObjects;
 
-public class QSBAngler : WorldObject<AnglerfishController>
+public class QSBAngler : LinkedWorldObject<AnglerfishController, AnglerTransformSync>
 {
 	public override bool ShouldDisplayDebug() => false;
 
-	public AnglerTransformSync TransformSync;
 	public Transform TargetTransform;
 	public Vector3 TargetVelocity { get; private set; }
 
 	private Vector3 _lastTargetPosition;
 
-	public override async UniTask Init(CancellationToken ct)
-	{
-		if (QSBCore.IsHost)
-		{
-			NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.AnglerPrefab));
-		}
-
-		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
-	}
-
-	public override void OnRemoval()
-	{
-		if (QSBCore.IsHost)
-		{
-			NetworkServer.Destroy(TransformSync.gameObject);
-		}
-	}
+	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.AnglerPrefab;
+	protected override bool SpawnWithServerAuthority => false;
 
 	public override void SendInitialState(uint to) =>
 		this.SendMessage(new AnglerDataMessage(this) { To = to });

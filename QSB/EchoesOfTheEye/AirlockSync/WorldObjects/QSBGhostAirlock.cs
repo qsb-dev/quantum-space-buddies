@@ -1,12 +1,13 @@
 ﻿using QSB.EchoesOfTheEye.AirlockSync.VariableSync;
-using QSB.WorldSync;
+using QSB.Utility.LinkedWorldObject;
+using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
 
-internal class QSBGhostAirlock : VariableSyncedWorldObject<GhostAirlock, AirlockVariableSyncer>
+internal class QSBGhostAirlock : LinkedWorldObject<GhostAirlock, AirlockVariableSyncer>
 {
-	public override void SendInitialState(uint to)
-	{
+	public override void SendInitialState(uint to) { }
 
-	}
+	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.AirlockPrefab;
+	protected override bool SpawnWithServerAuthority => true;
 }

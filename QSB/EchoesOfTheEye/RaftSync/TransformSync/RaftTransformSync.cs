@@ -2,23 +2,22 @@
 using QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
+using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
-using System.Collections.Generic;
 
 namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
 
-public class RaftTransformSync : UnsectoredRigidbodySync
+public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour
 {
 	protected override bool UseInterpolation => false;
 
 	private QSBRaft _qsbRaft;
-	private static readonly List<RaftTransformSync> _instances = new();
+	public void SetWorldObject(IWorldObject worldObject) => _qsbRaft = (QSBRaft)worldObject;
 
 	protected override OWRigidbody InitAttachedRigidbody() => _qsbRaft.AttachedObject._raftBody;
 
 	public override void OnStartClient()
 	{
-		_instances.Add(this);
 		if (QSBCore.IsHost)
 		{
 			netIdentity.RegisterAuthQueue();
@@ -29,7 +28,6 @@ public class RaftTransformSync : UnsectoredRigidbodySync
 
 	public override void OnStopClient()
 	{
-		_instances.Remove(this);
 		if (QSBCore.IsHost)
 		{
 			netIdentity.UnregisterAuthQueue();
@@ -40,9 +38,6 @@ public class RaftTransformSync : UnsectoredRigidbodySync
 
 	protected override void Init()
 	{
-		_qsbRaft = RaftManager.Rafts[_instances.IndexOf(this)].GetWorldObject<QSBRaft>();
-		_qsbRaft.TransformSync = this;
-
 		base.Init();
 		SetReferenceTransform(AttachedRigidbody.GetOrigParent());
 

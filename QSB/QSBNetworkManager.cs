@@ -25,7 +25,6 @@ using QSB.Syncs.Occasional;
 using QSB.TimeSync;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
-using QSB.Utility.VariableSync;
 using QSB.WorldSync;
 using System;
 using System.Linq;
@@ -168,17 +167,15 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	/// this works by calling Unload(false) and then reloading the AssetBundle,
 	/// which makes LoadAsset give you a new resource.
 	/// see https://docs.unity3d.com/Manual/AssetBundles-Native.html.
-	private static GameObject MakeNewNetworkObject(int assetId, string name, Type transformSyncType)
+	private static GameObject MakeNewNetworkObject(int assetId, string name, Type networkBehaviourType)
 	{
 		var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/empty");
 		var template = bundle.LoadAsset<GameObject>("Assets/Prefabs/Empty.prefab");
 		bundle.Unload(false);
 
-		DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
-		                    + $"for {assetId} {name} {transformSyncType.Name}");
 		template.name = name;
 		template.AddComponent<NetworkIdentity>().SetValue("m_AssetId", assetId.ToGuid().ToString("N"));
-		template.AddComponent(transformSyncType);
+		template.AddComponent(networkBehaviourType);
 		return template;
 	}
 
@@ -316,13 +313,13 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			// stop dragging for the orbs this player was dragging
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
-				if (qsbOrb.TransformSync == null)
+				if (qsbOrb.NetworkBehaviour == null)
 				{
 					DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
 					continue;
 				}
 
-				var identity = qsbOrb.TransformSync.netIdentity;
+				var identity = qsbOrb.NetworkBehaviour.netIdentity;
 				if (identity.connectionToClient == conn)
 				{
 					qsbOrb.SetDragging(false);

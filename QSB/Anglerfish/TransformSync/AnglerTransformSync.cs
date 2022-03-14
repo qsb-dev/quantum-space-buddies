@@ -1,26 +1,25 @@
 ﻿using QSB.Anglerfish.WorldObjects;
 using QSB.AuthoritySync;
 using QSB.Syncs.Unsectored.Rigidbodies;
+using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.Anglerfish.TransformSync;
 
-public class AnglerTransformSync : UnsectoredRigidbodySync
+public class AnglerTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour
 {
 	protected override bool UseInterpolation => false;
 	protected override bool AllowInactiveAttachedObject => true; // since they deactivate when suspended
 
 	private QSBAngler _qsbAngler;
-	private static readonly List<AnglerTransformSync> _instances = new();
+	public void SetWorldObject(IWorldObject worldObject) => _qsbAngler = (QSBAngler)worldObject;
 
 	protected override OWRigidbody InitAttachedRigidbody()
 		=> _qsbAngler.AttachedObject._anglerBody;
 
 	public override void OnStartClient()
 	{
-		_instances.Add(this);
 		if (QSBCore.IsHost)
 		{
 			netIdentity.RegisterAuthQueue();
@@ -31,7 +30,6 @@ public class AnglerTransformSync : UnsectoredRigidbodySync
 
 	public override void OnStopClient()
 	{
-		_instances.Remove(this);
 		if (QSBCore.IsHost)
 		{
 			netIdentity.UnregisterAuthQueue();
@@ -45,9 +43,6 @@ public class AnglerTransformSync : UnsectoredRigidbodySync
 
 	protected override void Init()
 	{
-		_qsbAngler = AnglerManager.Anglers[_instances.IndexOf(this)].GetWorldObject<QSBAngler>();
-		_qsbAngler.TransformSync = this;
-
 		base.Init();
 		SetReferenceTransform(_qsbAngler.AttachedObject._brambleBody.transform);
 
@@ -70,9 +65,9 @@ public class AnglerTransformSync : UnsectoredRigidbodySync
 	protected override void OnRenderObject()
 	{
 		if (!QSBCore.DebugSettings.DrawLines
-		    || !IsValid
-		    || !ReferenceTransform
-		    || !AttachedTransform.gameObject.activeInHierarchy)
+			|| !IsValid
+			|| !ReferenceTransform
+			|| !AttachedTransform.gameObject.activeInHierarchy)
 		{
 			return;
 		}
@@ -83,7 +78,7 @@ public class AnglerTransformSync : UnsectoredRigidbodySync
 		Popcron.Gizmos.Sphere(AttachedRigidbody.GetPosition(), _qsbAngler.AttachedObject._pursueDistance, Color.red);
 		Popcron.Gizmos.Sphere(AttachedRigidbody.GetPosition(), _qsbAngler.AttachedObject._escapeDistance, Color.yellow);
 		Popcron.Gizmos.Sphere(AttachedRigidbody.GetPosition()
-		                      + AttachedRigidbody.transform.TransformDirection(_qsbAngler.AttachedObject._mouthOffset), 3, Color.grey);
+			+ AttachedRigidbody.transform.TransformDirection(_qsbAngler.AttachedObject._mouthOffset), 3, Color.grey);
 
 		if (_qsbAngler.TargetTransform)
 		{

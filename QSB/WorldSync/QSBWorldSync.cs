@@ -7,7 +7,7 @@ using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
-using QSB.Utility.VariableSync;
+using QSB.Utility.LinkedWorldObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +87,11 @@ public static class QSBWorldSync
 
 		AllObjectsAdded = true;
 		DebugLog.DebugWrite("World Objects added.", MessageType.Success);
+
+		if (!QSBCore.IsHost)
+		{
+			new RequestLinksMessage().Send();
+		}
 
 		await _objectsIniting.Values;
 		if (_cts == null)
@@ -304,38 +309,6 @@ public static class QSBWorldSync
 				TriggerOwner = owner
 			};
 			AddAndInit(obj, item);
-		}
-	}
-
-	public static async UniTask InitWithVariableSync<TWorldObject, TUnityObject, TVariableSyncer>(CancellationToken ct, GameObject prefab)
-		where TWorldObject : VariableSyncedWorldObject<TUnityObject, TVariableSyncer>, new()
-		where TUnityObject : MonoBehaviour
-		where TVariableSyncer : IWorldObjectVariableSyncer
-	{
-		DebugLog.DebugWrite($"InitWithVariableSync TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{typeof(TUnityObject).Name}, TVariableSyncer:{typeof(TVariableSyncer).Name}");
-
-		var unityObjects = new List<TUnityObject>();
-		unityObjects.AddRange(GetUnityObjects<TUnityObject>().SortDeterministic());
-		Init<TWorldObject, TUnityObject>();
-
-		var allWorldObjects = GetWorldObjects<TWorldObject>().ToArray();
-
-		if (QSBCore.IsHost)
-		{
-			foreach (var item in allWorldObjects)
-			{
-				var networkObject = UnityEngine.Object.Instantiate(prefab);
-				networkObject.SpawnWithServerAuthority();
-			}
-		}
-
-		await UniTask.WaitUntil(() => VariableSyncStorage.GetSpecificSyncers<TVariableSyncer>().Count == unityObjects.Count, cancellationToken: ct);
-
-		foreach (var item in allWorldObjects)
-		{
-			var index = unityObjects.IndexOf(item.AttachedObject);
-			var syncer = VariableSyncStorage.GetSpecificSyncers<TVariableSyncer>()[index];
-			item.SetSyncer(syncer);
 		}
 	}
 

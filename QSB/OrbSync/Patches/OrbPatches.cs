@@ -48,7 +48,7 @@ public class OrbPatches : QSBPatch
 
 				var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 				qsbOrb.SendMessage(new OrbDragMessage(true));
-				qsbOrb.TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+				qsbOrb.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
 			}
 		}
 		else
@@ -75,7 +75,7 @@ public class OrbPatches : QSBPatch
 		}
 
 		var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-		if (!qsbOrb.TransformSync.hasAuthority)
+		if (!qsbOrb.NetworkBehaviour.hasAuthority)
 		{
 			return false;
 		}
@@ -95,7 +95,7 @@ public class OrbPatches : QSBPatch
 		}
 
 		var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-		if (qsbOrb.TransformSync.hasAuthority)
+		if (qsbOrb.NetworkBehaviour.hasAuthority)
 		{
 			if (__instance._occupiedSlot == null)
 			{
