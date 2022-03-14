@@ -18,11 +18,11 @@ public class RequestLinksMessage : QSBMessage
 
 	private static void SendLinks(uint to)
 	{
-		DebugLog.DebugWrite($"sending world object links to {to}");
-
 		foreach (var worldObject in QSBWorldSync.GetWorldObjects<ILinkedWorldObject<NetworkBehaviour>>())
 		{
 			new LinkMessage(worldObject, worldObject.NetworkBehaviour) { To = to }.Send();
 		}
+
+		DebugLog.DebugWrite($"sent world object links to {to}");
 	}
 }
