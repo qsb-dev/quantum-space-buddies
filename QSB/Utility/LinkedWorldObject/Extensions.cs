@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
 using QSB.WorldSync;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -15,7 +16,8 @@ public static class Extensions
 	public static void SpawnLinked(this ILinkedWorldObject<NetworkBehaviour> worldObject, GameObject prefab)
 	{
 		var go = Object.Instantiate(prefab);
-		var networkBehaviour = go.GetComponent<ILinkedNetworkBehaviour<IWorldObject>>();
+		var networkIdentity = go.GetComponent<NetworkIdentity>();
+		var networkBehaviour = networkIdentity.NetworkBehaviours.OfType<ILinkedNetworkBehaviour<IWorldObject>>().First();
 
 		worldObject.LinkTo((NetworkBehaviour)networkBehaviour);
 		networkBehaviour.LinkTo(worldObject);

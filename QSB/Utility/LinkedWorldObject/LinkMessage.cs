@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using QSB.Messaging;
 using QSB.WorldSync;
+using System.Linq;
 
 namespace QSB.Utility.LinkedWorldObject;
 
@@ -16,7 +17,8 @@ public class LinkMessage : QSBMessage<(int ObjectId, uint NetId)>
 	public override void OnReceiveRemote()
 	{
 		var worldObject = Data.ObjectId.GetWorldObject<ILinkedWorldObject<NetworkBehaviour>>();
-		var networkBehaviour = NetworkClient.spawned[Data.NetId].GetComponent<ILinkedNetworkBehaviour<IWorldObject>>();
+		var networkIdentity = NetworkClient.spawned[Data.NetId];
+		var networkBehaviour = networkIdentity.NetworkBehaviours.OfType<ILinkedNetworkBehaviour<IWorldObject>>().First();
 
 		worldObject.LinkTo((NetworkBehaviour)networkBehaviour);
 		networkBehaviour.LinkTo(worldObject);
