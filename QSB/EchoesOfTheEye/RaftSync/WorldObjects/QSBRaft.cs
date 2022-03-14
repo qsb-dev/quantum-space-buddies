@@ -35,10 +35,7 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>
 
 	public override void OnRemoval()
 	{
-		if (QSBCore.IsHost)
-		{
-			NetworkServer.Destroy(NetworkBehaviour.gameObject);
-		}
+		base.OnRemoval();
 
 		foreach (var lightSensor in _lightSensors)
 		{

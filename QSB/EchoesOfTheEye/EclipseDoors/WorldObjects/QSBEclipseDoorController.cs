@@ -1,16 +1,16 @@
-﻿using QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
-using QSB.Utility.LinkedWorldObject;
+﻿using HarmonyLib;
+using QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseDoors.WorldObjects;
 
-internal class QSBEclipseDoorController : LinkedWorldObject<EclipseDoorController, EclipseDoorVariableSyncer>
+internal class QSBEclipseDoorController : QSBRotatingElements<EclipseDoorController, EclipseDoorVariableSyncer>
 {
-	public override void SendInitialState(uint to) { }
+	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._lightSensors;
 
 	public override string ReturnLabel()
-		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value}\r\n- HasAuth:{NetworkBehaviour.hasAuthority}";
+		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value.Join()}\r\n- HasAuth:{NetworkBehaviour.hasAuthority}";
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.DoorPrefab;
-	protected override bool SpawnWithServerAuthority => true;
 }

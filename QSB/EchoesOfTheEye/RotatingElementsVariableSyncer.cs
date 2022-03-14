@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using QSB.AuthoritySync;
 using QSB.Utility.LinkedWorldObject;
 using QSB.Utility.VariableSync;
 using QSB.WorldSync;
@@ -10,16 +11,33 @@ namespace QSB.EchoesOfTheEye;
 internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVariableSyncer<Quaternion[]>, ILinkedNetworkBehaviour
 	where TWorldObject : IWorldObject
 {
+	public override void OnStartClient()
+	{
+		if (QSBCore.IsHost)
+		{
+			netIdentity.RegisterAuthQueue();
+		}
+
+		base.OnStartClient();
+	}
+
+	public override void OnStopClient()
+	{
+		if (QSBCore.IsHost)
+		{
+			netIdentity.UnregisterAuthQueue();
+		}
+
+		base.OnStopClient();
+	}
+
 	protected abstract Transform[] RotatingElements { get; }
 
 	protected override bool HasChanged()
 	{
 		var rotatingElements = RotatingElements;
-		if (Value == null)
-		{
-			Value = new Quaternion[rotatingElements.Length];
-			PrevValue = new Quaternion[rotatingElements.Length];
-		}
+		Value ??= new Quaternion[rotatingElements.Length];
+		PrevValue ??= new Quaternion[rotatingElements.Length];
 
 		for (var i = 0; i < rotatingElements.Length; i++)
 		{
