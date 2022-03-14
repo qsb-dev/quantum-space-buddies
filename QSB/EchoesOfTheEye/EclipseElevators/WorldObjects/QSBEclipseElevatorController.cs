@@ -1,15 +1,15 @@
 ﻿using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
-using QSB.WorldSync;
+using QSB.Utility.LinkedWorldObject;
+using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseElevators.WorldObjects;
 
-internal class QSBEclipseElevatorController : VariableSyncedWorldObject<EclipseElevatorController, EclipseElevatorVariableSyncer>
+internal class QSBEclipseElevatorController : LinkedWorldObject<EclipseElevatorController, EclipseElevatorVariableSyncer>
 {
-	public override void SendInitialState(uint to)
-	{
-
-	}
+	public override void SendInitialState(uint to) { }
 
 	public override string ReturnLabel()
-		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{Syncer.Value}\r\n- HasAuth:{Syncer.netIdentity.hasAuthority}";
+		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value}\r\n- HasAuth:{NetworkBehaviour.hasAuthority}";
+
+	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.ElevatorPrefab;
 }

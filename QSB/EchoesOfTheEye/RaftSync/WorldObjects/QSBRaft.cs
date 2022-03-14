@@ -7,28 +7,21 @@ using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using System.Linq;
 using System.Threading;
+using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 
-public class QSBRaft : WorldObject<RaftController>, ILinkedWorldObject<RaftTransformSync>
+public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>
 {
 	public override bool ShouldDisplayDebug() => false;
 
-	public RaftTransformSync NetworkBehaviour { get; private set; }
-	public void LinkTo(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (RaftTransformSync)networkBehaviour;
+	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.RaftPrefab;
 
 	private QSBLightSensor[] _lightSensors;
 
 	public override async UniTask Init(CancellationToken ct)
 	{
-		if (QSBCore.IsHost)
-		{
-			this.SpawnLinked(QSBNetworkManager.singleton.RaftPrefab);
-		}
-		else
-		{
-			await this.WaitForLink(ct);
-		}
+		await base.Init(ct);
 
 		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
 		_lightSensors = AttachedObject._lightSensors.Select(x => x.GetWorldObject<QSBLightSensor>()).ToArray();

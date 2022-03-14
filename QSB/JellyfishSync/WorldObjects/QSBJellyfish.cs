@@ -1,40 +1,16 @@
-﻿using Cysharp.Threading.Tasks;
-using Mirror;
-using QSB.JellyfishSync.Messages;
+﻿using QSB.JellyfishSync.Messages;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
 using QSB.Utility.LinkedWorldObject;
-using QSB.WorldSync;
-using System.Threading;
+using UnityEngine;
 
 namespace QSB.JellyfishSync.WorldObjects;
 
-public class QSBJellyfish : WorldObject<JellyfishController>, ILinkedWorldObject<JellyfishTransformSync>
+public class QSBJellyfish : LinkedWorldObject<JellyfishController, JellyfishTransformSync>
 {
 	public override bool ShouldDisplayDebug() => false;
 
-	public JellyfishTransformSync NetworkBehaviour { get; private set; }
-	public void LinkTo(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (JellyfishTransformSync)networkBehaviour;
-
-	public override async UniTask Init(CancellationToken ct)
-	{
-		if (QSBCore.IsHost)
-		{
-			this.SpawnLinked(QSBNetworkManager.singleton.JellyfishPrefab);
-		}
-		else
-		{
-			await this.WaitForLink(ct);
-		}
-	}
-
-	public override void OnRemoval()
-	{
-		if (QSBCore.IsHost)
-		{
-			NetworkServer.Destroy(NetworkBehaviour.gameObject);
-		}
-	}
+	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.JellyfishPrefab;
 
 	public override void SendInitialState(uint to) =>
 		this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });

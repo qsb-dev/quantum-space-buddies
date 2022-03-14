@@ -1,43 +1,18 @@
-﻿using Cysharp.Threading.Tasks;
-using Mirror;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
 using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
-using QSB.WorldSync;
 using System;
-using System.Threading;
 using UnityEngine;
 
 namespace QSB.OrbSync.WorldObjects;
 
-public class QSBOrb : WorldObject<NomaiInterfaceOrb>, ILinkedWorldObject<NomaiOrbTransformSync>
+public class QSBOrb : LinkedWorldObject<NomaiInterfaceOrb, NomaiOrbTransformSync>
 {
 	public override bool ShouldDisplayDebug() => false;
 
-	public NomaiOrbTransformSync NetworkBehaviour { get; private set; }
-	public void LinkTo(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (NomaiOrbTransformSync)networkBehaviour;
-
-	public override async UniTask Init(CancellationToken ct)
-	{
-		if (QSBCore.IsHost)
-		{
-			this.SpawnLinked(QSBNetworkManager.singleton.OrbPrefab);
-		}
-		else
-		{
-			await this.WaitForLink(ct);
-		}
-	}
-
-	public override void OnRemoval()
-	{
-		if (QSBCore.IsHost)
-		{
-			NetworkServer.Destroy(NetworkBehaviour.gameObject);
-		}
-	}
+	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.OrbPrefab;
 
 	public override void SendInitialState(uint to)
 	{

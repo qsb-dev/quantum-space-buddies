@@ -1,28 +1,29 @@
-﻿using QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
-using QSB.Utility.VariableSync;
+﻿using Mirror;
+using QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
+using QSB.Utility.LinkedWorldObject;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.VariableSync;
 
-internal class AirlockVariableSyncer : WorldObjectVariableSyncer<Vector3[], QSBGhostAirlock>
+internal class AirlockVariableSyncer : LinkedVariableSyncer<Vector3[], QSBGhostAirlock>
 {
-	protected override void Update()
+	protected override bool HasChanged()
 	{
-		base.Update();
+		var rotatingElements = WorldObject.AttachedObject._interface._rotatingElements;
+		Value = rotatingElements.Select(x => x.localRotation.eulerAngles).ToArray();
 
-		var rotatingElements = AttachedWorldObject.AttachedObject._interface._rotatingElements;
+		return base.HasChanged();
+	}
 
-		if (hasAuthority)
+	protected override void Deserialize(NetworkReader reader)
+	{
+		base.Deserialize(reader);
+
+		var rotatingElements = WorldObject.AttachedObject._interface._rotatingElements;
+		for (var i = 0; i < rotatingElements.Length; i++)
 		{
-			Value = rotatingElements.Select(x => x.localRotation.eulerAngles).ToArray();
-		}
-		else
-		{
-			for (var i = 0; i < rotatingElements.Length; i++)
-			{
-				rotatingElements[i].localRotation = Quaternion.Euler(Value[i]);
-			}
+			rotatingElements[i].localRotation = Quaternion.Euler(Value[i]);
 		}
 	}
 }
