@@ -10,10 +10,10 @@ internal class InitialStateMessage : QSBWorldObjectMessage<QSBEclipseCodeControl
 	private int _selectedDial;
 	private int[] _dialSelectedSymbols;
 
-	public InitialStateMessage()
+	public InitialStateMessage(EclipseCodeController4 eclipseCodeController)
 	{
-		_selectedDial = WorldObject.AttachedObject._selectedDial;
-		_dialSelectedSymbols = WorldObject.AttachedObject._dials.Select(x => x.GetSymbolSelected()).ToArray();
+		_selectedDial = eclipseCodeController._selectedDial;
+		_dialSelectedSymbols = eclipseCodeController._dials.Select(x => x.GetSymbolSelected()).ToArray();
 	}
 
 	public override void Serialize(NetworkWriter writer)
