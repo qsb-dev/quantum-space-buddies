@@ -1,6 +1,7 @@
-﻿using QSB.Utility.VariableSync;
+﻿using QSB.EchoesOfTheEye.EclipseDoors.WorldObjects;
+using QSB.Utility.VariableSync;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
 
-public class EclipseDoorVariableSyncer : WorldObjectVariableSyncer<Vector3> { }
+internal class EclipseDoorVariableSyncer : WorldObjectVariableSyncer<Vector3, QSBEclipseDoorController> { }

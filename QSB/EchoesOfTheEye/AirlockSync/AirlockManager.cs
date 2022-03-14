@@ -13,6 +13,6 @@ internal class AirlockManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		await QSBWorldSync.InitWithVariableSync<QSBGhostAirlock, GhostAirlock, AirlockVariableSyncer>(ct);
+		await QSBWorldSync.InitWithVariableSync<QSBGhostAirlock, GhostAirlock, AirlockVariableSyncer>(ct, QSBNetworkManager.singleton.AirlockPrefab);
 	}
 }

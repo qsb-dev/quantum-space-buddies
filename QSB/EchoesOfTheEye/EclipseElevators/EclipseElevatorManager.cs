@@ -23,6 +23,6 @@ internal class EclipseElevatorManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		await QSBWorldSync.InitWithVariableSync<QSBEclipseElevatorController, EclipseElevatorController, EclipseElevatorVariableSyncer>(ct);
+		await QSBWorldSync.InitWithVariableSync<QSBEclipseElevatorController, EclipseElevatorController, EclipseElevatorVariableSyncer>(ct, QSBNetworkManager.singleton.ElevatorPrefab);
 	}
 }

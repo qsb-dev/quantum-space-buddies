@@ -7,6 +7,7 @@ using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
+using QSB.EchoesOfTheEye.AirlockSync.VariableSync;
 using QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
 using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
@@ -48,6 +49,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject RaftPrefab { get; private set; }
 	public GameObject DoorPrefab { get; private set; }
 	public GameObject ElevatorPrefab { get; private set; }
+	public GameObject AirlockPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
 	private const int MaxConnections = 128;
@@ -127,6 +129,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		ElevatorPrefab = MakeNewNetworkObject(10, "NetworkEclipseElevator", typeof(EclipseElevatorVariableSyncer));
 		spawnPrefabs.Add(ElevatorPrefab);
+
+		AirlockPrefab = MakeNewNetworkObject(11, "NetworkGhostAirlock", typeof(AirlockVariableSyncer));
+		spawnPrefabs.Add(AirlockPrefab);
 
 		ConfigureNetworkManager();
 	}

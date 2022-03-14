@@ -3,12 +3,13 @@ using UnityEngine.SceneManagement;
 
 namespace QSB.Utility.VariableSync;
 
-public class WorldObjectVariableSyncer<T> : BaseVariableSyncer<T>, IWorldObjectVariableSyncer
+public class WorldObjectVariableSyncer<TSyncType, TWorldObjectType> : BaseVariableSyncer<TSyncType>, IWorldObjectVariableSyncer
+	where TWorldObjectType : IWorldObject
 {
-	public IWorldObject AttachedWorldObject { get; private set; }
+	public TWorldObjectType AttachedWorldObject { get; private set; }
 
 	public void Init(IWorldObject worldObject)
-		=> AttachedWorldObject = worldObject;
+		=> AttachedWorldObject = (TWorldObjectType)worldObject;
 
 	public override void OnStartClient()
 	{

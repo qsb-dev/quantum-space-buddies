@@ -307,7 +307,7 @@ public static class QSBWorldSync
 		}
 	}
 
-	public static async UniTask InitWithVariableSync<TWorldObject, TUnityObject, TVariableSyncer>(CancellationToken ct)
+	public static async UniTask InitWithVariableSync<TWorldObject, TUnityObject, TVariableSyncer>(CancellationToken ct, GameObject prefab)
 		where TWorldObject : VariableSyncedWorldObject<TUnityObject, TVariableSyncer>, new()
 		where TUnityObject : MonoBehaviour
 		where TVariableSyncer : IWorldObjectVariableSyncer
@@ -324,7 +324,7 @@ public static class QSBWorldSync
 		{
 			foreach (var item in allWorldObjects)
 			{
-				var networkObject = UnityEngine.Object.Instantiate(QSBNetworkManager.singleton.ElevatorPrefab);
+				var networkObject = UnityEngine.Object.Instantiate(prefab);
 				networkObject.SpawnWithServerAuthority();
 			}
 		}
