@@ -11,6 +11,7 @@ public class QSBJellyfish : LinkedWorldObject<JellyfishController, JellyfishTran
 	public override bool ShouldDisplayDebug() => false;
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.JellyfishPrefab;
+	protected override bool SpawnWithServerAuthority => false;
 
 	public override void SendInitialState(uint to) =>
 		this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });

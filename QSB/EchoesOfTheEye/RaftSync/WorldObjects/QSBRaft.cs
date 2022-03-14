@@ -16,6 +16,7 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>
 	public override bool ShouldDisplayDebug() => false;
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.RaftPrefab;
+	protected override bool SpawnWithServerAuthority => false;
 
 	private QSBLightSensor[] _lightSensors;
 

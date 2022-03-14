@@ -12,4 +12,5 @@ internal class QSBEclipseDoorController : LinkedWorldObject<EclipseDoorControlle
 		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value}\r\n- HasAuth:{NetworkBehaviour.hasAuthority}";
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.DoorPrefab;
+	protected override bool SpawnWithServerAuthority => true;
 }

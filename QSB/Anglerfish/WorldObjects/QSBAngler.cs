@@ -16,6 +16,7 @@ public class QSBAngler : LinkedWorldObject<AnglerfishController, AnglerTransform
 	private Vector3 _lastTargetPosition;
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.AnglerPrefab;
+	protected override bool SpawnWithServerAuthority => false;
 
 	public override void SendInitialState(uint to) =>
 		this.SendMessage(new AnglerDataMessage(this) { To = to });

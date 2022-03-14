@@ -9,4 +9,5 @@ internal class QSBGhostAirlock : LinkedWorldObject<GhostAirlock, AirlockVariable
 	public override void SendInitialState(uint to) { }
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.AirlockPrefab;
+	protected override bool SpawnWithServerAuthority => true;
 }
