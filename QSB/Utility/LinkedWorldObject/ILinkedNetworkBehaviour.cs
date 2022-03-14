@@ -1,13 +1,13 @@
 ﻿using QSB.WorldSync;
 
-namespace QSB.Utility.WorldObjectLink;
+namespace QSB.Utility.LinkedWorldObject;
 
 /// <summary>
 /// a network behaviour that is linked to a world object
 /// </summary>
-public interface ILinkedNetworkBehaviour<out TWorldObject>
+public interface ILinkedNetworkBehaviour<out TWorldObject> : INetworkBehaviour
 	where TWorldObject : IWorldObject
 {
 	TWorldObject WorldObject { get; }
-	void SetWorldObject(IWorldObject worldObject);
+	void LinkTo(IWorldObject worldObject);
 }

@@ -1,14 +1,13 @@
-﻿using Mirror;
-using QSB.WorldSync;
+﻿using QSB.WorldSync;
 
-namespace QSB.Utility.WorldObjectLink;
+namespace QSB.Utility.LinkedWorldObject;
 
 /// <summary>
 /// a world object that is linked to a network behaviour
 /// </summary>
 public interface ILinkedWorldObject<out TNetworkBehaviour> : IWorldObject
-	where TNetworkBehaviour : NetworkBehaviour
+	where TNetworkBehaviour : INetworkBehaviour
 {
 	TNetworkBehaviour NetworkBehaviour { get; }
-	void SetNetworkBehaviour(NetworkBehaviour networkBehaviour);
+	void LinkTo(INetworkBehaviour networkBehaviour);
 }

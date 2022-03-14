@@ -7,6 +7,7 @@ using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
+using QSB.Utility.LinkedWorldObject;
 using QSB.Utility.VariableSync;
 using System;
 using System.Collections.Generic;
@@ -87,6 +88,11 @@ public static class QSBWorldSync
 
 		AllObjectsAdded = true;
 		DebugLog.DebugWrite("World Objects added.", MessageType.Success);
+
+		if (!QSBCore.IsHost)
+		{
+			new RequestLinksMessage().Send();
+		}
 
 		await _objectsIniting.Values;
 		if (_cts == null)
