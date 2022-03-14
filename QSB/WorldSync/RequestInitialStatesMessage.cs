@@ -36,7 +36,8 @@ public class RequestInitialStatesMessage : QSBMessage
 
 		foreach (var worldObject in QSBWorldSync.GetWorldObjects())
 		{
-			worldObject.SendInitialState(to);
+			worldObject.Try("sending initial state", () =>
+				worldObject.SendInitialState(to));
 		}
 	}
 }
