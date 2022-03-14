@@ -1,16 +1,17 @@
-﻿using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
-using QSB.Utility.LinkedWorldObject;
+﻿using HarmonyLib;
+using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseElevators.WorldObjects;
 
-internal class QSBEclipseElevatorController : LinkedWorldObject<EclipseElevatorController, EclipseElevatorVariableSyncer>
+internal class QSBEclipseElevatorController : QSBRotatingElements<EclipseElevatorController, EclipseElevatorVariableSyncer>
 {
-	public override void SendInitialState(uint to) { }
+	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._lightSensors;
 
 	public override string ReturnLabel()
-		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value}\r\n- HasAuth:{NetworkBehaviour.hasAuthority}";
+		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value.Join()}\r\n- HasAuth:{NetworkBehaviour.hasAuthority}";
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.ElevatorPrefab;
-	protected override bool SpawnWithServerAuthority => true;
+	protected override bool SpawnWithServerAuthority => false;
 }
