@@ -3,33 +3,36 @@ using Mirror;
 using QSB.JellyfishSync.Messages;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
+using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using System.Threading;
-using UnityEngine;
 
 namespace QSB.JellyfishSync.WorldObjects;
 
-public class QSBJellyfish : WorldObject<JellyfishController>
+public class QSBJellyfish : WorldObject<JellyfishController>, ILinkedWorldObject<JellyfishTransformSync>
 {
 	public override bool ShouldDisplayDebug() => false;
 
-	public JellyfishTransformSync TransformSync;
+	public JellyfishTransformSync NetworkBehaviour { get; private set; }
+	public void LinkTo(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (JellyfishTransformSync)networkBehaviour;
 
 	public override async UniTask Init(CancellationToken ct)
 	{
 		if (QSBCore.IsHost)
 		{
-			NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab));
+			this.SpawnLinked(QSBNetworkManager.singleton.JellyfishPrefab);
 		}
-
-		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
+		else
+		{
+			await this.WaitForLink(ct);
+		}
 	}
 
 	public override void OnRemoval()
 	{
 		if (QSBCore.IsHost)
 		{
-			NetworkServer.Destroy(TransformSync.gameObject);
+			NetworkServer.Destroy(NetworkBehaviour.gameObject);
 		}
 	}
 

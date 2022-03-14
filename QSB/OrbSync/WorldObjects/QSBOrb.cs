@@ -4,35 +4,38 @@ using QSB.Messaging;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
 using QSB.Utility;
+using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using System;
 using System.Threading;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace QSB.OrbSync.WorldObjects;
 
-public class QSBOrb : WorldObject<NomaiInterfaceOrb>
+public class QSBOrb : WorldObject<NomaiInterfaceOrb>, ILinkedWorldObject<NomaiOrbTransformSync>
 {
 	public override bool ShouldDisplayDebug() => false;
 
-	public NomaiOrbTransformSync TransformSync;
+	public NomaiOrbTransformSync NetworkBehaviour { get; private set; }
+	public void LinkTo(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (NomaiOrbTransformSync)networkBehaviour;
 
 	public override async UniTask Init(CancellationToken ct)
 	{
 		if (QSBCore.IsHost)
 		{
-			NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.OrbPrefab));
+			this.SpawnLinked(QSBNetworkManager.singleton.OrbPrefab);
 		}
-
-		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
+		else
+		{
+			await this.WaitForLink(ct);
+		}
 	}
 
 	public override void OnRemoval()
 	{
 		if (QSBCore.IsHost)
 		{
-			NetworkServer.Destroy(TransformSync.gameObject);
+			NetworkServer.Destroy(NetworkBehaviour.gameObject);
 		}
 	}
 

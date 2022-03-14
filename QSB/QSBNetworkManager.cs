@@ -316,13 +316,13 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			// stop dragging for the orbs this player was dragging
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
-				if (qsbOrb.TransformSync == null)
+				if (qsbOrb.NetworkBehaviour == null)
 				{
 					DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
 					continue;
 				}
 
-				var identity = qsbOrb.TransformSync.netIdentity;
+				var identity = qsbOrb.NetworkBehaviour.netIdentity;
 				if (identity.connectionToClient == conn)
 				{
 					qsbOrb.SetDragging(false);

@@ -27,7 +27,7 @@ public class QSBRaft : WorldObject<RaftController>, ILinkedWorldObject<RaftTrans
 		}
 		else
 		{
-			await this.WaitForLink();
+			await this.WaitForLink(ct);
 		}
 
 		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
