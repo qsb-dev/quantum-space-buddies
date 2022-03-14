@@ -14,16 +14,11 @@ public class WorldObjectVariableSyncer<TSyncType, TWorldObjectType> : BaseVariab
 	public override void OnStartClient()
 	{
 		VariableSyncStorage._instances.Add(this);
-		DontDestroyOnLoad(this);
 		base.OnStartClient();
 	}
 
 	public override void OnStopClient()
 	{
 		VariableSyncStorage._instances.Remove(this);
-		// DontDestroyOnLoad moves GOs to the scene "DontDestroyOnLoad"
-		// so to undo it we can just move them back
-		SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());
-		base.OnStopClient();
 	}
 }

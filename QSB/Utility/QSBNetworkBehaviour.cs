@@ -12,6 +12,8 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 	private double _lastSendTime;
 	private byte[] _lastKnownData;
 
+	public override void OnStartClient() => DontDestroyOnLoad(gameObject);
+
 	/// <summary>
 	/// checked before serializing
 	/// </summary>
