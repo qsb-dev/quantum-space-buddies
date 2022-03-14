@@ -4,12 +4,7 @@ using System;
 
 namespace QSB.Utility;
 
-public interface INetworkBehaviour
-{
-	uint netId { get; }
-}
-
-public abstract class QSBNetworkBehaviour : NetworkBehaviour, INetworkBehaviour
+public abstract class QSBNetworkBehaviour : NetworkBehaviour
 {
 	protected virtual float SendInterval => 0.1f;
 	protected virtual bool UseReliableRpc => false;

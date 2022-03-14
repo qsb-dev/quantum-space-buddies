@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using Mirror;
+using QSB.Messaging;
 using QSB.WorldSync;
 
 namespace QSB.Utility.LinkedWorldObject;
@@ -19,7 +20,7 @@ public class RequestLinksMessage : QSBMessage
 	{
 		DebugLog.DebugWrite($"sending world object links to {to}");
 
-		foreach (var worldObject in QSBWorldSync.GetWorldObjects<ILinkedWorldObject<INetworkBehaviour>>())
+		foreach (var worldObject in QSBWorldSync.GetWorldObjects<ILinkedWorldObject<NetworkBehaviour>>())
 		{
 			new LinkMessage(worldObject, worldObject.NetworkBehaviour) { To = to }.Send();
 		}

@@ -3,18 +3,19 @@ using Mirror;
 using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
+using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using System.Linq;
 using System.Threading;
-using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 
-public class QSBRaft : WorldObject<RaftController>
+public class QSBRaft : WorldObject<RaftController>, ILinkedWorldObject<RaftTransformSync>
 {
 	public override bool ShouldDisplayDebug() => false;
 
-	public RaftTransformSync TransformSync;
+	public RaftTransformSync NetworkBehaviour { get; private set; }
+	public void LinkTo(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (RaftTransformSync)networkBehaviour;
 
 	private QSBLightSensor[] _lightSensors;
 
@@ -22,10 +23,12 @@ public class QSBRaft : WorldObject<RaftController>
 	{
 		if (QSBCore.IsHost)
 		{
-			NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.RaftPrefab));
+			this.SpawnLinked(QSBNetworkManager.singleton.RaftPrefab);
 		}
-
-		await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
+		else
+		{
+			await this.WaitForLink();
+		}
 
 		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
 		_lightSensors = AttachedObject._lightSensors.Select(x => x.GetWorldObject<QSBLightSensor>()).ToArray();
@@ -40,7 +43,7 @@ public class QSBRaft : WorldObject<RaftController>
 	{
 		if (QSBCore.IsHost)
 		{
-			NetworkServer.Destroy(TransformSync.gameObject);
+			NetworkServer.Destroy(NetworkBehaviour.gameObject);
 		}
 
 		foreach (var lightSensor in _lightSensors)
@@ -53,7 +56,7 @@ public class QSBRaft : WorldObject<RaftController>
 	{
 		if (AttachedObject.IsPlayerRiding())
 		{
-			TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+			NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
 		}
 	}
 

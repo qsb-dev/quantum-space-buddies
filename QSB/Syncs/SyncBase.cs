@@ -45,7 +45,7 @@ public abstract class SyncBase : QSBNetworkTransform
 			return false;
 		}
 
-		if (!QSBWorldSync.AllObjectsAdded)
+		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return false;
 		}
