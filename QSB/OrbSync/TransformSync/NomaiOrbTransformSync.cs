@@ -3,7 +3,6 @@ using QSB.OrbSync.WorldObjects;
 using QSB.Syncs.Unsectored.Transforms;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync;
@@ -24,9 +23,6 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 
 	protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
 	protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
-
-
-	private static readonly List<NomaiOrbTransformSync> _instances = new();
 
 	public override void OnStartClient()
 	{
