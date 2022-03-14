@@ -24,6 +24,6 @@ internal class DoorManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		await QSBWorldSync.InitWithVariableSync<QSBEclipseDoorController, EclipseDoorController, EclipseDoorVariableSyncer>(ct);
+		await QSBWorldSync.InitWithVariableSync<QSBEclipseDoorController, EclipseDoorController, EclipseDoorVariableSyncer>(ct, QSBNetworkManager.singleton.DoorPrefab);
 	}
 }
