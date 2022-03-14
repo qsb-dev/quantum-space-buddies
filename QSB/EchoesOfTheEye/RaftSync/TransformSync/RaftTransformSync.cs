@@ -7,14 +7,14 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
 
-public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour<QSBRaft>
+public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour
 {
 	protected override bool UseInterpolation => false;
 
-	public QSBRaft WorldObject { get; private set; }
-	public void LinkTo(IWorldObject worldObject) => WorldObject = (QSBRaft)worldObject;
+	private QSBRaft _qsbRaft;
+	public void SetWorldObject(IWorldObject worldObject) => _qsbRaft = (QSBRaft)worldObject;
 
-	protected override OWRigidbody InitAttachedRigidbody() => WorldObject.AttachedObject._raftBody;
+	protected override OWRigidbody InitAttachedRigidbody() => _qsbRaft.AttachedObject._raftBody;
 
 	public override void OnStartClient()
 	{

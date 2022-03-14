@@ -9,16 +9,16 @@ using UnityEngine;
 
 namespace QSB.JellyfishSync.TransformSync;
 
-public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour<QSBJellyfish>
+public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour
 {
 	protected override bool UseInterpolation => false;
 	protected override bool AllowInactiveAttachedObject => true; // since they deactivate when suspended
 
-	public QSBJellyfish WorldObject { get; private set; }
-	public void LinkTo(IWorldObject worldObject) => WorldObject = (QSBJellyfish)worldObject;
+	private QSBJellyfish _qsbJellyfish;
+	public void SetWorldObject(IWorldObject worldObject) => _qsbJellyfish = (QSBJellyfish)worldObject;
 
 	protected override OWRigidbody InitAttachedRigidbody()
-		=> WorldObject.AttachedObject._jellyfishBody;
+		=> _qsbJellyfish.AttachedObject._jellyfishBody;
 
 	public override void OnStartClient()
 	{
@@ -46,7 +46,7 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 	protected override void Init()
 	{
 		base.Init();
-		SetReferenceTransform(WorldObject.AttachedObject._planetBody.transform);
+		SetReferenceTransform(_qsbJellyfish.AttachedObject._planetBody.transform);
 
 		AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 		AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
@@ -66,13 +66,13 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 
 	protected override void Serialize(NetworkWriter writer)
 	{
-		writer.Write(WorldObject.AttachedObject._isRising);
+		writer.Write(_qsbJellyfish.AttachedObject._isRising);
 		base.Serialize(writer);
 	}
 
 	protected override void Deserialize(NetworkReader reader)
 	{
-		WorldObject.SetIsRising(reader.Read<bool>());
+		_qsbJellyfish.SetIsRising(reader.Read<bool>());
 		base.Deserialize(reader);
 	}
 
@@ -98,7 +98,7 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 
 		base.OnRenderObject();
 
-		var jellyfish = WorldObject.AttachedObject;
+		var jellyfish = _qsbJellyfish.AttachedObject;
 		var position = ReferenceTransform.position;
 		var dir = Vector3.Normalize(jellyfish.transform.position - position);
 		// Popcron.Gizmos.Line(position + dir * jellyfish._lowerLimit, position + dir * jellyfish._upperLimit, Color.magenta);

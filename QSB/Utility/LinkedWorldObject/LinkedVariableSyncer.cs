@@ -6,9 +6,9 @@ namespace QSB.Utility.LinkedWorldObject;
 /// <summary>
 /// helper implementation of the interface
 /// </summary>
-public abstract class LinkedVariableSyncer<T, TWorldObject> : BaseVariableSyncer<T>, ILinkedNetworkBehaviour<TWorldObject>
+public abstract class LinkedVariableSyncer<T, TWorldObject> : BaseVariableSyncer<T>, ILinkedNetworkBehaviour
 	where TWorldObject : IWorldObject
 {
-	public TWorldObject WorldObject { get; private set; }
-	public void LinkTo(IWorldObject worldObject) => WorldObject = (TWorldObject)worldObject;
+	protected TWorldObject WorldObject { get; private set; }
+	public void SetWorldObject(IWorldObject worldObject) => WorldObject = (TWorldObject)worldObject;
 }

@@ -1,7 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
-using QSB.WorldSync;
-using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -10,17 +8,24 @@ namespace QSB.Utility.LinkedWorldObject;
 public static class Extensions
 {
 	/// <summary>
+	/// link a world object and a network behaviour
+	/// </summary>
+	public static void LinkTo(this ILinkedWorldObject<NetworkBehaviour> worldObject, ILinkedNetworkBehaviour networkBehaviour)
+	{
+		worldObject.SetNetworkBehaviour((NetworkBehaviour)networkBehaviour);
+		networkBehaviour.SetWorldObject(worldObject);
+	}
+
+	/// <summary>
 	/// link a world object and network object, then spawn it.
 	/// (host only)
 	/// </summary>
 	public static void SpawnLinked(this ILinkedWorldObject<NetworkBehaviour> worldObject, GameObject prefab)
 	{
 		var go = Object.Instantiate(prefab);
-		var networkIdentity = go.GetComponent<NetworkIdentity>();
-		var networkBehaviour = networkIdentity.NetworkBehaviours.OfType<ILinkedNetworkBehaviour<IWorldObject>>().First();
+		var networkBehaviour = go.GetComponent<ILinkedNetworkBehaviour>();
 
-		worldObject.LinkTo((NetworkBehaviour)networkBehaviour);
-		networkBehaviour.LinkTo(worldObject);
+		worldObject.LinkTo(networkBehaviour);
 
 		NetworkServer.Spawn(go);
 	}

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.OrbSync.TransformSync;
 
-public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBehaviour<QSBOrb>
+public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBehaviour
 {
 	/// <summary>
 	/// normally prints error when attached object is null.
@@ -19,11 +19,11 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 	protected override bool UseInterpolation => true;
 	protected override float DistanceChangeThreshold => 1f;
 
-	public QSBOrb WorldObject { get; private set; }
-	public void LinkTo(IWorldObject worldObject) => WorldObject = (QSBOrb)worldObject;
+	private QSBOrb _qsbOrb;
+	public void SetWorldObject(IWorldObject worldObject) => _qsbOrb = (QSBOrb)worldObject;
 
-	protected override Transform InitLocalTransform() => WorldObject.AttachedObject.transform;
-	protected override Transform InitRemoteTransform() => WorldObject.AttachedObject.transform;
+	protected override Transform InitLocalTransform() => _qsbOrb.AttachedObject.transform;
+	protected override Transform InitRemoteTransform() => _qsbOrb.AttachedObject.transform;
 
 
 	private static readonly List<NomaiOrbTransformSync> _instances = new();
@@ -83,6 +83,6 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 	{
 		base.ApplyToAttached();
 
-		WorldObject.AttachedObject.SetTargetPosition(AttachedTransform.position);
+		_qsbOrb.AttachedObject.SetTargetPosition(AttachedTransform.position);
 	}
 }

@@ -14,7 +14,7 @@ public abstract class LinkedWorldObject<T, TNetworkBehaviour> : WorldObject<T>, 
 	where TNetworkBehaviour : NetworkBehaviour
 {
 	public TNetworkBehaviour NetworkBehaviour { get; private set; }
-	public void LinkTo(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (TNetworkBehaviour)networkBehaviour;
+	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (TNetworkBehaviour)networkBehaviour;
 
 	protected abstract GameObject NetworkObjectPrefab { get; }
 

@@ -10,5 +10,5 @@ public interface ILinkedWorldObject<out TNetworkBehaviour> : IWorldObject
 	where TNetworkBehaviour : NetworkBehaviour
 {
 	TNetworkBehaviour NetworkBehaviour { get; }
-	void LinkTo(NetworkBehaviour networkBehaviour);
+	void SetNetworkBehaviour(NetworkBehaviour networkBehaviour);
 }
