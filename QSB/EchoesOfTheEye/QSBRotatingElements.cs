@@ -19,6 +19,7 @@ internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 
 	protected abstract IEnumerable<SingleLightSensor> LightSensors { get; }
 	private QSBLightSensor[] _qsbLightSensors;
+	private int _litSensors;
 
 	public override async UniTask Init(CancellationToken ct)
 	{
@@ -45,8 +46,23 @@ internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 		}
 	}
 
-	private void OnDetectLocalLight() => NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
-	private void OnDetectLocalDarkness() => NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+	private void OnDetectLocalLight()
+	{
+		_litSensors++;
+		if (_litSensors == 1)
+		{
+			NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
+		}
+	}
+
+	private void OnDetectLocalDarkness()
+	{
+		_litSensors--;
+		if (_litSensors == 0)
+		{
+			NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+		}
+	}
 
 	protected override bool SpawnWithServerAuthority => false;
 }

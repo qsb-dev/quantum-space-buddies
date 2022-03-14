@@ -36,11 +36,8 @@ internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVaria
 	protected override bool HasChanged()
 	{
 		var rotatingElements = RotatingElements;
-		if (Value == null)
-		{
-			Value = new Quaternion[rotatingElements.Length];
-			PrevValue = new Quaternion[rotatingElements.Length];
-		}
+		Value ??= new Quaternion[rotatingElements.Length];
+		PrevValue ??= new Quaternion[rotatingElements.Length];
 
 		for (var i = 0; i < rotatingElements.Length; i++)
 		{
