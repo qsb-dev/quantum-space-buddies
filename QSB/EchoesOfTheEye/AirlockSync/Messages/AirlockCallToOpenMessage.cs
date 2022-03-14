@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.Messages;
 
-internal class AirlockCallToOpenMessage : QSBWorldObjectMessage<QSBGhostAirlock, bool>
+internal class AirlockCallToOpenMessage : QSBWorldObjectMessage<QSBAirlockInterface, bool>
 {
 	public AirlockCallToOpenMessage(bool front) : base(front) { }
 
 	public override void OnReceiveRemote()
 	{
-		var airlockInterface = WorldObject.AttachedObject._interface;
+		var airlockInterface = WorldObject.AttachedObject;
 
 		if (Data)
 		{

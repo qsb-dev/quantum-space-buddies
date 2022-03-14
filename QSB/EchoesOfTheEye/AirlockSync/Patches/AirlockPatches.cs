@@ -16,8 +16,7 @@ internal class AirlockPatches : QSBPatch
 	[HarmonyPatch(typeof(AirlockInterface), nameof(AirlockInterface.OnCallToOpenFront))]
 	public static bool Front(AirlockInterface __instance)
 	{
-		var worldObject = QSBWorldSync.GetWorldObjects<QSBGhostAirlock>().First(x => x.AttachedObject._interface == __instance);
-		worldObject.SendMessage(new AirlockCallToOpenMessage(true));
+		__instance.GetWorldObject<QSBAirlockInterface>().SendMessage(new AirlockCallToOpenMessage(true));
 		return true;
 	}
 
@@ -25,8 +24,7 @@ internal class AirlockPatches : QSBPatch
 	[HarmonyPatch(typeof(AirlockInterface), nameof(AirlockInterface.OnCallToOpenBack))]
 	public static bool Back(AirlockInterface __instance)
 	{
-		var worldObject = QSBWorldSync.GetWorldObjects<QSBGhostAirlock>().First(x => x.AttachedObject._interface == __instance);
-		worldObject.SendMessage(new AirlockCallToOpenMessage(false));
+		__instance.GetWorldObject<QSBAirlockInterface>().SendMessage(new AirlockCallToOpenMessage(false));
 		return true;
 	}
 }
