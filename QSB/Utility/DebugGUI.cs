@@ -1,5 +1,4 @@
 ﻿using QSB.ClientServerStateSync;
-using QSB.OrbSync;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
@@ -129,7 +128,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		#region Column2 - Player data
 
-		WriteLine(2, $"OrbList count : {OrbManager.Orbs.Count}");
 		WriteLine(2, $"Player data :");
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
