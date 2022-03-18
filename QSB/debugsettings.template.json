@@ -10,5 +10,6 @@
   "drawLabels": false,
   "drawQuantumVisibilityObjects": false,
   "skipTitleScreen": false,
-  "greySkybox": false
+  "greySkybox": false,
+  "drawGhostAI": false
 }
