@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeTool;
@@ -12,6 +14,45 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
 internal class LightSensorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(SingleLightSensor.OnSectorOccupantsUpdated))]
+	private static bool OnSectorOccupantsUpdated(SingleLightSensor __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		var flag = __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe);
+		if (flag && !__instance.enabled)
+		{
+			__instance.enabled = true;
+			__instance.GetWorldObject<QSBLightSensor>().SendMessage(new SetEnabledMessage(true));
+			__instance._lightDetector.GetShape().enabled = true;
+			if (__instance._preserveStateWhileDisabled)
+			{
+				__instance._fixedUpdateFrameDelayCount = 10;
+			}
+		}
+		else if (!flag && __instance.enabled)
+		{
+			__instance.enabled = false;
+			__instance.GetWorldObject<QSBLightSensor>().SendMessage(new SetEnabledMessage(false));
+			__instance._lightDetector.GetShape().enabled = false;
+			if (!__instance._preserveStateWhileDisabled)
+			{
+				if (__instance._illuminated)
+				{
+					__instance.OnDetectDarkness.Invoke();
+				}
+
+				__instance._illuminated = false;
+			}
+		}
+
+		return false;
+	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SingleLightSensor.UpdateIllumination))]
