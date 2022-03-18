@@ -8,11 +8,11 @@ namespace QSB.Player.Messages;
 /// <summary>
 /// always sent by host
 /// </summary>
-internal class PlayerKickMessage : QSBMessage<KickReason>
+internal class PlayerKickMessage : QSBMessage<string>
 {
 	private uint PlayerId;
 
-	public PlayerKickMessage(uint playerId, KickReason reason) : base(reason) =>
+	public PlayerKickMessage(uint playerId, string reason) : base(reason) =>
 		PlayerId = playerId;
 
 	public override void Serialize(NetworkWriter writer)

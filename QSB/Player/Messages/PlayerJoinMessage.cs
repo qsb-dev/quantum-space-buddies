@@ -46,28 +46,28 @@ public class PlayerJoinMessage : QSBMessage
 			if (QSBVersion != QSBCore.QSBVersion)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong QSB version. (Client:{QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
-				new PlayerKickMessage(From, KickReason.QSBVersionNotMatching).Send();
+				new PlayerKickMessage(From, $"QSB version does not match. (Client:{QSBVersion}, Server:{QSBCore.QSBVersion})").Send();
 				return;
 			}
 
 			if (GameVersion != QSBCore.GameVersion)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game version. (Client:{GameVersion}, Server:{QSBCore.GameVersion})", MessageType.Error);
-				new PlayerKickMessage(From, KickReason.GameVersionNotMatching).Send();
+				new PlayerKickMessage(From, $"Outer Wilds version does not match. (Client:{GameVersion}, Server:{QSBCore.GameVersion})").Send();
 				return;
 			}
 
 			if (DlcInstalled != QSBCore.DLCInstalled)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong DLC installation state. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
-				new PlayerKickMessage(From, KickReason.DLCNotMatching).Send();
+				new PlayerKickMessage(From, $"DLC installation state does not match. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})").Send();
 				return;
 			}
 
 			if (QSBPlayerManager.PlayerList.Any(x => x.EyeState >= EyeState.Observatory))
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting too late into eye scene.", MessageType.Error);
-				new PlayerKickMessage(From, KickReason.InEye).Send();
+				new PlayerKickMessage(From, "Game has progressed too far.").Send();
 				return;
 			}
 		}
