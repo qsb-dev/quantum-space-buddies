@@ -2,6 +2,7 @@
 using HarmonyLib;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Patches;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ internal class GhostPartyDirectorPatches : QSBPatch
 		}
 
 		var index = Random.Range(0, __instance._ghostsWaitingToAmbush.Count);
+		DebugLog.DebugWrite($"Unlocking ghost {index} for ambush.");
 		var ghost = __instance._ghostsWaitingToAmbush[index].GetWorldObject<QSBGhostBrain>();
 		(ghost.GetAction(GhostAction.Name.PartyHouse) as QSBPartyHouseAction).AllowChasePlayer();
 		ghost.HintPlayerLocation();
@@ -47,6 +49,9 @@ internal class GhostPartyDirectorPatches : QSBPatch
 		{
 			return false;
 		}
+
+		DebugLog.DebugWrite($"OnEnterAmbushTrigger");
+
 		if (hitObj.CompareTag("PlayerDetector"))
 		{
 			__instance._ambushTriggeredThisLoop = true;

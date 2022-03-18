@@ -32,7 +32,7 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public override string ReturnLabel()
 	{
-		var label = $"Name:{AttachedObject.ghostName}\r\nCurrent Action:{_currentAction?.GetName()}";
+		var label = $"Name:{AttachedObject.ghostName}\r\nCurrent Action:{AttachedObject.GetCurrentActionName()}";
 
 		return label;
 	}

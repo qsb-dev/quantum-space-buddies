@@ -20,9 +20,9 @@ internal class GhostBrainPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(GhostBrain.GetCurrentActionName))]
-	public static bool GetCurrentActionName(GhostBrain __instance)
+	public static bool GetCurrentActionName(GhostBrain __instance, ref GhostAction.Name __result)
 	{
-		__instance.GetWorldObject<QSBGhostBrain>().GetCurrentActionName();
+		__result = __instance.GetWorldObject<QSBGhostBrain>().GetCurrentActionName();
 		return false;
 	}
 
@@ -44,9 +44,9 @@ internal class GhostBrainPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(GhostBrain.GetThreatAwareness))]
-	public static bool GetThreatAwareness(GhostBrain __instance)
+	public static bool GetThreatAwareness(GhostBrain __instance, ref GhostData.ThreatAwareness __result)
 	{
-		__instance.GetWorldObject<QSBGhostBrain>().GetThreatAwareness();
+		__result = __instance.GetWorldObject<QSBGhostBrain>().GetThreatAwareness();
 		return false;
 	}
 
@@ -116,9 +116,17 @@ internal class GhostBrainPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(GhostBrain.HearGhostCall))]
-	public static bool HearGhostCall(GhostBrain __instance, Vector3 playerLocalPosition, float reactDelay, bool playResponseAudio)
+	public static bool HearGhostCall(GhostBrain __instance, Vector3 playerLocalPosition, float reactDelay, bool playResponseAudio, ref bool __result)
 	{
-		__instance.GetWorldObject<QSBGhostBrain>().HearGhostCall(playerLocalPosition, reactDelay, playResponseAudio);
+		__result = __instance.GetWorldObject<QSBGhostBrain>().HearGhostCall(playerLocalPosition, reactDelay, playResponseAudio);
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(GhostBrain.HearCallForHelp))]
+	public static bool HearCallForHelp(GhostBrain __instance, Vector3 playerLocalPosition, float reactDelay, ref bool __result)
+	{
+		__result = __instance.GetWorldObject<QSBGhostBrain>().HearCallForHelp(playerLocalPosition, reactDelay);
 		return false;
 	}
 
