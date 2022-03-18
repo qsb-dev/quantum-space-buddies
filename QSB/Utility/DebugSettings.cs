@@ -46,4 +46,8 @@ public class DebugSettings
 	[JsonProperty("greySkybox")]
 	private bool _greySkybox;
 	public bool GreySkybox => DebugMode && _greySkybox;
+
+	[JsonProperty("drawGhostAI")]
+	private bool _drawGhostAI;
+	public bool DrawGhostAI => DebugMode && _drawGhostAI;
 }

@@ -1,4 +1,5 @@
 ﻿using QSB.ClientServerStateSync;
+using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.OrbSync;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
@@ -252,10 +253,36 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		#endregion
 
+		DrawGhostLabels();
 		DrawWorldObjectLabels();
 	}
 
-	public void OnRenderObject() => DrawWorldObjectLines();
+	public void OnRenderObject()
+	{
+		DrawGhostLines();
+		DrawWorldObjectLines();
+	}
+
+	private static void DrawGhostLabels()
+	{
+		if (!QSBCore.DebugSettings.DrawGhostAI)
+		{
+			return;
+		}
+
+		foreach (var obj in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
+		{
+			if (obj.AttachedObject == null)
+			{
+				return;
+			}
+
+			if (obj.ShouldDisplayDebug())
+			{
+				DrawLabel(obj.AttachedObject.transform, obj.ReturnLabel());
+			}
+		}
+	}
 
 	private static void DrawWorldObjectLabels()
 	{
@@ -264,7 +291,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		foreach (var obj in QSBWorldSync.GetWorldObjects())
+		foreach (var obj in QSBWorldSync.GetWorldObjects().Where(x => x is not QSBGhostBrain))
 		{
 			if (obj.AttachedObject == null)
 			{
@@ -285,7 +312,28 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		foreach (var obj in QSBWorldSync.GetWorldObjects())
+		foreach (var obj in QSBWorldSync.GetWorldObjects().Where(x => x is not QSBGhostBrain))
+		{
+			if (obj.AttachedObject == null)
+			{
+				return;
+			}
+
+			if (obj.ShouldDisplayDebug())
+			{
+				obj.DisplayLines();
+			}
+		}
+	}
+
+	private static void DrawGhostLines()
+	{
+		if (!QSBCore.DebugSettings.DrawGhostAI)
+		{
+			return;
+		}
+
+		foreach (var obj in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
 		{
 			if (obj.AttachedObject == null)
 			{
