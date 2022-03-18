@@ -422,18 +422,19 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		{
 			DebugLog.DebugWrite("intentional disconnect. dont show popup");
 			_intentionalDisconnect = false;
-			return;
 		}
-
-		PopupOK += () =>
+		else
 		{
-			if (QSBSceneManager.IsInUniverse)
+			PopupOK += () =>
 			{
-				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
-			}
-		};
+				if (QSBSceneManager.IsInUniverse)
+				{
+					LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
+				}
+			};
 
-		OpenInfoPopup($"Client disconnected with error!\r\n{error}", "OK");
+			OpenInfoPopup($"Client disconnected with error!\r\n{error}", "OK");
+		}
 
 		SetButtonActive(DisconnectButton, false);
 		SetButtonActive(ConnectButton, true);
