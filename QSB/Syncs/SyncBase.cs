@@ -45,7 +45,7 @@ public abstract class SyncBase : QSBNetworkTransform
 			return false;
 		}
 
-		if (!QSBWorldSync.AllObjectsAdded)
+		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return false;
 		}
@@ -124,6 +124,7 @@ public abstract class SyncBase : QSBNetworkTransform
 
 	public override void OnStartClient()
 	{
+		base.OnStartClient();
 		if (IsPlayerObject)
 		{
 			// get player objects spawned before this object (or is this one)
@@ -133,7 +134,6 @@ public abstract class SyncBase : QSBNetworkTransform
 				.MaxBy(x => x.PlayerId);
 		}
 
-		DontDestroyOnLoad(gameObject);
 		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 	}
 

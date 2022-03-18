@@ -7,6 +7,9 @@ using QSB.Anglerfish.TransformSync;
 using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
+using QSB.EchoesOfTheEye.AirlockSync.VariableSync;
+using QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
+using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
@@ -43,6 +46,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject JellyfishPrefab { get; private set; }
 	public GameObject OccasionalPrefab { get; private set; }
 	public GameObject RaftPrefab { get; private set; }
+	public GameObject DoorPrefab { get; private set; }
+	public GameObject ElevatorPrefab { get; private set; }
+	public GameObject AirlockPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
 	private const int MaxConnections = 128;
@@ -117,6 +123,15 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		RaftPrefab = MakeNewNetworkObject(8, "NetworkRaft", typeof(RaftTransformSync));
 		spawnPrefabs.Add(RaftPrefab);
 
+		DoorPrefab = MakeNewNetworkObject(9, "NetworkEclipseDoor", typeof(EclipseDoorVariableSyncer));
+		spawnPrefabs.Add(DoorPrefab);
+
+		ElevatorPrefab = MakeNewNetworkObject(10, "NetworkEclipseElevator", typeof(EclipseElevatorVariableSyncer));
+		spawnPrefabs.Add(ElevatorPrefab);
+
+		AirlockPrefab = MakeNewNetworkObject(11, "NetworkGhostAirlock", typeof(AirlockVariableSyncer));
+		spawnPrefabs.Add(AirlockPrefab);
+
 		ConfigureNetworkManager();
 	}
 
@@ -152,17 +167,15 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	/// this works by calling Unload(false) and then reloading the AssetBundle,
 	/// which makes LoadAsset give you a new resource.
 	/// see https://docs.unity3d.com/Manual/AssetBundles-Native.html.
-	private static GameObject MakeNewNetworkObject(int assetId, string name, Type transformSyncType)
+	private static GameObject MakeNewNetworkObject(int assetId, string name, Type networkBehaviourType)
 	{
 		var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/empty");
 		var template = bundle.LoadAsset<GameObject>("Assets/Prefabs/Empty.prefab");
 		bundle.Unload(false);
 
-		DebugLog.DebugWrite($"MakeNewNetworkObject - prefab id {template.GetInstanceID()} "
-		                    + $"for {assetId} {name} {transformSyncType.Name}");
 		template.name = name;
 		template.AddComponent<NetworkIdentity>().SetValue("m_AssetId", assetId.ToGuid().ToString("N"));
-		template.AddComponent(transformSyncType);
+		template.AddComponent(networkBehaviourType);
 		return template;
 	}
 
@@ -300,13 +313,13 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			// stop dragging for the orbs this player was dragging
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
-				if (qsbOrb.TransformSync == null)
+				if (qsbOrb.NetworkBehaviour == null)
 				{
 					DebugLog.ToConsole($"{qsbOrb} TransformSync == null??????????", MessageType.Warning);
 					continue;
 				}
 
-				var identity = qsbOrb.TransformSync.netIdentity;
+				var identity = qsbOrb.NetworkBehaviour.netIdentity;
 				if (identity.connectionToClient == conn)
 				{
 					qsbOrb.SetDragging(false);

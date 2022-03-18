@@ -21,8 +21,8 @@ public class RaftPatches : QSBPatch
 		__instance._interactReceiver.SetInteractionEnabled(false);
 
 		var qsbRaft = __instance.GetWorldObject<QSBRaft>();
-		qsbRaft.TransformSync.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
-		Delay.RunWhen(() => qsbRaft.TransformSync.hasAuthority, () =>
+		qsbRaft.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+		Delay.RunWhen(() => qsbRaft.NetworkBehaviour.hasAuthority, () =>
 		{
 			var normalized = Vector3.ProjectOnPlane(Locator.GetPlayerCamera().transform.forward, __instance.transform.up).normalized;
 			__instance._raftBody.AddVelocityChange(normalized * 5f);

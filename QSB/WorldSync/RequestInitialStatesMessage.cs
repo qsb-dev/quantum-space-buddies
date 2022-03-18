@@ -20,8 +20,6 @@ public class RequestInitialStatesMessage : QSBMessage
 
 	private static void SendInitialStates(uint to)
 	{
-		DebugLog.DebugWrite($"sending initial states to {to}");
-
 		QSBWorldSync.DialogueConditions.ForEach(condition
 			=> new DialogueConditionMessage(condition.Key, condition.Value) { To = to }.Send());
 
@@ -36,7 +34,10 @@ public class RequestInitialStatesMessage : QSBMessage
 
 		foreach (var worldObject in QSBWorldSync.GetWorldObjects())
 		{
-			worldObject.SendInitialState(to);
+			worldObject.Try("sending initial state", () =>
+				worldObject.SendInitialState(to));
 		}
+
+		DebugLog.DebugWrite($"sent initial states to {to}");
 	}
 }

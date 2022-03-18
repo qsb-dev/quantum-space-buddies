@@ -1,15 +1,15 @@
 ﻿using Cysharp.Threading.Tasks;
-using QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
+using QSB.EchoesOfTheEye.EclipseDoors.WorldObjects;
 using QSB.WorldSync;
 using System.Threading;
 
-namespace QSB.EchoesOfTheEye.AirlockSync;
+namespace QSB.EchoesOfTheEye.EclipseDoors;
 
-internal class AirlockManager : WorldObjectManager
+internal class DoorManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) =>
-		QSBWorldSync.Init<QSBAirlockInterface, AirlockInterface>();
+		QSBWorldSync.Init<QSBEclipseDoorController, EclipseDoorController>();
 }
