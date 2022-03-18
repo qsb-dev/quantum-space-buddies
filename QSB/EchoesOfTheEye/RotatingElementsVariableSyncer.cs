@@ -31,10 +31,13 @@ internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVaria
 		base.OnStopClient();
 	}
 
+	private bool _enabled, _prevEnabled;
 	protected abstract Transform[] RotatingElements { get; }
 
 	protected override bool HasChanged()
 	{
+		_enabled = WorldObject.AttachedObject.enabled;
+
 		var rotatingElements = RotatingElements;
 		Value ??= new Quaternion[rotatingElements.Length];
 		PrevValue ??= new Quaternion[rotatingElements.Length];
@@ -42,6 +45,11 @@ internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVaria
 		for (var i = 0; i < rotatingElements.Length; i++)
 		{
 			Value[i] = rotatingElements[i].localRotation;
+		}
+
+		if (_enabled != _prevEnabled)
+		{
+			return true;
 		}
 
 		for (var i = 0; i < rotatingElements.Length; i++)
@@ -58,12 +66,24 @@ internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVaria
 	/// <summary>
 	/// copy array instead of setting, or else changes to values also happen on prev value
 	/// </summary>
-	protected override void UpdatePrevData() =>
+	protected override void UpdatePrevData()
+	{
+		_prevEnabled = _enabled;
 		Array.Copy(Value, PrevValue, Value.Length);
+	}
+
+	protected override void Serialize(NetworkWriter writer)
+	{
+		writer.Write(_enabled);
+		base.Serialize(writer);
+	}
 
 	protected override void Deserialize(NetworkReader reader)
 	{
+		_enabled = reader.Read<bool>();
 		base.Deserialize(reader);
+
+		WorldObject.AttachedObject.enabled = _enabled;
 
 		var rotatingElements = RotatingElements;
 		for (var i = 0; i < rotatingElements.Length; i++)
