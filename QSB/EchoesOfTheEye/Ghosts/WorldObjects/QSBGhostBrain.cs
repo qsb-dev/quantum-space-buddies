@@ -126,7 +126,6 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 		DebugLog.DebugWrite($"{AttachedObject._name} Awake");
 		AttachedObject._controller = AttachedObject.GetComponent<GhostController>();
 		AttachedObject._sensors = AttachedObject.GetComponent<GhostSensors>();
-		AttachedObject._data = new GhostData();
 	}
 
 	public void Start()
@@ -134,7 +133,14 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 		DebugLog.DebugWrite($"{AttachedObject._name} Start");
 		AttachedObject.enabled = false;
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
-		AttachedObject._controller.Initialize(AttachedObject._nodeLayer, AttachedObject._effects);
+		try
+		{
+			AttachedObject._controller.Initialize(AttachedObject._nodeLayer, AttachedObject._effects);
+		}
+		catch
+		{
+
+		}
 		AttachedObject._sensors.Initialize(AttachedObject._data, AttachedObject._guardVolume);
 		AttachedObject._effects.Initialize(AttachedObject._controller.GetNodeRoot(), AttachedObject._controller, AttachedObject._data);
 		AttachedObject._effects.OnCallForHelp += AttachedObject.OnCallForHelp;
