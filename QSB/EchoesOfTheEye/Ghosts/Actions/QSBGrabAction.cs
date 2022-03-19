@@ -20,7 +20,7 @@ internal class QSBGrabAction : QSBGhostAction
 
 	public override float CalculateUtility()
 	{
-		if (PlayerState.IsAttached() || !this._data.sensor.inContactWithPlayer)
+		if (PlayerState.IsAttached() || !_data.sensor.inContactWithPlayer)
 		{
 			return -100f;
 		}
@@ -34,59 +34,59 @@ internal class QSBGrabAction : QSBGhostAction
 
 	protected override void OnEnterAction()
 	{
-		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Chase);
-		this._effects.PlayGrabAnimation();
-		this._effects.OnGrabComplete += this.OnGrabComplete;
-		this._controller.SetLanternConcealed(false, true);
-		this._controller.ChangeLanternFocus(0f, 2f);
-		if (this._data.previousAction != GhostAction.Name.Chase)
+		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Chase);
+		_effects.AttachedObject.PlayGrabAnimation();
+		_effects.AttachedObject.OnGrabComplete += OnGrabComplete;
+		_controller.SetLanternConcealed(false, true);
+		_controller.ChangeLanternFocus(0f, 2f);
+		if (_data.previousAction != GhostAction.Name.Chase)
 		{
-			this._effects.PlayVoiceAudioNear((this._data.sensor.isPlayerVisible || PlayerData.GetReducedFrights()) ? AudioType.Ghost_Grab_Shout : AudioType.Ghost_Grab_Scream, 1f);
+			_effects.AttachedObject.PlayVoiceAudioNear((_data.sensor.isPlayerVisible || PlayerData.GetReducedFrights()) ? AudioType.Ghost_Grab_Shout : AudioType.Ghost_Grab_Scream, 1f);
 		}
 	}
 
 	protected override void OnExitAction()
 	{
-		this._effects.PlayDefaultAnimation();
-		this._playerIsGrabbed = false;
-		this._grabAnimComplete = false;
-		this._effects.OnGrabComplete -= this.OnGrabComplete;
+		_effects.AttachedObject.PlayDefaultAnimation();
+		_playerIsGrabbed = false;
+		_grabAnimComplete = false;
+		_effects.AttachedObject.OnGrabComplete -= OnGrabComplete;
 	}
 
 	public override bool Update_Action()
 	{
-		if (this._playerIsGrabbed)
+		if (_playerIsGrabbed)
 		{
 			return true;
 		}
-		if (this._data.playerLocation.distanceXZ > 1.7f)
+		if (_data.playerLocation.distanceXZ > 1.7f)
 		{
-			this._controller.MoveToLocalPosition(this._data.playerLocation.localPosition, MoveType.GRAB);
+			_controller.MoveToLocalPosition(_data.playerLocation.localPosition, MoveType.GRAB);
 		}
-		this._controller.FaceLocalPosition(this._data.playerLocation.localPosition, TurnSpeed.FASTEST);
-		if (this._sensors.CanGrabPlayer())
+		_controller.FaceLocalPosition(_data.playerLocation.localPosition, TurnSpeed.FASTEST);
+		if (_sensors.CanGrabPlayer())
 		{
-			this.GrabPlayer();
+			GrabPlayer();
 		}
-		return !this._grabAnimComplete;
+		return !_grabAnimComplete;
 	}
 
 	private void GrabPlayer()
 	{
-		this._playerIsGrabbed = true;
-		this._controller.StopMovingInstantly();
-		this._controller.StopFacing();
-		this._controller.SetLanternConcealed(true, false);
-		this._controller.GetGrabController().GrabPlayer(1f);
+		_playerIsGrabbed = true;
+		_controller.StopMovingInstantly();
+		_controller.StopFacing();
+		_controller.SetLanternConcealed(true, false);
+		_controller.GetGrabController().GrabPlayer(1f);
 	}
 
 	private void OnGrabComplete()
 	{
-		this._grabAnimComplete = true;
+		_grabAnimComplete = true;
 	}
 
 	public bool isPlayerGrabbed()
 	{
-		return this._playerIsGrabbed;
+		return _playerIsGrabbed;
 	}
 }

@@ -14,7 +14,7 @@ public class QSBSleepwalkAction : QSBGhostAction
 	{
 		MoveToRandomPatrolNode();
 		_controller.SetLanternConcealed(false, true);
-		_effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
+		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 	}
 
 	public override bool Update_Action()

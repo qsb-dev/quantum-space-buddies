@@ -1,4 +1,6 @@
-﻿namespace QSB.EchoesOfTheEye.Ghosts.Actions;
+﻿using QSB.Utility;
+
+namespace QSB.EchoesOfTheEye.Ghosts.Actions;
 
 public class QSBSleepAction : QSBGhostAction
 {
@@ -26,8 +28,9 @@ public class QSBSleepAction : QSBGhostAction
 		{
 			if (_data.hasWokenUp || _data.sensor.isIlluminatedByPlayer)
 			{
+				DebugLog.DebugWrite($"{_brain.AttachedObject._name} mm that was a good sleep");
 				_state = SleepAction.WakeState.Awake;
-				_effects.PlayDefaultAnimation();
+				_effects.AttachedObject.PlayDefaultAnimation();
 			}
 		}
 		else if (_state is not SleepAction.WakeState.WakingUp and SleepAction.WakeState.Awake)
@@ -41,7 +44,7 @@ public class QSBSleepAction : QSBGhostAction
 	private void EnterSleepState()
 	{
 		_controller.SetLanternConcealed(true, true);
-		_effects.PlaySleepAnimation();
+		_effects.AttachedObject.PlaySleepAnimation();
 		_state = SleepAction.WakeState.Sleeping;
 	}
 

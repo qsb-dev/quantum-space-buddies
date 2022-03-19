@@ -32,7 +32,7 @@ public class QSBWaitAction : QSBGhostAction
 			this._controller.StopFacing();
 			return;
 		}
-		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
+		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
 		this._controller.FacePlayer(TurnSpeed.MEDIUM);
 		if (this._data.playerLocation.distanceXZ < 3f)
 		{

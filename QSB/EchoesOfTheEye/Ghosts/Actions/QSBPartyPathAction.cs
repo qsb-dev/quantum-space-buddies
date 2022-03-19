@@ -89,8 +89,8 @@ public class QSBPartyPathAction : QSBGhostAction
 	protected override void OnEnterAction()
 	{
 		this._controller.FaceVelocity();
-		this._effects.PlayDefaultAnimation();
-		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
+		this._effects.AttachedObject.PlayDefaultAnimation();
+		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		if (this._allowFollowPath)
 		{
 			if (this._isMovingToFinalPosition)

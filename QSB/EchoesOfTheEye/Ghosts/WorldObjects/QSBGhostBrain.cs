@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 
-internal class QSBGhostBrain : WorldObject<GhostBrain>
+public class QSBGhostBrain : WorldObject<GhostBrain>
 {
 	#region World Object Stuff
 
@@ -32,7 +32,7 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public override string ReturnLabel()
 	{
-		var label = $"Name:{AttachedObject.ghostName}\r\nCurrent Action:{AttachedObject.GetCurrentActionName()}";
+		var label = $"Name:{AttachedObject.ghostName}\r\nAwareness:{AttachedObject.GetThreatAwareness()}\r\nCurrent Action:{AttachedObject.GetCurrentActionName()}";
 
 		return label;
 	}
@@ -40,7 +40,7 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 	public override void DisplayLines()
 	{
 		ControllerLines(AttachedObject._controller);
-		DataLines(AttachedObject._data, AttachedObject._controller);
+		DataLines(_data, AttachedObject._controller);
 
 		if (_currentAction != null)
 		{
@@ -58,10 +58,11 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 			{
 				Popcron.Gizmos.Sphere(controller.LocalToWorldPosition(controller._nodePath[i].localPosition), 0.25f, Color.cyan, 3);
 
+				var hasVisited = controller._pathIndex < i;
+				var color = hasVisited ? Color.white : Color.cyan;
+
 				if (i != 0)
 				{
-					var hasVisited = controller._pathIndex < i;
-					var color = hasVisited ? Color.white : Color.cyan;
 					Popcron.Gizmos.Line(controller.LocalToWorldPosition(controller._nodePath[i].localPosition), controller.LocalToWorldPosition(controller._nodePath[i - 1].localPosition), color);
 				}
 			}
@@ -73,17 +74,23 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 		}
 	}
 
-	private void DataLines(GhostData data, GhostController controller)
+	private void DataLines(QSBGhostData data, GhostController controller)
 	{
-		Popcron.Gizmos.Line(controller.transform.position, controller.LocalToWorldPosition(data.lastKnownPlayerLocation.localPosition), Color.magenta);
-		Popcron.Gizmos.Sphere(controller.LocalToWorldPosition(data.lastKnownPlayerLocation.localPosition), 1f, Color.magenta);
+		if (data.timeSincePlayerLocationKnown != float.PositiveInfinity)
+		{
+			Popcron.Gizmos.Line(controller.transform.position, controller.LocalToWorldPosition(data.lastKnownPlayerLocation.localPosition), Color.magenta);
+			Popcron.Gizmos.Sphere(controller.LocalToWorldPosition(data.lastKnownPlayerLocation.localPosition), 1f, Color.magenta);
+		}
 	}
 
 	#endregion
 
+	internal QSBGhostData _data;
 	private List<QSBGhostAction> _actionLibrary = new();
 	private QSBGhostAction _currentAction;
 	private QSBGhostAction _pendingAction;
+
+	public OWEvent<GhostBrain, QSBGhostData> OnIdentifyIntruder = new(4);
 
 	public GhostAction.Name GetCurrentActionName()
 	{
@@ -113,7 +120,7 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public GhostData.ThreatAwareness GetThreatAwareness()
 	{
-		return AttachedObject._data.threatAwareness;
+		return _data.threatAwareness;
 	}
 
 	public GhostEffects GetEffects()
@@ -123,43 +130,36 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public void Awake()
 	{
-		DebugLog.DebugWrite($"{AttachedObject._name} Awake");
 		AttachedObject._controller = AttachedObject.GetComponent<GhostController>();
 		AttachedObject._sensors = AttachedObject.GetComponent<GhostSensors>();
+		_data = new();
+		_data.threatAwareness = AttachedObject._data.threatAwareness;
 	}
 
 	public void Start()
 	{
-		DebugLog.DebugWrite($"{AttachedObject._name} Start");
 		AttachedObject.enabled = false;
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
-		try
-		{
-			AttachedObject._controller.Initialize(AttachedObject._nodeLayer, AttachedObject._effects);
-		}
-		catch
-		{
-
-		}
-		AttachedObject._sensors.Initialize(AttachedObject._data, AttachedObject._guardVolume);
-		AttachedObject._effects.Initialize(AttachedObject._controller.GetNodeRoot(), AttachedObject._controller, AttachedObject._data);
+		AttachedObject._controller.Initialize(AttachedObject._nodeLayer, AttachedObject._effects);
+		AttachedObject._sensors.GetWorldObject<QSBGhostSensors>().Initialize(_data, AttachedObject._guardVolume);
+		AttachedObject._effects.GetWorldObject<QSBGhostEffects>().Initialize(AttachedObject._controller.GetNodeRoot(), AttachedObject._controller, _data);
 		AttachedObject._effects.OnCallForHelp += AttachedObject.OnCallForHelp;
-		AttachedObject._data.reducedFrights_allowChase = AttachedObject._reducedFrights_allowChase;
+		_data.reducedFrights_allowChase = AttachedObject._reducedFrights_allowChase;
 		AttachedObject._controller.SetLanternConcealed(AttachedObject._startWithLanternConcealed, false);
 		AttachedObject._intruderConfirmedBySelf = false;
 		AttachedObject._intruderConfirmPending = false;
 		AttachedObject._intruderConfirmTime = 0f;
 		if (AttachedObject._chokePoint != null)
 		{
-			AttachedObject._data.hasChokePoint = true;
-			AttachedObject._data.chokePointLocalPosition = AttachedObject._controller.WorldToLocalPosition(AttachedObject._chokePoint.position);
-			AttachedObject._data.chokePointLocalFacing = AttachedObject._controller.WorldToLocalDirection(AttachedObject._chokePoint.forward);
+			_data.hasChokePoint = true;
+			_data.chokePointLocalPosition = AttachedObject._controller.WorldToLocalPosition(AttachedObject._chokePoint.position);
+			_data.chokePointLocalFacing = AttachedObject._controller.WorldToLocalDirection(AttachedObject._chokePoint.forward);
 		}
 
 		for (var i = 0; i < AttachedObject._actions.Length; i++)
 		{
 			var ghostAction = QSBGhostAction.CreateAction(AttachedObject._actions[i]);
-			ghostAction.Initialize(AttachedObject._data, AttachedObject._controller, AttachedObject._sensors, AttachedObject._effects);
+			ghostAction.Initialize(this);
 			_actionLibrary.Add(ghostAction);
 		}
 
@@ -168,7 +168,6 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public void OnDestroy()
 	{
-		DebugLog.DebugWrite($"{AttachedObject._name} OnDestroy");
 		AttachedObject._sensors.RemoveEventListeners();
 		AttachedObject._controller.OnArriveAtPosition -= AttachedObject.OnArriveAtPosition;
 		AttachedObject._controller.OnTraversePathNode -= AttachedObject.OnTraversePathNode;
@@ -181,24 +180,21 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public void TabulaRasa()
 	{
-		DebugLog.DebugWrite($"{AttachedObject._name} Tabula Rasa");
 		AttachedObject._intruderConfirmedBySelf = false;
 		AttachedObject._intruderConfirmPending = false;
 		AttachedObject._intruderConfirmTime = 0f;
 		AttachedObject._playResponseAudio = false;
-		AttachedObject._data.TabulaRasa();
+		_data.TabulaRasa();
 	}
 
 	public void Die()
 	{
-		DebugLog.DebugWrite($"{AttachedObject._name} Die");
-
-		if (!AttachedObject._data.isAlive)
+		if (!_data.isAlive)
 		{
 			return;
 		}
 
-		AttachedObject._data.isAlive = false;
+		_data.isAlive = false;
 		AttachedObject._controller.StopMoving();
 		AttachedObject._controller.StopFacing();
 		AttachedObject._controller.ExtinguishLantern();
@@ -206,7 +202,7 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 		AttachedObject._controller.GetGrabController().ReleasePlayer();
 		_pendingAction = null;
 		_currentAction = null;
-		AttachedObject._data.currentAction = GhostAction.Name.None;
+		_data.currentAction = GhostAction.Name.None;
 		AttachedObject._effects.PlayDeathAnimation();
 		AttachedObject._effects.PlayDeathEffects();
 	}
@@ -215,10 +211,10 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 	{
 		DebugLog.DebugWrite($"{AttachedObject._name} Escalate threat awareness to {newThreatAwareness}");
 
-		if (AttachedObject._data.threatAwareness < newThreatAwareness)
+		if (_data.threatAwareness < newThreatAwareness)
 		{
-			AttachedObject._data.threatAwareness = newThreatAwareness;
-			if (AttachedObject._data.isAlive && AttachedObject._data.threatAwareness == GhostData.ThreatAwareness.IntruderConfirmed)
+			_data.threatAwareness = newThreatAwareness;
+			if (_data.isAlive && _data.threatAwareness == GhostData.ThreatAwareness.IntruderConfirmed)
 			{
 				if (AttachedObject._intruderConfirmedBySelf)
 				{
@@ -237,21 +233,17 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public void WakeUp()
 	{
-		DebugLog.DebugWrite($"{AttachedObject._name} Wake up");
-
-		AttachedObject._data.hasWokenUp = true;
+		_data.hasWokenUp = true;
 	}
 
 	public bool HearGhostCall(Vector3 playerLocalPosition, float reactDelay, bool playResponseAudio = false)
 	{
-		DebugLog.DebugWrite($"{AttachedObject._name} Hear ghost call");
-
-		if (AttachedObject._data.isAlive && !AttachedObject._data.hasWokenUp)
+		if (_data.isAlive && !_data.hasWokenUp)
 		{
 			return false;
 		}
 
-		if (AttachedObject._data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed && !AttachedObject._intruderConfirmPending)
+		if (_data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed && !AttachedObject._intruderConfirmPending)
 		{
 			AttachedObject._intruderConfirmedBySelf = false;
 			AttachedObject._intruderConfirmPending = true;
@@ -265,45 +257,43 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public bool HearCallForHelp(Vector3 playerLocalPosition, float reactDelay)
 	{
-		DebugLog.DebugWrite($"{AttachedObject._name} hear call for help");
-
-		if (AttachedObject._data.isAlive && !AttachedObject._data.hasWokenUp)
+		if (_data.isAlive && !_data.hasWokenUp)
 		{
 			return false;
 		}
 
 		MonoBehaviour.print(AttachedObject._name + " responding to help call");
-		if (AttachedObject._data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed)
+		if (_data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed)
 		{
-			AttachedObject._data.threatAwareness = GhostData.ThreatAwareness.IntruderConfirmed;
+			_data.threatAwareness = GhostData.ThreatAwareness.IntruderConfirmed;
 			AttachedObject._intruderConfirmPending = false;
 		}
 
 		AttachedObject._effects.PlayRespondToHelpCallAudio(reactDelay);
-		AttachedObject._data.reduceGuardUtility = true;
-		AttachedObject._data.lastKnownPlayerLocation.UpdateLocalPosition(playerLocalPosition, AttachedObject._controller);
-		AttachedObject._data.wasPlayerLocationKnown = true;
-		AttachedObject._data.timeSincePlayerLocationKnown = 0f;
+		_data.reduceGuardUtility = true;
+		_data.lastKnownPlayerLocation.UpdateLocalPosition(playerLocalPosition, AttachedObject._controller);
+		_data.wasPlayerLocationKnown = true;
+		_data.timeSincePlayerLocationKnown = 0f;
 		return true;
 	}
 
 	public void HintPlayerLocation()
 	{
-		HintPlayerLocation(AttachedObject._data.playerLocation.localPosition, Time.time);
+		HintPlayerLocation(_data.playerLocation.localPosition, Time.time);
 	}
 
 	public void HintPlayerLocation(Vector3 localPosition, float informationTime)
 	{
-		if (!AttachedObject._data.hasWokenUp || AttachedObject._data.isPlayerLocationKnown)
+		if (!_data.hasWokenUp || _data.isPlayerLocationKnown)
 		{
 			return;
 		}
 
-		if (informationTime > AttachedObject._data.timeLastSawPlayer)
+		if (informationTime > _data.timeLastSawPlayer)
 		{
-			AttachedObject._data.lastKnownPlayerLocation.UpdateLocalPosition(localPosition, AttachedObject._controller);
-			AttachedObject._data.wasPlayerLocationKnown = true;
-			AttachedObject._data.timeSincePlayerLocationKnown = 0f;
+			_data.lastKnownPlayerLocation.UpdateLocalPosition(localPosition, AttachedObject._controller);
+			_data.wasPlayerLocationKnown = true;
+			_data.timeSincePlayerLocationKnown = 0f;
 		}
 	}
 
@@ -315,7 +305,7 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 		}
 		AttachedObject._controller.FixedUpdate_Controller();
 		AttachedObject._sensors.FixedUpdate_Sensors();
-		AttachedObject._data.FixedUpdate_Data(AttachedObject._controller, AttachedObject._sensors);
+		_data.FixedUpdate_Data(AttachedObject._controller, AttachedObject._sensors);
 		AttachedObject.FixedUpdate_ThreatAwareness();
 		if (_currentAction != null)
 		{
@@ -341,12 +331,12 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 		if (!flag && _currentAction != null)
 		{
 			_currentAction.ExitAction();
-			AttachedObject._data.previousAction = _currentAction.GetName();
+			_data.previousAction = _currentAction.GetName();
 			_currentAction = null;
-			AttachedObject._data.currentAction = GhostAction.Name.None;
+			_data.currentAction = GhostAction.Name.None;
 		}
 
-		if (AttachedObject._data.isAlive && !Locator.GetDreamWorldController().IsExitingDream())
+		if (_data.isAlive && !Locator.GetDreamWorldController().IsExitingDream())
 		{
 			AttachedObject.EvaluateActions();
 		}
@@ -354,21 +344,21 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public void FixedUpdate_ThreatAwareness()
 	{
-		if (AttachedObject._data.threatAwareness == GhostData.ThreatAwareness.IntruderConfirmed)
+		if (_data.threatAwareness == GhostData.ThreatAwareness.IntruderConfirmed)
 		{
 			return;
 		}
-		if (!AttachedObject._intruderConfirmPending && (AttachedObject._data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || AttachedObject._data.playerLocation.distance < 20f || AttachedObject._data.sensor.isPlayerIlluminatedByUs) && (AttachedObject._data.sensor.isPlayerVisible || AttachedObject._data.sensor.inContactWithPlayer))
+		if (!AttachedObject._intruderConfirmPending && (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.playerLocation.distance < 20f || _data.sensor.isPlayerIlluminatedByUs) && (_data.sensor.isPlayerVisible || _data.sensor.inContactWithPlayer))
 		{
 			AttachedObject._intruderConfirmedBySelf = true;
 			AttachedObject._intruderConfirmPending = true;
-			var num = Mathf.Lerp(0.1f, 1.5f, Mathf.InverseLerp(5f, 25f, AttachedObject._data.playerLocation.distance));
+			var num = Mathf.Lerp(0.1f, 1.5f, Mathf.InverseLerp(5f, 25f, _data.playerLocation.distance));
 			AttachedObject._intruderConfirmTime = Time.time + num;
 		}
 		if (AttachedObject._intruderConfirmPending && Time.time > AttachedObject._intruderConfirmTime)
 		{
 			AttachedObject.EscalateThreatAwareness(GhostData.ThreatAwareness.IntruderConfirmed);
-			AttachedObject.OnIdentifyIntruder.Invoke(AttachedObject, AttachedObject._data);
+			OnIdentifyIntruder.Invoke(AttachedObject, _data);
 		}
 	}
 
@@ -435,18 +425,18 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 		if (_currentAction != null)
 		{
 			_currentAction.ExitAction();
-			AttachedObject._data.previousAction = _currentAction.GetName();
+			_data.previousAction = _currentAction.GetName();
 		}
 		else
 		{
-			AttachedObject._data.previousAction = GhostAction.Name.None;
+			_data.previousAction = GhostAction.Name.None;
 		}
 		_currentAction = action;
-		AttachedObject._data.currentAction = ((action != null) ? action.GetName() : GhostAction.Name.None);
+		_data.currentAction = ((action != null) ? action.GetName() : GhostAction.Name.None);
 		if (_currentAction != null)
 		{
 			_currentAction.EnterAction();
-			AttachedObject._data.OnEnterAction(_currentAction.GetName());
+			_data.OnEnterAction(_currentAction.GetName());
 		}
 		ClearPendingAction();
 	}
@@ -496,7 +486,7 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 		{
 			for (var i = 0; i < AttachedObject._helperGhosts.Length; i++)
 			{
-				AttachedObject._helperGhosts[i].HearCallForHelp(AttachedObject._data.playerLocation.localPosition, 3f);
+				AttachedObject._helperGhosts[i].HearCallForHelp(_data.playerLocation.localPosition, 3f);
 			}
 		}
 	}
@@ -512,6 +502,6 @@ internal class QSBGhostBrain : WorldObject<GhostBrain>
 		AttachedObject.enabled = false;
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
 		ChangeAction(null);
-		AttachedObject._data.OnPlayerExitDreamWorld();
+		_data.OnPlayerExitDreamWorld();
 	}
 }

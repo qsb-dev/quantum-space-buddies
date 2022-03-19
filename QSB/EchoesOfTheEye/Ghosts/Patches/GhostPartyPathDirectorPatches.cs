@@ -3,6 +3,7 @@ using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Reflection;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Patches;
@@ -11,6 +12,24 @@ namespace QSB.EchoesOfTheEye.Ghosts.Patches;
 internal class GhostPartyPathDirectorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+	[HarmonyReversePatch]
+	[HarmonyPatch(typeof(GhostDirector), nameof(GhostDirector.OnDestroy))]
+	public static void GhostDirector_OnDestroy_Stub(object instance) { }
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(GhostPartyPathDirector.OnDestroy))]
+	public static bool OnDestroy(GhostPartyPathDirector __instance)
+	{
+		GhostDirector_OnDestroy_Stub(__instance);
+
+		for (var i = 0; i < __instance._directedGhosts.Length; i++)
+		{
+			__instance._directedGhosts[i].GetWorldObject<QSBGhostBrain>().OnIdentifyIntruder -= GhostManager.CustomOnGhostIdentifyIntruder;
+		}
+
+		return false;
+	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(GhostPartyPathDirector.Update))]
@@ -90,31 +109,7 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostPartyPathDirector.OnGhostIdentifyIntruder))]
 	public static bool OnGhostIdentifyIntruder(GhostPartyPathDirector __instance, GhostBrain ghostBrain, GhostData ghostData)
 	{
-		var num = Random.Range(2f, 3f);
-		for (var i = 0; i < __instance._directedGhosts.Length; i++)
-		{
-			if (!(__instance._directedGhosts[i] == ghostBrain))
-			{
-				var flag = __instance._directedGhosts[i].GetWorldObject<QSBGhostBrain>().GetCurrentActionName() != GhostAction.Name.PartyPath || ((QSBPartyPathAction)__instance._directedGhosts[i].GetWorldObject<QSBGhostBrain>().GetCurrentAction()).allowHearGhostCall;
-				var num2 = Vector3.Distance(ghostBrain.transform.position, __instance._directedGhosts[i].transform.position);
-				if (flag && num2 < 50f && __instance._directedGhosts[i].HearGhostCall(ghostData.playerLocation.localPosition, num, true))
-				{
-					__instance._directedGhosts[i].HintPlayerLocation();
-					num += Random.Range(2f, 3f);
-					DebugLog.DebugWrite(string.Concat(new object[]
-					{
-						__instance.gameObject.name,
-						" called to ",
-						__instance._directedGhosts[i].gameObject.name,
-						"   Distance: ",
-						num2,
-						"   Allowed: ",
-						flag.ToString()
-					}));
-				}
-			}
-		}
-
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 }

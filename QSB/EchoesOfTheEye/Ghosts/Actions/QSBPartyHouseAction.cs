@@ -1,6 +1,7 @@
 ﻿using System;
 using GhostEnums;
 using QSB.EchoesOfTheEye.Ghosts;
+using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using UnityEngine;
 
 public class QSBPartyHouseAction : QSBGhostAction
@@ -48,7 +49,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 		this._allowChasePlayer = true;
 		this._controller.SetLanternConcealed(true, true);
 		this._controller.FacePlayer(TurnSpeed.MEDIUM);
-		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
+		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
 	}
 
 	public void LookAtPlayer(float delay, TurnSpeed lookSpeed = TurnSpeed.SLOWEST)
@@ -58,9 +59,9 @@ public class QSBPartyHouseAction : QSBGhostAction
 		this._lookSpeed = lookSpeed;
 	}
 
-	public override void Initialize(GhostData data, GhostController controller, GhostSensors sensors, GhostEffects effects)
+	public override void Initialize(QSBGhostBrain brain)
 	{
-		base.Initialize(data, controller, sensors, effects);
+		base.Initialize(brain);
 		this._initialLocalPosition = this._controller.GetLocalFeetPosition();
 		this._initialLocalDirection = this._controller.GetLocalForward();
 	}
@@ -70,7 +71,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 		this._controller.MoveToLocalPosition(this._initialLocalPosition, MoveType.PATROL);
 		this._controller.FaceLocalPosition(this._initialLocalPosition + this._initialLocalDirection, TurnSpeed.MEDIUM);
 		this._controller.SetLanternConcealed(true, true);
-		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
+		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		this._waitingToLookAtPlayer = false;
 		this._lookingAtPlayer = false;
 	}
