@@ -42,8 +42,8 @@ internal class QSBCallForHelpAction : QSBGhostAction
 		this._hasStartedMoving = false;
 		this._controller.ChangeLanternFocus(1f, 2f);
 		this._controller.StopMoving();
-		this._effects.StopAllVoiceAudio();
-		this._effects.PlayCallForHelpAnimation();
+		this._effects.AttachedObject.StopAllVoiceAudio();
+		this._effects.AttachedObject.PlayCallForHelpAnimation();
 	}
 
 	protected override void OnExitAction()

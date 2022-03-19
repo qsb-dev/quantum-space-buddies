@@ -49,8 +49,8 @@ public class QSBGuardAction : QSBGhostAction
 	protected override void OnEnterAction()
 	{
 		_controller.SetLanternConcealed(true, true);
-		_sensors.SetContactEdgeCatcherWidth(5f);
-		_effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
+		_sensors.AttachedObject.SetContactEdgeCatcherWidth(5f);
+		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		ContinueSearch();
 	}
 
@@ -61,7 +61,7 @@ public class QSBGuardAction : QSBGhostAction
 			_controller.FaceVelocity();
 		}
 
-		_sensors.ResetContactEdgeCatcherWidth();
+		_sensors.AttachedObject.ResetContactEdgeCatcherWidth();
 		_targetSearchNode = null;
 		_searchingAtNode = false;
 		_watchingPlayer = false;

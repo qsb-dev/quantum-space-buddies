@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GhostEnums;
 using QSB.EchoesOfTheEye.Ghosts;
+using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using UnityEngine;
 
 public class QSBHuntAction : QSBGhostAction
@@ -32,9 +33,9 @@ public class QSBHuntAction : QSBGhostAction
 
 	private Vector3 _DEBUG_localVel;
 
-	public override void Initialize(GhostData data, GhostController controller, GhostSensors sensors, GhostEffects effects)
+	public override void Initialize(QSBGhostBrain brain)
 	{
-		base.Initialize(data, controller, sensors, effects);
+		base.Initialize(brain);
 		this._numNodesToSearch = 0;
 		this._nodesToSearch = new GhostNodeMap.NodeSearchData[this._controller.GetNodeMap().GetNodeCount()];
 		this._currentNodeIndex = 0;
@@ -42,7 +43,7 @@ public class QSBHuntAction : QSBGhostAction
 		this._huntStartTime = 0f;
 		this._huntFailed = false;
 		this._huntFailTime = 0f;
-		controller.OnNodeMapChanged += new OWEvent.OWCallback(this.OnNodeMapChanged);
+		_controller.OnNodeMapChanged += new OWEvent.OWCallback(this.OnNodeMapChanged);
 	}
 
 	private void OnNodeMapChanged()
@@ -83,7 +84,7 @@ public class QSBHuntAction : QSBGhostAction
 	{
 		this._controller.SetLanternConcealed(true, true);
 		this._controller.FaceVelocity();
-		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
+		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		if (!this._huntStarted || this._data.timeLastSawPlayer > this._huntStartTime)
 		{
 			Vector3 vector = this._data.lastKnownSensor.knowsPlayerVelocity ? this._data.lastKnownPlayerLocation.localVelocity : Vector3.zero;
@@ -125,7 +126,7 @@ public class QSBHuntAction : QSBGhostAction
 			{
 				this._controller.PathfindToNode(this._nodesToSearch[this._currentNodeIndex].node, MoveType.SEARCH);
 			}
-			this._effects.PlayVoiceAudioNear(global::AudioType.Ghost_Hunt, 1f);
+			this._effects.AttachedObject.PlayVoiceAudioNear(global::AudioType.Ghost_Hunt, 1f);
 		}
 	}
 
@@ -133,7 +134,7 @@ public class QSBHuntAction : QSBGhostAction
 	{
 		if (this._huntFailed && !this._data.isPlayerLocationKnown)
 		{
-			this._effects.PlayVoiceAudioNear(global::AudioType.Ghost_HuntFail, 1f);
+			this._effects.AttachedObject.PlayVoiceAudioNear(global::AudioType.Ghost_HuntFail, 1f);
 		}
 	}
 

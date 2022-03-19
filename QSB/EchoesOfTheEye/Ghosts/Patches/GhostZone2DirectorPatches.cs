@@ -34,6 +34,30 @@ internal class GhostZone2DirectorPatches : QSBPatch
 		return false;
 	}
 
+	[HarmonyReversePatch]
+	[HarmonyPatch(typeof(GhostDirector), nameof(GhostDirector.OnDestroy))]
+	public static void GhostDirector_OnDestroy_Stub(object instance) { }
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(GhostZone2Director), nameof(GhostZone2Director.OnDestroy))]
+	public static bool OnDestroy(GhostZone2Director __instance)
+	{
+		GhostDirector_OnDestroy_Stub(__instance);
+
+		__instance._lightsProjector.OnProjectorExtinguished -= __instance.OnLightsExtinguished;
+		__instance._undergroundVolume.OnEntry -= __instance.OnEnterUnderground;
+		__instance._undergroundVolume.OnExit -= __instance.OnExitUnderground;
+		__instance._finalTotem.OnRinging -= __instance.OnAlarmRinging;
+		for (int i = 0; i < __instance._cityGhosts.Length; i++)
+		{
+			__instance._cityGhosts[i].GetWorldObject<QSBGhostBrain>().OnIdentifyIntruder -= GhostManager.CustomOnCityGhostsIdentifiedIntruder;
+		}
+
+		__instance._ghostTutorialArrival.OnEntry -= __instance.OnStartGhostTutorial;
+
+		return false;
+	}
+
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(GhostZone2Director), nameof(GhostZone2Director.Update))]
 	public static bool Update(GhostZone2Director __instance)

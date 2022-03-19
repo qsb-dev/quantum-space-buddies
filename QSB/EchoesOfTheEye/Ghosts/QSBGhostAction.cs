@@ -1,4 +1,7 @@
 ﻿using QSB.EchoesOfTheEye.Ghosts.Actions;
+using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +13,11 @@ namespace QSB.EchoesOfTheEye.Ghosts;
 
 public abstract class QSBGhostAction
 {
-	protected GhostData _data;
-	protected GhostController _controller;
-	protected GhostSensors _sensors;
-	protected GhostEffects _effects;
+	protected QSBGhostBrain _brain;
+	protected QSBGhostData _data => _brain._data;
+	protected GhostController _controller => _brain.AttachedObject._controller;
+	protected QSBGhostSensors _sensors => _brain.AttachedObject._sensors.GetWorldObject<QSBGhostSensors>();
+	protected QSBGhostEffects _effects => _brain.AttachedObject._effects.GetWorldObject<QSBGhostEffects>();
 	protected Transform _transform;
 	protected bool _running;
 	protected float _enterTime;
@@ -82,12 +86,9 @@ public abstract class QSBGhostAction
 		return ghostAction;
 	}
 
-	public virtual void Initialize(GhostData data, GhostController controller, GhostSensors sensors, GhostEffects effects)
+	public virtual void Initialize(QSBGhostBrain brain)
 	{
-		this._data = data;
-		this._controller = controller;
-		this._sensors = sensors;
-		this._effects = effects;
+		_brain = brain;
 		this._transform = this._controller.transform;
 	}
 
@@ -100,6 +101,7 @@ public abstract class QSBGhostAction
 
 	public void ExitAction()
 	{
+		DebugLog.DebugWrite($"{_brain.AttachedObject._name} ExitAction");
 		this._running = false;
 		this.OnExitAction();
 	}

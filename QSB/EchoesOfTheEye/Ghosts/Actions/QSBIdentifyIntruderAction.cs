@@ -45,10 +45,12 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 		{
 			return -100f;
 		}
+
 		if (_running || (_data.sensor.isPlayerHeldLanternVisible && (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.playerLocation.distance < 20f)) || _data.sensor.isIlluminatedByPlayer)
 		{
 			return 80f;
 		}
+
 		return -100f;
 	}
 
@@ -72,6 +74,8 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 
 	protected override void OnEnterAction()
 	{
+		DebugLog.DebugWrite($"{_brain.AttachedObject._name} OwO, who's this...?");
+
 		_sawPlayerOccluded = false;
 		_movingToSearchLocation = false;
 		_arrivedAtTargetSearchPosition = false;
@@ -79,7 +83,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 		_searchNodesComplete = false;
 		_checkingTargetLocation = false;
 		_checkTimer = 0f;
-		_effects.PlayVoiceAudioNear((_numTimesIlluminatedByPlayer <= 2) ? AudioType.Ghost_Identify_Curious : AudioType.Ghost_Identify_Irritated, 1f);
+		_effects.AttachedObject.PlayVoiceAudioNear((_numTimesIlluminatedByPlayer <= 2) ? AudioType.Ghost_Identify_Curious : AudioType.Ghost_Identify_Irritated, 1f);
 	}
 
 	protected override void OnExitAction()
@@ -101,8 +105,8 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 
 		if ((_searchNodesNearTarget && _checkTimer > 1f) || _checkTimer > 3f)
 		{
-			DebugLog.DebugWrite($"Couldn't identify target :(");
-			_effects.PlayVoiceAudioNear(AudioType.Ghost_Identify_Fail, 1f);
+			DebugLog.DebugWrite($"{_brain.AttachedObject._name} Couldn't identify target :(");
+			_effects.AttachedObject.PlayVoiceAudioNear(AudioType.Ghost_Identify_Fail, 1f);
 			return false;
 		}
 
@@ -174,7 +178,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 		else
 		{
 			var localPos = _data.lastKnownPlayerLocation.localPosition + new Vector3(0f, 1.8f, 0f);
-			var flag2 = _sensors.CheckPositionOccluded(_controller.LocalToWorldPosition(localPos));
+			var flag2 = _sensors.AttachedObject.CheckPositionOccluded(_controller.LocalToWorldPosition(localPos));
 			var num = _allowFocusBeam ? (_controller.GetFocusedLanternRange() - 3f) : (_controller.GetUnfocusedLanternRange() - 1f);
 			var flag3 = _data.lastKnownPlayerLocation.distance < _controller.GetUnfocusedLanternRange();
 			if (_data.sensor.isPlayerIlluminatedByUs)

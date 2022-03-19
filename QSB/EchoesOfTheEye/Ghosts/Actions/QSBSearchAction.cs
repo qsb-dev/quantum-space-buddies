@@ -36,7 +36,7 @@ public class QSBSearchAction : QSBGhostAction
 	protected override void OnEnterAction()
 	{
 		_controller.SetLanternConcealed(true, true);
-		_effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
+		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		ContinueSearch();
 	}
 
