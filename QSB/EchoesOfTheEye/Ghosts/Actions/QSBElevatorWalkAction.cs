@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Actions;
 
-internal class QSBElevatorWalkAction : QSBGhostAction
+public class QSBElevatorWalkAction : QSBGhostAction
 {
 	private bool _reachedEndOfPath;
 
