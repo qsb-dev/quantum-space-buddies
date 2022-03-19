@@ -101,7 +101,6 @@ public abstract class QSBGhostAction
 
 	public void ExitAction()
 	{
-		DebugLog.DebugWrite($"{_brain.AttachedObject._name} ExitAction");
 		this._running = false;
 		this.OnExitAction();
 	}
