@@ -19,7 +19,6 @@ internal class GhostHotelDirectorPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostHotelDirector.OnDestroy))]
 	public static bool OnDestroy(GhostHotelDirector __instance)
 	{
-		DebugLog.DebugWrite($"ON DESTROY");
 		GhostDirector_OnDestroy_Stub(__instance);
 
 		__instance._hotelProjector.OnProjectorExtinguished -= __instance.OnHotelProjectorExtinguished;
@@ -32,13 +31,5 @@ internal class GhostHotelDirectorPatches : QSBPatch
 		}
 
 		return false;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(GhostDirector), nameof(GhostDirector.WakeGhosts))]
-	public static bool WakeGhosts(GhostDirector __instance)
-	{
-		DebugLog.DebugWrite($"WAKE GHOSTS");
-		return true;
 	}
 }

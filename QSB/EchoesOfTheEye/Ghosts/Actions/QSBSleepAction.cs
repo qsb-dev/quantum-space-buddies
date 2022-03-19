@@ -28,7 +28,7 @@ public class QSBSleepAction : QSBGhostAction
 		{
 			if (_data.hasWokenUp || _data.sensor.isIlluminatedByPlayer)
 			{
-				DebugLog.DebugWrite($"{_brain.AttachedObject._name} mm that was a good sleep");
+				DebugLog.DebugWrite($"{_brain.AttachedObject._name} : Who dares awaken me?");
 				_state = SleepAction.WakeState.Awake;
 				_effects.AttachedObject.PlayDefaultAnimation();
 			}

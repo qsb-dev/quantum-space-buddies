@@ -74,7 +74,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 
 	protected override void OnEnterAction()
 	{
-		DebugLog.DebugWrite($"{_brain.AttachedObject._name} OwO, who's this...?");
+		DebugLog.DebugWrite($"{_brain.AttachedObject._name} : I saw something...");
 
 		_sawPlayerOccluded = false;
 		_movingToSearchLocation = false;
@@ -105,7 +105,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 
 		if ((_searchNodesNearTarget && _checkTimer > 1f) || _checkTimer > 3f)
 		{
-			DebugLog.DebugWrite($"{_brain.AttachedObject._name} Couldn't identify target :(");
+			DebugLog.DebugWrite($"{_brain.AttachedObject._name} : Couldn't identify target. :(");
 			_effects.AttachedObject.PlayVoiceAudioNear(AudioType.Ghost_Identify_Fail, 1f);
 			return false;
 		}
