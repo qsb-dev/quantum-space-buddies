@@ -100,4 +100,37 @@ public class QSBSector : WorldObject<Sector>
 
 		return true;
 	}
+
+	public float CalculateScore(OWRigidbody rigidbody)
+	{
+		var sqrDistance = (Position - rigidbody.GetPosition()).sqrMagnitude;
+		var radius = GetRadius();
+		var velocity = GetRelativeVelocity(rigidbody);
+
+		return sqrDistance + radius * radius + velocity;
+	}
+
+	private float GetRadius()
+	{
+		// TODO : make this work for other stuff, not just shaped triggervolumes
+		var trigger = AttachedObject.GetTriggerVolume();
+		if (trigger && trigger.GetShape())
+		{
+			return trigger.GetShape().CalcWorldBounds().radius;
+		}
+
+		return 0f;
+	}
+
+	private float GetRelativeVelocity(OWRigidbody rigidbody)
+	{
+		var sectorRigidbody = AttachedObject.GetOWRigidbody();
+		if (sectorRigidbody && rigidbody)
+		{
+			var relativeVelocity = rigidbody.GetVelocity() - sectorRigidbody.GetPointVelocity(rigidbody.GetPosition());
+			return relativeVelocity.sqrMagnitude;
+		}
+
+		return 0;
+	}
 }

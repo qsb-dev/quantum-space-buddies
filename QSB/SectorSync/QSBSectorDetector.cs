@@ -109,54 +109,26 @@ public class QSBSectorDetector : MonoBehaviour
 		}
 
 		var closest = validSectors
-			.MinBy(sector => CalculateSectorScore(sector, _sectorDetector._attachedRigidbody));
+			.MinBy(sector => sector.CalculateScore(_sectorDetector._attachedRigidbody));
 
 		if (inASector)
 		{
-			bool IsSamePositionAsClosest(QSBSector fakeSector)
-				=> (fakeSector.Position - closest.Position).sqrMagnitude < 0.01f * 0.01f;
+			var pos = _sectorDetector._attachedRigidbody.GetPosition();
+
+			bool IsSameDistanceAsClosest(QSBSector fakeSector)
+				=> OWMath.ApproxEquals(
+					Vector3.Distance(fakeSector.Position, pos),
+					Vector3.Distance(closest.Position, pos),
+					0.01f);
 
 			bool IsAttachedValid(QSBSector fakeSector)
 				=> validSectors.Any(x => x.AttachedObject == fakeSector.FakeSector.AttachedSector);
 
 			var fakeToSyncTo = QSBSectorManager.Instance.FakeSectors
-				.FirstOrDefault(x => IsSamePositionAsClosest(x) && IsAttachedValid(x));
+				.FirstOrDefault(x => IsSameDistanceAsClosest(x) && IsAttachedValid(x));
 			return fakeToSyncTo ?? closest;
 		}
 
 		return closest;
-	}
-
-	private static float CalculateSectorScore(QSBSector sector, OWRigidbody rigidbody)
-	{
-		var sqrDistance = (sector.Position - rigidbody.GetPosition()).sqrMagnitude;
-		var radius = GetRadius(sector);
-		var velocity = GetRelativeVelocity(sector, rigidbody);
-
-		return sqrDistance + radius * radius + velocity;
-	}
-
-	private static float GetRadius(QSBSector sector)
-	{
-		// TODO : make this work for other stuff, not just shaped triggervolumes
-		var trigger = sector.AttachedObject.GetTriggerVolume();
-		if (trigger && trigger.GetShape())
-		{
-			return trigger.GetShape().CalcWorldBounds().radius;
-		}
-
-		return 0f;
-	}
-
-	private static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
-	{
-		var sectorRigidbody = sector.AttachedObject.GetOWRigidbody();
-		if (sectorRigidbody && rigidbody)
-		{
-			var relativeVelocity = rigidbody.GetVelocity() - sectorRigidbody.GetPointVelocity(rigidbody.GetPosition());
-			return relativeVelocity.sqrMagnitude;
-		}
-
-		return 0;
 	}
 }
