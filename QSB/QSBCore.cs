@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using HarmonyLib;
+using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
 using QSB.Menus;
@@ -44,8 +45,13 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle TextAssetsBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
-	public static string QSBVersion => Helper.Manifest.Version;
-	public static string GameVersion => Application.version;
+	public static string QSBVersion =>
+		// todo: show this in kick message
+		Helper.Manifest.Version;
+	public static string GameVersion =>
+		// ignore the last patch numbers like the title screen does
+		// todo: show this in kick message
+		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
@@ -153,7 +159,7 @@ public class QSBCore : ModBehaviour
 			DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
 			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
-			GetComponent<DebugGUI>().enabled = DebugSettings.DrawGui;
+			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
 			QuantumManager.UpdateFromDebugSetting();
 			DebugCameraSettings.UpdateFromDebugSetting();
 

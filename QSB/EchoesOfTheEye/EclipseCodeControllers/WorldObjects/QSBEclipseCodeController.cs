@@ -24,7 +24,10 @@ public class QSBEclipseCodeController : WorldObject<EclipseCodeController4>
 
 	public override void OnRemoval()
 	{
-		UnityEngine.Object.Destroy(AttachedObject.gameObject.GetComponent<CodeControllerRemoteUpdater>());
+		if (AttachedObject)
+		{
+			UnityEngine.Object.Destroy(AttachedObject.gameObject.GetComponent<CodeControllerRemoteUpdater>());
+		}
 	}
 
 	public void SetUser(uint user)

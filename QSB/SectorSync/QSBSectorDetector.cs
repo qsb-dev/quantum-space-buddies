@@ -23,7 +23,7 @@ public class QSBSectorDetector : MonoBehaviour
 
 		if (!detector)
 		{
-			DebugLog.ToConsole("Error - Trying to init QSBSectorDetector with null SectorDetector!", MessageType.Error);
+			DebugLog.ToConsole($"Error - Trying to init QSBSectorDetector {name} with null SectorDetector!", MessageType.Error);
 			return;
 		}
 
@@ -53,7 +53,7 @@ public class QSBSectorDetector : MonoBehaviour
 		if (!sector)
 		{
 			// wtf
-			DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
+			DebugLog.ToConsole($"Warning - Trying to add null sector for QSBSectorDetector {name}", MessageType.Error);
 			return;
 		}
 
@@ -64,13 +64,7 @@ public class QSBSectorDetector : MonoBehaviour
 			return;
 		}
 
-		if (SectorList.Contains(worldObject))
-		{
-			DebugLog.ToConsole($"Warning - Trying to add {sector.name} for {gameObject.name}, but is already in list", MessageType.Warning);
-			return;
-		}
-
-		SectorList.Add(worldObject);
+		SectorList.SafeAdd(worldObject);
 	}
 
 	private void RemoveSector(Sector sector)
@@ -78,7 +72,7 @@ public class QSBSectorDetector : MonoBehaviour
 		if (!sector)
 		{
 			// wtf
-			DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but it is null", MessageType.Warning);
+			DebugLog.ToConsole($"Warning - Trying to remove null sector for QSBSectorDetector {name}", MessageType.Error);
 			return;
 		}
 
@@ -89,13 +83,7 @@ public class QSBSectorDetector : MonoBehaviour
 			return;
 		}
 
-		if (!SectorList.Contains(worldObject))
-		{
-			DebugLog.ToConsole($"Warning - Trying to remove {sector.name} for {gameObject.name}, but is not in list!", MessageType.Warning);
-			return;
-		}
-
-		SectorList.Remove(worldObject);
+		SectorList.QuickRemove(worldObject);
 	}
 
 	/// <summary>
@@ -105,13 +93,17 @@ public class QSBSectorDetector : MonoBehaviour
 	{
 		var type = _sectorDetector._occupantType;
 
-		var validSectors = SectorList.Where(x => x.ShouldSyncTo(type)).ToList();
-		var inASector = validSectors.Count > 0;
+		var validSectors = SectorList
+			.Where(x => x.ShouldSyncTo(type))
+			.ToList();
 
-		if (!inASector)
+		if (validSectors.Count == 0)
 		{
 			validSectors = QSBWorldSync.GetWorldObjects<QSBSector>()
-				.Where(x => !x.IsFakeSector && x.Type != Sector.Name.Unnamed && x.ShouldSyncTo(type))
+				.Where(x =>
+					// we only wanna sync to the major ones when far away
+					x.Type != Sector.Name.Unnamed &&
+					x.ShouldSyncTo(type))
 				.ToList();
 		}
 
@@ -120,60 +112,7 @@ public class QSBSectorDetector : MonoBehaviour
 			return null;
 		}
 
-		var closest = validSectors
-			.MinBy(sector => CalculateSectorScore(sector, _sectorDetector._attachedRigidbody));
-
-		if (inASector)
-		{
-			var pos = _sectorDetector._attachedRigidbody.GetPosition();
-
-			bool IsSameDistanceAsClosest(QSBSector fakeSector)
-				=> OWMath.ApproxEquals(
-					Vector3.Distance(fakeSector.Position, pos),
-					Vector3.Distance(closest.Position, pos),
-					0.01f);
-
-			bool IsAttachedValid(QSBSector fakeSector)
-				=> validSectors.Any(x => x.AttachedObject == fakeSector.FakeSector.AttachedSector);
-
-			var fakeToSyncTo = QSBSectorManager.Instance.FakeSectors
-				.FirstOrDefault(x => IsSameDistanceAsClosest(x) && IsAttachedValid(x));
-			return fakeToSyncTo ?? closest;
-		}
-
-		return closest;
-	}
-
-	private static float CalculateSectorScore(QSBSector sector, OWRigidbody rigidbody)
-	{
-		var distance = (sector.Position - rigidbody.GetPosition()).sqrMagnitude;
-		var radius = GetRadius(sector);
-		var velocity = GetRelativeVelocity(sector, rigidbody);
-
-		return distance + Mathf.Pow(radius, 2) + velocity;
-	}
-
-	private static float GetRadius(QSBSector sector)
-	{
-		// TODO : make this work for other stuff, not just shaped triggervolumes
-		var trigger = sector.AttachedObject.GetTriggerVolume();
-		if (trigger && trigger.GetShape())
-		{
-			return trigger.GetShape().CalcWorldBounds().radius;
-		}
-
-		return 0f;
-	}
-
-	private static float GetRelativeVelocity(QSBSector sector, OWRigidbody rigidbody)
-	{
-		var sectorRigidBody = sector.AttachedObject.GetOWRigidbody();
-		if (sectorRigidBody && rigidbody)
-		{
-			var relativeVelocity = sectorRigidBody.GetRelativeVelocity(rigidbody);
-			return relativeVelocity.sqrMagnitude;
-		}
-
-		return 0;
+		return validSectors
+			.MinBy(x => x.GetScore(_sectorDetector._attachedRigidbody));
 	}
 }

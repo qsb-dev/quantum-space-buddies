@@ -11,11 +11,9 @@ internal class EclipseElevatorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-	[HarmonyPrefix]
+	[HarmonyPostfix]
 	[HarmonyPatch(typeof(ElevatorDestination), nameof(ElevatorDestination.OnPressInteract))]
-	public static bool CallElevator(ElevatorDestination __instance)
-	{
-		__instance.GetWorldObject<QSBElevatorDestination>().SendMessage(new CallElevatorMessage());
-		return true;
-	}
+	public static void CallElevator(ElevatorDestination __instance) =>
+		__instance.GetWorldObject<QSBElevatorDestination>()
+			.SendMessage(new CallElevatorMessage());
 }

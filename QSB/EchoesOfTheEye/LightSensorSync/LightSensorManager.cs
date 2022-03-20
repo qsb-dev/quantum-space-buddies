@@ -7,8 +7,15 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 
 internal class LightSensorManager : WorldObjectManager
 {
+	/// <summary>
+	/// light sensor apparently shows up in eye
+	/// </summary>
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
-	public override bool DlcOnly => true;
+	/// <summary>
+	/// light sensor patches like to run even with no dlc
+	/// </summary>
+	public override bool DlcOnly => false;
 
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) => QSBWorldSync.Init<QSBLightSensor, SingleLightSensor>();
+	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) =>
+		QSBWorldSync.Init<QSBLightSensor, SingleLightSensor>();
 }

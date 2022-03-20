@@ -1,7 +1,6 @@
 ﻿using EpicTransport;
 using Mirror;
 using QSB.Messaging;
-using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
@@ -384,19 +383,9 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			() => new RequestGameStateMessage().Send());
 	}
 
-	public void OnKicked(KickReason reason)
+	public void OnKicked(string reason)
 	{
 		_intentionalDisconnect = true;
-
-		var text = reason switch
-		{
-			KickReason.QSBVersionNotMatching => "Server refused connection as QSB version does not match.",
-			KickReason.GameVersionNotMatching => "Server refused connection as Outer Wilds version does not match.",
-			KickReason.DLCNotMatching => "Server refused connection as DLC installation state does not match.",
-			KickReason.InEye => "Server refused connection as game has progressed too far.",
-			KickReason.None => "Kicked from server. No reason given.",
-			_ => $"Kicked from server. KickReason:{reason}",
-		};
 
 		PopupOK += () =>
 		{
@@ -406,7 +395,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			}
 		};
 
-		OpenInfoPopup(text, "OK");
+		OpenInfoPopup($"Server refused connection.\r\n{reason}", "OK");
 
 		SetButtonActive(DisconnectButton, false);
 		SetButtonActive(ConnectButton, true);
@@ -422,18 +411,19 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		{
 			DebugLog.DebugWrite("intentional disconnect. dont show popup");
 			_intentionalDisconnect = false;
-			return;
 		}
-
-		PopupOK += () =>
+		else
 		{
-			if (QSBSceneManager.IsInUniverse)
+			PopupOK += () =>
 			{
-				LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
-			}
-		};
+				if (QSBSceneManager.IsInUniverse)
+				{
+					LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
+				}
+			};
 
-		OpenInfoPopup($"Client disconnected with error!\r\n{error}", "OK");
+			OpenInfoPopup($"Client disconnected with error!\r\n{error}", "OK");
+		}
 
 		SetButtonActive(DisconnectButton, false);
 		SetButtonActive(ConnectButton, true);
