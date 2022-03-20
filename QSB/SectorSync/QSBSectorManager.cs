@@ -102,7 +102,7 @@ public class QSBSectorManager : WorldObjectManager
 		// th elevators
 		foreach (var elevator in QSBWorldSync.GetUnityObjects<Elevator>())
 		{
-			// hack: wait for QSBElevator to the box shape on, and just use that
+			// hack: wait for QSBElevator to add the box shape, and just use that
 			BoxShape shape = null;
 			await UniTask.WaitUntil(() => elevator.TryGetComponent(out shape), cancellationToken: ct);
 
