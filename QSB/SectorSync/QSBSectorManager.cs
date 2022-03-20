@@ -46,8 +46,8 @@ public class QSBSectorManager : WorldObjectManager
 		foreach (var sync in SectoredSyncs)
 		{
 			if (sync.hasAuthority
-			    && sync.IsValid
-			    && sync.AttachedTransform.gameObject.activeInHierarchy)
+				&& sync.IsValid
+				&& sync.AttachedTransform.gameObject.activeInHierarchy)
 			{
 				UpdateReferenceSector(sync);
 			}
@@ -76,18 +76,11 @@ public class QSBSectorManager : WorldObjectManager
 		DebugLog.DebugWrite("Building sectors...", MessageType.Info);
 		if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
 		{
-			var timeLoopRing = GameObject.Find("TimeLoopRing_Body");
-			if (timeLoopRing != null)
-			{
-				if (timeLoopRing.GetComponent<FakeSector>() == null)
-				{
-					timeLoopRing.AddComponent<FakeSector>().AttachedSector = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
-				}
-			}
-			else
-			{
-				DebugLog.ToConsole($"Error - TimeLoopRing_Body not found!", MessageType.Error);
-			}
+			var TimeLoopRing_Body = GameObject.Find("TimeLoopRing_Body");
+			var Sector_TimeLoopInterior = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
+			// use same radius as parent sector
+			var radius = Sector_TimeLoopInterior.GetTriggerVolume().GetShape().CalcWorldBounds().radius;
+			FakeSector.CreateOn(TimeLoopRing_Body, Sector_TimeLoopInterior, radius);
 		}
 
 		QSBWorldSync.Init<QSBSector, Sector>();
