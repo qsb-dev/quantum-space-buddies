@@ -110,6 +110,6 @@ public class QSBSectorDetector : MonoBehaviour
 		}
 
 		return validSectors
-			.MinBy(sector => sector.GetScore(_sectorDetector._attachedRigidbody));
+			.MinBy(x => x.GetScore(_sectorDetector._attachedRigidbody));
 	}
 }
