@@ -30,12 +30,12 @@ public class FakeSector : Sector
 
 		go2.AddComponent<OWTriggerVolume>();
 		go2.AddComponent<SphereShape>().radius = fakeSector.Radius;
-		go2.AddComponent<Renderer>().FakeSector = fakeSector;
+		go2.AddComponent<DebugRenderer>().FakeSector = fakeSector;
 
 		go2.SetActive(true);
 	}
 
-	private class Renderer : MonoBehaviour
+	private class DebugRenderer : MonoBehaviour
 	{
 		[NonSerialized]
 		public FakeSector FakeSector;

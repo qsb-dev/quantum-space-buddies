@@ -93,10 +93,11 @@ public class QSBSectorDetector : MonoBehaviour
 	{
 		var type = _sectorDetector._occupantType;
 
-		var validSectors = SectorList.Where(x => x.ShouldSyncTo(type)).ToList();
-		var inASector = validSectors.Count > 0;
+		var validSectors = SectorList
+			.Where(x => x.ShouldSyncTo(type))
+			.ToList();
 
-		if (!inASector)
+		if (validSectors.Count == 0)
 		{
 			validSectors = QSBWorldSync.GetWorldObjects<QSBSector>()
 				.Where(x => x.ShouldSyncTo(type))
@@ -108,27 +109,7 @@ public class QSBSectorDetector : MonoBehaviour
 			return null;
 		}
 
-		var closest = validSectors
-			.MinBy(sector => sector.CalculateScore(_sectorDetector._attachedRigidbody));
-
-		if (inASector)
-		{
-			var pos = _sectorDetector._attachedRigidbody.GetPosition();
-
-			bool IsSameDistanceAsClosest(QSBSector fakeSector)
-				=> OWMath.ApproxEquals(
-					Vector3.Distance(fakeSector.Position, pos),
-					Vector3.Distance(closest.Position, pos),
-					0.01f);
-
-			bool IsParentValid(QSBSector fakeSector)
-				=> validSectors.Any(x => x.AttachedObject == fakeSector.FakeSector._parentSector);
-
-			var fakeToSyncTo = QSBSectorManager.Instance.FakeSectors
-				.FirstOrDefault(x => IsSameDistanceAsClosest(x) && IsParentValid(x));
-			return fakeToSyncTo ?? closest;
-		}
-
-		return closest;
+		return validSectors
+			.MinBy(sector => sector.GetScore(_sectorDetector._attachedRigidbody));
 	}
 }

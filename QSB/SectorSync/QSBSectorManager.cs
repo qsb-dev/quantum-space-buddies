@@ -17,7 +17,6 @@ public class QSBSectorManager : WorldObjectManager
 
 	public static QSBSectorManager Instance { get; private set; }
 	private bool _isReady;
-	public readonly List<QSBSector> FakeSectors = new();
 
 	public readonly List<BaseSectoredSync> SectoredSyncs = new();
 

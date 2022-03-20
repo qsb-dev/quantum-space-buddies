@@ -1,17 +1,15 @@
-﻿using Cysharp.Threading.Tasks;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Linq;
-using System.Threading;
 using UnityEngine;
 
 namespace QSB.SectorSync.WorldObjects;
 
 public class QSBSector : WorldObject<Sector>
 {
-	public Sector.Name Type => AttachedObject.GetName();
+	private Sector.Name Type => AttachedObject.GetName();
 	public Transform Transform
 	{
 		get
@@ -25,36 +23,11 @@ public class QSBSector : WorldObject<Sector>
 			return AttachedObject.transform;
 		}
 	}
-	public Vector3 Position => Transform.position;
-
-	public bool IsFakeSector => AttachedObject is FakeSector;
-	public FakeSector FakeSector => (FakeSector)AttachedObject;
-
-	public override async UniTask Init(CancellationToken ct)
-	{
-		if (IsFakeSector)
-		{
-			QSBSectorManager.Instance.FakeSectors.Add(this);
-		}
-	}
-
-	public override void OnRemoval()
-	{
-		if (IsFakeSector)
-		{
-			QSBSectorManager.Instance.FakeSectors.Remove(this);
-		}
-	}
 
 	public override void SendInitialState(uint to) { }
 
 	public bool ShouldSyncTo(DynamicOccupant occupantType)
 	{
-		if (IsFakeSector)
-		{
-			return false;
-		}
-
 		if (occupantType == DynamicOccupant.Ship && Type == Sector.Name.Ship)
 		{
 			return false;
@@ -106,20 +79,20 @@ public class QSBSector : WorldObject<Sector>
 		return true;
 	}
 
-	public float CalculateScore(OWRigidbody rigidbody)
+	public float GetScore(OWRigidbody rigidbody)
 	{
-		var sqrDistance = (Position - rigidbody.GetPosition()).sqrMagnitude;
+		var sqrDistance = (Transform.position - rigidbody.GetPosition()).sqrMagnitude;
 		var radius = GetRadius();
-		var velocity = GetRelativeVelocity(rigidbody);
+		var sqrVelocity = GetSqrVelocity(rigidbody);
 
-		return sqrDistance + radius * radius + velocity;
+		return sqrDistance + radius * radius + sqrVelocity;
 	}
 
 	private float GetRadius()
 	{
-		if (IsFakeSector)
+		if (AttachedObject is FakeSector fakeSector)
 		{
-			return FakeSector.Radius;
+			return fakeSector.Radius;
 		}
 
 		// TODO : make this work for other stuff, not just shaped triggervolumes
@@ -132,7 +105,7 @@ public class QSBSector : WorldObject<Sector>
 		return 0f;
 	}
 
-	private float GetRelativeVelocity(OWRigidbody rigidbody)
+	private float GetSqrVelocity(OWRigidbody rigidbody)
 	{
 		var sectorRigidbody = AttachedObject.GetOWRigidbody();
 		if (sectorRigidbody && rigidbody)
