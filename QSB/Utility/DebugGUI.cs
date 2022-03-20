@@ -16,27 +16,27 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 	private const float _debugLineSpacing = 8f;
 	private const float FixedWidth = 200f;
 	private const float Column1 = 20f;
-	private float column1Offset = 10f;
+	private static float column1Offset = 10f;
 	private const float Column2 = Column1 + FixedWidth;
-	private float column2Offset = 10f;
+	private static float column2Offset = 10f;
 	private const float Column3 = Column2 + FixedWidth;
-	private float column3Offset = 10f;
+	private static float column3Offset = 10f;
 	private const float Column4 = Column3 + FixedWidth;
-	private float column4Offset = 10f;
+	private static float column4Offset = 10f;
 	private const int MaxLabelSize = 15;
 	private const float MaxLabelDistance = 150;
 
-	private readonly GUIStyle guiGUIStyle = new();
+	private static readonly GUIStyle guiGUIStyle = new();
 	private static readonly GUIStyle labelGUIStyle = new();
 
 	private void Awake()
 	{
-		enabled = QSBCore.DebugSettings.DrawGui;
+		enabled = QSBCore.DebugSettings.DebugMode;
 
 		guiGUIStyle.fontSize = 9;
 	}
 
-	private void WriteLine(int columnID, string text)
+	private static void WriteLine(int columnID, string text)
 	{
 		var currentOffset = 0f;
 		var x = 0f;
@@ -67,7 +67,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		GUI.Label(new Rect(x, currentOffset, 0, 0), text, guiGUIStyle);
 	}
 
-	private void WriteLine(int columnID, string text, Color color)
+	private static void WriteLine(int columnID, string text, Color color)
 	{
 		guiGUIStyle.normal.textColor = color;
 		WriteLine(columnID, text);
@@ -89,9 +89,20 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		column3Offset = 10f;
 		column4Offset = 10f;
 
+		DrawGui();
+		DrawWorldObjectLabels();
+	}
+
+	private static void DrawGui()
+	{
 		#region Column1 - Server data
 
 		WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
+		if (!QSBCore.DebugSettings.DrawGui)
+		{
+			return;
+		}
+
 		WriteLine(1, $"HasWokenUp : {QSBWorldSync.AllObjectsReady}");
 		if (WakeUpSync.LocalInstance != null)
 		{
@@ -109,7 +120,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			}
 			else if (currentState != WakeUpSync.State.Loaded && currentState != WakeUpSync.State.NotLoaded && reason == null)
 			{
-				WriteLine(1, $"Reason : NULL", Color.red);
+				WriteLine(1, "Reason : NULL", Color.red);
 			}
 
 			WriteLine(1, $"Time Difference : {WakeUpSync.LocalInstance.GetTimeDifference()}");
@@ -128,7 +139,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		#region Column2 - Player data
 
-		WriteLine(2, $"Player data :");
+		WriteLine(2, "Player data :");
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
 			WriteLine(2, player.ToString());
@@ -163,7 +174,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 				var currentOwner = instance.netIdentity.connectionToClient;
 				if (currentOwner == null)
 				{
-					WriteLine(3, $"Current Owner : NULL");
+					WriteLine(3, "Current Owner : NULL");
 				}
 				else
 				{
@@ -178,10 +189,10 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		}
 		else
 		{
-			WriteLine(3, $"ShipTransformSync.LocalInstance is null.", Color.red);
+			WriteLine(3, "ShipTransformSync.LocalInstance is null.", Color.red);
 		}
 
-		WriteLine(3, $"QSBShipComponent");
+		WriteLine(3, "QSBShipComponent");
 		foreach (var component in QSBWorldSync.GetWorldObjects<QSBShipComponent>())
 		{
 			var attachedObject = component.AttachedObject;
@@ -195,7 +206,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			}
 		}
 
-		WriteLine(3, $"QSBShipHull");
+		WriteLine(3, "QSBShipHull");
 		foreach (var hull in QSBWorldSync.GetWorldObjects<QSBShipHull>())
 		{
 			var attachedObject = hull.AttachedObject;
@@ -233,8 +244,8 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			}
 		}
 
-		WriteLine(4, $"");
-		WriteLine(4, $"Enabled QuantumObjects :");
+		WriteLine(4, "");
+		WriteLine(4, "Enabled QuantumObjects :");
 		foreach (var qo in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 		{
 			if (qo.ControllingPlayer != 0)
@@ -249,11 +260,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		}
 
 		#endregion
-
-		DrawWorldObjectLabels();
 	}
-
-	public void OnRenderObject() => DrawWorldObjectLines();
 
 	private static void DrawWorldObjectLabels()
 	{
@@ -275,6 +282,8 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			}
 		}
 	}
+
+	public void OnRenderObject() => DrawWorldObjectLines();
 
 	private static void DrawWorldObjectLines()
 	{

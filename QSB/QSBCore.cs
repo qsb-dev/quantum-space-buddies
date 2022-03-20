@@ -159,7 +159,7 @@ public class QSBCore : ModBehaviour
 			DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
 			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
-			GetComponent<DebugGUI>().enabled = DebugSettings.DrawGui;
+			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
 			QuantumManager.UpdateFromDebugSetting();
 			DebugCameraSettings.UpdateFromDebugSetting();
 
