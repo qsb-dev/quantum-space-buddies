@@ -30,7 +30,7 @@ public class FakeSector : Sector
 
 		go2.AddComponent<OWTriggerVolume>();
 		go2.AddComponent<SphereShape>().radius = fakeSector.Radius;
-		go2.AddComponent<DebugRenderer>().FakeSector = fakeSector;
+		// go2.AddComponent<DebugRenderer>().FakeSector = fakeSector;
 
 		go2.SetActive(true);
 	}
@@ -48,7 +48,6 @@ public class FakeSector : Sector
 			}
 
 			Popcron.Gizmos.Sphere(FakeSector.transform.position, FakeSector.Radius, Color.yellow);
-			Popcron.Gizmos.Line(FakeSector.transform.position, FakeSector.transform.position + Vector3.up * FakeSector.Radius, Color.yellow);
 		}
 
 		private void OnGUI()
