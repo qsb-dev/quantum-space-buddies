@@ -133,7 +133,10 @@ public class QSBGhostBrain : WorldObject<GhostBrain>
 		AttachedObject._controller = AttachedObject.GetComponent<GhostController>();
 		AttachedObject._sensors = AttachedObject.GetComponent<GhostSensors>();
 		_data = new();
-		_data.threatAwareness = AttachedObject._data.threatAwareness;
+		if (AttachedObject._data != null)
+		{
+			_data.threatAwareness = AttachedObject._data.threatAwareness;
+		}
 	}
 
 	public void Start()

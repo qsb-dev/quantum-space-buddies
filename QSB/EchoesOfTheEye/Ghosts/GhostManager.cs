@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ internal class GhostManager : WorldObjectManager
 	{
 		QSBWorldSync.Init<QSBGhostEffects, GhostEffects>();
 		QSBWorldSync.Init<QSBGhostSensors, GhostSensors>();
-		QSBWorldSync.Init<QSBGhostBrain, GhostBrain>();
+		QSBWorldSync.Init<QSBGhostBrain, GhostBrain>(QSBWorldSync.GetUnityObjects<GhostBrain>().Where(x => x.gameObject.activeSelf).SortDeterministic());
 
 		_hotelDirector = QSBWorldSync.GetUnityObjects<GhostHotelDirector>().First();
 		_partyPathDirector = QSBWorldSync.GetUnityObjects<GhostPartyPathDirector>().First();
