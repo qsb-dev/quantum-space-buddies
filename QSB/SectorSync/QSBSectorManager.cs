@@ -97,16 +97,20 @@ public class QSBSectorManager : WorldObjectManager
 
 		foreach (var elevator in QSBWorldSync.GetUnityObjects<Elevator>())
 		{
-			radius = float.MinValue;
-			foreach (var collider in elevator.GetComponentsInChildren<Collider>())
+			var colliders = elevator.GetComponentsInChildren<Collider>();
+			await colliders.Select(x =>
+				UniTask.WaitUntil(() => x.bounds.extents != Vector3.zero, cancellationToken: ct));
+
+			static float Size(Collider collider)
 			{
-				await UniTask.WaitUntil(() => collider.bounds.extents != Vector3.zero, cancellationToken: ct);
-				radius = Mathf.Max(radius, collider.bounds.extents.magnitude);
+				var extents = collider.bounds.extents;
+				return Mathf.Max(extents.x, extents.y, extents.z);
 			}
 
-			FakeSector.CreateOn(elevator.gameObject,
-				radius,
-				elevator.GetComponentInParent<Sector>());
+			var largestCollider = colliders.MaxBy(Size);
+			FakeSector.CreateOn(largestCollider.gameObject,
+				Size(largestCollider),
+				largestCollider.GetComponentInParent<Sector>());
 		}
 	}
 }
