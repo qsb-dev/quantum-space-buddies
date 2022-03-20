@@ -50,6 +50,16 @@ public class QSBSector : WorldObject<Sector>
 
 	public bool ShouldSyncTo(DynamicOccupant occupantType)
 	{
+		if (IsFakeSector)
+		{
+			return false;
+		}
+
+		if (occupantType == DynamicOccupant.Ship && Type == Sector.Name.Ship)
+		{
+			return false;
+		}
+
 		if (AttachedObject == null)
 		{
 			DebugLog.ToConsole($"Warning - AttachedObject for sector id:{ObjectId} is null!", MessageType.Warning);
@@ -57,11 +67,6 @@ public class QSBSector : WorldObject<Sector>
 		}
 
 		if (!AttachedObject.gameObject.activeInHierarchy)
-		{
-			return false;
-		}
-
-		if (occupantType == DynamicOccupant.Ship && Type == Sector.Name.Ship)
 		{
 			return false;
 		}
@@ -112,6 +117,11 @@ public class QSBSector : WorldObject<Sector>
 
 	private float GetRadius()
 	{
+		if (IsFakeSector)
+		{
+			return FakeSector.Radius;
+		}
+
 		// TODO : make this work for other stuff, not just shaped triggervolumes
 		var trigger = AttachedObject.GetTriggerVolume();
 		if (trigger && trigger.GetShape())

@@ -74,14 +74,7 @@ public class QSBSectorManager : WorldObjectManager
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
 		DebugLog.DebugWrite("Building sectors...", MessageType.Info);
-		if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
-		{
-			var TimeLoopRing_Body = GameObject.Find("TimeLoopRing_Body");
-			var Sector_TimeLoopInterior = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
-			// use same radius as parent sector
-			var radius = Sector_TimeLoopInterior.GetTriggerVolume().GetShape().CalcWorldBounds().radius;
-			FakeSector.CreateOn(TimeLoopRing_Body, Sector_TimeLoopInterior, radius);
-		}
+		await CreateFakeSectors(ct);
 
 		QSBWorldSync.Init<QSBSector, Sector>();
 		_isReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
@@ -89,4 +82,32 @@ public class QSBSectorManager : WorldObjectManager
 
 	public override void UnbuildWorldObjects() =>
 		_isReady = false;
+
+	private static async UniTask CreateFakeSectors(CancellationToken ct)
+	{
+		if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
+		{
+			return;
+		}
+
+		var TimeLoopRing_Body = GameObject.Find("TimeLoopRing_Body");
+		var Sector_TimeLoopInterior = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
+		// use same radius as parent sector
+		var radius = Sector_TimeLoopInterior.GetTriggerVolume().GetShape().CalcWorldBounds().radius;
+		FakeSector.CreateOn(TimeLoopRing_Body, radius, Sector_TimeLoopInterior);
+
+		foreach (var elevator in QSBWorldSync.GetUnityObjects<Elevator>())
+		{
+			radius = float.MinValue;
+			foreach (var collider in elevator.GetComponentsInChildren<Collider>())
+			{
+				await UniTask.WaitUntil(() => collider.bounds.extents != Vector3.zero, cancellationToken: ct);
+				radius = Mathf.Max(radius, collider.bounds.extents.magnitude);
+			}
+
+			FakeSector.CreateOn(elevator.gameObject,
+				radius,
+				elevator.GetComponentInParent<Sector>());
+		}
+	}
 }

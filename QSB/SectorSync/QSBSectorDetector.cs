@@ -99,7 +99,7 @@ public class QSBSectorDetector : MonoBehaviour
 		if (!inASector)
 		{
 			validSectors = QSBWorldSync.GetWorldObjects<QSBSector>()
-				.Where(x => !x.IsFakeSector && x.Type != Sector.Name.Unnamed && x.ShouldSyncTo(type))
+				.Where(x => x.ShouldSyncTo(type))
 				.ToList();
 		}
 
@@ -121,11 +121,11 @@ public class QSBSectorDetector : MonoBehaviour
 					Vector3.Distance(closest.Position, pos),
 					0.01f);
 
-			bool IsAttachedValid(QSBSector fakeSector)
-				=> validSectors.Any(x => x.AttachedObject == fakeSector.FakeSector.AttachedSector);
+			bool IsParentValid(QSBSector fakeSector)
+				=> validSectors.Any(x => x.AttachedObject == fakeSector.FakeSector._parentSector);
 
 			var fakeToSyncTo = QSBSectorManager.Instance.FakeSectors
-				.FirstOrDefault(x => IsSameDistanceAsClosest(x) && IsAttachedValid(x));
+				.FirstOrDefault(x => IsSameDistanceAsClosest(x) && IsParentValid(x));
 			return fakeToSyncTo ?? closest;
 		}
 
