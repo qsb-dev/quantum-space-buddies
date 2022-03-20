@@ -5,17 +5,12 @@ using UnityEngine;
 public class QSBStalkAction : QSBGhostAction
 {
 	private bool _wasPlayerLanternConcealed;
-
 	private bool _isFocusingLight;
-
 	private bool _shouldFocusLightOnPlayer;
-
 	private float _changeFocusTime;
 
 	public override GhostAction.Name GetName()
-	{
-		return GhostAction.Name.Stalk;
-	}
+		=> GhostAction.Name.Stalk;
 
 	public override float CalculateUtility()
 	{
@@ -34,7 +29,7 @@ public class QSBStalkAction : QSBGhostAction
 
 	protected override void OnEnterAction()
 	{
-		bool flag = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
+		var flag = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
 		_wasPlayerLanternConcealed = flag;
 		_isFocusingLight = flag;
 		_shouldFocusLightOnPlayer = flag;
@@ -53,23 +48,26 @@ public class QSBStalkAction : QSBGhostAction
 			_data.fastStalkUnlocked = true;
 			_effects.AttachedObject.PlayVoiceAudioNear(global::AudioType.Ghost_Stalk_Fast, 1f);
 		}
+
 		return true;
 	}
 
 	public override void FixedUpdate_Action()
 	{
-		float num = GhostConstants.GetMoveSpeed(MoveType.SEARCH);
+		var num = GhostConstants.GetMoveSpeed(MoveType.SEARCH);
 		if (_data.fastStalkUnlocked)
 		{
 			num += 1.5f;
 		}
+
 		if (_controller.GetNodeMap().CheckLocalPointInBounds(_data.lastKnownPlayerLocation.localPosition))
 		{
 			_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation.localPosition, num, GhostConstants.GetMoveAcceleration(MoveType.SEARCH));
 		}
+
 		_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
-		bool flag = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
-		bool flag2 = !_wasPlayerLanternConcealed && flag && _data.wasPlayerLocationKnown;
+		var flag = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
+		var flag2 = !_wasPlayerLanternConcealed && flag && _data.wasPlayerLocationKnown;
 		_wasPlayerLanternConcealed = flag;
 		if (flag2 && !_shouldFocusLightOnPlayer)
 		{
@@ -81,6 +79,7 @@ public class QSBStalkAction : QSBGhostAction
 			_shouldFocusLightOnPlayer = false;
 			_changeFocusTime = Time.time + 1f;
 		}
+
 		if (_isFocusingLight != _shouldFocusLightOnPlayer && Time.time > _changeFocusTime)
 		{
 			if (_shouldFocusLightOnPlayer)
@@ -92,6 +91,7 @@ public class QSBStalkAction : QSBGhostAction
 			{
 				_controller.SetLanternConcealed(true, true);
 			}
+
 			_isFocusingLight = _shouldFocusLightOnPlayer;
 		}
 	}
