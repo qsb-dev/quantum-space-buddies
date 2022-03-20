@@ -9,7 +9,7 @@ namespace QSB.SectorSync.WorldObjects;
 
 public class QSBSector : WorldObject<Sector>
 {
-	private Sector.Name Type => AttachedObject.GetName();
+	public Sector.Name Type => AttachedObject.GetName();
 	public Transform Transform
 	{
 		get
@@ -90,11 +90,6 @@ public class QSBSector : WorldObject<Sector>
 
 	private float GetRadius()
 	{
-		if (AttachedObject is FakeSector fakeSector)
-		{
-			return fakeSector.Radius;
-		}
-
 		// TODO : make this work for other stuff, not just shaped triggervolumes
 		var trigger = AttachedObject.GetTriggerVolume();
 		if (trigger && trigger.GetShape())

@@ -73,7 +73,7 @@ public class QSBSectorManager : WorldObjectManager
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
 		DebugLog.DebugWrite("Building sectors...", MessageType.Info);
-		await CreateFakeSectors(ct);
+		await this.Try("creating fake sectors", () => CreateFakeSectors(ct));
 
 		QSBWorldSync.Init<QSBSector, Sector>();
 		_isReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
@@ -89,28 +89,62 @@ public class QSBSectorManager : WorldObjectManager
 			return;
 		}
 
-		var TimeLoopRing_Body = GameObject.Find("TimeLoopRing_Body");
-		var Sector_TimeLoopInterior = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
-		// use same radius as parent sector
-		var radius = Sector_TimeLoopInterior.GetTriggerVolume().GetShape().CalcWorldBounds().radius;
-		FakeSector.CreateOn(TimeLoopRing_Body, radius, Sector_TimeLoopInterior);
+		// time loop spinning ring
+		{
+			var TimeLoopRing_Body = GameObject.Find("TimeLoopRing_Body");
+			var Sector_TimeLoopInterior = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
+			// use same shape as parent sector
+			var shape = (SphereShape)Sector_TimeLoopInterior.GetTriggerVolume().GetShape();
+			FakeSector.Create<SphereShape>(TimeLoopRing_Body, Sector_TimeLoopInterior,
+				x => x.radius = shape.radius);
+		}
 
+		// th elevators
 		foreach (var elevator in QSBWorldSync.GetUnityObjects<Elevator>())
 		{
-			var colliders = elevator.GetComponentsInChildren<Collider>();
-			await colliders.Select(x =>
-				UniTask.WaitUntil(() => x.bounds.extents != Vector3.zero, cancellationToken: ct));
+			// hack: wait for QSBElevator to the box shape on, and just use that
+			BoxShape shape = null;
+			await UniTask.WaitUntil(() => elevator.TryGetComponent(out shape), cancellationToken: ct);
 
-			static float Size(Collider collider)
+			FakeSector.Create<BoxShape>(elevator.gameObject,
+				elevator.GetComponentInParent<Sector>(),
+				x =>
+				{
+					x.center = shape.center;
+					x.size = shape.size;
+				});
+		}
+
+		// rafts
+		foreach (var raft in QSBWorldSync.GetUnityObjects<RaftController>())
+		{
+			FakeSector.Create<BoxShape>(raft.gameObject,
+				raft._sector,
+				x =>
+				{
+					// todo: figure out a good shape for the raft ride volume
+					x.size = Vector3.one * 10;
+				});
+		}
+
+		// todo cage elevators
+		// todo prisoner elevator
+
+		// OPC probe
+		{
+			var probe = Locator._orbitalProbeCannon
+				.GetRequiredComponent<OrbitalProbeLaunchController>()
+				._probeBody;
+			if (probe)
 			{
-				var extents = collider.bounds.extents;
-				return Mathf.Max(extents.x, extents.y, extents.z);
+				FakeSector.Create<SphereShape>(probe.gameObject,
+					null,
+					x =>
+					{
+						// todo: figure out a good radius for this sector
+						x.radius = 100;
+					});
 			}
-
-			var largestCollider = colliders.MaxBy(Size);
-			FakeSector.CreateOn(largestCollider.gameObject,
-				Size(largestCollider),
-				largestCollider.GetComponentInParent<Sector>());
 		}
 	}
 }

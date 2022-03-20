@@ -100,7 +100,10 @@ public class QSBSectorDetector : MonoBehaviour
 		if (validSectors.Count == 0)
 		{
 			validSectors = QSBWorldSync.GetWorldObjects<QSBSector>()
-				.Where(x => x.ShouldSyncTo(type))
+				.Where(x =>
+					// we only wanna sync to the major ones when far away
+					x.Type != Sector.Name.Unnamed &&
+					x.ShouldSyncTo(type))
 				.ToList();
 		}
 

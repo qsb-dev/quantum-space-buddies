@@ -8,14 +8,13 @@ namespace QSB.SectorSync;
 
 public class FakeSector : Sector
 {
-	public float Radius;
-
-	public static void CreateOn(GameObject go, float radius, Sector parent)
+	public static void Create<T>(GameObject go, Sector parent, Action<T> initShape)
+		where T : Shape
 	{
-		var name = $"{go.name}_FakeSector";
+		var name = $"FakeSector_{go.name}";
 		if (go.transform.Find(name))
 		{
-			DebugLog.DebugWrite($"fake sector {name} already exists", MessageType.Warning);
+			DebugLog.DebugWrite($"{name} already exists", MessageType.Warning);
 			return;
 		}
 
@@ -24,13 +23,13 @@ public class FakeSector : Sector
 		go2.transform.SetParent(go.transform, false);
 
 		var fakeSector = go2.AddComponent<FakeSector>();
+		fakeSector._name = (Name)(-1);
 		fakeSector._subsectors = new List<Sector>();
-		fakeSector.Radius = radius;
 		fakeSector.SetParentSector(parent);
 
 		go2.AddComponent<OWTriggerVolume>();
-		go2.AddComponent<SphereShape>().radius = fakeSector.Radius;
-		// go2.AddComponent<DebugRenderer>().FakeSector = fakeSector;
+		initShape(go2.AddComponent<T>());
+		go2.AddComponent<DebugRenderer>().FS = fakeSector;
 
 		go2.SetActive(true);
 	}
@@ -38,7 +37,7 @@ public class FakeSector : Sector
 	private class DebugRenderer : MonoBehaviour
 	{
 		[NonSerialized]
-		public FakeSector FakeSector;
+		public FakeSector FS;
 
 		private void OnRenderObject()
 		{
@@ -47,7 +46,17 @@ public class FakeSector : Sector
 				return;
 			}
 
-			Popcron.Gizmos.Sphere(FakeSector.transform.position, FakeSector.Radius, Color.yellow);
+			var shape = FS._owTriggerVolume._shape;
+			var center = shape.GetWorldSpaceCenter();
+			switch (shape)
+			{
+				case SphereShape sphereShape:
+					Popcron.Gizmos.Sphere(center, sphereShape.radius, Color.yellow);
+					break;
+				case BoxShape boxShape:
+					Popcron.Gizmos.Cube(center, boxShape.transform.rotation, boxShape.size, Color.yellow);
+					break;
+			}
 		}
 
 		private void OnGUI()
@@ -58,9 +67,7 @@ public class FakeSector : Sector
 				return;
 			}
 
-			DebugGUI.DrawLabel(FakeSector.transform,
-				$"{FakeSector.name}\n" +
-				$"{FakeSector._parentSector.name} | {FakeSector.Radius}");
+			DebugGUI.DrawLabel(FS.transform, FS.name);
 		}
 	}
 }
