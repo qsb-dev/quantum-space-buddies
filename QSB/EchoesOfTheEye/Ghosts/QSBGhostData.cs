@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts;
 
