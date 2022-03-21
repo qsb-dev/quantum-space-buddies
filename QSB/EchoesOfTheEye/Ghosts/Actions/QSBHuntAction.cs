@@ -30,7 +30,7 @@ public class QSBHuntAction : QSBGhostAction
 		_huntStartTime = 0f;
 		_huntFailed = false;
 		_huntFailTime = 0f;
-		_controller.OnNodeMapChanged += new OWEvent.OWCallback(OnNodeMapChanged);
+		_controller.AttachedObject.OnNodeMapChanged += new OWEvent.OWCallback(OnNodeMapChanged);
 	}
 
 	private void OnNodeMapChanged()

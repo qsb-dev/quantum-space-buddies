@@ -120,7 +120,7 @@ public class QSBGuardAction : QSBGhostAction
 		_targetSearchNode = GetHighestPriorityNodeToSearch();
 		if (_targetSearchNode == null)
 		{
-			Debug.LogError("Failed to find any nodes to search!  Did we exhaust our existing options?", _controller);
+			Debug.LogError("Failed to find any nodes to search!  Did we exhaust our existing options?", _controller.AttachedObject);
 			Debug.Break();
 		}
 
