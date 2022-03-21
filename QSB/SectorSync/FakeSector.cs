@@ -28,25 +28,6 @@ public class FakeSector : Sector
 		fakeSector.SetParentSector(parent);
 		setupSector(fakeSector);
 
-		go2.AddComponent<DebugRenderer>();
-
 		go2.SetActive(true);
-	}
-
-	private class DebugRenderer : MonoBehaviour
-	{
-		private FakeSector _fs;
-		private void Awake() => _fs = GetComponent<FakeSector>();
-
-		private void OnGUI()
-		{
-			if (!QSBCore.DebugSettings.DebugMode ||
-				Event.current.type != EventType.Repaint)
-			{
-				return;
-			}
-
-			DebugGUI.DrawLabel(_fs.transform, _fs.name);
-		}
 	}
 }
