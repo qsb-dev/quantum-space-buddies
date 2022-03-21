@@ -42,8 +42,8 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public override void DisplayLines()
 	{
-		ControllerLines(AttachedObject._controller);
-		DataLines(_data, AttachedObject._controller);
+		ControllerLines(_controller);
+		DataLines(_data, _controller);
 
 		if (_currentAction != null)
 		{
@@ -51,9 +51,9 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		}
 	}
 
-	private void ControllerLines(GhostController controller)
+	private void ControllerLines(QSBGhostController controller)
 	{
-		Popcron.Gizmos.Sphere(controller.transform.position, 2f, Color.white);
+		Popcron.Gizmos.Sphere(controller.AttachedObject.transform.position, 2f, Color.white);
 
 		if (controller._followNodePath)
 		{
@@ -77,17 +77,18 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		}
 	}
 
-	private void DataLines(QSBGhostData data, GhostController controller)
+	private void DataLines(QSBGhostData data, QSBGhostController controller)
 	{
 		if (data.timeSincePlayerLocationKnown != float.PositiveInfinity)
 		{
-			Popcron.Gizmos.Line(controller.transform.position, controller.LocalToWorldPosition(data.lastKnownPlayerLocation.localPosition), Color.magenta);
+			Popcron.Gizmos.Line(controller.AttachedObject.transform.position, controller.LocalToWorldPosition(data.lastKnownPlayerLocation.localPosition), Color.magenta);
 			Popcron.Gizmos.Sphere(controller.LocalToWorldPosition(data.lastKnownPlayerLocation.localPosition), 1f, Color.magenta);
 		}
 	}
 
 	#endregion
 
+	internal QSBGhostController _controller;
 	internal QSBGhostData _data;
 	private List<QSBGhostAction> _actionLibrary = new();
 	private QSBGhostAction _currentAction;
@@ -156,7 +157,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public void Awake()
 	{
-		AttachedObject._controller = AttachedObject.GetComponent<GhostController>();
+		_controller = AttachedObject.GetComponent<GhostController>().GetWorldObject<QSBGhostController>();
 		AttachedObject._sensors = AttachedObject.GetComponent<GhostSensors>();
 		_data = new();
 		if (AttachedObject._data != null)
@@ -168,13 +169,13 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	public void Start()
 	{
 		AttachedObject.enabled = false;
-		AttachedObject._controller.GetDreamLanternController().enabled = false;
-		AttachedObject._controller.Initialize(AttachedObject._nodeLayer, AttachedObject._effects);
+		_controller.GetDreamLanternController().enabled = false;
+		_controller.Initialize(AttachedObject._nodeLayer, AttachedObject._effects.GetWorldObject<QSBGhostEffects>());
 		AttachedObject._sensors.GetWorldObject<QSBGhostSensors>().Initialize(_data, AttachedObject._guardVolume);
-		AttachedObject._effects.GetWorldObject<QSBGhostEffects>().Initialize(AttachedObject._controller.GetNodeRoot(), AttachedObject._controller, _data);
+		AttachedObject._effects.GetWorldObject<QSBGhostEffects>().Initialize(_controller.GetNodeRoot(), _controller, _data);
 		AttachedObject._effects.OnCallForHelp += AttachedObject.OnCallForHelp;
 		_data.reducedFrights_allowChase = AttachedObject._reducedFrights_allowChase;
-		AttachedObject._controller.SetLanternConcealed(AttachedObject._startWithLanternConcealed, false);
+		_controller.SetLanternConcealed(AttachedObject._startWithLanternConcealed, false);
 		AttachedObject._intruderConfirmedBySelf = false;
 		AttachedObject._intruderConfirmPending = false;
 		AttachedObject._intruderConfirmTime = 0f;
@@ -195,10 +196,10 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	public void OnDestroy()
 	{
 		AttachedObject._sensors.RemoveEventListeners();
-		AttachedObject._controller.OnArriveAtPosition -= AttachedObject.OnArriveAtPosition;
-		AttachedObject._controller.OnTraversePathNode -= AttachedObject.OnTraversePathNode;
-		AttachedObject._controller.OnFaceNode -= AttachedObject.OnFaceNode;
-		AttachedObject._controller.OnFinishFaceNodeList -= AttachedObject.OnFinishFaceNodeList;
+		_controller.AttachedObject.OnArriveAtPosition -= AttachedObject.OnArriveAtPosition;
+		_controller.AttachedObject.OnTraversePathNode -= AttachedObject.OnTraversePathNode;
+		_controller.AttachedObject.OnFaceNode -= AttachedObject.OnFaceNode;
+		_controller.AttachedObject.OnFinishFaceNodeList -= AttachedObject.OnFinishFaceNodeList;
 		AttachedObject._effects.OnCallForHelp -= AttachedObject.OnCallForHelp;
 		GlobalMessenger.RemoveListener("EnterDreamWorld", new Callback(AttachedObject.OnEnterDreamWorld));
 		GlobalMessenger.RemoveListener("ExitDreamWorld", new Callback(AttachedObject.OnExitDreamWorld));
@@ -221,11 +222,11 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		}
 
 		_data.isAlive = false;
-		AttachedObject._controller.StopMoving();
-		AttachedObject._controller.StopFacing();
-		AttachedObject._controller.ExtinguishLantern();
-		AttachedObject._controller.GetCollider().GetComponent<OWCollider>().SetActivation(false);
-		AttachedObject._controller.GetGrabController().ReleasePlayer();
+		_controller.StopMoving();
+		_controller.StopFacing();
+		_controller.ExtinguishLantern();
+		_controller.GetCollider().GetComponent<OWCollider>().SetActivation(false);
+		_controller.GetGrabController().ReleasePlayer();
 		_pendingAction = null;
 		_currentAction = null;
 		_data.currentAction = GhostAction.Name.None;
@@ -299,7 +300,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 		AttachedObject._effects.PlayRespondToHelpCallAudio(reactDelay);
 		_data.reduceGuardUtility = true;
-		_data.lastKnownPlayerLocation.UpdateLocalPosition(playerLocalPosition, AttachedObject._controller);
+		_data.lastKnownPlayerLocation.UpdateLocalPosition(playerLocalPosition, _controller.AttachedObject);
 		_data.wasPlayerLocationKnown = true;
 		_data.timeSincePlayerLocationKnown = 0f;
 		return true;
@@ -319,7 +320,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 		if (informationTime > _data.timeLastSawPlayer)
 		{
-			_data.lastKnownPlayerLocation.UpdateLocalPosition(localPosition, AttachedObject._controller);
+			_data.lastKnownPlayerLocation.UpdateLocalPosition(localPosition, _controller.AttachedObject);
 			_data.wasPlayerLocationKnown = true;
 			_data.timeSincePlayerLocationKnown = 0f;
 		}
@@ -331,9 +332,9 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			return;
 		}
-		AttachedObject._controller.FixedUpdate_Controller();
+		_controller.FixedUpdate_Controller();
 		AttachedObject._sensors.FixedUpdate_Sensors();
-		_data.FixedUpdate_Data(AttachedObject._controller, AttachedObject._sensors);
+		_data.FixedUpdate_Data(_controller, AttachedObject._sensors);
 		AttachedObject.FixedUpdate_ThreatAwareness();
 		if (_currentAction != null)
 		{
@@ -347,7 +348,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			return;
 		}
-		AttachedObject._controller.Update_Controller();
+		_controller.Update_Controller();
 		AttachedObject._sensors.Update_Sensors();
 		AttachedObject._effects.Update_Effects();
 		var flag = false;
@@ -524,13 +525,13 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	public void OnEnterDreamWorld()
 	{
 		AttachedObject.enabled = true;
-		AttachedObject._controller.GetDreamLanternController().enabled = true;
+		_controller.GetDreamLanternController().enabled = true;
 	}
 
 	public void OnExitDreamWorld()
 	{
 		AttachedObject.enabled = false;
-		AttachedObject._controller.GetDreamLanternController().enabled = false;
+		_controller.GetDreamLanternController().enabled = false;
 		ChangeAction(null);
 		_data.OnPlayerExitDreamWorld();
 	}

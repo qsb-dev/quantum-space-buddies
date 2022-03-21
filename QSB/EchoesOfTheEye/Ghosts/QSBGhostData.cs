@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts;
 
@@ -55,7 +56,7 @@ public class QSBGhostData
 		}
 	}
 
-	public void FixedUpdate_Data(GhostController controller, GhostSensors sensors)
+	public void FixedUpdate_Data(QSBGhostController controller, GhostSensors sensors)
 	{
 		wasPlayerLocationKnown = isPlayerLocationKnown;
 		isPlayerLocationKnown = sensor.isPlayerVisible || sensor.isPlayerHeldLanternVisible || sensor.isIlluminatedByPlayer || sensor.inContactWithPlayer;
@@ -66,7 +67,7 @@ public class QSBGhostData
 
 		var worldPosition = Locator.GetPlayerTransform().position - Locator.GetPlayerTransform().up;
 		var worldVelocity = Locator.GetPlayerBody().GetVelocity() - controller.GetNodeMap().GetOWRigidbody().GetVelocity();
-		playerLocation.Update(worldPosition, worldVelocity, controller);
+		playerLocation.Update(worldPosition, worldVelocity, controller.AttachedObject);
 		playerMinLanternRange = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().GetMinRange();
 		if (isPlayerLocationKnown)
 		{
@@ -82,7 +83,7 @@ public class QSBGhostData
 				firstUnknownSensor.CopyFromOther(sensor);
 			}
 
-			lastKnownPlayerLocation.Update(controller);
+			lastKnownPlayerLocation.Update(controller.AttachedObject);
 			timeSincePlayerLocationKnown += Time.deltaTime;
 		}
 
