@@ -9,11 +9,32 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 
-public class QSBGhostSensors : WorldObject<GhostSensors>
+public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 {
 	public override void SendInitialState(uint to)
 	{
 
+	}
+
+	public override void DisplayLines()
+	{
+		if (AttachedObject._guardVolume == null)
+		{
+			return;
+		}
+
+		var shape = AttachedObject._guardVolume._shape;
+		if (shape is BoxShape box)
+		{
+			Popcron.Gizmos.Cube(
+				ShapeUtil.Box.CalcWorldSpaceCenter(box),
+				box.transform.rotation,
+				ShapeUtil.Box.CalcWorldSpaceSize(box));
+		}
+		else
+		{
+			DebugLog.DebugWrite($"Unknown shape {shape.GetType()}");
+		}
 	}
 
 	private QSBGhostData _data;

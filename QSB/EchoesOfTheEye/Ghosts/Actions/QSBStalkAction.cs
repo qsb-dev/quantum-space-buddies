@@ -1,5 +1,6 @@
 ﻿using GhostEnums;
 using QSB.EchoesOfTheEye.Ghosts;
+using QSB.Utility;
 using UnityEngine;
 
 public class QSBStalkAction : QSBGhostAction
@@ -38,15 +39,16 @@ public class QSBStalkAction : QSBGhostAction
 		_controller.SetLanternConcealed(!_isFocusingLight, true);
 		_controller.FaceVelocity();
 		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
-		_effects.AttachedObject.PlayVoiceAudioNear(_data.fastStalkUnlocked ? global::AudioType.Ghost_Stalk_Fast : global::AudioType.Ghost_Stalk, 1f);
+		_effects.AttachedObject.PlayVoiceAudioNear(_data.fastStalkUnlocked ? AudioType.Ghost_Stalk_Fast : AudioType.Ghost_Stalk, 1f);
 	}
 
 	public override bool Update_Action()
 	{
 		if (!_data.fastStalkUnlocked && _data.illuminatedByPlayerMeter > 4f)
 		{
+			DebugLog.DebugWrite($"{_brain.AttachedObject._name} Fast stalk unlocked.");
 			_data.fastStalkUnlocked = true;
-			_effects.AttachedObject.PlayVoiceAudioNear(global::AudioType.Ghost_Stalk_Fast, 1f);
+			_effects.AttachedObject.PlayVoiceAudioNear(AudioType.Ghost_Stalk_Fast, 1f);
 		}
 
 		return true;
@@ -54,22 +56,26 @@ public class QSBStalkAction : QSBGhostAction
 
 	public override void FixedUpdate_Action()
 	{
-		var num = GhostConstants.GetMoveSpeed(MoveType.SEARCH);
+		var stalkSpeed = GhostConstants.GetMoveSpeed(MoveType.SEARCH);
 		if (_data.fastStalkUnlocked)
 		{
-			num += 1.5f;
+			stalkSpeed += 1.5f;
 		}
 
 		if (_controller.GetNodeMap().CheckLocalPointInBounds(_data.lastKnownPlayerLocation.localPosition))
 		{
-			_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation.localPosition, num, GhostConstants.GetMoveAcceleration(MoveType.SEARCH));
+			_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation.localPosition, stalkSpeed, GhostConstants.GetMoveAcceleration(MoveType.SEARCH));
 		}
 
 		_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
-		var flag = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
-		var flag2 = !_wasPlayerLanternConcealed && flag && _data.wasPlayerLocationKnown;
-		_wasPlayerLanternConcealed = flag;
-		if (flag2 && !_shouldFocusLightOnPlayer)
+
+		var isPlayerLanternConcealed = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
+		var sawPlayerLanternConceal = !_wasPlayerLanternConcealed
+			&& isPlayerLanternConcealed
+			&& _data.wasPlayerLocationKnown;
+
+		_wasPlayerLanternConcealed = isPlayerLanternConcealed;
+		if (sawPlayerLanternConceal && !_shouldFocusLightOnPlayer)
 		{
 			_shouldFocusLightOnPlayer = true;
 			_changeFocusTime = Time.time + 1f;
@@ -84,11 +90,13 @@ public class QSBStalkAction : QSBGhostAction
 		{
 			if (_shouldFocusLightOnPlayer)
 			{
+				DebugLog.DebugWrite($"{_brain.AttachedObject._name} : Un-concealing lantern and focusing on player.");
 				_controller.SetLanternConcealed(false, true);
 				_controller.ChangeLanternFocus(1f, 2f);
 			}
 			else
 			{
+				DebugLog.DebugWrite($"{_brain.AttachedObject._name} : Concealing lantern.");
 				_controller.SetLanternConcealed(true, true);
 			}
 

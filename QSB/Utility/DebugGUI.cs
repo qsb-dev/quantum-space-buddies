@@ -279,7 +279,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		foreach (var obj in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
+		foreach (var obj in QSBWorldSync.GetWorldObjects<IGhostObject>())
 		{
 			if (obj.AttachedObject == null)
 			{
@@ -300,7 +300,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		foreach (var obj in QSBWorldSync.GetWorldObjects().Where(x => x is not QSBGhostBrain))
+		foreach (var obj in QSBWorldSync.GetWorldObjects().Where(x => x is not IGhostObject))
 		{
 			if (obj.AttachedObject == null)
 			{
@@ -321,7 +321,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		foreach (var obj in QSBWorldSync.GetWorldObjects().Where(x => x is not QSBGhostBrain))
+		foreach (var obj in QSBWorldSync.GetWorldObjects().Where(x => x is not IGhostObject))
 		{
 			if (obj.AttachedObject == null)
 			{
@@ -342,7 +342,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		foreach (var obj in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
+		foreach (var obj in QSBWorldSync.GetWorldObjects<IGhostObject>())
 		{
 			if (obj.AttachedObject == null)
 			{
