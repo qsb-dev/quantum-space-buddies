@@ -15,7 +15,7 @@ public abstract class QSBGhostAction
 {
 	protected QSBGhostBrain _brain;
 	protected QSBGhostData _data => _brain._data;
-	protected QSBGhostController _controller => _brain._controller;
+	protected GhostController _controller => _brain.AttachedObject._controller;
 	protected QSBGhostSensors _sensors => _brain.AttachedObject._sensors.GetWorldObject<QSBGhostSensors>();
 	protected QSBGhostEffects _effects => _brain.AttachedObject._effects.GetWorldObject<QSBGhostEffects>();
 	protected Transform _transform;
@@ -83,7 +83,7 @@ public abstract class QSBGhostAction
 	public virtual void Initialize(QSBGhostBrain brain)
 	{
 		_brain = brain;
-		this._transform = this._controller.AttachedObject.transform;
+		this._transform = this._controller.transform;
 	}
 
 	public void EnterAction()

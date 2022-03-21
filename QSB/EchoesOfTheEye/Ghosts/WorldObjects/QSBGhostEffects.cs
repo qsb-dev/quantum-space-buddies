@@ -20,10 +20,10 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 
 	private QSBGhostData _data;
 
-	public void Initialize(Transform nodeRoot, QSBGhostController controller, QSBGhostData data)
+	public void Initialize(Transform nodeRoot, GhostController controller, QSBGhostData data)
 	{
 		AttachedObject._animator = AttachedObject.GetComponent<Animator>();
-		AttachedObject._controller = controller.AttachedObject;
+		AttachedObject._controller = controller;
 		_data = data;
 		if (AttachedObject._feetAudioSourceFar != null)
 		{
