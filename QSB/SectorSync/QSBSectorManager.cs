@@ -93,38 +93,31 @@ public class QSBSectorManager : WorldObjectManager
 		{
 			var TimeLoopRing_Body = GameObject.Find("TimeLoopRing_Body");
 			var Sector_TimeLoopInterior = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
-			// use same shape as parent sector
-			var shape = (SphereShape)Sector_TimeLoopInterior.GetTriggerVolume().GetShape();
-			FakeSector.Create<SphereShape>(TimeLoopRing_Body, Sector_TimeLoopInterior,
-				x => x.radius = shape.radius);
+			// use the same trigger as the parent sector
+			FakeSector.Create(TimeLoopRing_Body, Sector_TimeLoopInterior,
+				x => x._triggerRoot = Sector_TimeLoopInterior._triggerRoot);
 		}
 
 		// TH elevators
 		foreach (var elevator in QSBWorldSync.GetUnityObjects<Elevator>())
 		{
-			// hack: wait for QSBElevator to add the box shape, and just use that
-			BoxShape shape = null;
-			await UniTask.WaitUntil(() => elevator.TryGetComponent(out shape), cancellationToken: ct);
-
-			FakeSector.Create<BoxShape>(elevator.gameObject,
+			// just create a sphere at the attach point lol
+			// since players will be moved there when riding the elevator
+			FakeSector.Create(elevator._attachPoint.gameObject,
 				elevator.GetComponentInParent<Sector>(),
 				x =>
 				{
-					x.center = shape.center;
-					x.size = shape.size;
+					x.gameObject.AddComponent<OWTriggerVolume>();
+					x.gameObject.AddComponent<SphereShape>();
 				});
 		}
 
 		// rafts
 		foreach (var raft in QSBWorldSync.GetUnityObjects<RaftController>())
 		{
-			FakeSector.Create<BoxShape>(raft.gameObject,
+			FakeSector.Create(raft.gameObject,
 				raft._sector,
-				x =>
-				{
-					// todo: figure out a good shape for the raft ride volume
-					x.size = Vector3.one * 10;
-				});
+				x => x._triggerRoot = raft._rideVolume.gameObject);
 		}
 
 		// todo cage elevators
@@ -135,14 +128,16 @@ public class QSBSectorManager : WorldObjectManager
 			var probe = Locator._orbitalProbeCannon
 				.GetRequiredComponent<OrbitalProbeLaunchController>()
 				._probeBody;
+			probe.EnableKinematicSimulation();
 			if (probe)
 			{
-				FakeSector.Create<SphereShape>(probe.gameObject,
+				// just create a big circle around the probe lol
+				FakeSector.Create(probe.gameObject,
 					null,
 					x =>
 					{
-						// todo: figure out a good radius for this sector
-						x.radius = 100;
+						x.gameObject.AddComponent<OWTriggerVolume>();
+						x.gameObject.AddComponent<SphereShape>().radius = 100;
 					});
 			}
 		}
