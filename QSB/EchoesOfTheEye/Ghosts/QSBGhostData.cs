@@ -56,7 +56,7 @@ public class QSBGhostData
 		}
 	}
 
-	public void FixedUpdate_Data(QSBGhostController controller, GhostSensors sensors)
+	public void FixedUpdate_Data(GhostController controller, GhostSensors sensors)
 	{
 		wasPlayerLocationKnown = isPlayerLocationKnown;
 		isPlayerLocationKnown = sensor.isPlayerVisible || sensor.isPlayerHeldLanternVisible || sensor.isIlluminatedByPlayer || sensor.inContactWithPlayer;
@@ -67,7 +67,7 @@ public class QSBGhostData
 
 		var worldPosition = Locator.GetPlayerTransform().position - Locator.GetPlayerTransform().up;
 		var worldVelocity = Locator.GetPlayerBody().GetVelocity() - controller.GetNodeMap().GetOWRigidbody().GetVelocity();
-		playerLocation.Update(worldPosition, worldVelocity, controller.AttachedObject);
+		playerLocation.Update(worldPosition, worldVelocity, controller);
 		playerMinLanternRange = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().GetMinRange();
 		if (isPlayerLocationKnown)
 		{
@@ -83,7 +83,7 @@ public class QSBGhostData
 				firstUnknownSensor.CopyFromOther(sensor);
 			}
 
-			lastKnownPlayerLocation.Update(controller.AttachedObject);
+			lastKnownPlayerLocation.Update(controller);
 			timeSincePlayerLocationKnown += Time.deltaTime;
 		}
 
