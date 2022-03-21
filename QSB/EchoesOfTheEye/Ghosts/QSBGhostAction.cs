@@ -66,6 +66,9 @@ public abstract class QSBGhostAction
 			case GhostAction.Name.Grab:
 				ghostAction = new QSBGrabAction();
 				break;
+			case GhostAction.Name.SearchForIntruder:
+				ghostAction = new QSBSearchAction();
+				break;
 			default:
 				Debug.LogError("Failed to create action from name " + name);
 				return null;
