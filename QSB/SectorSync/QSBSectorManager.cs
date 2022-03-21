@@ -99,7 +99,7 @@ public class QSBSectorManager : WorldObjectManager
 				x => x.radius = shape.radius);
 		}
 
-		// th elevators
+		// TH elevators
 		foreach (var elevator in QSBWorldSync.GetUnityObjects<Elevator>())
 		{
 			// hack: wait for QSBElevator to add the box shape, and just use that
