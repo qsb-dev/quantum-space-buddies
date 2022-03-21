@@ -22,6 +22,7 @@ internal class GhostManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
+		QSBWorldSync.Init<QSBGhostController, GhostController>();
 		QSBWorldSync.Init<QSBGhostEffects, GhostEffects>();
 		QSBWorldSync.Init<QSBGhostSensors, GhostSensors>();
 		QSBWorldSync.Init<QSBGhostBrain, GhostBrain>(QSBWorldSync.GetUnityObjects<GhostBrain>().Where(x => x.gameObject.activeSelf).SortDeterministic());
