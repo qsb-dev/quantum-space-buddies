@@ -59,6 +59,22 @@ internal class GhostBrainPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
+	[HarmonyPatch(nameof(GhostBrain.CheckDreadAudioConditions))]
+	public static bool CheckDreadAudioConditions(GhostBrain __instance, ref bool __result)
+	{
+		__result = __instance.GetWorldObject<QSBGhostBrain>().CheckDreadAudioConditions();
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(GhostBrain.CheckFearAudioConditions))]
+	public static bool CheckFearAudioConditions(GhostBrain __instance, bool fearAudioAlreadyPlaying, ref bool __result)
+	{
+		__result = __instance.GetWorldObject<QSBGhostBrain>().CheckFearAudioConditions(fearAudioAlreadyPlaying);
+		return false;
+	}
+
+	[HarmonyPrefix]
 	[HarmonyPatch(nameof(GhostBrain.Awake))]
 	public static bool Awake(GhostBrain __instance)
 	{

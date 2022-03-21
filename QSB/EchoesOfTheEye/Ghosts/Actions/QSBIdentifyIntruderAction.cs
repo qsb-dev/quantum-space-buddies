@@ -74,8 +74,6 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 
 	protected override void OnEnterAction()
 	{
-		DebugLog.DebugWrite($"{_brain.AttachedObject._name} : I saw something...");
-
 		_sawPlayerOccluded = false;
 		_movingToSearchLocation = false;
 		_arrivedAtTargetSearchPosition = false;
@@ -177,33 +175,35 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 		}
 		else
 		{
-			var localPos = _data.lastKnownPlayerLocation.localPosition + new Vector3(0f, 1.8f, 0f);
-			var flag2 = _sensors.AttachedObject.CheckPositionOccluded(_controller.LocalToWorldPosition(localPos));
-			var num = _allowFocusBeam ? (_controller.GetFocusedLanternRange() - 3f) : (_controller.GetUnfocusedLanternRange() - 1f);
-			var flag3 = _data.lastKnownPlayerLocation.distance < _controller.GetUnfocusedLanternRange();
+			var playerLocationToCheck = _data.lastKnownPlayerLocation.localPosition + new Vector3(0f, 1.8f, 0f);
+			var canSeePlayerCheckLocation = _sensors.AttachedObject.CheckPositionOccluded(_controller.LocalToWorldPosition(playerLocationToCheck));
+			var lanternRange = _allowFocusBeam
+				? (_controller.GetFocusedLanternRange() - 3f)
+				: (_controller.GetUnfocusedLanternRange() - 1f);
+			var isLastKnownLocationInRange = _data.lastKnownPlayerLocation.distance < _controller.GetUnfocusedLanternRange();
 			if (_data.sensor.isPlayerIlluminatedByUs)
 			{
 				_allowFocusBeam = true;
 				_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
-				if (flag3 == _controller.IsLanternFocused())
+				if (isLastKnownLocationInRange == _controller.IsLanternFocused())
 				{
-					_controller.ChangeLanternFocus(flag3 ? 0f : 1f, 2f);
+					_controller.ChangeLanternFocus(isLastKnownLocationInRange ? 0f : 1f, 2f);
 					return;
 				}
 			}
-			else if (_data.lastKnownPlayerLocation.distance < num && !flag2)
+			else if (_data.lastKnownPlayerLocation.distance < lanternRange && !canSeePlayerCheckLocation)
 			{
 				if (_allowFocusBeam || !_data.isPlayerLocationKnown)
 				{
 					_controller.StopMoving();
 				}
 
-				if (_data.lastKnownPlayerLocation.degreesToPositionXZ < 5f && (flag3 || _controller.IsLanternFocused()))
+				if (_data.lastKnownPlayerLocation.degreesToPositionXZ < 5f && (isLastKnownLocationInRange || _controller.IsLanternFocused()))
 				{
 					_checkingTargetLocation = true;
 				}
 
-				if (flag3)
+				if (isLastKnownLocationInRange)
 				{
 					_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.FASTEST);
 					_controller.SetLanternConcealed(false, true);

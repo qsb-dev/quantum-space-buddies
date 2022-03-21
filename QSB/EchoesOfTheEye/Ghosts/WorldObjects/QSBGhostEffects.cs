@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 
-public class QSBGhostEffects : WorldObject<GhostEffects>
+public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 {
 	public override void SendInitialState(uint to)
 	{

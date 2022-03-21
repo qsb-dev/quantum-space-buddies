@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 
-public class QSBGhostBrain : WorldObject<GhostBrain>
+public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 {
 	#region World Object Stuff
 
@@ -32,7 +32,10 @@ public class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public override string ReturnLabel()
 	{
-		var label = $"Name:{AttachedObject.ghostName}\r\nAwareness:{AttachedObject.GetThreatAwareness()}\r\nCurrent Action:{AttachedObject.GetCurrentActionName()}";
+		var label = $"Name:{AttachedObject.ghostName}" +
+			$"\r\nAwareness:{AttachedObject.GetThreatAwareness()}" +
+			$"\r\nCurrent Action:{AttachedObject.GetCurrentActionName()}" +
+			$"\r\nHas Choke Point:{_data.hasChokePoint}";
 
 		return label;
 	}
@@ -45,6 +48,11 @@ public class QSBGhostBrain : WorldObject<GhostBrain>
 		if (_currentAction != null)
 		{
 			_currentAction.DrawGizmos(true);
+		}
+
+		if (_data.hasChokePoint)
+		{
+			Popcron.Gizmos.Sphere(AttachedObject._chokePoint.position, 0.5f, Color.red);
 		}
 	}
 
@@ -103,16 +111,16 @@ public class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public QSBGhostAction GetCurrentAction()
 	{
-		return this._currentAction;
+		return _currentAction;
 	}
 
 	public QSBGhostAction GetAction(GhostAction.Name actionName)
 	{
-		for (int i = 0; i < this._actionLibrary.Count; i++)
+		for (int i = 0; i < _actionLibrary.Count; i++)
 		{
-			if (this._actionLibrary[i].GetName() == actionName)
+			if (_actionLibrary[i].GetName() == actionName)
 			{
-				return this._actionLibrary[i];
+				return _actionLibrary[i];
 			}
 		}
 		return null;
@@ -126,6 +134,29 @@ public class QSBGhostBrain : WorldObject<GhostBrain>
 	public GhostEffects GetEffects()
 	{
 		return AttachedObject._effects;
+	}
+
+	public bool CheckDreadAudioConditions()
+	{
+		return _currentAction != null
+			&& _data.playerLocation.distance < 10f
+			&& _currentAction.GetName() != GhostAction.Name.Sentry
+			&& _currentAction.GetName() != GhostAction.Name.Grab;
+	}
+
+	public bool CheckFearAudioConditions(bool fearAudioAlreadyPlaying)
+	{
+		if (_currentAction == null)
+		{
+			return false;
+		}
+
+		if (fearAudioAlreadyPlaying)
+		{
+			return _currentAction.GetName() is GhostAction.Name.Chase or GhostAction.Name.Grab;
+		}
+
+		return _currentAction.GetName() == GhostAction.Name.Chase;
 	}
 
 	public void Awake()
@@ -236,6 +267,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public void WakeUp()
 	{
+		DebugLog.DebugWrite($"Wake up!");
 		_data.hasWokenUp = true;
 	}
 
@@ -265,7 +297,8 @@ public class QSBGhostBrain : WorldObject<GhostBrain>
 			return false;
 		}
 
-		MonoBehaviour.print(AttachedObject._name + " responding to help call");
+		DebugLog.DebugWrite($"{AttachedObject._name} Hear call for help!");
+
 		if (_data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed)
 		{
 			_data.threatAwareness = GhostData.ThreatAwareness.IntruderConfirmed;
@@ -435,7 +468,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>
 			_data.previousAction = GhostAction.Name.None;
 		}
 		_currentAction = action;
-		_data.currentAction = ((action != null) ? action.GetName() : GhostAction.Name.None);
+		_data.currentAction = (action != null) ? action.GetName() : GhostAction.Name.None;
 		if (_currentAction != null)
 		{
 			_currentAction.EnterAction();
@@ -485,6 +518,8 @@ public class QSBGhostBrain : WorldObject<GhostBrain>
 
 	public void OnCallForHelp()
 	{
+		DebugLog.DebugWrite($"{AttachedObject._name} - iterating through helper list for callforhelp");
+
 		if (AttachedObject._helperGhosts != null)
 		{
 			for (var i = 0; i < AttachedObject._helperGhosts.Length; i++)

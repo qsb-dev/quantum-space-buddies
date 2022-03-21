@@ -1,4 +1,5 @@
 ﻿using GhostEnums;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Actions;
@@ -30,6 +31,7 @@ internal class QSBCallForHelpAction : QSBGhostAction
 
 	protected override void OnEnterAction()
 	{
+		DebugLog.DebugWrite($"{_brain.AttachedObject._name} : Calling for help!");
 		_hasCalledForHelp = true;
 		_hasStartedMoving = false;
 		_controller.ChangeLanternFocus(1f, 2f);
