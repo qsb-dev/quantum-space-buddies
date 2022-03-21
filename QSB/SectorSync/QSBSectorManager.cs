@@ -73,7 +73,7 @@ public class QSBSectorManager : WorldObjectManager
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
 		DebugLog.DebugWrite("Building sectors...", MessageType.Info);
-		await this.Try("creating fake sectors", () => CreateFakeSectors(ct));
+		this.Try("creating fake sectors", CreateFakeSectors);
 
 		QSBWorldSync.Init<QSBSector, Sector>();
 		_isReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
@@ -82,7 +82,7 @@ public class QSBSectorManager : WorldObjectManager
 	public override void UnbuildWorldObjects() =>
 		_isReady = false;
 
-	private static async UniTask CreateFakeSectors(CancellationToken ct)
+	private static void CreateFakeSectors()
 	{
 		if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
 		{
