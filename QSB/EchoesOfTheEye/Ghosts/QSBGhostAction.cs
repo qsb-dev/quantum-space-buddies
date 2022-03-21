@@ -48,17 +48,11 @@ public abstract class QSBGhostAction
 			case GhostAction.Name.Sentry:
 				ghostAction = new QSBSentryAction();
 				break;
-			case GhostAction.Name.SearchForIntruder:
-				ghostAction = new QSBSearchAction();
-				break;
 			case GhostAction.Name.Guard:
 				ghostAction = new QSBGuardAction();
 				break;
 			case GhostAction.Name.IdentifyIntruder:
 				ghostAction = new QSBIdentifyIntruderAction();
-				break;
-			case GhostAction.Name.CallForHelp:
-				ghostAction = new QSBCallForHelpAction();
 				break;
 			case GhostAction.Name.Chase:
 				ghostAction = new QSBChaseAction();

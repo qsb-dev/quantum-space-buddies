@@ -16,6 +16,8 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 
 	}
 
+	public override bool ShouldDisplayDebug() => false;
+
 	private QSBGhostData _data;
 
 	public void Initialize(Transform nodeRoot, GhostController controller, QSBGhostData data)

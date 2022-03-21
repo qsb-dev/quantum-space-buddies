@@ -16,26 +16,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 
 	}
 
-	public override void DisplayLines()
-	{
-		if (AttachedObject._guardVolume == null)
-		{
-			return;
-		}
-
-		var shape = AttachedObject._guardVolume._shape;
-		if (shape is BoxShape box)
-		{
-			Popcron.Gizmos.Cube(
-				ShapeUtil.Box.CalcWorldSpaceCenter(box),
-				box.transform.rotation,
-				ShapeUtil.Box.CalcWorldSpaceSize(box));
-		}
-		else
-		{
-			DebugLog.DebugWrite($"Unknown shape {shape.GetType()}");
-		}
-	}
+	public override bool ShouldDisplayDebug() => false;
 
 	private QSBGhostData _data;
 
@@ -107,22 +88,6 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 		if (hitObj.CompareTag("PlayerDetector"))
 		{
 			_data.sensor.inContactWithPlayer = false;
-		}
-	}
-
-	public void OnEnterGuardVolume(GameObject hitObj)
-	{
-		if (hitObj.CompareTag("PlayerDetector"))
-		{
-			_data.sensor.isPlayerInGuardVolume = true;
-		}
-	}
-
-	public void OnExitGuardVolume(GameObject hitObj)
-	{
-		if (hitObj.CompareTag("PlayerDetector"))
-		{
-			_data.sensor.isPlayerInGuardVolume = false;
 		}
 	}
 }

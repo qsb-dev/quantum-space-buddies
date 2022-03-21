@@ -57,20 +57,4 @@ internal class GhostSensorsPatches : QSBPatch
 		__instance.GetWorldObject<QSBGhostSensors>().OnExitContactTrigger(hitObj);
 		return false;
 	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(nameof(GhostSensors.OnEnterContactTrigger))]
-	public static bool OnEnterGuardVolume(GhostSensors __instance, GameObject hitObj)
-	{
-		__instance.GetWorldObject<QSBGhostSensors>().OnEnterGuardVolume(hitObj);
-		return false;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(nameof(GhostSensors.OnExitGuardVolume))]
-	public static bool OnExitGuardVolume(GhostSensors __instance, GameObject hitObj)
-	{
-		__instance.GetWorldObject<QSBGhostSensors>().OnExitGuardVolume(hitObj);
-		return false;
-	}
 }
