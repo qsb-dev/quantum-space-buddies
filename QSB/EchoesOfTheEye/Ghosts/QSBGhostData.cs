@@ -22,9 +22,6 @@ public class QSBGhostData
 	public float timeSincePlayerLocationKnown = float.PositiveInfinity;
 	public float playerMinLanternRange;
 	public float illuminatedByPlayerMeter;
-	public bool hasChokePoint;
-	public Vector3 chokePointLocalPosition;
-	public Vector3 chokePointLocalFacing;
 	public bool reducedFrights_allowChase;
 	public bool lostPlayerDueToOcclusion => !isPlayerLocationKnown && !lastKnownSensor.isPlayerOccluded && firstUnknownSensor.isPlayerOccluded;
 

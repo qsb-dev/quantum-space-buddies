@@ -34,8 +34,8 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	{
 		var label = $"Name:{AttachedObject.ghostName}" +
 			$"\r\nAwareness:{AttachedObject.GetThreatAwareness()}" +
-			$"\r\nCurrent Action:{AttachedObject.GetCurrentActionName()}" +
-			$"\r\nHas Choke Point:{_data.hasChokePoint}";
+			$"\r\nCurrent action:{AttachedObject.GetCurrentActionName()}" +
+			$"\r\nIllumination meter:{_data.illuminatedByPlayerMeter}";
 
 		return label;
 	}
@@ -48,11 +48,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		if (_currentAction != null)
 		{
 			_currentAction.DrawGizmos(true);
-		}
-
-		if (_data.hasChokePoint)
-		{
-			Popcron.Gizmos.Sphere(AttachedObject._chokePoint.position, 0.5f, Color.red);
 		}
 	}
 
@@ -183,15 +178,12 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		AttachedObject._intruderConfirmedBySelf = false;
 		AttachedObject._intruderConfirmPending = false;
 		AttachedObject._intruderConfirmTime = 0f;
-		if (AttachedObject._chokePoint != null)
-		{
-			_data.hasChokePoint = true;
-			_data.chokePointLocalPosition = AttachedObject._controller.WorldToLocalPosition(AttachedObject._chokePoint.position);
-			_data.chokePointLocalFacing = AttachedObject._controller.WorldToLocalDirection(AttachedObject._chokePoint.forward);
-		}
+
+		DebugLog.DebugWrite($"{AttachedObject._name} setting up actions :");
 
 		for (var i = 0; i < AttachedObject._actions.Length; i++)
 		{
+			DebugLog.DebugWrite($"- {AttachedObject._actions[i]}");
 			var ghostAction = QSBGhostAction.CreateAction(AttachedObject._actions[i]);
 			ghostAction.Initialize(this);
 			_actionLibrary.Add(ghostAction);
