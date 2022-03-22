@@ -16,6 +16,11 @@ public class ElevatorPatches : QSBPatch
 	[HarmonyPatch(typeof(Elevator), nameof(Elevator.StartLift))]
 	public static void Elevator_StartLift(Elevator __instance)
 	{
+		if (Remote)
+		{
+			return;
+		}
+
 		var isGoingUp = __instance._goingToTheEnd;
 		var qsbElevator = __instance.GetWorldObject<QSBElevator>();
 		qsbElevator.SendMessage(new ElevatorMessage(isGoingUp));

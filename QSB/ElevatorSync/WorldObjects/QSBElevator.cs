@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.ElevatorSync.Messages;
 using QSB.Messaging;
+using QSB.Patches;
 using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;
@@ -32,23 +33,17 @@ public class QSBElevator : WorldObject<Elevator>
 			return;
 		}
 
+		SetDirection(isGoingUp);
 		if (_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
 		{
-			SetDirection(isGoingUp);
-
 			AttachedObject._attachPoint.AttachPlayer();
 			if (Locator.GetPlayerSuit().IsWearingSuit() && Locator.GetPlayerSuit().IsTrainingSuit())
 			{
 				Locator.GetPlayerSuit().RemoveSuit();
 			}
+		}
 
-			RemoteStartLift();
-		}
-		else
-		{
-			SetDirection(isGoingUp);
-			RemoteStartLift();
-		}
+		QSBPatch.RemoteCall(() => AttachedObject.StartLift(), this);
 	}
 
 	private void SetDirection(bool isGoingUp)
@@ -56,16 +51,6 @@ public class QSBElevator : WorldObject<Elevator>
 		AttachedObject._interactVolume.transform.Rotate(0f, 180f, 0f);
 		AttachedObject._goingToTheEnd = isGoingUp;
 		AttachedObject._targetLocalPos = isGoingUp ? AttachedObject._endLocalPos : AttachedObject._startLocalPos;
-	}
-
-	private void RemoteStartLift()
-	{
-		AttachedObject.enabled = true;
-		AttachedObject._initLocalPos = AttachedObject.transform.localPosition;
-		AttachedObject._initLiftTime = Time.time;
-		AttachedObject._owAudioSourceOneShot.PlayOneShot(AudioType.TH_LiftActivate);
-		AttachedObject._owAudioSourceLP.FadeIn(0.5f);
-		AttachedObject._interactVolume.DisableInteraction();
 	}
 
 	public override void DisplayLines()
