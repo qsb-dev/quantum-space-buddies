@@ -17,8 +17,8 @@ public abstract class QSBPatch
 
 	public static void RemoteCall(Action call, object data = null)
 	{
-		RemoteData = data;
 		Remote = true;
+		RemoteData = data;
 		nameof(QSBPatch).Try("doing remote call", call);
 		Remote = false;
 		RemoteData = null;
@@ -26,8 +26,8 @@ public abstract class QSBPatch
 
 	public static T RemoteCall<T>(Func<T> call, object data = null)
 	{
-		RemoteData = data;
 		Remote = true;
+		RemoteData = data;
 		var t = default(T);
 		nameof(QSBPatch).Try("doing remote call", () => t = call());
 		Remote = false;
