@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.Utility;
 using System;
 
 namespace QSB.Patches;
@@ -18,7 +19,7 @@ public abstract class QSBPatch
 	{
 		RemoteData = data;
 		Remote = true;
-		call();
+		nameof(QSBPatch).Try("doing remote call", call);
 		Remote = false;
 		RemoteData = null;
 	}
@@ -27,7 +28,8 @@ public abstract class QSBPatch
 	{
 		RemoteData = data;
 		Remote = true;
-		var t = call();
+		var t = default(T);
+		nameof(QSBPatch).Try("doing remote call", () => t = call());
 		Remote = false;
 		RemoteData = null;
 		return t;
