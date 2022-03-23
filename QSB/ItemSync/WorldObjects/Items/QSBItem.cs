@@ -3,7 +3,6 @@ using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Patches;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;
@@ -75,8 +74,7 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 		// todo SendInitialState
 	}
 
-	public ItemType GetItemType()
-		=> QSBPatch.RemoteCall(AttachedObject.GetItemType);
+	public ItemType GetItemType() => AttachedObject.GetItemType();
 
 	public void PickUpItem(Transform holdTransform)
 		=> QSBPatch.RemoteCall(() => AttachedObject.PickUpItem(holdTransform));

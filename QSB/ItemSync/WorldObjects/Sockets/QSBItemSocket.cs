@@ -1,4 +1,5 @@
 ﻿using QSB.ItemSync.WorldObjects.Items;
+using QSB.Patches;
 using QSB.WorldSync;
 
 namespace QSB.ItemSync.WorldObjects.Sockets;
@@ -10,12 +11,11 @@ internal class QSBItemSocket : WorldObject<OWItemSocket>
 		// todo SendInitialState
 	}
 
-	public bool IsSocketOccupied()
-		=> AttachedObject.IsSocketOccupied();
+	public bool IsSocketOccupied() => AttachedObject.IsSocketOccupied();
 
 	public void PlaceIntoSocket(IQSBItem item)
-		=> AttachedObject.PlaceIntoSocket((OWItem)item.AttachedObject);
+		=> QSBPatch.RemoteCall(() => AttachedObject.PlaceIntoSocket((OWItem)item.AttachedObject));
 
 	public void RemoveFromSocket()
-		=> AttachedObject.RemoveFromSocket();
+		=> QSBPatch.RemoteCall(AttachedObject.RemoveFromSocket);
 }
