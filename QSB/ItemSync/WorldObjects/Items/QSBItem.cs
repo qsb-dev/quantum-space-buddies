@@ -29,7 +29,11 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 
 	public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 
-	public void StoreLocation()
+	/// <summary>
+	/// store the last location when a remote player picks up an item
+	/// so we can use it if they leave while still holding it
+	/// </summary>
+	private void StoreLocation()
 	{
 		_lastParent = AttachedObject.transform.parent;
 		_lastPosition = AttachedObject.transform.localPosition;
@@ -76,8 +80,11 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 
 	public ItemType GetItemType() => AttachedObject.GetItemType();
 
-	public void PickUpItem(Transform holdTransform) =>
+	public void PickUpItem(Transform holdTransform)
+	{
+		StoreLocation();
 		QSBPatch.RemoteCall(() => AttachedObject.PickUpItem(holdTransform));
+	}
 
 	public void DropItem(Vector3 position, Vector3 normal, Sector sector) =>
 		QSBPatch.RemoteCall(() => AttachedObject.DropItem(position, normal, sector.transform, sector, null));
