@@ -30,7 +30,8 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 	public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 
 	/// <summary>
-	/// store the last location so we can use it on player leave
+	/// store the last location when a remote player picks up an item
+	/// so we can use it if they leave before dropping/socketing it
 	/// </summary>
 	private void StoreLocation()
 	{
