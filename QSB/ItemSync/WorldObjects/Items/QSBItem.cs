@@ -22,14 +22,17 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 	{
 		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
 
-		SetLastLocation();
+		StoreLocation();
 
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 	}
 
 	public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 
-	private void SetLastLocation()
+	/// <summary>
+	/// store the last location so we can use it on player leave
+	/// </summary>
+	private void StoreLocation()
 	{
 		_lastParent = AttachedObject.transform.parent;
 		_lastPosition = AttachedObject.transform.localPosition;
@@ -77,17 +80,14 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 	public ItemType GetItemType() => AttachedObject.GetItemType();
 
 	public void PickUpItem(Transform holdTransform)
-		=> QSBPatch.RemoteCall(() => AttachedObject.PickUpItem(holdTransform));
-
-	public void DropItem(Vector3 position, Vector3 normal, Sector sector)
 	{
+		StoreLocation();
+		QSBPatch.RemoteCall(() => AttachedObject.PickUpItem(holdTransform));
+	}
+
+	public void DropItem(Vector3 position, Vector3 normal, Sector sector) =>
 		QSBPatch.RemoteCall(() => AttachedObject.DropItem(position, normal, sector.transform, sector, null));
-		SetLastLocation();
-	}
 
-	public void OnCompleteUnsocket()
-	{
+	public void OnCompleteUnsocket() =>
 		QSBPatch.RemoteCall(AttachedObject.OnCompleteUnsocket);
-		SetLastLocation();
-	}
 }
