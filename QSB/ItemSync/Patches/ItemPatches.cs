@@ -16,7 +16,7 @@ internal class ItemPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.MoveItemToCarrySocket))]
 	public static void ItemTool_MoveItemToCarrySocket(OWItem item)
 	{
@@ -25,7 +25,7 @@ internal class ItemPatches : QSBPatch
 		qsbItem.SendMessage(new MoveToCarryMessage());
 	}
 
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.SocketItem))]
 	public static void ItemTool_SocketItem(ItemTool __instance, OWItemSocket socket)
 	{
@@ -34,7 +34,7 @@ internal class ItemPatches : QSBPatch
 		new SocketItemMessage(SocketMessageType.Socket, socket, item).Send();
 	}
 
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.StartUnsocketItem))]
 	public static void ItemTool_StartUnsocketItem(OWItemSocket socket)
 	{
@@ -44,7 +44,7 @@ internal class ItemPatches : QSBPatch
 		new SocketItemMessage(SocketMessageType.StartUnsocket, socket, item).Send();
 	}
 
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.CompleteUnsocketItem))]
 	public static void ItemTool_CompleteUnsocketItem(ItemTool __instance)
 	{
