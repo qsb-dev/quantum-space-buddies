@@ -11,14 +11,14 @@ using UnityEngine;
 
 namespace QSB.ItemSync.Patches;
 
-[HarmonyPatch]
-internal class ItemPatches : QSBPatch
+[HarmonyPatch(typeof(ItemTool))]
+internal class ItemToolPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.MoveItemToCarrySocket))]
-	public static void ItemTool_MoveItemToCarrySocket(OWItem item)
+	[HarmonyPatch(nameof(ItemTool.MoveItemToCarrySocket))]
+	public static void MoveItemToCarrySocket(OWItem item)
 	{
 		var qsbItem = item.GetWorldObject<IQSBItem>();
 		QSBPlayerManager.LocalPlayer.HeldItem = qsbItem;
@@ -26,8 +26,8 @@ internal class ItemPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.SocketItem))]
-	public static void ItemTool_SocketItem(ItemTool __instance, OWItemSocket socket)
+	[HarmonyPatch(nameof(ItemTool.SocketItem))]
+	public static void SocketItem(ItemTool __instance, OWItemSocket socket)
 	{
 		var item = __instance._heldItem;
 		QSBPlayerManager.LocalPlayer.HeldItem = null;
@@ -35,8 +35,8 @@ internal class ItemPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.StartUnsocketItem))]
-	public static void ItemTool_StartUnsocketItem(OWItemSocket socket)
+	[HarmonyPatch(nameof(ItemTool.StartUnsocketItem))]
+	public static void StartUnsocketItem(OWItemSocket socket)
 	{
 		var item = socket.GetSocketedItem();
 		var qsbItem = item.GetWorldObject<IQSBItem>();
@@ -45,16 +45,16 @@ internal class ItemPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.CompleteUnsocketItem))]
-	public static void ItemTool_CompleteUnsocketItem(ItemTool __instance)
+	[HarmonyPatch(nameof(ItemTool.CompleteUnsocketItem))]
+	public static void CompleteUnsocketItem(ItemTool __instance)
 	{
 		var item = __instance._heldItem;
 		new SocketItemMessage(SocketMessageType.CompleteUnsocket, null, item).Send();
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.DropItem))]
-	public static bool ItemTool_DropItem(ItemTool __instance, RaycastHit hit, OWRigidbody targetRigidbody, IItemDropTarget customDropTarget)
+	[HarmonyPatch(nameof(ItemTool.DropItem))]
+	public static bool DropItem(ItemTool __instance, RaycastHit hit, OWRigidbody targetRigidbody, IItemDropTarget customDropTarget)
 	{
 		Locator.GetPlayerAudioController().PlayDropItem(__instance._heldItem.GetItemType());
 		var hitGameObject = hit.collider.gameObject;

@@ -82,6 +82,5 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 	public void DropItem(Vector3 position, Vector3 normal, Sector sector) =>
 		QSBPatch.RemoteCall(() => AttachedObject.DropItem(position, normal, sector.transform, sector, null));
 
-	public void OnCompleteUnsocket() =>
-		QSBPatch.RemoteCall(AttachedObject.OnCompleteUnsocket);
+	public void OnCompleteUnsocket() => AttachedObject.OnCompleteUnsocket();
 }
