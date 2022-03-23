@@ -24,8 +24,7 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
 		WorldObject.DropItem(position, normal, sector);
 
 		var player = QSBPlayerManager.GetPlayer(From);
-		player.HeldItem = WorldObject;
-
+		player.HeldItem = null;
 		player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
 	}
 }

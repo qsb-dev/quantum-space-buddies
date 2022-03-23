@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
 using OWML.Common;
 using QSB.ItemSync.Messages;
-using QSB.ItemSync.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
-using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
@@ -18,46 +16,40 @@ internal class ItemPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-	[HarmonyPrefix]
+	[HarmonyPostfix]
 	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.MoveItemToCarrySocket))]
-	public static bool ItemTool_MoveItemToCarrySocket(OWItem item)
+	public static void ItemTool_MoveItemToCarrySocket(OWItem item)
 	{
-		var qsbObj = item.GetWorldObject<IQSBItem>();
-		QSBPlayerManager.LocalPlayer.HeldItem = qsbObj;
-		qsbObj.SendMessage(new MoveToCarryMessage());
-		return true;
+		var qsbItem = item.GetWorldObject<IQSBItem>();
+		QSBPlayerManager.LocalPlayer.HeldItem = qsbItem;
+		qsbItem.SendMessage(new MoveToCarryMessage());
 	}
 
-	[HarmonyPrefix]
+	[HarmonyPostfix]
 	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.SocketItem))]
-	public static bool ItemTool_SocketItem(ItemTool __instance, OWItemSocket socket)
+	public static void ItemTool_SocketItem(ItemTool __instance, OWItemSocket socket)
 	{
-		var qsbObj = __instance._heldItem.GetWorldObject<IQSBItem>();
-		var socketId = socket.GetWorldObject<QSBItemSocket>().ObjectId;
-		var itemId = qsbObj.ObjectId;
+		var item = __instance._heldItem;
 		QSBPlayerManager.LocalPlayer.HeldItem = null;
-		new SocketItemMessage(SocketMessageType.Socket, socketId, itemId).Send();
-		return true;
+		new SocketItemMessage(SocketMessageType.Socket, socket, item).Send();
 	}
 
-	[HarmonyPrefix]
+	[HarmonyPostfix]
 	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.StartUnsocketItem))]
-	public static bool ItemTool_StartUnsocketItem(OWItemSocket socket)
+	public static void ItemTool_StartUnsocketItem(OWItemSocket socket)
 	{
-		var item = socket.GetSocketedItem().GetWorldObject<IQSBItem>();
-		QSBPlayerManager.LocalPlayer.HeldItem = item;
-		var socketId = socket.GetWorldObject<QSBItemSocket>().ObjectId;
-		new SocketItemMessage(SocketMessageType.StartUnsocket, socketId).Send();
-		return true;
+		var item = socket.GetSocketedItem();
+		var qsbItem = item.GetWorldObject<IQSBItem>();
+		QSBPlayerManager.LocalPlayer.HeldItem = qsbItem;
+		new SocketItemMessage(SocketMessageType.StartUnsocket, socket, item).Send();
 	}
 
-	[HarmonyPrefix]
+	[HarmonyPostfix]
 	[HarmonyPatch(typeof(ItemTool), nameof(ItemTool.CompleteUnsocketItem))]
-	public static bool ItemTool_CompleteUnsocketItem(ItemTool __instance)
+	public static void ItemTool_CompleteUnsocketItem(ItemTool __instance)
 	{
-		var itemId = __instance._heldItem.GetWorldObject<IQSBItem>().ObjectId;
-		new SocketItemMessage(SocketMessageType.CompleteUnsocket, itemId: itemId).Send();
-		return true;
+		var item = __instance._heldItem;
+		new SocketItemMessage(SocketMessageType.CompleteUnsocket, null, item).Send();
 	}
 
 	[HarmonyPrefix]
@@ -88,7 +80,7 @@ internal class ItemPatches : QSBPatch
 			}
 		}
 
-		var parent = (customDropTarget == null)
+		var parent = customDropTarget == null
 			? targetRigidbody.transform
 			: customDropTarget.GetItemDropTargetTransform(hit.collider.gameObject);
 		var qsbItem = __instance._heldItem.GetWorldObject<IQSBItem>();

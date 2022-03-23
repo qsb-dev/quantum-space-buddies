@@ -1,7 +1,6 @@
 ﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
 
 namespace QSB.ItemSync.Messages;
 
@@ -24,7 +23,7 @@ internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem>
 			ItemType.DreamLantern => player.DreamLanternSocket,
 			ItemType.SlideReel => player.SlideReelSocket,
 			ItemType.VisionTorch => player.VisionTorchSocket,
-			_ => player.ItemSocket,
+			_ => player.ItemSocket
 		};
 		WorldObject.PickUpItem(itemSocket);
 

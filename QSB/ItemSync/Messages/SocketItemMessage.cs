@@ -9,44 +9,54 @@ namespace QSB.ItemSync.Messages;
 
 internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int SocketId, int ItemId)>
 {
-	public SocketItemMessage(SocketMessageType type, int socketId = -1, int itemId = -1) : base((type, socketId, itemId)) { }
+	public SocketItemMessage(SocketMessageType type, OWItemSocket socket, OWItem item) : base((
+		type,
+		socket ? socket.GetWorldObject<QSBItemSocket>().ObjectId : -1,
+		item ? item.GetWorldObject<IQSBItem>().ObjectId : -1
+	)) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
 	public override void OnReceiveRemote()
 	{
-		QSBItemSocket socketWorldObject;
-		IQSBItem itemWorldObject;
-		var player = QSBPlayerManager.GetPlayer(From);
-		player.HeldItem = null;
-
-		DebugLog.DebugWrite("DROP HELD ITEM");
-		player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
-
 		switch (Data.Type)
 		{
 			case SocketMessageType.Socket:
-				socketWorldObject = Data.SocketId.GetWorldObject<QSBItemSocket>();
-				itemWorldObject = Data.ItemId.GetWorldObject<IQSBItem>();
-
-				socketWorldObject.PlaceIntoSocket(itemWorldObject);
-				return;
-			case SocketMessageType.StartUnsocket:
-				socketWorldObject = Data.SocketId.GetWorldObject<QSBItemSocket>();
-
-				if (!socketWorldObject.IsSocketOccupied())
 				{
-					DebugLog.ToConsole($"Warning - Trying to start unsocket on socket that is unoccupied! Socket:{socketWorldObject.Name}");
+					var qsbItemSocket = Data.SocketId.GetWorldObject<QSBItemSocket>();
+					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
+
+					qsbItemSocket.PlaceIntoSocket(qsbItem);
+
+					var player = QSBPlayerManager.GetPlayer(From);
+					player.HeldItem = null;
+					player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
 					return;
 				}
+			case SocketMessageType.StartUnsocket:
+				{
+					var qsbItemSocket = Data.SocketId.GetWorldObject<QSBItemSocket>();
+					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
 
-				socketWorldObject.RemoveFromSocket();
-				return;
+					if (!qsbItemSocket.IsSocketOccupied())
+					{
+						DebugLog.ToConsole($"Warning - Trying to start unsocket on socket that is unoccupied! Socket:{qsbItemSocket.Name}");
+						return;
+					}
+
+					qsbItemSocket.RemoveFromSocket();
+
+					var player = QSBPlayerManager.GetPlayer(From);
+					player.HeldItem = qsbItem;
+					return;
+				}
 			case SocketMessageType.CompleteUnsocket:
-				itemWorldObject = Data.ItemId.GetWorldObject<IQSBItem>();
+				{
+					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
 
-				itemWorldObject.OnCompleteUnsocket();
-				return;
+					qsbItem.OnCompleteUnsocket();
+					return;
+				}
 		}
 	}
 }
