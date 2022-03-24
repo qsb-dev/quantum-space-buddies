@@ -132,15 +132,35 @@ public class PlayerInfo
 			return _handPivot;
 		}
 	}
-	public Transform ItemSocket => HandPivot.Find("REMOTE_ItemSocket");
-	public Transform ScrollSocket => HandPivot.Find("REMOTE_ScrollSocket");
-	public Transform SharedStoneSocket => HandPivot.Find("REMOTE_SharedStoneSocket");
-	public Transform WarpCoreSocket => HandPivot.Find("REMOTE_WarpCoreSocket");
-	public Transform VesselCoreSocket => HandPivot.Find("REMOTE_VesselCoreSocket");
-	public Transform SimpleLanternSocket => HandPivot.Find("REMOTE_SimpleLanternSocket");
-	public Transform DreamLanternSocket => HandPivot.Find("REMOTE_DreamLanternSocket");
-	public Transform SlideReelSocket => HandPivot.Find("REMOTE_SlideReelSocket");
-	public Transform VisionTorchSocket => HandPivot.Find("REMOTE_VisionTorchSocket");
+	public Transform ItemSocket => GetSocket("REMOTE_ItemSocket");
+	public Transform ScrollSocket => GetSocket("REMOTE_ScrollSocket");
+	public Transform SharedStoneSocket => GetSocket("REMOTE_SharedStoneSocket");
+	public Transform WarpCoreSocket => GetSocket("REMOTE_WarpCoreSocket");
+	public Transform VesselCoreSocket => GetSocket("REMOTE_VesselCoreSocket");
+	public Transform SimpleLanternSocket => GetSocket("REMOTE_SimpleLanternSocket");
+	public Transform DreamLanternSocket => GetSocket("REMOTE_DreamLanternSocket");
+	public Transform SlideReelSocket => GetSocket("REMOTE_SlideReelSocket");
+	public Transform VisionTorchSocket => GetSocket("REMOTE_VisionTorchSocket");
+
+	private Transform GetSocket(string name)
+	{
+		var handSocket = HandPivot.Find(name);
+		if (handSocket != null)
+		{
+			return handSocket;
+		}
+
+		var cameraSocket = CameraBody.transform.Find("REMOTE_ItemCarryTool").Find(name);
+		if (cameraSocket != null)
+		{
+			DebugLog.ToConsole($"Warning - Could not find hand socket for socket name {name}, defaulting to camera socket.", MessageType.Warning);
+			return cameraSocket;
+		}
+
+		DebugLog.ToConsole($"Error - Could not find hand socket or camera socket for socket name {name}.", MessageType.Error);
+		return null;
+	}
+
 	public QSBMarshmallow Marshmallow { get; set; }
 	public QSBCampfire Campfire { get; set; }
 	public IQSBItem HeldItem { get; set; }
