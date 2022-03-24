@@ -138,7 +138,7 @@ internal class ItemRemotePatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.SocketItem))]
-	private static bool DreamLanternItem_SocketItem(DreamLanternItem __instance,
+	private static bool SocketItem(DreamLanternItem __instance,
 		Transform socketTransform, Sector sector)
 	{
 		if (!Remote)
@@ -220,7 +220,6 @@ internal class ItemRemotePatches : QSBPatch
 		var player = QSBPlayerManager.PlayerList.First(x => x.HeldItem?.AttachedObject == socketedItem);
 		socketedItem.SetSocketLocalDir(__instance.CalcCorrectUnsocketDir(player.Camera.transform));
 		__result = base_RemoveFromSocket(__instance);
-
 		return false;
 	}
 
