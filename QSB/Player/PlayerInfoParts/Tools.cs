@@ -1,4 +1,5 @@
-﻿using QSB.CampfireSync.WorldObjects;
+﻿using OWML.Common;
+using QSB.CampfireSync.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.RoastingSync;
 using QSB.Tools;
