@@ -42,6 +42,27 @@ internal class ItemRemotePatches : QSBPatch
 		return false;
 	}
 
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(SimpleLanternItem), nameof(SimpleLanternItem.PickUpItem))]
+	private static bool SimpleLanternItem_PickUpItem(SimpleLanternItem __instance,
+		Transform holdTranform)
+	{
+		if (!Remote)
+		{
+			return true;
+		}
+
+		if (__instance._lit) { }
+
+		if (__instance._lightSourceVol != null)
+		{
+			__instance._lightSourceShape.radius = __instance._origLightSourceShapeRadius / holdTranform.localScale.x;
+		}
+
+		OWItem_PickUpItem(__instance, holdTranform);
+		return false;
+	}
+
 	[HarmonyReversePatch]
 	[HarmonyPatch(typeof(OWItem), nameof(OWItem.DropItem))]
 	private static void OWItem_DropItem(OWItem instance,
