@@ -1,27 +1,18 @@
 ﻿using OWML.Common;
 using QSB.Animation.Player;
-using QSB.Animation.Player.Thrusters;
 using QSB.Audio;
-using QSB.CampfireSync.WorldObjects;
 using QSB.ClientServerStateSync;
-using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
-using QSB.PlayerBodySetup.Remote;
 using QSB.QuantumSync.WorldObjects;
-using QSB.RoastingSync;
 using QSB.Tools;
-using QSB.Tools.FlashlightTool;
-using QSB.Tools.ProbeLauncherTool;
-using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System.Linq;
-using UnityEngine;
 
 namespace QSB.Player;
 
-public class PlayerInfo
+public partial class PlayerInfo
 {
 	/// <summary>
 	/// the player transform sync's net id
@@ -30,210 +21,17 @@ public class PlayerInfo
 	public string Name { get; set; }
 	public PlayerHUDMarker HudMarker { get; set; }
 	public PlayerTransformSync TransformSync { get; }
-	public AnimationSync AnimationSync { get; }
 	public ClientState State { get; set; }
 	public EyeState EyeState { get; set; }
 	public bool IsDead { get; set; }
-	public bool Visible => IsLocalPlayer || _ditheringAnimator == null || _ditheringAnimator.FullyVisible;
 	public bool IsReady { get; set; }
 	public bool IsInMoon { get; set; }
 	public bool IsInShrine { get; set; }
 	public bool IsInEyeShuttle { get; set; }
 	public IQSBQuantumObject EntangledObject { get; set; }
 	public QSBPlayerAudioController AudioController { get; set; }
-	internal QSBDitheringAnimator _ditheringAnimator;
-
 	public bool IsLocalPlayer => TransformSync.isLocalPlayer;
-
-	// Body Objects
-	public OWCamera Camera
-	{
-		get
-		{
-			if (_camera == null && IsReady)
-			{
-				DebugLog.ToConsole($"Warning - {PlayerId}.Camera is null!", MessageType.Warning);
-			}
-
-			return _camera;
-		}
-		set
-		{
-			if (value == null)
-			{
-				DebugLog.ToConsole($"Warning - Setting {PlayerId}.Camera to null.", MessageType.Warning);
-			}
-
-			_camera = value;
-		}
-	}
-	private OWCamera _camera;
-
-	public GameObject CameraBody { get; set; }
-
-	public GameObject Body
-	{
-		get
-		{
-			if (_body == null && IsReady)
-			{
-				DebugLog.ToConsole($"Warning - {PlayerId}.Body is null!", MessageType.Warning);
-			}
-
-			return _body;
-		}
-		set
-		{
-			if (value == null)
-			{
-				DebugLog.ToConsole($"Warning - Setting {PlayerId}.Body to null.", MessageType.Warning);
-			}
-
-			_body = value;
-		}
-	}
-	private GameObject _body;
-
 	public ThrusterLightTracker ThrusterLightTracker;
-
-	public GameObject RoastingStick { get; set; }
-
-	// Tools
-	public GameObject ProbeBody { get; set; }
-	public QSBProbe Probe { get; set; }
-	public QSBFlashlight FlashLight => CameraBody == null ? null : CameraBody.GetComponentInChildren<QSBFlashlight>();
-	public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
-	public QSBTool Translator => GetToolByType(ToolType.Translator);
-	public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
-	private Transform _handPivot;
-	public Transform HandPivot
-	{
-		get
-		{
-			if (_handPivot == null)
-			{
-				_handPivot = Body.transform.Find(
-					// TODO : kill me for my sins
-					"REMOTE_Traveller_HEA_Player_v2/" +
-					"Traveller_Rig_v01:Traveller_Trajectory_Jnt/" +
-					"Traveller_Rig_v01:Traveller_ROOT_Jnt/" +
-					"Traveller_Rig_v01:Traveller_Spine_01_Jnt/" +
-					"Traveller_Rig_v01:Traveller_Spine_02_Jnt/" +
-					"Traveller_Rig_v01:Traveller_Spine_Top_Jnt/" +
-					"Traveller_Rig_v01:Traveller_RT_Arm_Clavicle_Jnt/" +
-					"Traveller_Rig_v01:Traveller_RT_Arm_Shoulder_Jnt/" +
-					"Traveller_Rig_v01:Traveller_RT_Arm_Elbow_Jnt/" +
-					"Traveller_Rig_v01:Traveller_RT_Arm_Wrist_Jnt/" +
-					"REMOTE_ItemCarryTool/" +
-					"HandPivot"
-				);
-			}
-
-			return _handPivot;
-		}
-	}
-	public Transform ItemSocket => GetSocket("REMOTE_ItemSocket");
-	public Transform ScrollSocket => GetSocket("REMOTE_ScrollSocket");
-	public Transform SharedStoneSocket => GetSocket("REMOTE_SharedStoneSocket");
-	public Transform WarpCoreSocket => GetSocket("REMOTE_WarpCoreSocket");
-	public Transform VesselCoreSocket => GetSocket("REMOTE_VesselCoreSocket");
-	public Transform SimpleLanternSocket => GetSocket("REMOTE_SimpleLanternSocket");
-	public Transform DreamLanternSocket => GetSocket("REMOTE_DreamLanternSocket");
-	public Transform SlideReelSocket => GetSocket("REMOTE_SlideReelSocket");
-	public Transform VisionTorchSocket => GetSocket("REMOTE_VisionTorchSocket");
-
-	private Transform GetSocket(string name)
-	{
-		var handSocket = HandPivot.Find(name);
-		if (handSocket != null)
-		{
-			return handSocket;
-		}
-
-		var cameraSocket = CameraBody.transform.Find("REMOTE_ItemCarryTool").Find(name);
-		if (cameraSocket != null)
-		{
-			DebugLog.ToConsole($"Warning - Could not find hand socket for socket name {name}, defaulting to camera socket.", MessageType.Warning);
-			return cameraSocket;
-		}
-
-		DebugLog.ToConsole($"Error - Could not find hand socket or camera socket for socket name {name}.", MessageType.Error);
-		return null;
-	}
-
-	public QSBMarshmallow Marshmallow { get; set; }
-	public QSBCampfire Campfire { get; set; }
-	public IQSBItem HeldItem { get; set; }
-	public bool FlashlightActive { get; set; }
-	public bool SuitedUp { get; set; }
-	public bool ProbeLauncherEquipped { get; set; }
-	public bool SignalscopeEquipped { get; set; }
-	public bool TranslatorEquipped { get; set; }
-	public bool ProbeActive { get; set; }
-
-	// Conversation
-	public int CurrentCharacterDialogueTreeId { get; set; } = -1;
-	public GameObject CurrentDialogueBox { get; set; }
-
-	// Animation
-	public JetpackAccelerationSync JetpackAcceleration { get; set; }
-
-	// Local only
-	public PlayerProbeLauncher LocalProbeLauncher
-	{
-		get
-		{
-			if (!IsLocalPlayer)
-			{
-				DebugLog.ToConsole($"Warning - Tried to access local-only property LocalProbeLauncher in PlayerInfo for non local player!", MessageType.Warning);
-				return null;
-			}
-
-			return CameraBody?.transform.Find("ProbeLauncher").GetComponent<PlayerProbeLauncher>();
-		}
-	}
-
-	public Flashlight LocalFlashlight
-	{
-		get
-		{
-			if (!IsLocalPlayer)
-			{
-				DebugLog.ToConsole($"Warning - Tried to access local-only property LocalFlashlight in PlayerInfo for non local player!", MessageType.Warning);
-				return null;
-			}
-
-			return Locator.GetFlashlight();
-		}
-	}
-
-	public Signalscope LocalSignalscope
-	{
-		get
-		{
-			if (!IsLocalPlayer)
-			{
-				DebugLog.ToConsole($"Warning - Tried to access local-only property LocalSignalscope in PlayerInfo for non local player!", MessageType.Warning);
-				return null;
-			}
-
-			return CameraBody?.transform.Find("Signalscope").GetComponent<Signalscope>();
-		}
-	}
-
-	public NomaiTranslator LocalTranslator
-	{
-		get
-		{
-			if (!IsLocalPlayer)
-			{
-				DebugLog.ToConsole($"Warning - Tried to access local-only property LocalTranslator in PlayerInfo for non local player!", MessageType.Warning);
-				return null;
-			}
-
-			return CameraBody?.transform.Find("NomaiTranslatorProp").GetComponent<NomaiTranslator>();
-		}
-	}
 
 	public PlayerInfo(PlayerTransformSync transformSync)
 	{
