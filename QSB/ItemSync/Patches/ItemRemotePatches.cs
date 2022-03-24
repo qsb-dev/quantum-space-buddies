@@ -217,7 +217,7 @@ internal class ItemRemotePatches : QSBPatch
 		}
 
 		var socketedItem = (SlideReelItem)__instance._socketedItem;
-		var player = QSBPlayerManager.PlayerList.First(x => x.HeldItem.AttachedObject == socketedItem);
+		var player = QSBPlayerManager.PlayerList.First(x => x.HeldItem?.AttachedObject == socketedItem);
 		socketedItem.SetSocketLocalDir(__instance.CalcCorrectUnsocketDir(player.Camera.transform));
 		__result = base_RemoveFromSocket(__instance);
 
