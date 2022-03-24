@@ -10,15 +10,15 @@ internal class ItemRemotePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-	#region item
+	#region OWItem
 
 	[HarmonyReversePatch]
 	[HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
-	private static void OWItem_PickUpItem(OWItem instance, Transform holdTranform) { }
+	private static void base_PickUpItem(OWItem instance, Transform holdTranform) { }
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.PickUpItem))]
-	private static bool DreamLanternItem_PickUpItem(DreamLanternItem __instance,
+	private static bool PickUpItem(DreamLanternItem __instance,
 		Transform holdTranform)
 	{
 		if (!Remote)
@@ -26,7 +26,7 @@ internal class ItemRemotePatches : QSBPatch
 			return true;
 		}
 
-		OWItem_PickUpItem(__instance, holdTranform);
+		base_PickUpItem(__instance, holdTranform);
 		if (__instance._lanternType == DreamLanternType.Functioning)
 		{
 			__instance.enabled = true;
@@ -44,7 +44,7 @@ internal class ItemRemotePatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(SimpleLanternItem), nameof(SimpleLanternItem.PickUpItem))]
-	private static bool SimpleLanternItem_PickUpItem(SimpleLanternItem __instance,
+	private static bool PickUpItem(SimpleLanternItem __instance,
 		Transform holdTranform)
 	{
 		if (!Remote)
@@ -59,13 +59,13 @@ internal class ItemRemotePatches : QSBPatch
 			__instance._lightSourceShape.radius = __instance._origLightSourceShapeRadius / holdTranform.localScale.x;
 		}
 
-		OWItem_PickUpItem(__instance, holdTranform);
+		base_PickUpItem(__instance, holdTranform);
 		return false;
 	}
 
 	[HarmonyReversePatch]
 	[HarmonyPatch(typeof(OWItem), nameof(OWItem.DropItem))]
-	private static void OWItem_DropItem(OWItem instance,
+	private static void base_DropItem(OWItem instance,
 		Vector3 position,
 		Vector3 normal,
 		Transform parent,
@@ -74,7 +74,7 @@ internal class ItemRemotePatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.DropItem))]
-	private static bool DreamLanternItem_DropItem(DreamLanternItem __instance,
+	private static bool DropItem(DreamLanternItem __instance,
 		Vector3 position,
 		Vector3 normal,
 		Transform parent,
@@ -86,7 +86,7 @@ internal class ItemRemotePatches : QSBPatch
 			return true;
 		}
 
-		OWItem_DropItem(__instance, position, normal, parent, sector, customDropTarget);
+		base_DropItem(__instance, position, normal, parent, sector, customDropTarget);
 		__instance.enabled = false;
 		if (__instance._lanternController != null)
 		{
@@ -98,9 +98,43 @@ internal class ItemRemotePatches : QSBPatch
 		return false;
 	}
 
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(VisionTorchItem), nameof(VisionTorchItem.DropItem))]
+	private static bool DropItem(VisionTorchItem __instance,
+		Vector3 position,
+		Vector3 normal,
+		Transform parent,
+		Sector sector,
+		IItemDropTarget customDropTarget)
+	{
+		if (!Remote)
+		{
+			return true;
+		}
+
+		base_DropItem(__instance, position, normal, parent, sector, customDropTarget);
+		if (__instance._visionBeam != null)
+		{
+			__instance._visionBeam.localScale = Vector3.one;
+		}
+
+		foreach (var renderer in __instance._worldModelRenderers)
+		{
+			renderer.SetActivation(true);
+		}
+
+		foreach (var renderer in __instance._viewModelRenderers)
+		{
+			renderer.SetActivation(false);
+		}
+
+		__instance.enabled = false;
+		return false;
+	}
+
 	[HarmonyReversePatch]
 	[HarmonyPatch(typeof(OWItem), nameof(OWItem.SocketItem))]
-	private static void OWItem_SocketItem(OWItem instance, Transform socketTransform, Sector sector) { }
+	private static void base_SocketItem(OWItem instance, Transform socketTransform, Sector sector) { }
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.SocketItem))]
@@ -127,15 +161,15 @@ internal class ItemRemotePatches : QSBPatch
 
 	#endregion
 
-	#region item socket
+	#region OWItemSocket
 
 	[HarmonyReversePatch]
 	[HarmonyPatch(typeof(OWItemSocket), nameof(OWItemSocket.PlaceIntoSocket))]
-	private static bool OWItemSocket_PlaceIntoSocket(OWItemSocket instance, OWItem item) => default;
+	private static bool base_PlaceIntoSocket(OWItemSocket instance, OWItem item) => default;
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternSocket), nameof(DreamLanternSocket.PlaceIntoSocket))]
-	private static bool DreamLanternSocket_PlaceIntoSocket(DreamLanternSocket __instance, ref bool __result,
+	private static bool PlaceIntoSocket(DreamLanternSocket __instance, ref bool __result,
 		OWItem item)
 	{
 		if (!Remote)
@@ -143,7 +177,7 @@ internal class ItemRemotePatches : QSBPatch
 			return true;
 		}
 
-		if (OWItemSocket_PlaceIntoSocket(__instance, item))
+		if (base_PlaceIntoSocket(__instance, item))
 		{
 			__result = true;
 			return false;
@@ -155,18 +189,18 @@ internal class ItemRemotePatches : QSBPatch
 
 	[HarmonyReversePatch]
 	[HarmonyPatch(typeof(OWItemSocket), nameof(OWItemSocket.RemoveFromSocket))]
-	private static OWItem OWItemSocket_RemoveFromSocket(OWItemSocket instance) => default;
+	private static OWItem base_RemoveFromSocket(OWItemSocket instance) => default;
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternSocket), nameof(DreamLanternSocket.RemoveFromSocket))]
-	private static bool DreamLanternSocket_RemoveFromSocket(DreamLanternSocket __instance, ref OWItem __result)
+	private static bool RemoveFromSocket(DreamLanternSocket __instance, ref OWItem __result)
 	{
 		if (!Remote)
 		{
 			return true;
 		}
 
-		var owitem = OWItemSocket_RemoveFromSocket(__instance);
+		var owitem = base_RemoveFromSocket(__instance);
 		if (owitem != null) { }
 
 		__result = owitem;
@@ -175,7 +209,7 @@ internal class ItemRemotePatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(SlideReelSocket), nameof(SlideReelSocket.RemoveFromSocket))]
-	private static bool SlideReelSocket_RemoveFromSocket(SlideReelSocket __instance, ref OWItem __result)
+	private static bool RemoveFromSocket(SlideReelSocket __instance, ref OWItem __result)
 	{
 		if (!Remote)
 		{
@@ -185,7 +219,7 @@ internal class ItemRemotePatches : QSBPatch
 		var socketedItem = (SlideReelItem)__instance._socketedItem;
 		var player = QSBPlayerManager.PlayerList.First(x => x.HeldItem.AttachedObject == socketedItem);
 		socketedItem.SetSocketLocalDir(__instance.CalcCorrectUnsocketDir(player.Camera.transform));
-		__result = OWItemSocket_RemoveFromSocket(__instance);
+		__result = base_RemoveFromSocket(__instance);
 
 		return false;
 	}
