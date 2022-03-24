@@ -122,7 +122,6 @@ internal class ItemRemotePatches : QSBPatch
 
 		if (OWItemSocket_PlaceIntoSocket(__instance, item))
 		{
-			Locator.GetDreamWorldController().SetPlayerLanternSocket(__instance);
 			__result = true;
 			return false;
 		}
@@ -145,10 +144,7 @@ internal class ItemRemotePatches : QSBPatch
 		}
 
 		var owitem = OWItemSocket_RemoveFromSocket(__instance);
-		if (owitem != null)
-		{
-			Locator.GetDreamWorldController().SetPlayerLanternSocket(null);
-		}
+		if (owitem != null) { }
 
 		__result = owitem;
 		return false;
