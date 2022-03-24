@@ -29,11 +29,7 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 
 	public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 
-	/// <summary>
-	/// store the last location when a remote player picks up an item
-	/// so we can use it if they leave while still holding it
-	/// </summary>
-	private void StoreLocation()
+	public void StoreLocation()
 	{
 		_lastParent = AttachedObject.transform.parent;
 		_lastPosition = AttachedObject.transform.localPosition;
@@ -62,15 +58,16 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 		if (_lastSocket != null)
 		{
 			QSBPatch.RemoteCall(() => _lastSocket.PlaceIntoSocket(this));
-			return;
 		}
-
-		AttachedObject.transform.parent = _lastParent;
-		AttachedObject.transform.localPosition = _lastPosition;
-		AttachedObject.transform.localRotation = _lastRotation;
-		AttachedObject.transform.localScale = Vector3.one;
-		AttachedObject.SetSector(_lastSector?.AttachedObject);
-		AttachedObject.SetColliderActivation(true);
+		else
+		{
+			AttachedObject.transform.parent = _lastParent;
+			AttachedObject.transform.localPosition = _lastPosition;
+			AttachedObject.transform.localRotation = _lastRotation;
+			AttachedObject.transform.localScale = Vector3.one;
+			AttachedObject.SetSector(_lastSector?.AttachedObject);
+			AttachedObject.SetColliderActivation(true);
+		}
 	}
 
 	public override void SendInitialState(uint to)
@@ -80,11 +77,8 @@ internal class QSBItem<T> : WorldObject<T>, IQSBItem
 
 	public ItemType GetItemType() => AttachedObject.GetItemType();
 
-	public void PickUpItem(Transform holdTransform)
-	{
-		StoreLocation();
+	public void PickUpItem(Transform holdTransform) =>
 		QSBPatch.RemoteCall(() => AttachedObject.PickUpItem(holdTransform));
-	}
 
 	public void DropItem(Vector3 position, Vector3 normal, Sector sector) =>
 		QSBPatch.RemoteCall(() => AttachedObject.DropItem(position, normal, sector.transform, sector, null));

@@ -44,6 +44,8 @@ internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int Socke
 						return;
 					}
 
+					qsbItem.StoreLocation();
+
 					var player = QSBPlayerManager.GetPlayer(From);
 					player.HeldItem = qsbItem;
 
