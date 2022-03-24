@@ -44,10 +44,10 @@ internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int Socke
 						return;
 					}
 
-					qsbItemSocket.RemoveFromSocket();
-
 					var player = QSBPlayerManager.GetPlayer(From);
 					player.HeldItem = qsbItem;
+
+					qsbItemSocket.RemoveFromSocket();
 					return;
 				}
 			case SocketMessageType.CompleteUnsocket:

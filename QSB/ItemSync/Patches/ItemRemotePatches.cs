@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
+using QSB.Player;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.ItemSync.Patches;
@@ -147,6 +149,23 @@ internal class ItemRemotePatches : QSBPatch
 		if (owitem != null) { }
 
 		__result = owitem;
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(SlideReelSocket), nameof(SlideReelSocket.RemoveFromSocket))]
+	private static bool SlideReelSocket_RemoveFromSocket(SlideReelSocket __instance, ref OWItem __result)
+	{
+		if (!Remote)
+		{
+			return true;
+		}
+
+		var socketedItem = (SlideReelItem)__instance._socketedItem;
+		var player = QSBPlayerManager.PlayerList.First(x => x.HeldItem.AttachedObject == socketedItem);
+		socketedItem.SetSocketLocalDir(__instance.CalcCorrectUnsocketDir(player.Camera.transform));
+		__result = OWItemSocket_RemoveFromSocket(__instance);
+
 		return false;
 	}
 
