@@ -1,6 +1,7 @@
 ﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
 
 namespace QSB.ItemSync.Messages;
 
@@ -27,6 +28,7 @@ internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem>
 			ItemType.VisionTorch => player.VisionTorchSocket,
 			_ => player.ItemSocket
 		};
+
 		WorldObject.PickUpItem(itemSocket);
 
 		switch (itemType)
@@ -55,10 +57,9 @@ internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem>
 				player.AnimationSync.VisibleAnimator.SetTrigger("HoldLantern");
 				break;
 			case ItemType.SlideReel:
-				break;
 			case ItemType.DreamLantern:
-				break;
 			case ItemType.VisionTorch:
+				DebugLog.ToConsole($"Warning - {itemType} has no implemented holding pose.", OWML.Common.MessageType.Warning);
 				break;
 		}
 	}

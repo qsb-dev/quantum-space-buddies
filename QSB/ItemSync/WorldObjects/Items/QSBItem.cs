@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items;
 
-internal class QSBItem<T> : WorldObject<T>, IQSBItem
+public class QSBItem<T> : WorldObject<T>, IQSBItem
 	where T : OWItem
 {
 	private Transform _lastParent;
