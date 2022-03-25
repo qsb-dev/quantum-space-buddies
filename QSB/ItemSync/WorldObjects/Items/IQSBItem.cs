@@ -9,4 +9,10 @@ public interface IQSBItem : IWorldObject
 	void PickUpItem(Transform itemSocket);
 	void DropItem(Vector3 position, Vector3 normal, Sector sector);
 	void OnCompleteUnsocket();
+
+	/// <summary>
+	/// store the last location when a remote player picks up/unsockets an item
+	/// so we can drop/socket it if they leave while still holding it
+	/// </summary>
+	void StoreLocation();
 }

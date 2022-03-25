@@ -9,6 +9,8 @@ internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem>
 {
 	public override void OnReceiveRemote()
 	{
+		WorldObject.StoreLocation();
+
 		var player = QSBPlayerManager.GetPlayer(From);
 		var itemType = WorldObject.GetItemType();
 
