@@ -4,6 +4,7 @@ using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,5 +91,17 @@ internal class DreamLanternPatches : QSBPatch
 		new DreamLanternStateMessage(DreamLanternActionType.FOCUS, floatValue: value).Send();
 
 		return false;
+	}
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.SetLit))]
+	public static void SetLit(DreamLanternItem __instance, bool lit)
+	{
+		if (Remote)
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBDreamLanternItem>().SendMessage(new DreamLanternLitMessage(lit));
 	}
 }
