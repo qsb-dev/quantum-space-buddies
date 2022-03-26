@@ -5,6 +5,9 @@ using QSB.Player.TransformSync;
 
 namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 
+/// <summary>
+/// todo initial state
+/// </summary>
 [UsedImplicitly]
 internal class ExitDreamWorldMessage : QSBMessage
 {
