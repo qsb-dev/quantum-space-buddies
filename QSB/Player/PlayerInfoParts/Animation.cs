@@ -10,4 +10,5 @@ public partial class PlayerInfo
 	public AnimationSync AnimationSync { get; }
 	public JetpackAccelerationSync JetpackAcceleration { get; set; }
 	internal QSBDitheringAnimator _ditheringAnimator;
+	public DreamWorldSpawnAnimator DreamWorldSpawnAnimator { get; set; }
 }

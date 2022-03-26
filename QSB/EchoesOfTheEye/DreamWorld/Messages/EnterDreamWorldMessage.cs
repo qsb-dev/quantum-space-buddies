@@ -2,6 +2,7 @@
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.PlayerBodySetup.Remote;
 using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
@@ -32,5 +33,10 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.InDreamWorld = true;
 		player.AssignedSimulationLantern = WorldObject;
+
+		// do the spawn shader
+		player.SetVisible(false, 0);
+		player.SetVisible(true, DreamWorldSpawnAnimator.DREAMWORLD_SPAWN_TIME);
+		player.DreamWorldSpawnAnimator.StartSpawnEffect();
 	}
 }
