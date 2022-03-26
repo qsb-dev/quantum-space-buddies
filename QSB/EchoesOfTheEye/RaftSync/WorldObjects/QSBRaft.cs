@@ -1,5 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using Mirror;
 using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
