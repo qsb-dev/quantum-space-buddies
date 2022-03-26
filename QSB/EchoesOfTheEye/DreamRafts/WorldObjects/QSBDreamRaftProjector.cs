@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 
-public class QSBDreamObjectProjector : WorldObject<DreamObjectProjector>
+public class QSBDreamRaftProjector : WorldObject<DreamRaftProjector>
 {
 	public override void SendInitialState(uint to) =>
 		this.SendMessage(new SetLitMessage(AttachedObject._lit));

@@ -4,7 +4,7 @@ using QSB.Patches;
 
 namespace QSB.EchoesOfTheEye.DreamRafts.Messages;
 
-public class SetLitMessage : QSBWorldObjectMessage<QSBDreamObjectProjector, bool>
+public class SetLitMessage : QSBWorldObjectMessage<QSBDreamRaftProjector, bool>
 {
 	public SetLitMessage(bool data) : base(data) { }
 

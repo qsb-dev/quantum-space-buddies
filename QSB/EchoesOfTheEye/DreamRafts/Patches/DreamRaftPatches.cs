@@ -12,11 +12,16 @@ public class DreamRaftPatches : QSBPatch
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamObjectProjector), nameof(DreamObjectProjector.SetLit))]
-	private static void SetLit(DreamObjectProjector __instance,
+	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.SetLit))]
+	private static void SetLit(DreamRaftProjector __instance,
 		bool lit)
 	{
 		if (Remote)
+		{
+			return;
+		}
+
+		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
@@ -26,7 +31,7 @@ public class DreamRaftPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamObjectProjector>()
+		__instance.GetWorldObject<QSBDreamRaftProjector>()
 			.SendMessage(new SetLitMessage(lit));
 	}
 
@@ -39,7 +44,12 @@ public class DreamRaftPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamObjectProjector>()
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBDreamRaftProjector>()
 			.SendMessage(new RespawnRaftMessage());
 	}
 
@@ -52,7 +62,32 @@ public class DreamRaftPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamObjectProjector>()
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBDreamRaftProjector>()
 			.SendMessage(new ExtinguishImmediatelyMessage());
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.SetVisible))]
+	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.SetVisibleImmediate))]
+	private static void SetVisible(DreamRaftProjection __instance,
+		bool visible)
+	{
+		if (Remote)
+		{
+			return;
+		}
+
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBDreamRaftProjection>()
+			.SendMessage(new SetVisibleMessage(visible));
 	}
 }

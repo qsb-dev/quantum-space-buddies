@@ -4,7 +4,7 @@ using QSB.Patches;
 
 namespace QSB.EchoesOfTheEye.DreamRafts.Messages;
 
-public class ExtinguishImmediatelyMessage : QSBWorldObjectMessage<QSBDreamObjectProjector>
+public class ExtinguishImmediatelyMessage : QSBWorldObjectMessage<QSBDreamRaftProjector>
 {
 	public override void OnReceiveRemote()
 	{
