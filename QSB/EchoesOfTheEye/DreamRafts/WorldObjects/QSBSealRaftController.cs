@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 
-public class QSBDreamRaftController : WorldObject<DreamRaftController>
+public class QSBSealRaftController : WorldObject<SealRaftController>
 {
 	public override void SendInitialState(uint to) { }
 
