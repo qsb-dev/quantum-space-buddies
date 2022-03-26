@@ -1,5 +1,4 @@
-﻿using QSB.Utility;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.PlayerBodySetup.Remote;
 
@@ -13,8 +12,6 @@ public static class ShaderReplacer
 	/// </summary>
 	public static void ReplaceShaders(GameObject prefab)
 	{
-		DebugLog.DebugWrite($"Processing shaders for {prefab.name}...", OWML.Common.MessageType.Info);
-
 		foreach (var renderer in prefab.GetComponentsInChildren<Renderer>(true))
 		{
 			foreach (var material in renderer.sharedMaterials)
@@ -24,17 +21,9 @@ public static class ShaderReplacer
 					continue;
 				}
 
-				if (material.shader == null)
-				{
-					DebugLog.ToConsole($"Warning - Shader for material {material.name} is null.", OWML.Common.MessageType.Warning);
-					continue;
-				}
-
 				var replacementShader = Shader.Find(material.shader.name);
-
 				if (replacementShader == null)
 				{
-					DebugLog.ToConsole($"Warning - Replacement shader found for shader {material.shader.name} was null. Sticking with the original.", OWML.Common.MessageType.Warning);
 					continue;
 				}
 
