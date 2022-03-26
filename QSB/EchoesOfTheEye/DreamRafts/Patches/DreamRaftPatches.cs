@@ -72,10 +72,9 @@ public class DreamRaftPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.SetVisible))]
-	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.SetVisibleImmediate))]
-	private static void SetVisible(DreamRaftProjection __instance,
-		bool visible)
+	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.UpdateVisibility))]
+	private static void UpdateVisibility(DreamRaftProjection __instance,
+		bool immediate = false)
 	{
 		if (Remote)
 		{
@@ -88,6 +87,6 @@ public class DreamRaftPatches : QSBPatch
 		}
 
 		__instance.GetWorldObject<QSBDreamRaftProjection>()
-			.SendMessage(new SetVisibleMessage(visible));
+			.SendMessage(new UpdateVisibilityMessage(__instance._visible, immediate));
 	}
 }

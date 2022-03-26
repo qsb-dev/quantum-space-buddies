@@ -7,5 +7,5 @@ namespace QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 public class QSBDreamRaftProjection : WorldObject<DreamRaftProjection>
 {
 	public override void SendInitialState(uint to) =>
-		this.SendMessage(new SetVisibleMessage(AttachedObject._visible));
+		this.SendMessage(new UpdateVisibilityMessage(AttachedObject._visible, true));
 }
