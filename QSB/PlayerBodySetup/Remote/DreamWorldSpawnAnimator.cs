@@ -1,10 +1,4 @@
-﻿using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace QSB.PlayerBodySetup.Remote;
 
@@ -14,37 +8,22 @@ public class DreamWorldSpawnAnimator : MonoBehaviour
 	private Transform _bodyRoot;
 
 	private float _progression;
-	private OWRenderer[] _renderers;
+	private Renderer[] _renderers;
 	private Material _spawnEffectMaterial;
 
 	public const float DREAMWORLD_SPAWN_TIME = 2f;
 
 	private void Awake()
 	{
-		_renderers = GetComponentsInChildren<Renderer>(true)
-			.Select(x => x.gameObject.GetAddComponent<OWRenderer>())
-			.ToArray();
+		_renderers = GetComponentsInChildren<Renderer>(true);
 		enabled = false;
 
 		foreach (var renderer in _renderers)
 		{
-			if (renderer is null)
-			{
-				DebugLog.ToConsole($"Error - A renderer found on {gameObject.name} is null!", OWML.Common.MessageType.Error);
-				continue;
-			}
-
 			foreach (var material in renderer.sharedMaterials)
 			{
-				if (material is null)
+				if (material == null)
 				{
-					DebugLog.ToConsole($"Error - A material on renderer {renderer.name} is null!", OWML.Common.MessageType.Error);
-					continue;
-				}
-
-				if (material.shader is null)
-				{
-					DebugLog.ToConsole($"Error - The shader on material {material.name}, attached to renderer {renderer.name}, is null!", OWML.Common.MessageType.Error);
 					continue;
 				}
 
@@ -71,7 +50,7 @@ public class DreamWorldSpawnAnimator : MonoBehaviour
 	{
 		_spawnEffectMaterial.SetVector("_BodyPosition", _bodyRoot.position);
 
-		_progression = Mathf.MoveTowards(_progression, 4, (4 * Time.deltaTime) / DREAMWORLD_SPAWN_TIME);
+		_progression = Mathf.MoveTowards(_progression, 4, 4 * Time.deltaTime / DREAMWORLD_SPAWN_TIME);
 
 		if (OWMath.ApproxEquals(_progression, 4))
 		{

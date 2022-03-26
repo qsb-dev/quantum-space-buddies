@@ -35,7 +35,7 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 		player.AssignedSimulationLantern = WorldObject;
 
 		// do the spawn shader
-		player.SetVisible(false, 0);
+		player.SetVisible(false);
 		player.SetVisible(true, DreamWorldSpawnAnimator.DREAMWORLD_SPAWN_TIME);
 		player.DreamWorldSpawnAnimator.StartSpawnEffect();
 	}
