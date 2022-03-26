@@ -1,14 +1,12 @@
-﻿using JetBrains.Annotations;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 
 namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 
 /// <summary>
-/// todo initial state
+/// todo SendInitialState
 /// </summary>
-[UsedImplicitly]
 internal class ExitDreamWorldMessage : QSBMessage
 {
 	static ExitDreamWorldMessage()

@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
@@ -8,9 +7,8 @@ using QSB.WorldSync;
 namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 
 /// <summary>
-/// todo initial state
+/// todo SendInitialState
 /// </summary>
-[UsedImplicitly]
 internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternItem>
 {
 	static EnterDreamWorldMessage()
