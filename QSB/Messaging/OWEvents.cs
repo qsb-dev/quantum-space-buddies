@@ -29,4 +29,6 @@ public static class OWEvents
 	public const string ExitShip = nameof(ExitShip);
 	public const string EyeStateChanged = nameof(EyeStateChanged);
 	public const string FlickerOffAndOn = nameof(FlickerOffAndOn);
+	public const string EnterDreamWorld = nameof(EnterDreamWorld);
+	public const string ExitDreamWorld = nameof(ExitDreamWorld);
 }
