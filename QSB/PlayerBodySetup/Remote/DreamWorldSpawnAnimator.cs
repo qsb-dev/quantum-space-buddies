@@ -8,17 +8,15 @@ public class DreamWorldSpawnAnimator : MonoBehaviour
 	private Transform _bodyRoot;
 
 	private float _progression;
-	private Renderer[] _renderers;
 	private Material _spawnEffectMaterial;
 
 	public const float DREAMWORLD_SPAWN_TIME = 2f;
 
 	private void Awake()
 	{
-		_renderers = GetComponentsInChildren<Renderer>(true);
 		enabled = false;
 
-		foreach (var renderer in _renderers)
+		foreach (var renderer in GetComponentsInChildren<Renderer>(true))
 		{
 			foreach (var material in renderer.sharedMaterials)
 			{
