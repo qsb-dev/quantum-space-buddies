@@ -17,7 +17,7 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 
 	public void SetEnabled(bool enabled)
 	{
-		if (AttachedObject._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe))
+		if (AttachedObject._sector && AttachedObject._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe))
 		{
 			// local player is in sector, do not disable lights
 			return;
