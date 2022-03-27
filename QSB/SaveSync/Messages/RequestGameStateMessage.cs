@@ -1,9 +1,7 @@
 ﻿using QSB.ConversationSync.Messages;
-using QSB.ConversationSync.Patches;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using System.Linq;
 
 namespace QSB.SaveSync.Messages;
 
@@ -33,8 +31,7 @@ internal class RequestGameStateMessage : QSBMessage
 		}
 
 		var dictConditions = gameSave.dictConditions;
-		var dictConditionsToSend = dictConditions.Where(x => ConversationPatches.PersistentConditionsToSync.Contains(x.Key));
-		foreach (var item in dictConditionsToSend)
+		foreach (var item in dictConditions)
 		{
 			new PersistentConditionMessage(item.Key, item.Value).Send();
 		}
