@@ -10,9 +10,6 @@ public class QSBSealRaft : LinkedWorldObject<SealRaftController, RaftTransformSy
 {
 	public override void SendInitialState(uint to) { }
 
-	public override async UniTask Init(CancellationToken ct) =>
-		EnableDisableDetector.Add(AttachedObject.gameObject, this);
-
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.RaftPrefab;
 	protected override bool SpawnWithServerAuthority => false;
 }
