@@ -146,7 +146,7 @@ internal class ItemRemotePatches : QSBPatch
 			return true;
 		}
 
-		__instance.SocketItem(socketTransform, sector);
+		base_SocketItem(__instance, socketTransform, sector);
 		__instance.enabled = false;
 		if (__instance._lanternController != null)
 		{
