@@ -11,18 +11,7 @@ jobs:
     - uses: actions/setup-dotnet@v1
     - run: dotnet build -c Debug
 
-      # Replace / with _ in ref name so that it can be used in a filename
-    - uses: mad9000/actions-find-and-replace-string@2
-      id: sanitizeRef
-      with:
-        source: ${{ github.ref_name }}
-        find: '/'
-        replace: '_'
-      # Get short-sha so that it can be used in a filename
-    - uses: benjlevesque/short-sha@v1.2
-      id: short-sha
-
     - uses: actions/upload-artifact@v2
       with:
-        name: QSB-${{ steps.sanitizeRef.outputs.value }}-${{ steps.short-sha.outputs.sha }}
+        name: QSB
         path: .\QSB\Bin\Debug
