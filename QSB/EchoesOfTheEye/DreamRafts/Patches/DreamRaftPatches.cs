@@ -67,6 +67,11 @@ public class DreamRaftPatches : QSBPatch
 			return;
 		}
 
+		if (!__instance._lit)
+		{
+			return;
+		}
+
 		__instance.GetWorldObject<QSBDreamRaftProjector>()
 			.SendMessage(new ExtinguishImmediatelyMessage());
 	}
