@@ -16,6 +16,13 @@ public class DreamWorldSpawnAnimator : MonoBehaviour
 	{
 		enabled = false;
 
+		_spawnEffectMaterial = GetSpawnMaterial();
+		_spawnEffectMaterial.SetFloat("_Enabled", 0f);
+		_spawnEffectMaterial.SetFloat("_Progression", 0f);
+	}
+
+	private Material GetSpawnMaterial()
+	{
 		foreach (var renderer in GetComponentsInChildren<Renderer>(true))
 		{
 			foreach (var material in renderer.sharedMaterials)
@@ -27,14 +34,12 @@ public class DreamWorldSpawnAnimator : MonoBehaviour
 
 				if (material.shader.name == "DreamWorldSpawnEffect")
 				{
-					_spawnEffectMaterial = material;
-					return;
+					return material;
 				}
 			}
 		}
 
-		_spawnEffectMaterial.SetFloat("_Enabled", 0f);
-		_spawnEffectMaterial.SetFloat("_Progression", 0f);
+		return null;
 	}
 
 	public void StartSpawnEffect()
