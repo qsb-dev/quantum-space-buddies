@@ -4,6 +4,7 @@ using QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
+using System.Linq;
 
 namespace QSB.EchoesOfTheEye.DreamRafts.Patches;
 
@@ -21,18 +22,18 @@ public class DreamRaftPatches : QSBPatch
 			return;
 		}
 
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return;
-		}
-
 		if (__instance._lit == lit)
 		{
 			return;
 		}
 
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
 		__instance.GetWorldObject<QSBDreamRaftProjector>()
-			.SendMessage(new SetLitMessage(lit));
+			.SendMessage(new SpawnRaftMessage());
 	}
 
 	[HarmonyPrefix]
@@ -50,48 +51,30 @@ public class DreamRaftPatches : QSBPatch
 		}
 
 		__instance.GetWorldObject<QSBDreamRaftProjector>()
-			.SendMessage(new RespawnRaftMessage());
+			.SendMessage(new SpawnRaftMessage());
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.ExtinguishImmediately))]
-	private static void ExtinguishImmediately(DreamRaftProjector __instance)
+	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.OnCandleLitStateChanged))]
+	private static bool OnCandleLitStateChanged(DreamRaftProjection __instance)
 	{
-		if (Remote)
+		if (!__instance._visible)
 		{
-			return;
+			return false;
 		}
 
-		if (!QSBWorldSync.AllObjectsReady)
+		if (__instance._candles.Any(x => x.IsLit()))
 		{
-			return;
+			return false;
 		}
 
-		if (!__instance._lit)
+		__instance.SetVisible(false);
+		if (!Remote && QSBWorldSync.AllObjectsReady)
 		{
-			return;
+			__instance.GetWorldObject<QSBDreamRaftProjection>()
+				.SendMessage(new ExtinguishMessage());
 		}
 
-		__instance.GetWorldObject<QSBDreamRaftProjector>()
-			.SendMessage(new ExtinguishImmediatelyMessage());
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.UpdateVisibility))]
-	private static void UpdateVisibility(DreamRaftProjection __instance,
-		bool immediate = false)
-	{
-		if (Remote)
-		{
-			return;
-		}
-
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return;
-		}
-
-		__instance.GetWorldObject<QSBDreamRaftProjection>()
-			.SendMessage(new UpdateVisibilityMessage(__instance._visible, immediate));
+		return false;
 	}
 }

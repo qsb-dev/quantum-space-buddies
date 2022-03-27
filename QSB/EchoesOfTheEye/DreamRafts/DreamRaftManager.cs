@@ -12,8 +12,8 @@ public class DreamRaftManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		QSBWorldSync.Init<QSBDreamRaftController, DreamRaftController>();
-		QSBWorldSync.Init<QSBSealRaftController, SealRaftController>();
+		QSBWorldSync.Init<QSBDreamRaft, DreamRaftController>();
+		QSBWorldSync.Init<QSBSealRaft, SealRaftController>();
 
 		QSBWorldSync.Init<QSBDreamRaftProjector, DreamRaftProjector>();
 		QSBWorldSync.Init<QSBDreamRaftProjection, DreamRaftProjection>();

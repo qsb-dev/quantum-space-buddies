@@ -1,11 +1,10 @@
 ﻿using QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 using QSB.Messaging;
-using QSB.Patches;
 
 namespace QSB.EchoesOfTheEye.DreamRafts.Messages;
 
-public class RespawnRaftMessage : QSBWorldObjectMessage<QSBDreamRaftProjector>
+public class SpawnRaftMessage : QSBWorldObjectMessage<QSBDreamRaftProjector>
 {
 	public override void OnReceiveRemote() =>
-		QSBPatch.RemoteCall(WorldObject.AttachedObject.RespawnRaft);
+		WorldObject.AttachedObject.RespawnRaft();
 }
