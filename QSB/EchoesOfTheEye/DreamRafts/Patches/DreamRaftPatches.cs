@@ -13,32 +13,9 @@ public class DreamRaftPatches : QSBPatch
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.SetLit))]
-	private static void SetLit(DreamRaftProjector __instance,
+	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.SpawnRaft))]
+	private static void SpawnRaft(DreamRaftProjector __instance,
 		bool lit)
-	{
-		if (Remote)
-		{
-			return;
-		}
-
-		if (__instance._lit == lit)
-		{
-			return;
-		}
-
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return;
-		}
-
-		__instance.GetWorldObject<QSBDreamRaftProjector>()
-			.SendMessage(new SpawnRaftMessage());
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.RespawnRaft))]
-	private static void RespawnRaft(DreamRaftProjector __instance)
 	{
 		if (Remote)
 		{
