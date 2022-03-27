@@ -6,9 +6,6 @@ namespace QSB.EchoesOfTheEye.DreamRafts.Messages;
 
 public class ExtinguishImmediatelyMessage : QSBWorldObjectMessage<QSBDreamRaftProjector>
 {
-	public override void OnReceiveRemote()
-	{
-		var attachedObject = (DreamRaftProjector)WorldObject.AttachedObject;
-		QSBPatch.RemoteCall(attachedObject.ExtinguishImmediately);
-	}
+	public override void OnReceiveRemote() =>
+		QSBPatch.RemoteCall(WorldObject.AttachedObject.ExtinguishImmediately);
 }
