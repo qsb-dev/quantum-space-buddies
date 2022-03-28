@@ -120,7 +120,7 @@ Let me know if you find an answer.
 - (optional if copying built dlls manually) Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
 - (optional if no unity project) Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
 - (optional if no unity project) Edit the entry `<UnityAssetsDir>` to point to the Assets folder of the QSB unity project
-- Open the project solution file `QSB.sln` in Visual Studio
+- Open the project solution file `QSB.sln` in Visual Studio 2022
 
 It is recommended to use the Epic version of Outer Wilds, as you cannot run multiple versions of the Steam version.
 
