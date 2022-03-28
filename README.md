@@ -93,7 +93,7 @@ Long answer : Pay me enough money, and maybe I'll consider it.
 
 Boring boring physics stuff. The velocity of the ship is synced, as well as the angular velocity. However, this velocity is not also applied to the player. (Or it is sometimes. I don't 100% know.) This means the ship will accelerate, leaving the player "behind". Which makes you fly into the walls alot.
 
-**Update**: you can attach/detach yourself to/from the ship using the prompt in the upper right corner of the screen.
+**Update**: you can attach/detach yourself to/from the ship using the prompt in the center of the screen.
 
 ### What's the difference between QSB and Outer Wilds Online?
 
