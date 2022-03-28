@@ -1,8 +1,10 @@
-﻿using QSB.Messaging;
+﻿using QSB.ItemSync.WorldObjects.Items;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.RespawnSync;
 using QSB.ShipSync;
 using QSB.Utility.Messages;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -73,7 +75,10 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 			var dreamCampfire = Locator.GetDreamCampfire(location);
 			if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
 			{
-				var dreamLanternItem = FindObjectsOfType<DreamLanternItem>().First(x => x._lanternType == DreamLanternType.Functioning);
+				var dreamLanternItem = QSBWorldSync.GetWorldObjects<QSBDreamLanternItem>().First(x =>
+					x.AttachedObject._lanternType == DreamLanternType.Functioning &&
+					QSBPlayerManager.PlayerList.All(y => y.HeldItem != x)
+				).AttachedObject;
 				Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
 			}
 
