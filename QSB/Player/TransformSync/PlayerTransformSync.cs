@@ -63,6 +63,8 @@ public class PlayerTransformSync : SectoredTransformSync
 			Player.IsReady = false;
 			new PlayerReadyMessage(false).Send();
 		}
+
+		Player.Reset();
 	}
 
 	protected override void Init()

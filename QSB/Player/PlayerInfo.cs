@@ -40,6 +40,51 @@ public partial class PlayerInfo
 		AnimationSync = transformSync.GetComponent<AnimationSync>();
 	}
 
+	/// <summary>
+	/// called on player transform sync uninit.
+	/// (BOTH local and non-local)
+	/// </summary>
+	public void Reset()
+	{
+		HudMarker = default;
+		EyeState = default;
+		IsDead = default;
+		IsReady = default;
+		IsInMoon = default;
+		IsInShrine = default;
+		IsInEyeShuttle = default;
+		EntangledObject = default;
+		AudioController = default;
+		ThrusterLightTracker = default;
+
+		JetpackAcceleration = default;
+		_ditheringAnimator = default;
+
+		_camera = default;
+		CameraBody = default;
+		_body = default;
+
+		CurrentCharacterDialogueTreeId = -1;
+		CurrentDialogueBox = default;
+
+		InDreamWorld = default;
+		AssignedSimulationLantern = default;
+
+		ProbeBody = default;
+		Probe = default;
+		_handPivot = default;
+		Marshmallow = default;
+		Campfire = default;
+		HeldItem = default;
+		FlashlightActive = default;
+		SuitedUp = default;
+		ProbeLauncherEquipped = default;
+		SignalscopeEquipped = default;
+		TranslatorEquipped = default;
+		ProbeActive = default;
+		RoastingStick = default;
+	}
+
 	public void UpdateObjectsFromStates()
 	{
 		if (OWInput.GetInputMode() == InputMode.None)

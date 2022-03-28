@@ -186,7 +186,7 @@ public class DeathPatches : QSBPatch
 					return;
 				}
 
-				if (!Custom(deathType))
+				if (!Custom(@this, deathType))
 				{
 					return;
 				}
@@ -230,7 +230,7 @@ public class DeathPatches : QSBPatch
 			}
 		}
 
-		static bool Custom(DeathType deathType)
+		static bool Custom(DeathManager @this, DeathType deathType)
 		{
 			if (RespawnOnDeath.Instance == null)
 			{
@@ -238,6 +238,11 @@ public class DeathPatches : QSBPatch
 			}
 
 			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
+			{
+				return true;
+			}
+
+			if (@this.CheckShouldWakeInDreamWorld())
 			{
 				return true;
 			}
