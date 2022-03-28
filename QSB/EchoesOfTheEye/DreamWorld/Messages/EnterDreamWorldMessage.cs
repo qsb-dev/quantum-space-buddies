@@ -27,6 +27,8 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 		});
 	}
 
+	public override void OnReceiveLocal() => OnReceiveRemote();
+
 	public override void OnReceiveRemote()
 	{
 		var player = QSBPlayerManager.GetPlayer(From);
