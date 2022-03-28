@@ -122,7 +122,7 @@ Let me know if you find an answer.
 - (optional if no unity project) Edit the entry `<UnityAssetsDir>` to point to the Assets folder of the QSB unity project
 - Open the project solution file `QSB.sln` in Visual Studio 2022
 
-It is recommended to use the Epic version of Outer Wilds, as you cannot run multiple versions of the Steam version.
+If developing with the Steam version of Outer Wilds you can't run multiple instances of the game by default. To do so, create a file called `steam_appid.txt` in your Outer Wilds directory and write `753640` inside it, then run the exe directly.
 
 A powerful PC is needed for development, due to the high amount of RAM and CPU needed to run 2 or 3 instances of modded Outer Wilds.
 
