@@ -68,21 +68,32 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad2].wasPressedThisFrame)
 		{
-			var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
-
-			const DreamArrivalPoint.Location location = DreamArrivalPoint.Location.Zone3;
-			var arrivalPoint = Locator.GetDreamArrivalPoint(location);
-			var dreamCampfire = Locator.GetDreamCampfire(location);
-			if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
+			if (!QSBPlayerManager.LocalPlayer.InDreamWorld)
 			{
-				var dreamLanternItem = QSBWorldSync.GetWorldObjects<QSBDreamLanternItem>().First(x =>
-					x.AttachedObject._lanternType == DreamLanternType.Functioning &&
-					QSBPlayerManager.PlayerList.All(y => y.HeldItem != x)
-				).AttachedObject;
-				Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
-			}
+				var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
 
-			Locator.GetDreamWorldController().EnterDreamWorld(dreamCampfire, arrivalPoint, relativeLocation);
+				const DreamArrivalPoint.Location location = DreamArrivalPoint.Location.Zone3;
+				var arrivalPoint = Locator.GetDreamArrivalPoint(location);
+				var dreamCampfire = Locator.GetDreamCampfire(location);
+				if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
+				{
+					var dreamLanternItem = QSBWorldSync.GetWorldObjects<QSBDreamLanternItem>().First(x =>
+						x.AttachedObject._lanternType == DreamLanternType.Functioning &&
+						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x)
+					).AttachedObject;
+					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
+				}
+
+				Locator.GetDreamWorldController().EnterDreamWorld(dreamCampfire, arrivalPoint, relativeLocation);
+			}
+			else
+			{
+				if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
+				{
+					var dreamLanternItem = QSBPlayerManager.LocalPlayer.AssignedSimulationLantern.AttachedObject;
+					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
+				}
+			}
 		}
 
 		if (Keyboard.current[Key.Numpad3].wasPressedThisFrame)
