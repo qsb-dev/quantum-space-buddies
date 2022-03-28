@@ -22,7 +22,12 @@ internal class ExitDreamWorldMessage : QSBMessage
 		});
 	}
 
-	public override void OnReceiveLocal() => OnReceiveRemote();
+	public override void OnReceiveLocal()
+	{
+		var player = QSBPlayerManager.LocalPlayer;
+		player.InDreamWorld = false;
+		player.AssignedSimulationLantern = null;
+	}
 
 	public override void OnReceiveRemote()
 	{
