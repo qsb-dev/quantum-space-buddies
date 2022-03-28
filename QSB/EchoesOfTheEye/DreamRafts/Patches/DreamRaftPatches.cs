@@ -14,8 +14,7 @@ public class DreamRaftPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.SpawnRaft))]
-	private static void SpawnRaft(DreamRaftProjector __instance,
-		bool lit)
+	private static void SpawnRaft(DreamRaftProjector __instance)
 	{
 		if (Remote)
 		{
