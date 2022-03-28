@@ -45,7 +45,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		/*
 		 * 1 - Warp to first non local player
-		 * 2 - Set time flowing
+		 * 2 - Enter dream world
 		 * 3 - Destroy probe
 		 * 4 - Damage ship electricals
 		 * 5 - Trigger supernova
@@ -66,7 +66,17 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad2].wasPressedThisFrame)
 		{
-			TimeLoop._isTimeFlowing = true;
+			var relativeLocation = new RelativeLocationData(Vector3.up + Vector3.forward, Quaternion.identity, Vector3.zero);
+
+			const DreamArrivalPoint.Location location = DreamArrivalPoint.Location.Zone2;
+			var arrivalPoint = Locator.GetDreamArrivalPoint(location);
+			var dreamCampfire = Locator.GetDreamCampfire(location);
+			if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
+			{
+				Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(FindObjectsOfType<DreamLanternItem>()[3]);
+			}
+
+			Locator.GetDreamWorldController().EnterDreamWorld(dreamCampfire, arrivalPoint, relativeLocation);
 		}
 
 		if (Keyboard.current[Key.Numpad3].wasPressedThisFrame)
