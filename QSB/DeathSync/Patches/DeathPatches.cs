@@ -150,50 +150,121 @@ public class DeathPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
-	public static bool DeathManager_KillPlayer_Prefix(DeathType deathType)
+	private static bool DeathManager_KillPlayer(DeathManager __instance, DeathType deathType)
 	{
-		if (RespawnOnDeath.Instance == null)
-		{
-			return true;
-		}
-
-		if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
-		{
-			return true;
-		}
-
-		if (QSBPlayerManager.LocalPlayer.IsDead)
-		{
-			return false;
-		}
-
-		var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
-
-		if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
-		{
-			new EndLoopMessage().Send();
-			return true;
-		}
-
-		RespawnOnDeath.Instance.ResetPlayer();
+		Original(__instance, deathType);
 		return false;
-	}
 
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
-	public static void DeathManager_KillPlayer_Postfix(DeathType deathType)
-	{
-		if (QSBPlayerManager.LocalPlayer.IsDead)
+		static void Original(DeathManager @this, DeathType deathType)
 		{
-			return;
+			@this._fakeMeditationDeath = false;
+			if (deathType == DeathType.Meditation && @this.CheckShouldWakeInDreamWorld())
+			{
+				@this._fakeMeditationDeath = true;
+				OWInput.ChangeInputMode(InputMode.None);
+				ReticleController.Hide();
+				Locator.GetPromptManager().SetPromptsVisible(false);
+				GlobalMessenger.FireEvent("FakePlayerMeditationDeath");
+				return;
+			}
+
+			if (deathType == DeathType.DreamExplosion)
+			{
+				Achievements.Earn(Achievements.Type.EARLY_ADOPTER);
+			}
+
+			if (PlayerState.InDreamWorld() && deathType != DeathType.Dream && deathType != DeathType.DreamExplosion && deathType != DeathType.Supernova && deathType != DeathType.TimeLoop && deathType != DeathType.Meditation)
+			{
+				Locator.GetDreamWorldController().ExitDreamWorld(deathType);
+				return;
+			}
+
+			if (!@this._isDying)
+			{
+				if (@this._invincible && deathType != DeathType.Supernova && deathType != DeathType.BigBang && deathType != DeathType.Meditation && deathType != DeathType.TimeLoop && deathType != DeathType.BlackHole)
+				{
+					return;
+				}
+
+				if (!Custom(deathType))
+				{
+					return;
+				}
+
+				if (!TimeLoopCoreController.ParadoxExists())
+				{
+					var component = Locator.GetPlayerBody().GetComponent<PlayerResources>();
+					if ((deathType == DeathType.TimeLoop || deathType == DeathType.Supernova) && component.GetTotalDamageThisLoop() > 1000f)
+					{
+						Achievements.Earn(Achievements.Type.DIEHARD);
+						PlayerData.SetPersistentCondition("THERE_IS_BUT_VOID", true);
+					}
+
+					if ((TimeLoop.GetLoopCount() != 1 && TimeLoop.GetSecondsElapsed() < 60f || TimeLoop.GetLoopCount() == 1 && Time.timeSinceLevelLoad < 60f && !TimeLoop.IsTimeFlowing()) && deathType != DeathType.Meditation && LoadManager.GetCurrentScene() == OWScene.SolarSystem)
+					{
+						Achievements.Earn(Achievements.Type.GONE_IN_60_SECONDS);
+					}
+
+					if (TimeLoop.GetLoopCount() > 1)
+					{
+						Achievements.SetHeroStat(Achievements.HeroStat.TIMELOOP_COUNT, (uint)(TimeLoop.GetLoopCount() - 1));
+						if (deathType == DeathType.TimeLoop || deathType == DeathType.BigBang || deathType == DeathType.Supernova)
+						{
+							PlayerData.CompletedFullTimeLoop();
+						}
+					}
+
+					if (deathType == DeathType.Supernova && !PlayerData.GetPersistentCondition("KILLED_BY_SUPERNOVA_AND_KNOWS_IT") && PlayerData.GetFullTimeLoopsCompleted() > 2U && PlayerData.GetPersistentCondition("HAS_SEEN_SUN_EXPLODE"))
+					{
+						PlayerData.SetPersistentCondition("KILLED_BY_SUPERNOVA_AND_KNOWS_IT", true);
+						MonoBehaviour.print("KILLED_BY_SUPERNOVA_AND_KNOWS_IT");
+					}
+				}
+
+				@this._isDying = true;
+				@this._deathType = deathType;
+				MonoBehaviour.print("Player was killed by " + deathType);
+				Locator.GetPauseCommandListener().AddPauseCommandLock();
+				PlayerData.SetLastDeathType(deathType);
+				GlobalMessenger<DeathType>.FireEvent("PlayerDeath", deathType);
+			}
 		}
 
-		QSBPlayerManager.LocalPlayer.IsDead = true;
-		new PlayerDeathMessage(deathType).Send();
-
-		if (PlayerAttachWatcher.Current)
+		static bool Custom(DeathType deathType)
 		{
-			PlayerAttachWatcher.Current.DetachPlayer();
+			if (RespawnOnDeath.Instance == null)
+			{
+				return true;
+			}
+
+			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
+			{
+				return true;
+			}
+
+			if (QSBPlayerManager.LocalPlayer.IsDead)
+			{
+				return false;
+			}
+
+			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
+			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
+			{
+				new EndLoopMessage().Send();
+				return true;
+			}
+
+			RespawnOnDeath.Instance.ResetPlayer();
+
+			QSBPlayerManager.LocalPlayer.IsDead = true;
+			new PlayerDeathMessage(deathType).Send();
+
+			if (PlayerAttachWatcher.Current)
+			{
+				PlayerAttachWatcher.Current.DetachPlayer();
+			}
+
+			return false;
 		}
 	}
 
