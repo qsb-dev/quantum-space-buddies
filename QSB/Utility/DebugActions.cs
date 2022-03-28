@@ -73,7 +73,8 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 			var dreamCampfire = Locator.GetDreamCampfire(location);
 			if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
 			{
-				Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(FindObjectsOfType<DreamLanternItem>()[3]);
+				var dreamLanternItem = FindObjectsOfType<DreamLanternItem>().First(x => x._lanternType == DreamLanternType.Functioning);
+				Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
 			}
 
 			Locator.GetDreamWorldController().EnterDreamWorld(dreamCampfire, arrivalPoint, relativeLocation);
