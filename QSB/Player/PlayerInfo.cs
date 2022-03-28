@@ -42,7 +42,7 @@ public partial class PlayerInfo
 
 	/// <summary>
 	/// called on player transform sync uninit.
-	/// (BOTH authority and non-authority)
+	/// (BOTH local and non-local)
 	/// </summary>
 	public void Reset()
 	{
