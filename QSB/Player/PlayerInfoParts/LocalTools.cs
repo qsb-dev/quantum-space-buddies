@@ -11,7 +11,7 @@ public partial class PlayerInfo
 		{
 			if (!IsLocalPlayer)
 			{
-				DebugLog.ToConsole($"Warning - Tried to access local-only property LocalProbeLauncher in PlayerInfo for non local player!", MessageType.Warning);
+				DebugLog.ToConsole("Warning - Tried to access local-only property LocalProbeLauncher in PlayerInfo for non local player!", MessageType.Warning);
 				return null;
 			}
 
@@ -25,7 +25,7 @@ public partial class PlayerInfo
 		{
 			if (!IsLocalPlayer)
 			{
-				DebugLog.ToConsole($"Warning - Tried to access local-only property LocalFlashlight in PlayerInfo for non local player!", MessageType.Warning);
+				DebugLog.ToConsole("Warning - Tried to access local-only property LocalFlashlight in PlayerInfo for non local player!", MessageType.Warning);
 				return null;
 			}
 
@@ -39,7 +39,7 @@ public partial class PlayerInfo
 		{
 			if (!IsLocalPlayer)
 			{
-				DebugLog.ToConsole($"Warning - Tried to access local-only property LocalSignalscope in PlayerInfo for non local player!", MessageType.Warning);
+				DebugLog.ToConsole("Warning - Tried to access local-only property LocalSignalscope in PlayerInfo for non local player!", MessageType.Warning);
 				return null;
 			}
 
@@ -53,7 +53,7 @@ public partial class PlayerInfo
 		{
 			if (!IsLocalPlayer)
 			{
-				DebugLog.ToConsole($"Warning - Tried to access local-only property LocalTranslator in PlayerInfo for non local player!", MessageType.Warning);
+				DebugLog.ToConsole("Warning - Tried to access local-only property LocalTranslator in PlayerInfo for non local player!", MessageType.Warning);
 				return null;
 			}
 
