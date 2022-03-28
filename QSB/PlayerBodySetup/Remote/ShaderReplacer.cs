@@ -21,7 +21,13 @@ public static class ShaderReplacer
 					continue;
 				}
 
-				material.shader = Shader.Find(material.shader.name);
+				var replacementShader = Shader.Find(material.shader.name);
+				if (replacementShader == null)
+				{
+					continue;
+				}
+
+				material.shader = replacementShader;
 			}
 		}
 	}
