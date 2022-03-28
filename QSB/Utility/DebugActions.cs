@@ -66,7 +66,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad2].wasPressedThisFrame)
 		{
-			var relativeLocation = new RelativeLocationData(Vector3.up + Vector3.forward, Quaternion.identity, Vector3.zero);
+			var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
 
 			const DreamArrivalPoint.Location location = DreamArrivalPoint.Location.Zone3;
 			var arrivalPoint = Locator.GetDreamArrivalPoint(location);
