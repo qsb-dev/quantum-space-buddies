@@ -68,7 +68,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		{
 			var relativeLocation = new RelativeLocationData(Vector3.up + Vector3.forward, Quaternion.identity, Vector3.zero);
 
-			const DreamArrivalPoint.Location location = DreamArrivalPoint.Location.Zone2;
+			const DreamArrivalPoint.Location location = DreamArrivalPoint.Location.Zone3;
 			var arrivalPoint = Locator.GetDreamArrivalPoint(location);
 			var dreamCampfire = Locator.GetDreamCampfire(location);
 			if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
