@@ -46,13 +46,13 @@ public partial class PlayerInfo
 	/// </summary>
 	public void Reset()
 	{
+		HudMarker = default;
+		EyeState = default;
 		IsDead = default;
 		IsReady = default;
 		IsInMoon = default;
 		IsInShrine = default;
 		IsInEyeShuttle = default;
-		HudMarker = default;
-		EyeState = default;
 		EntangledObject = default;
 		AudioController = default;
 		ThrusterLightTracker = default;
@@ -61,6 +61,7 @@ public partial class PlayerInfo
 		_ditheringAnimator = default;
 
 		_camera = default;
+		CameraBody = default;
 		_body = default;
 
 		CurrentCharacterDialogueTreeId = -1;
