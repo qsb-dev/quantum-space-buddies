@@ -30,9 +30,12 @@ public class DreamRaftPatches : QSBPatch
 	}
 
 	/// <summary>
-	/// make the projections invisible,
-	/// but don't change the lit state
-	/// or sync anything.
+	/// this is only called when:
+	///	- you exit the dream world
+	/// - the raft goes thru the warp volume with you not on it
+	///
+	/// we ignore both of these.
+	/// we DO still suspend the raft so it's not visible.
 	/// </summary>
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.ExtinguishImmediately))]
@@ -43,10 +46,9 @@ public class DreamRaftPatches : QSBPatch
 			return false;
 		}
 
-		foreach (var projection in __instance._projections)
-		{
-			projection.SetVisibleImmediate(false, true);
-		}
+		var projection = __instance._dreamRaftProjection;
+		projection._body.Suspend();
+		projection._waitingToSuspend = false;
 
 		return false;
 	}
