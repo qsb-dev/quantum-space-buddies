@@ -46,7 +46,6 @@ public partial class PlayerInfo
 	/// </summary>
 	public void Reset()
 	{
-		HudMarker = default;
 		EyeState = default;
 		IsDead = default;
 		IsReady = default;
@@ -54,26 +53,12 @@ public partial class PlayerInfo
 		IsInShrine = default;
 		IsInEyeShuttle = default;
 		EntangledObject = default;
-		AudioController = default;
-		ThrusterLightTracker = default;
-
-		JetpackAcceleration = default;
-		_ditheringAnimator = default;
-
-		_camera = default;
-		CameraBody = default;
-		_body = default;
 
 		CurrentCharacterDialogueTreeId = -1;
-		CurrentDialogueBox = default;
 
 		InDreamWorld = default;
 		AssignedSimulationLantern = default;
 
-		ProbeBody = default;
-		Probe = default;
-		_handPivot = default;
-		Marshmallow = default;
 		Campfire = default;
 		HeldItem = default;
 		FlashlightActive = default;
@@ -82,7 +67,6 @@ public partial class PlayerInfo
 		SignalscopeEquipped = default;
 		TranslatorEquipped = default;
 		ProbeActive = default;
-		RoastingStick = default;
 	}
 
 	public void UpdateObjectsFromStates()
