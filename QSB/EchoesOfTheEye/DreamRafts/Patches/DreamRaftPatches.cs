@@ -30,7 +30,7 @@ public class DreamRaftPatches : QSBPatch
 	}
 
 	/// <summary>
-	/// make the projectors invisible,
+	/// make the projections invisible,
 	/// but don't change the lit state
 	/// or sync anything.
 	/// </summary>
