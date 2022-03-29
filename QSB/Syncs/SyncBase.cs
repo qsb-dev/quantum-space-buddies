@@ -154,7 +154,7 @@ public abstract class SyncBase : QSBNetworkTransform
 		}
 	}
 
-	private const float _pauseTimerDelay = 1;
+	private const float _pauseTimerDelay = 10;
 	private float _pauseTimer;
 
 	private void SafeInit()
