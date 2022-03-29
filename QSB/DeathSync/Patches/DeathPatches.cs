@@ -41,23 +41,9 @@ public class DeathPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(PlayerResources), nameof(PlayerResources.OnImpact))]
-	public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact)
-	{
-		if (PlayerState.IsInsideShip())
-		{
-			return false;
-		}
-
-		var speed = Mathf.Clamp01((impact.speed - __instance.GetMinImpactSpeed()) / (__instance.GetMaxImpactSpeed() - __instance.GetMinImpactSpeed()));
-		var tookDamage = __instance.ApplyInstantDamage(100f * speed, InstantDamageType.Impact);
-		if (tookDamage && __instance._currentHealth <= 0f && !PlayerState.IsDead())
-		{
-			Locator.GetDeathManager().SetImpactDeathSpeed(impact.speed);
-			Locator.GetDeathManager().KillPlayer(DeathType.Impact);
-		}
-
-		return false;
-	}
+	public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact) =>
+		// don't die from impact in ship
+		!PlayerState.IsInsideShip();
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.FixedUpdate))]
@@ -273,10 +259,12 @@ public class DeathPatches : QSBPatch
 		}
 	}
 
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Awake))]
-	public static void ShipDamageController_Awake(ShipDamageController __instance)
-		=> __instance._exploded = true;
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Explode))]
+	public static bool ShipDamageController_Explode()
+		// prevent ship from exploding
+		// todo remove this when sync ship explosions
+		=> false;
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishShip))]
@@ -287,6 +275,7 @@ public class DeathPatches : QSBPatch
 			return true;
 		}
 
+		// apparently this is to fix a weird bug when flying into the sun. idk this is 2-year-old code.
 		if (!ShipTransformSync.LocalInstance.hasAuthority)
 		{
 			return false;
@@ -296,6 +285,8 @@ public class DeathPatches : QSBPatch
 		{
 			Locator.GetDeathManager().KillPlayer(__instance._deathType);
 		}
+
+		// don't actually delete the ship to allow respawns or something
 
 		return true;
 	}
