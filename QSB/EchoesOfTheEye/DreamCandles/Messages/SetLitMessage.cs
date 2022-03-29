@@ -5,11 +5,11 @@ using QSB.Patches;
 namespace QSB.EchoesOfTheEye.DreamCandles.Messages;
 
 public class SetLitMessage : QSBWorldObjectMessage<QSBDreamCandle,
-	(bool lit, bool playAudio, bool instant)>
+	(bool Lit, bool PlayAudio, bool Instant)>
 {
-	public SetLitMessage(bool lit, bool playAudio = true, bool instant = false) :
+	public SetLitMessage(bool lit, bool playAudio, bool instant) :
 		base((lit, playAudio, instant)) { }
 
 	public override void OnReceiveRemote() =>
-		QSBPatch.RemoteCall(() => WorldObject.AttachedObject.SetLit(Data.lit, Data.playAudio, Data.instant));
+		QSBPatch.RemoteCall(() => WorldObject.AttachedObject.SetLit(Data.Lit, Data.PlayAudio, Data.Instant));
 }

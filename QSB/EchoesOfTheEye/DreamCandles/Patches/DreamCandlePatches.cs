@@ -14,7 +14,7 @@ public class DreamCandlePatches : QSBPatch
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamCandle), nameof(DreamCandle.SetLit))]
 	private static void SetLit(DreamCandle __instance,
-		bool lit, bool playAudio = true, bool instant = false)
+		bool lit, bool playAudio, bool instant)
 	{
 		if (Remote)
 		{
