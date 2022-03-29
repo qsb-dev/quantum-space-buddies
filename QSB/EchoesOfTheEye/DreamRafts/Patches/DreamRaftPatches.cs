@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
+using QSB.EchoesOfTheEye.DreamObjectProjectors.WorldObject;
 using QSB.EchoesOfTheEye.DreamRafts.Messages;
-using QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
@@ -25,7 +25,7 @@ public class DreamRaftPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamRaftProjector>()
+		__instance.GetWorldObject<QSBDreamObjectProjector>()
 			.SendMessage(new RespawnRaftMessage());
 	}
 
