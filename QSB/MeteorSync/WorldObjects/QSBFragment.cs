@@ -21,7 +21,7 @@ public class QSBFragment : WorldObject<FragmentIntegrity>
 	public override void SendInitialState(uint to)
 	{
 		this.SendMessage(new FragmentInitialStateMessage(AttachedObject._origIntegrity, (float)LeashLength) { To = to });
-		this.SendMessage(new FragmentIntegrityMessage(AttachedObject._integrity));
+		this.SendMessage(new FragmentIntegrityMessage(AttachedObject._integrity) { To = to });
 	}
 
 	public void SetIntegrity(float integrity)

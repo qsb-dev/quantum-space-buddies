@@ -13,5 +13,5 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	public Action OnDetectLocalDarkness;
 
 	public override void SendInitialState(uint to) =>
-		this.SendMessage(new SetEnabledMessage(AttachedObject.enabled));
+		this.SendMessage(new SetEnabledMessage(AttachedObject.enabled) { To = to });
 }

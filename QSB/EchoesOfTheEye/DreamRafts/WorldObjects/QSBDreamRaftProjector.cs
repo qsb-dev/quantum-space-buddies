@@ -10,7 +10,7 @@ public class QSBDreamRaftProjector : WorldObject<DreamRaftProjector>
 	{
 		if (AttachedObject._lit)
 		{
-			this.SendMessage(new SpawnRaftMessage());
+			this.SendMessage(new SpawnRaftMessage { To = to });
 		}
 	}
 }

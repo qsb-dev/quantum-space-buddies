@@ -24,7 +24,7 @@ public class QSBElevator : WorldObject<Elevator>
 	}
 
 	public override void SendInitialState(uint to) =>
-		this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd));
+		this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd) { To = to });
 
 	public void RemoteCall(bool isGoingUp)
 	{

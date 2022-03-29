@@ -11,10 +11,10 @@ internal class QSBSatelliteNode : WorldObject<SatelliteNode>
 	{
 		if (!AttachedObject._damaged)
 		{
-			this.SendMessage(new SatelliteNodeRepairedMessage());
+			this.SendMessage(new SatelliteNodeRepairedMessage { To = to });
 		}
 
-		this.SendMessage(new SatelliteNodeRepairTickMessage(AttachedObject._repairFraction));
+		this.SendMessage(new SatelliteNodeRepairTickMessage(AttachedObject._repairFraction) { To = to });
 	}
 
 	public void SetRepaired()
