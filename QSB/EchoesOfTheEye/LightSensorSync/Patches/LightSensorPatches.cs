@@ -19,26 +19,31 @@ internal class LightSensorPatches : QSBPatch
 	[HarmonyPatch(nameof(SingleLightSensor.OnSectorOccupantsUpdated))]
 	private static bool OnSectorOccupantsUpdated(SingleLightSensor __instance)
 	{
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return true;
-		}
-
-		var flag = __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe);
-		if (flag && !__instance.enabled)
+		var enable = !Remote
+			? __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe)
+			: (bool)RemoteData;
+		if (enable && !__instance.enabled)
 		{
 			__instance.enabled = true;
-			__instance.GetWorldObject<QSBLightSensor>().SendMessage(new SetEnabledMessage(true));
+			if (!Remote && QSBWorldSync.AllObjectsReady)
+			{
+				__instance.GetWorldObject<QSBLightSensor>().SendMessage(new SetEnabledMessage(true));
+			}
+
 			__instance._lightDetector.GetShape().enabled = true;
 			if (__instance._preserveStateWhileDisabled)
 			{
 				__instance._fixedUpdateFrameDelayCount = 10;
 			}
 		}
-		else if (!flag && __instance.enabled)
+		else if (!enable && __instance.enabled)
 		{
 			__instance.enabled = false;
-			__instance.GetWorldObject<QSBLightSensor>().SendMessage(new SetEnabledMessage(false));
+			if (!Remote && QSBWorldSync.AllObjectsReady)
+			{
+				__instance.GetWorldObject<QSBLightSensor>().SendMessage(new SetEnabledMessage(false));
+			}
+
 			__instance._lightDetector.GetShape().enabled = false;
 			if (!__instance._preserveStateWhileDisabled)
 			{
