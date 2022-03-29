@@ -30,12 +30,6 @@ internal class ProjectorPatches : QSBPatch
 			return;
 		}
 
-		// todo remove after removing QSBDreamRaftProjector
-		if (__instance is DreamRaftProjector)
-		{
-			return;
-		}
-
 		__instance.GetWorldObject<QSBDreamObjectProjector>()
 			.SendMessage(new ProjectorLitMessage(false));
 	}

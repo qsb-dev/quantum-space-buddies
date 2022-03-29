@@ -1,10 +1,9 @@
 ﻿using HarmonyLib;
+using QSB.EchoesOfTheEye.DreamObjectProjectors.WorldObject;
 using QSB.EchoesOfTheEye.DreamRafts.Messages;
-using QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
-using System.Linq;
 
 namespace QSB.EchoesOfTheEye.DreamRafts.Patches;
 
@@ -13,8 +12,8 @@ public class DreamRaftPatches : QSBPatch
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.SpawnRaft))]
-	private static void SpawnRaft(DreamRaftProjector __instance)
+	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.RespawnRaft))]
+	private static void RespawnRaft(DreamRaftProjector __instance)
 	{
 		if (Remote)
 		{
@@ -26,30 +25,30 @@ public class DreamRaftPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamRaftProjector>()
-			.SendMessage(new SpawnRaftMessage());
+		__instance.GetWorldObject<QSBDreamObjectProjector>()
+			.SendMessage(new RespawnRaftMessage());
 	}
 
+	/// <summary>
+	/// this is only called when:
+	///	- you exit the dream world
+	/// - the raft goes thru the warp volume with you not on it
+	///
+	/// we ignore both of these.
+	/// we DO still suspend the raft so it's not visible.
+	/// </summary>
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.OnCandleLitStateChanged))]
-	private static bool OnCandleLitStateChanged(DreamRaftProjection __instance)
+	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.ExtinguishImmediately))]
+	private static bool ExtinguishImmediately(DreamRaftProjector __instance)
 	{
-		if (!__instance._visible)
+		if (!__instance._lit)
 		{
 			return false;
 		}
 
-		if (__instance._candles.Any(x => x.IsLit()))
-		{
-			return false;
-		}
-
-		__instance.SetVisible(false);
-		if (!Remote && QSBWorldSync.AllObjectsReady)
-		{
-			__instance.GetWorldObject<QSBDreamRaftProjection>()
-				.SendMessage(new ExtinguishMessage());
-		}
+		var projection = __instance._dreamRaftProjection;
+		projection._body.Suspend();
+		projection._waitingToSuspend = false;
 
 		return false;
 	}
