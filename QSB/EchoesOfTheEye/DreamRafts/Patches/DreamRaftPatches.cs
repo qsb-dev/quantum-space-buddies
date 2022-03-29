@@ -53,4 +53,16 @@ public class DreamRaftPatches : QSBPatch
 
 		return false;
 	}
+
+	/// <summary>
+	/// this only happens when
+	/// 1) you leave the dream world
+	/// 2) the raft goes thru a warp volume when ur not riding it
+	///
+	/// we ignore both of these
+	/// </summary>
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.ExtinguishImmediately))]
+	private static bool ExtinguishImmediately(DreamRaftProjector __instance) =>
+		false;
 }
