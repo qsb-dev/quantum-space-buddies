@@ -11,8 +11,8 @@ public class ShipCustomAttach : MonoBehaviour
 
 	private void Awake()
 	{
-		Locator.GetPromptManager().AddScreenPrompt(_attachPrompt, PromptPosition.Center);
-		Locator.GetPromptManager().AddScreenPrompt(_detachPrompt, PromptPosition.Center);
+		Locator.GetPromptManager().AddScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
+		Locator.GetPromptManager().AddScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
 
 		_playerAttachPoint = gameObject.AddComponent<PlayerAttachPoint>();
 		_playerAttachPoint._lockPlayerTurning = false;
@@ -24,8 +24,8 @@ public class ShipCustomAttach : MonoBehaviour
 	{
 		if (Locator.GetPromptManager())
 		{
-			Locator.GetPromptManager().RemoveScreenPrompt(_attachPrompt, PromptPosition.Center);
-			Locator.GetPromptManager().RemoveScreenPrompt(_detachPrompt, PromptPosition.Center);
+			Locator.GetPromptManager().RemoveScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
+			Locator.GetPromptManager().RemoveScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
 		}
 	}
 
