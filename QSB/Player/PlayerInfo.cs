@@ -71,21 +71,10 @@ public partial class PlayerInfo
 
 	public void UpdateObjectsFromStates()
 	{
-		if (OWInput.GetInputMode() == InputMode.None)
-		{
-			// ? why is this here lmao
-			return;
-		}
-
-		if (CameraBody == null)
-		{
-			return;
-		}
-
-		FlashLight?.UpdateState(FlashlightActive);
-		Translator?.ChangeEquipState(TranslatorEquipped);
-		ProbeLauncher?.ChangeEquipState(ProbeLauncherEquipped);
-		Signalscope?.ChangeEquipState(SignalscopeEquipped);
+		FlashLight.UpdateState(FlashlightActive);
+		Translator.ChangeEquipState(TranslatorEquipped);
+		ProbeLauncher.ChangeEquipState(ProbeLauncherEquipped);
+		Signalscope.ChangeEquipState(SignalscopeEquipped);
 		AnimationSync.SetSuitState(SuitedUp);
 	}
 
