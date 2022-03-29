@@ -51,8 +51,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject AirlockPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
-	private const int MaxConnections = 128;
-
 	private GameObject _probePrefab;
 	private bool _everConnected;
 
@@ -182,7 +180,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private void ConfigureNetworkManager()
 	{
 		networkAddress = QSBCore.DefaultServerIP;
-		maxConnections = MaxConnections;
 
 		if (QSBCore.DebugSettings.UseKcpTransport)
 		{
