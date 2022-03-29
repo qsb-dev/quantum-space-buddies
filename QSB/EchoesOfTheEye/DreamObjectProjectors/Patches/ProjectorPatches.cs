@@ -11,24 +11,32 @@ internal class ProjectorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(DreamObjectProjector), nameof(DreamObjectProjector.OnPressInteract))]
-	public static void OnPressInteract(DreamObjectProjector __instance)
-		=> __instance.GetWorldObject<QSBDreamObjectProjector>().SendMessage(new ProjectorStatusMessage(false));
-
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamObjectProjector), nameof(DreamObjectProjector.FixedUpdate))]
-	public static bool FixedUpdate(DreamObjectProjector __instance)
+	[HarmonyPatch(typeof(DreamObjectProjector), nameof(DreamObjectProjector.SetLit))]
+	private static void SetLit(DreamObjectProjector __instance, bool lit)
 	{
-		var flag = __instance._lightSensor.IsIlluminated();
-		if (!__instance._lit && flag && !__instance._wasSensorIlluminated)
+		if (Remote)
 		{
-			__instance.SetLit(true);
-			__instance.GetWorldObject<QSBDreamObjectProjector>().SendMessage(new ProjectorStatusMessage(true));
+			return;
 		}
 
-		__instance._wasSensorIlluminated = flag;
+		if (__instance._lit == lit)
+		{
+			return;
+		}
 
-		return false;
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		// todo remove after removing QSBDreamRaftProjector
+		if (__instance is DreamRaftProjector)
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBDreamObjectProjector>()
+			.SendMessage(new ProjectorLitMessage(false));
 	}
 }

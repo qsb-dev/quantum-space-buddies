@@ -11,5 +11,5 @@ internal class ProjectorManager : WorldObjectManager
 	public override bool DlcOnly => true;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-		=> QSBWorldSync.Init<QSBDreamObjectProjector, DreamObjectProjector>(typeof(DreamRaftProjector));
+		=> QSBWorldSync.Init<QSBDreamObjectProjector, DreamObjectProjector>(typeof(DreamRaftProjector) /*todo remove after removing QSBDreamRaftProjector*/);
 }
