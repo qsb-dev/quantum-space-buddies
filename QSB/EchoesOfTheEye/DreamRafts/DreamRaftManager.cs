@@ -16,6 +16,5 @@ public class DreamRaftManager : WorldObjectManager
 		QSBWorldSync.Init<QSBSealRaft, SealRaftController>();
 
 		QSBWorldSync.Init<QSBDreamRaftProjector, DreamRaftProjector>();
-		QSBWorldSync.Init<QSBDreamRaftProjection, DreamRaftProjection>();
 	}
 }
