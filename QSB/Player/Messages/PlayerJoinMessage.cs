@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using HarmonyLib;
+using Mirror;
 using OWML.Common;
 using QSB.Messaging;
 using QSB.Utility;
@@ -86,7 +87,7 @@ public class PlayerJoinMessage : QSBMessage
 				.ToArray();
 			if (!AddonHashes.SequenceEqual(addonHashes))
 			{
-				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with addon mismatch. (Client:{AddonHashes}, Server:{addonHashes})", MessageType.Error);
+				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with addon mismatch. (Client:{AddonHashes.Join()}, Server:{addonHashes.Join()})", MessageType.Error);
 				new PlayerKickMessage(From, $"Addon mismatch. (Client:{AddonHashes.Length} addons, Server:{addonHashes.Length} addons)").Send();
 				return;
 			}
