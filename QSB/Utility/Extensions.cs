@@ -181,7 +181,7 @@ public static class Extensions
 			.Append(type.Assembly)
 			.SelectMany(x => x.GetTypes())
 			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x))
-			.OrderBy(x => x.AssemblyQualifiedName);
+			.OrderBy(x => x.FullName);
 
 	public static Guid ToGuid(this int value)
 	{
