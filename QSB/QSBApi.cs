@@ -4,5 +4,6 @@ namespace QSB;
 
 public class QSBApi
 {
-	public void RegisterAddon(IModBehaviour addon) => QSBCore.Addons.Add(addon);
+	public void RegisterAddon(IModBehaviour addon) =>
+		QSBCore.Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
 }

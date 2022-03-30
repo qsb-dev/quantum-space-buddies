@@ -165,7 +165,7 @@ public class QSBCore : ModBehaviour
 		}
 	}
 
-	public static readonly List<IModBehaviour> Addons = new();
+	public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
 	public override object GetApi() => new QSBApi();
 }
 

@@ -176,7 +176,7 @@ public static class Extensions
 	}
 
 	public static IEnumerable<Type> GetDerivedTypes(this Type type) =>
-		QSBCore.Addons
+		QSBCore.Addons.Values
 			.Select(x => x.GetType().Assembly)
 			.Append(type.Assembly)
 			.SelectMany(x => x.GetTypes())
