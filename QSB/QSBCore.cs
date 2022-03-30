@@ -8,6 +8,7 @@ using QSB.QuantumSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -163,6 +164,9 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
 	}
+
+	public static readonly List<IModBehaviour> Addons = new();
+	public override object GetApi() => new QSBApi();
 }
 
 /*
