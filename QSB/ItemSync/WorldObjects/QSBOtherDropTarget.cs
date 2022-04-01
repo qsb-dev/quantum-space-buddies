@@ -6,13 +6,13 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects;
 
-public class QSBDropTarget : WorldObject<MonoBehaviour>
+public class QSBOtherDropTarget : WorldObject<MonoBehaviour>, IQSBDropTarget
 {
-	public new IItemDropTarget AttachedObject => (IItemDropTarget)base.AttachedObject;
+	IItemDropTarget IQSBDropTarget.AttachedObject => (IItemDropTarget)AttachedObject;
 
 	public override async UniTask Init(CancellationToken ct)
 	{
-		if (base.AttachedObject is not IItemDropTarget)
+		if (AttachedObject is not IItemDropTarget)
 		{
 			throw new ArgumentException("QSBDropTarget.AttachedObject is not an IItemDropTarget!");
 		}

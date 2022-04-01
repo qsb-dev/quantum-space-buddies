@@ -32,7 +32,7 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
 		else
 		{
 			tuple.rigidBodyId = -1;
-			tuple.dropTargetId = ((MonoBehaviour)customDropTarget).GetWorldObject<QSBDropTarget>().ObjectId;
+			tuple.dropTargetId = ((MonoBehaviour)customDropTarget).GetWorldObject<IQSBDropTarget>().ObjectId;
 		}
 
 		tuple.sectorId = sector.GetWorldObject<QSBSector>().ObjectId;
@@ -46,7 +46,7 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
 	{
 		var customDropTarget = Data.dropTargetId == -1
 			? null
-			: Data.dropTargetId.GetWorldObject<QSBDropTarget>().AttachedObject;
+			: Data.dropTargetId.GetWorldObject<IQSBDropTarget>().AttachedObject;
 
 		var parent = customDropTarget == null
 			? Data.rigidBodyId.GetWorldObject<QSBOWRigidbody>().AttachedObject.transform

@@ -2,6 +2,7 @@
 using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
+using QSB.ItemSync.WorldObjects;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using System.Linq;
@@ -10,8 +11,10 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 
-public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>
+public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQSBDropTarget
 {
+	IItemDropTarget IQSBDropTarget.AttachedObject => AttachedObject;
+
 	public override bool ShouldDisplayDebug() => false;
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.RaftPrefab;
