@@ -282,19 +282,6 @@ public static class QSBWorldSync
 		}
 	}
 
-	public static void Init(IEnumerable<MonoBehaviour> listToInitFrom)
-	{
-		foreach (var item in listToInitFrom)
-		{
-			var obj = new MonoBehaviourWorldObject
-			{
-				AttachedObject = item,
-				ObjectId = WorldObjects.Count
-			};
-			AddAndInit(obj, item);
-		}
-	}
-
 	public static void Init<TWorldObject, TUnityObject>(Func<TUnityObject, OWTriggerVolume> triggerSelector)
 		where TWorldObject : QSBTrigger<TUnityObject>, new()
 		where TUnityObject : MonoBehaviour

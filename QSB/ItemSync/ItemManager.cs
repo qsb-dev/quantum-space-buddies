@@ -32,6 +32,9 @@ internal class ItemManager : WorldObjectManager
 		// Sockets
 		QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
 
-		QSBWorldSync.Init(QSBWorldSync.GetUnityObjects<MonoBehaviour>().WhereOfType<MonoBehaviour, IItemDropTarget>());
+		var listToInitFrom = QSBWorldSync.GetUnityObjects<MonoBehaviour>()
+			.Where(x => x is IItemDropTarget)
+			.SortDeterministic();
+		QSBWorldSync.Init<QSBDropTarget, MonoBehaviour>(listToInitFrom);
 	}
 }

@@ -214,8 +214,5 @@ public static class Extensions
 		}
 	}
 
-	public static IEnumerable<T> WhereOfType<T, U>(this IEnumerable<T> list)
-		=> list.Where(x => x is U);
-
 	#endregion
 }

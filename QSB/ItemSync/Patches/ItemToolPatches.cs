@@ -5,7 +5,6 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.ItemSync.Patches;
@@ -91,10 +90,7 @@ internal class ItemToolPatches : QSBPatch
 
 		Locator.GetToolModeSwapper().UnequipTool();
 
-		var qsbDropItem = QSBWorldSync.GetWorldObjects<MonoBehaviourWorldObject>()
-			.FirstOrDefault(x => (IItemDropTarget)x.AttachedObject == customDropTarget);
-
-		qsbItem.SendMessage(new DropItemMessage(hit.point, hit.normal, parent, sector, qsbDropItem, targetRigidbody));
+		qsbItem.SendMessage(new DropItemMessage(hit.point, hit.normal, parent, sector, customDropTarget, targetRigidbody));
 
 		return false;
 	}

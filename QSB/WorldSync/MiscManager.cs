@@ -12,6 +12,7 @@ internal class MiscManager : WorldObjectManager
 	{
 		await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
 
+		// todo: exclude probe and probably other things
 		QSBWorldSync.Init<QSBOWRigidbody, OWRigidbody>(typeof(PlayerBody), typeof(ShipBody));
 	}
 }

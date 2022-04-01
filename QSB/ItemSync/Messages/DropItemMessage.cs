@@ -1,4 +1,5 @@
-﻿using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.ItemSync.WorldObjects;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
@@ -7,9 +8,10 @@ using UnityEngine;
 
 namespace QSB.ItemSync.Messages;
 
-internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem, (Vector3 localPosition, Vector3 localNormal, int sectorId, int dropTargetId, int rigidBodyId)>
+internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
+	(Vector3 localPosition, Vector3 localNormal, int sectorId, int dropTargetId, int rigidBodyId)>
 {
-	public DropItemMessage(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, MonoBehaviourWorldObject customDropTarget, OWRigidbody targetRigidbody)
+	public DropItemMessage(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget, OWRigidbody targetRigidbody)
 		: base(ProcessInputs(worldPosition, worldNormal, parent, sector, customDropTarget, targetRigidbody)) { }
 
 	private static (Vector3 localPosition, Vector3 localNormal, int sectorId, int dropTargetId, int rigidBodyId) ProcessInputs(
@@ -17,7 +19,7 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem, (Vector3 localP
 		Vector3 worldNormal,
 		Transform parent,
 		Sector sector,
-		MonoBehaviourWorldObject customDropTarget,
+		IItemDropTarget customDropTarget,
 		OWRigidbody targetRigidbody)
 	{
 		(Vector3 localPosition, Vector3 localNormal, int sectorId, int dropTargetId, int rigidBodyId) tuple = new();
@@ -30,7 +32,7 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem, (Vector3 localP
 		else
 		{
 			tuple.rigidBodyId = -1;
-			tuple.dropTargetId = customDropTarget.ObjectId;
+			tuple.dropTargetId = ((MonoBehaviour)customDropTarget).GetWorldObject<QSBDropTarget>().ObjectId;
 		}
 
 		tuple.sectorId = sector.GetWorldObject<QSBSector>().ObjectId;
@@ -44,9 +46,9 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem, (Vector3 localP
 	{
 		var customDropTarget = Data.dropTargetId == -1
 			? null
-			: Data.dropTargetId.GetWorldObject<MonoBehaviourWorldObject>().AttachedObject as IItemDropTarget;
+			: Data.dropTargetId.GetWorldObject<QSBDropTarget>().AttachedObject;
 
-		var parent = Data.dropTargetId == -1
+		var parent = customDropTarget == null
 			? Data.rigidBodyId.GetWorldObject<QSBOWRigidbody>().AttachedObject.transform
 			: customDropTarget.GetItemDropTargetTransform(null);
 
