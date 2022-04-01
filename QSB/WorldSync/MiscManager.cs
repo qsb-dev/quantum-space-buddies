@@ -14,12 +14,12 @@ internal class MiscManager : WorldObjectManager
 	{
 		await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
 
-		var list = QSBWorldSync.GetUnityObjects<OWRigidbody>()
+		var listToInitFrom = QSBWorldSync.GetUnityObjects<OWRigidbody>()
 			.Where(x =>
 				x is not (PlayerBody or ShipBody or ShuttleBody) &&
 				!x.TryGetComponent<SurveyorProbe>(out _)
 			)
 			.SortDeterministic();
-		QSBWorldSync.Init<QSBOWRigidbody, OWRigidbody>(list);
+		QSBWorldSync.Init<QSBOWRigidbody, OWRigidbody>(listToInitFrom);
 	}
 }
