@@ -33,7 +33,7 @@ internal class ItemManager : WorldObjectManager
 		QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
 
 		var listToInitFrom = QSBWorldSync.GetUnityObjects<MonoBehaviour>()
-			.Where(x => x is IItemDropTarget)
+			.Where(x => x is IItemDropTarget and not (RaftDock or RaftController))
 			.SortDeterministic();
 		QSBWorldSync.Init<QSBDropTarget, MonoBehaviour>(listToInitFrom);
 	}
