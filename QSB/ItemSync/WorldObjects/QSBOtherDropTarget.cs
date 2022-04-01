@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects;
 
+/// <summary>
+/// for other drop targets that don't already have world objects
+/// </summary>
 public class QSBOtherDropTarget : WorldObject<MonoBehaviour>, IQSBDropTarget
 {
 	IItemDropTarget IQSBDropTarget.AttachedObject => (IItemDropTarget)AttachedObject;
