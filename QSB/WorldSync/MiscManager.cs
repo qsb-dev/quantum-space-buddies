@@ -1,4 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.Utility;
+using System.Linq;
 using System.Threading;
 
 namespace QSB.WorldSync;
@@ -12,7 +14,12 @@ internal class MiscManager : WorldObjectManager
 	{
 		await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
 
-		// todo: exclude probe and probably other things
-		QSBWorldSync.Init<QSBOWRigidbody, OWRigidbody>(typeof(PlayerBody), typeof(ShipBody));
+		var list = QSBWorldSync.GetUnityObjects<OWRigidbody>()
+			.Where(x =>
+				x is not (PlayerBody or ShipBody or ShuttleBody) &&
+				!x.TryGetComponent<SurveyorProbe>(out _)
+			)
+			.SortDeterministic();
+		QSBWorldSync.Init<QSBOWRigidbody, OWRigidbody>(list);
 	}
 }
