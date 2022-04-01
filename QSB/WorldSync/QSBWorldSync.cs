@@ -159,7 +159,7 @@ public static class QSBWorldSync
 	public static readonly List<FactReveal> ShipLogFacts = new();
 
 	private static readonly List<IWorldObject> WorldObjects = new();
-	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
+	private static readonly Dictionary<MonoBehaviour, List<IWorldObject>> UnityObjectsToWorldObjects = new();
 
 	private static void GameInit()
 	{
@@ -223,13 +223,19 @@ public static class QSBWorldSync
 			return default;
 		}
 
-		if (!UnityObjectsToWorldObjects.TryGetValue(unityObject, out var worldObject))
+		if (!UnityObjectsToWorldObjects.TryGetValue(unityObject, out var worldObjects))
+		{
+			DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain any WorldObjects for given TUnityObject! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
+			return default;
+		}
+
+		if (!worldObjects.Any(x => x is TWorldObject))
 		{
 			DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 			return default;
 		}
 
-		return (TWorldObject)worldObject;
+		return (TWorldObject)worldObjects.First(x => x is TWorldObject);
 	}
 
 	/// <summary>
@@ -276,6 +282,19 @@ public static class QSBWorldSync
 		}
 	}
 
+	public static void Init(IEnumerable<MonoBehaviour> listToInitFrom)
+	{
+		foreach (var item in listToInitFrom)
+		{
+			var obj = new MonoBehaviourWorldObject
+			{
+				AttachedObject = item,
+				ObjectId = WorldObjects.Count
+			};
+			AddAndInit(obj, item);
+		}
+	}
+
 	public static void Init<TWorldObject, TUnityObject>(Func<TUnityObject, OWTriggerVolume> triggerSelector)
 		where TWorldObject : QSBTrigger<TUnityObject>, new()
 		where TUnityObject : MonoBehaviour
@@ -304,7 +323,14 @@ public static class QSBWorldSync
 		where TUnityObject : MonoBehaviour
 	{
 		WorldObjects.Add(worldObject);
-		UnityObjectsToWorldObjects.Add(unityObject, worldObject);
+		if (!UnityObjectsToWorldObjects.ContainsKey(unityObject))
+		{
+			UnityObjectsToWorldObjects.Add(unityObject, new() { worldObject });
+		}
+		else
+		{
+			UnityObjectsToWorldObjects[unityObject].Add(worldObject);
+		}
 
 		var task = UniTask.Create(async () =>
 		{

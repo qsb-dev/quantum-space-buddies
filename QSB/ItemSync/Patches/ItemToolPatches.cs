@@ -7,6 +7,7 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.ItemSync.Patches;
@@ -57,22 +58,22 @@ internal class ItemToolPatches : QSBPatch
 	public static bool DropItem(ItemTool __instance, RaycastHit hit, OWRigidbody targetRigidbody, IItemDropTarget customDropTarget)
 	{
 		Locator.GetPlayerAudioController().PlayDropItem(__instance._heldItem.GetItemType());
-		var hitGameObject = hit.collider.gameObject;
-		var gameObject2 = hitGameObject;
-		var sectorGroup = gameObject2.GetComponent<ISectorGroup>();
+		GameObject gameObject = hit.collider.gameObject;
+		ISectorGroup component = gameObject.GetComponent<ISectorGroup>();
 		Sector sector = null;
-		while (sectorGroup == null && gameObject2.transform.parent != null)
+
+		while (component == null && gameObject.transform.parent != null)
 		{
-			gameObject2 = gameObject2.transform.parent.gameObject;
-			sectorGroup = gameObject2.GetComponent<ISectorGroup>();
+			gameObject = gameObject.transform.parent.gameObject;
+			component = gameObject.GetComponent<ISectorGroup>();
 		}
 
-		if (sectorGroup != null)
+		if (component != null)
 		{
-			sector = sectorGroup.GetSector();
-			if (sector == null && sectorGroup is SectorCullGroup sectorCullGroup)
+			sector = component.GetSector();
+			if (sector == null && component is SectorCullGroup)
 			{
-				var controllingProxy = sectorCullGroup.GetControllingProxy();
+				SectorProxy controllingProxy = (component as SectorCullGroup).GetControllingProxy();
 				if (controllingProxy != null)
 				{
 					sector = controllingProxy.GetSector();
@@ -80,23 +81,24 @@ internal class ItemToolPatches : QSBPatch
 			}
 		}
 
-		var parent = customDropTarget == null
+		Transform parent = (customDropTarget == null)
 			? targetRigidbody.transform
 			: customDropTarget.GetItemDropTargetTransform(hit.collider.gameObject);
 		var qsbItem = __instance._heldItem.GetWorldObject<IQSBItem>();
 		__instance._heldItem.DropItem(hit.point, hit.normal, parent, sector, customDropTarget);
+		if (customDropTarget != null)
+		{
+			customDropTarget.AddDroppedItem(hit.collider.gameObject, __instance._heldItem);
+		}
 		__instance._heldItem = null;
 		QSBPlayerManager.LocalPlayer.HeldItem = null;
+
 		Locator.GetToolModeSwapper().UnequipTool();
-		var parentSector = parent.GetComponentInChildren<Sector>();
-		if (parentSector != null)
-		{
-			qsbItem.SendMessage(new DropItemMessage(hit.point, hit.normal, parentSector));
-		}
-		else
-		{
-			DebugLog.ToConsole($"Error - No sector found for rigidbody {targetRigidbody.name}!.", MessageType.Error);
-		}
+
+		var qsbDropItem = QSBWorldSync.GetWorldObjects<MonoBehaviourWorldObject>()
+			.FirstOrDefault(x => (IItemDropTarget)x.AttachedObject == customDropTarget);
+
+		qsbItem.SendMessage(new DropItemMessage(hit.point, hit.normal, parent, sector, qsbDropItem, targetRigidbody));
 
 		return false;
 	}

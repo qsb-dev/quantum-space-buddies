@@ -80,8 +80,8 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 	public void PickUpItem(Transform holdTransform) =>
 		QSBPatch.RemoteCall(() => AttachedObject.PickUpItem(holdTransform));
 
-	public void DropItem(Vector3 position, Vector3 normal, Sector sector) =>
-		QSBPatch.RemoteCall(() => AttachedObject.DropItem(position, normal, sector.transform, sector, null));
+	public void DropItem(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget) =>
+		QSBPatch.RemoteCall(() => AttachedObject.DropItem(worldPosition, worldNormal, parent, sector, customDropTarget));
 
 	public void OnCompleteUnsocket() => AttachedObject.OnCompleteUnsocket();
 }
