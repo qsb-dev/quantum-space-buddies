@@ -231,7 +231,7 @@ public static class QSBWorldSync
 
 		if (!worldObjects.Any(x => x is TWorldObject))
 		{
-			DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
+			DebugLog.ToConsole($"Error - UnityObjectsToWorldObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 			return default;
 		}
 

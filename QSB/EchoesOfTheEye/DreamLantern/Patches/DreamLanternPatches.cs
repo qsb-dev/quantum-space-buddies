@@ -5,11 +5,6 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.Patches;
@@ -42,9 +37,9 @@ internal class DreamLanternPatches : QSBPatch
 		var isHoldingItem = Locator.GetToolModeSwapper().IsInToolMode(ToolMode.Item);
 
 		__instance._wasFocusing = __instance._focusing;
-		__instance._focusing = OWInput.IsPressed(InputLibrary.toolActionPrimary, InputMode.Character, 0f) && Time.time > __instance._forceUnfocusTime + 1f && isHoldingItem;
+		__instance._focusing = OWInput.IsPressed(InputLibrary.toolActionPrimary, InputMode.Character) && Time.time > __instance._forceUnfocusTime + 1f && isHoldingItem;
 
-		var concealActionPressed = OWInput.IsPressed(InputLibrary.toolActionSecondary, InputMode.Character, 0f) && isHoldingItem;
+		var concealActionPressed = OWInput.IsPressed(InputLibrary.toolActionSecondary, InputMode.Character) && isHoldingItem;
 		if (concealActionPressed && !__instance._lanternController.IsConcealed())
 		{
 			Locator.GetPlayerAudioController().OnArtifactConceal();
@@ -55,7 +50,7 @@ internal class DreamLanternPatches : QSBPatch
 		{
 			Locator.GetPlayerAudioController().OnArtifactUnconceal();
 			__instance._lanternController.SetConcealed(false);
-			new DreamLanternStateMessage(DreamLanternActionType.CONCEAL, false).Send();
+			new DreamLanternStateMessage(DreamLanternActionType.CONCEAL).Send();
 		}
 
 		if (__instance._focusing != __instance._wasFocusing)
@@ -98,6 +93,16 @@ internal class DreamLanternPatches : QSBPatch
 	public static void SetLit(DreamLanternItem __instance, bool lit)
 	{
 		if (Remote)
+		{
+			return;
+		}
+
+		if (__instance._lanternController.IsLit() == lit)
+		{
+			return;
+		}
+
+		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
