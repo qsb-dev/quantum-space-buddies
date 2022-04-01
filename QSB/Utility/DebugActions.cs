@@ -1,8 +1,10 @@
-﻿using QSB.Messaging;
+﻿using QSB.ItemSync.WorldObjects.Items;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.RespawnSync;
 using QSB.ShipSync;
 using QSB.Utility.Messages;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -45,7 +47,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		/*
 		 * 1 - Warp to first non local player
-		 * 2 - Set time flowing
+		 * 2 - Enter dream world
 		 * 3 - Destroy probe
 		 * 4 - Damage ship electricals
 		 * 5 - Trigger supernova
@@ -66,7 +68,32 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad2].wasPressedThisFrame)
 		{
-			TimeLoop._isTimeFlowing = true;
+			if (!QSBPlayerManager.LocalPlayer.InDreamWorld)
+			{
+				var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
+
+				const DreamArrivalPoint.Location location = DreamArrivalPoint.Location.Zone3;
+				var arrivalPoint = Locator.GetDreamArrivalPoint(location);
+				var dreamCampfire = Locator.GetDreamCampfire(location);
+				if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
+				{
+					var dreamLanternItem = QSBWorldSync.GetWorldObjects<QSBDreamLanternItem>().First(x =>
+						x.AttachedObject._lanternType == DreamLanternType.Functioning &&
+						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x)
+					).AttachedObject;
+					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
+				}
+
+				Locator.GetDreamWorldController().EnterDreamWorld(dreamCampfire, arrivalPoint, relativeLocation);
+			}
+			else
+			{
+				if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
+				{
+					var dreamLanternItem = QSBPlayerManager.LocalPlayer.AssignedSimulationLantern.AttachedObject;
+					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
+				}
+			}
 		}
 
 		if (Keyboard.current[Key.Numpad3].wasPressedThisFrame)

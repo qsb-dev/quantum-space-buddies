@@ -12,8 +12,6 @@ internal class DreamLanternStateMessage : QSBMessage<(DreamLanternActionType Typ
 
 	public override void OnReceiveRemote()
 	{
-		DebugLog.DebugWrite($"{From} Action:{Data.Type} BoolValue:{Data.BoolValue} FloatValue:{Data.FloatValue}");
-
 		var heldItem = QSBPlayerManager.GetPlayer(From).HeldItem;
 
 		if (heldItem is not QSBDreamLanternItem lantern)

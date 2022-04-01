@@ -10,6 +10,11 @@ internal class PlayerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	/// <summary>
+	/// this usually does a bunch of extra stuff before crushing the player.
+	/// it's too much effort to revert all that when respawning.
+	/// so we just don't do the extra stuff.
+	/// </summary>
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(PlayerCrushedController), nameof(PlayerCrushedController.CrushPlayer))]
 	public static bool PlayerCrushedController_CrushPlayer()

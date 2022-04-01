@@ -93,7 +93,7 @@ Long answer : Pay me enough money, and maybe I'll consider it.
 
 Boring boring physics stuff. The velocity of the ship is synced, as well as the angular velocity. However, this velocity is not also applied to the player. (Or it is sometimes. I don't 100% know.) This means the ship will accelerate, leaving the player "behind". Which makes you fly into the walls alot.
 
-**Update**: you can attach/detach yourself to/from the ship using the prompt in the upper right corner of the screen.
+**Update**: you can attach/detach yourself to/from the ship using the prompt in the center of the screen.
 
 ### What's the difference between QSB and Outer Wilds Online?
 
@@ -120,9 +120,9 @@ Let me know if you find an answer.
 - (optional if copying built dlls manually) Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
 - (optional if no unity project) Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
 - (optional if no unity project) Edit the entry `<UnityAssetsDir>` to point to the Assets folder of the QSB unity project
-- Open the project solution file `QSB.sln` in Visual Studio
+- Open the project solution file `QSB.sln` in Visual Studio 2022
 
-It is recommended to use the Epic version of Outer Wilds, as you cannot run multiple versions of the Steam version.
+If developing with the Steam version of Outer Wilds you can't run multiple instances of the game by default. To do so, create a file called `steam_appid.txt` in your Outer Wilds directory and write `753640` inside it, then run the exe directly.
 
 A powerful PC is needed for development, due to the high amount of RAM and CPU needed to run 2 or 3 instances of modded Outer Wilds.
 

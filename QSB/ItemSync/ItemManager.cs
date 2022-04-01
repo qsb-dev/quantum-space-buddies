@@ -1,10 +1,13 @@
 ﻿using Cysharp.Threading.Tasks;
 using OWML.Common;
+using QSB.ItemSync.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 using System.Threading;
+using UnityEngine;
 
 namespace QSB.ItemSync;
 
@@ -28,5 +31,10 @@ internal class ItemManager : WorldObjectManager
 
 		// Sockets
 		QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
+
+		var listToInitFrom = QSBWorldSync.GetUnityObjects<MonoBehaviour>()
+			.Where(x => x is IItemDropTarget and not (RaftDock or RaftController))
+			.SortDeterministic();
+		QSBWorldSync.Init<QSBDropTarget, MonoBehaviour>(listToInitFrom);
 	}
 }

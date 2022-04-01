@@ -1,3 +1,3 @@
 ﻿namespace QSB.ItemSync.WorldObjects.Items;
 
-internal class QSBDreamLanternItem : QSBItem<DreamLanternItem> { }
+public class QSBDreamLanternItem : QSBItem<DreamLanternItem> { }

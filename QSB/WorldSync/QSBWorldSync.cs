@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using MonoMod.Utils;
 using OWML.Common;
-using QSB.ConversationSync.Patches;
 using QSB.LogSync;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
@@ -174,23 +173,11 @@ public static class QSBWorldSync
 			return;
 		}
 
-		DebugLog.DebugWrite($"DIALOGUE CONDITIONS :");
 		DialogueConditions.Clear();
 		DialogueConditions.AddRange(DialogueConditionManager.SharedInstance._dictConditions);
-		foreach (var item in DialogueConditions)
-		{
-			DebugLog.DebugWrite($"- {item.Key}, {item.Value}");
-		}
 
-		DebugLog.DebugWrite($"PERSISTENT CONDITIONS :");
-		var dictConditions = PlayerData._currentGameSave.dictConditions;
-		var syncedConditions = dictConditions.Where(x => ConversationPatches.PersistentConditionsToSync.Contains(x.Key));
 		PersistentConditions.Clear();
-		PersistentConditions.AddRange(syncedConditions.ToDictionary(x => x.Key, x => x.Value));
-		foreach (var item in PersistentConditions)
-		{
-			DebugLog.DebugWrite($"- {item.Key}, {item.Value}");
-		}
+		PersistentConditions.AddRange(PlayerData._currentGameSave.dictConditions);
 	}
 
 	private static void GameReset()
@@ -238,7 +225,7 @@ public static class QSBWorldSync
 
 		if (!UnityObjectsToWorldObjects.TryGetValue(unityObject, out var worldObject))
 		{
-			DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
+			DebugLog.ToConsole($"Error - UnityObjectsToWorldObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 			return default;
 		}
 
@@ -317,7 +304,11 @@ public static class QSBWorldSync
 		where TUnityObject : MonoBehaviour
 	{
 		WorldObjects.Add(worldObject);
-		UnityObjectsToWorldObjects.Add(unityObject, worldObject);
+		if (!UnityObjectsToWorldObjects.TryAdd(unityObject, worldObject))
+		{
+			DebugLog.ToConsole($"Error - UnityObjectsToWorldObjects already contains \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
+			return;
+		}
 
 		var task = UniTask.Create(async () =>
 		{

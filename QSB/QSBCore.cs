@@ -8,6 +8,7 @@ using QSB.QuantumSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -45,12 +46,9 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle TextAssetsBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
-	public static string QSBVersion =>
-		// todo: show this in kick message
-		Helper.Manifest.Version;
+	public static string QSBVersion => Helper.Manifest.Version;
 	public static string GameVersion =>
 		// ignore the last patch numbers like the title screen does
-		// todo: show this in kick message
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static IMenuAPI MenuApi { get; private set; }
@@ -166,6 +164,9 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
 	}
+
+	public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
+	public override object GetApi() => new QSBApi();
 }
 
 /*

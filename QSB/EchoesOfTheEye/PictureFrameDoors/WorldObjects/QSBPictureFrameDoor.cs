@@ -9,7 +9,7 @@ public abstract class QSBPictureFrameDoor<T> : WorldObject<T>, IQSBPictureFrameD
 	where T : PictureFrameDoorInterface
 {
 	public override void SendInitialState(uint to)
-		=> ((IQSBPictureFrameDoor)this).SendMessage(new PictureFrameDoorMessage(AttachedObject._door.IsOpen()));
+		=> ((IQSBPictureFrameDoor)this).SendMessage(new PictureFrameDoorMessage(AttachedObject._door.IsOpen()) { To = to });
 
 	public abstract void SetOpenState(bool open);
 }

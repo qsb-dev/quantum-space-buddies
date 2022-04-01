@@ -8,8 +8,7 @@ namespace QSB.SectorSync;
 
 public class FakeSector : Sector
 {
-	public static void Create<T>(GameObject go, Sector parent, Action<T> initShape)
-		where T : Shape
+	public static void Create(GameObject go, Sector parent, Action<FakeSector> setupSector)
 	{
 		var name = $"FakeSector_{go.name}";
 		if (go.transform.Find(name))
@@ -25,49 +24,10 @@ public class FakeSector : Sector
 		var fakeSector = go2.AddComponent<FakeSector>();
 		fakeSector._name = (Name)(-1);
 		fakeSector._subsectors = new List<Sector>();
+		fakeSector._idString = name;
 		fakeSector.SetParentSector(parent);
-
-		go2.AddComponent<OWTriggerVolume>();
-		initShape(go2.AddComponent<T>());
-		go2.AddComponent<DebugRenderer>().FS = fakeSector;
+		setupSector(fakeSector);
 
 		go2.SetActive(true);
-	}
-
-	private class DebugRenderer : MonoBehaviour
-	{
-		[NonSerialized]
-		public FakeSector FS;
-
-		private void OnRenderObject()
-		{
-			if (!QSBCore.DebugSettings.DebugMode)
-			{
-				return;
-			}
-
-			var shape = FS._owTriggerVolume._shape;
-			var center = shape.GetWorldSpaceCenter();
-			switch (shape)
-			{
-				case SphereShape sphereShape:
-					Popcron.Gizmos.Sphere(center, sphereShape.radius, Color.yellow);
-					break;
-				case BoxShape boxShape:
-					Popcron.Gizmos.Cube(center, boxShape.transform.rotation, boxShape.size, Color.yellow);
-					break;
-			}
-		}
-
-		private void OnGUI()
-		{
-			if (!QSBCore.DebugSettings.DebugMode ||
-				Event.current.type != EventType.Repaint)
-			{
-				return;
-			}
-
-			DebugGUI.DrawLabel(FS.transform, FS.name);
-		}
 	}
 }

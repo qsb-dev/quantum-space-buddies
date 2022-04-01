@@ -13,7 +13,7 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	public Action OnDetectLocalDarkness;
 
 	public override void SendInitialState(uint to) =>
-		this.SendMessage(new SetEnabledMessage(AttachedObject.enabled));
+		this.SendMessage(new SetEnabledMessage(AttachedObject.enabled) { To = to });
 
 	public void SetEnabled(bool enabled)
 	{
@@ -28,6 +28,13 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 		}
 		else if (!enabled && AttachedObject.enabled)
 		{
+			if (AttachedObject._sector &&
+				AttachedObject._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe))
+			{
+				// local player is in sector, do not disable
+				return;
+			}
+
 			AttachedObject.enabled = false;
 			AttachedObject._lightDetector.GetShape().enabled = false;
 			if (!AttachedObject._preserveStateWhileDisabled)

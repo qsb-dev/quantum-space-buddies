@@ -11,14 +11,14 @@ internal class QSBShipComponent : WorldObject<ShipComponent>
 	{
 		if (AttachedObject._damaged)
 		{
-			this.SendMessage(new ComponentDamagedMessage());
+			this.SendMessage(new ComponentDamagedMessage { To = to });
 		}
 		else
 		{
-			this.SendMessage(new ComponentRepairedMessage());
+			this.SendMessage(new ComponentRepairedMessage { To = to });
 		}
 
-		this.SendMessage(new ComponentRepairTickMessage(AttachedObject._repairFraction));
+		this.SendMessage(new ComponentRepairTickMessage(AttachedObject._repairFraction) { To = to });
 	}
 
 	public void SetDamaged()

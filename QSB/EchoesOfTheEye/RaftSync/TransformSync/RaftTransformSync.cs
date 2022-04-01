@@ -1,9 +1,9 @@
 ﻿using QSB.AuthoritySync;
-using QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
+using System;
 
 namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
 
@@ -11,10 +11,17 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 {
 	protected override bool UseInterpolation => false;
 
-	private QSBRaft _qsbRaft;
-	public void SetWorldObject(IWorldObject worldObject) => _qsbRaft = (QSBRaft)worldObject;
+	private IWorldObject _worldObject;
+	public void SetWorldObject(IWorldObject worldObject) => _worldObject = worldObject;
 
-	protected override OWRigidbody InitAttachedRigidbody() => _qsbRaft.AttachedObject._raftBody;
+	protected override OWRigidbody InitAttachedRigidbody() =>
+		_worldObject.AttachedObject switch
+		{
+			RaftController x => x._raftBody,
+			DreamRaftController x => x._raftBody,
+			SealRaftController x => x._raftBody,
+			_ => throw new ArgumentOutOfRangeException(nameof(_worldObject.AttachedObject), _worldObject.AttachedObject, null)
+		};
 
 	public override void OnStartClient()
 	{

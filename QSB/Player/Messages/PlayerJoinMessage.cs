@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using HarmonyLib;
+using Mirror;
 using OWML.Common;
 using QSB.Messaging;
 using QSB.Utility;
@@ -13,12 +14,18 @@ public class PlayerJoinMessage : QSBMessage
 	private string GameVersion;
 	private bool DlcInstalled;
 
+	private int[] AddonHashes;
+
 	public PlayerJoinMessage(string name)
 	{
 		PlayerName = name;
 		QSBVersion = QSBCore.QSBVersion;
 		GameVersion = QSBCore.GameVersion;
 		DlcInstalled = QSBCore.DLCInstalled;
+
+		AddonHashes = QSBCore.Addons.Keys
+			.Select(x => x.GetStableHashCode())
+			.ToArray();
 	}
 
 	public override void Serialize(NetworkWriter writer)
@@ -28,6 +35,8 @@ public class PlayerJoinMessage : QSBMessage
 		writer.Write(QSBVersion);
 		writer.Write(GameVersion);
 		writer.Write(DlcInstalled);
+
+		writer.Write(AddonHashes);
 	}
 
 	public override void Deserialize(NetworkReader reader)
@@ -37,6 +46,8 @@ public class PlayerJoinMessage : QSBMessage
 		QSBVersion = reader.ReadString();
 		GameVersion = reader.ReadString();
 		DlcInstalled = reader.Read<bool>();
+
+		AddonHashes = reader.Read<int[]>();
 	}
 
 	public override void OnReceiveRemote()
@@ -68,6 +79,16 @@ public class PlayerJoinMessage : QSBMessage
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting too late into eye scene.", MessageType.Error);
 				new PlayerKickMessage(From, "Game has progressed too far.").Send();
+				return;
+			}
+
+			var addonHashes = QSBCore.Addons.Keys
+				.Select(x => x.GetStableHashCode())
+				.ToArray();
+			if (!AddonHashes.SequenceEqual(addonHashes))
+			{
+				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with addon mismatch. (Client:{AddonHashes.Join()}, Server:{addonHashes.Join()})", MessageType.Error);
+				new PlayerKickMessage(From, $"Addon mismatch. (Client:{AddonHashes.Length} addons, Server:{addonHashes.Length} addons)").Send();
 				return;
 			}
 		}
