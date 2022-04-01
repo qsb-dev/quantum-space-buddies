@@ -17,12 +17,6 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 
 	public void SetEnabled(bool enabled)
 	{
-		if (AttachedObject._sector && AttachedObject._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe))
-		{
-			// local player is in sector, do not disable lights
-			return;
-		}
-
 		if (enabled && !AttachedObject.enabled)
 		{
 			AttachedObject.enabled = true;
@@ -34,6 +28,13 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 		}
 		else if (!enabled && AttachedObject.enabled)
 		{
+			if (AttachedObject._sector &&
+				AttachedObject._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe))
+			{
+				// local player is in sector, do not disable
+				return;
+			}
+
 			AttachedObject.enabled = false;
 			AttachedObject._lightDetector.GetShape().enabled = false;
 			if (!AttachedObject._preserveStateWhileDisabled)
