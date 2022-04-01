@@ -1,10 +1,8 @@
-﻿using QSB.ItemSync.WorldObjects;
-using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
-using QSB.WorldSync.WorldObjects;
 using UnityEngine;
 
 namespace QSB.ItemSync.Messages;
@@ -44,18 +42,18 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem, (Vector3 localP
 
 	public override void OnReceiveRemote()
 	{
-		var customDropTarget = (Data.dropTargetId == -1)
+		var customDropTarget = Data.dropTargetId == -1
 			? null
-			: QSBWorldSync.GetWorldObject<MonoBehaviourWorldObject>(Data.dropTargetId).AttachedObject as IItemDropTarget;
+			: Data.dropTargetId.GetWorldObject<MonoBehaviourWorldObject>().AttachedObject as IItemDropTarget;
 
-		var parent = (Data.dropTargetId == -1)
-			? QSBWorldSync.GetWorldObject<QSBOWRigidbody>(Data.rigidBodyId).AttachedObject.transform
+		var parent = Data.dropTargetId == -1
+			? Data.rigidBodyId.GetWorldObject<QSBOWRigidbody>().AttachedObject.transform
 			: customDropTarget.GetItemDropTargetTransform(null);
 
 		var worldPos = parent.TransformPoint(Data.localPosition);
 		var worldNormal = parent.TransformDirection(Data.localNormal);
 
-		var sector = QSBWorldSync.GetWorldObject<QSBSector>(Data.sectorId).AttachedObject;
+		var sector = Data.sectorId.GetWorldObject<QSBSector>().AttachedObject;
 
 		WorldObject.DropItem(worldPos, worldNormal, parent, sector, customDropTarget);
 

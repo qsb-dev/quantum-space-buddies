@@ -1,11 +1,9 @@
 ﻿using HarmonyLib;
-using OWML.Common;
 using QSB.ItemSync.Messages;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
@@ -58,8 +56,8 @@ internal class ItemToolPatches : QSBPatch
 	public static bool DropItem(ItemTool __instance, RaycastHit hit, OWRigidbody targetRigidbody, IItemDropTarget customDropTarget)
 	{
 		Locator.GetPlayerAudioController().PlayDropItem(__instance._heldItem.GetItemType());
-		GameObject gameObject = hit.collider.gameObject;
-		ISectorGroup component = gameObject.GetComponent<ISectorGroup>();
+		var gameObject = hit.collider.gameObject;
+		var component = gameObject.GetComponent<ISectorGroup>();
 		Sector sector = null;
 
 		while (component == null && gameObject.transform.parent != null)
@@ -71,9 +69,9 @@ internal class ItemToolPatches : QSBPatch
 		if (component != null)
 		{
 			sector = component.GetSector();
-			if (sector == null && component is SectorCullGroup)
+			if (sector == null && component is SectorCullGroup sectorCullGroup)
 			{
-				SectorProxy controllingProxy = (component as SectorCullGroup).GetControllingProxy();
+				var controllingProxy = sectorCullGroup.GetControllingProxy();
 				if (controllingProxy != null)
 				{
 					sector = controllingProxy.GetSector();
@@ -81,15 +79,13 @@ internal class ItemToolPatches : QSBPatch
 			}
 		}
 
-		Transform parent = (customDropTarget == null)
+		var parent = customDropTarget == null
 			? targetRigidbody.transform
 			: customDropTarget.GetItemDropTargetTransform(hit.collider.gameObject);
 		var qsbItem = __instance._heldItem.GetWorldObject<IQSBItem>();
 		__instance._heldItem.DropItem(hit.point, hit.normal, parent, sector, customDropTarget);
-		if (customDropTarget != null)
-		{
-			customDropTarget.AddDroppedItem(hit.collider.gameObject, __instance._heldItem);
-		}
+		customDropTarget?.AddDroppedItem(hit.collider.gameObject, __instance._heldItem);
+
 		__instance._heldItem = null;
 		QSBPlayerManager.LocalPlayer.HeldItem = null;
 

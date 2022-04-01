@@ -1,4 +1,4 @@
-﻿namespace QSB.WorldSync.WorldObjects;
+﻿namespace QSB.WorldSync;
 
 internal class QSBOWRigidbody : WorldObject<OWRigidbody>
 {
