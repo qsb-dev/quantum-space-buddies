@@ -10,8 +10,8 @@ public class SetEnabledMessage : QSBWorldObjectMessage<QSBAlarmTotem, bool>
 
 	public override void OnReceiveRemote()
 	{
-		if (!Data && )
+		if ()
 
-		QSBPatch.RemoteCall(() => WorldObject.AttachedObject.SetFaceOpen(Data));
+		QSBPatch.RemoteCall(() => WorldObject.AttachedObject.set(Data));
 	}
 }
