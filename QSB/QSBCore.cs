@@ -87,7 +87,9 @@ public class QSBCore : ModBehaviour
 				);
 		}
 
-		InitializeAssemblies();
+		RegisterAddons();
+
+		InitAssemblies();
 
 		MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
@@ -131,18 +133,40 @@ public class QSBCore : ModBehaviour
 		}
 	}
 
-	private static void InitializeAssemblies()
+	public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
+
+	private static void RegisterAddons()
 	{
-		DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
-		foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
+		var addons = Helper.Interaction.GetDependants(Helper.Manifest.UniqueName);
+		foreach (var addon in addons)
 		{
-			var assembly = Assembly.LoadFile(path);
+			Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
+		}
+	}
+
+	private static void InitAssemblies()
+	{
+		static void Init(Assembly assembly)
+		{
 			DebugLog.DebugWrite(assembly.ToString());
 			assembly
 				.GetTypes()
 				.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
 				.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
 				.ForEach(x => x.Invoke(null, null));
+		}
+
+		DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
+		foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
+		{
+			var assembly = Assembly.LoadFile(path);
+			Init(assembly);
+		}
+
+		foreach (var addon in Addons.Values)
+		{
+			var assembly = addon.GetType().Assembly;
+			Init(assembly);
 		}
 
 		DebugLog.DebugWrite("Assemblies initialized", MessageType.Success);
@@ -164,9 +188,6 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
 	}
-
-	public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
-	public override object GetApi() => new QSBApi();
 }
 
 /*
