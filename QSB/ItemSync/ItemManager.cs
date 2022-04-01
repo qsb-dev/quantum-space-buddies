@@ -5,6 +5,7 @@ using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Utility;
 using QSB.WorldSync;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -32,6 +33,7 @@ internal class ItemManager : WorldObjectManager
 		// Sockets
 		QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
 
+		// drop targets
 		var listToInitFrom = QSBWorldSync.GetUnityObjects<MonoBehaviour>()
 			.Where(x => x is IItemDropTarget and not (RaftDock or RaftController))
 			.SortDeterministic();
