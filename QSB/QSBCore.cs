@@ -8,6 +8,7 @@ using QSB.QuantumSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -83,7 +84,9 @@ namespace QSB
 					});
 			}
 
-			InitializeAssemblies();
+			RegisterAddons();
+
+			InitAssemblies();
 
 			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
@@ -121,23 +124,44 @@ namespace QSB
 			}
 		}
 
-		private static void InitializeAssemblies()
-		{
-			DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
-			foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
-			{
-				var assembly = Assembly.LoadFile(path);
-				if (Path.GetFileNameWithoutExtension(path) == "ProxyScripts")
-				{
-					continue;
-				}
+		public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
 
+		private static void RegisterAddons()
+		{
+			var addons = Helper.Interaction.GetDependants(Helper.Manifest.UniqueName);
+			foreach (var addon in addons)
+			{
+				Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
+			}
+		}
+
+		private static void InitAssemblies()
+		{
+			static void Init(Assembly assembly)
+			{
 				DebugLog.DebugWrite(assembly.ToString());
 				assembly
 					.GetTypes()
 					.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
 					.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
 					.ForEach(x => x.Invoke(null, null));
+			}
+
+			DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
+			foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
+			{
+				if (Path.GetFileNameWithoutExtension(path) == "ProxyScripts")
+				{
+					continue;
+				}
+				var assembly = Assembly.LoadFile(path);
+				Init(assembly);
+			}
+
+			foreach (var addon in Addons.Values)
+			{
+				var assembly = addon.GetType().Assembly;
+				Init(assembly);
 			}
 
 			DebugLog.DebugWrite("Assemblies initialized", MessageType.Success);

@@ -177,8 +177,13 @@ namespace QSB.Utility
 			multiDelegate.GetInvocationList().ForEach(dl => dl.DynamicInvoke(args));
 		}
 
-		public static IEnumerable<Type> GetDerivedTypes(this Type type) => type.Assembly.GetTypes()
-			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x));
+		public static IEnumerable<Type> GetDerivedTypes(this Type type) =>
+			QSBCore.Addons
+				.Select(x => x.GetType().Assembly)
+				.Append(type.Assembly)
+				.SelectMany(x => x.GetTypes())
+				.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x))
+				.OrderBy(x => x.AssemblyQualifiedName);
 
 		public static Guid ToGuid(this int value)
 		{
