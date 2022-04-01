@@ -159,7 +159,7 @@ public static class QSBWorldSync
 	public static readonly List<FactReveal> ShipLogFacts = new();
 
 	private static readonly List<IWorldObject> WorldObjects = new();
-	private static readonly Dictionary<MonoBehaviour, List<IWorldObject>> UnityObjectsToWorldObjects = new();
+	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
 
 	private static void GameInit()
 	{
@@ -223,19 +223,13 @@ public static class QSBWorldSync
 			return default;
 		}
 
-		if (!UnityObjectsToWorldObjects.TryGetValue(unityObject, out var worldObjects))
-		{
-			DebugLog.ToConsole($"Error - WorldObjectsToUnityObjects does not contain any WorldObjects for given TUnityObject! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
-			return default;
-		}
-
-		if (!worldObjects.Any(x => x is TWorldObject))
+		if (!UnityObjectsToWorldObjects.TryGetValue(unityObject, out var worldObject))
 		{
 			DebugLog.ToConsole($"Error - UnityObjectsToWorldObjects does not contain \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 			return default;
 		}
 
-		return (TWorldObject)worldObjects.First(x => x is TWorldObject);
+		return (TWorldObject)worldObject;
 	}
 
 	/// <summary>
@@ -310,13 +304,10 @@ public static class QSBWorldSync
 		where TUnityObject : MonoBehaviour
 	{
 		WorldObjects.Add(worldObject);
-		if (!UnityObjectsToWorldObjects.ContainsKey(unityObject))
+		if (!UnityObjectsToWorldObjects.TryAdd(unityObject, worldObject))
 		{
-			UnityObjectsToWorldObjects.Add(unityObject, new() { worldObject });
-		}
-		else
-		{
-			UnityObjectsToWorldObjects[unityObject].Add(worldObject);
+			DebugLog.ToConsole($"Error - UnityObjectsToWorldObjects already contains \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
+			return;
 		}
 
 		var task = UniTask.Create(async () =>
