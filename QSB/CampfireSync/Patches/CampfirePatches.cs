@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.CampfireSync.Messages;
 using QSB.CampfireSync.WorldObjects;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
@@ -18,16 +19,33 @@ internal class CampfirePatches : QSBPatch
 	public static bool LightCampfireEvent(Campfire __instance)
 	{
 		var qsbCampfire = __instance.GetWorldObject<QSBCampfire>();
-		if (__instance._state == Campfire.State.LIT)
+
+		if (__instance._state != Campfire.State.LIT)
 		{
-			qsbCampfire.StartRoasting();
-		}
-		else
-		{
-			qsbCampfire.SetState(Campfire.State.LIT);
+			__instance.SetState(Campfire.State.LIT, false);
 			qsbCampfire.SendMessage(new CampfireStateMessage(Campfire.State.LIT));
 			Locator.GetFlashlight().TurnOff(false);
+			if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() == ItemType.SlideReel)
+			{
+				__instance.SetDropSlideReelMode(true);
+			}
+
+			return false;
 		}
+
+		if (__instance._dropSlideReelMode)
+		{
+			var slideReelItem = (SlideReelItem)Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItem();
+			Locator.GetToolModeSwapper().GetItemCarryTool().DropItemInstantly(__instance._sector, __instance._burnedSlideReelSocket);
+			slideReelItem.Burn();
+			slideReelItem.GetWorldObject<QSBSlideReelItem>().SendMessage(new BurnSlideReelMessage(qsbCampfire));
+			__instance.SetDropSlideReelMode(false);
+			__instance._hasBurnedSlideReel = true;
+			__instance._oneShotAudio.PlayOneShot(AudioType.TH_Campfire_Ignite, 1f);
+			return false;
+		}
+
+		__instance.StartRoasting();
 
 		return false;
 	}
