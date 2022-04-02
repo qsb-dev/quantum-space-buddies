@@ -57,7 +57,7 @@ public class AlarmTotemPatches : QSBPatch
 	}
 
 	/// <summary>
-	/// do local fixed update to check for local visibility
+	/// prefix to check for local visibility
 	/// </summary>
 	/// <param name="__instance"></param>
 	[HarmonyPrefix]
