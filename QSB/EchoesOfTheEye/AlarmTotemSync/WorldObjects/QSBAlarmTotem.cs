@@ -1,19 +1,54 @@
-﻿using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
+﻿using Cysharp.Threading.Tasks;
+using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 
 public class QSBAlarmTotem : WorldObject<AlarmTotem>
 {
-	public readonly List<PlayerInfo> VisibleFor = new();
+	public readonly List<uint> VisibleFor = new();
 
 	public override void SendInitialState(uint to)
 	{
 		this.SendMessage(new SetFaceOpenMessage(AttachedObject._isFaceOpen) { To = to });
 		this.SendMessage(new SetEnabledMessage(AttachedObject.enabled) { To = to });
+		this.SendMessage(new VisibleForMessage(VisibleFor) { To = to });
+	}
+
+	public override async UniTask Init(CancellationToken ct)
+	{
+		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
+
+		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
+		{
+			if (AttachedObject._isPlayerVisible)
+			{
+				this.SendMessage(new LocallyVisibleMessage(true));
+			}
+		});
+	}
+
+	public override void OnRemoval() =>
+		QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
+
+	private void OnPlayerLeave(PlayerInfo player) =>
+		VisibleFor.QuickRemove(player.PlayerId);
+
+	public void SetLocallyVisible(uint playerId, bool visible)
+	{
+		if (visible)
+		{
+			VisibleFor.SafeAdd(playerId);
+		}
+		else
+		{
+			VisibleFor.QuickRemove(playerId);
+		}
 	}
 
 	public void SetEnabled(bool enabled)

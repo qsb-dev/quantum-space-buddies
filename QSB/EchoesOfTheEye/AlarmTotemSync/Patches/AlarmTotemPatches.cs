@@ -72,6 +72,11 @@ public class AlarmTotemPatches : QSBPatch
 			{
 				GlobalMessenger.FireEvent("TutorialAlarmTotemTriggered");
 			}
+
+			if (QSBWorldSync.AllObjectsReady)
+			{
+				__instance.GetWorldObject<QSBAlarmTotem>().SendMessage(new LocallyVisibleMessage(true));
+			}
 		}
 		else if (isPlayerVisible && !__instance._isPlayerVisible)
 		{
@@ -80,6 +85,11 @@ public class AlarmTotemPatches : QSBPatch
 			__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
 			__instance._simVisionConeRenderer.SetColor(__instance._simVisionConeRenderer.GetOriginalColor());
 			__instance._pulseLightController.FadeTo(0f, 0.5f);
+
+			if (QSBWorldSync.AllObjectsReady)
+			{
+				__instance.GetWorldObject<QSBAlarmTotem>().SendMessage(new LocallyVisibleMessage(false));
+			}
 		}
 
 		return false;
