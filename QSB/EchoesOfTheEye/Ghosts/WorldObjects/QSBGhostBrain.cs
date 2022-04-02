@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -524,7 +525,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			for (var i = 0; i < AttachedObject._helperGhosts.Length; i++)
 			{
-				AttachedObject._helperGhosts[i].HearCallForHelp(_data.interestedPlayer.playerLocation.localPosition, 3f);
+				AttachedObject._helperGhosts[i].GetWorldObject<QSBGhostBrain>().HearCallForHelp(_data.interestedPlayer.playerLocation.localPosition, 3f, _data.interestedPlayer);
 			}
 		}
 	}
@@ -535,11 +536,11 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		AttachedObject._controller.GetDreamLanternController().enabled = true;
 	}
 
-	public void OnExitDreamWorld(PlayerInfo player)
+	public void OnExitDreamWorld()
 	{
 		AttachedObject.enabled = false;
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
 		ChangeAction(null);
-		_data.OnPlayerExitDreamWorld(player);
+		_data.OnPlayerExitDreamWorld();
 	}
 }

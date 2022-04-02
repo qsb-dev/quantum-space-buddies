@@ -41,13 +41,13 @@ public class QSBGhostData
 		}
 	}
 
-	public void OnPlayerExitDreamWorld(PlayerInfo player)
+	public void OnPlayerExitDreamWorld()
 	{
-		players[player].isPlayerLocationKnown = false;
-		players[player].wasPlayerLocationKnown = false;
+		localPlayer.isPlayerLocationKnown = false;
+		localPlayer.wasPlayerLocationKnown = false;
 		reduceGuardUtility = false;
 		fastStalkUnlocked = false;
-		players[player].timeSincePlayerLocationKnown = float.PositiveInfinity;
+		localPlayer.timeSincePlayerLocationKnown = float.PositiveInfinity;
 	}
 
 	public void OnEnterAction(GhostAction.Name actionName)
@@ -64,7 +64,11 @@ public class QSBGhostData
 		{
 			if (!players.ContainsKey(player))
 			{
-				players.Add(player, new GhostPlayer());
+				var newPlayer = new GhostPlayer
+				{
+					player = player
+				};
+				players.Add(player, newPlayer);
 			}
 		}
 

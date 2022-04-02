@@ -270,7 +270,7 @@ internal class GhostBrainPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostBrain.OnExitDreamWorld))]
 	public static bool OnExitDreamWorld(GhostBrain __instance)
 	{
-		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
+		__instance.GetWorldObject<QSBGhostBrain>().OnExitDreamWorld();
 		return false;
 	}
 }

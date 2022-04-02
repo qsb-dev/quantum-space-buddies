@@ -9,6 +9,7 @@ namespace QSB.EchoesOfTheEye.Ghosts;
 
 public class GhostPlayer
 {
+	public PlayerInfo player;
 	public QSBGhostSensorData sensor = new();
 	public GhostLocationData playerLocation = new();
 	public GhostLocationData lastKnownPlayerLocation = new();

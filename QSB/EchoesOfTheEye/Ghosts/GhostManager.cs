@@ -78,7 +78,7 @@ internal class GhostManager : WorldObjectManager
 				float num2 = Vector3.Distance(ghostBrain.transform.position, _partyPathDirector._directedGhosts[i].transform.position);
 				if (flag && num2 < 50f && _partyPathDirector._directedGhosts[i].HearGhostCall(ghostData.interestedPlayer.playerLocation.localPosition, num, true))
 				{
-					_partyPathDirector._directedGhosts[i].HintPlayerLocation();
+					_partyPathDirector._directedGhosts[i].GetWorldObject<QSBGhostBrain>().HintPlayerLocation(ghostData.interestedPlayer.player);
 					num += Random.Range(2f, 3f);
 				}
 			}
