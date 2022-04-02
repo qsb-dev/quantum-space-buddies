@@ -28,7 +28,7 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 		{
 			if (AttachedObject._isPlayerVisible)
 			{
-				this.SendMessage(new LocallyVisibleMessage(true));
+				this.SendMessage(new SetVisibleMessage(true));
 			}
 		});
 	}
@@ -39,7 +39,7 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 	private void OnPlayerLeave(PlayerInfo player) =>
 		VisibleFor.QuickRemove(player.PlayerId);
 
-	public void SetLocallyVisible(uint playerId, bool visible)
+	public void SetVisible(uint playerId, bool visible)
 	{
 		if (visible)
 		{
@@ -48,31 +48,6 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 		else
 		{
 			VisibleFor.QuickRemove(playerId);
-		}
-
-		UpdateVisible();
-	}
-
-	public void UpdateVisible()
-	{
-		if (AttachedObject._isPlayerVisible && VisibleFor.Count < 1)
-		{
-			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
-			AttachedObject._simTotemMaterials[0] = AttachedObject._simAlarmMaterial;
-			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
-			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simAlarmColor);
-			if (AttachedObject._isTutorialTotem)
-			{
-				GlobalMessenger.FireEvent("TutorialAlarmTotemTriggered");
-			}
-		}
-		else if (!AttachedObject._isPlayerVisible && VisibleFor.Count >= 1)
-		{
-			Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
-			AttachedObject._simTotemMaterials[0] = AttachedObject._origSimEyeMaterial;
-			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
-			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simVisionConeRenderer.GetOriginalColor());
-			AttachedObject._pulseLightController.FadeTo(0f, 0.5f);
 		}
 	}
 

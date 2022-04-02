@@ -75,7 +75,7 @@ public class AlarmTotemPatches : QSBPatch
 
 			if (QSBWorldSync.AllObjectsReady)
 			{
-				__instance.GetWorldObject<QSBAlarmTotem>().SendMessage(new LocallyVisibleMessage(true));
+				__instance.GetWorldObject<QSBAlarmTotem>().SendMessage(new SetVisibleMessage(true));
 			}
 		}
 		else if (isPlayerVisible && !__instance._isPlayerVisible)
@@ -88,7 +88,7 @@ public class AlarmTotemPatches : QSBPatch
 
 			if (QSBWorldSync.AllObjectsReady)
 			{
-				__instance.GetWorldObject<QSBAlarmTotem>().SendMessage(new LocallyVisibleMessage(false));
+				__instance.GetWorldObject<QSBAlarmTotem>().SendMessage(new SetVisibleMessage(false));
 			}
 		}
 

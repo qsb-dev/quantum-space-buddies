@@ -15,6 +15,5 @@ public class VisibleForMessage : QSBWorldObjectMessage<QSBAlarmTotem, List<uint>
 	{
 		WorldObject.VisibleFor.Clear();
 		WorldObject.VisibleFor.AddRange(Data);
-		WorldObject.UpdateVisible();
 	}
 }
