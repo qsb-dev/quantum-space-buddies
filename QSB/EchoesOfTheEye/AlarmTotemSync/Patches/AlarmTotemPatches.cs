@@ -94,30 +94,4 @@ public class AlarmTotemPatches : QSBPatch
 
 		return false;
 	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.CheckPlayerVisible))]
-	private static bool CheckPlayerVisible(AlarmTotem __instance, out bool __result)
-	{
-		if (!__instance._isFaceOpen)
-		{
-			__result = false;
-			return false;
-		}
-
-		var lanternController = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController();
-		var playerLightSensor = Locator.GetPlayerLightSensor();
-		if (lanternController.IsHeldByPlayer() && !lanternController.IsConcealed() || playerLightSensor.IsIlluminated())
-		{
-			var position = Locator.GetPlayerCamera().transform.position;
-			if (__instance.CheckPointInVisionCone(position) && !__instance.CheckLineOccluded(__instance._sightOrigin.position, position))
-			{
-				__result = true;
-				return false;
-			}
-		}
-
-		__result = false;
-		return false;
-	}
 }

@@ -49,6 +49,31 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 		{
 			VisibleFor.QuickRemove(playerId);
 		}
+
+		UpdateVisible();
+	}
+
+	public void UpdateVisible()
+	{
+		if (AttachedObject._isPlayerVisible && VisibleFor.Count < 1)
+		{
+			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
+			AttachedObject._simTotemMaterials[0] = AttachedObject._simAlarmMaterial;
+			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
+			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simAlarmColor);
+			if (AttachedObject._isTutorialTotem)
+			{
+				GlobalMessenger.FireEvent("TutorialAlarmTotemTriggered");
+			}
+		}
+		else if (!AttachedObject._isPlayerVisible && VisibleFor.Count >= 1)
+		{
+			Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
+			AttachedObject._simTotemMaterials[0] = AttachedObject._origSimEyeMaterial;
+			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
+			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simVisionConeRenderer.GetOriginalColor());
+			AttachedObject._pulseLightController.FadeTo(0f, 0.5f);
+		}
 	}
 
 	public void SetEnabled(bool enabled)
