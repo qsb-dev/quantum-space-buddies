@@ -15,12 +15,17 @@ public class QSBStalkAction : QSBGhostAction
 
 	public override float CalculateUtility()
 	{
+		if (_data.interestedPlayer == null)
+		{
+			return -100f;
+		}
+
 		if (_data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed)
 		{
 			return -100f;
 		}
 
-		if ((_running && _data.timeSincePlayerLocationKnown < 4f) || _data.isPlayerLocationKnown)
+		if ((_running && _data.interestedPlayer.timeSincePlayerLocationKnown < 4f) || _data.interestedPlayer.isPlayerLocationKnown)
 		{
 			return 85f;
 		}
@@ -62,17 +67,17 @@ public class QSBStalkAction : QSBGhostAction
 			stalkSpeed += 1.5f;
 		}
 
-		if (_controller.GetNodeMap().CheckLocalPointInBounds(_data.lastKnownPlayerLocation.localPosition))
+		if (_controller.GetNodeMap().CheckLocalPointInBounds(_data.interestedPlayer.lastKnownPlayerLocation.localPosition))
 		{
-			_controller.PathfindToLocalPosition(_data.lastKnownPlayerLocation.localPosition, stalkSpeed, GhostConstants.GetMoveAcceleration(MoveType.SEARCH));
+			_controller.PathfindToLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, stalkSpeed, GhostConstants.GetMoveAcceleration(MoveType.SEARCH));
 		}
 
-		_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
+		_controller.FaceLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
 
 		var isPlayerLanternConcealed = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
 		var sawPlayerLanternConceal = !_wasPlayerLanternConcealed
 			&& isPlayerLanternConcealed
-			&& _data.wasPlayerLocationKnown;
+			&& _data.interestedPlayer.wasPlayerLocationKnown;
 
 		_wasPlayerLanternConcealed = isPlayerLanternConcealed;
 		if (sawPlayerLanternConceal && !_shouldFocusLightOnPlayer)
@@ -80,7 +85,7 @@ public class QSBStalkAction : QSBGhostAction
 			_shouldFocusLightOnPlayer = true;
 			_changeFocusTime = Time.time + 1f;
 		}
-		else if (_data.sensor.isPlayerHeldLanternVisible && _shouldFocusLightOnPlayer)
+		else if (_data.interestedPlayer.sensor.isPlayerHeldLanternVisible && _shouldFocusLightOnPlayer)
 		{
 			_shouldFocusLightOnPlayer = false;
 			_changeFocusTime = Time.time + 1f;

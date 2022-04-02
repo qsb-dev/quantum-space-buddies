@@ -27,10 +27,10 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 		AttachedObject._guardVolume = guardVolume;
 	}
 
-	public bool CanGrabPlayer()
+	public bool CanGrabPlayer(GhostPlayer player)
 		=> !PlayerState.IsAttached()
-			&& _data.playerLocation.distanceXZ < 2f + AttachedObject._grabDistanceBuff
-			&& _data.playerLocation.degreesToPositionXZ < 20f + AttachedObject._grabAngleBuff
+			&& player.playerLocation.distanceXZ < 2f + AttachedObject._grabDistanceBuff
+			&& player.playerLocation.degreesToPositionXZ < 20f + AttachedObject._grabAngleBuff
 			&& AttachedObject._animator.GetFloat("GrabWindow") > 0.5f;
 
 	public void FixedUpdate_Sensors()
@@ -40,38 +40,62 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 			return;
 		}
 
-		var lanternController = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController();
-		var playerLightSensor = Locator.GetPlayerLightSensor();
-		_data.sensor.isPlayerHoldingLantern = lanternController.IsHeldByPlayer();
-		_data.sensor.isIlluminated = AttachedObject._lightSensor.IsIlluminated();
-		_data.sensor.isIlluminatedByPlayer = (lanternController.IsHeldByPlayer() && AttachedObject._lightSensor.IsIlluminatedByLantern(lanternController));
-		_data.sensor.isPlayerIlluminatedByUs = playerLightSensor.IsIlluminatedByLantern(AttachedObject._lantern);
-		_data.sensor.isPlayerIlluminated = playerLightSensor.IsIlluminated();
-		_data.sensor.isPlayerVisible = false;
-		_data.sensor.isPlayerHeldLanternVisible = false;
-		_data.sensor.isPlayerDroppedLanternVisible = false;
-		_data.sensor.isPlayerOccluded = false;
-
-		if ((lanternController.IsHeldByPlayer() && !lanternController.IsConcealed()) || playerLightSensor.IsIlluminated())
+		foreach (var pair in _data.players)
 		{
-			var position = Locator.GetPlayerCamera().transform.position;
-			if (AttachedObject.CheckPointInVisionCone(position))
+			var player = pair.Value;
+			var lanternController = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController();
+			var playerLightSensor = Locator.GetPlayerLightSensor();
+			player.sensor.isPlayerHoldingLantern = lanternController.IsHeldByPlayer();
+			_data.isIlluminated = AttachedObject._lightSensor.IsIlluminated();
+			player.sensor.isIlluminatedByPlayer = (lanternController.IsHeldByPlayer() && AttachedObject._lightSensor.IsIlluminatedByLantern(lanternController));
+			player.sensor.isPlayerIlluminatedByUs = playerLightSensor.IsIlluminatedByLantern(AttachedObject._lantern);
+			player.sensor.isPlayerIlluminated = playerLightSensor.IsIlluminated();
+			player.sensor.isPlayerVisible = false;
+			player.sensor.isPlayerHeldLanternVisible = false;
+			player.sensor.isPlayerDroppedLanternVisible = false;
+			player.sensor.isPlayerOccluded = false;
+
+			if ((lanternController.IsHeldByPlayer() && !lanternController.IsConcealed()) || playerLightSensor.IsIlluminated())
 			{
-				if (AttachedObject.CheckLineOccluded(AttachedObject._sightOrigin.position, position))
+				var position = pair.Key.Camera.transform.position;
+				if (AttachedObject.CheckPointInVisionCone(position))
 				{
-					_data.sensor.isPlayerOccluded = true;
+					if (AttachedObject.CheckLineOccluded(AttachedObject._sightOrigin.position, position))
+					{
+						player.sensor.isPlayerOccluded = true;
+					}
+					else
+					{
+						player.sensor.isPlayerVisible = playerLightSensor.IsIlluminated();
+						player.sensor.isPlayerHeldLanternVisible = (lanternController.IsHeldByPlayer() && !lanternController.IsConcealed());
+					}
 				}
-				else
-				{
-					_data.sensor.isPlayerVisible = playerLightSensor.IsIlluminated();
-					_data.sensor.isPlayerHeldLanternVisible = (lanternController.IsHeldByPlayer() && !lanternController.IsConcealed());
-				}
+			}
+
+			if (!lanternController.IsHeldByPlayer() && AttachedObject.CheckPointInVisionCone(lanternController.GetLightPosition()) && !AttachedObject.CheckLineOccluded(AttachedObject._sightOrigin.position, lanternController.GetLightPosition()))
+			{
+				player.sensor.isPlayerDroppedLanternVisible = true;
 			}
 		}
 
-		if (!lanternController.IsHeldByPlayer() && AttachedObject.CheckPointInVisionCone(lanternController.GetLightPosition()) && !AttachedObject.CheckLineOccluded(AttachedObject._sightOrigin.position, lanternController.GetLightPosition()))
+		var visiblePlayers = _data.players.Values.Where(x => x.sensor.isPlayerVisible || x.sensor.isPlayerHeldLanternVisible || x.sensor.inContactWithPlayer || x.sensor.isPlayerIlluminatedByUs);
+
+		if (visiblePlayers.Count() == 0) // no players visible
 		{
-			_data.sensor.isPlayerDroppedLanternVisible = true;
+			visiblePlayers = _data.players.Values.Where(x => x.sensor.isIlluminatedByPlayer);
+		}
+
+		if (visiblePlayers.Count() == 0) // no players lighting us
+		{
+			return;
+		}
+
+		var closest = visiblePlayers.MinBy(x => x.playerLocation.distance);
+
+		if (_data.interestedPlayer != closest)
+		{
+			DebugLog.DebugWrite($"CHANGE INTERESTED PLAYER!");
+			_data.interestedPlayer = closest;
 		}
 	}
 
@@ -79,7 +103,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 	{
 		if (hitObj.CompareTag("PlayerDetector"))
 		{
-			_data.sensor.inContactWithPlayer = true;
+			_data.localPlayer.sensor.inContactWithPlayer = true;
 		}
 	}
 
@@ -87,7 +111,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 	{
 		if (hitObj.CompareTag("PlayerDetector"))
 		{
-			_data.sensor.inContactWithPlayer = false;
+			_data.localPlayer.sensor.inContactWithPlayer = false;
 		}
 	}
 }

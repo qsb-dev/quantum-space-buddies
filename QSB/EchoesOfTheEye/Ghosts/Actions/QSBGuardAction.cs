@@ -1,5 +1,6 @@
 ﻿using GhostEnums;
 using QSB.EchoesOfTheEye.Ghosts;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -76,7 +77,10 @@ public class QSBGuardAction : QSBGhostAction
 			ContinueSearch();
 		}
 
-		var flag = _hasReachedAnySearchNode && (_data.sensor.isPlayerVisible || _data.sensor.isPlayerHeldLanternVisible);
+		var anyPlayerVisible = _data.players.Values.Any(x => x.sensor.isPlayerVisible);
+		var anyPlayerLanternVisible = _data.players.Values.Any(x => x.sensor.isPlayerHeldLanternVisible);
+
+		var flag = _hasReachedAnySearchNode && (anyPlayerVisible || anyPlayerLanternVisible);
 		if (flag)
 		{
 			_lastSawPlayer = Time.time;

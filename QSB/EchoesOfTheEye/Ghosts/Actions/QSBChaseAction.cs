@@ -19,37 +19,51 @@ internal class QSBChaseAction : QSBGhostAction
 
 	public override float CalculateUtility()
 	{
-		if (this._data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed || (PlayerData.GetReducedFrights() && !this._data.reducedFrights_allowChase))
+		if (_data.interestedPlayer == null)
 		{
 			return -100f;
 		}
-		bool flag = this._data.sensor.isPlayerVisible || this._data.sensor.isPlayerHeldLanternVisible || this._data.sensor.inContactWithPlayer;
-		if ((this._running && this._data.timeSincePlayerLocationKnown < 5f) || (flag && this._data.playerLocation.distance < this._data.playerMinLanternRange + 0.5f))
+
+		if (_data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed || (PlayerData.GetReducedFrights() && !_data.reducedFrights_allowChase))
+		{
+			return -100f;
+		}
+
+		var canSeePlayer = _data.interestedPlayer.sensor.isPlayerVisible
+			|| _data.interestedPlayer.sensor.isPlayerHeldLanternVisible
+			|| _data.interestedPlayer.sensor.inContactWithPlayer;
+
+		if ((_running
+			&& _data.interestedPlayer.timeSincePlayerLocationKnown < 5f)
+			|| (canSeePlayer && _data.interestedPlayer.playerLocation.distance < _data.interestedPlayer.playerMinLanternRange + 0.5f))
 		{
 			return 95f;
 		}
+
 		return -100f;
 	}
 
 	protected override void OnEnterAction()
 	{
-		this._controller.SetLanternConcealed(false, true);
-		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Chase);
-		if (Time.time > this._lastScreamTime + 10f && !PlayerData.GetReducedFrights())
+		_controller.SetLanternConcealed(false, true);
+		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Chase);
+		if (Time.time > _lastScreamTime + 10f && !PlayerData.GetReducedFrights())
 		{
-			this._effects.AttachedObject.PlayVoiceAudioNear(global::AudioType.Ghost_Chase, 1f);
-			this._lastScreamTime = Time.time;
+			_effects.AttachedObject.PlayVoiceAudioNear(global::AudioType.Ghost_Chase, 1f);
+			_lastScreamTime = Time.time;
 		}
 	}
 
 	public override bool Update_Action()
 	{
-		if (this._data.playerLocation.distance > 10f && !this._controller.GetNodeMap().CheckLocalPointInBounds(this._data.lastKnownPlayerLocation.localPosition))
+		if (_data.interestedPlayer.playerLocation.distance > 10f
+			&& !_controller.GetNodeMap().CheckLocalPointInBounds(_data.interestedPlayer.lastKnownPlayerLocation.localPosition))
 		{
 			return false;
 		}
-		this._controller.PathfindToLocalPosition(this._data.lastKnownPlayerLocation.localPosition, MoveType.CHASE);
-		this._controller.FaceLocalPosition(this._data.lastKnownPlayerLocation.localPosition, TurnSpeed.FAST);
+
+		_controller.PathfindToLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, MoveType.CHASE);
+		_controller.FaceLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, TurnSpeed.FAST);
 		return true;
 	}
 }

@@ -85,7 +85,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 	{
 		if (!this._lookingAtPlayer)
 		{
-			bool isIlluminatedByPlayer = this._data.sensor.isIlluminatedByPlayer;
+			bool isIlluminatedByPlayer = this._data.IsIlluminatedByAnyPlayer;
 			if ((this._waitingToLookAtPlayer && Time.time > this._lookAtPlayerTime) || isIlluminatedByPlayer)
 			{
 				this._controller.FacePlayer(isIlluminatedByPlayer ? TurnSpeed.SLOW : this._lookSpeed);
@@ -100,11 +100,11 @@ public class QSBPartyHouseAction : QSBGhostAction
 	{
 		if (this._allowChasePlayer)
 		{
-			if (this._controller.GetNodeMap().CheckLocalPointInBounds(this._data.playerLocation.localPosition))
+			if (this._controller.GetNodeMap().CheckLocalPointInBounds(this._data.interestedPlayer.playerLocation.localPosition))
 			{
-				this._controller.PathfindToLocalPosition(this._data.playerLocation.localPosition, MoveType.SEARCH);
+				this._controller.PathfindToLocalPosition(this._data.interestedPlayer.playerLocation.localPosition, MoveType.SEARCH);
 			}
-			this._controller.FaceLocalPosition(this._data.playerLocation.localPosition, TurnSpeed.MEDIUM);
+			this._controller.FaceLocalPosition(this._data.interestedPlayer.playerLocation.localPosition, TurnSpeed.MEDIUM);
 		}
 	}
 }

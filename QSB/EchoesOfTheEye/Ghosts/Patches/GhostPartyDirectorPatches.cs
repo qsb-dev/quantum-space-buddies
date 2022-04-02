@@ -30,7 +30,7 @@ internal class GhostPartyDirectorPatches : QSBPatch
 		DebugLog.DebugWrite($"Unlocking ghost {index} for ambush.");
 		var ghost = __instance._ghostsWaitingToAmbush[index].GetWorldObject<QSBGhostBrain>();
 		(ghost.GetAction(GhostAction.Name.PartyHouse) as QSBPartyHouseAction).AllowChasePlayer();
-		ghost.HintPlayerLocation();
+		ghost.HintPlayerLocation(ghost._data.players.MinBy(x => x.Value.playerLocation.distance).Key);
 		if (firstAmbush)
 		{
 			ghost.GetEffects().PlayVoiceAudioNear(global::AudioType.Ghost_Stalk, 1f);

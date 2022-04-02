@@ -142,7 +142,7 @@ internal class GhostBrainPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostBrain.HearCallForHelp))]
 	public static bool HearCallForHelp(GhostBrain __instance, Vector3 playerLocalPosition, float reactDelay, ref bool __result)
 	{
-		__result = __instance.GetWorldObject<QSBGhostBrain>().HearCallForHelp(playerLocalPosition, reactDelay);
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 
@@ -150,7 +150,7 @@ internal class GhostBrainPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostBrain.HintPlayerLocation), new Type[] { })]
 	public static bool HintPlayerLocation(GhostBrain __instance)
 	{
-		__instance.GetWorldObject<QSBGhostBrain>().HintPlayerLocation();
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 
@@ -158,7 +158,7 @@ internal class GhostBrainPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostBrain.HintPlayerLocation), typeof(Vector3), typeof(float))]
 	public static bool HintPlayerLocation(GhostBrain __instance, Vector3 localPosition, float informationTime)
 	{
-		__instance.GetWorldObject<QSBGhostBrain>().HintPlayerLocation(localPosition, informationTime);
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 
@@ -270,7 +270,7 @@ internal class GhostBrainPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostBrain.OnExitDreamWorld))]
 	public static bool OnExitDreamWorld(GhostBrain __instance)
 	{
-		__instance.GetWorldObject<QSBGhostBrain>().OnExitDreamWorld();
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 }

@@ -33,14 +33,16 @@ public class QSBElevatorWalkAction : QSBGhostAction
 
 	public override float CalculateUtility()
 	{
-		if (this._calledToElevator && !this._hasUsedElevator && !this._data.isPlayerLocationKnown)
+		if (this._calledToElevator && !this._hasUsedElevator && (_data.interestedPlayer == null || !this._data.interestedPlayer.isPlayerLocationKnown))
 		{
 			return 100f;
 		}
+
 		if (this._calledToElevator && !this._hasUsedElevator)
 		{
 			return 70f;
 		}
+
 		return -100f;
 	}
 

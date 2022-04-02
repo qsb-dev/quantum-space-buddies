@@ -60,7 +60,7 @@ internal class GhostManager : WorldObjectManager
 		var num = Random.Range(2f, 3f);
 		for (var i = 0; i < _hotelDirector._hotelDepthsGhosts.Length; i++)
 		{
-			if (!(_hotelDirector._hotelDepthsGhosts[i] == ghostBrain) && _hotelDirector._hotelDepthsGhosts[i].HearGhostCall(ghostData.playerLocation.localPosition, num, false))
+			if (!(_hotelDirector._hotelDepthsGhosts[i] == ghostBrain) && _hotelDirector._hotelDepthsGhosts[i].HearGhostCall(ghostData.interestedPlayer.playerLocation.localPosition, num, false))
 			{
 				num += Random.Range(2f, 3f);
 			}
@@ -76,7 +76,7 @@ internal class GhostManager : WorldObjectManager
 			{
 				bool flag = _partyPathDirector._directedGhosts[i].GetCurrentActionName() != GhostAction.Name.PartyPath || ((QSBPartyPathAction)_partyPathDirector._directedGhosts[i].GetWorldObject<QSBGhostBrain>().GetCurrentAction()).allowHearGhostCall;
 				float num2 = Vector3.Distance(ghostBrain.transform.position, _partyPathDirector._directedGhosts[i].transform.position);
-				if (flag && num2 < 50f && _partyPathDirector._directedGhosts[i].HearGhostCall(ghostData.playerLocation.localPosition, num, true))
+				if (flag && num2 < 50f && _partyPathDirector._directedGhosts[i].HearGhostCall(ghostData.interestedPlayer.playerLocation.localPosition, num, true))
 				{
 					_partyPathDirector._directedGhosts[i].HintPlayerLocation();
 					num += Random.Range(2f, 3f);
@@ -96,7 +96,7 @@ internal class GhostManager : WorldObjectManager
 		float num = Random.Range(2f, 3f);
 		for (int i = 0; i < _zone2Director._cityGhosts.Length; i++)
 		{
-			if (!(_zone2Director._cityGhosts[i] == ghostBrain) && _zone2Director._cityGhosts[i].HearGhostCall(ghostData.playerLocation.localPosition, num, false))
+			if (!(_zone2Director._cityGhosts[i] == ghostBrain) && _zone2Director._cityGhosts[i].HearGhostCall(ghostData.interestedPlayer.playerLocation.localPosition, num, false))
 			{
 				num += Random.Range(2f, 3f);
 			}

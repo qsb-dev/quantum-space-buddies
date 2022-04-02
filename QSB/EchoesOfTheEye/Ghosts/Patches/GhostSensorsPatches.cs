@@ -30,7 +30,7 @@ internal class GhostSensorsPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostSensors.CanGrabPlayer))]
 	public static bool CanGrabPlayer(GhostSensors __instance, ref bool __result)
 	{
-		__result = __instance.GetWorldObject<QSBGhostSensors>().CanGrabPlayer();
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 

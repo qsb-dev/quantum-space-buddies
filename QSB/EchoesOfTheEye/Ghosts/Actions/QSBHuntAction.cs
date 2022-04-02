@@ -53,17 +53,22 @@ public class QSBHuntAction : QSBGhostAction
 
 	public override float CalculateUtility()
 	{
+		if (_data.interestedPlayer == null)
+		{
+			return -100f;
+		}
+
 		if (_data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed)
 		{
 			return -100f;
 		}
 
-		if (_huntFailed && _huntFailTime > _data.timeLastSawPlayer)
+		if (_huntFailed && _huntFailTime > _data.interestedPlayer.timeLastSawPlayer)
 		{
 			return -100f;
 		}
 
-		if (_running || _data.timeSincePlayerLocationKnown < 60f)
+		if (_running || _data.interestedPlayer.timeSincePlayerLocationKnown < 60f)
 		{
 			return 80f;
 		}
@@ -76,10 +81,10 @@ public class QSBHuntAction : QSBGhostAction
 		_controller.SetLanternConcealed(true, true);
 		_controller.FaceVelocity();
 		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
-		if (!_huntStarted || _data.timeLastSawPlayer > _huntStartTime)
+		if (!_huntStarted || _data.interestedPlayer.timeLastSawPlayer > _huntStartTime)
 		{
-			var knownPlayerVelocity = _data.lastKnownSensor.knowsPlayerVelocity ? _data.lastKnownPlayerLocation.localVelocity : Vector3.zero;
-			_numNodesToSearch = _controller.GetNodeMap().FindPossiblePlayerNodes(_data.lastKnownPlayerLocation.localPosition, knownPlayerVelocity, 30f, _nodesToSearch, true, null, null, null);
+			var knownPlayerVelocity = _data.interestedPlayer.lastKnownSensor.knowsPlayerVelocity ? _data.interestedPlayer.lastKnownPlayerLocation.localVelocity : Vector3.zero;
+			_numNodesToSearch = _controller.GetNodeMap().FindPossiblePlayerNodes(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, knownPlayerVelocity, 30f, _nodesToSearch, true, null, null, null);
 			_currentNodeIndex = 0;
 			_startAtClosestNode = false;
 			_closestNode = null;
@@ -124,7 +129,7 @@ public class QSBHuntAction : QSBGhostAction
 
 	protected override void OnExitAction()
 	{
-		if (_huntFailed && !_data.isPlayerLocationKnown)
+		if (_huntFailed && !_data.interestedPlayer.isPlayerLocationKnown)
 		{
 			DebugLog.DebugWrite($"{_brain.AttachedObject._name} : Hunt failed. :(");
 			_effects.AttachedObject.PlayVoiceAudioNear(AudioType.Ghost_HuntFail, 1f);
@@ -133,7 +138,7 @@ public class QSBHuntAction : QSBGhostAction
 
 	public override bool Update_Action()
 	{
-		return !_huntFailed && !_data.isPlayerLocationKnown;
+		return !_huntFailed && !_data.interestedPlayer.isPlayerLocationKnown;
 	}
 
 	public override void FixedUpdate_Action()

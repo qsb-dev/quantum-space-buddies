@@ -43,7 +43,12 @@ public class QSBSentryAction : QSBGhostAction
 
 	public override void FixedUpdate_Action()
 	{
-		if (_data.isPlayerLocationKnown && !_spotlighting)
+		if (_data.interestedPlayer == null)
+		{
+			return;
+		}
+
+		if (_data.interestedPlayer.isPlayerLocationKnown && !_spotlighting)
 		{
 			_spotlighting = true;
 			_controller.ChangeLanternFocus(1f, 2f);
@@ -51,7 +56,7 @@ public class QSBSentryAction : QSBGhostAction
 
 		if (_spotlighting)
 		{
-			if (_data.timeSincePlayerLocationKnown > 3f)
+			if (_data.interestedPlayer.timeSincePlayerLocationKnown > 3f)
 			{
 				_spotlighting = false;
 				_controller.SetLanternConcealed(true, true);
@@ -59,7 +64,7 @@ public class QSBSentryAction : QSBGhostAction
 				return;
 			}
 
-			_controller.FaceLocalPosition(_data.lastKnownPlayerLocation.localPosition, TurnSpeed.FAST);
+			_controller.FaceLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, TurnSpeed.FAST);
 		}
 	}
 

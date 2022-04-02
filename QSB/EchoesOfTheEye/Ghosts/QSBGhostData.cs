@@ -1,51 +1,53 @@
 ﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.Player;
+using QSB.Utility;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts;
 
 public class QSBGhostData
 {
-	public GhostLocationData playerLocation = new GhostLocationData();
-	public GhostLocationData lastKnownPlayerLocation = new GhostLocationData();
-	public GhostSensorData sensor = new GhostSensorData();
-	public GhostSensorData lastKnownSensor = new GhostSensorData();
-	private GhostSensorData firstUnknownSensor = new GhostSensorData();
 	public GhostData.ThreatAwareness threatAwareness;
 	public GhostAction.Name currentAction = GhostAction.Name.None;
 	public GhostAction.Name previousAction = GhostAction.Name.None;
 	public bool isAlive = true;
 	public bool hasWokenUp;
-	public bool isPlayerLocationKnown;
-	public bool wasPlayerLocationKnown;
 	public bool reduceGuardUtility;
 	public bool fastStalkUnlocked;
-	public float timeLastSawPlayer;
-	public float timeSincePlayerLocationKnown = float.PositiveInfinity;
-	public float playerMinLanternRange;
 	public float illuminatedByPlayerMeter;
 	public bool reducedFrights_allowChase;
-	public bool lostPlayerDueToOcclusion => !isPlayerLocationKnown && !lastKnownSensor.isPlayerOccluded && firstUnknownSensor.isPlayerOccluded;
+	public bool isIlluminated;
+	public bool IsIlluminatedByAnyPlayer => players.Values.Any(x => x.sensor.isIlluminatedByPlayer);
+	public Dictionary<PlayerInfo, GhostPlayer> players = new();
+	public GhostPlayer localPlayer => players[QSBPlayerManager.LocalPlayer];
+	public GhostPlayer interestedPlayer;
 
 	public void TabulaRasa()
 	{
 		threatAwareness = GhostData.ThreatAwareness.EverythingIsNormal;
-		isPlayerLocationKnown = false;
-		wasPlayerLocationKnown = false;
 		reduceGuardUtility = false;
 		fastStalkUnlocked = false;
-		timeLastSawPlayer = 0f;
-		timeSincePlayerLocationKnown = float.PositiveInfinity;
-		playerMinLanternRange = 0f;
 		illuminatedByPlayerMeter = 0f;
+
+		foreach (var player in players.Values)
+		{
+			player.isPlayerLocationKnown = false;
+			player.wasPlayerLocationKnown = false;
+			player.timeLastSawPlayer = 0f;
+			player.timeSincePlayerLocationKnown = float.PositiveInfinity;
+			player.playerMinLanternRange = 0f;
+		}
 	}
 
-	public void OnPlayerExitDreamWorld()
+	public void OnPlayerExitDreamWorld(PlayerInfo player)
 	{
-		isPlayerLocationKnown = false;
-		wasPlayerLocationKnown = false;
+		players[player].isPlayerLocationKnown = false;
+		players[player].wasPlayerLocationKnown = false;
 		reduceGuardUtility = false;
 		fastStalkUnlocked = false;
-		timeSincePlayerLocationKnown = float.PositiveInfinity;
+		players[player].timeSincePlayerLocationKnown = float.PositiveInfinity;
 	}
 
 	public void OnEnterAction(GhostAction.Name actionName)
@@ -58,36 +60,51 @@ public class QSBGhostData
 
 	public void FixedUpdate_Data(GhostController controller, GhostSensors sensors)
 	{
-		wasPlayerLocationKnown = isPlayerLocationKnown;
-		isPlayerLocationKnown = sensor.isPlayerVisible || sensor.isPlayerHeldLanternVisible || sensor.isIlluminatedByPlayer || sensor.inContactWithPlayer;
-		if (!reduceGuardUtility && sensor.isIlluminatedByPlayer)
+		foreach (var player in QSBPlayerManager.PlayerList)
 		{
-			reduceGuardUtility = true;
+			if (!players.ContainsKey(player))
+			{
+				players.Add(player, new GhostPlayer());
+			}
 		}
 
-		var worldPosition = Locator.GetPlayerTransform().position - Locator.GetPlayerTransform().up;
-		var worldVelocity = Locator.GetPlayerBody().GetVelocity() - controller.GetNodeMap().GetOWRigidbody().GetVelocity();
-		playerLocation.Update(worldPosition, worldVelocity, controller);
-		playerMinLanternRange = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().GetMinRange();
-		if (isPlayerLocationKnown)
+		foreach (var pair in players)
 		{
-			lastKnownPlayerLocation.CopyFromOther(playerLocation);
-			lastKnownSensor.CopyFromOther(sensor);
-			timeLastSawPlayer = Time.time;
-			timeSincePlayerLocationKnown = 0f;
-		}
-		else
-		{
-			if (wasPlayerLocationKnown)
+			var player = pair.Value;
+			player.wasPlayerLocationKnown = player.isPlayerLocationKnown;
+			player.isPlayerLocationKnown = player.sensor.isPlayerVisible
+				|| player.sensor.isPlayerHeldLanternVisible
+				|| player.sensor.isIlluminatedByPlayer
+				|| player.sensor.inContactWithPlayer;
+			if (!reduceGuardUtility && player.sensor.isIlluminatedByPlayer)
 			{
-				firstUnknownSensor.CopyFromOther(sensor);
+				reduceGuardUtility = true;
 			}
 
-			lastKnownPlayerLocation.Update(controller);
-			timeSincePlayerLocationKnown += Time.deltaTime;
+			var worldPosition = pair.Key.Body.transform.position - pair.Key.Body.transform.up;
+			var worldVelocity = Locator.GetPlayerBody().GetVelocity() - controller.GetNodeMap().GetOWRigidbody().GetVelocity();
+			player.playerLocation.Update(worldPosition, worldVelocity, controller);
+			player.playerMinLanternRange = pair.Key.AssignedSimulationLantern.AttachedObject.GetLanternController().GetMinRange();
+			if (player.isPlayerLocationKnown)
+			{
+				player.lastKnownPlayerLocation.CopyFromOther(player.playerLocation);
+				player.lastKnownSensor.CopyFromOther(player.sensor);
+				player.timeLastSawPlayer = Time.time;
+				player.timeSincePlayerLocationKnown = 0f;
+			}
+			else
+			{
+				if (player.wasPlayerLocationKnown)
+				{
+					player.firstUnknownSensor.CopyFromOther(player.sensor);
+				}
+
+				player.lastKnownPlayerLocation.Update(controller);
+				player.timeSincePlayerLocationKnown += Time.deltaTime;
+			}
 		}
 
-		if (threatAwareness >= GhostData.ThreatAwareness.IntruderConfirmed && sensor.isIlluminatedByPlayer && !PlayerData.GetReducedFrights())
+		if (threatAwareness >= GhostData.ThreatAwareness.IntruderConfirmed && IsIlluminatedByAnyPlayer && !PlayerData.GetReducedFrights())
 		{
 			illuminatedByPlayerMeter += Time.deltaTime;
 			return;
