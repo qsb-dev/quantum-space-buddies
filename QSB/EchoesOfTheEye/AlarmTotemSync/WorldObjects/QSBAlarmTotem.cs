@@ -97,25 +97,10 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 		_isLocallyVisible = CheckPlayerVisible();
 		if (_isLocallyVisible && !isLocallyVisible)
 		{
-			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
-			AttachedObject._simTotemMaterials[0] = AttachedObject._simAlarmMaterial;
-			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
-			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simAlarmColor);
-			if (AttachedObject._isTutorialTotem)
-			{
-				GlobalMessenger.FireEvent("TutorialAlarmTotemTriggered");
-			}
-
 			this.SendMessage(new SetVisibleMessage(true));
 		}
 		else if (isLocallyVisible && !_isLocallyVisible)
 		{
-			Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
-			AttachedObject._simTotemMaterials[0] = AttachedObject._origSimEyeMaterial;
-			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
-			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simVisionConeRenderer.GetOriginalColor());
-			AttachedObject._pulseLightController.FadeTo(0f, 0.5f);
-
 			this.SendMessage(new SetVisibleMessage(false));
 		}
 	}
