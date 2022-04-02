@@ -15,9 +15,9 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 
 	public override void SendInitialState(uint to)
 	{
-		this.SendMessage(new SetFaceOpenMessage(AttachedObject._isFaceOpen) { To = to });
-		this.SendMessage(new SetEnabledMessage(AttachedObject.enabled) { To = to });
-		this.SendMessage(new VisibleForMessage(VisibleFor) { To = to });
+		this.SendMessage(new TotemFaceOpenMessage(AttachedObject._isFaceOpen) { To = to });
+		this.SendMessage(new TotemEnabledMessage(AttachedObject.enabled) { To = to });
+		this.SendMessage(new TotemVisibleForMessage(VisibleFor) { To = to });
 	}
 
 	public override async UniTask Init(CancellationToken ct) =>

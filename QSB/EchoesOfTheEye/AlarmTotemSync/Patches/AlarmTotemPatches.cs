@@ -4,6 +4,7 @@ using QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync.Patches;
 
@@ -31,17 +32,17 @@ public class AlarmTotemPatches : QSBPatch
 		}
 
 		__instance.GetWorldObject<QSBAlarmTotem>()
-			.SendMessage(new SetFaceOpenMessage(open));
+			.SendMessage(new TotemFaceOpenMessage(open));
 	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.OnSectorOccupantAdded))]
 	private static void OnSectorOccupantAdded(AlarmTotem __instance, SectorDetector sectorDetector)
 	{
-		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && QSBWorldSync.AllObjectsAdded)
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && QSBWorldSync.AllObjectsReady)
 		{
 			__instance.GetWorldObject<QSBAlarmTotem>()
-				.SendMessage(new SetEnabledMessage(true));
+				.SendMessage(new TotemEnabledMessage(true));
 		}
 	}
 
@@ -49,10 +50,10 @@ public class AlarmTotemPatches : QSBPatch
 	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.OnSectorOccupantRemoved))]
 	private static void OnSectorOccupantRemoved(AlarmTotem __instance, SectorDetector sectorDetector)
 	{
-		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && QSBWorldSync.AllObjectsAdded)
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && QSBWorldSync.AllObjectsReady)
 		{
 			__instance.GetWorldObject<QSBAlarmTotem>()
-				.SendMessage(new SetEnabledMessage(false));
+				.SendMessage(new TotemEnabledMessage(false));
 		}
 	}
 
@@ -71,11 +72,11 @@ public class AlarmTotemPatches : QSBPatch
 		qsbAlarmTotem.IsLocallyVisible = __instance.CheckPlayerVisible();
 		if (qsbAlarmTotem.IsLocallyVisible && !isLocallyVisible)
 		{
-			qsbAlarmTotem.SendMessage(new SetVisibleMessage(true));
+			qsbAlarmTotem.SendMessage(new TotemVisibleMessage(true));
 		}
 		else if (isLocallyVisible && !qsbAlarmTotem.IsLocallyVisible)
 		{
-			qsbAlarmTotem.SendMessage(new SetVisibleMessage(false));
+			qsbAlarmTotem.SendMessage(new TotemVisibleMessage(false));
 		}
 
 		var isPlayerVisible = __instance._isPlayerVisible;
@@ -98,6 +99,39 @@ public class AlarmTotemPatches : QSBPatch
 			__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
 			__instance._simVisionConeRenderer.SetColor(__instance._simVisionConeRenderer.GetOriginalColor());
 			__instance._pulseLightController.FadeTo(0f, 0.5f);
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(AlarmBell), nameof(AlarmBell.OnEntry))]
+	private static bool OnEntry(AlarmBell __instance, GameObject hitObj)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		if (hitObj.CompareTag("ProbeDetector"))
+		{
+			__instance._oneShotSource.PlayOneShot(AudioType.AlarmChime_RW);
+
+			__instance.GetWorldObject<QSBAlarmBell>()
+				.SendMessage(new BellHitMessage(1));
+		}
+		else if (hitObj.CompareTag("PlayerDetector"))
+		{
+			var vector = __instance.gameObject.GetAttachedOWRigidbody().GetPointVelocity(__instance._bellTrigger.transform.position) - Locator.GetPlayerBody().GetVelocity();
+			var magnitude = Vector3.ProjectOnPlane(vector, __instance._bellTrigger.transform.up).magnitude;
+			if (magnitude > 4f)
+			{
+				var volume = Mathf.Lerp(0.2f, 1f, Mathf.InverseLerp(4f, 12f, magnitude));
+				__instance._oneShotSource.PlayOneShot(AudioType.AlarmChime_RW, volume);
+
+				__instance.GetWorldObject<QSBAlarmBell>()
+					.SendMessage(new BellHitMessage(volume));
+			}
 		}
 
 		return false;

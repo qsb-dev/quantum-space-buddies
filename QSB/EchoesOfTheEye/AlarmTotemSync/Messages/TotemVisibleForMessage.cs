@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 
-public class VisibleForMessage : QSBWorldObjectMessage<QSBAlarmTotem, List<uint>>
+public class TotemVisibleForMessage : QSBWorldObjectMessage<QSBAlarmTotem, List<uint>>
 {
-	public VisibleForMessage(List<uint> visibleFor) : base(visibleFor) { }
+	public TotemVisibleForMessage(List<uint> visibleFor) : base(visibleFor) { }
 
 	public override void OnReceiveRemote()
 	{

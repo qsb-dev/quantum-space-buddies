@@ -3,9 +3,9 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 
-public class SetEnabledMessage : QSBWorldObjectMessage<QSBAlarmTotem, bool>
+public class TotemEnabledMessage : QSBWorldObjectMessage<QSBAlarmTotem, bool>
 {
-	public SetEnabledMessage(bool enabled) : base(enabled) { }
+	public TotemEnabledMessage(bool enabled) : base(enabled) { }
 
 	public override void OnReceiveRemote() =>
 		WorldObject.SetEnabled(Data);
