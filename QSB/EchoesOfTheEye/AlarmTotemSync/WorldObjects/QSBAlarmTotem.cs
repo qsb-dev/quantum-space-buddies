@@ -105,6 +105,8 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 			{
 				GlobalMessenger.FireEvent("TutorialAlarmTotemTriggered");
 			}
+
+			this.SendMessage(new SetVisibleMessage(true));
 		}
 		else if (isLocallyVisible && !_isLocallyVisible)
 		{
@@ -113,6 +115,8 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
 			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simVisionConeRenderer.GetOriginalColor());
 			AttachedObject._pulseLightController.FadeTo(0f, 0.5f);
+
+			this.SendMessage(new SetVisibleMessage(false));
 		}
 	}
 
