@@ -2,7 +2,6 @@
 using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Threading;
@@ -12,6 +11,7 @@ namespace QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 public class QSBAlarmTotem : WorldObject<AlarmTotem>
 {
 	public readonly List<uint> VisibleFor = new();
+	public bool IsLocallyVisible;
 
 	public override void SendInitialState(uint to)
 	{
@@ -20,26 +20,14 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 		this.SendMessage(new VisibleForMessage(VisibleFor) { To = to });
 	}
 
-	public override async UniTask Init(CancellationToken ct)
-	{
+	public override async UniTask Init(CancellationToken ct) =>
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
-
-		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
-		{
-			if (AttachedObject._isPlayerVisible)
-			{
-				this.SendMessage(new SetVisibleMessage(true));
-			}
-		});
-	}
 
 	public override void OnRemoval() =>
 		QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 
 	private void OnPlayerLeave(PlayerInfo player) =>
 		VisibleFor.QuickRemove(player.PlayerId);
-
-	public bool IsVisible() => VisibleFor.Count > 0;
 
 	public void SetVisible(uint playerId, bool visible)
 	{
@@ -83,45 +71,4 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 			}
 		}
 	}
-
-	#region local visibility
-
-	private bool _isLocallyVisible;
-
-	public void FixedUpdate()
-	{
-		var isLocallyVisible = _isLocallyVisible;
-		_isLocallyVisible = CheckPlayerVisible();
-		if (_isLocallyVisible && !isLocallyVisible)
-		{
-			this.SendMessage(new SetVisibleMessage(true));
-		}
-		else if (isLocallyVisible && !_isLocallyVisible)
-		{
-			this.SendMessage(new SetVisibleMessage(false));
-		}
-	}
-
-	private bool CheckPlayerVisible()
-	{
-		if (!AttachedObject._isFaceOpen)
-		{
-			return false;
-		}
-
-		var lanternController = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController();
-		var playerLightSensor = Locator.GetPlayerLightSensor();
-		if (lanternController.IsHeldByPlayer() && !lanternController.IsConcealed() || playerLightSensor.IsIlluminated())
-		{
-			var position = Locator.GetPlayerCamera().transform.position;
-			if (AttachedObject.CheckPointInVisionCone(position) && !AttachedObject.CheckLineOccluded(AttachedObject._sightOrigin.position, position))
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	#endregion
 }
