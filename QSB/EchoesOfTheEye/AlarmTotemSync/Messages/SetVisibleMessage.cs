@@ -1,13 +1,11 @@
 ﻿using QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 using QSB.Messaging;
-using QSB.Player;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 
-public class SetVisibleMessage : QSBWorldObjectMessage<QSBAlarmTotem, (uint playerId, bool visible)>
+public class SetVisibleMessage : QSBWorldObjectMessage<QSBAlarmTotem, bool>
 {
-	public SetVisibleMessage(bool visible) : base((QSBPlayerManager.LocalPlayerId, visible)) { }
-	public SetVisibleMessage(uint playerId) : base((playerId, true)) { }
+	public SetVisibleMessage(bool visible) : base(visible) { }
 	public override void OnReceiveLocal() => OnReceiveRemote();
-	public override void OnReceiveRemote() => WorldObject.SetVisible(Data.playerId, Data.visible);
+	public override void OnReceiveRemote() => WorldObject.SetVisible(From, Data);
 }
