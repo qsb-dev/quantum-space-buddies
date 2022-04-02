@@ -60,15 +60,17 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 
 		if (!enabled)
 		{
-			AttachedObject._pulseLightController.SetIntensity(0f);
 			AttachedObject._simTotemMaterials[0] = AttachedObject._origSimEyeMaterial;
 			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
 			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simVisionConeRenderer.GetOriginalColor());
+			AttachedObject._pulseLightController.SetIntensity(0f);
+			/*
 			if (AttachedObject._isPlayerVisible)
 			{
 				AttachedObject._isPlayerVisible = false;
 				Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
 			}
+			*/
 		}
 	}
 }
