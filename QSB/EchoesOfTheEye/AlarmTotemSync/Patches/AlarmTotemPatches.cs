@@ -33,4 +33,26 @@ public class AlarmTotemPatches : QSBPatch
 		__instance.GetWorldObject<QSBAlarmTotem>()
 			.SendMessage(new SetFaceOpenMessage(open));
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.OnSectorOccupantAdded))]
+	private static void OnSectorOccupantAdded(AlarmTotem __instance, SectorDetector sectorDetector)
+	{
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && QSBWorldSync.AllObjectsAdded)
+		{
+			__instance.GetWorldObject<QSBAlarmTotem>()
+				.SendMessage(new SetEnabledMessage(true));
+		}
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.OnSectorOccupantRemoved))]
+	private static void OnSectorOccupantRemoved(AlarmTotem __instance, SectorDetector sectorDetector)
+	{
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && QSBWorldSync.AllObjectsAdded)
+		{
+			__instance.GetWorldObject<QSBAlarmTotem>()
+				.SendMessage(new SetEnabledMessage(false));
+		}
+	}
 }
