@@ -42,6 +42,8 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 	private void OnPlayerLeave(PlayerInfo player) =>
 		_visibleFor.QuickRemove(player.PlayerId);
 
+	public bool IsVisible() => _visibleFor.Count > 0;
+
 	public void SetVisible(uint playerId, bool visible)
 	{
 		if (visible)
@@ -84,4 +86,56 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 			}
 		}
 	}
+
+	#region local visibility
+
+	private bool _isLocallyVisible;
+
+	public void FixedUpdate()
+	{
+		var isLocallyVisible = _isLocallyVisible;
+		_isLocallyVisible = CheckPlayerVisible();
+		if (_isLocallyVisible && !isLocallyVisible)
+		{
+			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
+			AttachedObject._simTotemMaterials[0] = AttachedObject._simAlarmMaterial;
+			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
+			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simAlarmColor);
+			if (AttachedObject._isTutorialTotem)
+			{
+				GlobalMessenger.FireEvent("TutorialAlarmTotemTriggered");
+			}
+		}
+		else if (isLocallyVisible && !_isLocallyVisible)
+		{
+			Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
+			AttachedObject._simTotemMaterials[0] = AttachedObject._origSimEyeMaterial;
+			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
+			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simVisionConeRenderer.GetOriginalColor());
+			AttachedObject._pulseLightController.FadeTo(0f, 0.5f);
+		}
+	}
+
+	private bool CheckPlayerVisible()
+	{
+		if (!AttachedObject._isFaceOpen)
+		{
+			return false;
+		}
+
+		var lanternController = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController();
+		var playerLightSensor = Locator.GetPlayerLightSensor();
+		if (lanternController.IsHeldByPlayer() && !lanternController.IsConcealed() || playerLightSensor.IsIlluminated())
+		{
+			var position = Locator.GetPlayerCamera().transform.position;
+			if (AttachedObject.CheckPointInVisionCone(position) && !AttachedObject.CheckLineOccluded(AttachedObject._sightOrigin.position, position))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	#endregion
 }

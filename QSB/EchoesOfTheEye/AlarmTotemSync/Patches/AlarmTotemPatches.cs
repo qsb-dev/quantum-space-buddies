@@ -56,44 +56,37 @@ public class AlarmTotemPatches : QSBPatch
 		}
 	}
 
+	/// <summary>
+	/// do local fixed update to check for local visibility
+	/// </summary>
+	/// <param name="__instance"></param>
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.FixedUpdate))]
-	private static bool FixedUpdate(AlarmTotem __instance)
+	private static void FixedUpdate(AlarmTotem __instance)
 	{
-		var isPlayerVisible = __instance._isPlayerVisible;
-		__instance._isPlayerVisible = __instance.CheckPlayerVisible();
-		if (__instance._isPlayerVisible && !isPlayerVisible)
+		if (!QSBWorldSync.AllObjectsReady)
 		{
-			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
-			__instance._simTotemMaterials[0] = __instance._simAlarmMaterial;
-			__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
-			__instance._simVisionConeRenderer.SetColor(__instance._simAlarmColor);
-			if (__instance._isTutorialTotem)
-			{
-				GlobalMessenger.FireEvent("TutorialAlarmTotemTriggered");
-			}
-
-			if (QSBWorldSync.AllObjectsReady)
-			{
-				__instance.GetWorldObject<QSBAlarmTotem>()
-					.SendMessage(new SetVisibleMessage(true));
-			}
-		}
-		else if (isPlayerVisible && !__instance._isPlayerVisible)
-		{
-			Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
-			__instance._simTotemMaterials[0] = __instance._origSimEyeMaterial;
-			__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
-			__instance._simVisionConeRenderer.SetColor(__instance._simVisionConeRenderer.GetOriginalColor());
-			__instance._pulseLightController.FadeTo(0f, 0.5f);
-
-			if (QSBWorldSync.AllObjectsReady)
-			{
-				__instance.GetWorldObject<QSBAlarmTotem>()
-					.SendMessage(new SetVisibleMessage(false));
-			}
+			return;
 		}
 
+		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
+		qsbAlarmTotem.FixedUpdate();
+	}
+
+	/// <summary>
+	/// check for global visibility
+	/// </summary>
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.CheckPlayerVisible))]
+	private static bool CheckPlayerVisible(AlarmTotem __instance, ref bool __result)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
+		__result = qsbAlarmTotem.IsVisible();
 		return false;
 	}
 }
