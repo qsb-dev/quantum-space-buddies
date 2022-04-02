@@ -69,8 +69,7 @@ public class AlarmTotemPatches : QSBPatch
 			return;
 		}
 
-		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
-		qsbAlarmTotem.FixedUpdate();
+		__instance.GetWorldObject<QSBAlarmTotem>().FixedUpdate();
 	}
 
 	/// <summary>
@@ -85,8 +84,7 @@ public class AlarmTotemPatches : QSBPatch
 			return true;
 		}
 
-		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
-		__result = qsbAlarmTotem.IsVisible();
+		__result = __instance.GetWorldObject<QSBAlarmTotem>().IsVisible();
 		return false;
 	}
 }
