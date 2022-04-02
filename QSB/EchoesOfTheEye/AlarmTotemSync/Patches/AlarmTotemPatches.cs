@@ -59,7 +59,6 @@ public class AlarmTotemPatches : QSBPatch
 	/// <summary>
 	/// prefix to check for local visibility
 	/// </summary>
-	/// <param name="__instance"></param>
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.FixedUpdate))]
 	private static void FixedUpdate(AlarmTotem __instance)
