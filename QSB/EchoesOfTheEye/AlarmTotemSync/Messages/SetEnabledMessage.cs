@@ -5,7 +5,7 @@ namespace QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 
 public class SetEnabledMessage : QSBWorldObjectMessage<QSBAlarmTotem, bool>
 {
-	public SetEnabledMessage(bool data) : base(data) { }
+	public SetEnabledMessage(bool enabled) : base(enabled) { }
 
 	public override void OnReceiveRemote() =>
 		WorldObject.SetEnabled(Data);

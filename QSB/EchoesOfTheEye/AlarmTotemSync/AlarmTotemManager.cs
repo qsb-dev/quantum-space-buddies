@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync;
 
-public class SarcophagusManager : WorldObjectManager
+public class AlarmTotemManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;

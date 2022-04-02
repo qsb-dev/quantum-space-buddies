@@ -1,11 +1,15 @@
 ﻿using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.Messaging;
+using QSB.Player;
 using QSB.WorldSync;
+using System.Collections.Generic;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 
 public class QSBAlarmTotem : WorldObject<AlarmTotem>
 {
+	public readonly List<PlayerInfo> VisibleFor = new();
+
 	public override void SendInitialState(uint to)
 	{
 		this.SendMessage(new SetFaceOpenMessage(AttachedObject._isFaceOpen) { To = to });

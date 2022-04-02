@@ -55,4 +55,59 @@ public class AlarmTotemPatches : QSBPatch
 				.SendMessage(new SetEnabledMessage(false));
 		}
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.FixedUpdate))]
+	private static bool FixedUpdate(AlarmTotem __instance)
+	{
+		var isPlayerVisible = __instance._isPlayerVisible;
+		__instance._isPlayerVisible = __instance.CheckPlayerVisible();
+		if (__instance._isPlayerVisible && !isPlayerVisible)
+		{
+			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
+			__instance._simTotemMaterials[0] = __instance._simAlarmMaterial;
+			__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
+			__instance._simVisionConeRenderer.SetColor(__instance._simAlarmColor);
+			if (__instance._isTutorialTotem)
+			{
+				GlobalMessenger.FireEvent("TutorialAlarmTotemTriggered");
+			}
+		}
+		else if (isPlayerVisible && !__instance._isPlayerVisible)
+		{
+			Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
+			__instance._simTotemMaterials[0] = __instance._origSimEyeMaterial;
+			__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
+			__instance._simVisionConeRenderer.SetColor(__instance._simVisionConeRenderer.GetOriginalColor());
+			__instance._pulseLightController.FadeTo(0f, 0.5f);
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.CheckPlayerVisible))]
+	private static bool CheckPlayerVisible(AlarmTotem __instance, out bool __result)
+	{
+		if (!__instance._isFaceOpen)
+		{
+			__result = false;
+			return false;
+		}
+
+		var lanternController = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController();
+		var playerLightSensor = Locator.GetPlayerLightSensor();
+		if (lanternController.IsHeldByPlayer() && !lanternController.IsConcealed() || playerLightSensor.IsIlluminated())
+		{
+			var position = Locator.GetPlayerCamera().transform.position;
+			if (__instance.CheckPointInVisionCone(position) && !__instance.CheckLineOccluded(__instance._sightOrigin.position, position))
+			{
+				__result = true;
+				return false;
+			}
+		}
+
+		__result = false;
+		return false;
+	}
 }
