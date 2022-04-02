@@ -20,6 +20,11 @@ internal class GhostZone2DirectorPatches : QSBPatch
 	[HarmonyPatch(typeof(GhostZone2Director), nameof(GhostZone2Director.Awake))]
 	public static bool Awake(GhostZone2Director __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		GhostDirector_Awake_Stub(__instance);
 
 		QSBGhostZone2Director.ElevatorsStatus = new QSBGhostZone2Director.ElevatorStatus[__instance._elevators.Length];
@@ -42,6 +47,11 @@ internal class GhostZone2DirectorPatches : QSBPatch
 	[HarmonyPatch(typeof(GhostZone2Director), nameof(GhostZone2Director.OnDestroy))]
 	public static bool OnDestroy(GhostZone2Director __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		GhostDirector_OnDestroy_Stub(__instance);
 
 		__instance._lightsProjector.OnProjectorExtinguished -= __instance.OnLightsExtinguished;
@@ -62,6 +72,11 @@ internal class GhostZone2DirectorPatches : QSBPatch
 	[HarmonyPatch(typeof(GhostZone2Director), nameof(GhostZone2Director.Update))]
 	public static bool Update(GhostZone2Director __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		if (__instance._lightsProjectorExtinguished)
 		{
 			if (__instance._ghostsAreAwake && !__instance._ghostsAlerted && Time.time >= __instance._ghostAlertTime)
@@ -117,6 +132,11 @@ internal class GhostZone2DirectorPatches : QSBPatch
 	[HarmonyPatch(typeof(GhostZone2Director), nameof(GhostZone2Director.OnLightsExtinguished))]
 	public static bool OnLightsExtinguished(GhostZone2Director __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		DebugLog.DebugWrite($"LIGHTS EXTINGUISHED");
 		__instance._lightsProjectorExtinguished = true;
 		__instance.WakeGhosts();

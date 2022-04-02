@@ -21,6 +21,11 @@ internal class GhostPartyDirectorPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostPartyDirector.UnlockGhostForAmbush))]
 	public static bool UnlockGhostForAmbush(GhostPartyDirector __instance, bool firstAmbush)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		if (__instance._ghostsWaitingToAmbush.Count == 0)
 		{
 			return false;
@@ -45,6 +50,11 @@ internal class GhostPartyDirectorPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostPartyDirector.OnEnterAmbushTrigger))]
 	public static bool OnEnterAmbushTrigger(GhostPartyDirector __instance, GameObject hitObj)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		if (__instance._ambushTriggered)
 		{
 			return false;
@@ -73,6 +83,11 @@ internal class GhostPartyDirectorPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostPartyDirector.OnEnterSector))]
 	public static bool OnEnterSector(GhostPartyDirector __instance, SectorDetector detector)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		if (__instance._connectedDreamCampfire != null && __instance._connectedDreamCampfire.GetState() == Campfire.State.UNLIT)
 		{
 			return false;

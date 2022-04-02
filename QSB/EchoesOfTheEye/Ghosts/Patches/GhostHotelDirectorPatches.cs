@@ -19,6 +19,11 @@ internal class GhostHotelDirectorPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostHotelDirector.OnDestroy))]
 	public static bool OnDestroy(GhostHotelDirector __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		GhostDirector_OnDestroy_Stub(__instance);
 
 		__instance._hotelProjector.OnProjectorExtinguished -= __instance.OnHotelProjectorExtinguished;

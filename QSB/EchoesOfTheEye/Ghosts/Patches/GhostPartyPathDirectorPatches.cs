@@ -21,6 +21,11 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostPartyPathDirector.OnDestroy))]
 	public static bool OnDestroy(GhostPartyPathDirector __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		GhostDirector_OnDestroy_Stub(__instance);
 
 		for (var i = 0; i < __instance._directedGhosts.Length; i++)
@@ -35,6 +40,11 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostPartyPathDirector.Update))]
 	public static bool Update(GhostPartyPathDirector __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		if (__instance._connectedCampfireExtinguished)
 		{
 			return false;
@@ -109,6 +119,11 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostPartyPathDirector.OnGhostIdentifyIntruder))]
 	public static bool OnGhostIdentifyIntruder(GhostPartyPathDirector __instance, GhostBrain ghostBrain, GhostData ghostData)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}

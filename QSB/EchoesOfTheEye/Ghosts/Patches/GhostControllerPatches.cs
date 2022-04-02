@@ -22,6 +22,11 @@ internal class GhostControllerPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostController.Initialize))]
 	public static bool Initialize(GhostController __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
@@ -30,6 +35,11 @@ internal class GhostControllerPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostController.SetLanternConcealed))]
 	public static bool SetLanternConcealed(GhostController __instance, bool concealed, bool playAudio)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+
+		}
 		__instance.GetWorldObject<QSBGhostController>().SetLanternConcealed(concealed, playAudio);
 		return false;
 	}
@@ -38,6 +48,11 @@ internal class GhostControllerPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostController.ChangeLanternFocus))]
 	public static bool ChangeLanternFocus(GhostController __instance, float focus, float focusRate)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		__instance.GetWorldObject<QSBGhostController>().ChangeLanternFocus(focus, focusRate);
 		return false;
 	}
@@ -46,6 +61,11 @@ internal class GhostControllerPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostController.FacePlayer))]
 	public static bool FacePlayer(GhostController __instance, TurnSpeed turnSpeed)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
