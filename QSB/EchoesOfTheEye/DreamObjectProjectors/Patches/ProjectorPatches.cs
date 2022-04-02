@@ -31,6 +31,6 @@ internal class ProjectorPatches : QSBPatch
 		}
 
 		__instance.GetWorldObject<QSBDreamObjectProjector>()
-			.SendMessage(new ProjectorLitMessage(false));
+			.SendMessage(new ProjectorLitMessage(lit));
 	}
 }
