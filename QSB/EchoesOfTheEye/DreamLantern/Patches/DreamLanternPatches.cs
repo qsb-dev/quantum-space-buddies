@@ -88,7 +88,7 @@ internal class DreamLanternPatches : QSBPatch
 		return false;
 	}
 
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.SetLit))]
 	public static void SetLit(DreamLanternItem __instance, bool lit)
 	{
