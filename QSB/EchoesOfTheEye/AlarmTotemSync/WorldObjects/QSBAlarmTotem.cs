@@ -11,13 +11,16 @@ namespace QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 
 public class QSBAlarmTotem : WorldObject<AlarmTotem>
 {
-	public readonly List<uint> VisibleFor = new();
+	private readonly List<uint> _visibleFor = new();
 
 	public override void SendInitialState(uint to)
 	{
 		this.SendMessage(new SetFaceOpenMessage(AttachedObject._isFaceOpen) { To = to });
 		this.SendMessage(new SetEnabledMessage(AttachedObject.enabled) { To = to });
-		this.SendMessage(new VisibleForMessage(VisibleFor) { To = to });
+		foreach (var playerId in _visibleFor)
+		{
+			this.SendMessage(new SetVisibleMessage(playerId, true));
+		}
 	}
 
 	public override async UniTask Init(CancellationToken ct)
@@ -37,17 +40,17 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 		QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 
 	private void OnPlayerLeave(PlayerInfo player) =>
-		VisibleFor.QuickRemove(player.PlayerId);
+		_visibleFor.QuickRemove(player.PlayerId);
 
 	public void SetVisible(uint playerId, bool visible)
 	{
 		if (visible)
 		{
-			VisibleFor.SafeAdd(playerId);
+			_visibleFor.SafeAdd(playerId);
 		}
 		else
 		{
-			VisibleFor.QuickRemove(playerId);
+			_visibleFor.QuickRemove(playerId);
 		}
 	}
 
