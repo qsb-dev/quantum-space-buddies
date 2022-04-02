@@ -19,7 +19,7 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 		this.SendMessage(new SetEnabledMessage(AttachedObject.enabled) { To = to });
 		foreach (var playerId in _visibleFor)
 		{
-			this.SendMessage(new SetVisibleMessage(playerId, true));
+			this.SendMessage(new SetVisibleMessage(playerId));
 		}
 	}
 
