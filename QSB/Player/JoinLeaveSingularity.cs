@@ -19,7 +19,7 @@ public static class JoinLeaveSingularity
 		if (joining)
 		{
 			if (PlayerTransformSync.LocalInstance == null ||
-				player.PlayerId < QSBPlayerManager.LocalPlayerId)
+			    player.PlayerId < QSBPlayerManager.LocalPlayerId)
 			{
 				// player was here before we joined
 				return;
@@ -34,11 +34,7 @@ public static class JoinLeaveSingularity
 		}
 
 		var go = new GameObject($"player {player} JoinLeaveSingularity");
-		var ct = CancellationTokenSource.CreateLinkedTokenSource(
-			go.GetCancellationTokenOnDestroy(),
-			player.TransformSync.GetCancellationTokenOnDestroy(),
-			player.Body.GetCancellationTokenOnDestroy()
-		).Token;
+		var ct = go.GetCancellationTokenOnDestroy();
 		UniTask.Create(async () =>
 		{
 			DebugLog.DebugWrite($"{go.name}: WARP TASK");
