@@ -40,7 +40,7 @@ public class EOSSDKComponent : MonoBehaviour
 	public LogLevel epicLoggerLevel = LogLevel.Error;
 
 	[SerializeField]
-	public bool collectPlayerMetrics = true;
+	private bool collectPlayerMetrics = true;
 
 	public static bool CollectPlayerMetrics => Instance.collectPlayerMetrics;
 

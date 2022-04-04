@@ -83,8 +83,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 			var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
 			eosSdkComponent.apiKeys = eosApiKey;
-			eosSdkComponent.epicLoggerLevel = LogLevel.Info;
-			eosSdkComponent.collectPlayerMetrics = false;
+			eosSdkComponent.epicLoggerLevel = LogLevel.VeryVerbose;
 
 			var eosTransport = gameObject.AddComponent<EosTransport>();
 			eosTransport.SetTransportError = error => _lastTransportError = error;
