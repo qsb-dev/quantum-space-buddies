@@ -399,7 +399,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(ConnectButton, true);
 		SetButtonActive(QuitButton, true);
 		SetButtonActive(HostButton, true);
-		SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
+		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 		SetButtonActive(NewGameButton, true);
 	}
 
@@ -427,7 +427,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(ConnectButton, true);
 		SetButtonActive(QuitButton, true);
 		SetButtonActive(HostButton, true);
-		SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
+		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 		SetButtonActive(NewGameButton, true);
 	}
 }
