@@ -15,7 +15,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static MenuManager Instance;
 
-	private PopupMenu IPPopup;
 	private PopupMenu OneButtonInfoPopup;
 	private PopupMenu TwoButtonInfoPopup;
 	private bool _addedPauseLock;
@@ -30,6 +29,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private GameObject ResumeGameButton;
 	private GameObject NewGameButton;
 	private GameObject ConnectButton;
+	private PopupInputMenu ConnectPopup;
 	private StringBuilder _nowLoadingSB;
 	private Text _loadingText;
 	private const int _titleButtonIndex = 2;
@@ -170,8 +170,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private void CreateCommonPopups()
 	{
 		var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Product User ID";
-		IPPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
-		IPPopup.OnPopupConfirm += Connect;
+		ConnectPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
+		ConnectPopup.OnPopupConfirm += Connect;
 
 		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
 		OneButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
@@ -245,7 +245,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		CreateCommonPopups();
 
-		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _titleButtonIndex, IPPopup);
+		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _titleButtonIndex, ConnectPopup);
 		_loadingText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 		ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
@@ -346,7 +346,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		_intentionalDisconnect = false;
 
-		var address = ((PopupInputMenu)IPPopup).GetInputText();
+		var address = ConnectPopup.GetInputText();
 		if (address == string.Empty)
 		{
 			address = QSBCore.DefaultServerIP;
@@ -356,6 +356,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		{
 			SetButtonActive(ResumeGameButton, false);
 			SetButtonActive(NewGameButton, false);
+
+			ConnectButton.GetComponent<SubmitActionMenu>().enabled = false;
 		}
 
 		if (QSBSceneManager.IsInUniverse)
@@ -393,13 +395,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		};
 
 		OpenInfoPopup($"Server refused connection.\r\n{reason}", "OK");
-
-		SetButtonActive(DisconnectButton, false);
-		SetButtonActive(ConnectButton, true);
-		SetButtonActive(QuitButton, true);
-		SetButtonActive(HostButton, true);
-		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
-		SetButtonActive(NewGameButton, true);
 	}
 
 	private void OnDisconnected(string error)
@@ -428,5 +423,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(HostButton, true);
 		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 		SetButtonActive(NewGameButton, true);
+
+		ConnectButton.GetComponent<SubmitActionMenu>().enabled = true;
 	}
 }
