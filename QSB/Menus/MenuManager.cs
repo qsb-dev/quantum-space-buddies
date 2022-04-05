@@ -15,8 +15,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static MenuManager Instance;
 
-	private IMenuAPI MenuApi => QSBCore.MenuApi;
-
 	private PopupMenu IPPopup;
 	private PopupMenu OneButtonInfoPopup;
 	private PopupMenu TwoButtonInfoPopup;
@@ -28,7 +26,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private GameObject DisconnectButton;
 	private PopupMenu DisconnectPopup;
 	private StringBuilder _nowLoadingSB;
-	protected Text _loadingText;
+	private Text _loadingText;
 
 	// title screen only
 	private GameObject ResumeGameButton;
@@ -92,13 +90,13 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private void Update()
 	{
 		if (QSBCore.IsInMultiplayer
-		    && (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
-		    && _loadingText != null)
+			&& LoadManager.GetLoadingScene() is OWScene.SolarSystem or OWScene.EyeOfTheUniverse
+			&& _loadingText != null)
 		{
 			var num = LoadManager.GetAsyncLoadProgress();
 			num = num < 0.1f
 				? Mathf.InverseLerp(0f, 0.1f, num) * 0.9f
-				: 0.9f + (Mathf.InverseLerp(0.1f, 1f, num) * 0.1f);
+				: 0.9f + Mathf.InverseLerp(0.1f, 1f, num) * 0.1f;
 			ResetStringBuilder();
 			_nowLoadingSB.Append(UITextLibrary.GetString(UITextType.LoadingMessage));
 			_nowLoadingSB.Append(num.ToString("P0"));
@@ -173,20 +171,20 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private void CreateCommonPopups()
 	{
 		var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Product User ID";
-		IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
+		IPPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
 		IPPopup.OnPopupConfirm += Connect;
 
-		OneButtonInfoPopup = MenuApi.MakeInfoPopup("", "");
+		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
 		OneButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
 
-		TwoButtonInfoPopup = MenuApi.MakeTwoChoicePopup("", "", "");
+		TwoButtonInfoPopup = QSBCore.MenuApi.MakeTwoChoicePopup("", "", "");
 		TwoButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
 	}
 
-	private void SetButtonActive(Button button, bool active)
-		=> SetButtonActive(button?.gameObject, active);
+	private static void SetButtonActive(Button button, bool active)
+		=> SetButtonActive(button ? button.gameObject : null, active);
 
-	private void SetButtonActive(GameObject button, bool active)
+	private static void SetButtonActive(GameObject button, bool active)
 	{
 		if (button == null)
 		{
@@ -202,13 +200,13 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		CreateCommonPopups();
 
-		HostButton = MenuApi.PauseMenu_MakeSimpleButton(HostString);
+		HostButton = QSBCore.MenuApi.PauseMenu_MakeSimpleButton(HostString);
 		HostButton.onClick.AddListener(Host);
 
-		DisconnectPopup = MenuApi.MakeTwoChoicePopup("Are you sure you want to disconnect?\r\nThis will send you back to the main menu.", "YES", "NO");
+		DisconnectPopup = QSBCore.MenuApi.MakeTwoChoicePopup("Are you sure you want to disconnect?\r\nThis will send you back to the main menu.", "YES", "NO");
 		DisconnectPopup.OnPopupConfirm += Disconnect;
 
-		DisconnectButton = MenuApi.PauseMenu_MakeMenuOpenButton(DisconnectString, DisconnectPopup);
+		DisconnectButton = QSBCore.MenuApi.PauseMenu_MakeMenuOpenButton(DisconnectString, DisconnectPopup);
 
 		QuitButton = FindObjectOfType<PauseMenuManager>()._exitToMainMenuAction.gameObject;
 
@@ -248,7 +246,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		CreateCommonPopups();
 
-		ConnectButton = MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _ClientButtonIndex, IPPopup);
+		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _ClientButtonIndex, IPPopup);
 		_loadingText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 		ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
@@ -337,9 +335,9 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 			PopupOK += () => GUIUtility.systemCopyBuffer = productUserId;
 
-			OpenInfoPopup($"Hosting server.\r\nClients will connect using your product user id, which is :\r\n" +
-			              $"{productUserId}\r\n" +
-			              "Do you want to copy this to the clipboard?"
+			OpenInfoPopup("Hosting server.\r\nClients will connect using your product user id, which is :\r\n" +
+				$"{productUserId}\r\n" +
+				"Do you want to copy this to the clipboard?"
 				, "YES"
 				, "NO");
 		}
@@ -368,11 +366,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		QSBNetworkManager.singleton.networkAddress = address;
 		// hack to get disconnect call if start client fails immediately
-		typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection)).SetValue(null, new NetworkConnectionToServer());
+		typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection))!.SetValue(null, new NetworkConnectionToServer());
 		QSBNetworkManager.singleton.StartClient();
 	}
 
-	private void OnConnected()
+	private static void OnConnected()
 	{
 		if (QSBCore.IsHost || !QSBCore.IsInMultiplayer)
 		{
