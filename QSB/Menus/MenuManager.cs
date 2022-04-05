@@ -342,7 +342,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			SetButtonActive(NewGameButton, false);
 
 			_connectButtonText.text = "CONNECTING...";
-			ConnectButton.GetComponent<SubmitActionMenu>().enabled = false;
+			Locator.GetMenuInputModule().DisableInputs();
 		}
 
 		if (QSBSceneManager.IsInUniverse)
@@ -410,6 +410,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(NewGameButton, true);
 
 		_connectButtonText.text = ConnectString;
-		ConnectButton.GetComponent<SubmitActionMenu>().enabled = true;
+		Locator.GetMenuInputModule().EnableInputs();
 	}
 }
