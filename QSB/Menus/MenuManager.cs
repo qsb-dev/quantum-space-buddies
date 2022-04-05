@@ -5,6 +5,7 @@ using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
 using System;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private GameObject NewGameButton;
 	private GameObject ConnectButton;
 	private PopupInputMenu ConnectPopup;
-	private Text _connectButtonText;
+	private Text _loadingText;
+	private StringBuilder _nowLoadingSB;
 	private const int _connectButtonIndex = 2;
 
 	private const string HostString = "OPEN TO MULTIPLAYER";
@@ -73,21 +75,35 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		}
 	}
 
+	private void ResetStringBuilder()
+	{
+		if (_nowLoadingSB == null)
+		{
+			_nowLoadingSB = new StringBuilder();
+			return;
+		}
+
+		_nowLoadingSB.Length = 0;
+	}
+
 	private void Update()
 	{
 		if (QSBCore.IsInMultiplayer
 			&& LoadManager.GetLoadingScene() is OWScene.SolarSystem or OWScene.EyeOfTheUniverse
-			&& _connectButtonText != null)
+			&& _loadingText != null)
 		{
 			var num = LoadManager.GetAsyncLoadProgress();
 			num = num < 0.1f
 				? Mathf.InverseLerp(0f, 0.1f, num) * 0.9f
 				: 0.9f + Mathf.InverseLerp(0.1f, 1f, num) * 0.1f;
-			_connectButtonText.text = $"{UITextLibrary.GetString(UITextType.LoadingMessage)}{num:P0}";
+			ResetStringBuilder();
+			_nowLoadingSB.Append(UITextLibrary.GetString(UITextType.LoadingMessage));
+			_nowLoadingSB.Append(num.ToString("P0"));
+			_loadingText.text = _nowLoadingSB.ToString();
 		}
 	}
 
-	public void JoinGame(bool inEye)
+	public void LoadGame(bool inEye)
 	{
 		if (inEye)
 		{
@@ -230,7 +246,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		CreateCommonPopups();
 
 		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _connectButtonIndex, ConnectPopup);
-		_connectButtonText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
+		_loadingText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 		ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 		NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
@@ -341,7 +357,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			SetButtonActive(ResumeGameButton, false);
 			SetButtonActive(NewGameButton, false);
 
-			_connectButtonText.text = "CONNECTING...";
+			_loadingText.text = "CONNECTING...";
 			Locator.GetMenuInputModule().DisableInputs();
 		}
 
@@ -409,7 +425,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 		SetButtonActive(NewGameButton, true);
 
-		_connectButtonText.text = ConnectString;
+		_loadingText.text = ConnectString;
 		Locator.GetMenuInputModule().EnableInputs();
 	}
 }

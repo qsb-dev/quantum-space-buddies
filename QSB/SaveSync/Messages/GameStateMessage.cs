@@ -91,6 +91,6 @@ internal class GameStateMessage : QSBMessage
 
 		PlayerData.SaveCurrentGame();
 
-		MenuManager.Instance.JoinGame(WarpedToTheEye);
+		MenuManager.Instance.LoadGame(WarpedToTheEye);
 	}
 }
