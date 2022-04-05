@@ -89,7 +89,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private void Update()
 	{
 		if (QSBCore.IsInMultiplayer
-			&& LoadManager.GetLoadingScene() is OWScene.SolarSystem or OWScene.EyeOfTheUniverse
+			&& (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
 			&& _loadingText != null)
 		{
 			var num = LoadManager.GetAsyncLoadProgress();
@@ -105,16 +105,9 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	public void LoadGame(bool inEye)
 	{
-		if (inEye)
-		{
-			LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToBlack, 1f, false);
-			Locator.GetMenuInputModule().DisableInputs();
-		}
-		else
-		{
-			LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack, 1f, false);
-			Locator.GetMenuInputModule().DisableInputs();
-		}
+		var sceneToLoad = inEye ? OWScene.EyeOfTheUniverse : OWScene.SolarSystem;
+		LoadManager.LoadSceneAsync(sceneToLoad, true, LoadManager.FadeType.ToBlack, 1f, false);
+		Locator.GetMenuInputModule().DisableInputs();
 	}
 
 	private void OpenInfoPopup(string message, string okButtonText)
@@ -251,27 +244,9 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 		NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
 
-		if (QSBCore.IsInMultiplayer)
-		{
-			SetButtonActive(ConnectButton, false);
-
-			if (QSBCore.IsHost)
-			{
-				Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
-				SetButtonActive(NewGameButton, true);
-			}
-			else
-			{
-				SetButtonActive(ResumeGameButton, false);
-				SetButtonActive(NewGameButton, false);
-			}
-		}
-		else
-		{
-			SetButtonActive(ConnectButton, true);
-			Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
-			SetButtonActive(NewGameButton, true);
-		}
+		SetButtonActive(ConnectButton, true);
+		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
+		SetButtonActive(NewGameButton, true);
 
 		if (QSBCore.DebugSettings.SkipTitleScreen)
 		{
@@ -298,11 +273,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		_intentionalDisconnect = true;
 
 		QSBNetworkManager.singleton.StopHost();
-		SetButtonActive(DisconnectButton.gameObject, false);
+
+		SetButtonActive(DisconnectButton, false);
 
 		Locator.GetSceneMenuManager().pauseMenu._pauseMenu.EnableMenu(false);
 		Locator.GetSceneMenuManager().pauseMenu._isPaused = false;
-
 		OWInput.RestorePreviousInputs();
 
 		LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
@@ -317,16 +292,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(QuitButton, false);
 
 		QSBNetworkManager.singleton.StartHost();
-
-		var text = QSBCore.IsHost
-			? StopHostingString
-			: DisconnectString;
-		DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
-
-		var popupText = QSBCore.IsHost
-			? "Are you sure you want to stop hosting?\r\nThis will disconnect all clients and send everyone back to the main menu."
-			: "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.";
-		DisconnectPopup._labelText.text = popupText;
 
 		if (!QSBCore.DebugSettings.UseKcpTransport)
 		{
@@ -352,19 +317,10 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			address = QSBCore.DefaultServerIP;
 		}
 
-		if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
-		{
-			SetButtonActive(ResumeGameButton, false);
-			SetButtonActive(NewGameButton, false);
-
-			_loadingText.text = "CONNECTING...";
-			Locator.GetMenuInputModule().DisableInputs();
-		}
-
-		if (QSBSceneManager.IsInUniverse)
-		{
-			SetButtonActive(QuitButton, false);
-		}
+		SetButtonActive(ResumeGameButton, false);
+		SetButtonActive(NewGameButton, false);
+		_loadingText.text = "CONNECTING...";
+		Locator.GetMenuInputModule().DisableInputs();
 
 		QSBNetworkManager.singleton.networkAddress = address;
 		// hack to get disconnect call if start client fails immediately
@@ -374,13 +330,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private static void OnConnected()
 	{
-		if (QSBCore.IsHost || !QSBCore.IsInMultiplayer)
+		if (!QSBCore.IsHost)
 		{
-			return;
+			Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
+				() => new RequestGameStateMessage().Send());
 		}
-
-		Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
-			() => new RequestGameStateMessage().Send());
 	}
 
 	public void OnKicked(string reason)
@@ -422,9 +376,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(ConnectButton, true);
 		SetButtonActive(QuitButton, true);
 		SetButtonActive(HostButton, true);
-		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
+		SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
 		SetButtonActive(NewGameButton, true);
-
 		_loadingText.text = ConnectString;
 		Locator.GetMenuInputModule().EnableInputs();
 	}
