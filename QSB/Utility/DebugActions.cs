@@ -13,7 +13,7 @@ namespace QSB.Utility;
 
 public class DebugActions : MonoBehaviour, IAddComponentOnStart
 {
-	private void GoToVessel()
+	private static void GoToVessel()
 	{
 		var spawnPoint = GameObject.Find("Spawn_Vessel").GetComponent<SpawnPoint>();
 
@@ -25,14 +25,15 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 	}
 
-	private void InsertWarpCore()
+	private static void InsertWarpCore()
 	{
 		var warpCore = GameObject.Find("Prefab_NOM_WarpCoreVessel").GetComponent<WarpCoreItem>();
 		var socket = GameObject.Find("Interactibles_VesselBridge").GetComponentInChildren<WarpCoreSocket>();
 		socket.PlaceIntoSocket(warpCore);
 	}
 
-	private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
+	private static void DamageShipElectricalSystem() =>
+		ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
 	private void Awake() => enabled = QSBCore.DebugSettings.DebugMode;
 
@@ -131,17 +132,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad9].wasPressedThisFrame)
 		{
-			if (Keyboard.current[Key.LeftShift].isPressed)
-			{
-				PlayerData._currentGameSave.warpedToTheEye = false;
-				PlayerData.SaveCurrentGame();
-				LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack);
-			}
-			else
-			{
-				PlayerData.SaveWarpedToTheEye(60);
-				LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToWhite);
-			}
+			new DebugChangeSceneMessage(Keyboard.current[Key.LeftShift].isPressed).Send();
 		}
 
 		if (Keyboard.current[Key.Numpad0].wasPressedThisFrame)
