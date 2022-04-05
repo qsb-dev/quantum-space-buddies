@@ -25,15 +25,14 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private GameObject QuitButton;
 	private GameObject DisconnectButton;
 	private PopupMenu DisconnectPopup;
-	private StringBuilder _nowLoadingSB;
-	private Text _loadingText;
 
 	// title screen only
 	private GameObject ResumeGameButton;
 	private GameObject NewGameButton;
 	private GameObject ConnectButton;
-
-	private const int _ClientButtonIndex = 2;
+	private StringBuilder _nowLoadingSB;
+	private Text _loadingText;
+	private const int _titleButtonIndex = 2;
 
 	private const string HostString = "OPEN TO MULTIPLAYER";
 	private const string ConnectString = "CONNECT TO MULTIPLAYER";
@@ -246,7 +245,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		CreateCommonPopups();
 
-		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _ClientButtonIndex, IPPopup);
+		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _titleButtonIndex, IPPopup);
 		_loadingText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 		ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
