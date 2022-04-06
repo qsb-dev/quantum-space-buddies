@@ -56,13 +56,15 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		if (isUniverse)
 		{
-			InitPauseMenus();
+			// wait a frame or else the changes won't actually happen
+			Delay.RunNextFrame(InitPauseMenus);
 			return;
 		}
 
 		if (newScene == OWScene.TitleScreen)
 		{
-			MakeTitleMenus();
+			// wait a frame or else the changes won't actually happen
+			Delay.RunNextFrame(MakeTitleMenus);
 		}
 	}
 
