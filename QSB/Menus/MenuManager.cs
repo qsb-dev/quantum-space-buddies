@@ -4,6 +4,7 @@ using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using System.Text;
 using UnityEngine;
@@ -20,7 +21,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private bool _addedPauseLock;
 
 	// Pause menu only
-	private Button HostButton;
 	private GameObject QuitButton;
 	private GameObject DisconnectButton;
 	private PopupMenu DisconnectPopup;
@@ -28,11 +28,12 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	// title screen only
 	private GameObject ResumeGameButton;
 	private GameObject NewGameButton;
+	private Button HostButton;
 	private GameObject ConnectButton;
 	private PopupInputMenu ConnectPopup;
 	private Text _loadingText;
 	private StringBuilder _nowLoadingSB;
-	private const int _connectButtonIndex = 2;
+	private const int _titleButtonIndex = 2;
 
 	private const string HostString = "OPEN TO MULTIPLAYER";
 	private const string ConnectString = "CONNECT TO MULTIPLAYER";
@@ -54,15 +55,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
 	{
-		if (newScene == OWScene.EyeOfTheUniverse)
-		{
-			GlobalMessenger<EyeState>.AddListener(OWEvents.EyeStateChanged, OnEyeStateChanged);
-		}
-		else
-		{
-			GlobalMessenger<EyeState>.RemoveListener(OWEvents.EyeStateChanged, OnEyeStateChanged);
-		}
-
 		if (isUniverse)
 		{
 			InitPauseMenus();
@@ -192,9 +184,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		CreateCommonPopups();
 
-		HostButton = QSBCore.MenuApi.PauseMenu_MakeSimpleButton(HostString);
-		HostButton.onClick.AddListener(Host);
-
 		DisconnectPopup = QSBCore.MenuApi.MakeTwoChoicePopup("Are you sure you want to disconnect?\r\nThis will send you back to the main menu.", "YES", "NO");
 		DisconnectPopup.OnPopupConfirm += Disconnect;
 
@@ -204,13 +193,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (QSBCore.IsInMultiplayer)
 		{
-			SetButtonActive(HostButton, false);
 			SetButtonActive(DisconnectButton, true);
 			SetButtonActive(QuitButton, false);
 		}
 		else
 		{
-			SetButtonActive(HostButton, true);
 			SetButtonActive(DisconnectButton, false);
 			SetButtonActive(QuitButton, true);
 		}
@@ -226,20 +213,14 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		DisconnectPopup._labelText.text = popupText;
 	}
 
-	private void OnEyeStateChanged(EyeState state)
-	{
-		if (state >= EyeState.Observatory)
-		{
-			SetButtonActive(HostButton, false);
-		}
-	}
-
 	private void MakeTitleMenus()
 	{
 		CreateCommonPopups();
 
-		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _connectButtonIndex, ConnectPopup);
-		_loadingText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
+		HostButton = QSBCore.MenuApi.TitleScreen_MakeSimpleButton(HostString, _titleButtonIndex);
+		HostButton.onClick.AddListener(Host);
+
+		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _titleButtonIndex + 1, ConnectPopup);
 
 		ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 		NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
@@ -287,13 +268,14 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		_intentionalDisconnect = false;
 
-		SetButtonActive(DisconnectButton, true);
-		SetButtonActive(HostButton, false);
-		SetButtonActive(QuitButton, false);
+		SetButtonActive(ConnectButton, false);
+		SetButtonActive(ResumeGameButton, false);
+		SetButtonActive(NewGameButton, false);
+		_loadingText = HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
 		QSBNetworkManager.singleton.StartHost();
 
-		if (!QSBCore.DebugSettings.UseKcpTransport)
+		if (!QSBCore.DebugSettings.UseKcpTransport && false/*temp*/)
 		{
 			var productUserId = EOSSDKComponent.LocalUserProductIdString;
 
@@ -305,6 +287,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				, "YES"
 				, "NO");
 		}
+
+		LoadGame(PlayerData.GetWarpedToTheEye());
 	}
 
 	private void Connect()
@@ -317,8 +301,10 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			address = QSBCore.DefaultServerIP;
 		}
 
+		SetButtonActive(HostButton, false);
 		SetButtonActive(ResumeGameButton, false);
 		SetButtonActive(NewGameButton, false);
+		_loadingText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 		_loadingText.text = "CONNECTING...";
 		Locator.GetMenuInputModule().DisableInputs();
 
@@ -378,7 +364,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(HostButton, true);
 		SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
 		SetButtonActive(NewGameButton, true);
-		_loadingText.text = ConnectString;
+		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = ConnectString;
+		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = HostString;
 		Locator.GetMenuInputModule().EnableInputs();
 	}
 }
