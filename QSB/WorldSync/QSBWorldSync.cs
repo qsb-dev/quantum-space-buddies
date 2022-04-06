@@ -157,9 +157,9 @@ public static class QSBWorldSync
 	// =======================================================================================================
 
 	public static readonly List<CharacterDialogueTree> OldDialogueTrees = new();
-	public static readonly Dictionary<string, bool> DialogueConditions = new();
+	private static readonly Dictionary<string, bool> DialogueConditions = new();
 	private static readonly Dictionary<string, bool> PersistentConditions = new();
-	public static readonly List<FactReveal> ShipLogFacts = new();
+	private static readonly List<FactReveal> ShipLogFacts = new();
 
 	private static readonly List<IWorldObject> WorldObjects = new();
 	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
