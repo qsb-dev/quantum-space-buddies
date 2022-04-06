@@ -3,6 +3,7 @@ using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
+using QSB.Player;
 using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeTool;
 using QSB.WorldSync;
@@ -179,7 +180,7 @@ internal class LightSensorPatches : QSBPatch
 							{
 								__instance._illuminatingDreamLanternList.Add(dreamLanternController);
 								__instance._illuminated = true;
-								qsbLightSensor.IlluminatedByLocal = true; // todo remote dream lanterns
+								qsbLightSensor.IlluminatedByLocal = QSBPlayerManager.LocalPlayer.HeldItem?.AttachedObject == dreamLanternController;
 							}
 
 							break;
@@ -193,7 +194,8 @@ internal class LightSensorPatches : QSBPatch
 								&& !__instance.CheckOcclusion(owlight.transform.position, vector, sensorWorldDir, occludableLight))
 							{
 								__instance._illuminated = true;
-								qsbLightSensor.IlluminatedByLocal = true; // todo remote dream lanterns
+								var simpleLanternItem = lightSource as SimpleLanternItem;
+								qsbLightSensor.IlluminatedByLocal = QSBPlayerManager.LocalPlayer.HeldItem?.AttachedObject == simpleLanternItem;
 								break;
 							}
 						}
