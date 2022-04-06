@@ -9,6 +9,9 @@ public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 	{
 		base.SendInitialState(to);
 
-		this.SendMessage(new DreamLanternLitMessage(AttachedObject._lanternController.IsLit()) { To = to });
+		if (AttachedObject._lanternController != null)
+		{
+			this.SendMessage(new DreamLanternLitMessage(AttachedObject._lanternController.IsLit()) { To = to });
+		}
 	}
 }
