@@ -2,6 +2,7 @@
 using QSB.LogSync.Messages;
 using QSB.Messaging;
 using QSB.Utility;
+using System;
 
 namespace QSB.WorldSync;
 
@@ -38,6 +39,10 @@ public class RequestInitialStatesMessage : QSBMessage
 				worldObject.SendInitialState(to));
 		}
 
+		SendInitialState?.SafeInvoke(to);
+
 		DebugLog.DebugWrite($"sent initial states to {to}");
 	}
+
+	public static event Action<uint> SendInitialState;
 }
