@@ -1,7 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using MonoMod.Utils;
 using OWML.Common;
+using QSB.ConversationSync.Messages;
 using QSB.LogSync;
+using QSB.LogSync.Messages;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
@@ -137,9 +139,10 @@ public static class QSBWorldSync
 
 		GameReset();
 
-		foreach (var item in WorldObjects)
+		foreach (var worldObject in WorldObjects)
 		{
-			item.Try("removing", item.OnRemoval);
+			worldObject.Try("removing", worldObject.OnRemoval);
+			RequestInitialStatesMessage.SendInitialState -= worldObject.SendInitialState;
 		}
 
 		WorldObjects.Clear();
@@ -160,6 +163,18 @@ public static class QSBWorldSync
 
 	private static readonly List<IWorldObject> WorldObjects = new();
 	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
+
+	static QSBWorldSync()
+	{
+		RequestInitialStatesMessage.SendInitialState += to =>
+		{
+			DialogueConditions.ForEach(condition
+				=> new DialogueConditionMessage(condition.Key, condition.Value) { To = to }.Send());
+
+			ShipLogFacts.ForEach(fact
+				=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = to }.Send());
+		};
+	}
 
 	private static void GameInit()
 	{
@@ -303,12 +318,14 @@ public static class QSBWorldSync
 		where TWorldObject : WorldObject<TUnityObject>
 		where TUnityObject : MonoBehaviour
 	{
-		WorldObjects.Add(worldObject);
 		if (!UnityObjectsToWorldObjects.TryAdd(unityObject, worldObject))
 		{
 			DebugLog.ToConsole($"Error - UnityObjectsToWorldObjects already contains \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 			return;
 		}
+
+		WorldObjects.Add(worldObject);
+		RequestInitialStatesMessage.SendInitialState += worldObject.SendInitialState;
 
 		var task = UniTask.Create(async () =>
 		{

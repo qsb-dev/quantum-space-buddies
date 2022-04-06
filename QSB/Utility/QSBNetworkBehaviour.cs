@@ -12,7 +12,13 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 	private double _lastSendTime;
 	private byte[] _lastKnownData;
 
-	public override void OnStartClient() => DontDestroyOnLoad(gameObject);
+	public override void OnStartClient()
+	{
+		DontDestroyOnLoad(gameObject);
+		RequestInitialStatesMessage.SendInitialState += SendInitialState;
+	}
+
+	public override void OnStopClient() => RequestInitialStatesMessage.SendInitialState -= SendInitialState;
 
 	/// <summary>
 	/// checked before serializing
@@ -80,11 +86,11 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 	/// <para/>
 	/// world objects will be ready on both sides at this point
 	/// </summary>
-	public void SendInitialState(NetworkConnectionToClient target)
+	private void SendInitialState(uint to)
 	{
 		if (_lastKnownData != null)
 		{
-			TargetSendInitialData(target, new ArraySegment<byte>(_lastKnownData));
+			TargetSendInitialData(to.GetNetworkConnection(), new ArraySegment<byte>(_lastKnownData));
 		}
 	}
 

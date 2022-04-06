@@ -139,6 +139,7 @@ public abstract class SyncBase : QSBNetworkTransform
 
 	public override void OnStopClient()
 	{
+		base.OnStopClient();
 		QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
 		if (IsInitialized)
 		{

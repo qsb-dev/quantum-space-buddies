@@ -1,6 +1,4 @@
-﻿using QSB.ConversationSync.Messages;
-using QSB.LogSync.Messages;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Utility;
 using System;
 
@@ -21,26 +19,7 @@ public class RequestInitialStatesMessage : QSBMessage
 
 	private static void SendInitialStates(uint to)
 	{
-		QSBWorldSync.DialogueConditions.ForEach(condition
-			=> new DialogueConditionMessage(condition.Key, condition.Value) { To = to }.Send());
-
-		QSBWorldSync.ShipLogFacts.ForEach(fact
-			=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = to }.Send());
-
-		var target = to.GetNetworkConnection();
-		foreach (var qsbNetworkBehaviour in QSBWorldSync.GetUnityObjects<QSBNetworkBehaviour>())
-		{
-			qsbNetworkBehaviour.SendInitialState(target);
-		}
-
-		foreach (var worldObject in QSBWorldSync.GetWorldObjects())
-		{
-			worldObject.Try("sending initial state", () =>
-				worldObject.SendInitialState(to));
-		}
-
 		SendInitialState?.SafeInvoke(to);
-
 		DebugLog.DebugWrite($"sent initial states to {to}");
 	}
 
