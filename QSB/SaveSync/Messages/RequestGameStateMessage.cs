@@ -2,7 +2,6 @@
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using QSB.WorldSync;
 
 namespace QSB.SaveSync.Messages;
 
@@ -14,28 +13,27 @@ internal class RequestGameStateMessage : QSBMessage
 	public RequestGameStateMessage() => To = 0;
 
 	public override void OnReceiveRemote() => Delay.RunFramesLater(100, () =>
-		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
+	{
+		if (!QSBPlayerManager.PlayerExists(From))
 		{
-			if (!QSBPlayerManager.PlayerExists(From))
-			{
-				// player was kicked
-				return;
-			}
+			// player was kicked
+			return;
+		}
 
-			new GameStateMessage(From).Send();
+		new GameStateMessage(From).Send();
 
-			var gameSave = PlayerData._currentGameSave;
+		var gameSave = PlayerData._currentGameSave;
 
-			var factSaves = gameSave.shipLogFactSaves;
-			foreach (var item in factSaves)
-			{
-				new ShipLogFactSaveMessage(item.Value).Send();
-			}
+		var factSaves = gameSave.shipLogFactSaves;
+		foreach (var item in factSaves)
+		{
+			new ShipLogFactSaveMessage(item.Value).Send();
+		}
 
-			var dictConditions = gameSave.dictConditions;
-			foreach (var item in dictConditions)
-			{
-				new PersistentConditionMessage(item.Key, item.Value).Send();
-			}
-		}));
+		var dictConditions = gameSave.dictConditions;
+		foreach (var item in dictConditions)
+		{
+			new PersistentConditionMessage(item.Key, item.Value).Send();
+		}
+	});
 }
