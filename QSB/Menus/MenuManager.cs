@@ -375,8 +375,16 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(HostButton, true);
 		SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
 		SetButtonActive(NewGameButton, true);
-		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = ConnectString;
-		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = HostString;
+		if (ConnectButton)
+		{
+			ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = ConnectString;
+		}
+
+		if (HostButton)
+		{
+			HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = HostString;
+		}
+
 		_loadingText = null;
 		Locator.GetMenuInputModule().EnableInputs();
 	}
