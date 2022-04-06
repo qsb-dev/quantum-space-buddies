@@ -35,7 +35,7 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
 			tuple.dropTargetId = ((MonoBehaviour)customDropTarget).GetWorldObject<IQSBDropTarget>().ObjectId;
 		}
 
-		tuple.sectorId = sector.GetWorldObject<QSBSector>().ObjectId;
+		tuple.sectorId = sector ? sector.GetWorldObject<QSBSector>().ObjectId : -1;
 		tuple.localPosition = parent.InverseTransformPoint(worldPosition);
 		tuple.localNormal = parent.InverseTransformDirection(worldNormal);
 
@@ -55,7 +55,7 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
 		var worldPos = parent.TransformPoint(Data.localPosition);
 		var worldNormal = parent.TransformDirection(Data.localNormal);
 
-		var sector = Data.sectorId.GetWorldObject<QSBSector>().AttachedObject;
+		var sector = Data.sectorId != -1 ? Data.sectorId.GetWorldObject<QSBSector>().AttachedObject : null;
 
 		WorldObject.DropItem(worldPos, worldNormal, parent, sector, customDropTarget);
 
