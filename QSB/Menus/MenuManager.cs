@@ -79,8 +79,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void Update()
 	{
-		if (QSBCore.IsInMultiplayer
-			&& (LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
+		if ((LoadManager.GetLoadingScene() == OWScene.SolarSystem || LoadManager.GetLoadingScene() == OWScene.EyeOfTheUniverse)
 			&& _loadingText != null)
 		{
 			var num = LoadManager.GetAsyncLoadProgress();
@@ -272,8 +271,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(NewGameButton, false);
 		_loadingText = HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
-		QSBNetworkManager.singleton.StartHost();
-
 		if (!QSBCore.DebugSettings.UseKcpTransport)
 		{
 			var productUserId = EOSSDKComponent.LocalUserProductIdString;
@@ -281,7 +278,9 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			PopupClose += () =>
 			{
 				GUIUtility.systemCopyBuffer = productUserId;
+
 				LoadGame(PlayerData.GetWarpedToTheEye());
+				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 			};
 
 			OpenInfoPopup("Hosting server.\r\nClients will connect using your product user id, which is :\r\n" +
@@ -289,6 +288,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				"Do you want to copy this to the clipboard?"
 				, "YES"
 				, "NO");
+		}
+		else
+		{
+			LoadGame(PlayerData.GetWarpedToTheEye());
+			Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 		}
 	}
 
@@ -367,6 +371,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(NewGameButton, true);
 		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = ConnectString;
 		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = HostString;
+		_loadingText = null;
 		Locator.GetMenuInputModule().EnableInputs();
 	}
 }
