@@ -4,7 +4,6 @@ using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
-using QSB.WorldSync;
 using System;
 using System.Text;
 using UnityEngine;
@@ -40,7 +39,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const string DisconnectString = "DISCONNECT";
 	private const string StopHostingString = "STOP HOSTING";
 
-	private Action PopupOK;
+	private Action PopupClose;
 
 	private bool _intentionalDisconnect;
 
@@ -148,8 +147,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		OWTime.Unpause(OWTime.PauseType.Menu);
 		OWInput.RestorePreviousInputs();
 
-		PopupOK?.SafeInvoke();
-		PopupOK = null;
+		PopupClose?.SafeInvoke();
+		PopupClose = null;
 	}
 
 	private void CreateCommonPopups()
@@ -275,11 +274,15 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		QSBNetworkManager.singleton.StartHost();
 
-		if (!QSBCore.DebugSettings.UseKcpTransport && false/*temp*/)
+		if (!QSBCore.DebugSettings.UseKcpTransport)
 		{
 			var productUserId = EOSSDKComponent.LocalUserProductIdString;
 
-			PopupOK += () => GUIUtility.systemCopyBuffer = productUserId;
+			PopupClose += () =>
+			{
+				GUIUtility.systemCopyBuffer = productUserId;
+				LoadGame(PlayerData.GetWarpedToTheEye());
+			};
 
 			OpenInfoPopup("Hosting server.\r\nClients will connect using your product user id, which is :\r\n" +
 				$"{productUserId}\r\n" +
@@ -287,8 +290,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				, "YES"
 				, "NO");
 		}
-
-		LoadGame(PlayerData.GetWarpedToTheEye());
 	}
 
 	private void Connect()
@@ -327,7 +328,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		_intentionalDisconnect = true;
 
-		PopupOK += () =>
+		PopupClose += () =>
 		{
 			if (QSBSceneManager.IsInUniverse)
 			{
@@ -347,7 +348,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		}
 		else
 		{
-			PopupOK += () =>
+			PopupClose += () =>
 			{
 				if (QSBSceneManager.IsInUniverse)
 				{
