@@ -164,8 +164,7 @@ public static class QSBWorldSync
 	private static readonly List<IWorldObject> WorldObjects = new();
 	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
 
-	static QSBWorldSync()
-	{
+	static QSBWorldSync() =>
 		RequestInitialStatesMessage.SendInitialState += to =>
 		{
 			DialogueConditions.ForEach(condition
@@ -174,7 +173,6 @@ public static class QSBWorldSync
 			ShipLogFacts.ForEach(fact
 				=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = to }.Send());
 		};
-	}
 
 	private static void GameInit()
 	{
