@@ -1,3 +1,14 @@
-﻿namespace QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.EchoesOfTheEye.DreamLantern.Messages;
+using QSB.Messaging;
 
-public class QSBDreamLanternItem : QSBItem<DreamLanternItem> { }
+namespace QSB.ItemSync.WorldObjects.Items;
+
+public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
+{
+	public override void SendInitialState(uint to)
+	{
+		base.SendInitialState(to);
+
+		this.SendMessage(new DreamLanternLitMessage(AttachedObject._lanternController.IsLit()) { To = to });
+	}
+}
