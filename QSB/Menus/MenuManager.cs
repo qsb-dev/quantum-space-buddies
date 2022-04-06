@@ -39,7 +39,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const string DisconnectString = "DISCONNECT";
 	private const string StopHostingString = "STOP HOSTING";
 
-	private Action PopupClose;
+	private Action<bool> PopupClose;
 
 	private bool _intentionalDisconnect;
 
@@ -136,7 +136,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		TwoButtonInfoPopup.EnableMenu(true);
 	}
 
-	private void OnCloseInfoPopup()
+	private void OnCloseInfoPopup(bool confirm)
 	{
 		var pauseCommandListener = Locator.GetPauseCommandListener();
 		if (pauseCommandListener != null && _addedPauseLock)
@@ -148,7 +148,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		OWTime.Unpause(OWTime.PauseType.Menu);
 		OWInput.RestorePreviousInputs();
 
-		PopupClose?.SafeInvoke();
+		PopupClose?.SafeInvoke(confirm);
 		PopupClose = null;
 	}
 
@@ -159,10 +159,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		ConnectPopup.OnPopupConfirm += Connect;
 
 		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
-		OneButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
+		OneButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
 
 		TwoButtonInfoPopup = QSBCore.MenuApi.MakeTwoChoicePopup("", "", "");
-		TwoButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
+		TwoButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
+		TwoButtonInfoPopup.OnPopupCancel += () => OnCloseInfoPopup(false);
 	}
 
 	private static void SetButtonActive(Button button, bool active)
@@ -277,9 +278,12 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		{
 			var productUserId = EOSSDKComponent.LocalUserProductIdString;
 
-			PopupClose += () =>
+			PopupClose += confirm =>
 			{
-				GUIUtility.systemCopyBuffer = productUserId;
+				if (confirm)
+				{
+					GUIUtility.systemCopyBuffer = productUserId;
+				}
 
 				LoadGame(PlayerData.GetWarpedToTheEye());
 				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
@@ -334,7 +338,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		_intentionalDisconnect = true;
 
-		PopupClose += () =>
+		PopupClose += _ =>
 		{
 			if (QSBSceneManager.IsInUniverse)
 			{
@@ -354,7 +358,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		}
 		else
 		{
-			PopupClose += () =>
+			PopupClose += _ =>
 			{
 				if (QSBSceneManager.IsInUniverse)
 				{
