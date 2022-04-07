@@ -48,7 +48,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 	{
 		this._allowChasePlayer = true;
 		this._controller.SetLanternConcealed(true, true);
-		this._controller.FacePlayer(TurnSpeed.MEDIUM);
+		this._controller.AttachedObject.FacePlayer(TurnSpeed.MEDIUM);
 		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
 	}
 
@@ -62,8 +62,8 @@ public class QSBPartyHouseAction : QSBGhostAction
 	public override void Initialize(QSBGhostBrain brain)
 	{
 		base.Initialize(brain);
-		this._initialLocalPosition = this._controller.GetLocalFeetPosition();
-		this._initialLocalDirection = this._controller.GetLocalForward();
+		this._initialLocalPosition = this._controller.AttachedObject.GetLocalFeetPosition();
+		this._initialLocalDirection = this._controller.AttachedObject.GetLocalForward();
 	}
 
 	protected override void OnEnterAction()
@@ -88,7 +88,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 			bool isIlluminatedByPlayer = this._data.IsIlluminatedByAnyPlayer;
 			if ((this._waitingToLookAtPlayer && Time.time > this._lookAtPlayerTime) || isIlluminatedByPlayer)
 			{
-				this._controller.FacePlayer(isIlluminatedByPlayer ? TurnSpeed.SLOW : this._lookSpeed);
+				this._controller.AttachedObject.FacePlayer(isIlluminatedByPlayer ? TurnSpeed.SLOW : this._lookSpeed);
 				this._waitingToLookAtPlayer = false;
 				this._lookingAtPlayer = true;
 			}
@@ -98,9 +98,14 @@ public class QSBPartyHouseAction : QSBGhostAction
 
 	public override void FixedUpdate_Action()
 	{
+		if (_data.interestedPlayer == null)
+		{
+			return;
+		}
+
 		if (this._allowChasePlayer)
 		{
-			if (this._controller.GetNodeMap().CheckLocalPointInBounds(this._data.interestedPlayer.playerLocation.localPosition))
+			if (this._controller.AttachedObject.GetNodeMap().CheckLocalPointInBounds(this._data.interestedPlayer.playerLocation.localPosition))
 			{
 				this._controller.PathfindToLocalPosition(this._data.interestedPlayer.playerLocation.localPosition, MoveType.SEARCH);
 			}

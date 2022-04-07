@@ -67,7 +67,7 @@ public class QSBStalkAction : QSBGhostAction
 			stalkSpeed += 1.5f;
 		}
 
-		if (_controller.GetNodeMap().CheckLocalPointInBounds(_data.interestedPlayer.lastKnownPlayerLocation.localPosition))
+		if (_controller.AttachedObject.GetNodeMap().CheckLocalPointInBounds(_data.interestedPlayer.lastKnownPlayerLocation.localPosition))
 		{
 			_controller.PathfindToLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, stalkSpeed, GhostConstants.GetMoveAcceleration(MoveType.SEARCH));
 		}

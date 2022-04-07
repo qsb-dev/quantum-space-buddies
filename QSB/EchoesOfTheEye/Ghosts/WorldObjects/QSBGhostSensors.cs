@@ -1,4 +1,6 @@
-﻿using QSB.Utility;
+﻿using QSB.EchoesOfTheEye.Ghosts.Messages;
+using QSB.Messaging;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 
 	public override bool ShouldDisplayDebug() => false;
 
-	private QSBGhostData _data;
+	public QSBGhostData _data;
 
 	public void Initialize(QSBGhostData data, OWTriggerVolume guardVolume = null)
 	{
@@ -43,7 +45,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 		foreach (var pair in _data.players)
 		{
 			var player = pair.Value;
-			var lanternController = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController();
+			var lanternController = player.player.AssignedSimulationLantern.AttachedObject.GetLanternController();
 			var playerLightSensor = Locator.GetPlayerLightSensor();
 			player.sensor.isPlayerHoldingLantern = lanternController.IsHeldByPlayer();
 			_data.isIlluminated = AttachedObject._lightSensor.IsIlluminated();
@@ -78,6 +80,11 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 			}
 		}
 
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
 		var visiblePlayers = _data.players.Values.Where(x => x.sensor.isPlayerVisible || x.sensor.isPlayerHeldLanternVisible || x.sensor.inContactWithPlayer || x.sensor.isPlayerIlluminatedByUs);
 
 		if (visiblePlayers.Count() == 0) // no players visible
@@ -96,6 +103,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 		{
 			DebugLog.DebugWrite($"CHANGE INTERESTED PLAYER!");
 			_data.interestedPlayer = closest;
+			this.SendMessage(new ChangeInterestedPlayerMessage(closest.player.PlayerId));
 		}
 	}
 

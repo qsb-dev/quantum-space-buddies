@@ -54,7 +54,7 @@ public class QSBPartyPathAction : QSBGhostAction
 
 	public override float CalculateUtility()
 	{
-		if (this._controller.GetNodeMap().GetPathNodes().Length == 0)
+		if (this._controller.AttachedObject.GetNodeMap().GetPathNodes().Length == 0)
 		{
 			return -100f;
 		}
@@ -67,21 +67,21 @@ public class QSBPartyPathAction : QSBGhostAction
 		this._allowFollowPath = false;
 		this._reachedEndOfPath = false;
 		this._isMovingToFinalPosition = false;
-		this._controller.StopMoving();
+		this._controller.AttachedObject.StopMoving();
 		this._controller.SetLanternConcealed(true, false);
 	}
 
 	public void StartFollowPath()
 	{
 		this._allowFollowPath = true;
-		this._controller.PathfindToNode(this._controller.GetNodeMap().GetPathNodes()[this._pathIndex], MoveType.PATROL);
+		this._controller.PathfindToNode(this._controller.AttachedObject.GetNodeMap().GetPathNodes()[this._pathIndex], MoveType.PATROL);
 		this._controller.SetLanternConcealed(false, false);
 	}
 
 	public void MoveToFinalPosition(Vector3 worldPosition)
 	{
 		this._isMovingToFinalPosition = true;
-		this._finalPosition = this._controller.WorldToLocalPosition(worldPosition);
+		this._finalPosition = this._controller.AttachedObject.WorldToLocalPosition(worldPosition);
 		this._controller.PathfindToLocalPosition(this._finalPosition, MoveType.PATROL);
 		this._controller.SetLanternConcealed(true, true);
 	}
@@ -99,7 +99,7 @@ public class QSBPartyPathAction : QSBGhostAction
 			}
 			else
 			{
-				this._controller.PathfindToNode(this._controller.GetNodeMap().GetPathNodes()[this._pathIndex], MoveType.PATROL);
+				this._controller.PathfindToNode(this._controller.AttachedObject.GetNodeMap().GetPathNodes()[this._pathIndex], MoveType.PATROL);
 			}
 			this._controller.SetLanternConcealed(this._isMovingToFinalPosition, true);
 			this._controller.ChangeLanternFocus(0f, 2f);
@@ -124,7 +124,7 @@ public class QSBPartyPathAction : QSBGhostAction
 		{
 			return;
 		}
-		GhostNode[] pathNodes = this._controller.GetNodeMap().GetPathNodes();
+		GhostNode[] pathNodes = this._controller.AttachedObject.GetNodeMap().GetPathNodes();
 		if (this._pathIndex + 1 > pathNodes.Length || pathNodes[this._pathIndex].pathData.isEndOfPath)
 		{
 			this._reachedEndOfPath = true;

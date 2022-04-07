@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.EchoesOfTheEye.Ghosts.Messages;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
@@ -446,6 +447,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 		if (_pendingAction != null && AttachedObject._pendingActionTimer <= 0f)
 		{
+			this.SendMessage(new ChangeActionMessage(_pendingAction.GetName()));
 			ChangeAction(_pendingAction);
 		}
 
@@ -540,6 +542,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	{
 		AttachedObject.enabled = false;
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
+		this.SendMessage(new ChangeActionMessage(GhostAction.Name.None));
 		ChangeAction(null);
 		_data.OnPlayerExitDreamWorld();
 	}

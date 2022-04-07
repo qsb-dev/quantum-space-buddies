@@ -80,10 +80,10 @@ internal class QSBGrabAction : QSBGhostAction
 	private void GrabPlayer()
 	{
 		_playerIsGrabbed = true;
-		_controller.StopMovingInstantly();
-		_controller.StopFacing();
+		_controller.AttachedObject.StopMovingInstantly();
+		_controller.AttachedObject.StopFacing();
 		_controller.SetLanternConcealed(true, false);
-		_controller.GetGrabController().GrabPlayer(1f);
+		_controller.AttachedObject.GetGrabController().GrabPlayer(1f);
 	}
 
 	private void OnGrabComplete()

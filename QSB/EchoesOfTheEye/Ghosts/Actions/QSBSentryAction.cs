@@ -30,7 +30,7 @@ public class QSBSentryAction : QSBGhostAction
 		_spotlighting = false;
 		_controller.SetLanternConcealed(true, true);
 		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
-		var searchNodesOnLayer = _controller.GetNodeMap().GetSearchNodesOnLayer(_controller.GetNodeLayer());
+		var searchNodesOnLayer = _controller.AttachedObject.GetNodeMap().GetSearchNodesOnLayer(_controller.AttachedObject.GetNodeLayer());
 		_targetSentryNode = searchNodesOnLayer[0];
 		_controller.PathfindToNode(_targetSentryNode, MoveType.PATROL);
 		_controller.FaceVelocity();

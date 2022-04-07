@@ -54,9 +54,9 @@ public class QSBElevatorWalkAction : QSBGhostAction
 	public void CallToUseElevator()
 	{
 		this._calledToElevator = true;
-		if (this._controller.GetNodeMap().GetPathNodes().Length > 1)
+		if (this._controller.AttachedObject.GetNodeMap().GetPathNodes().Length > 1)
 		{
-			this._elevatorNode = this._controller.GetNodeMap().GetPathNodes()[1];
+			this._elevatorNode = this._controller.AttachedObject.GetNodeMap().GetPathNodes()[1];
 			this._controller.PathfindToNode(this._elevatorNode, MoveType.PATROL);
 			return;
 		}

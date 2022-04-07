@@ -18,7 +18,7 @@ public class QSBSearchAction : QSBGhostAction
 
 	public override float CalculateUtility()
 	{
-		if (!_controller.GetNodeMap().HasSearchNodes(_controller.GetNodeLayer()))
+		if (!_controller.AttachedObject.GetNodeMap().HasSearchNodes(_controller.AttachedObject.GetNodeLayer()))
 		{
 			return -100f;
 		}
@@ -63,7 +63,7 @@ public class QSBSearchAction : QSBGhostAction
 
 	public override void OnArriveAtPosition()
 	{
-		_controller.Spin(TurnSpeed.MEDIUM);
+		_controller.AttachedObject.Spin(TurnSpeed.MEDIUM);
 		_searchingAtNode = true;
 		_searchStartTime = Time.time;
 	}
@@ -74,7 +74,7 @@ public class QSBSearchAction : QSBGhostAction
 		_targetSearchNode = GetHighestPriorityNodeToSearch();
 		if (_targetSearchNode == null)
 		{
-			Debug.LogError("Failed to find any nodes to search!  Did we exhaust our existing options?", _controller);
+			Debug.LogError("Failed to find any nodes to search!  Did we exhaust our existing options?", _controller.AttachedObject);
 			Debug.Break();
 		}
 
@@ -84,7 +84,7 @@ public class QSBSearchAction : QSBGhostAction
 
 	private GhostNode GetHighestPriorityNodeToSearch()
 	{
-		var searchNodesOnLayer = _controller.GetNodeMap().GetSearchNodesOnLayer(_controller.GetNodeLayer());
+		var searchNodesOnLayer = _controller.AttachedObject.GetNodeMap().GetSearchNodesOnLayer(_controller.AttachedObject.GetNodeLayer());
 		var num = 0f;
 		var time = Time.time;
 		for (var i = 0; i < searchNodesOnLayer.Length; i++)

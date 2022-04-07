@@ -25,7 +25,7 @@ public class QSBSleepwalkAction : QSBGhostAction
 
 	private void MoveToRandomPatrolNode()
 	{
-		_controller.PathfindToNode(_controller.GetNodeMap().GetRandomPatrolNode(), MoveType.PATROL);
+		_controller.PathfindToNode(_controller.AttachedObject.GetNodeMap().GetRandomPatrolNode(), MoveType.PATROL);
 		_controller.FaceVelocity();
 	}
 }

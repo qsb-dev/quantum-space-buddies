@@ -34,21 +34,21 @@ public class QSBWaitAction : QSBGhostAction
 	{
 		if (!PlayerState.IsGrabbedByGhost())
 		{
-			_controller.StopMoving();
-			_controller.StopFacing();
+			_controller.AttachedObject.StopMoving();
+			_controller.AttachedObject.StopFacing();
 			return;
 		}
 
 		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
-		_controller.FacePlayer(TurnSpeed.MEDIUM);
+		_controller.AttachedObject.FacePlayer(TurnSpeed.MEDIUM);
 		if (_data.interestedPlayer.playerLocation.distanceXZ < 3f)
 		{
 			Vector3 toPositionXZ = _data.interestedPlayer.playerLocation.toPositionXZ;
-			_controller.MoveToLocalPosition(_controller.GetLocalFeetPosition() - toPositionXZ * 3f, MoveType.SEARCH);
+			_controller.MoveToLocalPosition(_controller.AttachedObject.GetLocalFeetPosition() - toPositionXZ * 3f, MoveType.SEARCH);
 			return;
 		}
 
-		_controller.StopMoving();
+		_controller.AttachedObject.StopMoving();
 	}
 
 	public override bool Update_Action()

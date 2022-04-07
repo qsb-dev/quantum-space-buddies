@@ -73,4 +73,94 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		AttachedObject._targetDegreesPerSecond = GhostConstants.GetTurnSpeed(turnSpeed);
 		AttachedObject._angularAcceleration = GhostConstants.GetTurnAcceleration(turnSpeed);
 	}
+
+	public void FaceLocalPosition(Vector3 localPosition, TurnSpeed turnSpeed)
+	{
+		FaceLocalPosition(localPosition, GhostConstants.GetTurnSpeed(turnSpeed), GhostConstants.GetTurnAcceleration(turnSpeed));
+	}
+
+	public void FaceLocalPosition(Vector3 localPosition, float degreesPerSecond, float turnAcceleration = 360f)
+	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
+		AttachedObject.FaceLocalPosition(localPosition, degreesPerSecond, turnAcceleration);
+	}
+
+	public void FaceNodeList(GhostNode[] nodeList, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern = false)
+	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
+		AttachedObject.FaceNodeList(nodeList, numNodes, turnSpeed, nodeDelay, autoFocusLantern);
+	}
+
+	public void FaceVelocity()
+	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
+		AttachedObject.FaceVelocity();
+	}
+
+	public void MoveToLocalPosition(Vector3 localPosition, MoveType moveType)
+	{
+		this.MoveToLocalPosition(localPosition, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
+	}
+
+	public void MoveToLocalPosition(Vector3 localPosition, float speed, float acceleration = 10f)
+	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
+		AttachedObject.MoveToLocalPosition(localPosition, speed, acceleration);
+	}
+
+	public void PathfindToLocalPosition(Vector3 localPosition, MoveType moveType)
+	{
+		this.PathfindToLocalPosition(localPosition, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
+	}
+
+	public void PathfindToLocalPosition(Vector3 localPosition, float speed, float acceleration = 10f)
+	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
+		AttachedObject.PathfindToLocalPosition(localPosition, speed, acceleration);
+	}
+
+	public void PathfindToNode(GhostNode node, MoveType moveType)
+	{
+		this.PathfindToNode(node, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
+	}
+
+	public void PathfindToNode(GhostNode node, float speed, float acceleration = 10f)
+	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
+		AttachedObject.PathfindToNode(node, speed, acceleration);
+	}
+
+	public void FaceNode(GhostNode node, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern = false)
+	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
+		AttachedObject.FaceNode(node, turnSpeed, nodeDelay, autoFocusLantern);
+	}
 }

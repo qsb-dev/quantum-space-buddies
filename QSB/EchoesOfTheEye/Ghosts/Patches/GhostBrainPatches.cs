@@ -274,6 +274,11 @@ internal class GhostBrainPatches : QSBPatch
 			return true;
 		}
 
+		if (!QSBCore.IsHost)
+		{
+			return false;
+		}
+
 		__instance.GetWorldObject<QSBGhostBrain>().Update();
 		return false;
 	}

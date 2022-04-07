@@ -1,4 +1,8 @@
 ﻿using GhostEnums;
+using QSB.EchoesOfTheEye.Ghosts.Messages;
+using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.Messaging;
+using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,11 +61,17 @@ internal class QSBChaseAction : QSBGhostAction
 	public override bool Update_Action()
 	{
 		if (_data.interestedPlayer.playerLocation.distance > 10f
-			&& !_controller.GetNodeMap().CheckLocalPointInBounds(_data.interestedPlayer.lastKnownPlayerLocation.localPosition))
+			&& !_controller.AttachedObject.GetNodeMap().CheckLocalPointInBounds(_data.interestedPlayer.lastKnownPlayerLocation.localPosition))
 		{
 			return false;
 		}
 
+		if (!QSBCore.IsHost)
+		{
+			return true;
+		}
+
+		var worldPos = _controller.AttachedObject.LocalToWorldPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition);
 		_controller.PathfindToLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, MoveType.CHASE);
 		_controller.FaceLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, TurnSpeed.FAST);
 		return true;

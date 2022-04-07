@@ -24,13 +24,13 @@ public class QSBHuntAction : QSBGhostAction
 	{
 		base.Initialize(brain);
 		_numNodesToSearch = 0;
-		_nodesToSearch = new GhostNodeMap.NodeSearchData[_controller.GetNodeMap().GetNodeCount()];
+		_nodesToSearch = new GhostNodeMap.NodeSearchData[_controller.AttachedObject.GetNodeMap().GetNodeCount()];
 		_currentNodeIndex = 0;
 		_huntStarted = false;
 		_huntStartTime = 0f;
 		_huntFailed = false;
 		_huntFailTime = 0f;
-		_controller.OnNodeMapChanged += new OWEvent.OWCallback(OnNodeMapChanged);
+		_controller.AttachedObject.OnNodeMapChanged += new OWEvent.OWCallback(OnNodeMapChanged);
 	}
 
 	private void OnNodeMapChanged()
@@ -42,7 +42,7 @@ public class QSBHuntAction : QSBGhostAction
 		}
 
 		_numNodesToSearch = 0;
-		_nodesToSearch = new GhostNodeMap.NodeSearchData[_controller.GetNodeMap().GetNodeCount()];
+		_nodesToSearch = new GhostNodeMap.NodeSearchData[_controller.AttachedObject.GetNodeMap().GetNodeCount()];
 		_currentNodeIndex = 0;
 	}
 
@@ -84,7 +84,7 @@ public class QSBHuntAction : QSBGhostAction
 		if (!_huntStarted || _data.interestedPlayer.timeLastSawPlayer > _huntStartTime)
 		{
 			var knownPlayerVelocity = _data.interestedPlayer.lastKnownSensor.knowsPlayerVelocity ? _data.interestedPlayer.lastKnownPlayerLocation.localVelocity : Vector3.zero;
-			_numNodesToSearch = _controller.GetNodeMap().FindPossiblePlayerNodes(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, knownPlayerVelocity, 30f, _nodesToSearch, true, null, null, null);
+			_numNodesToSearch = _controller.AttachedObject.GetNodeMap().FindPossiblePlayerNodes(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, knownPlayerVelocity, 30f, _nodesToSearch, true, null, null, null);
 			_currentNodeIndex = 0;
 			_startAtClosestNode = false;
 			_closestNode = null;
@@ -101,7 +101,7 @@ public class QSBHuntAction : QSBGhostAction
 
 		if (!_huntFailed)
 		{
-			_closestNode = _controller.GetNodeMap().FindClosestNode(_controller.GetLocalFeetPosition());
+			_closestNode = _controller.AttachedObject.GetNodeMap().FindClosestNode(_controller.AttachedObject.GetLocalFeetPosition());
 			for (var i = 0; i < _closestNode.visibleNodes.Count; i++)
 			{
 				for (var j = 0; j < _numNodesToSearch; j++)
@@ -143,15 +143,15 @@ public class QSBHuntAction : QSBGhostAction
 
 	public override void FixedUpdate_Action()
 	{
-		if (_huntStarted && !_huntFailed && _spotlightIndexList.Count > 0 && !_controller.GetDreamLanternController().IsConcealed())
+		if (_huntStarted && !_huntFailed && _spotlightIndexList.Count > 0 && !_controller.AttachedObject.GetDreamLanternController().IsConcealed())
 		{
 			for (var i = 0; i < _spotlightIndexList.Count; i++)
 			{
 				if (!_nodesToSearch[_spotlightIndexList[i]].searched)
 				{
-					var from = _nodesToSearch[_spotlightIndexList[i]].node.localPosition - _controller.GetLocalFeetPosition();
-					var light = _controller.GetDreamLanternController().GetLight();
-					var to = _controller.WorldToLocalDirection(light.transform.forward);
+					var from = _nodesToSearch[_spotlightIndexList[i]].node.localPosition - _controller.AttachedObject.GetLocalFeetPosition();
+					var light = _controller.AttachedObject.GetDreamLanternController().GetLight();
+					var to = _controller.AttachedObject.WorldToLocalDirection(light.transform.forward);
 					if (Vector3.Angle(from, to) < (light.GetLight().spotAngle * 0.5f) - 5f && from.sqrMagnitude < light.range * light.range)
 					{
 						_nodesToSearch[_spotlightIndexList[i]].searched = true;
@@ -290,7 +290,7 @@ public class QSBHuntAction : QSBGhostAction
 			{
 				var t = Mathf.Abs(_nodesToSearch[i].score) / 180f;
 				Popcron.Gizmos.Sphere(
-					_controller.LocalToWorldPosition(_nodesToSearch[i].node.localPosition),
+					_controller.AttachedObject.LocalToWorldPosition(_nodesToSearch[i].node.localPosition),
 					(i < _currentNodeIndex) ? 0.5f : 2f,
 					_nodesToSearch[i].searched ? Color.black : Color.HSVToRGB(Mathf.Lerp(0.5f, 0f, t), 1f, 1f));
 			}
