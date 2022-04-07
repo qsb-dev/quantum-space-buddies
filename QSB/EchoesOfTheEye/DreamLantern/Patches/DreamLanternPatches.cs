@@ -3,7 +3,6 @@ using QSB.EchoesOfTheEye.DreamLantern.Messages;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Player;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -17,23 +16,6 @@ internal class DreamLanternPatches : QSBPatch
 	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.Update))]
 	public static bool UpdateReplacement(DreamLanternItem __instance)
 	{
-		var heldItem = QSBPlayerManager.LocalPlayer.HeldItem;
-
-		if (heldItem == null)
-		{
-			return false;
-		}
-
-		if (heldItem is not QSBDreamLanternItem qsbLantern)
-		{
-			return false;
-		}
-
-		if (__instance != qsbLantern.AttachedObject)
-		{
-			return false;
-		}
-
 		var isHoldingItem = Locator.GetToolModeSwapper().IsInToolMode(ToolMode.Item);
 
 		__instance._wasFocusing = __instance._focusing;
