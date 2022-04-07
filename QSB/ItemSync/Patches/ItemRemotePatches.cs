@@ -36,10 +36,42 @@ internal class ItemRemotePatches : QSBPatch
 		{
 			__instance._lanternController.enabled = true;
 			__instance._lanternController.SetDetectorScaleCompensation(__instance._lanternController.transform.lossyScale);
-			__instance._lanternController.SetHeldByPlayer(true);
+			// __instance._lanternController.SetHeldByPlayer(true);
 			// Locator.GetPlayerController().SetDreamLantern(__instance);
 		}
 
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(VisionTorchItem), nameof(VisionTorchItem.PickUpItem))]
+	private static bool PickUpItem(VisionTorchItem __instance,
+		Transform holdTranform)
+	{
+		if (!Remote)
+		{
+			return true;
+		}
+
+		base_PickUpItem(__instance, holdTranform);
+		if (__instance._visionBeam != null)
+		{
+			__instance._visionBeam.localScale = Vector3.one * 5f;
+		}
+
+		/*
+		foreach (var renderer in __instance._worldModelRenderers)
+		{
+			renderer.SetActivation(false);
+		}
+
+		foreach (var renderer in __instance._viewModelRenderers)
+		{
+			renderer.SetActivation(true);
+		}
+
+		__instance.enabled = true;
+		*/
 		return false;
 	}
 
@@ -95,7 +127,7 @@ internal class ItemRemotePatches : QSBPatch
 		if (__instance._lanternController != null)
 		{
 			__instance._lanternController.SetDetectorScaleCompensation(__instance._lanternController.transform.lossyScale);
-			__instance._lanternController.SetHeldByPlayer(false);
+			// __instance._lanternController.SetHeldByPlayer(false);
 			__instance._lanternController.enabled = __instance._lanternController.IsLit();
 			// Locator.GetPlayerController().SetDreamLantern(null);
 		}
@@ -127,6 +159,7 @@ internal class ItemRemotePatches : QSBPatch
 			__instance._visionBeam.localScale = Vector3.one;
 		}
 
+		/*
 		foreach (var renderer in __instance._worldModelRenderers)
 		{
 			renderer.SetActivation(true);
@@ -138,6 +171,7 @@ internal class ItemRemotePatches : QSBPatch
 		}
 
 		__instance.enabled = false;
+		*/
 		return false;
 	}
 
@@ -162,10 +196,42 @@ internal class ItemRemotePatches : QSBPatch
 			__instance._lanternController.SetDetectorScaleCompensation(__instance._lanternController.transform.lossyScale);
 			__instance._lanternController.SetSocketed(true);
 			// __instance._lanternController.SetHeldByPlayer(false);
-			// __instance._lanternController.enabled = __instance._lanternController.IsLit();
+			__instance._lanternController.enabled = __instance._lanternController.IsLit();
 			// Locator.GetPlayerController().SetDreamLantern(null);
 		}
 
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(VisionTorchItem), nameof(VisionTorchItem.SocketItem))]
+	private static bool SocketItem(VisionTorchItem __instance,
+		Transform socketTransform, Sector sector)
+	{
+		if (!Remote)
+		{
+			return true;
+		}
+
+		base_SocketItem(__instance, socketTransform, sector);
+		if (__instance._visionBeam != null)
+		{
+			__instance._visionBeam.localScale = Vector3.one;
+		}
+
+		/*
+		foreach (var renderer in __instance._worldModelRenderers)
+		{
+			renderer.SetActivation(true);
+		}
+
+		foreach (var renderer in __instance._viewModelRenderers)
+		{
+			renderer.SetActivation(false);
+		}
+
+		__instance.enabled = false;
+		*/
 		return false;
 	}
 
