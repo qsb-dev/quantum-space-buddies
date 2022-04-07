@@ -81,6 +81,12 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
+		DrawGui();
+		DrawWorldObjectLabels();
+	}
+
+	private static void DrawGui()
+	{
 		guiGUIStyle.normal.textColor = Color.white;
 		GUI.contentColor = Color.white;
 
@@ -89,12 +95,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		column3Offset = 10f;
 		column4Offset = 10f;
 
-		DrawGui();
-		DrawWorldObjectLabels();
-	}
-
-	private static void DrawGui()
-	{
 		#region Column1 - Server data
 
 		WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
@@ -271,11 +271,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		foreach (var obj in QSBWorldSync.GetWorldObjects())
 		{
-			if (obj.AttachedObject == null)
-			{
-				return;
-			}
-
 			if (obj.ShouldDisplayDebug())
 			{
 				DrawLabel(obj.AttachedObject.transform, obj.ReturnLabel());
@@ -294,11 +289,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		foreach (var obj in QSBWorldSync.GetWorldObjects())
 		{
-			if (obj.AttachedObject == null)
-			{
-				return;
-			}
-
 			if (obj.ShouldDisplayDebug())
 			{
 				obj.DisplayLines();
