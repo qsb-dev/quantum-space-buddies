@@ -36,7 +36,7 @@ internal class ItemRemotePatches : QSBPatch
 		{
 			__instance._lanternController.enabled = true;
 			__instance._lanternController.SetDetectorScaleCompensation(__instance._lanternController.transform.lossyScale);
-			// __instance._lanternController.SetHeldByPlayer(true);
+			__instance._lanternController.SetHeldByPlayer(true);
 			// Locator.GetPlayerController().SetDreamLantern(__instance);
 		}
 
@@ -127,7 +127,7 @@ internal class ItemRemotePatches : QSBPatch
 		if (__instance._lanternController != null)
 		{
 			__instance._lanternController.SetDetectorScaleCompensation(__instance._lanternController.transform.lossyScale);
-			// __instance._lanternController.SetHeldByPlayer(false);
+			__instance._lanternController.SetHeldByPlayer(false);
 			__instance._lanternController.enabled = __instance._lanternController.IsLit();
 			// Locator.GetPlayerController().SetDreamLantern(null);
 		}
@@ -195,7 +195,7 @@ internal class ItemRemotePatches : QSBPatch
 		{
 			__instance._lanternController.SetDetectorScaleCompensation(__instance._lanternController.transform.lossyScale);
 			__instance._lanternController.SetSocketed(true);
-			// __instance._lanternController.SetHeldByPlayer(false);
+			__instance._lanternController.SetHeldByPlayer(false);
 			__instance._lanternController.enabled = __instance._lanternController.IsLit();
 			// Locator.GetPlayerController().SetDreamLantern(null);
 		}
