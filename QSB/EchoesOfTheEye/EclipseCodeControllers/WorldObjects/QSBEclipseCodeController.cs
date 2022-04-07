@@ -19,16 +19,21 @@ public class QSBEclipseCodeController : WorldObject<EclipseCodeController4>
 
 	public override async UniTask Init(CancellationToken ct)
 	{
+		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 		AttachedObject.gameObject.AddComponent<CodeControllerRemoteUpdater>();
 	}
 
 	public override void OnRemoval()
 	{
+		QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 		if (AttachedObject)
 		{
 			UnityEngine.Object.Destroy(AttachedObject.gameObject.GetComponent<CodeControllerRemoteUpdater>());
 		}
 	}
+
+	private void OnPlayerLeave(PlayerInfo obj) =>
+		this.SendMessage(new UseControllerMessage(false));
 
 	public void SetUser(uint user)
 	{
