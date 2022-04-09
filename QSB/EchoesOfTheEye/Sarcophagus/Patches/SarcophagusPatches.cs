@@ -17,11 +17,7 @@ public class SarcophagusPatches : QSBPatch
 	{
 		if (Remote)
 		{
-			return;
-		}
-
-		if (__instance._isOpen)
-		{
+			__instance.GetComponent<GearInterface>().OnPressInteract();
 			return;
 		}
 
