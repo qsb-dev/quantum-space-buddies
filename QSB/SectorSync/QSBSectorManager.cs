@@ -128,7 +128,6 @@ public class QSBSectorManager : WorldObjectManager
 			var probe = Locator._orbitalProbeCannon
 				.GetRequiredComponent<OrbitalProbeLaunchController>()
 				._probeBody;
-			probe.EnableKinematicSimulation();
 			if (probe)
 			{
 				// just create a big circle around the probe lol
