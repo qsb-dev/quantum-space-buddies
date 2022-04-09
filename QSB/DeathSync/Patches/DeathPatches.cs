@@ -45,6 +45,9 @@ public class DeathPatches : QSBPatch
 		// don't take damage from impact in ship
 		!PlayerState.IsInsideShip();
 
+	/// <summary>
+	/// don't insta-die from impact in ship
+	/// </summary>
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.FixedUpdate))]
 	public static bool HighSpeedImpactSensor_FixedUpdate(HighSpeedImpactSensor __instance)
