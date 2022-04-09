@@ -1,4 +1,6 @@
 ﻿using GhostEnums;
+using QSB.EchoesOfTheEye.Ghosts.Messages;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
 using System;
@@ -136,6 +138,8 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 			return;
 		}
 
+		var brain = AttachedObject.GetComponent<GhostBrain>();
+		this.SendMessage(new PathfindLocalPositionMessage(brain._effects._ghostIKController._sector, AttachedObject.LocalToWorldPosition(localPosition), speed, acceleration));
 		AttachedObject.PathfindToLocalPosition(localPosition, speed, acceleration);
 	}
 

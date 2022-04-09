@@ -1,7 +1,9 @@
 ﻿using GhostEnums;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Messaging;
+using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,23 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController, (Vector3 worldPos, MoveType moveType)>
+internal class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController, (int sectorId, Vector3 localPosition, float speed, float acceleration)>
 {
-	public PathfindLocalPositionMessage(Vector3 worldPosition, MoveType moveType) : base((worldPosition, moveType)) { }
+	public PathfindLocalPositionMessage(Sector sector, Vector3 worldPosition, float speed, float acceleration) : base(Process(sector, worldPosition, speed, acceleration)) { }
+
+	private static (int sectorId, Vector3 localPosition, float speed, float acceleration) Process(Sector sector, Vector3 worldPosition, float speed, float acceleration)
+	{
+		(int sectorId, Vector3 localPosition, float speed, float acceleration) ret = new();
+
+		ret.speed = speed;
+		ret.acceleration = acceleration;
+
+		var qsbSector = sector.GetWorldObject<QSBSector>();
+		ret.sectorId = qsbSector.ObjectId;
+		ret.localPosition = qsbSector.AttachedObject.transform.InverseTransformPoint(worldPosition);
+
+		return ret;
+	}
 
 	public override void OnReceiveRemote()
 	{
@@ -23,7 +39,10 @@ internal class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostCont
 			return;
 		}
 
-		DebugLog.DebugWrite($"{WorldObject.AttachedObject.name} Pathfind to local position {WorldObject.AttachedObject.WorldToLocalPosition(Data.worldPos)} with movetype {Data.moveType}");
-		WorldObject.AttachedObject.PathfindToLocalPosition(WorldObject.AttachedObject.WorldToLocalPosition(Data.worldPos), Data.moveType);
+		var sector = QSBWorldSync.GetWorldObject<QSBSector>(Data.sectorId);
+		var worldPos = sector.AttachedObject.transform.TransformPoint(Data.localPosition);
+
+		DebugLog.DebugWrite($"{WorldObject.AttachedObject.name} Pathfind to local position {WorldObject.AttachedObject.transform.InverseTransformPoint(worldPos)} with speed:{Data.speed}, acceleration:{Data.acceleration}");
+		WorldObject.AttachedObject.PathfindToLocalPosition(WorldObject.AttachedObject.transform.InverseTransformPoint(worldPos), Data.speed, Data.acceleration);
 	}
 }

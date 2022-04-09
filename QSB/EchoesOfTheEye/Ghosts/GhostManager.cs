@@ -25,6 +25,7 @@ internal class GhostManager : WorldObjectManager
 		QSBWorldSync.Init<QSBGhostController, GhostController>();
 		QSBWorldSync.Init<QSBGhostEffects, GhostEffects>();
 		QSBWorldSync.Init<QSBGhostSensors, GhostSensors>();
+		QSBWorldSync.Init<QSBGhostNodeMap, GhostNodeMap>();
 		QSBWorldSync.Init<QSBGhostBrain, GhostBrain>(QSBWorldSync.GetUnityObjects<GhostBrain>().Where(x => x.gameObject.activeSelf).SortDeterministic());
 
 		_hotelDirector = QSBWorldSync.GetUnityObjects<GhostHotelDirector>().First();
