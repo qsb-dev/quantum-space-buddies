@@ -1,29 +1,15 @@
 ﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Messaging;
-using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController, (int sectorId, Vector3 localPosition, float speed, float acceleration)>
+internal class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController,
+	(Vector3 localPosition, float speed, float acceleration)>
 {
-	public PathfindLocalPositionMessage(Sector sector, Vector3 worldPosition, float speed, float acceleration) : base(Process(sector, worldPosition, speed, acceleration)) { }
-
-	private static (int sectorId, Vector3 localPosition, float speed, float acceleration) Process(Sector sector, Vector3 worldPosition, float speed, float acceleration)
-	{
-		(int sectorId, Vector3 localPosition, float speed, float acceleration) ret = new();
-
-		ret.speed = speed;
-		ret.acceleration = acceleration;
-
-		var qsbSector = sector.GetWorldObject<QSBSector>();
-		ret.sectorId = qsbSector.ObjectId;
-		ret.localPosition = qsbSector.AttachedObject.transform.InverseTransformPoint(worldPosition);
-
-		return ret;
-	}
+	public PathfindLocalPositionMessage(Vector3 localPosition, float speed, float acceleration) :
+		base((localPosition, speed, acceleration)) { }
 
 	public override void OnReceiveRemote()
 	{
@@ -33,10 +19,7 @@ internal class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostCont
 			return;
 		}
 
-		var sector = Data.sectorId.GetWorldObject<QSBSector>();
-		var worldPos = sector.AttachedObject.transform.TransformPoint(Data.localPosition);
-
-		DebugLog.DebugWrite($"{WorldObject.AttachedObject.name} Pathfind to local position {WorldObject.AttachedObject.transform.InverseTransformPoint(worldPos)} with speed:{Data.speed}, acceleration:{Data.acceleration}");
-		WorldObject.AttachedObject.PathfindToLocalPosition(WorldObject.AttachedObject.WorldToLocalPosition(worldPos), Data.speed, Data.acceleration);
+		DebugLog.DebugWrite($"{WorldObject} Pathfind to local position {Data.localPosition} with speed:{Data.speed}, acceleration:{Data.acceleration}");
+		WorldObject.AttachedObject.PathfindToLocalPosition(Data.localPosition, Data.speed, Data.acceleration);
 	}
 }

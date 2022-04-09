@@ -138,8 +138,7 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 			return;
 		}
 
-		var brain = AttachedObject.GetComponent<GhostBrain>();
-		this.SendMessage(new PathfindLocalPositionMessage(brain._effects._ghostIKController._sector, AttachedObject.LocalToWorldPosition(localPosition), speed, acceleration));
+		this.SendMessage(new PathfindLocalPositionMessage(localPosition, speed, acceleration));
 		AttachedObject.PathfindToLocalPosition(localPosition, speed, acceleration);
 	}
 
