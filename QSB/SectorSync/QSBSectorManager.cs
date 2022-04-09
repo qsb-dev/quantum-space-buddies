@@ -122,6 +122,7 @@ public class QSBSectorManager : WorldObjectManager
 
 		// todo cage elevators
 		// todo prisoner elevator
+		// todo black hole forge
 
 		// OPC probe
 		{
