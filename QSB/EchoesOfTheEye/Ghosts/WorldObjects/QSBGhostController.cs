@@ -101,11 +101,16 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		AttachedObject.FaceNodeList(nodeList, numNodes, turnSpeed, nodeDelay, autoFocusLantern);
 	}
 
-	public void FaceVelocity()
+	public void FaceVelocity(bool remote = false)
 	{
-		if (!QSBCore.IsHost)
+		if (!remote)
 		{
-			return;
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new FaceVelocityMessage());
 		}
 
 		AttachedObject.FaceVelocity();
@@ -166,11 +171,16 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		AttachedObject.PathfindToNode(node, speed, acceleration);
 	}
 
-	public void FaceNode(GhostNode node, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern = false)
+	public void FaceNode(GhostNode node, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern = false, bool remote = false)
 	{
-		if (!QSBCore.IsHost)
+		if (!remote)
 		{
-			return;
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new FaceNodeMessage(node, turnSpeed, nodeDelay, autoFocusLantern));
 		}
 
 		AttachedObject.FaceNode(node, turnSpeed, nodeDelay, autoFocusLantern);

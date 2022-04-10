@@ -35,8 +35,6 @@ internal class PathfindNodeMessage : QSBWorldObjectMessage<QSBGhostController, (
 			return;
 		}
 
-		DebugLog.DebugWrite($"{WorldObject.AttachedObject.name} Pathfind to node {Data.nodeIndex} on map {Data.mapId} with speed:{Data.speed}, acceleration:{Data.acceleration}");
-
 		var map = Data.mapId.GetWorldObject<QSBGhostNodeMap>();
 		var node = map.AttachedObject._nodes[Data.nodeIndex];
 

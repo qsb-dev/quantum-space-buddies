@@ -75,6 +75,12 @@ public class QSBGhostData
 		foreach (var pair in players)
 		{
 			var player = pair.Value;
+
+			if (!player.player.InDreamWorld)
+			{
+				continue;
+			}
+
 			player.wasPlayerLocationKnown = player.isPlayerLocationKnown;
 			player.isPlayerLocationKnown = player.sensor.isPlayerVisible
 				|| player.sensor.isPlayerHeldLanternVisible
