@@ -25,6 +25,11 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
+		if (LightSensorManager.ShouldIgnore(__instance))
+		{
+			return true;
+		}
+
 		var flag = __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe);
 		if (flag && !__instance.enabled)
 		{
@@ -60,6 +65,11 @@ internal class LightSensorPatches : QSBPatch
 	private static bool UpdateIllumination(SingleLightSensor __instance)
 	{
 		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		if (LightSensorManager.ShouldIgnore(__instance))
 		{
 			return true;
 		}
