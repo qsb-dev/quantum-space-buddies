@@ -458,7 +458,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public void ChangeAction(QSBGhostAction action, bool remote = false)
 	{
-		if (remote)
+		if (!remote)
 		{
 			this.SendMessage(new ChangeActionMessage(_data.currentAction));
 		}
