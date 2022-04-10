@@ -1,21 +1,24 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
+using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 using System.Threading;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync;
 
 internal class LightSensorManager : WorldObjectManager
 {
-	/// <summary>
-	/// light sensor apparently shows up in eye
-	/// </summary>
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
-	/// <summary>
-	/// light sensor patches like to run even with no dlc
-	/// </summary>
-	public override bool DlcOnly => false;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+	public override bool DlcOnly => true;
 
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) =>
-		QSBWorldSync.Init<QSBLightSensor, SingleLightSensor>();
+	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+	{
+		// ignore player light sensors
+		var list = QSBWorldSync.GetUnityObjects<SingleLightSensor>()
+			.Where(x => QSBPlayerManager.PlayerList.All(y => y.LightSensor != x))
+			.SortDeterministic();
+		QSBWorldSync.Init<QSBLightSensor, SingleLightSensor>(list);
+	}
 }

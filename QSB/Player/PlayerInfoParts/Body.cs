@@ -58,6 +58,11 @@ public partial class PlayerInfo
 	{
 		get
 		{
+			if (IsLocalPlayer)
+			{
+				return Locator.GetPlayerLightSensor();
+			}
+
 			if (CameraBody == null)
 			{
 				DebugLog.ToConsole($"Error - Can't get LightSensor for {PlayerId}, because CameraBody is null.", MessageType.Error);
