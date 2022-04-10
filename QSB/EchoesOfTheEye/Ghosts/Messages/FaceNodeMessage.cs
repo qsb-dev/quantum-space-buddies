@@ -4,10 +4,7 @@ using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
@@ -20,7 +17,7 @@ internal class FaceNodeMessage : QSBWorldObjectMessage<QSBGhostController, (int 
 		(int mapId, int nodeIndex, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern) ret = new();
 
 		ret.turnSpeed = turnSpeed;
-		ret.nodeDelay = nodeDelay; ;
+		ret.nodeDelay = nodeDelay;
 		ret.autoFocusLantern = autoFocusLantern;
 
 		var nodeMaps = QSBWorldSync.GetWorldObjects<QSBGhostNodeMap>();
