@@ -131,14 +131,18 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		this.PathfindToLocalPosition(localPosition, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
 	}
 
-	public void PathfindToLocalPosition(Vector3 localPosition, float speed, float acceleration = 10f)
+	public void PathfindToLocalPosition(Vector3 localPosition, float speed, float acceleration = 10f, bool remote = false)
 	{
-		if (!QSBCore.IsHost)
+		if (!remote)
 		{
-			return;
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new PathfindLocalPositionMessage(localPosition, speed, acceleration));
 		}
 
-		this.SendMessage(new PathfindLocalPositionMessage(localPosition, speed, acceleration));
 		AttachedObject.PathfindToLocalPosition(localPosition, speed, acceleration);
 	}
 
@@ -147,11 +151,16 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		this.PathfindToNode(node, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
 	}
 
-	public void PathfindToNode(GhostNode node, float speed, float acceleration = 10f)
+	public void PathfindToNode(GhostNode node, float speed, float acceleration = 10f, bool remote = false)
 	{
-		if (!QSBCore.IsHost)
+		if (!remote)
 		{
-			return;
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new PathfindNodeMessage(node, speed, acceleration));
 		}
 
 		AttachedObject.PathfindToNode(node, speed, acceleration);

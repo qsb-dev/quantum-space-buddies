@@ -447,7 +447,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 		if (_pendingAction != null && AttachedObject._pendingActionTimer <= 0f)
 		{
-			this.SendMessage(new ChangeActionMessage(_pendingAction.GetName()));
 			ChangeAction(_pendingAction);
 		}
 
@@ -457,8 +456,13 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		}
 	}
 
-	public void ChangeAction(QSBGhostAction action)
+	public void ChangeAction(QSBGhostAction action, bool remote = false)
 	{
+		if (remote)
+		{
+			this.SendMessage(new ChangeActionMessage(_data.currentAction));
+		}
+
 		DebugLog.DebugWrite($"{AttachedObject._name} Change action to {action?.GetName()}");
 
 		if (_currentAction != null)
@@ -542,7 +546,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	{
 		AttachedObject.enabled = false;
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
-		this.SendMessage(new ChangeActionMessage(GhostAction.Name.None));
 		ChangeAction(null);
 		_data.OnPlayerExitDreamWorld();
 	}

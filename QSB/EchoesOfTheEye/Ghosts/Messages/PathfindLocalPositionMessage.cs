@@ -20,6 +20,6 @@ internal class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostCont
 		}
 
 		DebugLog.DebugWrite($"{WorldObject.AttachedObject.name} Pathfind to local position {Data.localPosition} with speed:{Data.speed}, acceleration:{Data.acceleration}");
-		WorldObject.AttachedObject.PathfindToLocalPosition(Data.localPosition, Data.speed, Data.acceleration);
+		WorldObject.PathfindToLocalPosition(Data.localPosition, Data.speed, Data.acceleration, true);
 	}
 }
