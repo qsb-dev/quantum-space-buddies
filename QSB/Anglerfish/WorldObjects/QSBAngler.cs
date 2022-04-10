@@ -28,7 +28,7 @@ public class QSBAngler : LinkedWorldObject<AnglerfishController, AnglerTransform
 			return;
 		}
 
-		TargetVelocity = TargetTransform.position - _lastTargetPosition;
+		TargetVelocity = (TargetTransform.position - _lastTargetPosition) / Time.fixedDeltaTime;
 		_lastTargetPosition = TargetTransform.position;
 	}
 }
