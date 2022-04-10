@@ -546,7 +546,11 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	{
 		AttachedObject.enabled = false;
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
-		ChangeAction(null);
+		if (QSBCore.IsHost)
+		{
+			ChangeAction(null);
+		}
+		
 		_data.OnPlayerExitDreamWorld();
 	}
 }

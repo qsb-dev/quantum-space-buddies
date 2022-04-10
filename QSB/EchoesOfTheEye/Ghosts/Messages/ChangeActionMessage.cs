@@ -10,6 +10,12 @@ internal class ChangeActionMessage : QSBWorldObjectMessage<QSBGhostBrain, GhostA
 
 	public override void OnReceiveRemote()
 	{
+		if (QSBCore.IsHost)
+		{
+			DebugLog.ToConsole("Error - Received ChangeActionMessage on host. Something has gone horribly wrong!", OWML.Common.MessageType.Error);
+			return;
+		}
+
 		DebugLog.DebugWrite($"{WorldObject.AttachedObject._name} Change action to {Data}");
 		WorldObject.ChangeAction(WorldObject.GetAction(Data), true);
 	}

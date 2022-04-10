@@ -45,6 +45,12 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 		foreach (var pair in _data.players)
 		{
 			var player = pair.Value;
+
+			if (player.player.AssignedSimulationLantern == null)
+			{
+				continue;
+			}
+
 			var lanternController = player.player.AssignedSimulationLantern.AttachedObject.GetLanternController();
 			var playerLightSensor = Locator.GetPlayerLightSensor();
 			player.sensor.isPlayerHoldingLantern = lanternController.IsHeldByPlayer();
