@@ -92,7 +92,7 @@ public class QSBGhostData
 			}
 
 			var worldPosition = pair.Key.Body.transform.position - pair.Key.Body.transform.up;
-			var worldVelocity = Locator.GetPlayerBody().GetVelocity() - controller.GetNodeMap().GetOWRigidbody().GetVelocity();
+			var worldVelocity = pair.Key.Velocity - controller.GetNodeMap().GetOWRigidbody().GetVelocity();
 			player.playerLocation.Update(worldPosition, worldVelocity, controller);
 			player.playerMinLanternRange = pair.Key.AssignedSimulationLantern.AttachedObject.GetLanternController().GetMinRange();
 			if (player.isPlayerLocationKnown)

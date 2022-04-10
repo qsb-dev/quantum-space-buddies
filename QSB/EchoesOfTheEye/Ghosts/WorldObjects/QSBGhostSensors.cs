@@ -52,7 +52,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 			}
 
 			var lanternController = player.player.AssignedSimulationLantern.AttachedObject.GetLanternController();
-			var playerLightSensor = Locator.GetPlayerLightSensor();
+			var playerLightSensor = player.player.LightSensor;
 			player.sensor.isPlayerHoldingLantern = lanternController.IsHeldByPlayer();
 			_data.isIlluminated = AttachedObject._lightSensor.IsIlluminated();
 			player.sensor.isIlluminatedByPlayer = (lanternController.IsHeldByPlayer() && AttachedObject._lightSensor.IsIlluminatedByLantern(lanternController));
