@@ -458,11 +458,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public void ChangeAction(QSBGhostAction action, bool remote = false)
 	{
-		if (!remote)
-		{
-			this.SendMessage(new ChangeActionMessage(_data.currentAction));
-		}
-
 		DebugLog.DebugWrite($"{AttachedObject._name} Change action to {action?.GetName()}");
 
 		if (_currentAction != null)
@@ -482,6 +477,11 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 			_data.OnEnterAction(_currentAction.GetName());
 		}
 		ClearPendingAction();
+
+		if (!remote)
+		{
+			this.SendMessage(new ChangeActionMessage(_data.currentAction));
+		}
 	}
 
 	public void ClearPendingAction()
