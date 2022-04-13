@@ -1,12 +1,6 @@
 ﻿using QSB.EchoesOfTheEye.Ghosts.Actions;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts;
@@ -24,6 +18,11 @@ public abstract class QSBGhostAction
 
 	public static QSBGhostAction CreateAction(GhostAction.Name name)
 	{
+		if (!QSBCore.IsHost)
+		{
+			return new QSBGhostActionStub { Name = name };
+		}
+
 		QSBGhostAction ghostAction;
 		switch (name)
 		{
@@ -31,7 +30,7 @@ public abstract class QSBGhostAction
 				ghostAction = new QSBWaitAction();
 				break;
 			case GhostAction.Name.Sleep:
-				ghostAction = new QSBSleepAction();
+				ghostAction =  new QSBSleepAction();
 				break;
 			case GhostAction.Name.Sleepwalk:
 				ghostAction = new QSBSleepwalkAction();
@@ -93,12 +92,24 @@ public abstract class QSBGhostAction
 	{
 		this._running = true;
 		this._enterTime = Time.time;
+
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
 		this.OnEnterAction();
 	}
 
 	public void ExitAction()
 	{
 		this._running = false;
+
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
 		this.OnExitAction();
 	}
 

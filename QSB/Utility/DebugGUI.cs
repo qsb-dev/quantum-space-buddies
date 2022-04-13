@@ -150,9 +150,18 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			WriteLine(2, $"Visible : {player.Visible}");
 			WriteLine(2, $"Ready : {player.IsReady}");
 			WriteLine(2, $"Suited Up : {player.SuitedUp}");
+			WriteLine(2, $"InDreamWorld : {player.InDreamWorld}");
+			
 
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
 			{
+				WriteLine(2, $"Illuminated : {player.LightSensor.IsIlluminated()}");
+				var singleLightSensor = player.LightSensor as SingleLightSensor;
+				foreach (var item in singleLightSensor._lightSources)
+				{
+					WriteLine(2, $"- {item.GetLightSourceType()}");
+				}
+
 				var networkTransform = player.TransformSync;
 				var referenceSector = networkTransform.ReferenceSector;
 				var referenceTransform = networkTransform.ReferenceTransform;
@@ -223,6 +232,37 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		#endregion
 
+		if (QSBWorldSync.AllObjectsReady)
+		{
+			var ghost = QSBWorldSync.GetWorldObjects<QSBGhostBrain>().First(x => x.AttachedObject._name == "Kamaji");
+			WriteLine(4, ghost.AttachedObject._name);
+			WriteLine(4, $"Action:{ghost.GetCurrentActionName()}");
+			WriteLine(4, $"Threat Awareness:{ghost.GetThreatAwareness()}");
+			var interestedPlayer = ghost._data.interestedPlayer;
+			WriteLine(4, $"InterestedPlayer:{(interestedPlayer == null ? "NULL" : interestedPlayer.player.PlayerId)}");
+
+			foreach (var player in ghost._data.players.Values)
+			{
+				WriteLine(4, $"{player.player.PlayerId}");
+				WriteLine(4, $"- isPlayerVisible:{player.sensor.isPlayerVisible}");
+				WriteLine(4, $"- isPlayerHeldLanternVisible:{player.sensor.isPlayerHeldLanternVisible}");
+				WriteLine(4, $"- isIlluminatedByPlayer:{player.sensor.isIlluminatedByPlayer}");
+				WriteLine(4, $"- isPlayerLocationKnown:{player.isPlayerLocationKnown}");
+				WriteLine(4, $"- timeSincePlayerLocationKnown:{player.timeSincePlayerLocationKnown}");
+				var lantern = player.player.AssignedSimulationLantern;
+				WriteLine(4, $"- IsHeldByPlayer:{lantern.AttachedObject.GetLanternController().IsHeldByPlayer()}");
+				WriteLine(4, $"- Concealed:{lantern.AttachedObject.GetLanternController().IsConcealed()}");
+				var position = player.player.Camera.transform.position;
+				WriteLine(4, $"- Camera in vision cone:{ghost.AttachedObject._sensors.CheckPointInVisionCone(position)}");
+				WriteLine(4, $"- CheckLineOccluded:{ghost.AttachedObject._sensors.CheckLineOccluded(ghost.AttachedObject._sensors._sightOrigin.position, position)}");
+			}
+
+			WriteLine(4, $"First check:{!ghost.AttachedObject._intruderConfirmPending}");
+			WriteLine(4, $"Second check:{ghost._data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || ghost._data.players.Values.Any(x => x.playerLocation.distance < 20f) || ghost._data.players.Values.Any(x => x.sensor.isPlayerIlluminatedByUs)}");
+			WriteLine(4, $"Third check:{ghost._data.players.Values.Any(x => x.sensor.isPlayerVisible) || ghost._data.players.Values.Any(x => x.sensor.inContactWithPlayer)}");
+		}
+
+		/*
 		#region Column4 - Quantum Object Possesion
 
 		foreach (var player in QSBPlayerManager.PlayerList)
@@ -261,6 +301,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		}
 
 		#endregion
+		*/
 	}
 
 	private static void DrawWorldObjectLabels()

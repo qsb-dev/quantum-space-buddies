@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using GhostEnums;
 using QSB.EchoesOfTheEye.Ghosts.Messages;
 using QSB.Messaging;
 using QSB.Player;
@@ -39,6 +40,14 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 			$"\r\nAwareness:{AttachedObject.GetThreatAwareness()}" +
 			$"\r\nCurrent action:{AttachedObject.GetCurrentActionName()}" +
 			$"\r\nIllumination meter:{_data.illuminatedByPlayerMeter}";
+
+		if (QSBCore.IsHost)
+		{
+			foreach (var action in _actionLibrary.OrderByDescending(x => x.CalculateUtility()))
+			{
+				label += $"\r\n{action.GetName()}:{action.CalculateUtility()}";
+			}
+		}
 
 		return label;
 	}
@@ -336,11 +345,19 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	{
 		if (!AttachedObject.enabled)
 		{
+			DebugLog.DebugWrite($"attached object is not enabled!");
 			return;
 		}
+
 		AttachedObject._controller.FixedUpdate_Controller();
 		AttachedObject._sensors.FixedUpdate_Sensors();
 		_data.FixedUpdate_Data(AttachedObject._controller, AttachedObject._sensors);
+
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
 		AttachedObject.FixedUpdate_ThreatAwareness();
 		if (_currentAction != null)
 		{
@@ -354,9 +371,16 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			return;
 		}
+
 		AttachedObject._controller.Update_Controller();
 		AttachedObject._sensors.Update_Sensors();
 		AttachedObject._effects.Update_Effects();
+
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
 		var flag = false;
 		if (_currentAction != null)
 		{
@@ -384,8 +408,11 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 			return;
 		}
 
-		if (!AttachedObject._intruderConfirmPending && (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.players.Values.Any(x => x.playerLocation.distance < 20f) || _data.players.Values.Any(x => x.sensor.isPlayerIlluminatedByUs)) && (_data.players.Values.Any(x => x.sensor.isPlayerVisible) || _data.players.Values.Any(x => x.sensor.inContactWithPlayer)))
+		if (!AttachedObject._intruderConfirmPending
+			&& (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.players.Values.Any(x => x.playerLocation.distance < 20f) || _data.players.Values.Any(x => x.sensor.isPlayerIlluminatedByUs))
+			&& (_data.players.Values.Any(x => x.sensor.isPlayerVisible) || _data.players.Values.Any(x => x.sensor.inContactWithPlayer)))
 		{
+			DebugLog.DebugWrite($"INTRUDER CONFIRMED BY SELF");
 			AttachedObject._intruderConfirmedBySelf = true;
 			AttachedObject._intruderConfirmPending = true;
 			var closestPlayer = _data.players.Values.MinBy(x => x.playerLocation.distance);
@@ -498,6 +525,11 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public void OnArriveAtPosition()
 	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
 		if (_currentAction != null)
 		{
 			_currentAction.OnArriveAtPosition();
@@ -551,7 +583,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	{
 		AttachedObject.enabled = false;
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
-		ChangeAction(null);
+		//ChangeAction(null);
 		_data.OnPlayerExitDreamWorld();
 	}
 }

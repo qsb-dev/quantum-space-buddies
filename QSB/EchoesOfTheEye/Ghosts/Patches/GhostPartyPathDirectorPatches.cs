@@ -45,6 +45,11 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 			return true;
 		}
 
+		if (!QSBCore.IsHost)
+		{
+			return false;
+		}
+
 		if (__instance._connectedCampfireExtinguished)
 		{
 			return false;

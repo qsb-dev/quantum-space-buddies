@@ -16,7 +16,7 @@ internal class DreamLanternStateMessage : QSBMessage<(DreamLanternActionType Typ
 
 		if (heldItem is not QSBDreamLanternItem lantern)
 		{
-			DebugLog.ToConsole($"Error - Got DreamLanternStateMessage from player {From}, but they are not holding a QSBDreamLanternItem!");
+			DebugLog.ToConsole($"Error - Got DreamLanternStateMessage from player {From}, but they are not holding a QSBDreamLanternItem!", OWML.Common.MessageType.Error);
 			return;
 		}
 
@@ -25,6 +25,7 @@ internal class DreamLanternStateMessage : QSBMessage<(DreamLanternActionType Typ
 		switch (Data.Type)
 		{
 			case DreamLanternActionType.CONCEAL:
+				DebugLog.DebugWrite($"CONCEAL {lantern.AttachedObject.name}");
 				controller.SetConcealed(Data.BoolValue);
 				break;
 			case DreamLanternActionType.FOCUS:
