@@ -44,7 +44,7 @@ public class QSBStalkAction : QSBGhostAction
 		_controller.SetLanternConcealed(!_isFocusingLight, true);
 		_controller.FaceVelocity();
 		_effects.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
-		_effects.AttachedObject.PlayVoiceAudioNear(_data.fastStalkUnlocked ? AudioType.Ghost_Stalk_Fast : AudioType.Ghost_Stalk, 1f);
+		_effects.PlayVoiceAudioNear(_data.fastStalkUnlocked ? AudioType.Ghost_Stalk_Fast : AudioType.Ghost_Stalk, 1f);
 	}
 
 	public override bool Update_Action()
@@ -53,7 +53,7 @@ public class QSBStalkAction : QSBGhostAction
 		{
 			DebugLog.DebugWrite($"{_brain.AttachedObject._name} Fast stalk unlocked.");
 			_data.fastStalkUnlocked = true;
-			_effects.AttachedObject.PlayVoiceAudioNear(AudioType.Ghost_Stalk_Fast, 1f);
+			_effects.PlayVoiceAudioNear(AudioType.Ghost_Stalk_Fast, 1f);
 		}
 
 		return true;

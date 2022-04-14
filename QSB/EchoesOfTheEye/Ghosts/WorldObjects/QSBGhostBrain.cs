@@ -259,13 +259,13 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 			{
 				if (AttachedObject._intruderConfirmedBySelf)
 				{
-					AttachedObject._effects.PlayVoiceAudioFar(global::AudioType.Ghost_IntruderConfirmed, 1f);
+					AttachedObject._effects.GetWorldObject<QSBGhostEffects>().PlayVoiceAudioFar(global::AudioType.Ghost_IntruderConfirmed, 1f);
 					return;
 				}
 
 				if (AttachedObject._playResponseAudio)
 				{
-					AttachedObject._effects.PlayVoiceAudioFar(global::AudioType.Ghost_IntruderConfirmedResponse, 1f);
+					AttachedObject._effects.GetWorldObject<QSBGhostEffects>().PlayVoiceAudioFar(global::AudioType.Ghost_IntruderConfirmedResponse, 1f);
 					AttachedObject._playResponseAudio = false;
 				}
 			}

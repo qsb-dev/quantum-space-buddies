@@ -48,7 +48,7 @@ internal class QSBGrabAction : QSBGhostAction
 		_controller.ChangeLanternFocus(0f, 2f);
 		if (_data.previousAction != GhostAction.Name.Chase)
 		{
-			_effects.AttachedObject.PlayVoiceAudioNear((_data.interestedPlayer.sensor.isPlayerVisible || PlayerData.GetReducedFrights()) ? AudioType.Ghost_Grab_Shout : AudioType.Ghost_Grab_Scream, 1f);
+			_effects.PlayVoiceAudioNear((_data.interestedPlayer.sensor.isPlayerVisible || PlayerData.GetReducedFrights()) ? AudioType.Ghost_Grab_Shout : AudioType.Ghost_Grab_Scream, 1f);
 		}
 	}
 

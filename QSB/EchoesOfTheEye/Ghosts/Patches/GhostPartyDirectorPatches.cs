@@ -38,7 +38,7 @@ internal class GhostPartyDirectorPatches : QSBPatch
 		ghost.HintPlayerLocation(ghost._data.players.MinBy(x => x.Value.playerLocation.distance).Key);
 		if (firstAmbush)
 		{
-			ghost.GetEffects().PlayVoiceAudioNear(global::AudioType.Ghost_Stalk, 1f);
+			ghost.GetEffects().GetWorldObject<QSBGhostEffects>().PlayVoiceAudioNear(global::AudioType.Ghost_Stalk, 1f);
 		}
 
 		__instance._ghostsWaitingToAmbush.QuickRemoveAt(index);

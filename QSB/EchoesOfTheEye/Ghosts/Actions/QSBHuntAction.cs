@@ -123,7 +123,7 @@ public class QSBHuntAction : QSBGhostAction
 				_controller.PathfindToNode(_nodesToSearch[_currentNodeIndex].node, MoveType.SEARCH);
 			}
 
-			_effects.AttachedObject.PlayVoiceAudioNear(AudioType.Ghost_Hunt, 1f);
+			_effects.PlayVoiceAudioNear(AudioType.Ghost_Hunt, 1f);
 		}
 	}
 
@@ -132,7 +132,7 @@ public class QSBHuntAction : QSBGhostAction
 		if (_huntFailed && !_data.interestedPlayer.isPlayerLocationKnown)
 		{
 			DebugLog.DebugWrite($"{_brain.AttachedObject._name} : Hunt failed. :(");
-			_effects.AttachedObject.PlayVoiceAudioNear(AudioType.Ghost_HuntFail, 1f);
+			_effects.PlayVoiceAudioNear(AudioType.Ghost_HuntFail, 1f);
 		}
 	}
 

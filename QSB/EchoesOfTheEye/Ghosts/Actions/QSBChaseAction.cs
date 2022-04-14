@@ -53,7 +53,7 @@ internal class QSBChaseAction : QSBGhostAction
 		_effects.SetMovementStyle(GhostEffects.MovementStyle.Chase);
 		if (Time.time > _lastScreamTime + 10f && !PlayerData.GetReducedFrights())
 		{
-			_effects.AttachedObject.PlayVoiceAudioNear(global::AudioType.Ghost_Chase, 1f);
+			_effects.PlayVoiceAudioNear(global::AudioType.Ghost_Chase, 1f);
 			_lastScreamTime = Time.time;
 		}
 	}

@@ -65,7 +65,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		if (AttachedObject._waitToRespondToHelpCall && Time.time >= AttachedObject._respondToHelpCallTime)
 		{
 			AttachedObject._waitToRespondToHelpCall = false;
-			AttachedObject.PlayVoiceAudioFar(AudioType.Ghost_CallForHelpResponse, 1f);
+			PlayVoiceAudioFar(AudioType.Ghost_CallForHelpResponse, 1f);
 		}
 
 		if (AttachedObject._waitForGrabWindow && AttachedObject._animator.GetFloat(GhostEffects.AnimatorKeys.AnimCurve_GrabWindow) > 0.5f)
@@ -137,5 +137,35 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		}
 
 		AttachedObject.SetMovementStyle(style);
+	}
+
+	public void PlayVoiceAudioNear(AudioType audioType, float volumeScale, bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new PlayVoiceAudioMessage(audioType, volumeScale, true));
+		}
+
+		AttachedObject.PlayVoiceAudioNear(audioType, volumeScale);
+	}
+
+	public void PlayVoiceAudioFar(AudioType audioType, float volumeScale, bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new PlayVoiceAudioMessage(audioType, volumeScale, false));
+		}
+
+		AttachedObject.PlayVoiceAudioFar(audioType, volumeScale);
 	}
 }

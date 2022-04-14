@@ -91,7 +91,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 		_searchNodesComplete = false;
 		_checkingTargetLocation = false;
 		_checkTimer = 0f;
-		_effects.AttachedObject.PlayVoiceAudioNear((_numTimesIlluminatedByPlayer <= 2) ? AudioType.Ghost_Identify_Curious : AudioType.Ghost_Identify_Irritated, 1f);
+		_effects.PlayVoiceAudioNear((_numTimesIlluminatedByPlayer <= 2) ? AudioType.Ghost_Identify_Curious : AudioType.Ghost_Identify_Irritated, 1f);
 	}
 
 	protected override void OnExitAction()
@@ -114,7 +114,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 		if ((_searchNodesNearTarget && _checkTimer > 1f) || _checkTimer > 3f)
 		{
 			DebugLog.DebugWrite($"{_brain.AttachedObject._name} : Couldn't identify target. :(");
-			_effects.AttachedObject.PlayVoiceAudioNear(AudioType.Ghost_Identify_Fail, 1f);
+			_effects.PlayVoiceAudioNear(AudioType.Ghost_Identify_Fail, 1f);
 			return false;
 		}
 
