@@ -68,8 +68,18 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		AttachedObject._lanternFocusRate = focusRate;
 	}
 
-	public void FacePlayer(PlayerInfo player, TurnSpeed turnSpeed)
+	public void FacePlayer(PlayerInfo player, TurnSpeed turnSpeed, bool remote = false)
 	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new FacePlayerMessage(player.PlayerId, turnSpeed));
+		}
+
 		AttachedObject._facingState = GhostController.FacingState.FaceTransform;
 		AttachedObject._faceTransform = player.Camera.transform;
 		AttachedObject._targetDegreesPerSecond = GhostConstants.GetTurnSpeed(turnSpeed);
@@ -81,21 +91,31 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		FaceLocalPosition(localPosition, GhostConstants.GetTurnSpeed(turnSpeed), GhostConstants.GetTurnAcceleration(turnSpeed));
 	}
 
-	public void FaceLocalPosition(Vector3 localPosition, float degreesPerSecond, float turnAcceleration = 360f)
+	public void FaceLocalPosition(Vector3 localPosition, float degreesPerSecond, float turnAcceleration = 360f, bool remote = false)
 	{
-		if (!QSBCore.IsHost)
+		if (!remote)
 		{
-			return;
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new FaceLocalPositionMessage(localPosition, degreesPerSecond, turnAcceleration));
 		}
 
 		AttachedObject.FaceLocalPosition(localPosition, degreesPerSecond, turnAcceleration);
 	}
 
-	public void FaceNodeList(GhostNode[] nodeList, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern = false)
+	public void FaceNodeList(GhostNode[] nodeList, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern = false, bool remote = false)
 	{
-		if (!QSBCore.IsHost)
+		if (!remote)
 		{
-			return;
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new FaceNodeListMessage(nodeList, numNodes, turnSpeed, nodeDelay, autoFocusLantern));
 		}
 
 		AttachedObject.FaceNodeList(nodeList, numNodes, turnSpeed, nodeDelay, autoFocusLantern);
@@ -118,14 +138,19 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 
 	public void MoveToLocalPosition(Vector3 localPosition, MoveType moveType)
 	{
-		this.MoveToLocalPosition(localPosition, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
+		MoveToLocalPosition(localPosition, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
 	}
 
-	public void MoveToLocalPosition(Vector3 localPosition, float speed, float acceleration = 10f)
+	public void MoveToLocalPosition(Vector3 localPosition, float speed, float acceleration = 10f, bool remote = false)
 	{
-		if (!QSBCore.IsHost)
+		if (!remote)
 		{
-			return;
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new MoveToLocalPositionMessage(localPosition, speed, acceleration));
 		}
 
 		AttachedObject.MoveToLocalPosition(localPosition, speed, acceleration);
@@ -133,7 +158,7 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 
 	public void PathfindToLocalPosition(Vector3 localPosition, MoveType moveType)
 	{
-		this.PathfindToLocalPosition(localPosition, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
+		PathfindToLocalPosition(localPosition, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
 	}
 
 	public void PathfindToLocalPosition(Vector3 localPosition, float speed, float acceleration = 10f, bool remote = false)
@@ -153,7 +178,7 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 
 	public void PathfindToNode(GhostNode node, MoveType moveType)
 	{
-		this.PathfindToNode(node, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
+		PathfindToNode(node, GhostConstants.GetMoveSpeed(moveType), GhostConstants.GetMoveAcceleration(moveType));
 	}
 
 	public void PathfindToNode(GhostNode node, float speed, float acceleration = 10f, bool remote = false)
@@ -184,5 +209,62 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		}
 
 		AttachedObject.FaceNode(node, turnSpeed, nodeDelay, autoFocusLantern);
+	}
+
+	public void FaceLocalDirection(Vector3 localDirection, TurnSpeed turnSpeed)
+	{
+		FaceLocalDirection(localDirection, GhostConstants.GetTurnSpeed(turnSpeed), GhostConstants.GetTurnAcceleration(turnSpeed));
+	}
+
+	public void FaceLocalDirection(Vector3 localDirection, float degreesPerSecond, float turnAcceleration = 360f, bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new FaceLocalDirectionMessage(localDirection, degreesPerSecond, turnAcceleration));
+		}
+
+		AttachedObject.FaceLocalDirection(localDirection, degreesPerSecond, turnAcceleration);
+	}
+
+	public void StopMoving()
+	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
+		this.SendMessage(new StopMovingMessage(false));
+		AttachedObject.StopMoving();
+	}
+
+	public void StopMovingInstantly()
+	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
+
+		this.SendMessage(new StopMovingMessage(true));
+		AttachedObject.StopMovingInstantly();
+	}
+
+	public void StopFacing(bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new StopFacingMessage());
+		}
+
+		AttachedObject.StopFacing();
 	}
 }

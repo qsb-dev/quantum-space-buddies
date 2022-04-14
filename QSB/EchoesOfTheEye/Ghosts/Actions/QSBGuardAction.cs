@@ -90,8 +90,8 @@ public class QSBGuardAction : QSBGhostAction
 		{
 			_watchingPlayer = true;
 			_searchingAtNode = false;
-			_controller.AttachedObject.StopMoving();
-			_controller.AttachedObject.FacePlayer(TurnSpeed.MEDIUM);
+			_controller.StopMoving();
+			_controller.FacePlayer(_data.interestedPlayer.player, TurnSpeed.MEDIUM);
 		}
 		else if (_watchingPlayer && !flag && Time.time - _lastSawPlayer > 1f)
 		{

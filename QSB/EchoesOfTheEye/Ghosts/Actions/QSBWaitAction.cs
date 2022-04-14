@@ -34,13 +34,13 @@ public class QSBWaitAction : QSBGhostAction
 	{
 		if (!PlayerState.IsGrabbedByGhost())
 		{
-			_controller.AttachedObject.StopMoving();
-			_controller.AttachedObject.StopFacing();
+			_controller.StopMoving();
+			_controller.StopFacing();
 			return;
 		}
 
 		_effects.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
-		_controller.AttachedObject.FacePlayer(TurnSpeed.MEDIUM);
+		_controller.FacePlayer(_data.interestedPlayer.player, TurnSpeed.MEDIUM);
 		if (_data.interestedPlayer.playerLocation.distanceXZ < 3f)
 		{
 			Vector3 toPositionXZ = _data.interestedPlayer.playerLocation.toPositionXZ;
@@ -48,7 +48,7 @@ public class QSBWaitAction : QSBGhostAction
 			return;
 		}
 
-		_controller.AttachedObject.StopMoving();
+		_controller.StopMoving();
 	}
 
 	public override bool Update_Action()

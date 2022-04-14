@@ -236,8 +236,8 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		}
 
 		_data.isAlive = false;
-		AttachedObject._controller.StopMoving();
-		AttachedObject._controller.StopFacing();
+		AttachedObject._controller.GetWorldObject<QSBGhostController>().StopMoving();
+		AttachedObject._controller.GetWorldObject<QSBGhostController>().StopFacing();
 		AttachedObject._controller.ExtinguishLantern();
 		AttachedObject._controller.GetCollider().GetComponent<OWCollider>().SetActivation(false);
 		AttachedObject._controller.GetGrabController().ReleasePlayer();

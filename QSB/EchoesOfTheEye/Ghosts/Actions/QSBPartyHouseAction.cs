@@ -48,7 +48,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 	{
 		this._allowChasePlayer = true;
 		this._controller.SetLanternConcealed(true, true);
-		this._controller.AttachedObject.FacePlayer(TurnSpeed.MEDIUM);
+		this._controller.FacePlayer(_data.interestedPlayer.player, TurnSpeed.MEDIUM);
 		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
 	}
 
@@ -88,7 +88,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 			bool isIlluminatedByPlayer = this._data.IsIlluminatedByAnyPlayer;
 			if ((this._waitingToLookAtPlayer && Time.time > this._lookAtPlayerTime) || isIlluminatedByPlayer)
 			{
-				this._controller.AttachedObject.FacePlayer(isIlluminatedByPlayer ? TurnSpeed.SLOW : this._lookSpeed);
+				this._controller.FacePlayer(_data.interestedPlayer.player, isIlluminatedByPlayer ? TurnSpeed.SLOW : this._lookSpeed);
 				this._waitingToLookAtPlayer = false;
 				this._lookingAtPlayer = true;
 			}

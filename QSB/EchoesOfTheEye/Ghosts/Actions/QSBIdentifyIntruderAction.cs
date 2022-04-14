@@ -205,7 +205,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 			{
 				if (_allowFocusBeam || !_data.interestedPlayer.isPlayerLocationKnown)
 				{
-					_controller.AttachedObject.StopMoving();
+					_controller.StopMoving();
 				}
 
 				if (_data.interestedPlayer.lastKnownPlayerLocation.degreesToPositionXZ < 5f && (isLastKnownLocationInRange || _controller.AttachedObject.IsLanternFocused()))

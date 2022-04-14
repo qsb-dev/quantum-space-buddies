@@ -67,7 +67,7 @@ public class QSBPartyPathAction : QSBGhostAction
 		this._allowFollowPath = false;
 		this._reachedEndOfPath = false;
 		this._isMovingToFinalPosition = false;
-		this._controller.AttachedObject.StopMoving();
+		this._controller.StopMoving();
 		this._controller.SetLanternConcealed(true, false);
 	}
 
