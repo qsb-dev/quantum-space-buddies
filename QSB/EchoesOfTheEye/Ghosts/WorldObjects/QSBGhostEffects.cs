@@ -168,4 +168,79 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 
 		AttachedObject.PlayVoiceAudioFar(audioType, volumeScale);
 	}
+
+	public void PlaySleepAnimation(bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new GhostAnimationTriggerMessage(GhostAnimationType.Sleep));
+		}
+
+		AttachedObject.PlaySleepAnimation();
+	}
+
+	public void PlayDefaultAnimation(bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new GhostAnimationTriggerMessage(GhostAnimationType.Default));
+		}
+
+		AttachedObject.PlayDefaultAnimation();
+	}
+
+	public void PlayGrabAnimation(bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new GhostAnimationTriggerMessage(GhostAnimationType.Grab));
+		}
+
+		AttachedObject.PlayGrabAnimation();
+	}
+
+	public void PlayBlowOutLanternAnimation(bool fast = false, bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new GhostAnimationTriggerMessage(fast ? GhostAnimationType.BlowOutLanternFast : GhostAnimationType.BlowOutLanternNormal));
+		}
+
+		AttachedObject.PlayBlowOutLanternAnimation(fast);
+	}
+
+	public void PlaySnapNeckAnimation(bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new GhostAnimationTriggerMessage(GhostAnimationType.SnapNeck));
+		}
+
+		AttachedObject.PlaySnapNeckAnimation();
+	}
 }

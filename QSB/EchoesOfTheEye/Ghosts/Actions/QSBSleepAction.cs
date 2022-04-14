@@ -30,7 +30,7 @@ public class QSBSleepAction : QSBGhostAction
 			{
 				DebugLog.DebugWrite($"{_brain.AttachedObject._name} : Who dares awaken me?");
 				_state = SleepAction.WakeState.Awake;
-				_effects.AttachedObject.PlayDefaultAnimation();
+				_effects.PlayDefaultAnimation();
 			}
 		}
 		else if (_state is not SleepAction.WakeState.WakingUp and SleepAction.WakeState.Awake)
@@ -44,7 +44,7 @@ public class QSBSleepAction : QSBGhostAction
 	private void EnterSleepState()
 	{
 		_controller.SetLanternConcealed(true, true);
-		_effects.AttachedObject.PlaySleepAnimation();
+		_effects.PlaySleepAnimation();
 		_state = SleepAction.WakeState.Sleeping;
 	}
 

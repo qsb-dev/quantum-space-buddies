@@ -67,7 +67,7 @@ public class QSBElevatorWalkAction : QSBGhostAction
 	{
 		this._controller.SetLanternConcealed(true, true);
 		this._controller.FaceVelocity();
-		this._effects.AttachedObject.PlayDefaultAnimation();
+		this._effects.PlayDefaultAnimation();
 		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		if (this._elevatorNode != null)
 		{
