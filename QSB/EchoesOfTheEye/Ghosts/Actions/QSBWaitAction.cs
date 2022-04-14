@@ -39,7 +39,7 @@ public class QSBWaitAction : QSBGhostAction
 			return;
 		}
 
-		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
+		_effects.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
 		_controller.AttachedObject.FacePlayer(TurnSpeed.MEDIUM);
 		if (_data.interestedPlayer.playerLocation.distanceXZ < 3f)
 		{

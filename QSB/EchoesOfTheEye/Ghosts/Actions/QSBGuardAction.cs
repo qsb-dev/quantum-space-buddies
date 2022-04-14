@@ -51,7 +51,7 @@ public class QSBGuardAction : QSBGhostAction
 	{
 		_controller.SetLanternConcealed(true, true);
 		_sensors.AttachedObject.SetContactEdgeCatcherWidth(5f);
-		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
+		_effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		ContinueSearch();
 	}
 

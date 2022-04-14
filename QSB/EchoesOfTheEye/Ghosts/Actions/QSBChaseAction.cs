@@ -50,7 +50,7 @@ internal class QSBChaseAction : QSBGhostAction
 	protected override void OnEnterAction()
 	{
 		_controller.SetLanternConcealed(false, true);
-		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Chase);
+		_effects.SetMovementStyle(GhostEffects.MovementStyle.Chase);
 		if (Time.time > _lastScreamTime + 10f && !PlayerData.GetReducedFrights())
 		{
 			_effects.AttachedObject.PlayVoiceAudioNear(global::AudioType.Ghost_Chase, 1f);

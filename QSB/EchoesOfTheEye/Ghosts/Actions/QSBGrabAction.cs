@@ -41,7 +41,7 @@ internal class QSBGrabAction : QSBGhostAction
 
 	protected override void OnEnterAction()
 	{
-		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Chase);
+		_effects.SetMovementStyle(GhostEffects.MovementStyle.Chase);
 		_effects.AttachedObject.PlayGrabAnimation();
 		_effects.AttachedObject.OnGrabComplete += OnGrabComplete;
 		_controller.SetLanternConcealed(false, true);

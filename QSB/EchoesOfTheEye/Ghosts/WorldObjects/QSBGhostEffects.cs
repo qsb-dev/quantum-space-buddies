@@ -1,4 +1,6 @@
-﻿using QSB.Utility;
+﻿using QSB.EchoesOfTheEye.Ghosts.Messages;
+using QSB.Messaging;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
@@ -120,5 +122,20 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 				}
 			}
 		}
+	}
+
+	public void SetMovementStyle(GhostEffects.MovementStyle style, bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new SetMovementStyleMessage(style));
+		}
+
+		AttachedObject.SetMovementStyle(style);
 	}
 }

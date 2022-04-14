@@ -49,7 +49,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 		this._allowChasePlayer = true;
 		this._controller.SetLanternConcealed(true, true);
 		this._controller.AttachedObject.FacePlayer(TurnSpeed.MEDIUM);
-		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
+		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
 	}
 
 	public void LookAtPlayer(float delay, TurnSpeed lookSpeed = TurnSpeed.SLOWEST)
@@ -71,7 +71,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 		this._controller.MoveToLocalPosition(this._initialLocalPosition, MoveType.PATROL);
 		this._controller.FaceLocalPosition(this._initialLocalPosition + this._initialLocalDirection, TurnSpeed.MEDIUM);
 		this._controller.SetLanternConcealed(true, true);
-		this._effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
+		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		this._waitingToLookAtPlayer = false;
 		this._lookingAtPlayer = false;
 	}

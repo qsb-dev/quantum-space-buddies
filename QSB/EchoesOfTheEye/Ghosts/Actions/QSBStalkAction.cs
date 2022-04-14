@@ -43,7 +43,7 @@ public class QSBStalkAction : QSBGhostAction
 		_controller.ChangeLanternFocus(_isFocusingLight ? 1f : 0f, 2f);
 		_controller.SetLanternConcealed(!_isFocusingLight, true);
 		_controller.FaceVelocity();
-		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
+		_effects.SetMovementStyle(GhostEffects.MovementStyle.Stalk);
 		_effects.AttachedObject.PlayVoiceAudioNear(_data.fastStalkUnlocked ? AudioType.Ghost_Stalk_Fast : AudioType.Ghost_Stalk, 1f);
 	}
 

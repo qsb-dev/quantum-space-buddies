@@ -80,7 +80,7 @@ public class QSBHuntAction : QSBGhostAction
 	{
 		_controller.SetLanternConcealed(true, true);
 		_controller.FaceVelocity();
-		_effects.AttachedObject.SetMovementStyle(GhostEffects.MovementStyle.Normal);
+		_effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		if (!_huntStarted || _data.interestedPlayer.timeLastSawPlayer > _huntStartTime)
 		{
 			var knownPlayerVelocity = _data.interestedPlayer.lastKnownSensor.knowsPlayerVelocity ? _data.interestedPlayer.lastKnownPlayerLocation.localVelocity : Vector3.zero;
