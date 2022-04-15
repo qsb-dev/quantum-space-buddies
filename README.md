@@ -7,7 +7,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/misternebula/quantum-space-buddies/latest/total?style=flat-square)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/misternebula/quantum-space-buddies/dev?label=last%20commit%20to%20dev&style=flat-square)
 
-[![Support on Patreon](https://img.shields.io/badge/dynamic/json?style=for-the-badge&color=%23e85b46&label=Patreon&query=data.attributes.patron_count&suffix=%20patrons&url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F8528628&logo=patreon)](https://www.patreon.com/qsb)
+[![Support on Patreon](https://img.shields.io/badge/dynamic/json?style=for-the-badge&color=%23e85b46&label=Patreon&query=data.attributes.patron_count&suffix=%20patrons&url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F8528628&logo=patreon)](https://www.patreon.com/qsb) [![Donate with PayPal](https://img.shields.io/badge/PayPal-Donate%20(nebula)-blue?style=for-the-badge&color=blue&logo=paypal)](https://www.paypal.com/paypalme/nebula2056/5)
 
 Quantum Space Buddies (QSB) is a multiplayer mod for Outer Wilds. The mod uses the OWML mod loader and Mirror for networking.
 
@@ -54,7 +54,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #### Connecting to a server
 
 - On the title screen, click the option `CONNECT TO MULTIPLAYER`.
-- Enter the SteamID of the person you are trying to connect to.
+- Enter the Product User ID of the person you are trying to connect to.
 - Enjoy!
 
 #### Hosting a server
@@ -129,6 +129,57 @@ It is recommended to use the Epic version of Outer Wilds, as you cannot run mult
 A powerful PC is needed for development, due to the high amount of RAM and CPU needed to run 2 or 3 instances of modded Outer Wilds.
 
 It is also recommended to lower all graphics settings to minimum, be in windowed mode, and lower resolution to roughly a quarter of your monitor space. This lets you run multiple instances of Outer Wilds to quickly test QSB.
+
+Some debugging options exist to make things easier. These come in the form of actions and settings.
+### Debug Actions :
+
+Hold Q and press :
+
+- Numpad 1 - Teleport to nearest player.
+- Numpad 2 - Warp to the Dreamworld.
+- Numpad 3 - Destroy the probe.
+- Numpad 4 - Damage the ship's electrical system.
+- Numpad 5 - Trigger the supernova.
+- Numpad 6 - Set the flags for meeting Solanum and the Prisoner.
+- Numpad 7 - Warp to the Vessel.
+- Numpad 8 - Insert the Advanced Warp Core into the Vessel.
+- Numpad 9 - If holding LeftShift, load the SolarSystem scene. If not, load the EyeOfTheUniverse scene.
+- Numpad 0 - Revive a random dead player.
+
+### Debug Settings :
+
+Create a file called `debugsettings.json` in the mod folder.
+The template for this file is this :
+
+```
+{
+  "useKcpTransport": false,
+  "dumpWorldObjects": false,
+  "playerIdInLogs": false,
+  "hookDebugLogs": false,
+  "avoidTimeSync": false,
+  "debugMode": false,
+  "drawGui": false,
+  "drawLines": false,
+  "drawLabels": false,
+  "drawQuantumVisibilityObjects": false,
+  "skipTitleScreen": false,
+  "greySkybox": false
+}
+```
+
+- useKcpTransport - Allows you to directly connect to IP addresses, rather than use the Epic relay.
+- dumpWorldObjects - Creates a file with information about the WorldObjects that were created.
+- playerIdInLogs - Appends the player id to every log message sent.
+- hookDebugLogs - Print Unity logs and warnings.
+- avoidTimeSync - Disables the syncing of time.
+- debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
+- drawGui - Draws a GUI at the top of the screen that gives information on many things.
+- drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
+- drawLabels - Draws GUI labels attached to some objects. LAGGY.
+- drawQuantumVisibilityObjects - Indicates visibility objects with an orange shape.
+- skipTitleScreen - Auto-skips the splash screen.
+- greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.
 
 **Warning : Mod development can lead to unexpected errors in your computer system.** 
 - **When editing the networking code, mistakes can lead to QSB overwhelming your network connection with excess packets**.
