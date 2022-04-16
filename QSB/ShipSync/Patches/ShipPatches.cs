@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.Messaging;
 using QSB.Patches;
+using QSB.Player;
 using QSB.ShipSync.Messages;
 using QSB.ShipSync.Messages.Component;
 using QSB.ShipSync.Messages.Hull;
@@ -8,6 +9,7 @@ using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches;
@@ -249,6 +251,80 @@ internal class ShipPatches : QSBPatch
 		{
 			__instance._damageEffect.SetEffectBlend(1f - __instance._integrity);
 		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipCockpitController), nameof(ShipCockpitController.EnterLandingView))]
+	public static bool EnterLandingView()
+	{
+		new LandingCameraMessage(true).Send();
+		return true;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipCockpitController), nameof(ShipCockpitController.ExitLandingView))]
+	public static bool ExitLandingView()
+	{
+		new LandingCameraMessage(false).Send();
+		return true;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipLight), nameof(ShipLight.SetOn))]
+	public static bool SetOn(ShipLight __instance, bool on)
+	{
+		if (!QSBWorldSync.WorldObjectExistsFor<QSBShipLight>(__instance))
+		{
+			return true;
+		}
+
+		if (QSBPlayerManager.LocalPlayerId != ShipManager.Instance.CurrentFlyer)
+		{
+			return false;
+		}
+
+		var worldObject = __instance.GetWorldObject<QSBShipLight>();
+
+		if (__instance.IsOn() != on)
+		{
+			worldObject.SendMessage(new ShipLightMessage(on));
+
+			worldObject.SetOn(on);
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipCockpitUI), nameof(ShipCockpitUI.UpdateSignalscopeCanvas))]
+	public static bool UpdateSignalscopeCanvas(ShipCockpitUI __instance)
+	{
+		var flag = false;
+		if (Locator.GetToolModeSwapper().GetToolMode() != ToolMode.SignalScope)
+		{
+			if (__instance._signalscopeUI.IsActivated())
+			{
+				__instance._signalscopeUI.Deactivate();
+			}
+		}
+		else if (ShipManager.Instance.CurrentFlyer != uint.MaxValue)
+		{
+			flag = true;
+			if (!__instance._signalscopeUI.IsActivated())
+			{
+				if (__instance._reticuleController == null)
+				{
+					Debug.LogError("ReticuleController cannot be null!");
+				}
+
+				__instance._signalscopeUI.Activate(__instance._signalscopeTool, __instance._reticuleController);
+			}
+		}
+
+		__instance._scopeScreenMaterial.SetColor(__instance._propID_EmissionColor, __instance._scopeScreenColor * (flag ? 1f : 0f));
+		__instance._sigScopeScreenLight.SetOn(flag);
 
 		return false;
 	}

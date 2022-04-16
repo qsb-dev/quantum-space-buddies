@@ -100,6 +100,21 @@ internal class ShipManager : WorldObjectManager
 		_shipCustomAttach = new GameObject(nameof(ShipCustomAttach));
 		_shipCustomAttach.transform.SetParent(shipBody.transform, false);
 		_shipCustomAttach.AddComponent<ShipCustomAttach>();
+
+		QSBWorldSync.Init<QSBShipLight, ShipLight>(new List<ShipLight>()
+		{
+			CockpitController._headlight,
+			CockpitController._landingLight,
+			ShipCockpitUI._altimeterLight,
+			ShipCockpitUI._landingCamScreenLight,
+			ShipCockpitUI._minimapLight,
+			ShipCockpitUI._minimapNorthPoleLight,
+			ShipCockpitUI._minimapProbeLight,
+			ShipCockpitUI._minimapShipLight,
+			ShipCockpitUI._minimapSouthPoleLight,
+			ShipCockpitUI._probeLauncherScreenLight,
+			ShipCockpitUI._sigScopeScreenLight
+		});
 	}
 
 	public override void UnbuildWorldObjects() => Destroy(_shipCustomAttach);
@@ -147,7 +162,6 @@ internal class ShipManager : WorldObjectManager
 	public void UpdateSignalscope(bool equipped)
 	{
 		ShipCockpitUI._displaySignalscopeScreen = equipped;
-		ShipCockpitUI._sigScopeScreenLight.SetOn(equipped);
 		ShipCockpitUI._shipAudioController.PlaySigScopeSlide();
 	}
 
@@ -155,10 +169,40 @@ internal class ShipManager : WorldObjectManager
 	{
 		ShipCockpitUI._displayProbeLauncherScreen = equipped;
 		ShipCockpitUI._shipAudioController.PlayProbeScreenMotor();
+	}
 
-		if (!equipped)
+	public void UpdateLandingCamera(bool on)
+	{
+		if (on)
 		{
-			ShipCockpitUI._probeLauncherScreenLight.SetOn(false);
+			EnterLandingView();
+			return;
 		}
+
+		ExitLandingView();
+	}
+
+	private void EnterLandingView()
+	{
+		if (CockpitController._landingCam.mode == LandingCamera.Mode.Double)
+		{
+			CockpitController._landingCam.enabled = true;
+		}
+
+		if (CockpitController._landingCamComponent.isDamaged)
+		{
+			CockpitController._shipAudioController.PlayLandingCamOn(AudioType.ShipCockpitLandingCamStatic_LP);
+			CockpitController._shipAudioController.PlayLandingCamStatic(0.25f);
+			return;
+		}
+
+		CockpitController._shipAudioController.PlayLandingCamOn(AudioType.ShipCockpitLandingCamAmbient_LP);
+		CockpitController._shipAudioController.PlayLandingCamAmbient(0.25f);
+	}
+
+	private void ExitLandingView()
+	{
+		CockpitController._landingCam.enabled = false;
+		CockpitController._shipAudioController.PlayLandingCamOff();
 	}
 }
