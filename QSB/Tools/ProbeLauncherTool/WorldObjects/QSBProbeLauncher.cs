@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace QSB.Tools.ProbeLauncherTool.WorldObjects;
 
-internal class QSBProbeLauncher : WorldObject<ProbeLauncher>
+public class QSBProbeLauncher : WorldObject<ProbeLauncher>
 {
 	public override async UniTask Init(CancellationToken ct) =>
 		AttachedObject.OnLaunchProbe += OnLaunchProbe;

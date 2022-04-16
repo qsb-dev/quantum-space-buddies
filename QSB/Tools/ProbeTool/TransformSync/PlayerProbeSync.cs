@@ -1,7 +1,9 @@
 ﻿using OWML.Common;
 using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools.ProbeLauncherTool;
+using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Tools.ProbeTool.TransformSync;
@@ -58,9 +60,11 @@ public class PlayerProbeSync : SectoredTransformSync
 				DebugLog.ToConsole($"Warning - Could not find OWRigidbody of local probe.", MessageType.Warning);
 			}
 
-			var probeLauncher = Player.LocalProbeLauncher;
-			// TODO : make this sync to the *active* probe launcher's _launcherTransform
-			var launcherTransform = probeLauncher._launcherTransform;
+			var probeLauncher = Player.ProbeLauncherEquipped;
+			var launcherTransform = probeLauncher == null
+				? Player.LocalProbeLauncher._launcherTransform
+				: probeLauncher.AttachedObject._launcherTransform;
+
 			probeBody.SetPosition(launcherTransform.position);
 			probeBody.SetRotation(launcherTransform.rotation);
 

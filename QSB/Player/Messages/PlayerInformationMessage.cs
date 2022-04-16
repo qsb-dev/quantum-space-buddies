@@ -12,7 +12,7 @@ public class PlayerInformationMessage : QSBMessage
 	private bool IsReady;
 	private bool FlashlightActive;
 	private bool SuitedUp;
-	private bool ProbeLauncherEquipped;
+	private bool LocalProbeLauncherEquipped;
 	private bool SignalscopeEquipped;
 	private bool TranslatorEquipped;
 	private bool ProbeActive;
@@ -25,7 +25,7 @@ public class PlayerInformationMessage : QSBMessage
 		IsReady = player.IsReady;
 		FlashlightActive = player.FlashlightActive;
 		SuitedUp = player.SuitedUp;
-		ProbeLauncherEquipped = player.ProbeLauncherEquipped;
+		LocalProbeLauncherEquipped = player.LocalProbeLauncherEquipped;
 		SignalscopeEquipped = player.SignalscopeEquipped;
 		TranslatorEquipped = player.TranslatorEquipped;
 		ProbeActive = player.ProbeActive;
@@ -39,7 +39,7 @@ public class PlayerInformationMessage : QSBMessage
 		writer.Write(IsReady);
 		writer.Write(FlashlightActive);
 		writer.Write(SuitedUp);
-		writer.Write(ProbeLauncherEquipped);
+		writer.Write(LocalProbeLauncherEquipped);
 		writer.Write(SignalscopeEquipped);
 		writer.Write(TranslatorEquipped);
 		writer.Write(ProbeActive);
@@ -53,7 +53,7 @@ public class PlayerInformationMessage : QSBMessage
 		IsReady = reader.Read<bool>();
 		FlashlightActive = reader.Read<bool>();
 		SuitedUp = reader.Read<bool>();
-		ProbeLauncherEquipped = reader.Read<bool>();
+		LocalProbeLauncherEquipped = reader.Read<bool>();
 		SignalscopeEquipped = reader.Read<bool>();
 		TranslatorEquipped = reader.Read<bool>();
 		ProbeActive = reader.Read<bool>();
@@ -70,7 +70,7 @@ public class PlayerInformationMessage : QSBMessage
 			player.IsReady = IsReady;
 			player.FlashlightActive = FlashlightActive;
 			player.SuitedUp = SuitedUp;
-			player.ProbeLauncherEquipped = ProbeLauncherEquipped;
+			player.LocalProbeLauncherEquipped = LocalProbeLauncherEquipped;
 			player.SignalscopeEquipped = SignalscopeEquipped;
 			player.TranslatorEquipped = TranslatorEquipped;
 			player.ProbeActive = ProbeActive;

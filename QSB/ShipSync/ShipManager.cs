@@ -24,6 +24,7 @@ internal class ShipManager : WorldObjectManager
 	public ShipTractorBeamSwitch ShipTractorBeam;
 	public ShipCockpitController CockpitController;
 	public ShipElectricalComponent ShipElectricalComponent;
+	public ShipCockpitUI ShipCockpitUI;
 	private GameObject _shipCustomAttach;
 	public uint CurrentFlyer
 	{
@@ -66,6 +67,7 @@ internal class ShipManager : WorldObjectManager
 		ShipTractorBeam = QSBWorldSync.GetUnityObjects<ShipTractorBeamSwitch>().First();
 		CockpitController = QSBWorldSync.GetUnityObjects<ShipCockpitController>().First();
 		ShipElectricalComponent = QSBWorldSync.GetUnityObjects<ShipElectricalComponent>().First();
+		ShipCockpitUI = QSBWorldSync.GetUnityObjects<ShipCockpitUI>().First();
 
 		var sphereShape = HatchController.GetComponent<SphereShape>();
 		sphereShape.radius = 2.5f;
@@ -139,6 +141,24 @@ internal class ShipManager : WorldObjectManager
 				DebugLog.DebugWrite($"Player in ship - turning on electricals.");
 				electricalSystem.SetPowered(true);
 			}
+		}
+	}
+
+	public void UpdateSignalscope(bool equipped)
+	{
+		ShipCockpitUI._displaySignalscopeScreen = equipped;
+		ShipCockpitUI._sigScopeScreenLight.SetOn(equipped);
+		ShipCockpitUI._shipAudioController.PlaySigScopeSlide();
+	}
+
+	public void UpdateProbeLauncher(bool equipped)
+	{
+		ShipCockpitUI._displayProbeLauncherScreen = equipped;
+		ShipCockpitUI._shipAudioController.PlayProbeScreenMotor();
+
+		if (!equipped)
+		{
+			ShipCockpitUI._probeLauncherScreenLight.SetOn(false);
 		}
 	}
 }

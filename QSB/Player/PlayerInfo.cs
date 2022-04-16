@@ -6,6 +6,7 @@ using QSB.Messaging;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.QuantumSync.WorldObjects;
+using QSB.ShipSync;
 using QSB.Tools;
 using QSB.Utility;
 using System.Linq;
@@ -32,6 +33,7 @@ public partial class PlayerInfo
 	public QSBPlayerAudioController AudioController { get; set; }
 	public bool IsLocalPlayer => TransformSync.isLocalPlayer;
 	public ThrusterLightTracker ThrusterLightTracker;
+	public bool FlyingShip => ShipManager.Instance.CurrentFlyer == PlayerId;
 
 	public PlayerInfo(PlayerTransformSync transformSync)
 	{
@@ -63,17 +65,19 @@ public partial class PlayerInfo
 		HeldItem = default;
 		FlashlightActive = default;
 		SuitedUp = default;
-		ProbeLauncherEquipped = default;
+		LocalProbeLauncherEquipped = default;
 		SignalscopeEquipped = default;
 		TranslatorEquipped = default;
 		ProbeActive = default;
+
+		ProbeLauncherEquipped = default;
 	}
 
 	public void UpdateObjectsFromStates()
 	{
 		FlashLight.UpdateState(FlashlightActive);
 		Translator.ChangeEquipState(TranslatorEquipped);
-		ProbeLauncher.ChangeEquipState(ProbeLauncherEquipped);
+		ProbeLauncherTool.ChangeEquipState(LocalProbeLauncherEquipped);
 		Signalscope.ChangeEquipState(SignalscopeEquipped);
 		AnimationSync.SetSuitState(SuitedUp);
 	}

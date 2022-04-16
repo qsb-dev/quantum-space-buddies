@@ -1,6 +1,7 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.ShipSync;
 
 namespace QSB.Tools.SignalscopeTool.Messages;
 
@@ -27,6 +28,11 @@ public class PlayerSignalscopeMessage : QSBMessage<bool>
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.SignalscopeEquipped = Data;
 		player.Signalscope?.ChangeEquipState(Data);
+
+		if (player.FlyingShip)
+		{
+			ShipManager.Instance.UpdateSignalscope(Data);
+		}
 	}
 
 	public override void OnReceiveLocal() =>
