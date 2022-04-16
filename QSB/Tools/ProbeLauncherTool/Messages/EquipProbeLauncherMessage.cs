@@ -42,7 +42,7 @@ public class EquipProbeLauncherMessage : QSBWorldObjectMessage<QSBProbeLauncher,
 		DebugLog.DebugWrite($"{From} equip {WorldObject}");
 
 		var player = QSBPlayerManager.GetPlayer(From);
-		player.ProbeLauncherEquipped = WorldObject;
+		player.ProbeLauncherEquipped = Data ? WorldObject : null;
 
 		if (player.FlyingShip && WorldObject.AttachedObject == ShipManager.Instance.CockpitController.GetShipProbeLauncher())
 		{
@@ -52,6 +52,6 @@ public class EquipProbeLauncherMessage : QSBWorldObjectMessage<QSBProbeLauncher,
 
 	public override void OnReceiveLocal()
 	{
-		QSBPlayerManager.LocalPlayer.ProbeLauncherEquipped = WorldObject;
+		QSBPlayerManager.LocalPlayer.ProbeLauncherEquipped = Data ? WorldObject : null;
 	}
 }
