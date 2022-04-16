@@ -77,15 +77,16 @@ public class QSBTool : PlayerTool
 	{
 		base.EquipTool();
 
-		if (_ditheringAnimator != null)
-		{
-			ToolGameObject?.SetActive(true);
-			_ditheringAnimator.SetVisible(true, .2f);
-		}
-
 		if (!Player.FlyingShip)
 		{
+			ToolGameObject?.SetActive(true);
 			Player.AudioController.PlayEquipTool();
+		}
+
+		if (_ditheringAnimator != null)
+		{
+			
+			_ditheringAnimator.SetVisible(true, .2f);
 		}
 	}
 
