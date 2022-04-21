@@ -53,16 +53,9 @@ public static class QSBWorldSync
 
 		foreach (var manager in Managers)
 		{
-			if (manager.DlcOnly && !QSBCore.DLCInstalled)
+			if (ShouldIgnoreManager(manager))
 			{
 				continue;
-			}
-
-			switch (manager.WorldObjectScene)
-			{
-				case WorldObjectScene.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
-				case WorldObjectScene.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
-					continue;
 			}
 
 			var task = UniTask.Create(async () =>
@@ -150,8 +143,30 @@ public static class QSBWorldSync
 
 		foreach (var manager in Managers)
 		{
+			if (ShouldIgnoreManager(manager))
+			{
+				continue;
+			}
+
 			manager.Try("unbuilding world objects", manager.UnbuildWorldObjects);
 		}
+	}
+
+	private static bool ShouldIgnoreManager(WorldObjectManager manager)
+	{
+		if (manager.DlcOnly && !QSBCore.DLCInstalled)
+		{
+			return true;
+		}
+
+		switch (manager.WorldObjectScene)
+		{
+			case WorldObjectScene.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
+			case WorldObjectScene.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+				return true;
+		}
+
+		return false;
 	}
 
 	// =======================================================================================================
@@ -176,7 +191,7 @@ public static class QSBWorldSync
 
 	private static void GameInit()
 	{
-		DebugLog.DebugWrite($"GameInit QSBWorldSync", MessageType.Info);
+		DebugLog.DebugWrite("GameInit QSBWorldSync", MessageType.Info);
 
 		OldDialogueTrees.Clear();
 		OldDialogueTrees.AddRange(GetUnityObjects<CharacterDialogueTree>().SortDeterministic());
@@ -195,7 +210,7 @@ public static class QSBWorldSync
 
 	private static void GameReset()
 	{
-		DebugLog.DebugWrite($"GameReset QSBWorldSync", MessageType.Info);
+		DebugLog.DebugWrite("GameReset QSBWorldSync", MessageType.Info);
 
 		OldDialogueTrees.Clear();
 		DialogueConditions.Clear();

@@ -53,4 +53,42 @@ public partial class PlayerInfo
 		}
 	}
 	private GameObject _body;
+
+	public LightSensor LightSensor
+	{
+		get
+		{
+			if (IsLocalPlayer)
+			{
+				return Locator.GetPlayerLightSensor();
+			}
+
+			if (CameraBody == null)
+			{
+				DebugLog.ToConsole($"Error - Can't get LightSensor for {PlayerId}, because CameraBody is null.", MessageType.Error);
+				return null;
+			}
+
+			return CameraBody.transform.Find("REMOTE_CameraDetector").GetComponent<LightSensor>();
+		}
+	}
+
+	public Vector3 Velocity
+	{
+		get
+		{
+			if (IsLocalPlayer)
+			{
+				return Locator.GetPlayerBody().GetVelocity();
+			}
+
+			if (Body == null)
+			{
+				DebugLog.ToConsole($"Error - Can't get velocity for {PlayerId}, because Body is null.", MessageType.Error);
+				return Vector3.zero;
+			}
+
+			return Body.GetComponent<RemotePlayerVelocity>().Velocity;
+		}
+	}
 }
