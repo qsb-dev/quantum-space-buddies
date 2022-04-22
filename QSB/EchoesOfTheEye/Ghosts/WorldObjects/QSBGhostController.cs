@@ -2,6 +2,7 @@
 using QSB.EchoesOfTheEye.Ghosts.Messages;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,12 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 
 	public void Initialize(GhostNode.NodeLayer layer, QSBGhostEffects effects)
 	{
+		if (effects == null)
+		{
+			DebugLog.ToConsole($"Error - Tried initializing {Name} with a null QSBGhostEffects.", OWML.Common.MessageType.Error);
+			return;
+		}
+
 		_effects = effects;
 		AttachedObject._nodeRoot = AttachedObject.transform.parent = AttachedObject._nodeMap.transform;
 		AttachedObject._nodeLayer = layer;

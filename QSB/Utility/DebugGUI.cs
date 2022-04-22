@@ -250,8 +250,12 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 				WriteLine(4, $"- isPlayerLocationKnown:{player.isPlayerLocationKnown}");
 				WriteLine(4, $"- timeSincePlayerLocationKnown:{player.timeSincePlayerLocationKnown}");
 				var lantern = player.player.AssignedSimulationLantern;
-				WriteLine(4, $"- IsHeldByPlayer:{lantern.AttachedObject.GetLanternController().IsHeldByPlayer()}");
-				WriteLine(4, $"- Concealed:{lantern.AttachedObject.GetLanternController().IsConcealed()}");
+				if (lantern != null)
+				{
+					WriteLine(4, $"- IsHeldByPlayer:{lantern.AttachedObject.GetLanternController().IsHeldByPlayer()}");
+					WriteLine(4, $"- Concealed:{lantern.AttachedObject.GetLanternController().IsConcealed()}");
+				}
+				
 				var position = player.player.Camera.transform.position;
 				WriteLine(4, $"- Camera in vision cone:{ghost.AttachedObject._sensors.CheckPointInVisionCone(position)}");
 				WriteLine(4, $"- CheckLineOccluded:{ghost.AttachedObject._sensors.CheckLineOccluded(ghost.AttachedObject._sensors._sightOrigin.position, position)}");

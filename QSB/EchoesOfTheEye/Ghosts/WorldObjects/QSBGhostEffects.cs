@@ -22,10 +22,10 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 
 	private QSBGhostData _data;
 
-	public void Initialize(Transform nodeRoot, GhostController controller, QSBGhostData data)
+	public void Initialize(Transform nodeRoot, QSBGhostController controller, QSBGhostData data)
 	{
 		AttachedObject._animator = AttachedObject.GetComponent<Animator>();
-		AttachedObject._controller = controller;
+		AttachedObject._controller = controller.AttachedObject;
 		_data = data;
 		if (AttachedObject._feetAudioSourceFar != null)
 		{
@@ -169,7 +169,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		AttachedObject.PlayVoiceAudioFar(audioType, volumeScale);
 	}
 
-	public void PlaySleepAnimation(bool remote = false)
+	public virtual void PlaySleepAnimation(bool remote = false)
 	{
 		if (!remote)
 		{
@@ -184,7 +184,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		AttachedObject.PlaySleepAnimation();
 	}
 
-	public void PlayDefaultAnimation(bool remote = false)
+	public virtual void PlayDefaultAnimation(bool remote = false)
 	{
 		if (!remote)
 		{
@@ -199,7 +199,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		AttachedObject.PlayDefaultAnimation();
 	}
 
-	public void PlayGrabAnimation(bool remote = false)
+	public virtual void PlayGrabAnimation(bool remote = false)
 	{
 		if (!remote)
 		{
@@ -214,7 +214,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		AttachedObject.PlayGrabAnimation();
 	}
 
-	public void PlayBlowOutLanternAnimation(bool fast = false, bool remote = false)
+	public virtual void PlayBlowOutLanternAnimation(bool fast = false, bool remote = false)
 	{
 		if (!remote)
 		{
@@ -229,7 +229,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		AttachedObject.PlayBlowOutLanternAnimation(fast);
 	}
 
-	public void PlaySnapNeckAnimation(bool remote = false)
+	public virtual void PlaySnapNeckAnimation(bool remote = false)
 	{
 		if (!remote)
 		{

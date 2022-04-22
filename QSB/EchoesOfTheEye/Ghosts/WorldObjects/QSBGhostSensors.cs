@@ -115,7 +115,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 
 	public void OnEnterContactTrigger(GameObject hitObj)
 	{
-		if (hitObj.CompareTag("PlayerDetector"))
+		if (hitObj.CompareTag("PlayerDetector") && _data.localPlayer != null && _data.localPlayer.sensor != null)
 		{
 			_data.localPlayer.sensor.inContactWithPlayer = true;
 		}
@@ -123,7 +123,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 
 	public void OnExitContactTrigger(GameObject hitObj)
 	{
-		if (hitObj.CompareTag("PlayerDetector"))
+		if (hitObj.CompareTag("PlayerDetector") && _data.localPlayer != null && _data.localPlayer.sensor != null)
 		{
 			_data.localPlayer.sensor.inContactWithPlayer = false;
 		}
