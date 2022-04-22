@@ -33,6 +33,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private Text _loadingText;
 	private StringBuilder _nowLoadingSB;
 	private const int _titleButtonIndex = 2;
+	private float _connectPopupOpenTime;
 
 	private const string HostString = "OPEN TO MULTIPLAYER";
 	private const string ConnectString = "CONNECT TO MULTIPLAYER";
@@ -156,7 +157,19 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Product User ID";
 		ConnectPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
-		ConnectPopup.OnPopupConfirm += Connect;
+		ConnectPopup.CloseMenuOnOk(false);
+		ConnectPopup.OnPopupConfirm += () =>
+		{
+			// fixes dumb thing with using keyboard to open popup
+			if (OWMath.ApproxEquals(Time.time, _connectPopupOpenTime))
+			{
+				return;
+			}
+
+			ConnectPopup.EnableMenu(false);
+			Connect();
+		};
+		ConnectPopup.OnActivateMenu += () => _connectPopupOpenTime = Time.time;
 
 		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
 		OneButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
