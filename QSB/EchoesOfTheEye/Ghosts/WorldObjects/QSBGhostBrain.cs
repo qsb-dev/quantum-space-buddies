@@ -30,10 +30,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		Start();
 	}
 
-	public override bool ShouldDisplayDebug()
-		=> base.ShouldDisplayDebug()
-		&& QSBCore.DebugSettings.DrawGhostAI;
-
 	public override string ReturnLabel()
 	{
 		var label = $"Name:{AttachedObject.ghostName}" +
