@@ -35,6 +35,7 @@ namespace QSB.Menus
 		private GameObject ResumeGameButton;
 		private GameObject NewGameButton;
 		private GameObject ConnectButton;
+		private float _timeIPPopupOpened;
 
 		private const int _ClientButtonIndex = 2;
 
@@ -175,7 +176,13 @@ namespace QSB.Menus
 		{
 			var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Product User ID";
 			IPPopup = MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
+			IPPopup.CloseMenuOnOk(false);
 			IPPopup.OnPopupConfirm += Connect;
+			IPPopup.OnActivateMenu += () =>
+			{
+				_timeIPPopupOpened = Time.time;
+				Delay.RunFramesLater(30, () => IPPopup.CloseMenuOnOk(true));
+			};
 
 			OneButtonInfoPopup = MenuApi.MakeInfoPopup("", "");
 			OneButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
@@ -348,6 +355,13 @@ namespace QSB.Menus
 
 		private void Connect()
 		{
+			if (Time.time - _timeIPPopupOpened < 0.25f)
+			{
+				return;
+			}
+
+			IPPopup.CloseMenuOnOk(false);
+
 			_intentionalDisconnect = false;
 
 			var address = ((PopupInputMenu)IPPopup).GetInputText();
