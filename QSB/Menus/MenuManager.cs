@@ -183,6 +183,7 @@ namespace QSB.Menus
 				_timeIPPopupOpened = Time.time;
 				Delay.RunFramesLater(30, () => IPPopup.CloseMenuOnOk(true));
 			};
+			IPPopup.OnDeactivateMenu += () => IPPopup.CloseMenuOnOk(false);
 
 			OneButtonInfoPopup = MenuApi.MakeInfoPopup("", "");
 			OneButtonInfoPopup.OnDeactivateMenu += OnCloseInfoPopup;
