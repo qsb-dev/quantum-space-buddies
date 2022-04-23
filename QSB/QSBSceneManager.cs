@@ -16,21 +16,14 @@ public static class QSBSceneManager
 
 	static QSBSceneManager()
 	{
-		LoadManager.OnStartSceneLoad += OnStartSceneLoad;
 		LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
 		DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
-	}
-
-	private static void OnStartSceneLoad(OWScene oldScene, OWScene newScene)
-	{
-		DebugLog.DebugWrite($"START SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
-		QSBWorldSync.RemoveWorldObjects();
-		DeterministicManager.OnStartSceneLoad();
 	}
 
 	private static void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
 	{
 		DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
+		QSBWorldSync.RemoveWorldObjects();
 		var universe = InUniverse(newScene);
 		if (QSBCore.IsInMultiplayer && universe)
 		{

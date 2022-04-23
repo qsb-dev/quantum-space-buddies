@@ -16,21 +16,19 @@ public static class DeterministicManager
 	private static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> _cache = new();
 
 	public static void Init() =>
-		LoadManager.OnStartSceneLoad += (_, _) => { };
-
-	public static void OnStartSceneLoad()
-	{
-		DebugLog.DebugWrite("cleared cache");
-		_cache.Clear();
-
-		if (!_patched)
+		LoadManager.OnStartSceneLoad += (_, _) =>
 		{
-			_harmony.PatchAll(typeof(OWRigidbodyPatches));
-			_patched = true;
-		}
-	}
+			DebugLog.DebugWrite("cleared cache");
+			_cache.Clear();
 
-	public static void OnWorldObjectsReady()
+			if (!_patched)
+			{
+				_harmony.PatchAll(typeof(OWRigidbodyPatches));
+				_patched = true;
+			}
+		};
+
+	public static void WorldObjectsReady()
 	{
 		if (QSBCore.DebugSettings.DumpWorldObjects)
 		{
