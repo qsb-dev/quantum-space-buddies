@@ -104,7 +104,6 @@ public class QSBCore : ModBehaviour
 		TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
 
 		QSBPatchManager.Init();
-		DeterministicManager.Init();
 
 		var components = typeof(IAddComponentOnStart).GetDerivedTypes()
 			.Select(x => gameObject.AddComponent(x))
