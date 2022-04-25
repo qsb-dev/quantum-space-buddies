@@ -68,11 +68,11 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 		var projectorComponent = AUTO_SLIDE_PROJECTOR.AddComponent<CustomAutoSlideProjector>();
 		projectorComponent._light = Light.GetComponent<OWLight2>();
 
-		var cellevator1 = QSBCore.Helper.Assets.GetTexture("cellevator1.png");
+		var cellevator1 = QSBCore.Helper.Assets.GetTexture("Assets/cellevator1.png");
 		cellevator1.wrapMode = TextureWrapMode.Clamp;
-		var cellevator2 = QSBCore.Helper.Assets.GetTexture("cellevator2.png");
+		var cellevator2 = QSBCore.Helper.Assets.GetTexture("Assets/cellevator2.png");
 		cellevator2.wrapMode = TextureWrapMode.Clamp;
-		var cellevator3 = QSBCore.Helper.Assets.GetTexture("cellevator3.png");
+		var cellevator3 = QSBCore.Helper.Assets.GetTexture("Assets/cellevator3.png");
 		cellevator3.wrapMode = TextureWrapMode.Clamp;
 
 		var slideCollection = new CustomSlideCollection(3);
