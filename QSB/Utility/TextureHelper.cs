@@ -20,7 +20,7 @@ public static class TextureHelper
 		}
 
 		var data = File.ReadAllBytes(path);
-		var tex = new Texture2D(1, 1);
+		var tex = new Texture2D(1, 1, TextureFormat.RGB24, false);
 		tex.LoadImage(data);
 		tex.wrapMode = wrapMode;
 		return tex;

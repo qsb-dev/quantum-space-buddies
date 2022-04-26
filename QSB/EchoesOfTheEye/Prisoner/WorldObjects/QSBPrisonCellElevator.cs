@@ -56,7 +56,7 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 		var lightComponent = Light.AddComponent<Light>();
 		lightComponent.type = LightType.Spot;
 		lightComponent.range = 10;
-		lightComponent.spotAngle = 60;
+		lightComponent.spotAngle = 50;
 		lightComponent.shadows = LightShadows.Soft;
 		lightComponent.shadowStrength = 1f;
 		lightComponent.shadowResolution = UnityEngine.Rendering.LightShadowResolution.Low;
