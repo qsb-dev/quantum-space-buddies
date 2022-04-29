@@ -1,7 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.Audio;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.EchoesOfTheEye.Prisoner.Messages;
 using QSB.ItemSync.WorldObjects;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -77,5 +79,15 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 		AUTO_SLIDE_PROJECTOR.SetActive(true);
 
 		projectorComponent.Play(false);
+	}
+
+	public void CallToFloorIndex(int index, bool remote = false)
+	{
+		if (!remote)
+		{
+			this.SendMessage(new CellevatorCallMessage(index));
+		}
+
+		AttachedObject.CallElevatorToFloor(index);
 	}
 }
