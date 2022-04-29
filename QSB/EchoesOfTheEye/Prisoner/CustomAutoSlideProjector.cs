@@ -29,7 +29,6 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 
 	protected void Awake()
 	{
-		DebugLog.DebugWrite($"AWAKE");
 		if (this._slideCollectionItem != null)
 		{
 			this._slideCollectionItem.onSlideTextureUpdated += this.OnSlideTextureUpdated;
@@ -58,10 +57,8 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 
 	public void Play(bool reset)
 	{
-		DebugLog.DebugWrite($"PLAY");
 		if (this._isPlaying)
 		{
-			DebugLog.DebugWrite($"already playing!");
 			return;
 		}
 		this._light.SetActivation(true);
@@ -77,7 +74,6 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 
 	public void Stop()
 	{
-		DebugLog.DebugWrite($"Stop");
 		if (!this._isPlaying)
 		{
 			return;
@@ -89,7 +85,6 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 
 	public void TurnOff()
 	{
-		DebugLog.DebugWrite($"Turn Off");
 		this.Stop();
 		this._oneShotAudio.PlayOneShot(global::AudioType.Lantern_Remove, 1f);
 		this._light.SetActivation(false);
@@ -97,7 +92,6 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 
 	public void SetSlideCollection(CustomSlideCollectionContainer collection)
 	{
-		DebugLog.DebugWrite($"SET SLIDE COLLECTION");
 		if (this._slideCollectionItem != null)
 		{
 			if (this._isPlaying)
@@ -148,14 +142,11 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 
 	private void OnSlideTextureUpdated()
 	{
-		DebugLog.DebugWrite($"OnSlideTextureUpdated");
 		this.UpdateSlideTexture();
 	}
 
 	private void UpdateSlideTexture()
 	{
-		DebugLog.DebugWrite($"UpdateSlideTexture");
-
 		if (_light == null)
 		{
 			DebugLog.DebugWrite($"- Light is null!");
@@ -181,7 +172,6 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 
 	private void NextSlide()
 	{
-		DebugLog.DebugWrite($"Next Slide");
 		this._slideCollectionItem.IncreaseSlideIndex();
 		this._lastSlidePlayTime = Time.time;
 		if (this._oneShotAudio != null)

@@ -62,7 +62,6 @@ public class CustomSlide
 
 	public void Display(CustomSlideCollectionContainer owner, bool forward)
 	{
-		DebugLog.DebugWrite($"Display");
 
 		if (owner == null)
 		{
@@ -75,7 +74,6 @@ public class CustomSlide
 
 	public void InvokeTextureUpdate()
 	{
-		DebugLog.DebugWrite($"Invoke Texture Update");
 		if (this._owningItem != null)
 		{
 			this._owningItem.onSlideTextureUpdated.Invoke();

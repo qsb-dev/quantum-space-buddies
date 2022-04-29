@@ -52,7 +52,6 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 
 			if (this._currentSlideIndex == value)
 			{
-				DebugLog.DebugWrite($"current slide index is already {value}");
 				return;
 			}
 
@@ -77,7 +76,6 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 
 	public void Initialize()
 	{
-		DebugLog.DebugWrite($"INITIALIZE");
 		if (this._initialized)
 		{
 			return;
@@ -115,7 +113,6 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 	{
 		if (!this._changeSlidesAllowed)
 		{
-			DebugLog.DebugWrite($"Changing slides is not allowed!");
 			return false;
 		}
 
