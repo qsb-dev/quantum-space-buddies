@@ -22,17 +22,7 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 		// todo : implement this
 	}
 
-	private CustomAutoSlideProjector projector;
-	private OWLight2 light;
-
 	IItemDropTarget IQSBDropTarget.AttachedObject => AttachedObject;
-
-	public override void DisplayLines()
-	{
-		Popcron.Gizmos.Sphere(projector.transform.position, 0.5f, Color.white);
-		Popcron.Gizmos.Line(QSBPlayerManager.LocalPlayer.Body.transform.position, light.transform.position);
-		Popcron.Gizmos.Cone(light.transform.position, light.transform.rotation, light.range, light.GetLight().spotAngle, Color.yellow);
-	}
 
 	public override async UniTask Init(CancellationToken ct)
 	{
@@ -56,6 +46,7 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 		var lightComponent = Light.AddComponent<Light>();
 		lightComponent.type = LightType.Spot;
 		lightComponent.range = 10;
+		lightComponent.intensity = 2;
 		lightComponent.spotAngle = 50;
 		lightComponent.shadows = LightShadows.Soft;
 		lightComponent.shadowStrength = 1f;
@@ -63,14 +54,14 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 		lightComponent.shadowBias = 0.05f;
 		lightComponent.shadowNormalBias = 0.4f;
 		lightComponent.shadowNearPlane = 0.2f;
-		light = Light.AddComponent<OWLight2>();
+		Light.AddComponent<OWLight2>();
 
 		var projectorComponent = AUTO_SLIDE_PROJECTOR.AddComponent<CustomAutoSlideProjector>();
 		projectorComponent._light = Light.GetComponent<OWLight2>();
 
-		var cellevator1 = TextureHelper.LoadTexture("Assets/cellevator1.png", TextureWrapMode.Clamp);
-		var cellevator2 = TextureHelper.LoadTexture("Assets/cellevator2.png", TextureWrapMode.Clamp);
-		var cellevator3 = TextureHelper.LoadTexture("Assets/cellevator3.png", TextureWrapMode.Clamp);
+		var cellevator1 = TextureHelper.LoadTexture("Assets/cellevator1.png", TextureWrapMode.Clamp, true);
+		var cellevator2 = TextureHelper.LoadTexture("Assets/cellevator2.png", TextureWrapMode.Clamp, true);
+		var cellevator3 = TextureHelper.LoadTexture("Assets/cellevator3.png", TextureWrapMode.Clamp, true);
 
 		var slideCollection = new CustomSlideCollection(3);
 		slideCollection.slides[0] = new CustomSlide() { _image = cellevator1 };
@@ -84,8 +75,6 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 		projectorComponent._defaultSlideDuration = 1f;
 
 		AUTO_SLIDE_PROJECTOR.SetActive(true);
-
-		projector = projectorComponent;
 
 		projectorComponent.Play(false);
 	}
