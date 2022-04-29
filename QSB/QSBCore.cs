@@ -215,4 +215,5 @@ public class QSBCore : ModBehaviour
  * Daft Punk
  * Natalie Holt
  * WMD
+ * Brian David Gilbert
  */
