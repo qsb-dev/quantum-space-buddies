@@ -40,6 +40,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const string DisconnectString = "DISCONNECT";
 	private const string StopHostingString = "STOP HOSTING";
 
+	private const string UpdateChangelog = "QSB v0.18.0\r\nit's good";
+
 	private Action<bool> PopupClose;
 
 	private bool _intentionalDisconnect;
@@ -51,6 +53,14 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		QSBNetworkManager.singleton.OnClientConnected += OnConnected;
 		QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
+
+		if (QSBCore.Storage.LastUsedVersion != QSBCore.QSBVersion)
+		{
+			// recently updated!
+			QSBCore.Storage.LastUsedVersion = QSBCore.QSBVersion;
+			QSBCore.Helper.Storage.Save(QSBCore.Storage, "storage.json");
+			QSBCore.MenuApi.RegisterStartupPopup(UpdateChangelog);
+		}
 	}
 
 	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
