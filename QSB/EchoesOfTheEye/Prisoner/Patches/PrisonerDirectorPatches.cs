@@ -2,11 +2,6 @@
 using QSB.EchoesOfTheEye.Prisoner.Messages;
 using QSB.Messaging;
 using QSB.Patches;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Prisoner.Patches;

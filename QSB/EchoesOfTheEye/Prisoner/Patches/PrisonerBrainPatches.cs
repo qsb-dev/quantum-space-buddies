@@ -3,13 +3,9 @@ using QSB.EchoesOfTheEye.Prisoner.Messages;
 using QSB.EchoesOfTheEye.Prisoner.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Prisoner.Patches;
@@ -85,6 +81,19 @@ internal class PrisonerBrainPatches : QSBPatch
 		}
 
 		__instance.GetWorldObject<QSBPrisonerBrain>().FixedUpdate();
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(PrisonerBrain.OnFinishEmergeAnimation))]
+	public static bool OnFinishEmergeAnimation(PrisonerBrain __instance)
+	{
+		if (__instance._currentBehavior is PrisonerBehavior.Emerge or PrisonerBehavior.WaitForConversation)
+		{
+			__instance._effects.OnRevealAnimationComplete -= __instance.OnFinishEmergeAnimation;
+			__instance.RaiseEvent(nameof(PrisonerBrain.OnFinishEmergeBehavior));
+		}
+
 		return false;
 	}
 }
