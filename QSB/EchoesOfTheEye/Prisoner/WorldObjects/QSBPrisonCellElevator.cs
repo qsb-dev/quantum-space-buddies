@@ -26,7 +26,7 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 
 	IItemDropTarget IQSBDropTarget.AttachedObject => AttachedObject;
 
-	public override async UniTask Init(CancellationToken ct)
+	/*public override async UniTask Init(CancellationToken ct)
 	{
 		DebugLog.DebugWrite($"INIT {AttachedObject.name}");
 
@@ -78,8 +78,8 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 
 		AUTO_SLIDE_PROJECTOR.SetActive(true);
 
-		//projectorComponent.Play(false);
-	}
+		projectorComponent.Play(false);
+	}*/
 
 	public void CallToFloorIndex(int index, bool remote = false)
 	{
