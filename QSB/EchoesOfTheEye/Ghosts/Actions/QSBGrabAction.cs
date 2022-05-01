@@ -75,12 +75,7 @@ internal class QSBGrabAction : QSBGhostAction
 		_controller.FaceLocalPosition(_data.interestedPlayer.playerLocation.localPosition, TurnSpeed.FASTEST);
 		if (_sensors.CanGrabPlayer(_data.interestedPlayer))
 		{
-			DebugLog.DebugWrite($"Grab player {_data.interestedPlayer.player.PlayerId}!");
 			GrabPlayer();
-		}
-		else
-		{
-			DebugLog.DebugWrite($"can't grab player {_data.interestedPlayer.player.PlayerId}");
 		}
 
 		return !_grabAnimComplete;

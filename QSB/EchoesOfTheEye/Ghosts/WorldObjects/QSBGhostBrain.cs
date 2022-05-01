@@ -188,7 +188,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		AttachedObject.enabled = false;
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
 		AttachedObject._controller.GetWorldObject<QSBGhostController>().Initialize(AttachedObject._nodeLayer, AttachedObject._effects.GetWorldObject<QSBGhostEffects>());
-		AttachedObject._sensors.GetWorldObject<QSBGhostSensors>().Initialize(_data, AttachedObject._guardVolume);
+		AttachedObject._sensors.GetWorldObject<QSBGhostSensors>().Initialize(_data);
 		AttachedObject._effects.GetWorldObject<QSBGhostEffects>().Initialize(AttachedObject._controller.GetNodeRoot(), AttachedObject._controller.GetWorldObject<QSBGhostController>(), _data);
 		AttachedObject._effects.OnCallForHelp += AttachedObject.OnCallForHelp;
 		_data.reducedFrights_allowChase = AttachedObject._reducedFrights_allowChase;

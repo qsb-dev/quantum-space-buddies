@@ -22,11 +22,14 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 
 	public QSBGhostData _data;
 
-	public void Initialize(QSBGhostData data, OWTriggerVolume guardVolume = null)
+	public void Initialize(QSBGhostData data)
 	{
 		_data = data;
+		AttachedObject._contactTrigger.OnEntry -= AttachedObject.OnEnterContactTrigger;
+		AttachedObject._contactTrigger.OnEntry += OnEnterContactTrigger;
+		AttachedObject._contactTrigger.OnExit -= AttachedObject.OnExitContactTrigger;
+		AttachedObject._contactTrigger.OnExit += OnExitContactTrigger;
 		AttachedObject._origEdgeCatcherSize = AttachedObject._contactEdgeCatcherShape.size;
-		AttachedObject._guardVolume = guardVolume;
 	}
 
 	public bool CanGrabPlayer(GhostPlayer player)
@@ -117,6 +120,11 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 		if (hitObj.CompareTag("PlayerDetector") && _data.localPlayer != null && _data.localPlayer.sensor != null)
 		{
 			_data.localPlayer.sensor.inContactWithPlayer = true;
+
+			if (!QSBCore.IsHost)
+			{
+				this.SendMessage(new ContactTriggerMessage(true));
+			}
 		}
 	}
 
@@ -125,6 +133,11 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 		if (hitObj.CompareTag("PlayerDetector") && _data.localPlayer != null && _data.localPlayer.sensor != null)
 		{
 			_data.localPlayer.sensor.inContactWithPlayer = false;
+
+			if (!QSBCore.IsHost)
+			{
+				this.SendMessage(new ContactTriggerMessage(false));
+			}
 		}
 	}
 }
