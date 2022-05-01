@@ -75,19 +75,19 @@ internal class QSBGrabAction : QSBGhostAction
 		_controller.FaceLocalPosition(_data.interestedPlayer.playerLocation.localPosition, TurnSpeed.FASTEST);
 		if (_sensors.CanGrabPlayer(_data.interestedPlayer))
 		{
-			GrabPlayer();
+			GrabPlayer(_data.interestedPlayer);
 		}
 
 		return !_grabAnimComplete;
 	}
 
-	private void GrabPlayer()
+	private void GrabPlayer(GhostPlayer player)
 	{
 		_playerIsGrabbed = true;
 		_controller.StopMovingInstantly();
 		_controller.StopFacing();
 		_controller.SetLanternConcealed(true, false);
-		_controller.AttachedObject.GetGrabController().GrabPlayer(1f);
+		_controller.GetGrabController().GrabPlayer(1f, player);
 	}
 
 	private void OnGrabComplete()
