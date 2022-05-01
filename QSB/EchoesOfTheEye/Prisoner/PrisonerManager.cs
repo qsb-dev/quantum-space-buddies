@@ -37,5 +37,6 @@ internal class PrisonerManager : WorldObjectManager
 
 		QSBWorldSync.Init<QSBPrisonerMarker, PrisonerBehaviourCueMarker>();
 		QSBWorldSync.Init<QSBPrisonerBrain, PrisonerBrain>();
+		QSBWorldSync.Init<QSBPrisonCellElevator, PrisonCellElevator>();
 	}
 }

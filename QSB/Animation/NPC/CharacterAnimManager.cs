@@ -17,5 +17,6 @@ internal class CharacterAnimManager : WorldObjectManager
 		QSBWorldSync.Init<QSBSolanumAnimController, SolanumAnimController>();
 		QSBWorldSync.Init<QSBHearthianRecorderEffects, HearthianRecorderEffects>();
 		QSBWorldSync.Init<QSBTravelerEyeController, TravelerEyeController>();
+		QSBWorldSync.Init<PrisonerDialogue, PrisonerDirector>();
 	}
 }
