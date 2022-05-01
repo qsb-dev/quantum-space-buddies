@@ -75,10 +75,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ### How complete is this mod? How far through the game can I play?
 
-| Area of the game  | Working            |
-|-------------------|--------------------|
-| Base game         | :heavy_check_mark: |
-| Echoes of the Eye | :x:                |
+The base game is around 95% done, whereas EotE is around 80% done.
 
 ### Compatibility with other mods
 TL;DR - Don't use any mods with QSB that aren't marked as QSB compatible. 
@@ -87,9 +84,7 @@ QSB relies on object hierarchy to sync objects, so any mod that changes that ris
 
 ### Will you make this compatible with NomaiVR?
 
-Short answer : No.
-
-Long answer : Pay me enough money, and maybe I'll consider it.
+Maybe.
 
 ### Why do I keep getting thrown around the ship?
 
@@ -136,11 +131,11 @@ Some debugging options exist to make things easier. These come in the form of ac
 Hold Q and press :
 
 - Numpad 1 - Teleport to nearest player.
-- Numpad 2 - Warp to the Dreamworld.
-- Numpad 3 - Destroy the probe.
+- Numpad 2 - If holding LeftShift, warp to the dreamworld Vault fire. If not, warp to the Endless Canyon.
+- Numpad 3 - Unlock the Sealed Vault.
 - Numpad 4 - Damage the ship's electrical system.
 - Numpad 5 - Trigger the supernova.
-- Numpad 6 - Set the flags for meeting Solanum and the Prisoner.
+- Numpad 6 - Set the flags for having met Solanum and the Prisoner.
 - Numpad 7 - Warp to the Vessel.
 - Numpad 8 - Insert the Advanced Warp Core into the Vessel.
 - Numpad 9 - If holding LeftShift, load the SolarSystem scene. If not, load the EyeOfTheUniverse scene.
@@ -164,7 +159,8 @@ The template for this file is this :
   "drawLabels": false,
   "drawQuantumVisibilityObjects": false,
   "skipTitleScreen": false,
-  "greySkybox": false
+  "greySkybox": false,
+  "drawGhostAI": false
 }
 ```
 
@@ -180,6 +176,7 @@ The template for this file is this :
 - drawQuantumVisibilityObjects - Indicates visibility objects with an orange shape.
 - skipTitleScreen - Auto-skips the splash screen.
 - greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.
+- drawGhostAI - Draws debug lines and labels just for the ghosts.
 
 **Warning : Mod development can lead to unexpected errors in your computer system.** 
 - **When editing the networking code, mistakes can lead to QSB overwhelming your network connection with excess packets**.
