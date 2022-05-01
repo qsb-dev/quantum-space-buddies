@@ -197,11 +197,8 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		AttachedObject._intruderConfirmPending = false;
 		AttachedObject._intruderConfirmTime = 0f;
 
-		DebugLog.DebugWrite($"{AttachedObject._name} setting up actions :");
-
 		for (var i = 0; i < AttachedObject._actions.Length; i++)
 		{
-			DebugLog.DebugWrite($"- {AttachedObject._actions[i]}");
 			var ghostAction = QSBGhostAction.CreateAction(AttachedObject._actions[i]);
 			ghostAction.Initialize(this);
 			_actionLibrary.Add(ghostAction);
@@ -276,10 +273,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	}
 
 	public void WakeUp()
-	{
-		DebugLog.DebugWrite($"Wake up!");
-		_data.hasWokenUp = true;
-	}
+		=> _data.hasWokenUp = true;
 
 	public bool HearGhostCall(Vector3 playerLocalPosition, float reactDelay, bool playResponseAudio = false)
 	{
@@ -306,8 +300,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			return false;
 		}
-
-		DebugLog.DebugWrite($"{AttachedObject._name} Hear call for help!");
 
 		if (_data.threatAwareness < GhostData.ThreatAwareness.IntruderConfirmed)
 		{
@@ -415,7 +407,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 			&& (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.players.Values.Any(x => x.playerLocation.distance < 20f) || _data.players.Values.Any(x => x.sensor.isPlayerIlluminatedByUs))
 			&& (_data.players.Values.Any(x => x.sensor.isPlayerVisible) || _data.players.Values.Any(x => x.sensor.inContactWithPlayer)))
 		{
-			DebugLog.DebugWrite($"INTRUDER CONFIRMED BY SELF");
 			AttachedObject._intruderConfirmedBySelf = true;
 			AttachedObject._intruderConfirmPending = true;
 			var closestPlayer = _data.players.Values.MinBy(x => x.playerLocation.distance);
@@ -565,8 +556,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public void OnCallForHelp()
 	{
-		DebugLog.DebugWrite($"{AttachedObject._name} - iterating through helper list for callforhelp");
-
 		if (AttachedObject._helperGhosts != null)
 		{
 			for (var i = 0; i < AttachedObject._helperGhosts.Length; i++)

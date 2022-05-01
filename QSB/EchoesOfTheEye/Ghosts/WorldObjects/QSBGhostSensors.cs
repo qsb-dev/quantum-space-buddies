@@ -107,7 +107,6 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 
 		if (_data.interestedPlayer != closest)
 		{
-			DebugLog.DebugWrite($"CHANGE INTERESTED PLAYER!");
 			_data.interestedPlayer = closest;
 			this.SendMessage(new ChangeInterestedPlayerMessage(closest.player.PlayerId));
 		}
