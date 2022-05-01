@@ -91,7 +91,7 @@ internal class PrisonerBrainPatches : QSBPatch
 		if (__instance._currentBehavior is PrisonerBehavior.Emerge or PrisonerBehavior.WaitForConversation)
 		{
 			__instance._effects.OnRevealAnimationComplete -= __instance.OnFinishEmergeAnimation;
-			__instance.RaiseEvent(nameof(PrisonerBrain.OnFinishEmergeBehavior));
+			__instance.OnFinishEmergeBehavior.Invoke();
 		}
 
 		return false;

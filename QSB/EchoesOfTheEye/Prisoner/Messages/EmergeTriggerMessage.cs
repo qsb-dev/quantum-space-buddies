@@ -14,10 +14,6 @@ internal class EmergeTriggerMessage : QSBMessage
 		director._cellevator.OnPrisonerReveal();
 		director._musicSource.SetLocalVolume(Locator.GetAudioManager().GetAudioEntry(director._musicSource.audioLibraryClip).volume);
 		director._musicSource.Play();
-
-		if (QSBCore.IsHost)
-		{
-			director._prisonerBrain.BeginBehavior(PrisonerBehavior.Emerge);
-		}
+		director._prisonerBrain.BeginBehavior(PrisonerBehavior.Emerge);
 	}
 }
