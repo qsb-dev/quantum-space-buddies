@@ -157,12 +157,19 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 			return false;
 		}
 
-		if (fearAudioAlreadyPlaying)
+		if (_data.interestedPlayer == null)
 		{
-			return _currentAction.GetName() is GhostAction.Name.Chase or GhostAction.Name.Grab;
+			return false;
 		}
 
-		return _currentAction.GetName() == GhostAction.Name.Chase;
+		if (_data.interestedPlayer.player != QSBPlayerManager.LocalPlayer)
+		{
+			return false;
+		}
+
+		return fearAudioAlreadyPlaying
+			? _currentAction.GetName() is GhostAction.Name.Chase or GhostAction.Name.Grab
+			: _currentAction.GetName() == GhostAction.Name.Chase;
 	}
 
 	public void Awake()
