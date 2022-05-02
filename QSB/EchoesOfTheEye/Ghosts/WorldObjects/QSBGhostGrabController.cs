@@ -21,7 +21,7 @@ public class QSBGhostGrabController : WorldObject<GhostGrabController>
 			this.SendMessage(new GrabRemotePlayerMessage(speed, player.player.PlayerId));
 		}
 
-		var isLocalPlayer = player.player.PlayerId == QSBPlayerManager.LocalPlayerId;
+		var isLocalPlayer = player.player.IsLocalPlayer;
 
 		if (isLocalPlayer)
 		{

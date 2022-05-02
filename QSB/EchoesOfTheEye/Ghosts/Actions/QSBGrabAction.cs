@@ -1,4 +1,5 @@
 ﻿using GhostEnums;
+using QSB.Player;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace QSB.EchoesOfTheEye.Ghosts.Actions;
 internal class QSBGrabAction : QSBGhostAction
 {
 	private bool _playerIsGrabbed;
-
 	private bool _grabAnimComplete;
+	private PlayerInfo _grabbedPlayer;
 
 	public override GhostAction.Name GetName()
 	{
@@ -26,7 +27,7 @@ internal class QSBGrabAction : QSBGhostAction
 			return -100f;
 		}
 
-		if (PlayerState.IsAttached() || !_data.interestedPlayer.sensor.inContactWithPlayer)
+		if (_playerIsGrabbed || !_data.interestedPlayer.sensor.inContactWithPlayer)
 		{
 			return -100f;
 		}
@@ -58,10 +59,16 @@ internal class QSBGrabAction : QSBGhostAction
 		_playerIsGrabbed = false;
 		_grabAnimComplete = false;
 		_effects.AttachedObject.OnGrabComplete -= OnGrabComplete;
+		_grabbedPlayer = null;
 	}
 
 	public override bool Update_Action()
 	{
+		if (_grabbedPlayer != null && !_grabbedPlayer.InDreamWorld)
+		{
+			return false;
+		}
+
 		if (_playerIsGrabbed)
 		{
 			return true;
@@ -83,6 +90,7 @@ internal class QSBGrabAction : QSBGhostAction
 
 	private void GrabPlayer(GhostPlayer player)
 	{
+		_grabbedPlayer = player.player;
 		_playerIsGrabbed = true;
 		_controller.StopMovingInstantly();
 		_controller.StopFacing();

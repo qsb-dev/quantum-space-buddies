@@ -234,7 +234,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		if (QSBWorldSync.AllObjectsReady)
 		{
-			var ghost = QSBWorldSync.GetWorldObjects<QSBGhostBrain>().First(x => x.AttachedObject._name == "Kamaji");
+			var ghost = QSBWorldSync.GetWorldObjects<QSBGhostBrain>().First(x => x.AttachedObject._name == "Yubaba");
 			WriteLine(4, ghost.AttachedObject._name);
 			WriteLine(4, $"Action:{ghost.GetCurrentActionName()}");
 			WriteLine(4, $"Threat Awareness:{ghost.GetThreatAwareness()}");
