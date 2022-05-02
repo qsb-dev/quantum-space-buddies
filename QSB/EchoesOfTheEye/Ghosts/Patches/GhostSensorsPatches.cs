@@ -66,7 +66,7 @@ internal class GhostSensorsPatches : QSBPatch
 			return true;
 		}
 
-		__instance.GetWorldObject<QSBGhostSensors>().OnEnterContactTrigger(hitObj);
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 
@@ -79,7 +79,7 @@ internal class GhostSensorsPatches : QSBPatch
 			return true;
 		}
 
-		__instance.GetWorldObject<QSBGhostSensors>().OnExitContactTrigger(hitObj);
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 }

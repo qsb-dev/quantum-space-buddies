@@ -77,7 +77,7 @@ internal class QSBPrisonerBrain : WorldObject<PrisonerBrain>, IGhostObject
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
 		Controller.Initialize(AttachedObject._nodeLayer, Effects);
 		Data = new QSBGhostData();
-		Sensors.Initialize(Data, null);
+		Sensors.Initialize(Data);
 		Effects.Initialize(AttachedObject._controller.GetNodeRoot(), Controller, Data);
 	}
 

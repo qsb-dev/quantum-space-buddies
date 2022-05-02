@@ -1,4 +1,5 @@
 ﻿using GhostEnums;
+using QSB.Player;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace QSB.EchoesOfTheEye.Ghosts.Actions;
 internal class QSBGrabAction : QSBGhostAction
 {
 	private bool _playerIsGrabbed;
-
 	private bool _grabAnimComplete;
+	private PlayerInfo _grabbedPlayer;
 
 	public override GhostAction.Name GetName()
 	{
@@ -26,7 +27,7 @@ internal class QSBGrabAction : QSBGhostAction
 			return -100f;
 		}
 
-		if (PlayerState.IsAttached() || !_data.interestedPlayer.sensor.inContactWithPlayer)
+		if (_playerIsGrabbed || !_data.interestedPlayer.sensor.inContactWithPlayer)
 		{
 			return -100f;
 		}
@@ -58,10 +59,16 @@ internal class QSBGrabAction : QSBGhostAction
 		_playerIsGrabbed = false;
 		_grabAnimComplete = false;
 		_effects.AttachedObject.OnGrabComplete -= OnGrabComplete;
+		_grabbedPlayer = null;
 	}
 
 	public override bool Update_Action()
 	{
+		if (_grabbedPlayer != null && !_grabbedPlayer.InDreamWorld)
+		{
+			return false;
+		}
+
 		if (_playerIsGrabbed)
 		{
 			return true;
@@ -75,24 +82,20 @@ internal class QSBGrabAction : QSBGhostAction
 		_controller.FaceLocalPosition(_data.interestedPlayer.playerLocation.localPosition, TurnSpeed.FASTEST);
 		if (_sensors.CanGrabPlayer(_data.interestedPlayer))
 		{
-			DebugLog.DebugWrite($"Grab player {_data.interestedPlayer.player.PlayerId}!");
-			GrabPlayer();
-		}
-		else
-		{
-			DebugLog.DebugWrite($"can't grab player {_data.interestedPlayer.player.PlayerId}");
+			GrabPlayer(_data.interestedPlayer);
 		}
 
 		return !_grabAnimComplete;
 	}
 
-	private void GrabPlayer()
+	private void GrabPlayer(GhostPlayer player)
 	{
+		_grabbedPlayer = player.player;
 		_playerIsGrabbed = true;
 		_controller.StopMovingInstantly();
 		_controller.StopFacing();
 		_controller.SetLanternConcealed(true, false);
-		_controller.AttachedObject.GetGrabController().GrabPlayer(1f);
+		_controller.GetGrabController().GrabPlayer(1f, player);
 	}
 
 	private void OnGrabComplete()
