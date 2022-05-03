@@ -8,7 +8,7 @@ internal class ProjectMessage : QSBMessage
 {
 	public override void OnReceiveRemote()
 	{
-		var director = QSBWorldSync.GetUnityObjects<PrisonerDirector>().First();
+		var director = QSBWorldSync.GetUnityObject<PrisonerDirector>();
 		director._prisonerBrain.BeginBehavior(PrisonerBehavior.ExperienceVision, 0f);
 	}
 }

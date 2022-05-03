@@ -14,7 +14,7 @@ internal class StopProjectMessage : QSBMessage<bool>
 
 	public override void OnReceiveRemote()
 	{
-		var director = QSBWorldSync.GetUnityObjects<PrisonerDirector>().First();
+		var director = QSBWorldSync.GetUnityObject<PrisonerDirector>();
 
 		if (!Data)
 		{

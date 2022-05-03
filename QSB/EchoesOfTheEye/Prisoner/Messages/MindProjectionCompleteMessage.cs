@@ -8,7 +8,7 @@ internal class MindProjectionCompleteMessage : QSBMessage
 {
 	public override void OnReceiveRemote()
 	{
-		var director = QSBWorldSync.GetUnityObjects<PrisonerDirector>().First();
+		var director = QSBWorldSync.GetUnityObject<PrisonerDirector>();
 		director.OnMindProjectionComplete();
 	}
 }

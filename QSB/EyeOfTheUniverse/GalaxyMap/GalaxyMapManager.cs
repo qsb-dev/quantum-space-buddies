@@ -24,7 +24,7 @@ internal class GalaxyMapManager : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		var mapController = QSBWorldSync.GetUnityObjects<GalaxyMapController>().First();
+		var mapController = QSBWorldSync.GetUnityObject<GalaxyMapController>();
 		var map = mapController._interactVolume.gameObject;
 
 		map.SetActive(false);

@@ -13,10 +13,10 @@ internal class QSBQuantumInstrument : WorldObject<QuantumInstrument>
 
 	public void Gather()
 	{
-		var maskZoneController = QSBWorldSync.GetUnityObjects<MaskZoneController>().First();
+		var maskZoneController = QSBWorldSync.GetUnityObject<MaskZoneController>();
 		if (maskZoneController._maskInstrument == AttachedObject)
 		{
-			var shuttleController = QSBWorldSync.GetUnityObjects<EyeShuttleController>().First();
+			var shuttleController = QSBWorldSync.GetUnityObject<EyeShuttleController>();
 
 			foreach (var player in MaskManager.WentOnSolanumsWildRide)
 			{

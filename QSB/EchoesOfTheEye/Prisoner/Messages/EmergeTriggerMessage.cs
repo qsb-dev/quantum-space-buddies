@@ -9,7 +9,7 @@ internal class EmergeTriggerMessage : QSBMessage
 	public override void OnReceiveRemote()
 	{
 		// hewwo
-		var director = QSBWorldSync.GetUnityObjects<PrisonerDirector>().First();
+		var director = QSBWorldSync.GetUnityObject<PrisonerDirector>();
 		director._darknessAwoken = true;
 		director._cellevator.OnPrisonerReveal();
 		director._musicSource.SetLocalVolume(Locator.GetAudioManager().GetAudioEntry(director._musicSource.audioLibraryClip).volume);

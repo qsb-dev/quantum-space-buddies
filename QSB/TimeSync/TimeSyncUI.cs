@@ -31,7 +31,7 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 	private void OnUniverseSceneLoad(OWScene oldScene, OWScene newScene)
 	{
 		_isSetUp = true;
-		var obj = QSBWorldSync.GetUnityObjects<SleepTimerUI>().First();
+		var obj = QSBWorldSync.GetUnityObject<SleepTimerUI>();
 		_canvas = obj._canvas;
 		_text = obj._text;
 		_canvas.enabled = false;

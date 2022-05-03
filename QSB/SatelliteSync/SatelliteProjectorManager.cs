@@ -52,7 +52,7 @@ internal class SatelliteProjectorManager : MonoBehaviour, IAddComponentOnStart
 	{
 		if (newScene == OWScene.SolarSystem)
 		{
-			Projector = QSBWorldSync.GetUnityObjects<SatelliteSnapshotController>().First();
+			Projector = QSBWorldSync.GetUnityObject<SatelliteSnapshotController>();
 			Projector._loopingSource.spatialBlend = 1f;
 			Projector._oneShotSource.spatialBlend = 1f;
 

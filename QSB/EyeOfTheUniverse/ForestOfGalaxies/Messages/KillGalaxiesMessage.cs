@@ -29,7 +29,7 @@ internal class KillGalaxiesMessage : QSBMessage
 
 	public override void OnReceiveRemote()
 	{
-		var galaxyController = QSBWorldSync.GetUnityObjects<MiniGalaxyController>().First();
+		var galaxyController = QSBWorldSync.GetUnityObject<MiniGalaxyController>();
 
 		galaxyController._killTrigger.OnEntry -= galaxyController.OnEnterKillTrigger;
 
