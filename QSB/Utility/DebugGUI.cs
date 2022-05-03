@@ -1,5 +1,4 @@
 ﻿using QSB.ClientServerStateSync;
-using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
@@ -232,50 +231,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		#endregion
 
-		if (QSBWorldSync.AllObjectsReady)
-		{
-			var ghost = QSBWorldSync.GetWorldObjects<QSBGhostBrain>().First(x => x.AttachedObject._name == "Yubaba");
-			WriteLine(4, ghost.AttachedObject._name);
-			WriteLine(4, $"Action:{ghost.GetCurrentActionName()}");
-			WriteLine(4, $"Threat Awareness:{ghost.GetThreatAwareness()}");
-			var interestedPlayer = ghost._data.interestedPlayer;
-			WriteLine(4, $"InterestedPlayer:{(interestedPlayer == null ? "NULL" : interestedPlayer.player.PlayerId)}");
-
-			foreach (var player in ghost._data.players.Values)
-			{
-				WriteLine(4, $"{player.player.PlayerId}");
-				WriteLine(4, $"- isPlayerVisible:{player.sensor.isPlayerVisible}");
-				WriteLine(4, $"- isPlayerHeldLanternVisible:{player.sensor.isPlayerHeldLanternVisible}");
-				WriteLine(4, $"- isIlluminatedByPlayer:{player.sensor.isIlluminatedByPlayer}");
-				WriteLine(4, $"- isPlayerLocationKnown:{player.isPlayerLocationKnown}");
-				WriteLine(4, $"- timeSincePlayerLocationKnown:{player.timeSincePlayerLocationKnown}");
-				var lantern = player.player.AssignedSimulationLantern;
-				if (lantern != null)
-				{
-					WriteLine(4, $"- IsHeldByPlayer:{lantern.AttachedObject.GetLanternController().IsHeldByPlayer()}");
-					WriteLine(4, $"- Concealed:{lantern.AttachedObject.GetLanternController().IsConcealed()}");
-				}
-				else
-				{
-					WriteLine(4, $"- LANTERN NULL", Color.red);
-				}
-
-				var playerCamera = player.player.Camera;
-
-				if (playerCamera != null)
-				{
-					var position = playerCamera.transform.position;
-					WriteLine(4, $"- Camera in vision cone:{ghost.AttachedObject._sensors.CheckPointInVisionCone(position)}");
-					WriteLine(4, $"- CheckLineOccluded:{ghost.AttachedObject._sensors.CheckLineOccluded(ghost.AttachedObject._sensors._sightOrigin.position, position)}");
-				}
-				else
-				{
-					WriteLine(4, $"- CAMERA NULL", Color.red);
-				}
-			}
-		}
-
-		/*
 		#region Column4 - Quantum Object Possesion
 
 		foreach (var player in QSBPlayerManager.PlayerList)
@@ -314,7 +269,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		}
 
 		#endregion
-		*/
 	}
 
 	private static void DrawWorldObjectLabels()
@@ -322,16 +276,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		if (QSBCore.DebugSettings.DrawLabels)
 		{
 			foreach (var obj in QSBWorldSync.GetWorldObjects())
-			{
-				if (obj.ShouldDisplayDebug())
-				{
-					DrawLabel(obj.AttachedObject.transform, obj.ReturnLabel());
-				}
-			}
-		}
-		else if (QSBCore.DebugSettings.DrawGhostAI)
-		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects<IGhostObject>())
 			{
 				if (obj.ShouldDisplayDebug())
 				{
@@ -348,16 +292,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		if (QSBCore.DebugSettings.DrawLines)
 		{
 			foreach (var obj in QSBWorldSync.GetWorldObjects())
-			{
-				if (obj.ShouldDisplayDebug())
-				{
-					obj.DisplayLines();
-				}
-			}
-		}
-		else if (QSBCore.DebugSettings.DrawGhostAI)
-		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects<IGhostObject>())
 			{
 				if (obj.ShouldDisplayDebug())
 				{
