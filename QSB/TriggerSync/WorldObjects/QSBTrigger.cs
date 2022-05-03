@@ -9,104 +9,103 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace QSB.TriggerSync.WorldObjects
+namespace QSB.TriggerSync.WorldObjects;
+
+public interface IQSBTrigger : IWorldObject
 {
-	public interface IQSBTrigger : IWorldObject
+	List<PlayerInfo> Occupants { get; }
+
+	void Enter(PlayerInfo player);
+
+	void Exit(PlayerInfo player);
+}
+
+public abstract class QSBTrigger<TO> : WorldObject<OWTriggerVolume>, IQSBTrigger
+{
+	public TO TriggerOwner { get; init; }
+
+	public List<PlayerInfo> Occupants { get; } = new();
+
+	protected virtual string CompareTag => "PlayerDetector";
+
+	public override async UniTask Init(CancellationToken ct)
 	{
-		List<PlayerInfo> Occupants { get; }
+		AttachedObject.OnEntry += OnEnterEvent;
+		AttachedObject.OnExit += OnExitEvent;
 
-		void Enter(PlayerInfo player);
+		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 
-		void Exit(PlayerInfo player);
-	}
-
-	public abstract class QSBTrigger<TO> : WorldObject<OWTriggerVolume>, IQSBTrigger
-	{
-		public TO TriggerOwner { get; init; }
-
-		public List<PlayerInfo> Occupants { get; } = new();
-
-		protected virtual string CompareTag => "PlayerDetector";
-
-		public override async UniTask Init(CancellationToken ct)
+		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
 		{
-			AttachedObject.OnEntry += OnEnterEvent;
-			AttachedObject.OnExit += OnExitEvent;
-
-			QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
-
-			Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
-			{
-				if (AttachedObject._trackedObjects != null && AttachedObject._trackedObjects.Any(x => x.CompareTag(CompareTag)))
-				{
-					((IQSBTrigger)this).SendMessage(new TriggerMessage(true));
-				}
-			});
-		}
-
-		public override void OnRemoval()
-		{
-			AttachedObject.OnEntry -= OnEnterEvent;
-			AttachedObject.OnExit -= OnExitEvent;
-
-			QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
-		}
-
-		public override void SendInitialState(uint to) =>
-			((IQSBTrigger)this).SendMessage(new TriggerInitialStateMessage(Occupants) { To = to });
-
-		protected void OnEnterEvent(GameObject hitObj)
-		{
-			if (hitObj.CompareTag(CompareTag))
+			if (AttachedObject._trackedObjects != null && AttachedObject._trackedObjects.Any(x => x.CompareTag(CompareTag)))
 			{
 				((IQSBTrigger)this).SendMessage(new TriggerMessage(true));
 			}
-		}
-
-		protected void OnExitEvent(GameObject hitObj)
-		{
-			if (hitObj.CompareTag(CompareTag))
-			{
-				((IQSBTrigger)this).SendMessage(new TriggerMessage(false));
-			}
-		}
-
-		private void OnPlayerLeave(PlayerInfo player)
-		{
-			if (Occupants.Contains(player))
-			{
-				Exit(player);
-			}
-		}
-
-		public void Enter(PlayerInfo player)
-		{
-			if (!Occupants.SafeAdd(player))
-			{
-				return;
-			}
-
-			OnEnter(player);
-		}
-
-		public void Exit(PlayerInfo player)
-		{
-			if (!Occupants.QuickRemove(player))
-			{
-				return;
-			}
-
-			OnExit(player);
-		}
-
-		/// <summary>
-		/// called when a player enters this trigger
-		/// </summary>
-		protected virtual void OnEnter(PlayerInfo player) { }
-
-		/// <summary>
-		/// called when a player exits this trigger or leaves the game
-		/// </summary>
-		protected virtual void OnExit(PlayerInfo player) { }
+		});
 	}
+
+	public override void OnRemoval()
+	{
+		AttachedObject.OnEntry -= OnEnterEvent;
+		AttachedObject.OnExit -= OnExitEvent;
+
+		QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
+	}
+
+	public override void SendInitialState(uint to) =>
+		((IQSBTrigger)this).SendMessage(new TriggerInitialStateMessage(Occupants) { To = to });
+
+	protected void OnEnterEvent(GameObject hitObj)
+	{
+		if (hitObj.CompareTag(CompareTag))
+		{
+			((IQSBTrigger)this).SendMessage(new TriggerMessage(true));
+		}
+	}
+
+	protected void OnExitEvent(GameObject hitObj)
+	{
+		if (hitObj.CompareTag(CompareTag))
+		{
+			((IQSBTrigger)this).SendMessage(new TriggerMessage(false));
+		}
+	}
+
+	private void OnPlayerLeave(PlayerInfo player)
+	{
+		if (Occupants.Contains(player))
+		{
+			Exit(player);
+		}
+	}
+
+	public void Enter(PlayerInfo player)
+	{
+		if (!Occupants.SafeAdd(player))
+		{
+			return;
+		}
+
+		OnEnter(player);
+	}
+
+	public void Exit(PlayerInfo player)
+	{
+		if (!Occupants.QuickRemove(player))
+		{
+			return;
+		}
+
+		OnExit(player);
+	}
+
+	/// <summary>
+	/// called when a player enters this trigger
+	/// </summary>
+	protected virtual void OnEnter(PlayerInfo player) { }
+
+	/// <summary>
+	/// called when a player exits this trigger or leaves the game
+	/// </summary>
+	protected virtual void OnExit(PlayerInfo player) { }
 }

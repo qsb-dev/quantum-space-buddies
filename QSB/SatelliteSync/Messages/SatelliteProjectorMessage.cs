@@ -1,21 +1,20 @@
 ﻿using QSB.Messaging;
 
-namespace QSB.SatelliteSync.Messages
-{
-	internal class SatelliteProjectorMessage : QSBMessage<bool>
-	{
-		public SatelliteProjectorMessage(bool usingProjector) => Value = usingProjector;
+namespace QSB.SatelliteSync.Messages;
 
-		public override void OnReceiveRemote()
+internal class SatelliteProjectorMessage : QSBMessage<bool>
+{
+	public SatelliteProjectorMessage(bool usingProjector) : base(usingProjector) { }
+
+	public override void OnReceiveRemote()
+	{
+		if (Data)
 		{
-			if (Value)
-			{
-				SatelliteProjectorManager.Instance.RemoteEnter();
-			}
-			else
-			{
-				SatelliteProjectorManager.Instance.RemoteExit();
-			}
+			SatelliteProjectorManager.Instance.RemoteEnter();
+		}
+		else
+		{
+			SatelliteProjectorManager.Instance.RemoteExit();
 		}
 	}
 }

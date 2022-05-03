@@ -1,75 +1,52 @@
-using Mirror;
 using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.ConversationSync.Messages
+namespace QSB.ConversationSync.Messages;
+
+public class DialogueConditionMessage : QSBMessage<(string Name, bool State)>
 {
-	public class DialogueConditionMessage : QSBMessage
+	public DialogueConditionMessage(string name, bool state) : base((name, state)) { }
+
+	public override void OnReceiveRemote()
 	{
-		private string ConditionName;
-		private bool ConditionState;
-
-		public DialogueConditionMessage(string name, bool state)
+		if (QSBCore.IsHost)
 		{
-			ConditionName = name;
-			ConditionState = state;
+			QSBWorldSync.SetDialogueCondition(Data.Name, Data.State);
 		}
 
-		public override void Serialize(NetworkWriter writer)
+		var sharedInstance = DialogueConditionManager.SharedInstance;
+
+		var flag = true;
+		if (sharedInstance.ConditionExists(Data.Name))
 		{
-			base.Serialize(writer);
-			writer.Write(ConditionName);
-			writer.Write(ConditionState);
+			if (sharedInstance._dictConditions[Data.Name] == Data.State)
+			{
+				flag = false;
+			}
+
+			sharedInstance._dictConditions[Data.Name] = Data.State;
+		}
+		else
+		{
+			sharedInstance.AddCondition(Data.Name, Data.State);
 		}
 
-		public override void Deserialize(NetworkReader reader)
+		if (flag)
 		{
-			base.Deserialize(reader);
-			ConditionName = reader.ReadString();
-			ConditionState = reader.Read<bool>();
+			GlobalMessenger<string, bool>.FireEvent("DialogueConditionChanged", Data.Name, Data.State);
 		}
 
-		public override void OnReceiveRemote()
+		if (Data.Name == "LAUNCH_CODES_GIVEN")
 		{
-			if (QSBCore.IsHost)
-			{
-				QSBWorldSync.SetDialogueCondition(ConditionName, ConditionState);
-			}
-
-			var sharedInstance = DialogueConditionManager.SharedInstance;
-
-			var flag = true;
-			if (sharedInstance.ConditionExists(ConditionName))
-			{
-				if (sharedInstance._dictConditions[ConditionName] == ConditionState)
-				{
-					flag = false;
-				}
-
-				sharedInstance._dictConditions[ConditionName] = ConditionState;
-			}
-			else
-			{
-				sharedInstance.AddCondition(ConditionName, ConditionState);
-			}
-
-			if (flag)
-			{
-				GlobalMessenger<string, bool>.FireEvent("DialogueConditionChanged", ConditionName, ConditionState);
-			}
-
-			if (ConditionName == "LAUNCH_CODES_GIVEN")
-			{
-				PlayerData.LearnLaunchCodes();
-			}
+			PlayerData.LearnLaunchCodes();
 		}
+	}
 
-		public override void OnReceiveLocal()
+	public override void OnReceiveLocal()
+	{
+		if (QSBCore.IsHost)
 		{
-			if (QSBCore.IsHost)
-			{
-				QSBWorldSync.SetDialogueCondition(ConditionName, ConditionState);
-			}
+			QSBWorldSync.SetDialogueCondition(Data.Name, Data.State);
 		}
 	}
 }

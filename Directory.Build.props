@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
 
   <PropertyGroup>
     <DevEnvLoc>$(MSBuildThisFileDirectory)DevEnv.targets</DevEnvLoc>
@@ -8,12 +7,10 @@
 
   <PropertyGroup Label="Common Properties">
     <TargetFramework>net48</TargetFramework>
+    <LangVersion>default</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>9</LangVersion>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <NeutralLanguage>en-GB</NeutralLanguage>
     <Company>Henry Pointer, Aleksander Waage, Ricardo Lopes</Company>
     <Copyright>Copyright © Henry Pointer, Aleksander Waage, Ricardo Lopes 2020-2021</Copyright>
   </PropertyGroup>
@@ -23,10 +20,6 @@
     <OwmlDir>$(AppData)\OuterWildsModManager\OWML</OwmlDir>
     <UnityAssetsDir>$(SolutionDir)\qsb-unityproject\Assets</UnityAssetsDir>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-  </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>portable</DebugType>

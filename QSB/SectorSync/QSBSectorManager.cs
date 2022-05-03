@@ -9,91 +9,137 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace QSB.SectorSync
+namespace QSB.SectorSync;
+
+public class QSBSectorManager : WorldObjectManager
 {
-	public class QSBSectorManager : WorldObjectManager
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
+
+	public static QSBSectorManager Instance { get; private set; }
+	private bool _isReady;
+
+	public readonly List<BaseSectoredSync> SectoredSyncs = new();
+
+	private const float UpdateInterval = 0.4f;
+	private float _timer = UpdateInterval;
+
+	private void Update()
 	{
-		public override WorldObjectType WorldObjectType => WorldObjectType.Both;
-
-		public static QSBSectorManager Instance { get; private set; }
-		private bool _isReady;
-		public readonly List<QSBSector> FakeSectors = new();
-
-		public readonly List<BaseSectoredSync> SectoredSyncs = new();
-
-		private const float UpdateInterval = 0.4f;
-		private float _timer = UpdateInterval;
-
-		private void Update()
+		_timer += Time.unscaledDeltaTime;
+		if (_timer < UpdateInterval)
 		{
-			_timer += Time.unscaledDeltaTime;
-			if (_timer < UpdateInterval)
-			{
-				return;
-			}
-
-			_timer = 0;
-			UpdateReferenceSectors();
+			return;
 		}
 
-		public void UpdateReferenceSectors()
-		{
-			if (!Instance._isReady || !QSBWorldSync.AllObjectsReady)
-			{
-				return;
-			}
+		_timer = 0;
+		UpdateReferenceSectors();
+	}
 
-			foreach (var sync in SectoredSyncs)
+	public void UpdateReferenceSectors()
+	{
+		if (!Instance._isReady || !QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		foreach (var sync in SectoredSyncs)
+		{
+			if (sync.hasAuthority
+				&& sync.IsValid
+				&& sync.AttachedTransform.gameObject.activeInHierarchy)
 			{
-				if (sync.hasAuthority
-					&& sync.IsValid)
+				UpdateReferenceSector(sync);
+			}
+		}
+	}
+
+	private static void UpdateReferenceSector(BaseSectoredSync sync)
+	{
+		var closestSector = sync.SectorDetector.GetClosestSector();
+		if (closestSector == null)
+		{
+			return;
+		}
+
+		sync.SetReferenceSector(closestSector);
+	}
+
+	public void Awake()
+	{
+		Instance = this;
+		DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
+	}
+
+	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+	{
+		DebugLog.DebugWrite("Building sectors...", MessageType.Info);
+		this.Try("creating fake sectors", CreateFakeSectors);
+
+		QSBWorldSync.Init<QSBSector, Sector>();
+		_isReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
+	}
+
+	public override void UnbuildWorldObjects() =>
+		_isReady = false;
+
+	private static void CreateFakeSectors()
+	{
+		if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
+		{
+			return;
+		}
+
+		// time loop spinning ring
+		{
+			var TimeLoopRing_Body = GameObject.Find("TimeLoopRing_Body");
+			var Sector_TimeLoopInterior = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
+			// use the same trigger as the parent sector
+			FakeSector.Create(TimeLoopRing_Body, Sector_TimeLoopInterior,
+				x => x._triggerRoot = Sector_TimeLoopInterior._triggerRoot);
+		}
+
+		// TH elevators
+		foreach (var elevator in QSBWorldSync.GetUnityObjects<Elevator>())
+		{
+			// just create a sphere at the attach point lol
+			// since players will be moved there when riding the elevator
+			FakeSector.Create(elevator._attachPoint.gameObject,
+				elevator.GetComponentInParent<Sector>(),
+				x =>
 				{
-					UpdateReferenceSector(sync);
-				}
-			}
+					x.gameObject.AddComponent<OWTriggerVolume>();
+					x.gameObject.AddComponent<SphereShape>();
+				});
 		}
 
-		private static void UpdateReferenceSector(BaseSectoredSync sync)
+		// rafts
+		foreach (var raft in QSBWorldSync.GetUnityObjects<RaftController>())
 		{
-			var closestSector = sync.SectorDetector.GetClosestSector();
-			if (closestSector == null)
+			FakeSector.Create(raft.gameObject,
+				raft._sector,
+				x => x._triggerRoot = raft._rideVolume.gameObject);
+		}
+
+		// todo cage elevators
+		// todo prisoner elevator
+		// todo black hole forge
+
+		// OPC probe
+		{
+			var probe = Locator._orbitalProbeCannon
+				.GetRequiredComponent<OrbitalProbeLaunchController>()
+				._probeBody;
+			if (probe)
 			{
-				return;
-			}
-
-			sync.SetReferenceSector(closestSector);
-		}
-
-		public void Awake()
-		{
-			Instance = this;
-			DebugLog.DebugWrite("Sector Manager ready.", MessageType.Success);
-		}
-
-		public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-		{
-			DebugLog.DebugWrite("Building sectors...", MessageType.Info);
-			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
-			{
-				var timeLoopRing = GameObject.Find("TimeLoopRing_Body");
-				if (timeLoopRing != null)
-				{
-					if (timeLoopRing.GetComponent<FakeSector>() == null)
+				// just create a big circle around the probe lol
+				FakeSector.Create(probe.gameObject,
+					null,
+					x =>
 					{
-						timeLoopRing.AddComponent<FakeSector>().AttachedSector = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
-					}
-				}
-				else
-				{
-					DebugLog.ToConsole($"Error - TimeLoopRing_Body not found!", MessageType.Error);
-				}
+						x.gameObject.AddComponent<OWTriggerVolume>();
+						x.gameObject.AddComponent<SphereShape>().radius = 100;
+					});
 			}
-
-			QSBWorldSync.Init<QSBSector, Sector>();
-			_isReady = QSBWorldSync.GetWorldObjects<QSBSector>().Any();
 		}
-
-		public override void UnbuildWorldObjects() =>
-			_isReady = false;
 	}
 }

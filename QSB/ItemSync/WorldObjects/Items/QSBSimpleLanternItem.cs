@@ -1,4 +1,3 @@
-﻿namespace QSB.ItemSync.WorldObjects.Items
-{
-	internal class QSBSimpleLanternItem : QSBItem<SimpleLanternItem> { }
-}
+﻿namespace QSB.ItemSync.WorldObjects.Items;
+
+internal class QSBSimpleLanternItem : QSBItem<SimpleLanternItem> { }

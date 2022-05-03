@@ -1,76 +1,64 @@
-﻿using Mirror;
-using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 
-namespace QSB.ItemSync.Messages
+namespace QSB.ItemSync.Messages;
+
+internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int SocketId, int ItemId)>
 {
-	internal class SocketItemMessage : QSBMessage<SocketMessageType>
+	public SocketItemMessage(SocketMessageType type, OWItemSocket socket, OWItem item) : base((
+		type,
+		socket ? socket.GetWorldObject<QSBItemSocket>().ObjectId : -1,
+		item ? item.GetWorldObject<IQSBItem>().ObjectId : -1
+	)) { }
+
+	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+	public override void OnReceiveRemote()
 	{
-		private int SocketId;
-		private int ItemId;
-
-		public SocketItemMessage(SocketMessageType type, int socketId = -1, int itemId = -1)
+		switch (Data.Type)
 		{
-			Value = type;
-			SocketId = socketId;
-			ItemId = itemId;
-		}
+			case SocketMessageType.Socket:
+				{
+					var qsbItemSocket = Data.SocketId.GetWorldObject<QSBItemSocket>();
+					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
 
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(SocketId);
-			writer.Write(ItemId);
-		}
+					qsbItemSocket.PlaceIntoSocket(qsbItem);
 
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			SocketId = reader.Read<int>();
-			ItemId = reader.Read<int>();
-		}
-
-		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-		public override void OnReceiveRemote()
-		{
-			QSBItemSocket socketWorldObject;
-			IQSBItem itemWorldObject;
-			var player = QSBPlayerManager.GetPlayer(From);
-			player.HeldItem = null;
-
-			DebugLog.DebugWrite("DROP HELD ITEM");
-			player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
-
-			switch (Value)
-			{
-				case SocketMessageType.Socket:
-					socketWorldObject = SocketId.GetWorldObject<QSBItemSocket>();
-					itemWorldObject = ItemId.GetWorldObject<IQSBItem>();
-
-					socketWorldObject.PlaceIntoSocket(itemWorldObject);
+					var player = QSBPlayerManager.GetPlayer(From);
+					player.HeldItem = null;
+					player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
 					return;
-				case SocketMessageType.StartUnsocket:
-					socketWorldObject = SocketId.GetWorldObject<QSBItemSocket>();
+				}
+			case SocketMessageType.StartUnsocket:
+				{
+					var qsbItemSocket = Data.SocketId.GetWorldObject<QSBItemSocket>();
+					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
 
-					if (!socketWorldObject.IsSocketOccupied())
+					if (!qsbItemSocket.IsSocketOccupied())
 					{
-						DebugLog.ToConsole($"Warning - Trying to start unsocket on socket that is unoccupied! Socket:{socketWorldObject.Name}");
+						DebugLog.ToConsole($"Warning - Trying to start unsocket on socket that is unoccupied! Socket:{qsbItemSocket.Name}");
 						return;
 					}
 
-					socketWorldObject.RemoveFromSocket();
-					return;
-				case SocketMessageType.CompleteUnsocket:
-					itemWorldObject = ItemId.GetWorldObject<IQSBItem>();
+					qsbItem.StoreLocation();
 
-					itemWorldObject.OnCompleteUnsocket();
+					var player = QSBPlayerManager.GetPlayer(From);
+					player.HeldItem = qsbItem;
+
+					qsbItemSocket.RemoveFromSocket();
 					return;
-			}
+				}
+			case SocketMessageType.CompleteUnsocket:
+				{
+					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
+
+					qsbItem.OnCompleteUnsocket();
+					return;
+				}
 		}
 	}
 }

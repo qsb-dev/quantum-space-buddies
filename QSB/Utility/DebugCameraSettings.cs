@@ -1,39 +1,38 @@
 ﻿using UnityEngine;
 
-namespace QSB.Utility
+namespace QSB.Utility;
+
+internal class DebugCameraSettings : MonoBehaviour, IAddComponentOnStart
 {
-	internal class DebugCameraSettings : MonoBehaviour, IAddComponentOnStart
+	public static void UpdateFromDebugSetting()
 	{
-		public static void UpdateFromDebugSetting()
+		if (QSBCore.DebugSettings.GreySkybox)
 		{
-			if (QSBCore.DebugSettings.GreySkybox)
+			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+			if (Camera.main)
 			{
-				QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-				if (Camera.main)
-				{
-					Camera.main.backgroundColor = Color.gray;
-				}
-			}
-			else
-			{
-				QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-				if (Camera.main)
-				{
-					Camera.main.backgroundColor = _origColor;
-				}
+				Camera.main.backgroundColor = Color.gray;
 			}
 		}
-
-		private static Color _origColor;
-
-		private void Awake()
+		else
 		{
-			_origColor = Camera.main.backgroundColor;
-			UpdateFromDebugSetting();
-			Destroy(this);
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+			if (Camera.main)
+			{
+				Camera.main.backgroundColor = _origColor;
+			}
 		}
-
-		private static void OnSceneLoaded(OWScene arg1, OWScene arg2, bool arg3)
-			=> Camera.main.backgroundColor = Color.gray;
 	}
+
+	private static Color _origColor;
+
+	private void Awake()
+	{
+		_origColor = Camera.main.backgroundColor;
+		UpdateFromDebugSetting();
+		Destroy(this);
+	}
+
+	private static void OnSceneLoaded(OWScene arg1, OWScene arg2, bool arg3)
+		=> Camera.main.backgroundColor = Color.gray;
 }

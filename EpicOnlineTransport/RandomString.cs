@@ -8,7 +8,7 @@ public class RandomString
 	{
 		var builder = new StringBuilder(size);
 
-		Random random = new Random();
+		var random = new Random();
 
 		// Unicode/ASCII Letters are divided into two blocks
 		// (Letters 65–90 / 97–122):
@@ -16,8 +16,8 @@ public class RandomString
 		// the second group containing the lowercase.  
 
 		// char is a single Unicode character  
-		char offsetLowerCase = 'a';
-		char offsetUpperCase = 'A';
+		var offsetLowerCase = 'a';
+		var offsetUpperCase = 'A';
 		const int lettersOffset = 26; // A...Z or a..z: length=26  
 
 		for (var i = 0; i < size; i++)

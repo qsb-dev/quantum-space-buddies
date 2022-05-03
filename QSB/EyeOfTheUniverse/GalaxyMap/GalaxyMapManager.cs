@@ -3,38 +3,37 @@ using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
-namespace QSB.EyeOfTheUniverse.GalaxyMap
+namespace QSB.EyeOfTheUniverse.GalaxyMap;
+
+internal class GalaxyMapManager : MonoBehaviour, IAddComponentOnStart
 {
-	internal class GalaxyMapManager : MonoBehaviour, IAddComponentOnStart
+	public static GalaxyMapManager Instance { get; private set; }
+
+	public QSBCharacterDialogueTree Tree { get; private set; }
+
+	private void Awake()
 	{
-		public static GalaxyMapManager Instance { get; private set; }
+		Instance = this;
+		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+	}
 
-		public QSBCharacterDialogueTree Tree { get; private set; }
-
-		private void Awake()
+	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
+	{
+		if (newScene != OWScene.EyeOfTheUniverse)
 		{
-			Instance = this;
-			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+			return;
 		}
 
-		private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
-		{
-			if (newScene != OWScene.EyeOfTheUniverse)
-			{
-				return;
-			}
+		var mapController = QSBWorldSync.GetUnityObject<GalaxyMapController>();
+		var map = mapController._interactVolume.gameObject;
 
-			var mapController = QSBWorldSync.GetUnityObjects<GalaxyMapController>().First();
-			var map = mapController._interactVolume.gameObject;
-
-			map.SetActive(false);
-			Tree = map.AddComponent<QSBCharacterDialogueTree>();
-			Tree._xmlCharacterDialogueAsset = QSBCore.TextAssetsBundle.LoadAsset<TextAsset>("Assets/TextAssets/GalaxyMap.txt");
-			Tree._attentionPoint = map.transform;
-			Tree._attentionPointOffset = new Vector3(0, 1, 0);
-			Tree._turnOffFlashlight = true;
-			Tree._turnOnFlashlight = true;
-			map.SetActive(true);
-		}
+		map.SetActive(false);
+		Tree = map.AddComponent<QSBCharacterDialogueTree>();
+		Tree._xmlCharacterDialogueAsset = QSBCore.TextAssetsBundle.LoadAsset<TextAsset>("Assets/TextAssets/GalaxyMap.txt");
+		Tree._attentionPoint = map.transform;
+		Tree._attentionPointOffset = new Vector3(0, 1, 0);
+		Tree._turnOffFlashlight = true;
+		Tree._turnOnFlashlight = true;
+		map.SetActive(true);
 	}
 }

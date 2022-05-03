@@ -1,3 +1,4 @@
+using MirrorWeaver;
 using System;
 using System.Collections.Generic;
 using Mono.Cecil;
@@ -138,10 +139,12 @@ namespace Mirror.Weaver
             {
                 throw new GenerateWriterException($"Cannot generate writer for {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
             }
+            /*
             if (variableDefinition.HasGenericParameters)
             {
                 throw new GenerateWriterException($"Cannot generate writer for generic type {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
             }
+            */
             if (variableDefinition.IsInterface)
             {
                 throw new GenerateWriterException($"Cannot generate writer for interface {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
@@ -216,7 +219,7 @@ namespace Mirror.Weaver
             if (!variable.Resolve().IsValueType)
                 WriteNullCheck(worker, ref WeavingFailed);
 
-            if (!WriteAllFields(variable, worker, ref WeavingFailed))
+            if (!this.WriteAllFieldsGeneric(variable, worker, ref WeavingFailed))
                 return null;
 
             worker.Emit(OpCodes.Ret);

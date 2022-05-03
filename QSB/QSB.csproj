@@ -1,52 +1,66 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyTitle>Quantum Space Buddies</AssemblyTitle>
-    <Description>Multiplayer mod for Outer Wilds</Description>
     <Product>Quantum Space Buddies</Product>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <ProjectGuid>{1F00090A-C697-4C55-B401-192F3CFB9DC2}</ProjectGuid>
+    <Description>Multiplayer mod for Outer Wilds</Description>
     <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\QSB</OutputPath>
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
 
   <Target Name="clean before building" BeforeTargets="PreBuildEvent">
-    <Exec Command="del /f /q &quot;$(OutputPath)\*.dll&quot;" IgnoreExitCode="true" />
-    <Exec Command="del /f /q &quot;$(OutputPath)\*.exe&quot;" IgnoreExitCode="true" />
-    <Exec Command="del /f /q &quot;$(OutputPath)\*.pdb&quot;" IgnoreExitCode="true" />
-    <Exec Command="del /f /q &quot;$(OutputPath)\AssetBundles\*&quot;" IgnoreExitCode="true" />
+    <ItemGroup>
+      <_Files Remove="@(_Files)" />
+      <_Files Include="$(OutputPath)\*.dll" />
+      <_Files Include="$(OutputPath)\*.exe" />
+      <_Files Include="$(OutputPath)\*.pdb" />
+
+      <_Files Include="$(OutputPath)\AssetBundles\*" />
+    </ItemGroup>
+    <Delete Files="@(_Files)" />
+  </Target>
+  <Target Name="clean after building" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <_Files Remove="@(_Files)" />
+      <_Files Include="$(OutputPath)\*.exe.config" />
+    </ItemGroup>
+    <Delete Files="@(_Files)" />
+  </Target>
+
+  <Target Name="weave qsb" AfterTargets="PostBuildEvent">
+    <Exec Command="MirrorWeaver &quot;$(TargetPath)&quot;" WorkingDirectory="..\MirrorWeaver\bin\$(Configuration)\" />
   </Target>
 
   <PropertyGroup>
     <GameDllsDir Condition="Exists('$(GameDir)')">$(GameDir)\OuterWilds_Data\Managed</GameDllsDir>
     <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
   </PropertyGroup>
-  <Target Name="remove dumb files" AfterTargets="PostBuildEvent">
-    <Exec Command="del /f /q &quot;$(OutputPath)\*.exe.config&quot;" />
-  </Target>
-  <Target Name="weave qsb" AfterTargets="PostBuildEvent">
-    <Exec Command="&quot;..\MirrorWeaver\bin\$(Configuration)\MirrorWeaver&quot; &quot;$(TargetPath)&quot; ..\GameDlls" />
-  </Target>
   <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)') and Exists('$(GameDllsDir)')">
-    <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.dll&quot;" />
-    <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.exe&quot;" />
-    <Exec Command="del /f /q &quot;$(UnityDllsDir)\*.pdb&quot;" />
+    <ItemGroup>
+      <_Files Remove="@(_Files)" />
+      <_Files Include="$(UnityDllsDir)\*.dll" />
+      <_Files Include="$(UnityDllsDir)\*.exe" />
+      <_Files Include="$(UnityDllsDir)\*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(_Files)" />
 
-    <Exec Command="copy /y &quot;$(OutputPath)\*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(OutputPath)\*.exe&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(OutputPath)\*.pdb&quot; &quot;$(UnityDllsDir)&quot;" IgnoreExitCode="true" />
+    <ItemGroup>
+      <_Files Remove="@(_Files)" />
+      <_Files Include="$(OutputPath)\*.dll" />
+      <_Files Include="$(OutputPath)\*.exe" />
+      <_Files Include="$(OutputPath)\*.pdb" />
 
-    <Exec Command="copy /y &quot;$(GameDllsDir)\Assembly-CSharp*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\Unity.InputSystem.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\UnityEngine.UI.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\EOS-SDK.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\UniSense.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\Autofac.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\Newtonsoft.Json.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\0Harmony.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\MonoMod*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\Mono.Cecil.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\OWML*.dll&quot; &quot;$(UnityDllsDir)&quot;" />
-    <Exec Command="copy /y &quot;$(GameDllsDir)\NAudio-Unity.dll&quot; &quot;$(UnityDllsDir)&quot;" />
+      <_Files Include="$(GameDllsDir)\EOS-SDK.dll" />
+      <_Files Include="$(GameDllsDir)\UniSense.dll" />
+      <_Files Include="$(GameDllsDir)\Autofac.dll" />
+      <_Files Include="$(GameDllsDir)\Newtonsoft.Json.dll" />
+      <_Files Include="$(GameDllsDir)\0Harmony.dll" />
+      <_Files Include="$(GameDllsDir)\MonoMod*.dll" />
+      <_Files Include="$(GameDllsDir)\Mono.Cecil.dll" />
+      <_Files Include="$(GameDllsDir)\OWML*.dll" />
+      <_Files Include="$(GameDllsDir)\NAudio-Unity.dll" />
+      <_Files Include="$(GameDllsDir)\com.rlabrecque.steamworks.net.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_Files)" DestinationFolder="$(UnityDllsDir)" />
   </Target>
 
   <ItemGroup>
@@ -56,6 +70,10 @@
     <None Include="manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+	<None Include="Assets\*">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	 <None Remove="Assets\*.pdn" />
     <None Include="AssetBundles\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -69,7 +87,6 @@
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.168" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
-    <Reference Include="..\ProxyScripts\*.dll" />
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
     <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />

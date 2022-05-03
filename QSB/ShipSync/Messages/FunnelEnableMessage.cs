@@ -1,13 +1,12 @@
 ﻿using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.ShipSync.Messages
-{
-	internal class FunnelEnableMessage : QSBMessage
-	{
-		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+namespace QSB.ShipSync.Messages;
 
-		public override void OnReceiveRemote()
-			=> ShipManager.Instance.ShipTractorBeam.ActivateTractorBeam();
-	}
+internal class FunnelEnableMessage : QSBMessage
+{
+	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+	public override void OnReceiveRemote()
+		=> ShipManager.Instance.ShipTractorBeam.ActivateTractorBeam();
 }

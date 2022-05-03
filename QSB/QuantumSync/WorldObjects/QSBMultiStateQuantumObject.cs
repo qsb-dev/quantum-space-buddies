@@ -6,46 +6,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace QSB.QuantumSync.WorldObjects
+namespace QSB.QuantumSync.WorldObjects;
+
+internal class QSBMultiStateQuantumObject : QSBQuantumObject<MultiStateQuantumObject>
 {
-	internal class QSBMultiStateQuantumObject : QSBQuantumObject<MultiStateQuantumObject>
+	public List<QSBQuantumState> QuantumStates { get; private set; }
+	public int CurrentState => AttachedObject._stateIndex;
+
+	public override async UniTask Init(CancellationToken ct)
 	{
-		public List<QSBQuantumState> QuantumStates { get; private set; }
-		public int CurrentState => AttachedObject._stateIndex;
+		await base.Init(ct);
 
-		public override async UniTask Init(CancellationToken ct)
+		await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
+
+		QuantumStates = AttachedObject._states.Select(QSBWorldSync.GetWorldObject<QSBQuantumState>).ToList();
+
+		if (QuantumStates.Any(x => x == null))
 		{
-			await base.Init(ct);
+			DebugLog.ToConsole($"Error - {AttachedObject.name} has one or more null QSBQuantumStates assigned!", OWML.Common.MessageType.Error);
+		}
+	}
 
-			await UniTask.WaitUntil(() => QSBWorldSync.AllObjectsAdded, cancellationToken: ct);
+	public override string ReturnLabel()
+		=> $"{base.ReturnLabel()}StateIndex:{AttachedObject._stateIndex}";
 
-			QuantumStates = AttachedObject._states.Select(QSBWorldSync.GetWorldObject<QSBQuantumState>).ToList();
+	public override void SendInitialState(uint to)
+	{
+		base.SendInitialState(to);
 
-			if (QuantumStates.Any(x => x == null))
-			{
-				DebugLog.ToConsole($"Error - {AttachedObject.name} has one or more null QSBQuantumStates assigned!", OWML.Common.MessageType.Error);
-			}
+		// todo SendInitialState
+	}
+
+	public void ChangeState(int newStateIndex)
+	{
+		if (CurrentState != -1)
+		{
+			QuantumStates[CurrentState].SetVisible(false);
 		}
 
-		public override string ReturnLabel()
-			=> $"{this}{Environment.NewLine}StateIndex:{AttachedObject._stateIndex}";
-
-		public override void SendInitialState(uint to)
-		{
-			base.SendInitialState(to);
-
-			// todo SendInitialState
-		}
-
-		public void ChangeState(int newStateIndex)
-		{
-			if (CurrentState != -1)
-			{
-				QuantumStates[CurrentState].SetVisible(false);
-			}
-
-			QuantumStates[newStateIndex].SetVisible(true);
-			AttachedObject._stateIndex = newStateIndex;
-		}
+		QuantumStates[newStateIndex].SetVisible(true);
+		AttachedObject._stateIndex = newStateIndex;
 	}
 }

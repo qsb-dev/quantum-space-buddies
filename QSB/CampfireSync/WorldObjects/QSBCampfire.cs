@@ -2,20 +2,19 @@
 using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.CampfireSync.WorldObjects
+namespace QSB.CampfireSync.WorldObjects;
+
+public class QSBCampfire : WorldObject<Campfire>
 {
-	public class QSBCampfire : WorldObject<Campfire>
-	{
-		public override void SendInitialState(uint to) =>
-			this.SendMessage(new CampfireStateMessage(GetState()) { To = to });
+	public override void SendInitialState(uint to) =>
+		this.SendMessage(new CampfireStateMessage(GetState()) { To = to });
 
-		public void StartRoasting()
-			=> AttachedObject.StartRoasting();
+	public void StartRoasting()
+		=> AttachedObject.StartRoasting();
 
-		public Campfire.State GetState()
-			=> AttachedObject.GetState();
+	public Campfire.State GetState()
+		=> AttachedObject.GetState();
 
-		public void SetState(Campfire.State newState)
-			=> AttachedObject.SetState(newState);
-	}
+	public void SetState(Campfire.State newState)
+		=> AttachedObject.SetState(newState);
 }

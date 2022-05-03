@@ -1,12 +1,11 @@
-﻿namespace QSB.RoastingSync
+﻿namespace QSB.RoastingSync;
+
+public enum MarshmallowMessageType
 {
-	public enum MarshmallowMessageType
-	{
-		Toss,
-		Burn,
-		Extinguish,
-		Replace,
-		Remove,
-		Shrivel
-	}
+	Toss,
+	Burn,
+	Extinguish,
+	Replace,
+	Remove,
+	Shrivel
 }

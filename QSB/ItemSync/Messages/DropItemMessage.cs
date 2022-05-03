@@ -1,53 +1,66 @@
-﻿using Mirror;
+﻿using QSB.ItemSync.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.ItemSync.Messages
+namespace QSB.ItemSync.Messages;
+
+internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
+	(Vector3 localPosition, Vector3 localNormal, int sectorId, int dropTargetId, int rigidBodyId)>
 {
-	internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem>
+	public DropItemMessage(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget, OWRigidbody targetRigidbody)
+		: base(ProcessInputs(worldPosition, worldNormal, parent, sector, customDropTarget, targetRigidbody)) { }
+
+	private static (Vector3 localPosition, Vector3 localNormal, int sectorId, int dropTargetId, int rigidBodyId) ProcessInputs(
+		Vector3 worldPosition,
+		Vector3 worldNormal,
+		Transform parent,
+		Sector sector,
+		IItemDropTarget customDropTarget,
+		OWRigidbody targetRigidbody)
 	{
-		private Vector3 Position;
-		private Vector3 Normal;
-		private int SectorId;
+		(Vector3 localPosition, Vector3 localNormal, int sectorId, int dropTargetId, int rigidBodyId) tuple = new();
 
-		public DropItemMessage(Vector3 position, Vector3 normal, Sector sector)
+		if (customDropTarget == null)
 		{
-			Position = position;
-			Normal = normal;
-			SectorId = sector.GetWorldObject<QSBSector>().ObjectId;
+			tuple.rigidBodyId = targetRigidbody.GetWorldObject<QSBOWRigidbody>().ObjectId;
+			tuple.dropTargetId = -1;
+		}
+		else
+		{
+			tuple.rigidBodyId = -1;
+			tuple.dropTargetId = ((MonoBehaviour)customDropTarget).GetWorldObject<IQSBDropTarget>().ObjectId;
 		}
 
-		public override void Serialize(NetworkWriter writer)
-		{
-			base.Serialize(writer);
-			writer.Write(Position);
-			writer.Write(Normal);
-			writer.Write(SectorId);
-		}
+		tuple.sectorId = sector ? sector.GetWorldObject<QSBSector>().ObjectId : -1;
+		tuple.localPosition = parent.InverseTransformPoint(worldPosition);
+		tuple.localNormal = parent.InverseTransformDirection(worldNormal);
 
-		public override void Deserialize(NetworkReader reader)
-		{
-			base.Deserialize(reader);
-			Position = reader.ReadVector3();
-			Normal = reader.ReadVector3();
-			SectorId = reader.Read<int>();
-		}
+		return tuple;
+	}
 
-		public override void OnReceiveRemote()
-		{
-			var sector = SectorId.GetWorldObject<QSBSector>().AttachedObject;
-			WorldObject.DropItem(Position, Normal, sector);
+	public override void OnReceiveRemote()
+	{
+		var customDropTarget = Data.dropTargetId == -1
+			? null
+			: Data.dropTargetId.GetWorldObject<IQSBDropTarget>().AttachedObject;
 
-			var player = QSBPlayerManager.GetPlayer(From);
-			player.HeldItem = WorldObject;
+		var parent = customDropTarget == null
+			? Data.rigidBodyId.GetWorldObject<QSBOWRigidbody>().AttachedObject.transform
+			: customDropTarget.GetItemDropTargetTransform(null);
 
-			DebugLog.DebugWrite("DROP HELD ITEM");
-			player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
-		}
+		var worldPos = parent.TransformPoint(Data.localPosition);
+		var worldNormal = parent.TransformDirection(Data.localNormal);
+
+		var sector = Data.sectorId != -1 ? Data.sectorId.GetWorldObject<QSBSector>().AttachedObject : null;
+
+		WorldObject.DropItem(worldPos, worldNormal, parent, sector, customDropTarget);
+
+		var player = QSBPlayerManager.GetPlayer(From);
+		player.HeldItem = null;
+		player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
 	}
 }

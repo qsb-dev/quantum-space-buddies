@@ -3,8 +3,9 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Mono.Cecil" Version="0.11.4" />
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.168" />
+    <PackageReference Include="OWML" Version="2.3.2" />
+    <PackageReference Include="HarmonyX" Version="2.9.0" />
     <Reference Include="../Mirror/*.dll" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,7 @@ using QSB.QuantumSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,46 +34,48 @@ using UnityEngine.InputSystem;
 	You should have received a copy of the GNU Affero General Public License along with this program. If not, see https://www.gnu.org/licenses/.
 */
 
-namespace QSB
+namespace QSB;
+
+public class QSBCore : ModBehaviour
 {
-	public class QSBCore : ModBehaviour
+	public static IModHelper Helper { get; private set; }
+	public static string DefaultServerIP;
+	public static AssetBundle NetworkAssetBundle { get; private set; }
+	public static AssetBundle ConversationAssetBundle { get; private set; }
+	public static AssetBundle DebugAssetBundle { get; private set; }
+	public static AssetBundle TextAssetsBundle { get; private set; }
+	public static bool IsHost => NetworkServer.active;
+	public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
+	public static string QSBVersion => Helper.Manifest.Version;
+	public static string GameVersion =>
+		// ignore the last patch numbers like the title screen does
+		Application.version.Split('.').Take(3).Join(delimiter: ".");
+	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
+	public static IMenuAPI MenuApi { get; private set; }
+	public static DebugSettings DebugSettings { get; private set; } = new();
+
+	public void Awake()
 	{
-		public static IModHelper Helper { get; private set; }
-		public static string DefaultServerIP;
-		public static AssetBundle NetworkAssetBundle { get; private set; }
-		public static AssetBundle InstrumentAssetBundle { get; private set; }
-		public static AssetBundle ConversationAssetBundle { get; private set; }
-		public static AssetBundle DebugAssetBundle { get; private set; }
-		public static AssetBundle TextAssetsBundle { get; private set; }
-		public static bool IsHost => NetworkServer.active;
-		public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
-		public static string QSBVersion => Helper.Manifest.Version;
-		public static string GameVersion =>
-			// ignore the last patch numbers like the title screen does
-			Application.version.Split('.').Take(3).Join(delimiter: ".");
-		public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
-		public static IMenuAPI MenuApi { get; private set; }
-		public static DebugSettings DebugSettings { get; private set; } = new();
+		EpicRerouter.ModSide.Interop.Go();
 
-		public void Awake()
+		UIHelper.ReplaceUI(UITextType.PleaseUseController,
+			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
+	}
+
+	public void Start()
+	{
+		Helper = ModHelper;
+		DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
+
+		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
+
+		if (DebugSettings.HookDebugLogs)
 		{
-			EpicRerouter.ModSide.Interop.Go();
-
-			UIHelper.ReplaceUI(UITextType.PleaseUseController,
-				"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
-		}
-
-		public void Start()
-		{
-			Helper = ModHelper;
-			DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
-
-			DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
-
-			if (DebugSettings.HookDebugLogs)
-			{
-				Application.logMessageReceived += (condition, stackTrace, logType) =>
-					DebugLog.DebugWrite($"[Debug] {condition}\nStacktrace: {stackTrace}", logType switch
+			Application.logMessageReceived += (condition, stackTrace, logType) =>
+				DebugLog.ToConsole(
+					$"[Debug] {condition}" +
+					(stackTrace != string.Empty ? $"\nStacktrace: {stackTrace}" : string.Empty),
+					logType switch
 					{
 						LogType.Error => MessageType.Error,
 						LogType.Assert => MessageType.Error,
@@ -80,84 +83,109 @@ namespace QSB
 						LogType.Log => MessageType.Message,
 						LogType.Exception => MessageType.Error,
 						_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
-					});
-			}
-
-			InitializeAssemblies();
-
-			MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
-
-			NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
-			InstrumentAssetBundle = Helper.Assets.LoadBundle("AssetBundles/instruments");
-			ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
-			DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
-			TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
-
-			QSBPatchManager.Init();
-			DeterministicManager.Init();
-
-			var components = typeof(IAddComponentOnStart).GetDerivedTypes()
-				.Select(x => gameObject.AddComponent(x))
-				.ToArray();
-
-			QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
-			QSBPatchManager.OnPatchType += OnPatchType;
-			QSBPatchManager.OnUnpatchType += OnUnpatchType;
+					}
+				);
 		}
 
-		private static void OnPatchType(QSBPatchTypes type)
+		RegisterAddons();
+
+		InitAssemblies();
+
+		MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
+
+		DebugLog.DebugWrite("loading network-big bundle", MessageType.Info);
+		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/network-big");
+		var request = AssetBundle.LoadFromFileAsync(path);
+		request.completed += _ => DebugLog.DebugWrite("network-big bundle loaded", MessageType.Success);
+
+		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
+		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
+		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
+		TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
+
+		QSBPatchManager.Init();
+		DeterministicManager.Init();
+
+		var components = typeof(IAddComponentOnStart).GetDerivedTypes()
+			.Select(x => gameObject.AddComponent(x))
+			.ToArray();
+
+		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
+		QSBPatchManager.OnPatchType += OnPatchType;
+		QSBPatchManager.OnUnpatchType += OnUnpatchType;
+
+		QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
+	}
+
+	private static void OnPatchType(QSBPatchTypes type)
+	{
+		if (type == QSBPatchTypes.OnClientConnect)
 		{
-			if (type == QSBPatchTypes.OnClientConnect)
-			{
-				Application.runInBackground = true;
-			}
+			Application.runInBackground = true;
+		}
+	}
+
+	private static void OnUnpatchType(QSBPatchTypes type)
+	{
+		if (type == QSBPatchTypes.OnClientConnect)
+		{
+			Application.runInBackground = false;
+		}
+	}
+
+	public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
+
+	private static void RegisterAddons()
+	{
+		var addons = Helper.Interaction.GetDependants(Helper.Manifest.UniqueName);
+		foreach (var addon in addons)
+		{
+			Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
+		}
+	}
+
+	private static void InitAssemblies()
+	{
+		static void Init(Assembly assembly)
+		{
+			DebugLog.DebugWrite(assembly.ToString());
+			assembly
+				.GetTypes()
+				.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
+				.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
+				.ForEach(x => x.Invoke(null, null));
 		}
 
-		private static void OnUnpatchType(QSBPatchTypes type)
+		DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
+		foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
 		{
-			if (type == QSBPatchTypes.OnClientConnect)
-			{
-				Application.runInBackground = false;
-			}
+			var assembly = Assembly.LoadFile(path);
+			Init(assembly);
 		}
 
-		private static void InitializeAssemblies()
+		foreach (var addon in Addons.Values)
 		{
-			DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
-			foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
-			{
-				var assembly = Assembly.LoadFile(path);
-				if (Path.GetFileNameWithoutExtension(path) == "ProxyScripts")
-				{
-					continue;
-				}
-
-				DebugLog.DebugWrite(assembly.ToString());
-				assembly
-					.GetTypes()
-					.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly))
-					.Where(x => x.IsDefined(typeof(RuntimeInitializeOnLoadMethodAttribute)))
-					.ForEach(x => x.Invoke(null, null));
-			}
-
-			DebugLog.DebugWrite("Assemblies initialized", MessageType.Success);
+			var assembly = addon.GetType().Assembly;
+			Init(assembly);
 		}
 
-		public override void Configure(IModConfig config) => DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
+		DebugLog.DebugWrite("Assemblies initialized", MessageType.Success);
+	}
 
-		private void Update()
+	public override void Configure(IModConfig config) => DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
+
+	private void Update()
+	{
+		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
 		{
-			if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
-			{
-				DebugSettings.DebugMode = !DebugSettings.DebugMode;
+			DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
-				GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
-				GetComponent<DebugGUI>().enabled = DebugSettings.DrawGui;
-				QuantumManager.UpdateFromDebugSetting();
-				DebugCameraSettings.UpdateFromDebugSetting();
+			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
+			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
+			QuantumManager.UpdateFromDebugSetting();
+			DebugCameraSettings.UpdateFromDebugSetting();
 
-				DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
-			}
+			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
 	}
 }
@@ -187,4 +215,6 @@ namespace QSB
  * Daft Punk
  * Natalie Holt
  * WMD
+ * Woody Jackson
+ * Brian David Gilbert
  */

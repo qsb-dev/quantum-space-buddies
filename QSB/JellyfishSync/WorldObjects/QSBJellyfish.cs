@@ -1,50 +1,29 @@
-﻿using Cysharp.Threading.Tasks;
-using Mirror;
-using QSB.JellyfishSync.Messages;
+﻿using QSB.JellyfishSync.Messages;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
-using QSB.WorldSync;
-using System.Threading;
+using QSB.Utility.LinkedWorldObject;
 using UnityEngine;
 
-namespace QSB.JellyfishSync.WorldObjects
+namespace QSB.JellyfishSync.WorldObjects;
+
+public class QSBJellyfish : LinkedWorldObject<JellyfishController, JellyfishTransformSync>
 {
-	public class QSBJellyfish : WorldObject<JellyfishController>
+	public override bool ShouldDisplayDebug() => false;
+
+	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.JellyfishPrefab;
+	protected override bool SpawnWithServerAuthority => false;
+
+	public override void SendInitialState(uint to) =>
+		this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });
+
+	public void SetIsRising(bool value)
 	{
-		public override bool ShouldDisplayDebug() => false;
-
-		public JellyfishTransformSync TransformSync;
-
-		public override async UniTask Init(CancellationToken ct)
+		if (AttachedObject._isRising == value)
 		{
-			if (QSBCore.IsHost)
-			{
-				NetworkServer.Spawn(Object.Instantiate(QSBNetworkManager.singleton.JellyfishPrefab));
-			}
-
-			await UniTask.WaitUntil(() => TransformSync, cancellationToken: ct);
+			return;
 		}
 
-		public override void OnRemoval()
-		{
-			if (QSBCore.IsHost)
-			{
-				NetworkServer.Destroy(TransformSync.gameObject);
-			}
-		}
-
-		public override void SendInitialState(uint to) =>
-			this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });
-
-		public void SetIsRising(bool value)
-		{
-			if (AttachedObject._isRising == value)
-			{
-				return;
-			}
-
-			AttachedObject._isRising = value;
-			AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
-		}
+		AttachedObject._isRising = value;
+		AttachedObject._attractiveFluidVolume.SetVolumeActivation(!value);
 	}
 }

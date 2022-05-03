@@ -1,27 +1,36 @@
 ﻿using HarmonyLib;
-using QSB.Utility;
-using UnityEngine;
+using QSB.Patches;
 
-namespace QSB.Player
+namespace QSB.Player;
+
+[HarmonyPatch(typeof(PlayerAttachPoint))]
+internal class PlayerAttachWatcher : QSBPatch
 {
-	[HarmonyPatch(typeof(PlayerAttachPoint))]
-	internal class PlayerAttachWatcher : MonoBehaviour, IAddComponentOnStart
+	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
+
+	public static PlayerAttachPoint Current { get; private set; }
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(PlayerAttachPoint.AttachPlayer))]
+	private static void AttachPlayer(PlayerAttachPoint __instance)
 	{
-		private void Awake()
+		if (Current != null)
 		{
-			Harmony.CreateAndPatchAll(typeof(PlayerAttachWatcher));
-			QSBSceneManager.OnSceneLoaded += (_, _, _) => Current = null;
-			Destroy(this);
+			Current.DetachPlayer();
 		}
 
-		public static PlayerAttachPoint Current { get; private set; }
+		Current = __instance;
+	}
 
-		[HarmonyPrefix]
-		[HarmonyPatch(nameof(PlayerAttachPoint.AttachPlayer))]
-		private static void AttachPlayer(PlayerAttachPoint __instance) => Current = __instance;
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(PlayerAttachPoint.DetachPlayer))]
+	private static void DetachPlayer(PlayerAttachPoint __instance)
+	{
+		if (!__instance.enabled)
+		{
+			return;
+		}
 
-		[HarmonyPrefix]
-		[HarmonyPatch(nameof(PlayerAttachPoint.DetachPlayer))]
-		private static void DetachPlayer() => Current = null;
+		Current = null;
 	}
 }

@@ -2,24 +2,23 @@
 using QSB.Player;
 using QSB.WorldSync;
 
-namespace QSB.Tools.ProbeTool.Messages
+namespace QSB.Tools.ProbeTool.Messages;
+
+internal class PlayerProbeEventMessage : QSBMessage<ProbeEvent>
 {
-	internal class PlayerProbeEventMessage : QSBMessage<ProbeEvent>
+	public PlayerProbeEventMessage(ProbeEvent probeEvent) : base(probeEvent) { }
+
+	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+
+	public override void OnReceiveRemote()
 	{
-		public PlayerProbeEventMessage(ProbeEvent probeEvent) => Value = probeEvent;
-
-		public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
-		public override void OnReceiveRemote()
+		var player = QSBPlayerManager.GetPlayer(From);
+		if (!player.IsReady || player.Probe == null)
 		{
-			var player = QSBPlayerManager.GetPlayer(From);
-			if (!player.IsReady || player.Probe == null)
-			{
-				return;
-			}
-
-			var probe = player.Probe;
-			probe.HandleEvent(Value);
+			return;
 		}
+
+		var probe = player.Probe;
+		probe.HandleEvent(Data);
 	}
 }

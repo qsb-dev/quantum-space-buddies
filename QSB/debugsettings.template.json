@@ -3,12 +3,12 @@
   "dumpWorldObjects": false,
   "playerIdInLogs": false,
   "hookDebugLogs": false,
+  "avoidTimeSync": false,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
   "drawLabels": false,
   "drawQuantumVisibilityObjects": false,
-  "avoidTimeSync": false,
   "skipTitleScreen": false,
   "greySkybox": false
 }

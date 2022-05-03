@@ -2,34 +2,33 @@
 using QSB.Player;
 using QSB.Player.TransformSync;
 
-namespace QSB.Tools.SignalscopeTool.Messages
+namespace QSB.Tools.SignalscopeTool.Messages;
+
+public class PlayerSignalscopeMessage : QSBMessage<bool>
 {
-	public class PlayerSignalscopeMessage : QSBMessage<bool>
+	static PlayerSignalscopeMessage()
 	{
-		static PlayerSignalscopeMessage()
-		{
-			GlobalMessenger<Signalscope>.AddListener(OWEvents.EquipSignalscope, _ => Handle(true));
-			GlobalMessenger.AddListener(OWEvents.UnequipSignalscope, () => Handle(false));
-		}
-
-		private static void Handle(bool equipped)
-		{
-			if (PlayerTransformSync.LocalInstance)
-			{
-				new PlayerSignalscopeMessage(equipped).Send();
-			}
-		}
-
-		private PlayerSignalscopeMessage(bool equipped) => Value = equipped;
-
-		public override void OnReceiveRemote()
-		{
-			var player = QSBPlayerManager.GetPlayer(From);
-			player.SignalscopeEquipped = Value;
-			player.Signalscope?.ChangeEquipState(Value);
-		}
-
-		public override void OnReceiveLocal() =>
-			QSBPlayerManager.LocalPlayer.SignalscopeEquipped = Value;
+		GlobalMessenger<Signalscope>.AddListener(OWEvents.EquipSignalscope, _ => Handle(true));
+		GlobalMessenger.AddListener(OWEvents.UnequipSignalscope, () => Handle(false));
 	}
+
+	private static void Handle(bool equipped)
+	{
+		if (PlayerTransformSync.LocalInstance)
+		{
+			new PlayerSignalscopeMessage(equipped).Send();
+		}
+	}
+
+	private PlayerSignalscopeMessage(bool equipped) : base(equipped) { }
+
+	public override void OnReceiveRemote()
+	{
+		var player = QSBPlayerManager.GetPlayer(From);
+		player.SignalscopeEquipped = Data;
+		player.Signalscope?.ChangeEquipState(Data);
+	}
+
+	public override void OnReceiveLocal() =>
+		QSBPlayerManager.LocalPlayer.SignalscopeEquipped = Data;
 }
