@@ -274,7 +274,6 @@ public static class QSBWorldSync
 		}
 
 		var unityObject = GetUnityObjects<TUnityObject>().First();
-		DebugLog.DebugWrite($"Adding {typeof(TUnityObject)} to cached unity object list.");
 		CachedUnityObjects.Add(typeof(TUnityObject), unityObject);
 		return unityObject;
 	}
