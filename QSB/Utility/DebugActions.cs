@@ -99,7 +99,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad3].wasPressedThisFrame)
 		{
-			var sarcoController = QSBWorldSync.GetUnityObjects<SarcophagusController>().First();
+			var sarcoController = QSBWorldSync.GetUnityObject<SarcophagusController>();
 
 			sarcoController.firstSealProjector.SetLit(false);
 			sarcoController.secondSealProjector.SetLit(false);

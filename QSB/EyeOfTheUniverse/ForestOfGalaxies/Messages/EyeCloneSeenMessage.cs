@@ -12,7 +12,7 @@ internal class EyeCloneSeenMessage : QSBMessage
 
 	public override void OnReceiveRemote()
 	{
-		var controller = QSBWorldSync.GetUnityObjects<PlayerCloneController>().First();
+		var controller = QSBWorldSync.GetUnityObject<PlayerCloneController>();
 
 		controller._warpFlickerActivated = true;
 		controller._warpTime = Time.time + 0.5f;

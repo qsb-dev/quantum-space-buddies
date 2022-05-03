@@ -34,7 +34,7 @@ internal class QuantumManager : WorldObjectManager
 		QSBWorldSync.Init<QSBQuantumSkeletonTower, QuantumSkeletonTower>();
 		if (scene == OWScene.SolarSystem)
 		{
-			Shrine = QSBWorldSync.GetUnityObjects<QuantumShrine>().First();
+			Shrine = QSBWorldSync.GetUnityObject<QuantumShrine>();
 		}
 
 		UpdateFromDebugSetting();

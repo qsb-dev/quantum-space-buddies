@@ -63,9 +63,9 @@ internal class ShipManager : WorldObjectManager
 		}
 
 		HatchInteractZone = HatchController.GetComponent<InteractZone>();
-		ShipTractorBeam = QSBWorldSync.GetUnityObjects<ShipTractorBeamSwitch>().First();
-		CockpitController = QSBWorldSync.GetUnityObjects<ShipCockpitController>().First();
-		ShipElectricalComponent = QSBWorldSync.GetUnityObjects<ShipElectricalComponent>().First();
+		ShipTractorBeam = QSBWorldSync.GetUnityObject<ShipTractorBeamSwitch>();
+		CockpitController = QSBWorldSync.GetUnityObject<ShipCockpitController>();
+		ShipElectricalComponent = QSBWorldSync.GetUnityObject<ShipElectricalComponent>();
 
 		var sphereShape = HatchController.GetComponent<SphereShape>();
 		sphereShape.radius = 2.5f;

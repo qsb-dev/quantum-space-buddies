@@ -178,6 +178,7 @@ public static class QSBWorldSync
 
 	private static readonly List<IWorldObject> WorldObjects = new();
 	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
+	private static readonly Dictionary<Type, MonoBehaviour> CachedUnityObjects = new();
 
 	static QSBWorldSync() =>
 		RequestInitialStatesMessage.SendInitialState += to =>
@@ -216,6 +217,7 @@ public static class QSBWorldSync
 		DialogueConditions.Clear();
 		PersistentConditions.Clear();
 		ShipLogFacts.Clear();
+		CachedUnityObjects.Clear();
 	}
 
 	public static IEnumerable<IWorldObject> GetWorldObjects() => WorldObjects;
@@ -258,6 +260,23 @@ public static class QSBWorldSync
 		}
 
 		return (TWorldObject)worldObject;
+	}
+
+	/// <summary>
+	/// not deterministic across platforms
+	/// </summary>
+	public static TUnityObject GetUnityObject<TUnityObject>()
+		where TUnityObject : MonoBehaviour
+	{
+		if (CachedUnityObjects.ContainsKey(typeof(TUnityObject)))
+		{
+			return CachedUnityObjects[typeof(TUnityObject)] as TUnityObject;
+		}
+
+		var unityObject = GetUnityObjects<TUnityObject>().First();
+		DebugLog.DebugWrite($"Adding {typeof(TUnityObject)} to cached unity object list.");
+		CachedUnityObjects.Add(typeof(TUnityObject), unityObject);
+		return unityObject;
 	}
 
 	/// <summary>

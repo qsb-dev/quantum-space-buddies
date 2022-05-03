@@ -51,7 +51,7 @@ internal class MarshmallowEventMessage : QSBMessage<MarshmallowMessageType>
 		var stick = player.RoastingStick;
 		var stickTip = stick.transform.GetChild(0);
 
-		var mallowPrefab = QSBWorldSync.GetUnityObjects<RoastingStickController>().First()._mallowBodyPrefab;
+		var mallowPrefab = QSBWorldSync.GetUnityObject<RoastingStickController>()._mallowBodyPrefab;
 
 		var tossedMallow = Object.Instantiate(mallowPrefab, stickTip.position, stickTip.rotation);
 		var rigidbody = tossedMallow.GetComponent<OWRigidbody>();
