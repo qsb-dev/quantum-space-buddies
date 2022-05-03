@@ -38,7 +38,6 @@ internal class CampfirePatches : QSBPatch
 			var slideReelItem = (SlideReelItem)Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItem();
 			Locator.GetToolModeSwapper().GetItemCarryTool().DropItemInstantly(__instance._sector, __instance._burnedSlideReelSocket);
 			slideReelItem.Burn();
-			slideReelItem.GetWorldObject<QSBSlideReelItem>().SendMessage(new BurnSlideReelMessage(qsbCampfire));
 			__instance.SetDropSlideReelMode(false);
 			__instance._hasBurnedSlideReel = true;
 			__instance._oneShotAudio.PlayOneShot(AudioType.TH_Campfire_Ignite, 1f);

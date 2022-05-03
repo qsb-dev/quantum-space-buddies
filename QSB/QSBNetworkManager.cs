@@ -8,9 +8,6 @@ using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.EchoesOfTheEye.AirlockSync.VariableSync;
-using QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
-using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
-using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
 using QSB.OrbSync.Messages;
@@ -116,15 +113,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		OccasionalPrefab = MakeNewNetworkObject(7, "NetworkOccasional", typeof(OccasionalTransformSync));
 		spawnPrefabs.Add(OccasionalPrefab);
-
-		RaftPrefab = MakeNewNetworkObject(8, "NetworkRaft", typeof(RaftTransformSync));
-		spawnPrefabs.Add(RaftPrefab);
-
-		DoorPrefab = MakeNewNetworkObject(9, "NetworkEclipseDoor", typeof(EclipseDoorVariableSyncer));
-		spawnPrefabs.Add(DoorPrefab);
-
-		ElevatorPrefab = MakeNewNetworkObject(10, "NetworkEclipseElevator", typeof(EclipseElevatorVariableSyncer));
-		spawnPrefabs.Add(ElevatorPrefab);
 
 		AirlockPrefab = MakeNewNetworkObject(11, "NetworkGhostAirlock", typeof(AirlockVariableSyncer));
 		spawnPrefabs.Add(AirlockPrefab);
