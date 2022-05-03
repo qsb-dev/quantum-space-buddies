@@ -9,7 +9,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 
 internal class LightSensorManager : WorldObjectManager
 {
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 	public override bool DlcOnly => true;
 
 	public static bool ShouldIgnore(LightSensor lightSensor) =>
