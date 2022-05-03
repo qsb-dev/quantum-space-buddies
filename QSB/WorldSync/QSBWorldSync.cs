@@ -273,7 +273,15 @@ public static class QSBWorldSync
 			return CachedUnityObjects[typeof(TUnityObject)] as TUnityObject;
 		}
 
-		var unityObject = GetUnityObjects<TUnityObject>().First();
+		var unityObjects = GetUnityObjects<TUnityObject>();
+
+		if (unityObjects.Count() != 1)
+		{
+			DebugLog.ToConsole($"Warning - Tried to cache a unity object that there are multiple of. ({typeof(TUnityObject).Name})" +
+				$"\r\nCaching the first one - this probably is going to end badly!", MessageType.Warning);
+		}
+
+		var unityObject = unityObjects.First();
 		CachedUnityObjects.Add(typeof(TUnityObject), unityObject);
 		return unityObject;
 	}
