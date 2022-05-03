@@ -75,7 +75,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ### How complete is this mod? How far through the game can I play?
 
-The base game is around 95% done, whereas EotE is around 80% done.
+The base game is around 95% supported.
+
+Echoes of the Eye is not yet supported, but is nearly done.
 
 ### Compatibility with other mods
 TL;DR - Don't use any mods with QSB that aren't marked as QSB compatible. 
@@ -159,8 +161,7 @@ The template for this file is this :
   "drawLabels": false,
   "drawQuantumVisibilityObjects": false,
   "skipTitleScreen": false,
-  "greySkybox": false,
-  "drawGhostAI": false
+  "greySkybox": false
 }
 ```
 
@@ -176,7 +177,6 @@ The template for this file is this :
 - drawQuantumVisibilityObjects - Indicates visibility objects with an orange shape.
 - skipTitleScreen - Auto-skips the splash screen.
 - greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.
-- drawGhostAI - Draws debug lines and labels just for the ghosts.
 
 **Warning : Mod development can lead to unexpected errors in your computer system.** 
 - **When editing the networking code, mistakes can lead to QSB overwhelming your network connection with excess packets**.
