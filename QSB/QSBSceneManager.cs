@@ -18,13 +18,13 @@ public static class QSBSceneManager
 	public static event Action<OWScene, OWScene> OnUniverseSceneLoaded;
 
 	/// <summary>
-	/// runs before the scene is changed
-	/// and objects are destroyed
+	/// runs before the scene is changed.
+	/// happens before OnDestroy.
 	/// </summary>
 	public static event LoadManager.SceneLoadEvent OnPreSceneLoad;
 	/// <summary>
-	/// runs after the scene has changewd
-	/// and objects are awakened and started
+	/// runs after the scene is changed.
+	/// happens after Awake, but before Start.
 	/// </summary>
 	public static event LoadManager.SceneLoadEvent OnPostSceneLoad;
 
@@ -38,11 +38,10 @@ public static class QSBSceneManager
 			OnPreSceneLoad?.SafeInvoke(originalScene, loadScene);
 		};
 		LoadManager.OnCompleteSceneLoad += (originalScene, loadScene) =>
-			Delay.RunNextFrame(() =>
-			{
-				DebugLog.DebugWrite($"POST SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
-				OnPostSceneLoad?.SafeInvoke(originalScene, loadScene);
-			});
+		{
+			DebugLog.DebugWrite($"POST SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
+			OnPostSceneLoad?.SafeInvoke(originalScene, loadScene);
+		};
 
 		DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
 	}
