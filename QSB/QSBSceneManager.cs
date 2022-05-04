@@ -30,8 +30,6 @@ public static class QSBSceneManager
 
 	static QSBSceneManager()
 	{
-		LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
-
 		LoadManager.OnStartSceneLoad += (originalScene, loadScene) =>
 		{
 			DebugLog.DebugWrite($"PRE SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
@@ -41,6 +39,8 @@ public static class QSBSceneManager
 		{
 			DebugLog.DebugWrite($"POST SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
 			OnPostSceneLoad?.SafeInvoke(originalScene, loadScene);
+
+			OnCompleteSceneLoad(originalScene, loadScene);
 		};
 
 		DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
