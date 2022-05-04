@@ -4,6 +4,7 @@ using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using UnityEngine;
 
 namespace QSB;
 
@@ -11,9 +12,11 @@ public static class QSBSceneManager
 {
 	public static OWScene CurrentScene => LoadManager.GetCurrentScene();
 
-	public static bool IsInUniverse => InUniverse(CurrentScene);
+	public static bool IsInUniverse => CurrentScene.IsUniverseScene();
 
+	[Obsolete]
 	public static event Action<OWScene, OWScene, bool> OnSceneLoaded;
+	[Obsolete]
 	public static event Action<OWScene, OWScene> OnUniverseSceneLoaded;
 
 	/// <summary>
@@ -27,9 +30,6 @@ public static class QSBSceneManager
 
 	static QSBSceneManager()
 	{
-		LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
-		DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
-
 		LoadManager.OnStartSceneLoad += (originalScene, loadScene) =>
 		{
 			DebugLog.DebugWrite($"PRE SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
@@ -41,37 +41,34 @@ public static class QSBSceneManager
 				DebugLog.DebugWrite($"POST SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
 				OnPostSceneLoad?.SafeInvoke(originalScene, loadScene);
 			});
+
+		OnPreSceneLoad += (_, _) =>
+			QSBWorldSync.RemoveWorldObjects();
+		OnPostSceneLoad += (_, loadScene) =>
+		{
+			if (QSBCore.IsInMultiplayer)
+			{
+				if (loadScene.IsUniverseScene())
+				{
+					QSBWorldSync.BuildWorldObjects(loadScene).Forget();
+				}
+
+				if (loadScene == OWScene.TitleScreen)
+				{
+					QSBNetworkManager.singleton.StopHost();
+				}
+			}
+		};
+
+		DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
 	}
 
-	private static void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
-	{
-		DebugLog.DebugWrite($"COMPLETE SCENE LOAD ({oldScene} -> {newScene})", MessageType.Info);
-		QSBWorldSync.RemoveWorldObjects();
-		var universe = InUniverse(newScene);
-		if (QSBCore.IsInMultiplayer && universe)
-		{
-			// So objects have time to be deleted, made, whatever
-			Delay.RunNextFrame(() => QSBWorldSync.BuildWorldObjects(newScene).Forget());
-		}
-
-		OnSceneLoaded?.SafeInvoke(oldScene, newScene, universe);
-		if (universe)
-		{
-			OnUniverseSceneLoaded?.SafeInvoke(oldScene, newScene);
-		}
-
-		if (newScene == OWScene.TitleScreen && QSBCore.IsInMultiplayer)
-		{
-			QSBNetworkManager.singleton.StopHost();
-		}
-	}
-
-	private static bool InUniverse(OWScene scene) =>
+	public static bool IsUniverseScene(this OWScene scene) =>
 		scene is OWScene.SolarSystem or OWScene.EyeOfTheUniverse;
 }
 
 [HarmonyPatch(typeof(GhostBrain))]
-internal class Patch : QSBPatch
+internal class TestPatch : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 
