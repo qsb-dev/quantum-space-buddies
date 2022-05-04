@@ -202,6 +202,14 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			};
 		}
 
+		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
+		{
+			if (QSBCore.IsInMultiplayer && loadScene == OWScene.TitleScreen)
+			{
+				StopHost();
+			}
+		};
+
 		DebugLog.DebugWrite("Network Manager ready.", MessageType.Success);
 	}
 

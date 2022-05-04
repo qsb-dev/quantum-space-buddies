@@ -180,7 +180,18 @@ public static class QSBWorldSync
 	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
 	private static readonly Dictionary<Type, MonoBehaviour> CachedUnityObjects = new();
 
-	static QSBWorldSync() =>
+	static QSBWorldSync()
+	{
+		QSBSceneManager.OnPreSceneLoad += (_, _) =>
+			RemoveWorldObjects();
+		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
+		{
+			if (QSBCore.IsInMultiplayer && loadScene.IsUniverseScene())
+			{
+				BuildWorldObjects(loadScene).Forget();
+			}
+		};
+
 		RequestInitialStatesMessage.SendInitialState += to =>
 		{
 			DialogueConditions.ForEach(condition
@@ -189,6 +200,7 @@ public static class QSBWorldSync
 			ShipLogFacts.ForEach(fact
 				=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = to }.Send());
 		};
+	}
 
 	private static void GameInit()
 	{
@@ -278,7 +290,7 @@ public static class QSBWorldSync
 		if (unityObjects.Count() != 1)
 		{
 			DebugLog.ToConsole($"Warning - Tried to cache a unity object that there are multiple of. ({typeof(TUnityObject).Name})" +
-				$"\r\nCaching the first one - this probably is going to end badly!", MessageType.Warning);
+				"\r\nCaching the first one - this probably is going to end badly!", MessageType.Warning);
 		}
 
 		var unityObject = unityObjects.First();

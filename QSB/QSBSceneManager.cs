@@ -2,9 +2,7 @@
 using OWML.Common;
 using QSB.Patches;
 using QSB.Utility;
-using QSB.WorldSync;
 using System;
-using UnityEngine;
 
 namespace QSB;
 
@@ -20,11 +18,13 @@ public static class QSBSceneManager
 	public static event Action<OWScene, OWScene> OnUniverseSceneLoaded;
 
 	/// <summary>
-	/// runs before objects are destroyed
+	/// runs before the scene is changed
+	/// and objects are destroyed
 	/// </summary>
 	public static event LoadManager.SceneLoadEvent OnPreSceneLoad;
 	/// <summary>
-	/// runs after objects are awakened and started
+	/// runs after the scene has changewd
+	/// and objects are awakened and started
 	/// </summary>
 	public static event LoadManager.SceneLoadEvent OnPostSceneLoad;
 
@@ -41,24 +41,6 @@ public static class QSBSceneManager
 				DebugLog.DebugWrite($"POST SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
 				OnPostSceneLoad?.SafeInvoke(originalScene, loadScene);
 			});
-
-		OnPreSceneLoad += (_, _) =>
-			QSBWorldSync.RemoveWorldObjects();
-		OnPostSceneLoad += (_, loadScene) =>
-		{
-			if (QSBCore.IsInMultiplayer)
-			{
-				if (loadScene.IsUniverseScene())
-				{
-					QSBWorldSync.BuildWorldObjects(loadScene).Forget();
-				}
-
-				if (loadScene == OWScene.TitleScreen)
-				{
-					QSBNetworkManager.singleton.StopHost();
-				}
-			}
-		};
 
 		DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
 	}
