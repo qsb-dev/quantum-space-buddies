@@ -178,7 +178,6 @@ public static class QSBWorldSync
 
 	private static readonly List<IWorldObject> WorldObjects = new();
 	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
-	private static readonly Dictionary<Type, MonoBehaviour> CachedUnityObjects = new();
 
 	static QSBWorldSync()
 	{
@@ -229,7 +228,6 @@ public static class QSBWorldSync
 		DialogueConditions.Clear();
 		PersistentConditions.Clear();
 		ShipLogFacts.Clear();
-		CachedUnityObjects.Clear();
 	}
 
 	public static IEnumerable<IWorldObject> GetWorldObjects() => WorldObjects;
@@ -275,28 +273,12 @@ public static class QSBWorldSync
 	}
 
 	/// <summary>
-	/// not deterministic across platforms
+	/// not deterministic across platforms.
+	/// iterates thru all objects and throws error if there isn't exactly 1.
 	/// </summary>
 	public static TUnityObject GetUnityObject<TUnityObject>()
 		where TUnityObject : MonoBehaviour
-	{
-		if (CachedUnityObjects.ContainsKey(typeof(TUnityObject)))
-		{
-			return CachedUnityObjects[typeof(TUnityObject)] as TUnityObject;
-		}
-
-		var unityObjects = GetUnityObjects<TUnityObject>();
-
-		if (unityObjects.Count() != 1)
-		{
-			DebugLog.ToConsole($"Warning - Tried to cache a unity object that there are multiple of. ({typeof(TUnityObject).Name})" +
-				"\r\nCaching the first one - this probably is going to end badly!", MessageType.Warning);
-		}
-
-		var unityObject = unityObjects.First();
-		CachedUnityObjects.Add(typeof(TUnityObject), unityObject);
-		return unityObject;
-	}
+		=> GetUnityObjects<TUnityObject>().Single();
 
 	/// <summary>
 	/// not deterministic across platforms
