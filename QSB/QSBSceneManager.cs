@@ -1,4 +1,6 @@
-﻿using OWML.Common;
+﻿using HarmonyLib;
+using OWML.Common;
+using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -14,10 +16,31 @@ public static class QSBSceneManager
 	public static event Action<OWScene, OWScene, bool> OnSceneLoaded;
 	public static event Action<OWScene, OWScene> OnUniverseSceneLoaded;
 
+	/// <summary>
+	/// runs before objects are destroyed
+	/// </summary>
+	public static event LoadManager.SceneLoadEvent OnPreSceneLoad;
+	/// <summary>
+	/// runs after objects are awakened and started
+	/// </summary>
+	public static event LoadManager.SceneLoadEvent OnPostSceneLoad;
+
 	static QSBSceneManager()
 	{
 		LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
 		DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
+
+		LoadManager.OnStartSceneLoad += (originalScene, loadScene) =>
+		{
+			DebugLog.DebugWrite($"PRE SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
+			OnPreSceneLoad?.SafeInvoke(originalScene, loadScene);
+		};
+		LoadManager.OnCompleteSceneLoad += (originalScene, loadScene) =>
+			Delay.RunNextFrame(() =>
+			{
+				DebugLog.DebugWrite($"POST SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
+				OnPostSceneLoad?.SafeInvoke(originalScene, loadScene);
+			});
 	}
 
 	private static void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
@@ -45,4 +68,22 @@ public static class QSBSceneManager
 
 	private static bool InUniverse(OWScene scene) =>
 		scene is OWScene.SolarSystem or OWScene.EyeOfTheUniverse;
+}
+
+[HarmonyPatch(typeof(GhostBrain))]
+internal class Patch : QSBPatch
+{
+	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(GhostBrain.Awake))]
+	private static void Awake() => DebugLog.DebugWrite("GhostBrain.Awake");
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(GhostBrain.Start))]
+	private static void Start() => DebugLog.DebugWrite("GhostBrain.Start");
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(GhostBrain.OnDestroy))]
+	private static void OnDestroy() => DebugLog.DebugWrite("GhostBrain.OnDestroy");
 }
