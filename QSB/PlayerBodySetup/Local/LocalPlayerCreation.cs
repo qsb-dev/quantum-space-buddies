@@ -40,7 +40,7 @@ public static class LocalPlayerCreation
 		PlayerToolsManager.InitLocal();
 
 		// stick
-		var pivot = QSBWorldSync.GetUnityObjects<RoastingStickController>().First().transform.Find("Stick_Root/Stick_Pivot");
+		var pivot = QSBWorldSync.GetUnityObject<RoastingStickController>().transform.Find("Stick_Root/Stick_Pivot");
 		player.RoastingStick = pivot.parent.gameObject;
 		visibleRoastingSystem = pivot.parent.parent;
 		visibleStickPivot = pivot;

@@ -62,8 +62,7 @@ public class QSBSector : WorldObject<Sector>
 			}
 			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 			{
-				// TODO : Optimize this out.
-				var shuttleController = QSBWorldSync.GetUnityObjects<EyeShuttleController>().First();
+				var shuttleController = QSBWorldSync.GetUnityObject<EyeShuttleController>();
 				if (shuttleController == null)
 				{
 					DebugLog.ToConsole($"Warning - Expected to find a EyeShuttleController for {AttachedObject.name}!", MessageType.Warning);

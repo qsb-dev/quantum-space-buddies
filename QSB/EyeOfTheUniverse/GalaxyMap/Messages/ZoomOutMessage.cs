@@ -10,7 +10,7 @@ internal class ZoomOutMessage : QSBMessage
 
 	public override void OnReceiveRemote()
 	{
-		var controller = QSBWorldSync.GetUnityObjects<GalaxyMapController>().First();
+		var controller = QSBWorldSync.GetUnityObject<GalaxyMapController>();
 		controller.enabled = true;
 		Locator.GetPlayerController().SetColliderActivation(false);
 		controller._endlessObservatoryVolume.SetActivation(false);

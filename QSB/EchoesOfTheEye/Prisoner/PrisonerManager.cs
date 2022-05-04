@@ -18,7 +18,7 @@ internal class PrisonerManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		var director = QSBWorldSync.GetUnityObjects<PrisonerDirector>().First();
+		var director = QSBWorldSync.GetUnityObject<PrisonerDirector>();
 
 		var markers = new List<Transform>()
 		{
@@ -37,5 +37,6 @@ internal class PrisonerManager : WorldObjectManager
 
 		QSBWorldSync.Init<QSBPrisonerMarker, PrisonerBehaviourCueMarker>();
 		QSBWorldSync.Init<QSBPrisonerBrain, PrisonerBrain>();
+		QSBWorldSync.Init<QSBPrisonCellElevator, PrisonCellElevator>();
 	}
 }

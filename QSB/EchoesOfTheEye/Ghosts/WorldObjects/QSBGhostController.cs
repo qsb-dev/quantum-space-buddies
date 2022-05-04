@@ -39,6 +39,9 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		AttachedObject._playerCollider = Locator.GetPlayerBody().GetComponent<CapsuleCollider>();
 	}
 
+	public QSBGhostGrabController GetGrabController()
+		=> AttachedObject.GetGrabController().GetWorldObject<QSBGhostGrabController>();
+
 	public void SetLanternConcealed(bool concealed, bool playAudio = true)
 	{
 		if (playAudio && AttachedObject._lantern.IsConcealed() != concealed)

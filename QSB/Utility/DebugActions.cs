@@ -99,7 +99,15 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad3].wasPressedThisFrame)
 		{
-			Destroy(Locator.GetProbe().gameObject);
+			var sarcoController = QSBWorldSync.GetUnityObject<SarcophagusController>();
+
+			sarcoController.firstSealProjector.SetLit(false);
+			sarcoController.secondSealProjector.SetLit(false);
+			sarcoController.thirdSealProjector.SetLit(false);
+
+			sarcoController._attemptOpenAfterDelay = true;
+			sarcoController._openAttemptTime = Time.time + 0.5f;
+			sarcoController.enabled = true;
 		}
 
 		if (Keyboard.current[Key.Numpad4].wasPressedThisFrame)
