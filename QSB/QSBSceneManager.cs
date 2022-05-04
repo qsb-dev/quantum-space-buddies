@@ -12,9 +12,9 @@ public static class QSBSceneManager
 
 	public static bool IsInUniverse => CurrentScene.IsUniverseScene();
 
-	[Obsolete]
+	[Obsolete("TODO: remove after migration")]
 	public static event Action<OWScene, OWScene, bool> OnSceneLoaded;
-	[Obsolete]
+	[Obsolete("TODO: remove after migration")]
 	public static event Action<OWScene, OWScene> OnUniverseSceneLoaded;
 
 	/// <summary>
@@ -30,6 +30,8 @@ public static class QSBSceneManager
 
 	static QSBSceneManager()
 	{
+		LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
+
 		LoadManager.OnStartSceneLoad += (originalScene, loadScene) =>
 		{
 			DebugLog.DebugWrite($"PRE SCENE LOAD ({originalScene} -> {loadScene})", MessageType.Info);
@@ -43,6 +45,18 @@ public static class QSBSceneManager
 			});
 
 		DebugLog.DebugWrite("Scene Manager ready.", MessageType.Success);
+	}
+
+	[Obsolete("TODO: remove after migration")]
+	private static void OnCompleteSceneLoad(OWScene oldScene, OWScene newScene)
+	{
+		var universe = newScene.IsUniverseScene();
+
+		OnSceneLoaded?.SafeInvoke(oldScene, newScene, universe);
+		if (universe)
+		{
+			OnUniverseSceneLoaded?.SafeInvoke(oldScene, newScene);
+		}
 	}
 
 	public static bool IsUniverseScene(this OWScene scene) =>
