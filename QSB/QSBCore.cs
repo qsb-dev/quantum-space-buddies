@@ -53,6 +53,7 @@ public class QSBCore : ModBehaviour
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
+	public static Storage Storage { get; private set; } = new();
 
 	public void Awake()
 	{
@@ -68,6 +69,7 @@ public class QSBCore : ModBehaviour
 		DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
 		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
+		Storage = Helper.Storage.Load<Storage>("storage.json") ?? new Storage();
 
 		if (DebugSettings.HookDebugLogs)
 		{
