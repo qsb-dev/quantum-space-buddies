@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using OWML.Common;
-using QSB.Patches;
+﻿using OWML.Common;
 using QSB.Utility;
 using System;
 
@@ -60,22 +58,4 @@ public static class QSBSceneManager
 
 	public static bool IsUniverseScene(this OWScene scene) =>
 		scene is OWScene.SolarSystem or OWScene.EyeOfTheUniverse;
-}
-
-[HarmonyPatch(typeof(GhostBrain))]
-internal class TestPatch : QSBPatch
-{
-	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
-
-	[HarmonyPrefix]
-	[HarmonyPatch(nameof(GhostBrain.Awake))]
-	private static void Awake() => DebugLog.DebugWrite("GhostBrain.Awake");
-
-	[HarmonyPrefix]
-	[HarmonyPatch(nameof(GhostBrain.Start))]
-	private static void Start() => DebugLog.DebugWrite("GhostBrain.Start");
-
-	[HarmonyPrefix]
-	[HarmonyPatch(nameof(GhostBrain.OnDestroy))]
-	private static void OnDestroy() => DebugLog.DebugWrite("GhostBrain.OnDestroy");
 }
