@@ -21,6 +21,11 @@ public class MeteorServerPatches : QSBPatch
 	[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.FixedUpdate))]
 	public static bool MeteorLauncher_FixedUpdate(MeteorLauncher __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		if (__instance._launchedMeteors != null)
 		{
 			for (var i = __instance._launchedMeteors.Count - 1; i >= 0; i--)
@@ -87,6 +92,11 @@ public class MeteorServerPatches : QSBPatch
 	[HarmonyPatch(typeof(MeteorLauncher), nameof(MeteorLauncher.LaunchMeteor))]
 	public static bool MeteorLauncher_LaunchMeteor(MeteorLauncher __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		var flag = __instance._dynamicMeteorPool != null && (__instance._meteorPool == null || Random.value < __instance._dynamicProbability);
 		MeteorController meteorController = null;
 		if (!flag)
@@ -140,9 +150,16 @@ public class MeteorServerPatches : QSBPatch
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(FragmentIntegrity), nameof(FragmentIntegrity.AddDamage))]
-	public static void FragmentIntegrity_AddDamage(FragmentIntegrity __instance) =>
+	public static void FragmentIntegrity_AddDamage(FragmentIntegrity __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
 		__instance.GetWorldObject<QSBFragment>()
 			.SendMessage(new FragmentIntegrityMessage(__instance._integrity));
+	}
 }
 
 /// <summary>
@@ -175,6 +192,11 @@ public class MeteorPatches : QSBPatch
 	public static void MeteorController_Impact(MeteorController __instance,
 		GameObject hitObject, Vector3 impactPoint, Vector3 impactVel)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
 		if (QSBMeteor.IsSpecialImpact(hitObject))
 		{
 			__instance.GetWorldObject<QSBMeteor>()
@@ -198,6 +220,11 @@ public class MeteorPatches : QSBPatch
 	public static void DebrisLeash_Init(DebrisLeash __instance)
 	{
 		if (__instance._detachableFragment == null || __instance._detachableFragment._fragmentIntegrity == null)
+		{
+			return;
+		}
+
+		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
