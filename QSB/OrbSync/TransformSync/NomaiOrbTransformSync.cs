@@ -1,6 +1,7 @@
 ﻿using QSB.AuthoritySync;
 using QSB.OrbSync.WorldObjects;
 using QSB.Syncs.Unsectored.Transforms;
+using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using UnityEngine;
@@ -47,7 +48,10 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 	protected override void Init()
 	{
 		base.Init();
+		DebugLog.DebugWrite($"{this} - attached = {AttachedTransform}");
 		var body = AttachedTransform.GetAttachedOWRigidbody();
+		DebugLog.DebugWrite($"{this} - body = {body}");
+		DebugLog.DebugWrite($"{this} - body.GetOrigParent() = {body.GetOrigParent()}");
 		SetReferenceTransform(body.GetOrigParent());
 
 		body.OnUnsuspendOWRigidbody += OnUnsuspend;
@@ -61,11 +65,14 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 
 		// this is null sometimes on here, but not on other similar transforms syncs (like anglers)
 		// idk why, but whatever
+		DebugLog.DebugWrite($"{this} - attached = {AttachedTransform}");
 		if (AttachedTransform)
 		{
 			var body = AttachedTransform.GetAttachedOWRigidbody();
+			DebugLog.DebugWrite($"{this} - body = {body}");
 			if (body)
 			{
+				DebugLog.DebugWrite($"{this} - body.GetOrigParent() = {body.GetOrigParent()}");
 				body.OnUnsuspendOWRigidbody -= OnUnsuspend;
 				body.OnSuspendOWRigidbody -= OnSuspend;
 			}
