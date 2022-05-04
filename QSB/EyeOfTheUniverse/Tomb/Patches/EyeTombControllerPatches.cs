@@ -2,6 +2,7 @@
 using QSB.EyeOfTheUniverse.Tomb.Messages;
 using QSB.Messaging;
 using QSB.Patches;
+using QSB.Player;
 using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.Tomb.Patches;
@@ -74,4 +75,14 @@ internal class EyeTombControllerPatches : QSBPatch
 
 		return false;
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(EyeTombController.OnObserveGrave))]
+	public static bool OnObserveGrave()
+		=> false;
+
+	[HarmonyPostfix]
+	[HarmonyPatch(nameof(EyeTombController.OnFinishGather))]
+	public static void OnFinishGather()
+		=> QSBPlayerManager.ShowAllPlayers(0.5f);
 }
