@@ -95,6 +95,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		base.Awake();
 
 		InitPlayerName();
+		StandaloneProfileManager.SharedInstance.OnProfileSignInComplete += (ProfileManagerSignInResult result) => InitPlayerName();
 
 		playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
 		playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", 1.ToGuid().ToString("N"));
