@@ -24,11 +24,11 @@ internal class FlyShipMessage : QSBMessage<bool>
 		}
 	}
 
-	private FlyShipMessage(bool flying) : base(flying) { }
+	public FlyShipMessage(bool flying) : base(flying) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 
-	public override void OnReceiveLocal() => SetCurrentFlyer(From, Data);
+	public override void OnReceiveLocal() => OnReceiveRemote();
 
 	public override void OnReceiveRemote()
 	{

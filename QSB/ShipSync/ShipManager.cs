@@ -1,7 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
 using OWML.Common;
+using QSB.Messaging;
 using QSB.Player;
+using QSB.ShipSync.Messages;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
@@ -44,7 +46,18 @@ internal class ShipManager : WorldObjectManager
 	private uint _currentFlyer = uint.MaxValue;
 
 	public void Start()
-		=> Instance = this;
+	{
+		Instance = this;
+		QSBPlayerManager.OnRemovePlayer += OnRemovePlayer;
+	}
+
+	private void OnRemovePlayer(PlayerInfo player)
+	{
+		if (QSBCore.IsHost && player.PlayerId == CurrentFlyer)
+		{
+			new FlyShipMessage(false).Send();
+		}
+	}
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
@@ -104,14 +117,12 @@ internal class ShipManager : WorldObjectManager
 
 	public void AddPlayerToShip(PlayerInfo player)
 	{
-		DebugLog.DebugWrite($"{player} enter ship.");
 		_playersInShip.Add(player);
 		UpdateElectricalComponent();
 	}
 
 	public void RemovePlayerFromShip(PlayerInfo player)
 	{
-		DebugLog.DebugWrite($"{player} leave ship.");
 		_playersInShip.Remove(player);
 		UpdateElectricalComponent();
 	}
@@ -128,7 +139,6 @@ internal class ShipManager : WorldObjectManager
 		{
 			if (!damaged)
 			{
-				DebugLog.DebugWrite($"No players left in ship - turning off electricals.");
 				electricalSystem.SetPowered(false);
 			}
 		}
@@ -136,7 +146,6 @@ internal class ShipManager : WorldObjectManager
 		{
 			if (!damaged)
 			{
-				DebugLog.DebugWrite($"Player in ship - turning on electricals.");
 				electricalSystem.SetPowered(true);
 			}
 		}
