@@ -40,7 +40,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const string DisconnectString = "DISCONNECT";
 	private const string StopHostingString = "STOP HOSTING";
 
-	private const string UpdateChangelog = "QSB v0.18.0\r\nit's good";
+	private const string UpdateChangelog = $"QSB Version 0.19.0\r\nThis update syncs Echoes of the Eye content! A bit rough around the edges, but things will be polished up in later updates. Enjoy!";
 
 	private Action<bool> PopupClose;
 
