@@ -277,4 +277,20 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 
 		AttachedObject.StopFacing();
 	}
+
+	public void Spin(TurnSpeed turnSpeed, bool remote = false)
+	{
+		if (!remote)
+		{
+			if (!QSBCore.IsHost)
+			{
+				return;
+			}
+
+			this.SendMessage(new SpinMessage(turnSpeed));
+		}
+
+		// SPEEEEEEEEEN
+		AttachedObject.Spin(turnSpeed);
+	}
 }

@@ -63,7 +63,7 @@ public class QSBSearchAction : QSBGhostAction
 
 	public override void OnArriveAtPosition()
 	{
-		_controller.AttachedObject.Spin(TurnSpeed.MEDIUM);
+		_controller.Spin(TurnSpeed.MEDIUM);
 		_searchingAtNode = true;
 		_searchStartTime = Time.time;
 	}

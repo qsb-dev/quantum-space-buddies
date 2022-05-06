@@ -111,7 +111,7 @@ public class QSBGuardAction : QSBGhostAction
 		}
 		else
 		{
-			_controller.AttachedObject.Spin(TurnSpeed.MEDIUM);
+			_controller.Spin(TurnSpeed.MEDIUM);
 		}
 
 		_searchingAtNode = true;
