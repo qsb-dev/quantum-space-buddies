@@ -35,7 +35,9 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		var label = $"Name:{AttachedObject.ghostName}" +
 			$"\r\nAwareness:{AttachedObject.GetThreatAwareness()}" +
 			$"\r\nCurrent action:{AttachedObject.GetCurrentActionName()}" +
-			$"\r\nIllumination meter:{_data.illuminatedByPlayerMeter}";
+			$"\r\nMoveToTargetPosition:{AttachedObject._controller._moveToTargetPosition}" +
+			$"\r\nTargetSpeed:{AttachedObject._controller._targetSpeed}" +
+			$"\r\nFollowNodePath:{AttachedObject._controller._followNodePath}";
 
 		if (QSBCore.IsHost)
 		{

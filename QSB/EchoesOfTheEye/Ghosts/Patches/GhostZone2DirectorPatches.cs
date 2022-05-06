@@ -1,7 +1,10 @@
 ﻿using HarmonyLib;
 using QSB.EchoesOfTheEye.Ghosts.Actions;
+using QSB.EchoesOfTheEye.Ghosts.Messages;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
@@ -77,11 +80,16 @@ internal class GhostZone2DirectorPatches : QSBPatch
 			return true;
 		}
 
+		if (!QSBCore.IsHost)
+		{
+			return false;
+		}
+
 		if (__instance._lightsProjectorExtinguished)
 		{
 			if (__instance._ghostsAreAwake && !__instance._ghostsAlerted && Time.time >= __instance._ghostAlertTime)
 			{
-				__instance._ghostHowlAudioSource.PlayOneShot(global::AudioType.Ghost_SomeoneIsInHereHowl, 1f);
+				__instance._ghostHowlAudioSource.PlayOneShot(AudioType.Ghost_SomeoneIsInHereHowl, 1f);
 				__instance._ghostsAlerted = true;
 			}
 
@@ -93,6 +101,7 @@ internal class GhostZone2DirectorPatches : QSBPatch
 					QSBGhostZone2Director.ElevatorsStatus[i].elevatorPair.elevator.topLight.FadeTo(1f, 0.2f);
 					QSBGhostZone2Director.ElevatorsStatus[i].elevatorPair.elevator.GoToDestination(0);
 					QSBGhostZone2Director.ElevatorsStatus[i].activated = true;
+					new Zone2ElevatorStateMessage(i, Zone2ElevatorState.GoToUndercity).Send();
 				}
 
 				if (!QSBGhostZone2Director.ElevatorsStatus[i].lightsDeactivated && QSBGhostZone2Director.ElevatorsStatus[i].activated && QSBGhostZone2Director.ElevatorsStatus[i].elevatorPair.elevator.isAtBottom)
@@ -115,13 +124,32 @@ internal class GhostZone2DirectorPatches : QSBPatch
 
 					QSBGhostZone2Director.ElevatorsStatus[i].elevatorAction.UseElevator();
 					QSBGhostZone2Director.ElevatorsStatus[i].timeSinceArrival = Time.time;
+					new Zone2ElevatorStateMessage(i, Zone2ElevatorState.ReachedUndercity).Send();
 				}
 
 				if (QSBGhostZone2Director.ElevatorsStatus[i].lightsDeactivated && QSBGhostZone2Director.ElevatorsStatus[i].activated && !QSBGhostZone2Director.ElevatorsStatus[i].deactivated && Time.time >= QSBGhostZone2Director.ElevatorsStatus[i].timeSinceArrival + 2f)
 				{
 					QSBGhostZone2Director.ElevatorsStatus[i].elevatorPair.elevator.GoToDestination(1);
 					QSBGhostZone2Director.ElevatorsStatus[i].deactivated = true;
+					new Zone2ElevatorStateMessage(i, Zone2ElevatorState.ReturnToCity).Send();
 				}
+			}
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(GhostZone2Director), nameof(GhostZone2Director.OnStartGhostTutorial))]
+	public static bool OnStartGhostTutorial(GhostZone2Director __instance, GameObject hitObj)
+	{
+		if (__instance._lightsProjectorExtinguished && hitObj.CompareTag("PlayerDetector") && !__instance._ghostTutorialElevator.isAtTop)
+		{
+			__instance._ghostTutorialElevator.GoToDestination(1);
+			new Zone2ElevatorStateMessage(-1, Zone2ElevatorState.TutorialElevator).Send();
+			for (var i = 0; i < __instance._cityGhosts.Length; i++)
+			{
+				__instance._cityGhosts[i].EscalateThreatAwareness(GhostData.ThreatAwareness.IntruderConfirmed);
 			}
 		}
 
@@ -135,6 +163,11 @@ internal class GhostZone2DirectorPatches : QSBPatch
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return true;
+		}
+
+		if (!QSBCore.IsHost)
+		{
+			return false;
 		}
 
 		DebugLog.DebugWrite($"LIGHTS EXTINGUISHED");
@@ -174,7 +207,24 @@ internal class GhostZone2DirectorPatches : QSBPatch
 			QSBGhostZone2Director.ElevatorsStatus[j].ghostController = QSBGhostZone2Director.ElevatorsStatus[j].elevatorPair.ghost.GetComponent<GhostController>();
 		}
 
+		new Zone2ElevatorStateMessage(-1, Zone2ElevatorState.LightsExtinguished).Send();
+
 		__instance._ghostAlertTime = Time.time + 2f;
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(GhostZone2Director), nameof(GhostZone2Director.OnAlarmRinging))]
+	public static bool OnAlarmRinging(GhostZone2Director __instance)
+	{
+		foreach (var ghost in __instance._undergroundGhosts)
+		{
+			var qsbGhost = ghost.GetWorldObject<QSBGhostBrain>();
+			var totemPos = __instance._finalTotem.transform.position;
+			var closestPlayer = QSBPlayerManager.GetClosestPlayerToWorldPoint(totemPos, true);
+			qsbGhost.HintPlayerLocation(totemPos, 0, qsbGhost._data.players[closestPlayer]);
+		}
 
 		return false;
 	}

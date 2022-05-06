@@ -1,6 +1,8 @@
 ﻿using GhostEnums;
 using HarmonyLib;
+using QSB.EchoesOfTheEye.Ghosts.Messages;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -67,6 +69,27 @@ internal class GhostControllerPatches : QSBPatch
 		}
 
 		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(GhostController.SetNodeMap))]
+	public static bool SetNodeMap(GhostController __instance, GhostNodeMap nodeMap)
+	{
+		if (__instance._nodeMap == nodeMap)
+		{
+			return false;
+		}
+
+		__instance.StopMoving();
+		__instance.StopFacing();
+		__instance._nodeMap = nodeMap;
+		__instance.transform.parent = nodeMap.transform;
+		__instance._nodeRoot = nodeMap.transform;
+		__instance.OnNodeMapChanged.Invoke();
+
+		__instance.GetWorldObject<QSBGhostController>().SendMessage(new ChangeNodeMapMessage(nodeMap.GetWorldObject<QSBGhostNodeMap>().ObjectId));
+
 		return false;
 	}
 }
