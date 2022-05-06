@@ -268,6 +268,8 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 					_controller.FaceLocalPosition(_searchPosition, TurnSpeed.MEDIUM);
 					return;
 				}
+
+				DebugLog.DebugWrite($"{_brain.Name} : how did i get here\nthis is not my beautiful house\nthis is not my beautiful wife", OWML.Common.MessageType.Error);
 			}
 		}
 	}

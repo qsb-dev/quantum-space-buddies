@@ -71,7 +71,6 @@ internal class QSBChaseAction : QSBGhostAction
 			return true;
 		}
 
-		var worldPos = _controller.AttachedObject.LocalToWorldPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition);
 		_controller.PathfindToLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, MoveType.CHASE);
 		_controller.FaceLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, TurnSpeed.FAST);
 		return true;

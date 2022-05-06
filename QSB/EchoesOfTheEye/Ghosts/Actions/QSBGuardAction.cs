@@ -1,5 +1,6 @@
 ﻿using GhostEnums;
 using QSB.EchoesOfTheEye.Ghosts;
+using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -124,8 +125,7 @@ public class QSBGuardAction : QSBGhostAction
 		_targetSearchNode = GetHighestPriorityNodeToSearch();
 		if (_targetSearchNode == null)
 		{
-			Debug.LogError("Failed to find any nodes to search!  Did we exhaust our existing options?", _controller.AttachedObject);
-			Debug.Break();
+			DebugLog.DebugWrite($"{_brain.Name} : Failed to find any nodes to search!  Did we exhaust our existing options?", OWML.Common.MessageType.Error);
 		}
 
 		_controller.PathfindToNode(_targetSearchNode, MoveType.SEARCH);
@@ -155,5 +155,13 @@ public class QSBGuardAction : QSBGhostAction
 		}
 
 		return ghostNode;
+	}
+
+	public override void DrawGizmos(bool isGhostSelected)
+	{
+		foreach (var item in _searchNodes)
+		{
+			Popcron.Gizmos.Sphere(_controller.AttachedObject.LocalToWorldPosition(item.localPosition), 1f, Color.red);
+		}
 	}
 }

@@ -18,7 +18,20 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 
 	}
 
-	public override bool ShouldDisplayDebug() => false;
+	public override string ReturnLabel() => "";
+
+	public override void DisplayLines()
+	{
+		var rotation = Quaternion.AngleAxis(20f, AttachedObject.transform.up);
+		var b = rotation * (AttachedObject.transform.forward * 50f);
+		var b2 = Quaternion.Inverse(rotation) * (AttachedObject.transform.forward * 50f);
+		var color = Color.blue;
+		Popcron.Gizmos.Line(AttachedObject._sightOrigin.position, AttachedObject._sightOrigin.position + b, color);
+		Popcron.Gizmos.Line(AttachedObject._sightOrigin.position, AttachedObject._sightOrigin.position + b2, color);
+		Popcron.Gizmos.Line(AttachedObject._sightOrigin.position + AttachedObject.transform.right * 0.5f, AttachedObject._sightOrigin.position + AttachedObject.transform.forward + AttachedObject.transform.right * 0.5f, color);
+		Popcron.Gizmos.Line(AttachedObject._sightOrigin.position - AttachedObject.transform.right * 0.5f, AttachedObject._sightOrigin.position + AttachedObject.transform.forward - AttachedObject.transform.right * 0.5f, color);
+		Popcron.Gizmos.Line(AttachedObject._sightOrigin.position + AttachedObject.transform.forward + AttachedObject.transform.right * 0.5f, AttachedObject._sightOrigin.position + AttachedObject.transform.forward - AttachedObject.transform.right * 0.5f, color);
+	}
 
 	public QSBGhostData _data;
 

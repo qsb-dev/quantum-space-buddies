@@ -74,7 +74,7 @@ public class QSBStalkAction : QSBGhostAction
 
 		_controller.FaceLocalPosition(_data.interestedPlayer.lastKnownPlayerLocation.localPosition, TurnSpeed.MEDIUM);
 
-		var isPlayerLanternConcealed = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
+		var isPlayerLanternConcealed = _data.interestedPlayer.player.AssignedSimulationLantern.AttachedObject.GetLanternController().IsConcealed();
 		var sawPlayerLanternConceal = !_wasPlayerLanternConcealed
 			&& isPlayerLanternConcealed
 			&& _data.interestedPlayer.wasPlayerLocationKnown;
