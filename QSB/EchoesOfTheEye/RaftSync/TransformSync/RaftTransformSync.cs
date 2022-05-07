@@ -82,8 +82,25 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 
 			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
+			var onRaft = false;
+			var localPos = Vector3.zero;
+			var localRot = Quaternion.identity;
+			if (Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody)
+			{
+				onRaft = true;
+				localPos = AttachedRigidbody.transform.InverseTransformPoint(Locator.GetPlayerTransform().position);
+				localRot = AttachedRigidbody.transform.InverseTransformRotation(Locator.GetPlayerTransform().rotation);
+			}
+
 			AttachedRigidbody.SetPosition(targetPos);
 			AttachedRigidbody.SetRotation(targetRot);
+
+			if (onRaft)
+			{
+				var playerTransform = Locator.GetPlayerBody().transform;
+				playerTransform.position = AttachedRigidbody.transform.TransformPoint(localPos);
+				playerTransform.rotation = AttachedRigidbody.transform.TransformRotation(localRot);
+			}
 		}
 
 		var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
