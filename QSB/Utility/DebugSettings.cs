@@ -11,8 +11,8 @@ public class DebugSettings
 	[JsonProperty("dumpWorldObjects")]
 	public bool DumpWorldObjects;
 
-	[JsonProperty("playerIdInLogs")]
-	public bool PlayerIdInLogs;
+	[JsonProperty("instanceIdInLogs")]
+	public bool InstanceIdInLogs;
 
 	[JsonProperty("hookDebugLogs")]
 	public bool HookDebugLogs;

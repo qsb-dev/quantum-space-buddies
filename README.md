@@ -150,7 +150,7 @@ The template for this file is this :
 {
   "useKcpTransport": false,
   "dumpWorldObjects": false,
-  "playerIdInLogs": false,
+  "instanceIdInLogs": false,
   "hookDebugLogs": false,
   "avoidTimeSync": false,
   "debugMode": false,
@@ -166,7 +166,7 @@ The template for this file is this :
 
 - useKcpTransport - Allows you to directly connect to IP addresses, rather than use the Epic relay.
 - dumpWorldObjects - Creates a file with information about the WorldObjects that were created.
-- playerIdInLogs - Appends the player id to every log message sent.
+- instanceIdInLogs - Appends the game instance id to every log message sent.
 - hookDebugLogs - Print Unity logs and warnings.
 - avoidTimeSync - Disables the syncing of time.
 - debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
