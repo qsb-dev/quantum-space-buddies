@@ -134,20 +134,20 @@ public abstract class SyncBase : QSBNetworkTransform
 				.MaxBy(x => x.PlayerId);
 		}
 
-		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+		QSBSceneManager.OnPreSceneLoad += OnPreSceneLoad;
 	}
 
 	public override void OnStopClient()
 	{
 		base.OnStopClient();
-		QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+		QSBSceneManager.OnPreSceneLoad -= OnPreSceneLoad;
 		if (IsInitialized)
 		{
 			SafeUninit();
 		}
 	}
 
-	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
+	private void OnPreSceneLoad(OWScene oldScene, OWScene newScene)
 	{
 		if (IsInitialized)
 		{

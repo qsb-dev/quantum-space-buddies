@@ -19,13 +19,13 @@ internal class ClientStateManager : MonoBehaviour
 
 	private void Start()
 	{
-		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+		QSBSceneManager.OnPostSceneLoad += OnPostSceneLoad;
 		Delay.RunWhen(() => PlayerTransformSync.LocalInstance != null,
 			() => new ClientStateMessage(ForceGetCurrentState()).Send());
 	}
 
 	private void OnDestroy() =>
-		QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+		QSBSceneManager.OnPostSceneLoad -= OnPostSceneLoad;
 
 	public void ChangeClientState(ClientState newState)
 	{
@@ -38,7 +38,7 @@ internal class ClientStateManager : MonoBehaviour
 		OnChangeState?.Invoke(newState);
 	}
 
-	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool inUniverse)
+	private static void OnPostSceneLoad(OWScene oldScene, OWScene newScene)
 	{
 		var serverState = ServerStateManager.Instance.GetServerState();
 

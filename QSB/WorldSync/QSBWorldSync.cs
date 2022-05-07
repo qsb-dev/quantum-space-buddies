@@ -178,9 +178,21 @@ public static class QSBWorldSync
 
 	private static readonly List<IWorldObject> WorldObjects = new();
 	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
-	private static readonly Dictionary<Type, MonoBehaviour> CachedUnityObjects = new();
 
-	static QSBWorldSync() =>
+	static QSBWorldSync()
+	{
+		QSBSceneManager.OnPreSceneLoad += (_, _) =>
+			RemoveWorldObjects();
+		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
+		{
+			if (QSBCore.IsInMultiplayer && loadScene.IsUniverseScene())
+			{
+				// So objects have time to be deleted, made, whatever
+				// I.E. wait until Start has been called
+				Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
+			}
+		};
+
 		RequestInitialStatesMessage.SendInitialState += to =>
 		{
 			DialogueConditions.ForEach(condition
@@ -189,6 +201,7 @@ public static class QSBWorldSync
 			ShipLogFacts.ForEach(fact
 				=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = to }.Send());
 		};
+	}
 
 	private static void GameInit()
 	{
@@ -217,7 +230,6 @@ public static class QSBWorldSync
 		DialogueConditions.Clear();
 		PersistentConditions.Clear();
 		ShipLogFacts.Clear();
-		CachedUnityObjects.Clear();
 	}
 
 	public static IEnumerable<IWorldObject> GetWorldObjects() => WorldObjects;
@@ -263,28 +275,12 @@ public static class QSBWorldSync
 	}
 
 	/// <summary>
-	/// not deterministic across platforms
+	/// not deterministic across platforms.
+	/// iterates thru all objects and throws error if there isn't exactly 1.
 	/// </summary>
 	public static TUnityObject GetUnityObject<TUnityObject>()
 		where TUnityObject : MonoBehaviour
-	{
-		if (CachedUnityObjects.ContainsKey(typeof(TUnityObject)))
-		{
-			return CachedUnityObjects[typeof(TUnityObject)] as TUnityObject;
-		}
-
-		var unityObjects = GetUnityObjects<TUnityObject>();
-
-		if (unityObjects.Count() != 1)
-		{
-			DebugLog.ToConsole($"Warning - Tried to cache a unity object that there are multiple of. ({typeof(TUnityObject).Name})" +
-				$"\r\nCaching the first one - this probably is going to end badly!", MessageType.Warning);
-		}
-
-		var unityObject = unityObjects.First();
-		CachedUnityObjects.Add(typeof(TUnityObject), unityObject);
-		return unityObject;
-	}
+		=> GetUnityObjects<TUnityObject>().Single();
 
 	/// <summary>
 	/// not deterministic across platforms

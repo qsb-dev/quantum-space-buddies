@@ -2,7 +2,6 @@
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.SectorSync.WorldObjects;
@@ -25,6 +24,8 @@ public class QSBSector : WorldObject<Sector>
 	}
 
 	public override void SendInitialState(uint to) { }
+
+	private static EyeShuttleController _cachedShuttleController;
 
 	public bool ShouldSyncTo(DynamicOccupant occupantType)
 	{
@@ -62,14 +63,10 @@ public class QSBSector : WorldObject<Sector>
 			}
 			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 			{
-				var shuttleController = QSBWorldSync.GetUnityObject<EyeShuttleController>();
-				if (shuttleController == null)
-				{
-					DebugLog.ToConsole($"Warning - Expected to find a EyeShuttleController for {AttachedObject.name}!", MessageType.Warning);
-					return false;
-				}
+				if (!_cachedShuttleController)
+					_cachedShuttleController = QSBWorldSync.GetUnityObject<EyeShuttleController>();
 
-				if (!shuttleController._isPlayerInside)
+				if (!_cachedShuttleController._isPlayerInside)
 				{
 					return false;
 				}
