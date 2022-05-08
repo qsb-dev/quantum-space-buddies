@@ -11,6 +11,8 @@ public class DreamCandlePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	public static bool DontSendMessage;
+
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamCandle), nameof(DreamCandle.SetLit))]
 	private static void SetLit(DreamCandle __instance,
@@ -27,6 +29,11 @@ public class DreamCandlePatches : QSBPatch
 		}
 
 		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		if (DontSendMessage)
 		{
 			return;
 		}
