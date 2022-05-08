@@ -6,7 +6,6 @@ using QSB.EchoesOfTheEye.DreamRafts.Messages;
 using QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.DreamRafts.Patches;
@@ -77,9 +76,4 @@ public class DreamRaftPatches : QSBPatch
 
 		return false;
 	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.UpdateVisibility))]
-	private static void UpdateVisibility(DreamRaftProjection __instance, bool immediate = false) =>
-		DebugLog.DebugWrite($"DreamRaftProjection.UpdateVisibility | {__instance._visible} | {immediate} | {Remote}");
 }
