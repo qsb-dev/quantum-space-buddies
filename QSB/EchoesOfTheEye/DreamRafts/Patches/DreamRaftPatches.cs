@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
+using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.DreamCandles.Patches;
 using QSB.EchoesOfTheEye.DreamObjectProjectors.WorldObject;
 using QSB.EchoesOfTheEye.DreamRafts.Messages;
+using QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Utility;
@@ -62,8 +64,19 @@ public class DreamRaftPatches : QSBPatch
 	/// </summary>
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.ExtinguishImmediately))]
-	private static bool ExtinguishImmediately()
-		=> false;
+	private static bool ExtinguishImmediately(DreamRaftProjector __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		// still release authority over the raft tho
+		__instance._dreamRaftProjection.GetWorldObject<QSBDreamRaft>()
+			.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+
+		return false;
+	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamRaftProjection), nameof(DreamRaftProjection.UpdateVisibility))]
