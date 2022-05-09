@@ -71,7 +71,7 @@ public class DreamRaftPatches : QSBPatch
 		}
 
 		// still release authority over the raft tho
-		__instance._dreamRaftProjection.GetWorldObject<QSBDreamRaft>()
+		__instance._dreamRaftProjection.GetComponent<DreamRaftController>().GetWorldObject<QSBDreamRaft>()
 			.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
 
 		return false;
