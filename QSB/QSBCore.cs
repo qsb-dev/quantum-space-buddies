@@ -176,6 +176,7 @@ public class QSBCore : ModBehaviour
 
 	public override void Configure(IModConfig config) => DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 
+#if DEBUG
 	private void Update()
 	{
 		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
@@ -190,6 +191,7 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
 	}
+#endif
 }
 
 /*
