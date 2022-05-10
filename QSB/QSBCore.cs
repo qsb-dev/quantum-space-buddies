@@ -51,9 +51,21 @@ public class QSBCore : ModBehaviour
 		// ignore the last patch numbers like the title screen does
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
+	public static bool IncompatibleModsAllowed { get; private set; }
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
 	public static Storage Storage { get; private set; } = new();
+
+	public static readonly string[] IncompatibleMods = new[]
+	{
+		// cheats mods
+		"Glitch.AltDebugMenu",
+		"PacificEngine.CheatsMod",
+		// incompatible mods
+		"Raicuparta.NomaiVR",
+		"xen.NewHorizons",
+		"Vesper.AutoResume"
+	};
 
 	public void Awake()
 	{
@@ -174,8 +186,13 @@ public class QSBCore : ModBehaviour
 		DebugLog.DebugWrite("Assemblies initialized", MessageType.Success);
 	}
 
-	public override void Configure(IModConfig config) => DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
+	public override void Configure(IModConfig config)
+	{
+		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
+		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
+	}
 
+#if DEBUG
 	private void Update()
 	{
 		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
@@ -190,6 +207,7 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
 	}
+#endif
 }
 
 /*
