@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using QSB.EchoesOfTheEye.Prisoner.Messages;
 using QSB.EchoesOfTheEye.Prisoner.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
 
@@ -11,18 +13,25 @@ public class CellevatorPatches : QSBPatch
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(nameof(PrisonCellElevator.CallToTopFloor))]
-	public static bool CallToTopFloor(PrisonCellElevator __instance)
+	[HarmonyPatch(nameof(PrisonCellElevator.CallElevatorToFloor))]
+	public static void CallElevatorToFloor(PrisonCellElevator __instance, int floorIndex)
 	{
-		__instance.GetWorldObject<QSBPrisonCellElevator>().CallToFloorIndex(1);
-		return false;
-	}
+		if (Remote)
+		{
+			return;
+		}
 
-	[HarmonyPrefix]
-	[HarmonyPatch(nameof(PrisonCellElevator.CallToBottomFloor))]
-	public static bool CallToBottomFloor(PrisonCellElevator __instance)
-	{
-		__instance.GetWorldObject<QSBPrisonCellElevator>().CallToFloorIndex(0);
-		return false;
+		if (__instance._targetFloorIndex == floorIndex)
+		{
+			return;
+		}
+
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBPrisonCellElevator>()
+			.SendMessage(new CellevatorCallMessage(floorIndex));
 	}
 }

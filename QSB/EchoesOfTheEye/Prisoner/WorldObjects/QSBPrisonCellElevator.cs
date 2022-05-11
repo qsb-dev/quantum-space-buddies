@@ -1,28 +1,15 @@
-﻿using Cysharp.Threading.Tasks;
-using QSB.Audio;
-using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.EchoesOfTheEye.Prisoner.Messages;
 using QSB.ItemSync.WorldObjects;
 using QSB.Messaging;
-using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Prisoner.WorldObjects;
 
 internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDropTarget, IGhostObject
 {
-	public override void SendInitialState(uint to)
-	{
-		// todo : implement this
-	}
+	public override void SendInitialState(uint to) =>
+		this.SendMessage(new CellevatorCallMessage(AttachedObject._targetFloorIndex) { To = to });
 
 	IItemDropTarget IQSBDropTarget.AttachedObject => AttachedObject;
 
@@ -80,14 +67,4 @@ internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDrop
 
 		projectorComponent.Play(false);
 	}*/
-
-	public void CallToFloorIndex(int index, bool remote = false)
-	{
-		if (!remote)
-		{
-			this.SendMessage(new CellevatorCallMessage(index));
-		}
-
-		AttachedObject.CallElevatorToFloor(index);
-	}
 }
