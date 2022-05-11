@@ -33,7 +33,6 @@ internal class GameStateMessage : QSBMessage
 		ReducedFrights = PlayerData.GetReducedFrights();
 	}
 
-
 	public override void Serialize(NetworkWriter writer)
 	{
 		base.Serialize(writer);
