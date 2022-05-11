@@ -1,6 +1,5 @@
 ﻿using OWML.Common;
 using QSB.Utility;
-using System;
 using UnityEngine;
 
 namespace QSB.Player;
@@ -39,13 +38,6 @@ public partial class PlayerInfo
 			if (_body == null && IsReady)
 			{
 				DebugLog.ToConsole($"Warning - {PlayerId}.Body is null!", MessageType.Warning);
-
-				if (!QSBPlayerManager.PlayerExists(PlayerId))
-				{
-					DebugLog.ToConsole($"Warning - Tried to get {PlayerId}.Body, but this player no longer exists in QSBPlayerManager!" +
-						$"\r\nThere was most likely a PlayerInfo object still being referenced after the player had left." +
-						$"\r\nStacktrace: {Environment.StackTrace}", MessageType.Warning);
-				}
 			}
 
 			return _body;
