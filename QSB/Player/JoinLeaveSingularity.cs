@@ -35,6 +35,8 @@ public static class JoinLeaveSingularity
 
 		var go = new GameObject($"player {player} JoinLeaveSingularity");
 		var ct = go.GetCancellationTokenOnDestroy();
+		QSBPlayerManager.OnRemovePlayer += (PlayerInfo removedPlayer) => OnPlayerRemoved(removedPlayer, player, go);
+
 		UniTask.Create(async () =>
 		{
 			DebugLog.DebugWrite($"{go.name}: WARP TASK");
@@ -42,9 +44,19 @@ public static class JoinLeaveSingularity
 			await go.name.Try("running warp task",
 				() => Run(go.transform, player, joining, ct));
 			Object.Destroy(go);
+			QSBPlayerManager.OnRemovePlayer -= (PlayerInfo removedPlayer) => OnPlayerRemoved(removedPlayer, player, go);
 
 			DebugLog.DebugWrite($"{go.name}: WARP TASK DONE");
 		});
+	}
+
+	private static void OnPlayerRemoved(PlayerInfo playerRemoved, PlayerInfo currentPlayer, GameObject cancellationGo)
+	{
+		if (playerRemoved.PlayerId == currentPlayer.PlayerId)
+		{
+			DebugLog.DebugWrite($"{currentPlayer.PlayerId} left - cancel task");
+			Object.Destroy(cancellationGo);
+		}
 	}
 
 	private static async UniTask Run(Transform transform, PlayerInfo player, bool joining, CancellationToken ct)
@@ -65,6 +77,8 @@ public static class JoinLeaveSingularity
 		GameObject fakePlayer = null;
 		if (!joining)
 		{
+			await UniTask.WaitUntil(() => player.Body, cancellationToken: ct);
+
 			player.Body.SetActive(false);
 
 			fakePlayer = player.Body.transform.Find("REMOTE_Traveller_HEA_Player_v2").gameObject.InstantiateInactive();
