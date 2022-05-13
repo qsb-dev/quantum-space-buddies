@@ -27,7 +27,7 @@ public class ConversationPatches : QSBPatch
 		var worldObject = __instance.GetWorldObject<QSBCharacterDialogueTree>();
 
 		QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTree = worldObject;
-		ConversationManager.Instance.SendConvState(worldObject.ObjectId, true);
+		ConversationManager.Instance.SendConvState(worldObject, true);
 	}
 
 	[HarmonyPrefix]
@@ -45,7 +45,7 @@ public class ConversationPatches : QSBPatch
 			return true;
 		}
 
-		ConversationManager.Instance.SendConvState(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTree.ObjectId, false);
+		ConversationManager.Instance.SendConvState(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTree, false);
 		ConversationManager.Instance.CloseBoxCharacter(QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTree.ObjectId);
 		QSBPlayerManager.LocalPlayer.CurrentCharacterDialogueTree = null;
 		ConversationManager.Instance.CloseBoxPlayer();

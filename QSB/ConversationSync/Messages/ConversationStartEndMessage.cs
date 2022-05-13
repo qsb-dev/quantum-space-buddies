@@ -1,47 +1,27 @@
-﻿using OWML.Common;
-using QSB.ConversationSync.WorldObjects;
+﻿using QSB.ConversationSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using QSB.WorldSync;
 
 namespace QSB.ConversationSync.Messages;
 
-public class ConversationStartEndMessage : QSBMessage<(int TreeId, bool Start)>
+public class ConversationStartEndMessage : QSBWorldObjectMessage<QSBCharacterDialogueTree, bool>
 {
-	public ConversationStartEndMessage(int treeId, bool start) : base((treeId, start)) { }
-
-	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+	public ConversationStartEndMessage(bool start) : base(start) { }
 
 	public override void OnReceiveRemote()
 	{
-		var dialogueTree = Data.TreeId.GetWorldObject<QSBCharacterDialogueTree>();
-
-		if (Data.Start)
+		if (Data)
 		{
-			StartConversation(From, dialogueTree);
+			QSBPlayerManager.GetPlayer(From).CurrentCharacterDialogueTree = WorldObject;
+			WorldObject.AttachedObject.GetInteractVolume().DisableInteraction();
+			WorldObject.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnStartConversation));
 		}
 		else
 		{
-			EndConversation(From, dialogueTree);
+			QSBPlayerManager.GetPlayer(From).CurrentCharacterDialogueTree = null;
+			WorldObject.AttachedObject.GetInteractVolume().EnableInteraction();
+			WorldObject.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnEndConversation));
 		}
-	}
-
-	private static void StartConversation(
-		uint playerId,
-		QSBCharacterDialogueTree tree)
-	{
-		QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTree = tree;
-		tree.AttachedObject.GetInteractVolume().DisableInteraction();
-		tree.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnStartConversation));
-	}
-
-	private static void EndConversation(
-		uint playerId,
-		QSBCharacterDialogueTree tree)
-	{
-		QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTree = null;
-		tree.AttachedObject.GetInteractVolume().EnableInteraction();
-		tree.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnEndConversation));
 	}
 }
