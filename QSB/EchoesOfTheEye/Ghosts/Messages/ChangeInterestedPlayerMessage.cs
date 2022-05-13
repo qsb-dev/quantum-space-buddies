@@ -10,8 +10,5 @@ internal class ChangeInterestedPlayerMessage : QSBWorldObjectMessage<QSBGhostSen
 	public ChangeInterestedPlayerMessage(uint playerId) : base(playerId) { }
 
 	public override void OnReceiveRemote()
-	{
-		DebugLog.DebugWrite($"{WorldObject.AttachedObject.name} Set interested player {Data}");
-		WorldObject._data.interestedPlayer = WorldObject._data.players[QSBPlayerManager.GetPlayer(Data)];
-	}
+		=> WorldObject._data.interestedPlayer = WorldObject._data.players[QSBPlayerManager.GetPlayer(Data)];
 }

@@ -46,6 +46,14 @@ public class ConversationStartEndMessage : QSBMessage<(int TreeId, bool Start)>
 		CharacterDialogueTree tree)
 	{
 		QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTreeId = -1;
+
+		// hack to fix prisoner dialogue prompt from re-appearing... this is a shit solution
+		var prisonerDirector = QSBWorldSync.GetUnityObject<PrisonerDirector>();
+		if (prisonerDirector != null && prisonerDirector._characterDialogueTree == tree)
+		{
+			return;
+		}
+
 		tree.GetInteractVolume().EnableInteraction();
 	}
 }
