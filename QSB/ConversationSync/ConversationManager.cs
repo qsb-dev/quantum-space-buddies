@@ -46,7 +46,7 @@ public class ConversationManager : WorldObjectManager
 	}
 
 	public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
-		=> QSBPlayerManager.PlayerList.FirstOrDefault(x => x.CurrentCharacterDialogueTree.AttachedObject == tree).PlayerId;
+		=> QSBPlayerManager.PlayerList.FirstOrDefault(x => x.CurrentCharacterDialogueTree?.AttachedObject == tree).PlayerId;
 
 	public void SendPlayerOption(string text)
 		=> new ConversationMessage(ConversationType.Player, (int)QSBPlayerManager.LocalPlayerId, text).Send();
