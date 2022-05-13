@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.ConversationSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
@@ -14,17 +15,11 @@ public class ConversationStartEndMessage : QSBMessage<(int TreeId, bool Start)>
 
 	public override void OnReceiveRemote()
 	{
-		if (Data.TreeId == -1)
-		{
-			DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
-			return;
-		}
-
-		var dialogueTree = QSBWorldSync.OldDialogueTrees[Data.TreeId];
+		var dialogueTree = Data.TreeId.GetWorldObject<QSBCharacterDialogueTree>();
 
 		if (Data.Start)
 		{
-			StartConversation(From, Data.TreeId, dialogueTree);
+			StartConversation(From, dialogueTree);
 		}
 		else
 		{
@@ -34,26 +29,19 @@ public class ConversationStartEndMessage : QSBMessage<(int TreeId, bool Start)>
 
 	private static void StartConversation(
 		uint playerId,
-		int treeId,
-		CharacterDialogueTree tree)
+		QSBCharacterDialogueTree tree)
 	{
-		QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTreeId = treeId;
-		tree.GetInteractVolume().DisableInteraction();
+		QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTree = tree;
+		tree.AttachedObject.GetInteractVolume().DisableInteraction();
+		tree.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnStartConversation));
 	}
 
 	private static void EndConversation(
 		uint playerId,
-		CharacterDialogueTree tree)
+		QSBCharacterDialogueTree tree)
 	{
-		QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTreeId = -1;
-
-		// hack to fix prisoner dialogue prompt from re-appearing... this is a shit solution
-		var prisonerDirector = QSBWorldSync.GetUnityObject<PrisonerDirector>();
-		if (prisonerDirector != null && prisonerDirector._characterDialogueTree == tree)
-		{
-			return;
-		}
-
-		tree.GetInteractVolume().EnableInteraction();
+		QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTree = null;
+		tree.AttachedObject.GetInteractVolume().EnableInteraction();
+		tree.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnEndConversation));
 	}
 }

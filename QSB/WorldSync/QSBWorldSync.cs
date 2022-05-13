@@ -171,7 +171,6 @@ public static class QSBWorldSync
 
 	// =======================================================================================================
 
-	public static readonly List<CharacterDialogueTree> OldDialogueTrees = new();
 	private static readonly Dictionary<string, bool> DialogueConditions = new();
 	private static readonly Dictionary<string, bool> PersistentConditions = new();
 	private static readonly List<FactReveal> ShipLogFacts = new();
@@ -207,9 +206,6 @@ public static class QSBWorldSync
 	{
 		DebugLog.DebugWrite("GameInit QSBWorldSync", MessageType.Info);
 
-		OldDialogueTrees.Clear();
-		OldDialogueTrees.AddRange(GetUnityObjects<CharacterDialogueTree>().SortDeterministic());
-
 		if (!QSBCore.IsHost)
 		{
 			return;
@@ -226,7 +222,6 @@ public static class QSBWorldSync
 	{
 		DebugLog.DebugWrite("GameReset QSBWorldSync", MessageType.Info);
 
-		OldDialogueTrees.Clear();
 		DialogueConditions.Clear();
 		PersistentConditions.Clear();
 		ShipLogFacts.Clear();

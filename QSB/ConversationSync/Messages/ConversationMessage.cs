@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using QSB.ConversationSync.WorldObjects;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
 using System.Text.RegularExpressions;
@@ -32,7 +33,7 @@ public class ConversationMessage : QSBMessage<(ConversationType Type, int Id, st
 					break;
 				}
 
-				var tree = QSBWorldSync.OldDialogueTrees[Data.Id];
+				var tree = Data.Id.GetWorldObject<QSBCharacterDialogueTree>().AttachedObject;
 				Object.Destroy(ConversationManager.Instance.BoxMappings[tree]);
 				break;
 
