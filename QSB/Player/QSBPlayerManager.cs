@@ -94,11 +94,11 @@ public static class QSBPlayerManager
 	public static IEnumerable<ThrusterLightTracker> GetThrusterLightTrackers()
 		=> PlayerList.Select(x => x.ThrusterLightTracker).Where(x => x != null);
 
-	public static void ShowAllPlayers()
-		=> PlayerList.ForEach(x => x.SetVisible(true, 2));
+	public static void ShowAllPlayers(float time = 2f)
+		=> PlayerList.ForEach(x => x.SetVisible(true, time));
 
-	public static void HideAllPlayers()
-		=> PlayerList.ForEach(x => x.SetVisible(false, 2));
+	public static void HideAllPlayers(float time = 2f)
+		=> PlayerList.ForEach(x => x.SetVisible(false, time));
 
 	public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
 		? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)

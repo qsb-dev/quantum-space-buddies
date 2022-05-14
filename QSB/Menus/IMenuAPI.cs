@@ -7,13 +7,6 @@ namespace QSB.Menus;
 public interface IMenuAPI
 {
 	// Title screen
-	[Obsolete]
-	GameObject TitleScreen_MakeMenuOpenButton(string name, Menu menuToOpen);
-	[Obsolete]
-	GameObject TitleScreen_MakeSceneLoadButton(string name, SubmitActionLoadScene.LoadableScenes sceneToLoad, PopupMenu confirmPopup = null);
-	[Obsolete]
-	Button TitleScreen_MakeSimpleButton(string name);
-
 	GameObject TitleScreen_MakeMenuOpenButton(string name, int index, Menu menuToOpen);
 	GameObject TitleScreen_MakeSceneLoadButton(string name, int index, SubmitActionLoadScene.LoadableScenes sceneToLoad, PopupMenu confirmPopup = null);
 	Button TitleScreen_MakeSimpleButton(string name, int index);
@@ -26,4 +19,6 @@ public interface IMenuAPI
 	PopupMenu MakeTwoChoicePopup(string message, string confirmText, string cancelText);
 	PopupInputMenu MakeInputFieldPopup(string message, string placeholderMessage, string confirmText, string cancelText);
 	PopupMenu MakeInfoPopup(string message, string continueButtonText);
+	// Startup Popups
+	void RegisterStartupPopup(string message);
 }

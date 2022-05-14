@@ -1,6 +1,7 @@
 {
 	"enabled": true,
 	"settings": {
-		"defaultServerIP": "localhost"
+		"defaultServerIP": "localhost",
+		"incompatibleModsAllowed": false
 	}
 }

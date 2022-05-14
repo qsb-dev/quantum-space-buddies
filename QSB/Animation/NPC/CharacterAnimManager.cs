@@ -12,10 +12,6 @@ internal class CharacterAnimManager : WorldObjectManager
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
 		QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>();
-		QSBWorldSync.Init<QSBTravelerController, TravelerController>();
-		QSBWorldSync.Init<QSBSolanumController, NomaiConversationManager>();
 		QSBWorldSync.Init<QSBSolanumAnimController, SolanumAnimController>();
-		QSBWorldSync.Init<QSBHearthianRecorderEffects, HearthianRecorderEffects>();
-		QSBWorldSync.Init<QSBTravelerEyeController, TravelerEyeController>();
 	}
 }

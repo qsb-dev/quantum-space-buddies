@@ -1,51 +1,27 @@
-﻿using OWML.Common;
+﻿using QSB.ConversationSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using QSB.WorldSync;
 
 namespace QSB.ConversationSync.Messages;
 
-public class ConversationStartEndMessage : QSBMessage<(int TreeId, bool Start)>
+public class ConversationStartEndMessage : QSBWorldObjectMessage<QSBCharacterDialogueTree, bool>
 {
-	public ConversationStartEndMessage(int treeId, bool start) : base((treeId, start)) { }
-
-	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
+	public ConversationStartEndMessage(bool start) : base(start) { }
 
 	public override void OnReceiveRemote()
 	{
-		if (Data.TreeId == -1)
+		if (Data)
 		{
-			DebugLog.ToConsole("Warning - Received conv. start/end event with char id -1.", MessageType.Warning);
-			return;
-		}
-
-		var dialogueTree = QSBWorldSync.OldDialogueTrees[Data.TreeId];
-
-		if (Data.Start)
-		{
-			StartConversation(From, Data.TreeId, dialogueTree);
+			QSBPlayerManager.GetPlayer(From).CurrentCharacterDialogueTree = WorldObject;
+			WorldObject.AttachedObject.GetInteractVolume().DisableInteraction();
+			WorldObject.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnStartConversation));
 		}
 		else
 		{
-			EndConversation(From, dialogueTree);
+			QSBPlayerManager.GetPlayer(From).CurrentCharacterDialogueTree = null;
+			WorldObject.AttachedObject.GetInteractVolume().EnableInteraction();
+			WorldObject.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnEndConversation));
 		}
-	}
-
-	private static void StartConversation(
-		uint playerId,
-		int treeId,
-		CharacterDialogueTree tree)
-	{
-		QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTreeId = treeId;
-		tree.GetInteractVolume().DisableInteraction();
-	}
-
-	private static void EndConversation(
-		uint playerId,
-		CharacterDialogueTree tree)
-	{
-		QSBPlayerManager.GetPlayer(playerId).CurrentCharacterDialogueTreeId = -1;
-		tree.GetInteractVolume().EnableInteraction();
 	}
 }

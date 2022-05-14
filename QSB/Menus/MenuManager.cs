@@ -5,6 +5,7 @@ using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
 using System;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,26 +31,45 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private Button HostButton;
 	private GameObject ConnectButton;
 	private PopupInputMenu ConnectPopup;
+	private ThreeChoicePopupMenu HostGameTypePopup;
 	private Text _loadingText;
 	private StringBuilder _nowLoadingSB;
 	private const int _titleButtonIndex = 2;
+	private float _connectPopupOpenTime;
 
 	private const string HostString = "OPEN TO MULTIPLAYER";
 	private const string ConnectString = "CONNECT TO MULTIPLAYER";
 	private const string DisconnectString = "DISCONNECT";
 	private const string StopHostingString = "STOP HOSTING";
 
+	private const string UpdateChangelog = $"QSB Version 0.19.0\r\nThis update syncs Echoes of the Eye content! A bit rough around the edges, but things will be polished up in later updates. Enjoy!";
+
 	private Action<bool> PopupClose;
 
 	private bool _intentionalDisconnect;
 
+	private GameObject _threeChoicePopupBase;
+
 	public void Start()
 	{
 		Instance = this;
+
+		_threeChoicePopupBase = Instantiate(Resources.FindObjectsOfTypeAll<PopupMenu>().First(x => x.name == "TwoButton-Popup" && x.transform.parent.name == "PopupCanvas" && x.transform.parent.parent.name == "TitleMenu").gameObject);
+		DontDestroyOnLoad(_threeChoicePopupBase);
+		_threeChoicePopupBase.SetActive(false);
+
 		MakeTitleMenus();
 		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		QSBNetworkManager.singleton.OnClientConnected += OnConnected;
 		QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
+
+		if (QSBCore.Storage.LastUsedVersion != QSBCore.QSBVersion)
+		{
+			// recently updated!
+			QSBCore.Storage.LastUsedVersion = QSBCore.QSBVersion;
+			QSBCore.Helper.Storage.Save(QSBCore.Storage, "storage.json");
+			QSBCore.MenuApi.RegisterStartupPopup(UpdateChangelog);
+		}
 	}
 
 	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
@@ -93,6 +113,60 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			_nowLoadingSB.Append(num.ToString("P0"));
 			_loadingText.text = _nowLoadingSB.ToString();
 		}
+	}
+
+	public ThreeChoicePopupMenu CreateThreeChoicePopup(string message, string confirm1Text, string confirm2Text, string cancelText)
+	{
+		var newPopup = Instantiate(_threeChoicePopupBase);
+
+		switch (LoadManager.GetCurrentScene())
+		{
+			case OWScene.TitleScreen:
+				newPopup.transform.parent = GameObject.Find("/TitleMenu/PopupCanvas").transform;
+				break;
+			case OWScene.SolarSystem:
+			case OWScene.EyeOfTheUniverse:
+				newPopup.transform.parent = GameObject.Find("/PauseMenu/PopupCanvas").transform;
+				break;
+		}
+
+		newPopup.transform.localPosition = Vector3.zero;
+		newPopup.transform.localScale = Vector3.one;
+		newPopup.GetComponentsInChildren<LocalizedText>().ToList().ForEach(x => Destroy(x));
+
+		var originalPopup = newPopup.GetComponent<PopupMenu>();
+
+		var ok1Button = originalPopup._confirmButton.gameObject;
+
+		var ok2Button = Instantiate(ok1Button, ok1Button.transform.parent);
+		ok2Button.transform.SetSiblingIndex(1);
+
+		var popup = newPopup.AddComponent<ThreeChoicePopupMenu>();
+		popup._labelText = originalPopup._labelText;
+		popup._cancelAction = originalPopup._cancelAction;
+		popup._ok1Action = originalPopup._okAction;
+		popup._ok2Action = ok2Button.GetComponent<SubmitAction>();
+		popup._cancelButton = originalPopup._cancelButton;
+		popup._confirmButton1 = originalPopup._confirmButton;
+		popup._confirmButton2 = ok2Button.GetComponent<ButtonWithHotkeyImageElement>();
+		popup._rootCanvas = originalPopup._rootCanvas;
+		popup._menuActivationRoot = originalPopup._menuActivationRoot;
+		popup._startEnabled = originalPopup._startEnabled;
+		popup._selectOnActivate = originalPopup._selectOnActivate;
+		popup._selectableItemsRoot = originalPopup._selectableItemsRoot;
+		popup._subMenus = originalPopup._subMenus;
+		popup._menuOptions = originalPopup._menuOptions;
+		popup.SetUpPopup(
+			message,
+			InputLibrary.menuConfirm,
+			InputLibrary.confirm2,
+			InputLibrary.cancel,
+			new ScreenPrompt(confirm1Text),
+			new ScreenPrompt(confirm2Text),
+			new ScreenPrompt(cancelText),
+			true,
+			true);
+		return popup;
 	}
 
 	public void LoadGame(bool inEye)
@@ -156,7 +230,19 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		var text = QSBCore.DebugSettings.UseKcpTransport ? "Public IP Address" : "Product User ID";
 		ConnectPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, "Connect", "Cancel");
-		ConnectPopup.OnPopupConfirm += Connect;
+		ConnectPopup.CloseMenuOnOk(false);
+		ConnectPopup.OnPopupConfirm += () =>
+		{
+			// fixes dumb thing with using keyboard to open popup
+			if (OWMath.ApproxEquals(Time.time, _connectPopupOpenTime))
+			{
+				return;
+			}
+
+			ConnectPopup.EnableMenu(false);
+			Connect();
+		};
+		ConnectPopup.OnActivateMenu += () => _connectPopupOpenTime = Time.time;
 
 		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
 		OneButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
@@ -164,6 +250,10 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		TwoButtonInfoPopup = QSBCore.MenuApi.MakeTwoChoicePopup("", "", "");
 		TwoButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
 		TwoButtonInfoPopup.OnPopupCancel += () => OnCloseInfoPopup(false);
+
+		HostGameTypePopup = CreateThreeChoicePopup("Do you want to host an existing expedition, or host a new expedition?", "EXISTING SAVE", "NEW SAVE", "CANCEL");
+		HostGameTypePopup.OnPopupConfirm1 += () => Host(false);
+		HostGameTypePopup.OnPopupConfirm2 += () => Host(true);
 	}
 
 	private static void SetButtonActive(Button button, bool active)
@@ -219,7 +309,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		CreateCommonPopups();
 
 		HostButton = QSBCore.MenuApi.TitleScreen_MakeSimpleButton(HostString, _titleButtonIndex);
-		HostButton.onClick.AddListener(Host);
+		HostButton.onClick.AddListener(PreHost);
 
 		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(ConnectString, _titleButtonIndex + 1, ConnectPopup);
 
@@ -265,8 +355,26 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		LoadManager.LoadScene(OWScene.TitleScreen, LoadManager.FadeType.ToBlack, 2f);
 	}
 
-	private void Host()
+	private void PreHost()
 	{
+		var doesSaveExist = StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1;
+
+		if (!doesSaveExist)
+		{
+			Host(true);
+			return;
+		}
+
+		HostGameTypePopup.EnableMenu(true);
+	}
+
+	private void Host(bool newSave)
+	{
+		if (newSave)
+		{
+			PlayerData.ResetGame();
+		}
+
 		_intentionalDisconnect = false;
 
 		SetButtonActive(ConnectButton, false);

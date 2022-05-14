@@ -19,7 +19,7 @@ public class ConversationManager : WorldObjectManager
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
 	public static ConversationManager Instance { get; private set; }
-	public Dictionary<CharacterDialogueTree, GameObject> BoxMappings { get; } = new Dictionary<CharacterDialogueTree, GameObject>();
+	public Dictionary<CharacterDialogueTree, GameObject> BoxMappings { get; } = new();
 
 	private GameObject _boxPrefab;
 
@@ -40,29 +40,20 @@ public class ConversationManager : WorldObjectManager
 	}
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-		=> QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>();
-
-	public uint GetPlayerTalkingToTree(CharacterDialogueTree tree)
 	{
-		var treeIndex = QSBWorldSync.OldDialogueTrees.IndexOf(tree);
-		return QSBPlayerManager.PlayerList.All(x => x.CurrentCharacterDialogueTreeId != treeIndex)
-			? uint.MaxValue
-			: QSBPlayerManager.PlayerList.First(x => x.CurrentCharacterDialogueTreeId == treeIndex).PlayerId;
+		QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>();
+		QSBWorldSync.Init<QSBCharacterDialogueTree, CharacterDialogueTree>();
 	}
 
-	public void SendPlayerOption(string text) =>
-		new ConversationMessage(ConversationType.Player, (int)QSBPlayerManager.LocalPlayerId, text).Send();
+	public uint GetPlayerTalkingToTree(CharacterDialogueTree tree) => 
+		QSBPlayerManager.PlayerList.FirstOrDefault(x => x.CurrentCharacterDialogueTree?.AttachedObject == tree)
+			?.PlayerId ?? uint.MaxValue;
+
+	public void SendPlayerOption(string text)
+		=> new ConversationMessage(ConversationType.Player, (int)QSBPlayerManager.LocalPlayerId, text).Send();
 
 	public void SendCharacterDialogue(int id, string text)
-	{
-		if (id == -1)
-		{
-			DebugLog.ToConsole("Warning - Tried to send conv. event with char id -1.", MessageType.Warning);
-			return;
-		}
-
-		new ConversationMessage(ConversationType.Character, id, text).Send();
-	}
+		=> new ConversationMessage(ConversationType.Character, id, text).Send();
 
 	public void CloseBoxPlayer() =>
 		new ConversationMessage(ConversationType.ClosePlayer, (int)QSBPlayerManager.LocalPlayerId).Send();
@@ -70,16 +61,8 @@ public class ConversationManager : WorldObjectManager
 	public void CloseBoxCharacter(int id) =>
 		new ConversationMessage(ConversationType.CloseCharacter, id).Send();
 
-	public void SendConvState(int charId, bool state)
-	{
-		if (charId == -1)
-		{
-			DebugLog.ToConsole("Warning - Tried to send conv. start/end event with char id -1.", MessageType.Warning);
-			return;
-		}
-
-		new ConversationStartEndMessage(charId, state).Send();
-	}
+	public void SendConvState(QSBCharacterDialogueTree tree, bool state)
+		=> tree.SendMessage(new ConversationStartEndMessage(state));
 
 	public void DisplayPlayerConversationBox(uint playerId, string text)
 	{
@@ -103,14 +86,9 @@ public class ConversationManager : WorldObjectManager
 
 	public void DisplayCharacterConversationBox(int index, string text)
 	{
-		if (QSBWorldSync.OldDialogueTrees.ElementAtOrDefault(index) == null)
-		{
-			DebugLog.ToConsole($"Error - Tried to display character conversation box for id {index}! (Doesn't exist!)", MessageType.Error);
-			return;
-		}
-
 		// Remove old box if it exists
-		var oldDialogueTree = QSBWorldSync.OldDialogueTrees[index];
+		var oldDialogueTree = index.GetWorldObject<QSBCharacterDialogueTree>().AttachedObject;
+
 		if (BoxMappings.ContainsKey(oldDialogueTree))
 		{
 			Destroy(BoxMappings[oldDialogueTree]);

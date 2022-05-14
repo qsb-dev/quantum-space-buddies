@@ -56,7 +56,7 @@ public partial class PlayerInfo
 		IsInEyeShuttle = default;
 		EntangledObject = default;
 
-		CurrentCharacterDialogueTreeId = -1;
+		CurrentCharacterDialogueTree = default;
 
 		InDreamWorld = default;
 		AssignedSimulationLantern = default;

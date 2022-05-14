@@ -35,7 +35,7 @@ internal class ItemManager : WorldObjectManager
 
 		// other drop targets that don't already have world objects
 		var listToInitFrom = QSBWorldSync.GetUnityObjects<MonoBehaviour>()
-			.Where(x => x is IItemDropTarget and not (RaftDock or RaftController))
+			.Where(x => x is IItemDropTarget and not (RaftDock or RaftController or PrisonCellElevator))
 			.SortDeterministic();
 		QSBWorldSync.Init<QSBOtherDropTarget, MonoBehaviour>(listToInitFrom);
 	}

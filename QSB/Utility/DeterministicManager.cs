@@ -16,7 +16,7 @@ public static class DeterministicManager
 	private static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> _cache = new();
 
 	public static void Init() =>
-		LoadManager.OnStartSceneLoad += (_, _) =>
+		QSBSceneManager.OnPreSceneLoad += (_, _) =>
 		{
 			DebugLog.DebugWrite("cleared cache");
 			_cache.Clear();

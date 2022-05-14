@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.EchoesOfTheEye.DreamLantern.Messages;
-using QSB.ItemSync.WorldObjects.Items;
+using QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
@@ -13,73 +13,15 @@ internal class DreamLanternPatches : QSBPatch
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.Update))]
-	public static bool UpdateReplacement(DreamLanternItem __instance)
-	{
-		var isHoldingItem = Locator.GetToolModeSwapper().IsInToolMode(ToolMode.Item);
-
-		__instance._wasFocusing = __instance._focusing;
-		__instance._focusing = OWInput.IsPressed(InputLibrary.toolActionPrimary, InputMode.Character) && Time.time > __instance._forceUnfocusTime + 1f && isHoldingItem;
-
-		var concealActionPressed = OWInput.IsPressed(InputLibrary.toolActionSecondary, InputMode.Character) && isHoldingItem;
-		if (concealActionPressed && !__instance._lanternController.IsConcealed())
-		{
-			Locator.GetPlayerAudioController().OnArtifactConceal();
-			__instance._lanternController.SetConcealed(true);
-			new DreamLanternStateMessage(DreamLanternActionType.CONCEAL, true).Send();
-		}
-		else if (!concealActionPressed && __instance._lanternController.IsConcealed())
-		{
-			Locator.GetPlayerAudioController().OnArtifactUnconceal();
-			__instance._lanternController.SetConcealed(false);
-			new DreamLanternStateMessage(DreamLanternActionType.CONCEAL).Send();
-		}
-
-		if (__instance._focusing != __instance._wasFocusing)
-		{
-			if (__instance._focusing)
-			{
-				Locator.GetPlayerAudioController().OnArtifactFocus();
-			}
-			else
-			{
-				Locator.GetPlayerAudioController().OnArtifactUnfocus();
-			}
-		}
-
-		__instance.UpdateFocus();
-
-		return false;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.MoveTowardFocus))]
-	public static bool UpdateFocusReplacement(DreamLanternController __instance, float targetFocus, float rate)
-	{
-		var value = Mathf.MoveTowards(__instance._focus, targetFocus, rate * Time.deltaTime);
-
-		if (__instance._focus == value)
-		{
-			__instance.SetFocus(value);
-			return false;
-		}
-
-		__instance.SetFocus(value);
-		new DreamLanternStateMessage(DreamLanternActionType.FOCUS, floatValue: value).Send();
-
-		return false;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.SetLit))]
-	public static void SetLit(DreamLanternItem __instance, bool lit)
+	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.SetLit))]
+	public static void SetLit(DreamLanternController __instance, bool lit)
 	{
 		if (Remote)
 		{
 			return;
 		}
 
-		if (__instance._lanternController.IsLit() == lit)
+		if (__instance._lit == lit)
 		{
 			return;
 		}
@@ -89,6 +31,73 @@ internal class DreamLanternPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamLanternItem>().SendMessage(new DreamLanternLitMessage(lit));
+		__instance.GetWorldObject<QSBDreamLantern>().SendMessage(new SetLitMessage(lit));
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.SetConcealed))]
+	public static void SetConcealed(DreamLanternController __instance, bool concealed)
+	{
+		if (Remote)
+		{
+			return;
+		}
+
+		if (__instance._concealed == concealed)
+		{
+			return;
+		}
+
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBDreamLantern>().SendMessage(new SetConcealedMessage(concealed));
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.SetFocus))]
+	public static void SetFocus(DreamLanternController __instance, float focus)
+	{
+		if (Remote)
+		{
+			return;
+		}
+
+		focus = Mathf.Clamp01(focus);
+		if (OWMath.ApproxEquals(__instance._focus, focus))
+		{
+			return;
+		}
+
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBDreamLantern>().SendMessage(new SetFocusMessage(focus));
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.SetRange))]
+	public static void SetRange(DreamLanternController __instance, float minRange, float maxRange)
+	{
+		if (Remote)
+		{
+			return;
+		}
+
+		if (OWMath.ApproxEquals(__instance._minRange, minRange) && OWMath.ApproxEquals(__instance._maxRange, maxRange))
+		{
+			return;
+		}
+
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBDreamLantern>().SendMessage(new SetRangeMessage(minRange, maxRange));
 	}
 }

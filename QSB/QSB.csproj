@@ -70,6 +70,13 @@
     <None Include="manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+	  <None Include="storage.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	<None Include="Assets\*">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	 <None Remove="Assets\*.pdn" />
     <None Include="AssetBundles\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -86,7 +93,7 @@
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
     <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
-    <PackageReference Include="HarmonyX" Version="2.9.0" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.3.2" IncludeAssets="compile" />
+    <PackageReference Include="HarmonyX" Version="2.10.0" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.3.3" IncludeAssets="compile" />
   </ItemGroup>
 </Project>

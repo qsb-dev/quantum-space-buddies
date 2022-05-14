@@ -53,16 +53,9 @@ public static class QSBWorldSync
 
 		foreach (var manager in Managers)
 		{
-			if (manager.DlcOnly && !QSBCore.DLCInstalled)
+			if (ShouldIgnoreManager(manager))
 			{
 				continue;
-			}
-
-			switch (manager.WorldObjectScene)
-			{
-				case WorldObjectScene.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
-				case WorldObjectScene.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
-					continue;
 			}
 
 			var task = UniTask.Create(async () =>
@@ -150,13 +143,34 @@ public static class QSBWorldSync
 
 		foreach (var manager in Managers)
 		{
+			if (ShouldIgnoreManager(manager))
+			{
+				continue;
+			}
+
 			manager.Try("unbuilding world objects", manager.UnbuildWorldObjects);
 		}
 	}
 
+	private static bool ShouldIgnoreManager(WorldObjectManager manager)
+	{
+		if (manager.DlcOnly && !QSBCore.DLCInstalled)
+		{
+			return true;
+		}
+
+		switch (manager.WorldObjectScene)
+		{
+			case WorldObjectScene.SolarSystem when QSBSceneManager.CurrentScene != OWScene.SolarSystem:
+			case WorldObjectScene.Eye when QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse:
+				return true;
+		}
+
+		return false;
+	}
+
 	// =======================================================================================================
 
-	public static readonly List<CharacterDialogueTree> OldDialogueTrees = new();
 	private static readonly Dictionary<string, bool> DialogueConditions = new();
 	private static readonly Dictionary<string, bool> PersistentConditions = new();
 	private static readonly List<FactReveal> ShipLogFacts = new();
@@ -164,7 +178,20 @@ public static class QSBWorldSync
 	private static readonly List<IWorldObject> WorldObjects = new();
 	private static readonly Dictionary<MonoBehaviour, IWorldObject> UnityObjectsToWorldObjects = new();
 
-	static QSBWorldSync() =>
+	static QSBWorldSync()
+	{
+		QSBSceneManager.OnPreSceneLoad += (_, _) =>
+			RemoveWorldObjects();
+		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
+		{
+			if (QSBCore.IsInMultiplayer && loadScene.IsUniverseScene())
+			{
+				// So objects have time to be deleted, made, whatever
+				// I.E. wait until Start has been called
+				Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
+			}
+		};
+
 		RequestInitialStatesMessage.SendInitialState += to =>
 		{
 			DialogueConditions.ForEach(condition
@@ -173,13 +200,11 @@ public static class QSBWorldSync
 			ShipLogFacts.ForEach(fact
 				=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = to }.Send());
 		};
+	}
 
 	private static void GameInit()
 	{
-		DebugLog.DebugWrite($"GameInit QSBWorldSync", MessageType.Info);
-
-		OldDialogueTrees.Clear();
-		OldDialogueTrees.AddRange(GetUnityObjects<CharacterDialogueTree>().SortDeterministic());
+		DebugLog.DebugWrite("GameInit QSBWorldSync", MessageType.Info);
 
 		if (!QSBCore.IsHost)
 		{
@@ -195,9 +220,8 @@ public static class QSBWorldSync
 
 	private static void GameReset()
 	{
-		DebugLog.DebugWrite($"GameReset QSBWorldSync", MessageType.Info);
+		DebugLog.DebugWrite("GameReset QSBWorldSync", MessageType.Info);
 
-		OldDialogueTrees.Clear();
 		DialogueConditions.Clear();
 		PersistentConditions.Clear();
 		ShipLogFacts.Clear();
@@ -247,6 +271,14 @@ public static class QSBWorldSync
 
 	public static bool WorldObjectExistsFor<TWorldObject>(this MonoBehaviour unityObject)
 		=> unityObject != null && UnityObjectsToWorldObjects.ContainsKey(unityObject);
+
+	/// <summary>
+	/// not deterministic across platforms.
+	/// iterates thru all objects and throws error if there isn't exactly 1.
+	/// </summary>
+	public static TUnityObject GetUnityObject<TUnityObject>()
+		where TUnityObject : MonoBehaviour
+		=> GetUnityObjects<TUnityObject>().Single();
 
 	/// <summary>
 	/// not deterministic across platforms

@@ -1,7 +1,7 @@
 ﻿{
   "useKcpTransport": false,
   "dumpWorldObjects": false,
-  "playerIdInLogs": false,
+  "instanceIdInLogs": false,
   "hookDebugLogs": false,
   "avoidTimeSync": false,
   "debugMode": false,
@@ -10,5 +10,6 @@
   "drawLabels": false,
   "drawQuantumVisibilityObjects": false,
   "skipTitleScreen": false,
-  "greySkybox": false
+  "greySkybox": false,
+  "drawGhostAI": false
 }

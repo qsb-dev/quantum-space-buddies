@@ -18,6 +18,7 @@ internal class GameStateMessage : QSBMessage
 	private int LoopCount;
 	private bool[] KnownFrequencies;
 	private Dictionary<int, bool> KnownSignals;
+	private bool ReducedFrights;
 
 	public GameStateMessage(uint toId)
 	{
@@ -29,8 +30,8 @@ internal class GameStateMessage : QSBMessage
 		LoopCount = gameSave.loopCount;
 		KnownFrequencies = gameSave.knownFrequencies;
 		KnownSignals = gameSave.knownSignals;
+		ReducedFrights = PlayerData.GetReducedFrights();
 	}
-
 
 	public override void Serialize(NetworkWriter writer)
 	{
@@ -48,6 +49,8 @@ internal class GameStateMessage : QSBMessage
 			writer.Write(name);
 			writer.Write(discovered);
 		}
+
+		writer.Write(ReducedFrights);
 	}
 
 	public override void Deserialize(NetworkReader reader)
@@ -68,6 +71,8 @@ internal class GameStateMessage : QSBMessage
 			var value = reader.Read<bool>();
 			KnownSignals.Add(key, value);
 		}
+
+		ReducedFrights = reader.Read<bool>();
 	}
 
 	public override void OnReceiveRemote()
@@ -88,6 +93,7 @@ internal class GameStateMessage : QSBMessage
 		gameSave.secondsRemainingOnWarp = SecondsRemainingOnWarp;
 
 		PlayerData.SetPersistentCondition("LAUNCH_CODES_GIVEN", LaunchCodesGiven);
+		PlayerData._settingsSave.reducedFrights = ReducedFrights;
 
 		PlayerData.SaveCurrentGame();
 

@@ -39,8 +39,7 @@ internal class MaskManager : MonoBehaviour, IAddComponentOnStart
 	{
 		if (_flickering && Time.time > _flickerOutTime)
 		{
-			// TODO : Optimize this out.
-			var controller = QSBWorldSync.GetUnityObjects<EyeShuttleController>().First();
+			var controller = QSBWorldSync.GetUnityObject<EyeShuttleController>();
 			controller._shuttleObject.SetActive(false);
 			_flickering = false;
 			_flickerOutTime = 0f;

@@ -9,7 +9,7 @@ internal class GalaxyMapManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static GalaxyMapManager Instance { get; private set; }
 
-	public QSBCharacterDialogueTree Tree { get; private set; }
+	public CustomDialogueTree Tree { get; private set; }
 
 	private void Awake()
 	{
@@ -24,11 +24,11 @@ internal class GalaxyMapManager : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		var mapController = QSBWorldSync.GetUnityObjects<GalaxyMapController>().First();
+		var mapController = QSBWorldSync.GetUnityObject<GalaxyMapController>();
 		var map = mapController._interactVolume.gameObject;
 
 		map.SetActive(false);
-		Tree = map.AddComponent<QSBCharacterDialogueTree>();
+		Tree = map.AddComponent<CustomDialogueTree>();
 		Tree._xmlCharacterDialogueAsset = QSBCore.TextAssetsBundle.LoadAsset<TextAsset>("Assets/TextAssets/GalaxyMap.txt");
 		Tree._attentionPoint = map.transform;
 		Tree._attentionPointOffset = new Vector3(0, 1, 0);

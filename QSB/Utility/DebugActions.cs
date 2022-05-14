@@ -73,7 +73,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 			{
 				var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
 
-				const DreamArrivalPoint.Location location = DreamArrivalPoint.Location.Zone3;
+				var location = Keyboard.current[Key.LeftShift].isPressed ? DreamArrivalPoint.Location.Zone4 : DreamArrivalPoint.Location.Zone3;
 				var arrivalPoint = Locator.GetDreamArrivalPoint(location);
 				var dreamCampfire = Locator.GetDreamCampfire(location);
 				if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
@@ -99,7 +99,15 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad3].wasPressedThisFrame)
 		{
-			Destroy(Locator.GetProbe().gameObject);
+			var sarcoController = QSBWorldSync.GetUnityObject<SarcophagusController>();
+
+			sarcoController.firstSealProjector.SetLit(false);
+			sarcoController.secondSealProjector.SetLit(false);
+			sarcoController.thirdSealProjector.SetLit(false);
+
+			sarcoController._attemptOpenAfterDelay = true;
+			sarcoController._openAttemptTime = Time.time + 0.5f;
+			sarcoController.enabled = true;
 		}
 
 		if (Keyboard.current[Key.Numpad4].wasPressedThisFrame)

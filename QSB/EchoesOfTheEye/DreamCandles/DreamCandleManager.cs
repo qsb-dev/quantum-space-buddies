@@ -7,7 +7,7 @@ namespace QSB.EchoesOfTheEye.DreamCandles;
 
 public class DreamCandleManager : WorldObjectManager
 {
-	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
+	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 	public override bool DlcOnly => true;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) =>

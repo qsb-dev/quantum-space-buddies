@@ -54,7 +54,6 @@ internal class QSBShipHull : WorldObject<ShipHull>
 			return;
 		}
 
-		DebugLog.DebugWrite($"[HULL] {AttachedObject} Change integrity to {newIntegrity}.");
 		AttachedObject._integrity = newIntegrity;
 		var damageEffect = AttachedObject._damageEffect;
 		damageEffect.SetEffectBlend(1f - newIntegrity);

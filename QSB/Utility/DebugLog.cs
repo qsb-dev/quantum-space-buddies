@@ -1,5 +1,4 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using System.Diagnostics;
 using System.Linq;
 
@@ -7,11 +6,14 @@ namespace QSB.Utility;
 
 public static class DebugLog
 {
+	private static readonly int _processInstanceId = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName)
+		.IndexOf(x => x.Id == Process.GetCurrentProcess().Id);
+
 	public static void ToConsole(string message, MessageType type = MessageType.Message)
 	{
-		if (QSBCore.DebugSettings.PlayerIdInLogs && NetworkClient.localPlayer)
+		if (QSBCore.DebugSettings.InstanceIdInLogs)
 		{
-			message = $"[{NetworkClient.localPlayer.netId}] " + message;
+			message = $"[{_processInstanceId}] " + message;
 		}
 
 		QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));

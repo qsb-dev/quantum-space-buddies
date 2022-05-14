@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using OWML.Common;
-using QSB.Animation.NPC.Messages;
 using QSB.Animation.NPC.WorldObjects;
 using QSB.ConversationSync;
 using QSB.Messaging;
@@ -115,36 +114,6 @@ public class CharacterAnimationPatches : QSBPatch
 		__instance.FaceLocalRotation(lhs * __instance.transform.localRotation);
 
 		return false;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.StartConversation))]
-	public static bool StartConversation(CharacterDialogueTree __instance)
-	{
-		var allNpcAnimControllers = QSBWorldSync.GetWorldObjects<INpcAnimController>();
-		var ownerOfThis = allNpcAnimControllers.FirstOrDefault(x => x.GetDialogueTree() == __instance);
-		if (ownerOfThis == default)
-		{
-			return true;
-		}
-
-		ownerOfThis.SendMessage(new NpcAnimationMessage(true));
-		return true;
-	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.EndConversation))]
-	public static bool EndConversation(CharacterDialogueTree __instance)
-	{
-		var allNpcAnimControllers = QSBWorldSync.GetWorldObjects<INpcAnimController>();
-		var ownerOfThis = allNpcAnimControllers.FirstOrDefault(x => x.GetDialogueTree() == __instance);
-		if (ownerOfThis == default)
-		{
-			return true;
-		}
-
-		ownerOfThis.SendMessage(new NpcAnimationMessage(false));
-		return true;
 	}
 
 	[HarmonyPrefix]
