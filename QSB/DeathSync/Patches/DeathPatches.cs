@@ -238,26 +238,27 @@ public class DeathPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishShip))]
-	public static bool DestructionVolume_VanishShip(DestructionVolume __instance)
+	public static bool DestructionVolume_VanishShip(DestructionVolume __instance, OWRigidbody shipBody, RelativeLocationData entryLocation)
 	{
-		if (RespawnOnDeath.Instance == null)
+		var cockpitIntact = !shipBody.GetComponent<ShipDamageController>().IsCockpitDetached();
+		if (PlayerState.IsInsideShip() || PlayerState.UsingShipComputer() || (cockpitIntact && PlayerState.AtFlightConsole()))
 		{
-			return true;
-		}
+			var autopilot = shipBody.GetComponent<Autopilot>();
+			if (autopilot != null && autopilot.IsFlyingToDestination())
+			{
+				var astroObject = __instance.GetComponentInParent<AstroObject>();
+				if (astroObject != null && astroObject.GetAstroObjectType() == AstroObject.Type.Star)
+				{
+					PlayerData.SetPersistentCondition("AUTOPILOT_INTO_SUN", true);
+					MonoBehaviour.print("AUTOPILOT_INTO_SUN");
+				}
+			}
 
-		// apparently this is to fix a weird bug when flying into the sun. idk this is 2-year-old code.
-		if (!ShipTransformSync.LocalInstance.hasAuthority)
-		{
-			return false;
-		}
-
-		if (PlayerState.IsInsideShip() || PlayerState.UsingShipComputer() || PlayerState.AtFlightConsole())
-		{
 			Locator.GetDeathManager().KillPlayer(__instance._deathType);
 		}
 
-		// don't actually delete the ship to allow respawns or something
-
-		return true;
+		__instance.Vanish(shipBody, entryLocation);
+		GlobalMessenger.FireEvent("ShipDestroyed");
+		return false;
 	}
 }
