@@ -328,4 +328,21 @@ internal class ShipPatches : QSBPatch
 
 		return false;
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipReactorComponent), nameof(ShipReactorComponent.OnComponentDamaged))]
+	public static bool ByeByeReactor(ShipReactorComponent __instance)
+	{
+		if (!QSBCore.IsHost)
+		{
+			return false;
+		}
+
+		__instance._criticalCountdown = UnityEngine.Random.Range(__instance._minCountdown, __instance._maxCountdown);
+		__instance._criticalTimer = __instance._criticalCountdown;
+		__instance.enabled = true;
+		new ReactorCountdownMessage(__instance._criticalCountdown).Send();
+
+		return false;
+	}
 }
