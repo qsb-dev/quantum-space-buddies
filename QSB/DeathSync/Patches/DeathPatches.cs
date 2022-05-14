@@ -15,30 +15,6 @@ public class DeathPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-	// TODO : Remove with future functionality.
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ShipEjectionSystem), nameof(ShipEjectionSystem.OnPressInteract))]
-	public static bool DisableEjection()
-		=> false;
-
-	// TODO : Remove with future functionality.
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ShipDetachableLeg), nameof(ShipDetachableLeg.Detach))]
-	public static bool ShipDetachableLeg_Detach(out OWRigidbody __result)
-	{
-		__result = null;
-		return false;
-	}
-
-	// TODO : Remove with future functionality.
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ShipDetachableModule), nameof(ShipDetachableModule.Detach))]
-	public static bool ShipDetachableModule_Detach(out OWRigidbody __result)
-	{
-		__result = null;
-		return false;
-	}
-
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(PlayerResources), nameof(PlayerResources.OnImpact))]
 	public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact) =>
@@ -259,13 +235,6 @@ public class DeathPatches : QSBPatch
 			return false;
 		}
 	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Explode))]
-	public static bool ShipDamageController_Explode()
-		// prevent ship from exploding
-		// todo remove this when sync ship explosions
-		=> false;
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishShip))]

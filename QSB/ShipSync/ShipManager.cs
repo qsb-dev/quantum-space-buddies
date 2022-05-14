@@ -128,6 +128,9 @@ internal class ShipManager : WorldObjectManager
 			ShipCockpitUI._probeLauncherScreenLight,
 			ShipCockpitUI._sigScopeScreenLight
 		});
+
+		QSBWorldSync.Init<QSBShipDetachableModule, ShipDetachableModule>();
+		QSBWorldSync.Init<QSBShipDetachableLeg, ShipDetachableLeg>();
 	}
 
 	public override void UnbuildWorldObjects() => Destroy(_shipCustomAttach);

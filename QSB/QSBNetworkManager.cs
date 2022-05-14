@@ -49,6 +49,8 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject DoorPrefab { get; private set; }
 	public GameObject ElevatorPrefab { get; private set; }
 	public GameObject AirlockPrefab { get; private set; }
+	public GameObject ShipModulePrefab { get; private set; }
+	public GameObject ShipLegPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
 	private GameObject _probePrefab;
@@ -129,6 +131,12 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		AirlockPrefab = MakeNewNetworkObject(11, "NetworkGhostAirlock", typeof(AirlockVariableSyncer));
 		spawnPrefabs.Add(AirlockPrefab);
+
+		ShipModulePrefab = MakeNewNetworkObject(12, "NetworkShipModule", typeof(ShipModuleTransformSync));
+		spawnPrefabs.Add(ShipModulePrefab);
+
+		ShipLegPrefab = MakeNewNetworkObject(13, "NetworkShipLeg", typeof(ShipLegTransformSync));
+		spawnPrefabs.Add(ShipLegPrefab);
 
 		ConfigureNetworkManager();
 	}
