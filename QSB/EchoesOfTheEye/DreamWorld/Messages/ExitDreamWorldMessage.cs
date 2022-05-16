@@ -1,6 +1,8 @@
-﻿using QSB.Messaging;
+﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 
@@ -34,5 +36,13 @@ internal class ExitDreamWorldMessage : QSBMessage
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.InDreamWorld = false;
 		player.AssignedSimulationLantern = null;
+
+		if (QSBCore.IsHost)
+		{
+			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
+			{
+				ghost.OnExitDreamWorld();
+			}
+		}
 	}
 }

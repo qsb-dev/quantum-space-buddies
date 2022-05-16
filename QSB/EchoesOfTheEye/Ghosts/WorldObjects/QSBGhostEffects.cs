@@ -1,5 +1,6 @@
 ﻿using QSB.EchoesOfTheEye.Ghosts.Messages;
 using QSB.Messaging;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -89,7 +90,8 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		var target = _data.isIlluminated ? 1f : 0f;
 		var num2 = _data.isIlluminated ? 8f : 0.8f;
 		AttachedObject._eyeGlow = Mathf.MoveTowards(AttachedObject._eyeGlow, target, Time.deltaTime * num2);
-		var num3 = (Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().GetLight().GetFlickerScale() - 1f + 0.07f) / 0.14f;
+		var closestPlayer = QSBPlayerManager.GetClosestPlayerToWorldPoint(AttachedObject.transform.position, true);
+		var num3 = (closestPlayer.AssignedSimulationLantern.AttachedObject.GetLanternController().GetLight().GetFlickerScale() - 1f + 0.07f) / 0.14f;
 		num3 = Mathf.Lerp(0.7f, 1f, num3);
 		AttachedObject.SetEyeGlow(AttachedObject._eyeGlow * num3);
 

@@ -575,9 +575,16 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public void OnExitDreamWorld()
 	{
-		AttachedObject.enabled = false;
+		var playersInDreamworld = QSBPlayerManager.PlayerList.Where(x => x.InDreamWorld);
+
+		if (playersInDreamworld.Count() == 0 || (playersInDreamworld.Count() == 1 && playersInDreamworld.First() == QSBPlayerManager.LocalPlayer))
+		{
+			DebugLog.DebugWrite($"No players in dream world");
+			AttachedObject.enabled = false;
+			ChangeAction(null);
+		}
+
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
-		//ChangeAction(null);
 		_data.OnPlayerExitDreamWorld();
 	}
 }

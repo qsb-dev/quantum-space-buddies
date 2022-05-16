@@ -1,4 +1,5 @@
-﻿using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
@@ -45,5 +46,13 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 		player.SetVisible(false);
 		player.SetVisible(true, DreamWorldSpawnAnimator.DREAMWORLD_SPAWN_TIME);
 		player.DreamWorldSpawnAnimator.StartSpawnEffect();
+
+		if (QSBCore.IsHost)
+		{
+			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
+			{
+				ghost.OnEnterDreamWorld();
+			}
+		}
 	}
 }
