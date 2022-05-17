@@ -1,3 +1,4 @@
+using QSB.Animation.Player.Thrusters;
 using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using UnityEngine;
@@ -25,6 +26,16 @@ public class ShipTransformSync : SectoredRigidbodySync
 	{
 		SectorDetector.Init(Locator.GetShipDetector().GetComponent<SectorDetector>());
 		return Locator.GetShipBody();
+	}
+
+	protected override void Init()
+	{
+		base.Init();
+
+		ShipManager.Instance.ShipThrusterSync = gameObject.GetAddComponent<ThrusterSync>();
+		ShipManager.Instance.ShipThrusterSync.Init(Locator.GetShipBody().GetComponent<ShipThrusterModel>());
+
+		ShipThrusterManager.CreateShipVFX();
 	}
 
 	/// Dont do base... this is a replacement!

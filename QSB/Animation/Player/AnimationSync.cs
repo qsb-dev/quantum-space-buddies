@@ -95,7 +95,7 @@ public class AnimationSync : PlayerSyncObject
 
 	private void InitAccelerationSync()
 	{
-		Player.JetpackAcceleration = GetComponent<JetpackAccelerationSync>();
+		Player.JetpackAcceleration = GetComponent<ThrusterSync>();
 		var thrusterModel = hasAuthority ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
 		Player.JetpackAcceleration.Init(thrusterModel);
 	}

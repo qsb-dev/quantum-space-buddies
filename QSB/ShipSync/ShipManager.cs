@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
 using OWML.Common;
+using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.ShipSync.Messages;
@@ -27,6 +28,7 @@ internal class ShipManager : WorldObjectManager
 	public ShipCockpitController CockpitController;
 	public ShipElectricalComponent ShipElectricalComponent;
 	public ShipCockpitUI ShipCockpitUI;
+	public ThrusterSync ShipThrusterSync;
 	private GameObject _shipCustomAttach;
 	public uint CurrentFlyer
 	{
