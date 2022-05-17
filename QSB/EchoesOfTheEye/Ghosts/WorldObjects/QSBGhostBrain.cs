@@ -179,10 +179,26 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		AttachedObject._controller = AttachedObject.GetComponent<GhostController>();
 		AttachedObject._sensors = AttachedObject.GetComponent<GhostSensors>();
 		_data = new();
+
+		AttachedObject._controller.OnArriveAtPosition -= AttachedObject.OnArriveAtPosition;
+		AttachedObject._controller.OnArriveAtPosition += OnArriveAtPosition;
+
+		AttachedObject._controller.OnTraversePathNode -= AttachedObject.OnTraversePathNode;
+		AttachedObject._controller.OnTraversePathNode += OnTraversePathNode;
+
+		AttachedObject._controller.OnFaceNode -= AttachedObject.OnFaceNode;
+		AttachedObject._controller.OnFaceNode += OnFaceNode;
+
+		AttachedObject._controller.OnFinishFaceNodeList -= AttachedObject.OnFinishFaceNodeList;
+		AttachedObject._controller.OnFinishFaceNodeList += OnFinishFaceNodeList;
+
 		if (AttachedObject._data != null)
 		{
 			_data.threatAwareness = AttachedObject._data.threatAwareness;
 		}
+
+		GlobalMessenger.AddListener("EnterDreamWorld", new Callback(OnEnterDreamWorld));
+		GlobalMessenger.AddListener("ExitDreamWorld", new Callback(OnExitDreamWorld));
 	}
 
 	public void Start()
@@ -212,13 +228,13 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	public void OnDestroy()
 	{
 		AttachedObject._sensors.RemoveEventListeners();
-		AttachedObject._controller.OnArriveAtPosition -= AttachedObject.OnArriveAtPosition;
-		AttachedObject._controller.OnTraversePathNode -= AttachedObject.OnTraversePathNode;
-		AttachedObject._controller.OnFaceNode -= AttachedObject.OnFaceNode;
-		AttachedObject._controller.OnFinishFaceNodeList -= AttachedObject.OnFinishFaceNodeList;
-		AttachedObject._effects.OnCallForHelp -= AttachedObject.OnCallForHelp;
-		GlobalMessenger.RemoveListener("EnterDreamWorld", new Callback(AttachedObject.OnEnterDreamWorld));
-		GlobalMessenger.RemoveListener("ExitDreamWorld", new Callback(AttachedObject.OnExitDreamWorld));
+		AttachedObject._controller.OnArriveAtPosition -= OnArriveAtPosition;
+		AttachedObject._controller.OnTraversePathNode -= OnTraversePathNode;
+		AttachedObject._controller.OnFaceNode -= OnFaceNode;
+		AttachedObject._controller.OnFinishFaceNodeList -= OnFinishFaceNodeList;
+		AttachedObject._effects.OnCallForHelp -= OnCallForHelp;
+		GlobalMessenger.RemoveListener("EnterDreamWorld", new Callback(OnEnterDreamWorld));
+		GlobalMessenger.RemoveListener("ExitDreamWorld", new Callback(OnExitDreamWorld));
 	}
 
 	public void TabulaRasa()
@@ -575,9 +591,16 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public void OnExitDreamWorld()
 	{
-		AttachedObject.enabled = false;
+		var playersInDreamworld = QSBPlayerManager.PlayerList.Where(x => x.InDreamWorld);
+
+		if (playersInDreamworld.Count() == 0 || (playersInDreamworld.Count() == 1 && playersInDreamworld.First() == QSBPlayerManager.LocalPlayer))
+		{
+			DebugLog.DebugWrite($"No players in dream world");
+			AttachedObject.enabled = false;
+			ChangeAction(null);
+		}
+
 		AttachedObject._controller.GetDreamLanternController().enabled = false;
-		//ChangeAction(null);
 		_data.OnPlayerExitDreamWorld();
 	}
 }
