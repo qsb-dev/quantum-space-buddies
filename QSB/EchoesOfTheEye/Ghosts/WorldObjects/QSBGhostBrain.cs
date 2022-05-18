@@ -408,6 +408,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 			_data.currentAction = GhostAction.Name.None;
 		}
 
+		// BUG: IsExitingDream happens for one frame, but still, doesn't this not evaluate actions if host is leaving dream world?
 		if (_data.isAlive && !Locator.GetDreamWorldController().IsExitingDream())
 		{
 			AttachedObject.EvaluateActions();
@@ -593,6 +594,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 	{
 		var playersInDreamworld = QSBPlayerManager.PlayerList.Where(x => x.InDreamWorld);
 
+		// BUG: doesn't this disable the ghost if the host is the only player left?
 		if (playersInDreamworld.Count() == 0 || (playersInDreamworld.Count() == 1 && playersInDreamworld.First() == QSBPlayerManager.LocalPlayer))
 		{
 			DebugLog.DebugWrite($"No players in dream world");

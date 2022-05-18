@@ -94,6 +94,7 @@ internal class QSBPrisonerBrain : WorldObject<PrisonerBrain>, IGhostObject
 
 		if (Controller.AttachedObject.IsMoving())
 		{
+			// BUG: does this make it not stop for remote players?
 			bool movementPaused = AttachedObject._blockMovementVolume.IsTrackingObject(Locator.GetPlayerDetector()) || !AttachedObject._allowMovementVolume.IsTrackingObject(Locator.GetPlayerDetector());
 			Controller.AttachedObject.SetMovementPaused(movementPaused);
 		}
