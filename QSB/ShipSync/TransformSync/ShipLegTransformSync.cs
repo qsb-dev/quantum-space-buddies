@@ -21,7 +21,6 @@ internal class ShipLegTransformSync : SectoredRigidbodySync, ILinkedNetworkBehav
 			&& base.CheckReady();
 
 	protected override bool UseInterpolation => true;
-	protected override float DistanceChangeThreshold => 1f;
 
 	private QSBShipDetachableLeg _qsbModule;
 	public void SetWorldObject(IWorldObject worldObject) => _qsbModule = (QSBShipDetachableLeg)worldObject;
