@@ -13,12 +13,12 @@ internal class ShipModuleTransformSync : SectoredRigidbodySync, ILinkedNetworkBe
 	/// </summary>
 	protected override bool CheckValid()
 		=> AttachedTransform
-		&& base.CheckValid();
+			&& base.CheckValid();
 
 	protected override bool CheckReady()
 		=> _qsbModule != null
-		&& _qsbModule.AttachedObject.isDetached
-		&& base.CheckReady();
+			&& _qsbModule.AttachedObject.isDetached
+			&& base.CheckReady();
 
 	protected override bool UseInterpolation => true;
 	protected override float DistanceChangeThreshold => 1f;
@@ -31,15 +31,5 @@ internal class ShipModuleTransformSync : SectoredRigidbodySync, ILinkedNetworkBe
 		var owRigidbody = _qsbModule.AttachedObject.GetComponent<OWRigidbody>();
 		SectorDetector.Init(owRigidbody.transform.Find("DetectorVolume").GetComponent<SectorDetector>());
 		return owRigidbody;
-	}
-
-	protected override void ApplyToAttached()
-	{
-		if (!_qsbModule.AttachedObject.isDetached)
-		{
-			return;
-		}
-
-		base.ApplyToAttached();
 	}
 }

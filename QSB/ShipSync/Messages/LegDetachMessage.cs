@@ -4,7 +4,7 @@ using QSB.ShipSync.WorldObjects;
 
 namespace QSB.ShipSync.Messages;
 
-internal class ModuleDetachMessage : QSBWorldObjectMessage<QSBShipDetachableModule>
+internal class LegDetachMessage : QSBWorldObjectMessage<QSBShipDetachableLeg>
 {
 	public override void OnReceiveRemote() =>
 		QSBPatch.RemoteCall(WorldObject.AttachedObject.Detach);

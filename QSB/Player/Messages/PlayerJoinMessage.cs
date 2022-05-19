@@ -29,7 +29,6 @@ public class PlayerJoinMessage : QSBMessage
 
 		FirstIncompatibleMod = "";
 
-#if RELEASE
 		foreach (var mod in allEnabledMods)
 		{
 			if (QSBCore.IncompatibleMods.Contains(mod.ModHelper.Manifest.UniqueName))
@@ -37,7 +36,6 @@ public class PlayerJoinMessage : QSBMessage
 				FirstIncompatibleMod = mod.ModHelper.Manifest.UniqueName;
 			}
 		}
-#endif
 
 		AddonHashes = QSBCore.Addons.Keys
 			.Select(x => x.GetStableHashCode())
