@@ -20,11 +20,13 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
+using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Syncs.Occasional;
 using QSB.TimeSync;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
+using QSB.Utility.VariableSync;
 using QSB.WorldSync;
 using System;
 using System.Linq;
@@ -103,6 +105,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", 1.ToGuid().ToString("N"));
 
 		ShipPrefab = MakeNewNetworkObject(2, "NetworkShip", typeof(ShipTransformSync));
+		var shipVector3Sync = ShipPrefab.AddComponent<Vector3VariableSyncer>();
+		var shipThrustSync = ShipPrefab.AddComponent<ShipThrusterVariableSyncer>();
+		shipThrustSync.AccelerationSyncer = shipVector3Sync;
 		spawnPrefabs.Add(ShipPrefab);
 
 		_probePrefab = MakeNewNetworkObject(3, "NetworkProbe", typeof(PlayerProbeSync));

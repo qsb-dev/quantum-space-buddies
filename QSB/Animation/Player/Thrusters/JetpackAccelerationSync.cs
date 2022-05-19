@@ -3,7 +3,7 @@ using QSB.Utility.VariableSync;
 
 namespace QSB.Animation.Player.Thrusters;
 
-public class ThrusterSync : NetworkBehaviour
+public class JetpackAccelerationSync : NetworkBehaviour
 {
 	public Vector3VariableSyncer AccelerationVariableSyncer;
 

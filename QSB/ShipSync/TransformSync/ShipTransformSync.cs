@@ -9,6 +9,8 @@ public class ShipTransformSync : SectoredRigidbodySync
 {
 	public static ShipTransformSync LocalInstance { get; private set; }
 
+	public ShipThrusterVariableSyncer ThrusterVariableSyncer { get; private set; }
+
 	private float _lastSetPositionTime;
 	private const float ForcePositionAfterTime = 1;
 
@@ -32,8 +34,8 @@ public class ShipTransformSync : SectoredRigidbodySync
 	{
 		base.Init();
 
-		ShipManager.Instance.ShipThrusterSync = gameObject.GetAddComponent<ThrusterSync>();
-		ShipManager.Instance.ShipThrusterSync.Init(Locator.GetShipBody().GetComponent<ShipThrusterModel>());
+		ThrusterVariableSyncer = this.GetRequiredComponent<ShipThrusterVariableSyncer>();
+		ThrusterVariableSyncer.Init();
 
 		ShipThrusterManager.CreateShipVFX();
 	}

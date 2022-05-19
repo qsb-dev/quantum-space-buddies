@@ -198,7 +198,7 @@ public abstract class SyncBase : QSBNetworkTransform
 	/// <summary>
 	/// call the base method FIRST
 	/// </summary>
-	protected override bool HasChanged()
+	public override bool HasChanged()
 	{
 		GetFromAttached();
 		if (UseInterpolation)

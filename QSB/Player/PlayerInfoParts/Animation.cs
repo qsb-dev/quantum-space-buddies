@@ -8,7 +8,7 @@ public partial class PlayerInfo
 {
 	public bool Visible => IsLocalPlayer || _ditheringAnimator == null || _ditheringAnimator.FullyVisible;
 	public AnimationSync AnimationSync { get; }
-	public ThrusterSync JetpackAcceleration { get; set; }
+	public JetpackAccelerationSync JetpackAcceleration { get; set; }
 	internal QSBDitheringAnimator _ditheringAnimator;
 	public DreamWorldSpawnAnimator DreamWorldSpawnAnimator { get; set; }
 }

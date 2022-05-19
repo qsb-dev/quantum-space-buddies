@@ -1,18 +1,25 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
 using QSB.Player;
+using QSB.ShipSync.TransformSync;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches;
 
-internal class FlameWashPatches : QSBPatch
+[HarmonyPatch(typeof(ThrusterFlameController))]
+internal class ShipFlamePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ThrusterFlameController), nameof(ThrusterFlameController.GetThrustFraction))]
-	public static bool FlameThrustFraction(ThrusterFlameController __instance, ref float __result)
+	[HarmonyPatch(nameof(ThrusterFlameController.GetThrustFraction))]
+	public static bool GetThrustFraction(ThrusterFlameController __instance, ref float __result)
 	{
+		if (!ShipThrusterManager.ShipFlameControllers.Contains(__instance))
+		{
+			return true;
+		}
+
 		if (!__instance._thrusterModel.IsThrusterBankEnabled(OWUtilities.GetShipThrusterBank(__instance._thruster)))
 		{
 			__result = 0f;
@@ -25,8 +32,7 @@ internal class FlameWashPatches : QSBPatch
 		}
 		else
 		{
-			__instance.OnStartTranslationalThrust();
-			__result = Vector3.Dot(ShipManager.Instance.ShipThrusterSync.AccelerationVariableSyncer.Value, __instance._thrusterFilter);
+			__result = Vector3.Dot(ShipTransformSync.LocalInstance.ThrusterVariableSyncer.AccelerationSyncer.Value, __instance._thrusterFilter);
 		}
 		
 		return false;

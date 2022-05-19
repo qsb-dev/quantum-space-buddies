@@ -28,7 +28,6 @@ internal class ShipManager : WorldObjectManager
 	public ShipCockpitController CockpitController;
 	public ShipElectricalComponent ShipElectricalComponent;
 	public ShipCockpitUI ShipCockpitUI;
-	public ThrusterSync ShipThrusterSync;
 	private GameObject _shipCustomAttach;
 	public uint CurrentFlyer
 	{
