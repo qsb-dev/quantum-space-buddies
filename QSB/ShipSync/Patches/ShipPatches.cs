@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Player;
 using QSB.ShipSync.Messages;
 using QSB.ShipSync.Messages.Component;
 using QSB.ShipSync.Messages.Hull;
@@ -9,7 +8,6 @@ using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using UnityEngine;
 
 namespace QSB.ShipSync.Patches;
@@ -257,44 +255,39 @@ internal class ShipPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ShipCockpitController), nameof(ShipCockpitController.EnterLandingView))]
-	public static bool EnterLandingView()
-	{
+	public static void EnterLandingView() =>
 		new LandingCameraMessage(true).Send();
-		return true;
-	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ShipCockpitController), nameof(ShipCockpitController.ExitLandingView))]
-	public static bool ExitLandingView()
-	{
+	public static void ExitLandingView() =>
 		new LandingCameraMessage(false).Send();
-		return true;
-	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ShipLight), nameof(ShipLight.SetOn))]
-	public static bool SetOn(ShipLight __instance, bool on)
+	public static void SetOn(ShipLight __instance, bool on)
 	{
-		if (!QSBWorldSync.WorldObjectExistsFor<QSBShipLight>(__instance))
+		if (Remote)
 		{
-			return true;
+			return;
 		}
 
-		if (QSBPlayerManager.LocalPlayerId != ShipManager.Instance.CurrentFlyer)
+		if (__instance._on == on)
 		{
-			return false;
+			return;
 		}
 
-		var worldObject = __instance.GetWorldObject<QSBShipLight>();
-
-		if (__instance.IsOn() != on)
+		if (!QSBWorldSync.AllObjectsReady)
 		{
-			worldObject.SendMessage(new ShipLightMessage(on));
-
-			worldObject.SetOn(on);
+			return;
 		}
 
-		return false;
+		if (!__instance.HasWorldObject())
+		{
+			return;
+		}
+
+		__instance.GetWorldObject<QSBShipLight>().SendMessage(new ShipLightMessage(on));
 	}
 
 	[HarmonyPrefix]
