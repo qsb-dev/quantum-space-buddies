@@ -32,6 +32,8 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 				{
 					item.OnStopTranslationalThrust();
 				}
+
+				ShipThrusterManager.ShipWashController.OnStopTranslationalThrust();
 			}
 			else
 			{
@@ -39,6 +41,8 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 				{
 					item.OnStartTranslationalThrust();
 				}
+
+				ShipThrusterManager.ShipWashController.OnStartTranslationalThrust();
 			}
 		}
 	}
