@@ -412,11 +412,6 @@ internal class GhostBrainPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostBrain.OnEnterDreamWorld))]
 	public static bool OnEnterDreamWorld(GhostBrain __instance)
 	{
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return true;
-		}
-
 		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
@@ -425,11 +420,6 @@ internal class GhostBrainPatches : QSBPatch
 	[HarmonyPatch(nameof(GhostBrain.OnExitDreamWorld))]
 	public static bool OnExitDreamWorld(GhostBrain __instance)
 	{
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return true;
-		}
-
 		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
