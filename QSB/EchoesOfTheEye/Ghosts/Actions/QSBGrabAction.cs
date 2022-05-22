@@ -84,6 +84,13 @@ internal class QSBGrabAction : QSBGhostAction
 		{
 			GrabPlayer(_data.interestedPlayer);
 		}
+		else
+		{
+			DebugLog.DebugWrite($"can't grab player!" +
+				$"\r\nIn Grab Distance:{_data.interestedPlayer.playerLocation.distanceXZ < 2f + _sensors.AttachedObject._grabDistanceBuff}" +
+				$"\r\nIn Grab Angle:{_data.interestedPlayer.playerLocation.degreesToPositionXZ < 20f + _sensors.AttachedObject._grabAngleBuff}" +
+				$"\r\nIn Grab Window:{_sensors.AttachedObject._animator.GetFloat("GrabWindow") > 0.5f}");
+		}
 
 		return !_grabAnimComplete;
 	}

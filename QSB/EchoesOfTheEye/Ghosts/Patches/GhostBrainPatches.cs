@@ -417,7 +417,7 @@ internal class GhostBrainPatches : QSBPatch
 			return true;
 		}
 
-		__instance.GetWorldObject<QSBGhostBrain>().OnEnterDreamWorld();
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 
@@ -430,7 +430,7 @@ internal class GhostBrainPatches : QSBPatch
 			return true;
 		}
 
-		__instance.GetWorldObject<QSBGhostBrain>().OnExitDreamWorld();
+		DebugLog.ToConsole($"Error - {MethodBase.GetCurrentMethod().Name} not supported!", OWML.Common.MessageType.Error);
 		return false;
 	}
 }

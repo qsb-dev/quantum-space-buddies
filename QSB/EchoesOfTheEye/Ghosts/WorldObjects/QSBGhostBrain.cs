@@ -196,9 +196,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			_data.threatAwareness = AttachedObject._data.threatAwareness;
 		}
-
-		GlobalMessenger.AddListener("EnterDreamWorld", new Callback(OnEnterDreamWorld));
-		GlobalMessenger.AddListener("ExitDreamWorld", new Callback(OnExitDreamWorld));
 	}
 
 	public void Start()
@@ -233,8 +230,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		AttachedObject._controller.OnFaceNode -= OnFaceNode;
 		AttachedObject._controller.OnFinishFaceNodeList -= OnFinishFaceNodeList;
 		AttachedObject._effects.OnCallForHelp -= OnCallForHelp;
-		GlobalMessenger.RemoveListener("EnterDreamWorld", new Callback(OnEnterDreamWorld));
-		GlobalMessenger.RemoveListener("ExitDreamWorld", new Callback(OnExitDreamWorld));
 	}
 
 	public void TabulaRasa()
@@ -584,25 +579,22 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		}
 	}
 
-	public void OnEnterDreamWorld()
+	public void OnEnterDreamWorld(PlayerInfo player)
 	{
 		AttachedObject.enabled = true;
 		AttachedObject._controller.GetDreamLanternController().enabled = true;
 	}
 
-	public void OnExitDreamWorld()
+	public void OnExitDreamWorld(PlayerInfo player)
 	{
-		var playersInDreamworld = QSBPlayerManager.PlayerList.Where(x => x.InDreamWorld);
+		AttachedObject._controller.GetDreamLanternController().enabled = false;
+		_data.OnPlayerExitDreamWorld(player);
 
-		// BUG: doesn't this disable the ghost if the host is the only player left?
-		if (playersInDreamworld.Count() == 0 || (playersInDreamworld.Count() == 1 && playersInDreamworld.First() == QSBPlayerManager.LocalPlayer))
+		if (QSBPlayerManager.PlayerList.All(x => !x.InDreamWorld))
 		{
-			DebugLog.DebugWrite($"No players in dream world");
+			DebugLog.DebugWrite($"No one left in dreamworld - disabling ghost");
 			AttachedObject.enabled = false;
 			ChangeAction(null);
 		}
-
-		AttachedObject._controller.GetDreamLanternController().enabled = false;
-		_data.OnPlayerExitDreamWorld();
 	}
 }
