@@ -110,9 +110,7 @@ public class PlayerJoinMessage : QSBMessage
 			if (FirstIncompatibleMod != "" && !QSBCore.IncompatibleModsAllowed)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with incompatible mod. (First mod found was {FirstIncompatibleMod})");
-#if RELEASE
 				new PlayerKickMessage(From, $"Using an incompatible/disallowed mod. First mod found was {FirstIncompatibleMod}").Send();
-#endif
 			}
 		}
 
