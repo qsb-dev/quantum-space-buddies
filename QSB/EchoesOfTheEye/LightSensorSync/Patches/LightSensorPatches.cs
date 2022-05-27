@@ -172,12 +172,8 @@ internal class LightSensorPatches : QSBPatch
 						}
 
 						break;
-					default:
-						if (lightSourceType == LightSourceType.VOLUME_ONLY)
-						{
-							_illuminated = true;
-						}
-
+					case LightSourceType.VOLUME_ONLY:
+						_illuminated = true;
 						break;
 				}
 			}
