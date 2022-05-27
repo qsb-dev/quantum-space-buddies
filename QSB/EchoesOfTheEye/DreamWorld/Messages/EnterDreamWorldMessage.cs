@@ -5,7 +5,6 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PlayerBodySetup.Remote;
 using QSB.WorldSync;
-using System.Linq;
 
 namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 
