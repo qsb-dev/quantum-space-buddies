@@ -28,6 +28,7 @@ public class PlayerJoinMessage : QSBMessage
 		var allEnabledMods = QSBCore.Helper.Interaction.GetMods();
 
 		FirstIncompatibleMod = "";
+
 		foreach (var mod in allEnabledMods)
 		{
 			if (QSBCore.IncompatibleMods.Contains(mod.ModHelper.Manifest.UniqueName))

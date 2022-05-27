@@ -12,7 +12,7 @@ public abstract class BaseVariableSyncer<T> : QSBNetworkBehaviour
 	[NonSerialized]
 	public T Value;
 
-	protected override bool HasChanged() => !EqualityComparer<T>.Default.Equals(PrevValue, Value);
+	public override bool HasChanged() => !EqualityComparer<T>.Default.Equals(PrevValue, Value);
 	protected override void UpdatePrevData() => PrevValue = Value;
 	protected override void Serialize(NetworkWriter writer) => writer.Write(Value);
 	protected override void Deserialize(NetworkReader reader) => Value = reader.Read<T>();

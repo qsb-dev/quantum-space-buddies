@@ -11,6 +11,6 @@ internal class PlayerLaunchProbeMessage : QSBMessage
 	public override void OnReceiveRemote()
 	{
 		var player = QSBPlayerManager.GetPlayer(From);
-		player.ProbeLauncher.LaunchProbe();
+		player.ProbeLauncherTool.LaunchProbe();
 	}
 }

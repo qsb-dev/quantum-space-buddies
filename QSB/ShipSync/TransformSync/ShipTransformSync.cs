@@ -8,8 +8,18 @@ public class ShipTransformSync : SectoredRigidbodySync
 {
 	public static ShipTransformSync LocalInstance { get; private set; }
 
+	public ShipThrusterVariableSyncer ThrusterVariableSyncer { get; private set; }
+
 	private float _lastSetPositionTime;
 	private const float ForcePositionAfterTime = 1;
+
+	/// <summary>
+	/// normally prints error when attached object is null.
+	/// this overrides it so that doesn't happen, since the ship can be destroyed.
+	/// </summary>
+	protected override bool CheckValid()
+		=> AttachedTransform
+			&& base.CheckValid();
 
 	protected override bool CheckReady() =>
 		base.CheckReady() &&
@@ -25,6 +35,16 @@ public class ShipTransformSync : SectoredRigidbodySync
 	{
 		SectorDetector.Init(Locator.GetShipDetector().GetComponent<SectorDetector>());
 		return Locator.GetShipBody();
+	}
+
+	protected override void Init()
+	{
+		base.Init();
+
+		ThrusterVariableSyncer = this.GetRequiredComponent<ShipThrusterVariableSyncer>();
+		ThrusterVariableSyncer.Init();
+
+		ShipThrusterManager.CreateShipVFX();
 	}
 
 	/// Dont do base... this is a replacement!

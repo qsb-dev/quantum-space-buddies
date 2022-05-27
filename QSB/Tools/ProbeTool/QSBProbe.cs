@@ -86,8 +86,8 @@ public class QSBProbe : MonoBehaviour, ILightSource
 
 				gameObject.SetActive(true);
 				_lightSourceVol.SetVolumeActivation(true);
-				transform.position = _owner.ProbeLauncher.transform.position;
-				transform.rotation = _owner.ProbeLauncher.transform.rotation;
+				transform.position = _owner.ProbeLauncherTool.transform.position;
+				transform.rotation = _owner.ProbeLauncherTool.transform.rotation;
 
 				if (OnLaunchProbe == null)
 				{

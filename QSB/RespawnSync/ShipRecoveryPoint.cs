@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.ShipSync;
 using QSB.Utility;
 using UnityEngine;
 
@@ -56,7 +57,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 			_playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
 		}
 
-		if (RespawnManager.Instance.RespawnNeeded)
+		if (RespawnManager.Instance.RespawnNeeded && !ShipManager.Instance.ShipCockpitUI._shipDamageCtrlr.IsDestroyed())
 		{
 			_interactVolume.EnableSingleInteraction(true, _respawnIndex);
 			_interactVolume.SetKeyCommandVisible(true, _respawnIndex);
@@ -124,7 +125,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 		}
 		else if (inputCommand == _interactVolume.GetInteractionAt(_respawnIndex).inputCommand)
 		{
-			if (!RespawnManager.Instance.RespawnNeeded)
+			if (!RespawnManager.Instance.RespawnNeeded || ShipManager.Instance.ShipCockpitUI._shipDamageCtrlr.IsDestroyed())
 			{
 				return;
 			}

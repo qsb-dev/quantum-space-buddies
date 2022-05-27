@@ -23,7 +23,7 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 	/// <summary>
 	/// checked before serializing
 	/// </summary>
-	protected abstract bool HasChanged();
+	public abstract bool HasChanged();
 
 	protected abstract void Serialize(NetworkWriter writer);
 
