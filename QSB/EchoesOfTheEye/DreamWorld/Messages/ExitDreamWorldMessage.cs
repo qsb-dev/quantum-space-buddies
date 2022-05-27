@@ -30,12 +30,9 @@ internal class ExitDreamWorldMessage : QSBMessage
 		player.InDreamWorld = false;
 		player.AssignedSimulationLantern = null;
 
-		if (QSBCore.IsHost)
+		foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
 		{
-			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
-			{
-				ghost.OnExitDreamWorld(player);
-			}
+			ghost.OnExitDreamWorld(player);
 		}
 	}
 

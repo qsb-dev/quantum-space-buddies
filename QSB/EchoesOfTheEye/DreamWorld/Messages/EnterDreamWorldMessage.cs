@@ -35,12 +35,9 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 		player.InDreamWorld = true;
 		player.AssignedSimulationLantern = WorldObject;
 
-		if (QSBCore.IsHost)
+		foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
 		{
-			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
-			{
-				ghost.OnEnterDreamWorld(player);
-			}
+			ghost.OnEnterDreamWorld(player);
 		}
 	}
 
