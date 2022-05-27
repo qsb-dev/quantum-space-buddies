@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Tools.FlashlightTool;
@@ -13,6 +15,80 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
 internal class LightSensorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+	[HarmonyPostfix]
+	[HarmonyPatch(nameof(SingleLightSensor.Start))]
+	private static void Start(SingleLightSensor __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
+		{
+			return;
+		}
+
+		if (__instance._sector != null)
+		{
+			if (__instance._startIlluminated)
+			{
+				qsbLightSensor.OnDetectLocalLight?.Invoke();
+			}
+		}
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(SingleLightSensor.OnSectorOccupantsUpdated))]
+	private static bool OnSectorOccupantsUpdated(SingleLightSensor __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
+		{
+			return true;
+		}
+
+		var containsAnyOccupants = __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe);
+		if (containsAnyOccupants && !__instance.enabled)
+		{
+			__instance.enabled = true;
+			__instance._lightDetector.GetShape().enabled = true;
+			if (__instance._preserveStateWhileDisabled)
+			{
+				__instance._fixedUpdateFrameDelayCount = 10;
+			}
+
+			qsbLightSensor.SendMessage(new LightSensorAuthorityMessage(QSBPlayerManager.LocalPlayerId));
+		}
+		else if (!containsAnyOccupants && __instance.enabled)
+		{
+			__instance.enabled = false;
+			__instance._lightDetector.GetShape().enabled = false;
+			if (!__instance._preserveStateWhileDisabled)
+			{
+				if (__instance._illuminated)
+				{
+					__instance.OnDetectDarkness.Invoke();
+				}
+
+				if (qsbLightSensor.LocallyIlluminated)
+				{
+					qsbLightSensor.OnDetectLocalDarkness?.Invoke();
+				}
+
+				__instance._illuminated = false;
+			}
+
+			qsbLightSensor.SendMessage(new LightSensorAuthorityMessage(0));
+		}
+
+		return false;
+	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SingleLightSensor.UpdateIllumination))]
