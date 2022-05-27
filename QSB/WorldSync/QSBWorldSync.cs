@@ -269,8 +269,25 @@ public static class QSBWorldSync
 		return (TWorldObject)worldObject;
 	}
 
-	public static bool HasWorldObject(this MonoBehaviour unityObject)
-		=> unityObject && UnityObjectsToWorldObjects.ContainsKey(unityObject);
+	public static bool TryGetWorldObject<TWorldObject>(this MonoBehaviour unityObject, out TWorldObject worldObject)
+		where TWorldObject : IWorldObject
+	{
+		if (!unityObject)
+		{
+			DebugLog.ToConsole($"Error - Trying to run GetWorldFromUnity with a null unity object! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:NULL, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
+			worldObject = default;
+			return false;
+		}
+
+		if (!UnityObjectsToWorldObjects.TryGetValue(unityObject, out var iWorldObject))
+		{
+			worldObject = default;
+			return false;
+		}
+
+		worldObject = (TWorldObject)iWorldObject;
+		return true;
+	}
 
 	/// <summary>
 	/// not deterministic across platforms.

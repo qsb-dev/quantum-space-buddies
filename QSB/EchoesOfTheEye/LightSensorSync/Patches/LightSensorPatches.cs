@@ -23,13 +23,11 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		if (!__instance.HasWorldObject())
+		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
 		{
 			return true;
 		}
 
-		var qsbLightSensor = __instance.GetWorldObject<QSBLightSensor>();
-		
 		if (__instance._fixedUpdateFrameDelayCount > 0)
 		{
 			__instance._fixedUpdateFrameDelayCount--;
@@ -61,12 +59,10 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		if (!__instance.HasWorldObject())
+		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
 		{
 			return true;
 		}
-
-		var qsbLightSensor = __instance.GetWorldObject<QSBLightSensor>();
 
 		qsbLightSensor.LocallyIlluminated = false;
 		__instance._illuminatingDreamLanternList?.Clear();
@@ -176,12 +172,11 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		if (!__instance.HasWorldObject())
+		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
 		{
 			return true;
 		}
 
-		var qsbLightSensor = __instance.GetWorldObject<QSBLightSensor>();
 		var locallyIlluminated = qsbLightSensor.LocallyIlluminated;
 		qsbLightSensor.LocallyIlluminated = false;
 
