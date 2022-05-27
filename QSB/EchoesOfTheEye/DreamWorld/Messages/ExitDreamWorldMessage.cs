@@ -3,6 +3,7 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.WorldSync;
+using System.Linq;
 
 namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 
@@ -47,6 +48,11 @@ internal class ExitDreamWorldMessage : QSBMessage
 			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
 			{
 				ghost.OnExitDreamWorld(player);
+
+				if (QSBPlayerManager.PlayerList.Count(x => x.InDreamWorld) == 0)
+				{
+					ghost.GetEffects().OnSectorOccupantsUpdated();
+				}
 			}
 		}
 	}

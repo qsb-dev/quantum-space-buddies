@@ -5,6 +5,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.PlayerBodySetup.Remote;
 using QSB.WorldSync;
+using System.Linq;
 
 namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 
@@ -57,6 +58,11 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
 			{
 				ghost.OnEnterDreamWorld(player);
+
+				if (QSBPlayerManager.PlayerList.Count(x => x.InDreamWorld) == 1)
+				{
+					ghost.GetEffects().OnSectorOccupantsUpdated();
+				}
 			}
 		}
 	}
