@@ -48,11 +48,7 @@ internal class ExitDreamWorldMessage : QSBMessage
 			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
 			{
 				ghost.OnExitDreamWorld(player);
-
-				if (QSBPlayerManager.PlayerList.Count(x => x.InDreamWorld) == 0)
-				{
-					ghost.GetEffects().OnSectorOccupantsUpdated();
-				}
+				ghost.GetEffects().OnSectorOccupantsUpdated();
 			}
 		}
 	}

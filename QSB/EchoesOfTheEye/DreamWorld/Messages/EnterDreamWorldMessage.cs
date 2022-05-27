@@ -58,11 +58,7 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
 			{
 				ghost.OnEnterDreamWorld(player);
-
-				if (QSBPlayerManager.PlayerList.Count(x => x.InDreamWorld) == 1)
-				{
-					ghost.GetEffects().OnSectorOccupantsUpdated();
-				}
+				ghost.GetEffects().OnSectorOccupantsUpdated();
 			}
 		}
 	}
