@@ -96,7 +96,4 @@
     <PackageReference Include="HarmonyX" Version="2.10.0" IncludeAssets="compile" />
     <PackageReference Include="OWML" Version="2.3.3" IncludeAssets="compile" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EchoesOfTheEye\LightSensorSync\Messages" />
-  </ItemGroup>
 </Project>
