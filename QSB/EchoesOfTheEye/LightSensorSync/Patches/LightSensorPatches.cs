@@ -91,6 +91,50 @@ internal class LightSensorPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
+	[HarmonyPatch(nameof(SingleLightSensor.ManagedFixedUpdate))]
+	private static bool ManagedFixedUpdate(SingleLightSensor __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
+		{
+			return true;
+		}
+
+		if (__instance._fixedUpdateFrameDelayCount > 0)
+		{
+			__instance._fixedUpdateFrameDelayCount--;
+			return false;
+		}
+
+		var illuminated = __instance._illuminated;
+		var locallyIlluminated = qsbLightSensor.LocallyIlluminated;
+		__instance.UpdateIllumination();
+		if (!illuminated && __instance._illuminated)
+		{
+			__instance.OnDetectLight.Invoke();
+		}
+		else if (illuminated && !__instance._illuminated)
+		{
+			__instance.OnDetectDarkness.Invoke();
+		}
+
+		if (!locallyIlluminated && qsbLightSensor.LocallyIlluminated)
+		{
+			qsbLightSensor.OnDetectLocalLight?.Invoke();
+		}
+		else if (locallyIlluminated && !qsbLightSensor.LocallyIlluminated)
+		{
+			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SingleLightSensor.UpdateIllumination))]
 	private static bool UpdateIllumination(SingleLightSensor __instance)
 	{
@@ -104,19 +148,12 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		var locallyIlluminated = qsbLightSensor.LocallyIlluminated;
-		qsbLightSensor.LocallyIlluminated = false;
-
 		__instance._illuminated = false;
+		qsbLightSensor.LocallyIlluminated = false;
 		__instance._illuminatingDreamLanternList?.Clear();
 
 		if (__instance._lightSources == null || __instance._lightSources.Count == 0)
 		{
-			if (locallyIlluminated)
-			{
-				qsbLightSensor.OnDetectLocalDarkness?.Invoke();
-			}
-
 			return false;
 		}
 
@@ -239,15 +276,6 @@ internal class LightSensorPatches : QSBPatch
 						break;
 				}
 			}
-		}
-
-		if (!locallyIlluminated && qsbLightSensor.LocallyIlluminated)
-		{
-			qsbLightSensor.OnDetectLocalLight?.Invoke();
-		}
-		else if (locallyIlluminated && !qsbLightSensor.LocallyIlluminated)
-		{
-			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 		}
 
 		return false;
