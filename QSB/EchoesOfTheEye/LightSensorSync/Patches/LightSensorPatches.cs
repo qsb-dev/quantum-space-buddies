@@ -2,6 +2,8 @@
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Tools.FlashlightTool;
+using QSB.Tools.ProbeTool;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -11,51 +13,6 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
 internal class LightSensorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
-
-	[HarmonyPrefix]
-	[HarmonyPatch(nameof(SingleLightSensor.ManagedFixedUpdate))]
-	private static bool ManagedFixedUpdate(SingleLightSensor __instance)
-	{
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return true;
-		}
-
-		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
-		{
-			return true;
-		}
-
-		if (__instance._fixedUpdateFrameDelayCount > 0)
-		{
-			__instance._fixedUpdateFrameDelayCount--;
-			return false;
-		}
-
-		var locallyIlluminated = qsbLightSensor.LocallyIlluminated;
-		var illuminated = qsbLightSensor._illuminated;
-		__instance.UpdateIllumination();
-		if (!locallyIlluminated && qsbLightSensor.LocallyIlluminated)
-		{
-			qsbLightSensor.OnDetectLocalLight?.Invoke();
-		}
-		else if (locallyIlluminated && !__instance._illuminated)
-		{
-			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
-		}
-
-		__instance._illuminated = qsbLightSensor._illuminated;
-		if (!illuminated && qsbLightSensor._illuminated)
-		{
-			__instance.OnDetectLight.Invoke();
-		}
-		else if (illuminated && !qsbLightSensor._illuminated)
-		{
-			__instance.OnDetectDarkness.Invoke();
-		}
-
-		return false;
-	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SingleLightSensor.UpdateIllumination))]
@@ -71,11 +28,19 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
+		var locallyIlluminated = qsbLightSensor.LocallyIlluminated;
 		qsbLightSensor.LocallyIlluminated = false;
-		qsbLightSensor._illuminated = false;
+
+		__instance._illuminated = false;
 		__instance._illuminatingDreamLanternList?.Clear();
+
 		if (__instance._lightSources == null || __instance._lightSources.Count == 0)
 		{
+			if (locallyIlluminated)
+			{
+				qsbLightSensor.OnDetectLocalDarkness?.Invoke();
+			}
+
 			return false;
 		}
 
@@ -100,35 +65,63 @@ internal class LightSensorPatches : QSBPatch
 							if (owlight.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
 								&& !__instance.CheckOcclusion(owlight.transform.position, vector, sensorWorldDir, occludableLight))
 							{
-								qsbLightSensor._illuminated = true;
+								__instance._illuminated = true;
 							}
 
 							break;
 						}
 					case LightSourceType.FLASHLIGHT:
 						{
-							var position = Locator.GetPlayerCamera().transform.position;
-							var to = __instance.transform.position - position;
-							if (Vector3.Angle(Locator.GetPlayerCamera().transform.forward, to) <= __instance._maxSpotHalfAngle
-								&& !__instance.CheckOcclusion(position, vector, sensorWorldDir))
+							if (lightSource is Flashlight)
 							{
-								qsbLightSensor.LocallyIlluminated = true;
-								qsbLightSensor._illuminated = true;
+								var position = Locator.GetPlayerCamera().transform.position;
+								var to = __instance.transform.position - position;
+								if (Vector3.Angle(Locator.GetPlayerCamera().transform.forward, to) <= __instance._maxSpotHalfAngle
+									&& !__instance.CheckOcclusion(position, vector, sensorWorldDir))
+								{
+									__instance._illuminated = true;
+									qsbLightSensor.LocallyIlluminated = true;
+								}
+							}
+							else if (lightSource is QSBFlashlight qsbFlashlight)
+							{
+								var playerCamera = qsbFlashlight.Player.Camera;
+
+								var position = playerCamera.transform.position;
+								var to = __instance.transform.position - position;
+								if (Vector3.Angle(playerCamera.transform.forward, to) <= __instance._maxSpotHalfAngle
+									&& !__instance.CheckOcclusion(position, vector, sensorWorldDir))
+								{
+									__instance._illuminated = true;
+								}
 							}
 
 							break;
 						}
 					case LightSourceType.PROBE:
 						{
-							var probe = Locator.GetProbe();
-							if (probe != null
-								&& probe.IsLaunched()
-								&& !probe.IsRetrieving()
-								&& probe.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
-								&& !__instance.CheckOcclusion(probe.GetLightSourcePosition(), vector, sensorWorldDir))
+							if (lightSource is SurveyorProbe probe)
 							{
-								qsbLightSensor.LocallyIlluminated = true;
-								qsbLightSensor._illuminated = true;
+								if (probe != null
+									&& probe.IsLaunched()
+									&& !probe.IsRetrieving()
+									&& probe.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
+									&& !__instance.CheckOcclusion(probe.GetLightSourcePosition(), vector, sensorWorldDir))
+								{
+									__instance._illuminated = true;
+									qsbLightSensor.LocallyIlluminated = true;
+								}
+							}
+							else if (lightSource is QSBProbe qsbProbe)
+							{
+								if (qsbProbe != null
+									&& qsbProbe.IsLaunched()
+									&& !qsbProbe.IsRetrieving()
+									&& qsbProbe.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
+									&& !__instance.CheckOcclusion(qsbProbe.GetLightSourcePosition(), vector, sensorWorldDir))
+								{
+									__instance._illuminated = true;
+								}
 							}
 
 							break;
@@ -142,9 +135,9 @@ internal class LightSensorPatches : QSBPatch
 								&& !__instance.CheckOcclusion(dreamLanternController.GetLightPosition(), vector, sensorWorldDir))
 							{
 								__instance._illuminatingDreamLanternList.Add(dreamLanternController);
+								__instance._illuminated = true;
 								var dreamLanternItem = dreamLanternController.GetComponent<DreamLanternItem>();
 								qsbLightSensor.LocallyIlluminated |= QSBPlayerManager.LocalPlayer.HeldItem?.AttachedObject == dreamLanternItem;
-								qsbLightSensor._illuminated = true;
 							}
 
 							break;
@@ -157,19 +150,28 @@ internal class LightSensorPatches : QSBPatch
 							if (owlight.CheckIlluminationAtPoint(vector, __instance._sensorRadius, maxDistance)
 								&& !__instance.CheckOcclusion(owlight.transform.position, vector, sensorWorldDir, occludableLight))
 							{
+								__instance._illuminated = true;
 								var simpleLanternItem = (SimpleLanternItem)lightSource;
 								qsbLightSensor.LocallyIlluminated |= QSBPlayerManager.LocalPlayer.HeldItem?.AttachedObject == simpleLanternItem;
-								qsbLightSensor._illuminated = true;
 								break;
 							}
 						}
 
 						break;
 					case LightSourceType.VOLUME_ONLY:
-						qsbLightSensor._illuminated = true;
+						__instance._illuminated = true;
 						break;
 				}
 			}
+		}
+
+		if (!locallyIlluminated && qsbLightSensor.LocallyIlluminated)
+		{
+			qsbLightSensor.OnDetectLocalLight?.Invoke();
+		}
+		else if (locallyIlluminated && !qsbLightSensor.LocallyIlluminated)
+		{
+			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 		}
 
 		return false;
