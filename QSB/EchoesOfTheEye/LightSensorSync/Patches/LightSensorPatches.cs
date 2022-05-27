@@ -25,7 +25,7 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		if (LightSensorManager.ShouldIgnore(__instance))
+		if (!__instance.HasWorldObject())
 		{
 			return true;
 		}
@@ -69,7 +69,7 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		if (LightSensorManager.ShouldIgnore(__instance))
+		if (!__instance.HasWorldObject())
 		{
 			return true;
 		}

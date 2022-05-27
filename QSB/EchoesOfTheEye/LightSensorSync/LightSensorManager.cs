@@ -12,14 +12,11 @@ internal class LightSensorManager : WorldObjectManager
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 	public override bool DlcOnly => true;
 
-	public static bool ShouldIgnore(LightSensor lightSensor) =>
-		lightSensor.name is "CameraDetector" or "REMOTE_CameraDetector";
-
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
 		// ignore player light sensors
 		var list = QSBWorldSync.GetUnityObjects<SingleLightSensor>()
-			.Where(x => !ShouldIgnore(x))
+			.Where(x => x.name is not ("CameraDetector" or "REMOTE_CameraDetector"))
 			.SortDeterministic();
 		QSBWorldSync.Init<QSBLightSensor, SingleLightSensor>(list);
 	}

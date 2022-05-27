@@ -269,6 +269,9 @@ public static class QSBWorldSync
 		return (TWorldObject)worldObject;
 	}
 
+	public static bool HasWorldObject(this MonoBehaviour unityObject)
+		=> unityObject && UnityObjectsToWorldObjects.ContainsKey(unityObject);
+
 	/// <summary>
 	/// not deterministic across platforms.
 	/// iterates thru all objects and throws error if there isn't exactly 1.
