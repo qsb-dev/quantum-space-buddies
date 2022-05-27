@@ -32,6 +32,9 @@ using UnityEngine.InputSystem;
 	See the GNU Affero General Public License for more details.
 
 	You should have received a copy of the GNU Affero General Public License along with this program. If not, see https://www.gnu.org/licenses/.
+
+	This work is unofficial Fan Content created under permission from the Mobius Digital Fan Content Policy.
+	It includes materials which are the property of Mobius Digital and it is neither approved nor endorsed by Mobius Digital.
 */
 
 namespace QSB;

@@ -41,13 +41,11 @@ public class QSBGhostData
 		}
 	}
 
-	public void OnPlayerExitDreamWorld()
+	public void OnPlayerExitDreamWorld(PlayerInfo player)
 	{
-		localPlayer.isPlayerLocationKnown = false;
-		localPlayer.wasPlayerLocationKnown = false;
-		reduceGuardUtility = false;
-		fastStalkUnlocked = false;
-		localPlayer.timeSincePlayerLocationKnown = float.PositiveInfinity;
+		players[player].isPlayerLocationKnown = false;
+		players[player].wasPlayerLocationKnown = false;
+		players[player].timeSincePlayerLocationKnown = float.PositiveInfinity;
 	}
 
 	public void OnEnterAction(GhostAction.Name actionName)

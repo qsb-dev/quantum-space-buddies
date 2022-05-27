@@ -16,7 +16,7 @@ public class GrappleTotemPatches : QSBPatch
 	[HarmonyPatch(typeof(LanternZoomPoint), nameof(LanternZoomPoint.OnDetectLight))]
 	private static bool OnDetectLight(LanternZoomPoint __instance) =>
 		!QSBWorldSync.AllObjectsReady ||
-		__instance._lightSensor.GetWorldObject<QSBLightSensor>().IlluminatedByLocal;
+		__instance._lightSensor.GetWorldObject<QSBLightSensor>().LocallyIlluminated;
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(LanternZoomPoint), nameof(LanternZoomPoint.StartZoomIn))]

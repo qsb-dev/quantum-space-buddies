@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Patches;
+using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -67,6 +68,16 @@ internal class GhostEffectsPatches : QSBPatch
 		}
 
 		__instance.GetWorldObject<QSBGhostEffects>().Update_Effects();
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(GhostEffects.OnSectorOccupantsUpdated))]
+	public static bool OnSectorOccupantsUpdated(GhostEffects __instance)
+	{
+		__instance._animator.enabled = __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe)
+			|| QSBPlayerManager.PlayerList.Any(x => x.InDreamWorld);
+
 		return false;
 	}
 }

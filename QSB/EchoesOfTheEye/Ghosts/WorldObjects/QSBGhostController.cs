@@ -36,6 +36,7 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		AttachedObject._grabController.Initialize(effects.AttachedObject);
 		AttachedObject._lantern.SetLit(true);
 		AttachedObject.MoveLanternToCarrySocket(false, 0.1f);
+		// BUG: i have no idea what this does, but it's still local player shenanigans?
 		AttachedObject._playerCollider = Locator.GetPlayerBody().GetComponent<CapsuleCollider>();
 	}
 

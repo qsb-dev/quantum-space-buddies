@@ -34,6 +34,11 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 		var player = QSBPlayerManager.LocalPlayer;
 		player.InDreamWorld = true;
 		player.AssignedSimulationLantern = WorldObject;
+
+		foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
+		{
+			ghost.OnEnterDreamWorld(player);
+		}
 	}
 
 	public override void OnReceiveRemote()
@@ -51,7 +56,8 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 		{
 			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
 			{
-				ghost.OnEnterDreamWorld();
+				ghost.OnEnterDreamWorld(player);
+				ghost.GetEffects().OnSectorOccupantsUpdated();
 			}
 		}
 	}

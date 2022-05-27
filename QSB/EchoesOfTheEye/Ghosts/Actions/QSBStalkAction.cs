@@ -35,7 +35,7 @@ public class QSBStalkAction : QSBGhostAction
 
 	protected override void OnEnterAction()
 	{
-		var flag = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController().IsConcealed();
+		var flag = _data.interestedPlayer.player.AssignedSimulationLantern.AttachedObject.GetLanternController().IsConcealed();
 		_wasPlayerLanternConcealed = flag;
 		_isFocusingLight = flag;
 		_shouldFocusLightOnPlayer = flag;

@@ -72,6 +72,7 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 						__instance._numArrivedGhosts++;
 					}
 
+					// BUG: only checks for host blocking the respawn?
 					if (!__instance._respawnBlockTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
 					{
 						__instance._dispatchedGhosts.QuickRemoveAt(i);

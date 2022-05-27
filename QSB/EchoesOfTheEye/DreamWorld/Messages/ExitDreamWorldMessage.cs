@@ -29,6 +29,11 @@ internal class ExitDreamWorldMessage : QSBMessage
 		var player = QSBPlayerManager.LocalPlayer;
 		player.InDreamWorld = false;
 		player.AssignedSimulationLantern = null;
+
+		foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
+		{
+			ghost.OnExitDreamWorld(player);
+		}
 	}
 
 	public override void OnReceiveRemote()
@@ -41,7 +46,8 @@ internal class ExitDreamWorldMessage : QSBMessage
 		{
 			foreach (var ghost in QSBWorldSync.GetWorldObjects<QSBGhostBrain>())
 			{
-				ghost.OnExitDreamWorld();
+				ghost.OnExitDreamWorld(player);
+				ghost.GetEffects().OnSectorOccupantsUpdated();
 			}
 		}
 	}

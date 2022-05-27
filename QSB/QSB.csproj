@@ -70,13 +70,13 @@
     <None Include="manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	  <None Include="storage.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	<None Include="Assets\*">
-		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	</None>
-	 <None Remove="Assets\*.pdn" />
+    <None Include="storage.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Remove="Assets\*.pdn" />
     <None Include="AssetBundles\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
