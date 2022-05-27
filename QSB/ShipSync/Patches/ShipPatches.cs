@@ -282,12 +282,12 @@ internal class ShipPatches : QSBPatch
 			return;
 		}
 
-		if (!__instance.HasWorldObject())
+		if (!__instance.TryGetWorldObject(out QSBShipLight qsbShipLight))
 		{
 			return;
 		}
 
-		__instance.GetWorldObject<QSBShipLight>().SendMessage(new ShipLightMessage(on));
+		qsbShipLight.SendMessage(new ShipLightMessage(on));
 	}
 
 	[HarmonyPrefix]
