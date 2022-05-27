@@ -96,8 +96,7 @@ internal class LightSensorPatches : QSBPatch
 			if ((__instance._lightSourceMask & lightSource.GetLightSourceType()) == lightSource.GetLightSourceType()
 				&& lightSource.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance))
 			{
-				var lightSourceType = lightSource.GetLightSourceType();
-				switch (lightSourceType)
+				switch (lightSource.GetLightSourceType())
 				{
 					case LightSourceType.UNDEFINED:
 						{
@@ -106,7 +105,6 @@ internal class LightSensorPatches : QSBPatch
 							if (owlight.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
 								&& !__instance.CheckOcclusion(owlight.transform.position, vector, sensorWorldDir, occludableLight))
 							{
-								qsbLightSensor.LocallyIlluminated = true;
 								_illuminated = true;
 							}
 
