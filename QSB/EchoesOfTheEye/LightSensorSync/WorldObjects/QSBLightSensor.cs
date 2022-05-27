@@ -10,8 +10,5 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;
 
-	public override void SendInitialState(uint to)
-	{
-		throw new NotImplementedException();
-	}
+	public override void SendInitialState(uint to) { }
 }
