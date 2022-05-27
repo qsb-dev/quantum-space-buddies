@@ -40,6 +40,7 @@ internal class LightSensorPatches : QSBPatch
 		var locallyIlluminated = qsbLightSensor.LocallyIlluminated;
 		var illuminated = _illuminated;
 		__instance.UpdateIllumination();
+		__instance._illuminated = _illuminated; // temp
 		if (!locallyIlluminated && qsbLightSensor.LocallyIlluminated)
 		{
 			qsbLightSensor.OnDetectLocalLight?.Invoke();
