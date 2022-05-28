@@ -118,7 +118,7 @@ internal class LightSensorPatches : QSBPatch
 							if (Vector3.Angle(Locator.GetPlayerCamera().transform.forward, to) <= __instance._maxSpotHalfAngle
 								&& !__instance.CheckOcclusion(position, vector, sensorWorldDir))
 							{
-								qsbLightSensor.LocallyIlluminated = true;
+								qsbLightSensor.LocallyIlluminated |= lightSource is Flashlight;
 								qsbLightSensor._illuminated = true;
 							}
 
@@ -133,7 +133,7 @@ internal class LightSensorPatches : QSBPatch
 								&& probe.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
 								&& !__instance.CheckOcclusion(probe.GetLightSourcePosition(), vector, sensorWorldDir))
 							{
-								qsbLightSensor.LocallyIlluminated = true;
+								qsbLightSensor.LocallyIlluminated |= lightSource is SurveyorProbe;
 								qsbLightSensor._illuminated = true;
 							}
 
