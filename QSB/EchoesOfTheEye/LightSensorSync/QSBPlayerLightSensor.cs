@@ -2,6 +2,7 @@
 using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,8 +16,9 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 [RequireComponent(typeof(SingleLightSensor))]
 public class QSBPlayerLightSensor : MonoBehaviour
 {
-	public uint PlayerId;
 	private SingleLightSensor _lightSensor;
+	[NonSerialized]
+	public uint PlayerId;
 
 	internal bool _locallyIlluminated;
 	internal readonly List<uint> _illuminatedBy = new();
