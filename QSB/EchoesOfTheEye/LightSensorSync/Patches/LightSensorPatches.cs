@@ -140,8 +140,11 @@ internal class LightSensorPatches : QSBPatch
 			__instance._fixedUpdateFrameDelayCount--;
 		}
 
-		_prevIlluminatingDreamLanternList.Clear();
-		_prevIlluminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
+		if (__instance._illuminatingDreamLanternList != null)
+		{
+			_prevIlluminatingDreamLanternList.Clear();
+			_prevIlluminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
+		}
 
 		var illuminated = __instance._illuminated;
 		__instance.UpdateIllumination();
@@ -162,7 +165,8 @@ internal class LightSensorPatches : QSBPatch
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 		}
 
-		if (!__instance._illuminatingDreamLanternList.SequenceEqual(_prevIlluminatingDreamLanternList))
+		if (__instance._illuminatingDreamLanternList != null
+			&& !__instance._illuminatingDreamLanternList.SequenceEqual(_prevIlluminatingDreamLanternList))
 		{
 			qsbLightSensor.SendMessage(new IlluminatingLanternsMessage(__instance._illuminatingDreamLanternList));
 		}

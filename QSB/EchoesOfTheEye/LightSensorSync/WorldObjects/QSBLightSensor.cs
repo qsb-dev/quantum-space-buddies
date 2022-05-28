@@ -21,7 +21,10 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	public override void SendInitialState(uint to)
 	{
 		this.SendMessage(new IlluminatedByMessage(_illuminatedBy.ToArray()) { To = to });
-		this.SendMessage(new IlluminatingLanternsMessage(AttachedObject._illuminatingDreamLanternList) { To = to });
+		if (AttachedObject._illuminatingDreamLanternList != null)
+		{
+			this.SendMessage(new IlluminatingLanternsMessage(AttachedObject._illuminatingDreamLanternList) { To = to });
+		}
 	}
 
 	public override async UniTask Init(CancellationToken ct) => QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
