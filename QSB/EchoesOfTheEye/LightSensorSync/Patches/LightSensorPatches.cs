@@ -36,7 +36,7 @@ internal class LightSensorPatches : QSBPatch
 		}
 
 		var locallyIlluminated = qsbLightSensor.LocallyIlluminated;
-		var illuminated = qsbLightSensor._illuminated;
+		var clientIlluminated = qsbLightSensor._clientIlluminated;
 		__instance.UpdateIllumination();
 		if (!locallyIlluminated && qsbLightSensor.LocallyIlluminated)
 		{
@@ -49,14 +49,14 @@ internal class LightSensorPatches : QSBPatch
 			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 		}
 
-		if (!illuminated && qsbLightSensor._illuminated)
+		if (!clientIlluminated && qsbLightSensor._clientIlluminated)
 		{
-			DebugLog.DebugWrite($"{qsbLightSensor} _illuminated = true");
+			DebugLog.DebugWrite($"{qsbLightSensor} _clientIlluminated = true");
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
 		}
-		else if (illuminated && !qsbLightSensor._illuminated)
+		else if (clientIlluminated && !qsbLightSensor._clientIlluminated)
 		{
-			DebugLog.DebugWrite($"{qsbLightSensor} _illuminated = false");
+			DebugLog.DebugWrite($"{qsbLightSensor} _clientIlluminated = false");
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 		}
 
@@ -78,7 +78,7 @@ internal class LightSensorPatches : QSBPatch
 		}
 
 		qsbLightSensor.LocallyIlluminated = false;
-		qsbLightSensor._illuminated = false;
+		qsbLightSensor._clientIlluminated = false;
 		__instance._illuminatingDreamLanternList?.Clear();
 		if (__instance._lightSources == null || __instance._lightSources.Count == 0)
 		{
@@ -106,7 +106,7 @@ internal class LightSensorPatches : QSBPatch
 							if (owlight.CheckIlluminationAtPoint(vector, __instance._sensorRadius, __instance._maxDistance)
 								&& !__instance.CheckOcclusion(owlight.transform.position, vector, sensorWorldDir, occludableLight))
 							{
-								qsbLightSensor._illuminated = true;
+								qsbLightSensor._clientIlluminated = true;
 							}
 
 							break;
@@ -119,7 +119,7 @@ internal class LightSensorPatches : QSBPatch
 								&& !__instance.CheckOcclusion(position, vector, sensorWorldDir))
 							{
 								qsbLightSensor.LocallyIlluminated |= lightSource is Flashlight;
-								qsbLightSensor._illuminated = true;
+								qsbLightSensor._clientIlluminated = true;
 							}
 
 							break;
@@ -134,7 +134,7 @@ internal class LightSensorPatches : QSBPatch
 								&& !__instance.CheckOcclusion(probe.GetLightSourcePosition(), vector, sensorWorldDir))
 							{
 								qsbLightSensor.LocallyIlluminated |= lightSource is SurveyorProbe;
-								qsbLightSensor._illuminated = true;
+								qsbLightSensor._clientIlluminated = true;
 							}
 
 							break;
@@ -150,7 +150,7 @@ internal class LightSensorPatches : QSBPatch
 								__instance._illuminatingDreamLanternList.Add(dreamLanternController);
 								var dreamLanternItem = dreamLanternController.GetComponent<DreamLanternItem>();
 								qsbLightSensor.LocallyIlluminated |= QSBPlayerManager.LocalPlayer.HeldItem?.AttachedObject == dreamLanternItem;
-								qsbLightSensor._illuminated = true;
+								qsbLightSensor._clientIlluminated = true;
 							}
 
 							break;
@@ -165,14 +165,14 @@ internal class LightSensorPatches : QSBPatch
 							{
 								var simpleLanternItem = (SimpleLanternItem)lightSource;
 								qsbLightSensor.LocallyIlluminated |= QSBPlayerManager.LocalPlayer.HeldItem?.AttachedObject == simpleLanternItem;
-								qsbLightSensor._illuminated = true;
+								qsbLightSensor._clientIlluminated = true;
 								break;
 							}
 						}
 
 						break;
 					case LightSourceType.VOLUME_ONLY:
-						qsbLightSensor._illuminated = true;
+						qsbLightSensor._clientIlluminated = true;
 						break;
 				}
 			}
