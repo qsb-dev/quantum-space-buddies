@@ -5,6 +5,7 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
@@ -116,6 +117,9 @@ internal class LightSensorPatches : QSBPatch
 
 		return false;
 	}
+	
+	// to prevent allocating a new list every frame
+	private static readonly List<DreamLanternController> _prevIlluminatingDreamLanternList = new();
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SingleLightSensor.ManagedFixedUpdate))]
@@ -136,6 +140,9 @@ internal class LightSensorPatches : QSBPatch
 			__instance._fixedUpdateFrameDelayCount--;
 		}
 
+		_prevIlluminatingDreamLanternList.Clear();
+		_prevIlluminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
+
 		var illuminated = __instance._illuminated;
 		__instance.UpdateIllumination();
 		var locallyIlluminated = qsbLightSensor._locallyIlluminated;
@@ -153,6 +160,11 @@ internal class LightSensorPatches : QSBPatch
 			qsbLightSensor._locallyIlluminated = false;
 			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
+		}
+
+		if (!__instance._illuminatingDreamLanternList.SequenceEqual(_prevIlluminatingDreamLanternList))
+		{
+			qsbLightSensor.SendMessage(new IlluminatingLanternsMessage(__instance._illuminatingDreamLanternList));
 		}
 
 		return false;
