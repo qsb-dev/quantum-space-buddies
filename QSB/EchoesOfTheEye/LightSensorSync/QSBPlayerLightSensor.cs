@@ -1,4 +1,6 @@
-﻿using QSB.Player;
+﻿using QSB.EchoesOfTheEye.LightSensorSync.Messages;
+using QSB.Messaging;
+using QSB.Player;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +37,11 @@ public class QSBPlayerLightSensor : MonoBehaviour
 
 	private void SendInitialState(uint to)
 	{
-		// todo send the messages
+		new PlayerIlluminatedByMessage(_player.PlayerId, _illuminatedBy.ToArray()) { To = to }.Send();
+		if (_lightSensor._illuminatingDreamLanternList != null)
+		{
+			new PlayerIlluminatingLanternsMessage(_player.PlayerId, _lightSensor._illuminatingDreamLanternList) { To = to }.Send();
+		}
 	}
 
 	private void OnPlayerLeave(PlayerInfo player) => SetIlluminated(player.PlayerId, false);
