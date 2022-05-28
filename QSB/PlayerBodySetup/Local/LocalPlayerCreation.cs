@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using QSB.EchoesOfTheEye.LightSensorSync;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.SectorSync;
@@ -36,6 +37,8 @@ public static class LocalPlayerCreation
 		player.Camera = Locator.GetPlayerCamera();
 		player.CameraBody = cameraBody.gameObject;
 		visibleCameraRoot = cameraBody;
+
+		player.PlayerLightSensor = player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
 
 		PlayerToolsManager.InitLocal();
 

@@ -1,4 +1,5 @@
 ﻿using QSB.Audio;
+using QSB.EchoesOfTheEye.LightSensorSync;
 using QSB.Player;
 using QSB.RoastingSync;
 using QSB.Tools;
@@ -75,6 +76,8 @@ public static class RemotePlayerCreation
 		player.Camera = owcamera;
 		player.CameraBody = REMOTE_PlayerCamera;
 		visibleCameraRoot = REMOTE_PlayerCamera.transform;
+
+		player.PlayerLightSensor = player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
 
 		PlayerToolsManager.InitRemote(player);
 
