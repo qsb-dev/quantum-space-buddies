@@ -48,21 +48,11 @@ internal class LightSensorPatches : QSBPatch
 
 		if (!clientIlluminated && qsbLightSensor._clientIlluminated)
 		{
-			qsbLightSensor.SendMessage(new LightSensorIlluminatedMessage(true));
+			qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
 		}
 		else if (clientIlluminated && !qsbLightSensor._clientIlluminated)
 		{
-			qsbLightSensor.SendMessage(new LightSensorIlluminatedMessage(false));
-		}
-
-		var illuminated = __instance._illuminated;
-		if (!illuminated && __instance._illuminated)
-		{
-			__instance.OnDetectLight.Invoke();
-		}
-		else if (illuminated && !__instance._illuminated)
-		{
-			__instance.OnDetectDarkness.Invoke();
+			qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 		}
 
 		return false;

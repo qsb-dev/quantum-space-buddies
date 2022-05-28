@@ -15,7 +15,7 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	public Action OnDetectLocalDarkness;
 
 	internal bool _clientIlluminated;
-	internal List<uint> _illuminatedBy;
+	private readonly List<uint> _illuminatedBy = new();
 
 	public override void SendInitialState(uint to) { }
 
@@ -23,5 +23,18 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 
 	private void OnPlayerLeave(PlayerInfo player) =>
-		_illuminatedBy.QuickRemove(player.PlayerId);
+		SetIlluminated(player.PlayerId, false);
+
+	public void SetIlluminated(uint playerId, bool illuminated)
+	{
+		// var illuminated = __instance._illuminated;
+		// if (!illuminated && __instance._illuminated)
+		// {
+		// __instance.OnDetectLight.Invoke();
+		// }
+		// else if (illuminated && !__instance._illuminated)
+		// {
+		// __instance.OnDetectDarkness.Invoke();
+		// }
+	}
 }
