@@ -1,6 +1,7 @@
 ﻿using QSB.Player;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync;
@@ -12,6 +13,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 public class QSBPlayerLightSensor : MonoBehaviour
 {
 	private SingleLightSensor _lightSensor;
+	private PlayerInfo _player;
 
 	internal bool _locallyIlluminated;
 	internal readonly List<uint> _illuminatedBy = new();
@@ -19,6 +21,7 @@ public class QSBPlayerLightSensor : MonoBehaviour
 	private void Awake()
 	{
 		_lightSensor = GetComponent<SingleLightSensor>();
+		_player = QSBPlayerManager.PlayerList.First(x => x.LightSensor == _lightSensor);
 
 		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
