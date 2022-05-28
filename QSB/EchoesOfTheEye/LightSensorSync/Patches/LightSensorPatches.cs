@@ -118,7 +118,9 @@ internal class LightSensorPatches : QSBPatch
 		return false;
 	}
 
-	// to prevent allocating a new list every frame
+	/// <summary>
+	/// to prevent allocating a new list every frame
+	/// </summary>
 	private static readonly List<DreamLanternController> _prevIlluminatingDreamLanternList = new();
 
 	[HarmonyPrefix]
