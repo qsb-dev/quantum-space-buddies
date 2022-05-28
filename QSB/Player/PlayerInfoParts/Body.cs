@@ -74,7 +74,7 @@ public partial class PlayerInfo
 		}
 	}
 
-	public QSBPlayerLightSensor PlayerLightSensor;
+	public QSBPlayerLightSensor QSBPlayerLightSensor;
 
 	public Vector3 Velocity
 	{
