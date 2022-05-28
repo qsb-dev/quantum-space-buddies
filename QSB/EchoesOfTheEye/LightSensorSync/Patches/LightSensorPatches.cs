@@ -24,10 +24,8 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
-		{
-			return true;
-		}
+		var isPlayerLightSensor = LightSensorManager.IsPlayerLightSensor(__instance);
+		var qsbLightSensor = isPlayerLightSensor ? null : __instance.GetWorldObject<QSBLightSensor>();
 
 		if (__instance._lightDetector != null)
 		{
@@ -67,9 +65,19 @@ internal class LightSensorPatches : QSBPatch
 			__instance._lightDetector.GetShape().enabled = false;
 			if (__instance._startIlluminated)
 			{
-				qsbLightSensor._locallyIlluminated = true;
-				qsbLightSensor.OnDetectLocalLight?.Invoke();
-				qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
+				if (isPlayerLightSensor)
+				{
+					var qsbPlayerLightSensor = __instance.GetComponent<QSBPlayerLightSensor>();
+
+					qsbPlayerLightSensor._locallyIlluminated = true;
+					new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, true).Send();
+				}
+				else
+				{
+					qsbLightSensor._locallyIlluminated = true;
+					qsbLightSensor.OnDetectLocalLight?.Invoke();
+					qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
+				}
 			}
 		}
 
@@ -85,10 +93,8 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
-		{
-			return true;
-		}
+		var isPlayerLightSensor = LightSensorManager.IsPlayerLightSensor(__instance);
+		var qsbLightSensor = isPlayerLightSensor ? null : __instance.GetWorldObject<QSBLightSensor>();
 
 		var containsAnyOccupants = __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe);
 		if (containsAnyOccupants && !__instance.enabled)
@@ -106,11 +112,24 @@ internal class LightSensorPatches : QSBPatch
 			__instance._lightDetector.GetShape().enabled = false;
 			if (!__instance._preserveStateWhileDisabled)
 			{
-				if (qsbLightSensor._locallyIlluminated)
+				if (isPlayerLightSensor)
 				{
-					qsbLightSensor._locallyIlluminated = false;
-					qsbLightSensor.OnDetectLocalDarkness?.Invoke();
-					qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
+					var qsbPlayerLightSensor = __instance.GetComponent<QSBPlayerLightSensor>();
+
+					if (qsbPlayerLightSensor._locallyIlluminated)
+					{
+						qsbPlayerLightSensor._locallyIlluminated = false;
+						new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, false).Send();
+					}
+				}
+				else
+				{
+					if (qsbLightSensor._locallyIlluminated)
+					{
+						qsbLightSensor._locallyIlluminated = false;
+						qsbLightSensor.OnDetectLocalDarkness?.Invoke();
+						qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
+					}
 				}
 			}
 		}
@@ -132,10 +151,8 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		if (!__instance.TryGetWorldObject(out QSBLightSensor qsbLightSensor))
-		{
-			return true;
-		}
+		var isPlayerLightSensor = LightSensorManager.IsPlayerLightSensor(__instance);
+		var qsbLightSensor = isPlayerLightSensor ? null : __instance.GetWorldObject<QSBLightSensor>();
 
 		if (__instance._fixedUpdateFrameDelayCount > 0)
 		{
@@ -150,27 +167,63 @@ internal class LightSensorPatches : QSBPatch
 
 		var illuminated = __instance._illuminated;
 		__instance.UpdateIllumination();
-		var locallyIlluminated = qsbLightSensor._locallyIlluminated;
-		qsbLightSensor._locallyIlluminated = __instance._illuminated;
+		bool locallyIlluminated;
+		QSBPlayerLightSensor qsbPlayerLightSensor = null;
+		if (isPlayerLightSensor)
+		{
+			qsbPlayerLightSensor = __instance.GetComponent<QSBPlayerLightSensor>();
+
+			locallyIlluminated = qsbPlayerLightSensor._locallyIlluminated;
+			qsbPlayerLightSensor._locallyIlluminated = __instance._illuminated;
+		}
+		else
+		{
+			locallyIlluminated = qsbLightSensor._locallyIlluminated;
+			qsbLightSensor._locallyIlluminated = __instance._illuminated;
+		}
+
 		__instance._illuminated = illuminated;
 
-		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
+		if (isPlayerLightSensor)
 		{
-			qsbLightSensor._locallyIlluminated = true;
-			qsbLightSensor.OnDetectLocalLight?.Invoke();
-			qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
+			if (!locallyIlluminated && qsbPlayerLightSensor._locallyIlluminated)
+			{
+				qsbPlayerLightSensor._locallyIlluminated = true;
+				new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, true).Send();
+			}
+			else if (locallyIlluminated && !qsbPlayerLightSensor._locallyIlluminated)
+			{
+				qsbPlayerLightSensor._locallyIlluminated = false;
+				new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, false).Send();
+			}
 		}
-		else if (locallyIlluminated && !qsbLightSensor._locallyIlluminated)
+		else
 		{
-			qsbLightSensor._locallyIlluminated = false;
-			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
-			qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
+			if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
+			{
+				qsbLightSensor._locallyIlluminated = true;
+				qsbLightSensor.OnDetectLocalLight?.Invoke();
+				qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
+			}
+			else if (locallyIlluminated && !qsbLightSensor._locallyIlluminated)
+			{
+				qsbLightSensor._locallyIlluminated = false;
+				qsbLightSensor.OnDetectLocalDarkness?.Invoke();
+				qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
+			}
 		}
 
 		if (__instance._illuminatingDreamLanternList != null
 			&& !__instance._illuminatingDreamLanternList.SequenceEqual(_prevIlluminatingDreamLanternList))
 		{
-			qsbLightSensor.SendMessage(new IlluminatingLanternsMessage(__instance._illuminatingDreamLanternList));
+			if (isPlayerLightSensor)
+			{
+				new PlayerIlluminatingLanternsMessage(qsbPlayerLightSensor.PlayerId, __instance._illuminatingDreamLanternList).Send();
+			}
+			else
+			{
+				qsbLightSensor.SendMessage(new IlluminatingLanternsMessage(__instance._illuminatingDreamLanternList));
+			}
 		}
 
 		return false;

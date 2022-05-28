@@ -10,17 +10,13 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 
 /// <summary>
 /// stores a bit of extra data needed for player light sensor sync
-///
-///
-///
-/// 
 /// todo you might be able to remove when you simplify light sensor after the fake sector thingy
 /// </summary>
 [RequireComponent(typeof(SingleLightSensor))]
 public class QSBPlayerLightSensor : MonoBehaviour
 {
+	public uint PlayerId;
 	private SingleLightSensor _lightSensor;
-	private PlayerInfo _player;
 
 	internal bool _locallyIlluminated;
 	internal readonly List<uint> _illuminatedBy = new();
@@ -28,7 +24,7 @@ public class QSBPlayerLightSensor : MonoBehaviour
 	private void Awake()
 	{
 		_lightSensor = GetComponent<SingleLightSensor>();
-		_player = QSBPlayerManager.PlayerList.First(x => x.LightSensor == _lightSensor);
+		PlayerId = QSBPlayerManager.PlayerList.First(x => x.LightSensor == _lightSensor).PlayerId;
 
 		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
@@ -42,10 +38,10 @@ public class QSBPlayerLightSensor : MonoBehaviour
 
 	private void SendInitialState(uint to)
 	{
-		new PlayerIlluminatedByMessage(_player.PlayerId, _illuminatedBy.ToArray()) { To = to }.Send();
+		new PlayerIlluminatedByMessage(PlayerId, _illuminatedBy.ToArray()) { To = to }.Send();
 		if (_lightSensor._illuminatingDreamLanternList != null)
 		{
-			new PlayerIlluminatingLanternsMessage(_player.PlayerId, _lightSensor._illuminatingDreamLanternList) { To = to }.Send();
+			new PlayerIlluminatingLanternsMessage(PlayerId, _lightSensor._illuminatingDreamLanternList) { To = to }.Send();
 		}
 	}
 
