@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.EchoesOfTheEye.GrappleTotemSync.Messages;
 using QSB.EchoesOfTheEye.GrappleTotemSync.WorldObjects;
-using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
@@ -15,8 +14,8 @@ public class GrappleTotemPatches : QSBPatch
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(LanternZoomPoint), nameof(LanternZoomPoint.OnDetectLight))]
 	private static bool OnDetectLight(LanternZoomPoint __instance) =>
-		!QSBWorldSync.AllObjectsReady ||
-		__instance._lightSensor.GetWorldObject<QSBLightSensor>().LocallyIlluminated;
+		// only trigger with local player lantern
+		__instance._lightSensor.IsIlluminatedByLantern(Locator.GetDreamWorldController().GetPlayerLantern().GetComponent<DreamLanternController>());
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(LanternZoomPoint), nameof(LanternZoomPoint.StartZoomIn))]

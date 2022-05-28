@@ -9,7 +9,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 
 internal class QSBLightSensor : WorldObject<SingleLightSensor>
 {
-	public bool LocallyIlluminated;
+	internal bool _locallyIlluminated;
 
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;

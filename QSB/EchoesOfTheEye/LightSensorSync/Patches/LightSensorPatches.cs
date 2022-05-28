@@ -66,7 +66,7 @@ internal class LightSensorPatches : QSBPatch
 			__instance._lightDetector.GetShape().enabled = false;
 			if (__instance._startIlluminated)
 			{
-				qsbLightSensor.LocallyIlluminated = true;
+				qsbLightSensor._locallyIlluminated = true;
 				qsbLightSensor.OnDetectLocalLight?.Invoke();
 				qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
 			}
@@ -105,9 +105,9 @@ internal class LightSensorPatches : QSBPatch
 			__instance._lightDetector.GetShape().enabled = false;
 			if (!__instance._preserveStateWhileDisabled)
 			{
-				if (qsbLightSensor.LocallyIlluminated)
+				if (qsbLightSensor._locallyIlluminated)
 				{
-					qsbLightSensor.LocallyIlluminated = false;
+					qsbLightSensor._locallyIlluminated = false;
 					qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 					qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 				}
@@ -138,19 +138,19 @@ internal class LightSensorPatches : QSBPatch
 
 		var illuminated = __instance._illuminated;
 		__instance.UpdateIllumination();
-		var locallyIlluminated = qsbLightSensor.LocallyIlluminated;
-		qsbLightSensor.LocallyIlluminated = __instance._illuminated;
+		var locallyIlluminated = qsbLightSensor._locallyIlluminated;
+		qsbLightSensor._locallyIlluminated = __instance._illuminated;
 		__instance._illuminated = illuminated;
 
-		if (!locallyIlluminated && qsbLightSensor.LocallyIlluminated)
+		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
 		{
-			qsbLightSensor.LocallyIlluminated = true;
+			qsbLightSensor._locallyIlluminated = true;
 			qsbLightSensor.OnDetectLocalLight?.Invoke();
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
 		}
-		else if (locallyIlluminated && !qsbLightSensor.LocallyIlluminated)
+		else if (locallyIlluminated && !qsbLightSensor._locallyIlluminated)
 		{
-			qsbLightSensor.LocallyIlluminated = false;
+			qsbLightSensor._locallyIlluminated = false;
 			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 		}
