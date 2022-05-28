@@ -23,5 +23,9 @@ public class RequestInitialStatesMessage : QSBMessage
 		DebugLog.DebugWrite($"sent initial states to {to}");
 	}
 
+	/// <summary>
+	/// called on the host.
+	/// use this to send initial states to whoever is asking for it.
+	/// </summary>
 	public static event Action<uint> SendInitialState;
 }
