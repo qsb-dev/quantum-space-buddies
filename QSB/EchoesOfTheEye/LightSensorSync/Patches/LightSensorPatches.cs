@@ -3,7 +3,6 @@ using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
@@ -68,7 +67,6 @@ internal class LightSensorPatches : QSBPatch
 			if (__instance._startIlluminated)
 			{
 				qsbLightSensor.LocallyIlluminated = true;
-				DebugLog.DebugWrite($"{qsbLightSensor} LocallyIlluminated = true");
 				qsbLightSensor.OnDetectLocalLight?.Invoke();
 				qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
 			}
@@ -110,7 +108,6 @@ internal class LightSensorPatches : QSBPatch
 				if (qsbLightSensor.LocallyIlluminated)
 				{
 					qsbLightSensor.LocallyIlluminated = false;
-					DebugLog.DebugWrite($"{qsbLightSensor} LocallyIlluminated = false");
 					qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 					qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 				}
@@ -144,13 +141,11 @@ internal class LightSensorPatches : QSBPatch
 		__instance.UpdateIllumination();
 		if (!locallyIlluminated && qsbLightSensor.LocallyIlluminated)
 		{
-			DebugLog.DebugWrite($"{qsbLightSensor} LocallyIlluminated = true");
 			qsbLightSensor.OnDetectLocalLight?.Invoke();
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
 		}
 		else if (locallyIlluminated && !qsbLightSensor.LocallyIlluminated)
 		{
-			DebugLog.DebugWrite($"{qsbLightSensor} LocallyIlluminated = false");
 			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 		}

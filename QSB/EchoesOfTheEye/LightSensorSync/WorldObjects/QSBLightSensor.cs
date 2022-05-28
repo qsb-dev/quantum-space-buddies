@@ -1,6 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
@@ -40,13 +39,11 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 
 		if (!illuminated && _illuminatedBy.Count > 0)
 		{
-			DebugLog.DebugWrite($"{this} _illuminated = true by {playerId}");
 			AttachedObject._illuminated = true;
 			AttachedObject.OnDetectLight.Invoke();
 		}
 		else if (illuminated && _illuminatedBy.Count == 0)
 		{
-			DebugLog.DebugWrite($"{this} _illuminated = false by {playerId}");
 			AttachedObject._illuminated = false;
 			AttachedObject.OnDetectDarkness.Invoke();
 		}
