@@ -1,7 +1,6 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Player;
-using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
@@ -156,7 +155,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
 			{
 				WriteLine(2, $"Illuminated : {player.LightSensor.IsIlluminated()}");
-				var singleLightSensor = player.LightSensor as SingleLightSensor;
+				var singleLightSensor = (SingleLightSensor)player.LightSensor;
 				foreach (var item in singleLightSensor._lightSources)
 				{
 					WriteLine(2, $"- {item.GetLightSourceType()}");
@@ -236,7 +235,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 			if (QSBWorldSync.AllObjectsReady)
 			{
-				var ghost = QSBWorldSync.GetWorldObjects<QSBGhostBrain>().First(x => x.AttachedObject._name == "Yubaba");
+				var ghost = QSBWorldSync.GetWorldObjects<QSBGhostBrain>().First(x => x.AttachedObject._name == "Kamaji");
 				WriteLine(4, ghost.AttachedObject._name);
 				WriteLine(4, $"Action:{ghost.GetCurrentActionName()}");
 				WriteLine(4, $"Threat Awareness:{ghost.GetThreatAwareness()}");
