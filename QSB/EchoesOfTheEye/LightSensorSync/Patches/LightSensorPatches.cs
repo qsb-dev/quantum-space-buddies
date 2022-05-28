@@ -25,6 +25,7 @@ internal class LightSensorPatches : QSBPatch
 		}
 
 		var isPlayerLightSensor = LightSensorManager.IsPlayerLightSensor(__instance);
+		var qsbPlayerLightSensor = isPlayerLightSensor ? __instance.GetComponent<QSBPlayerLightSensor>() : null;
 		var qsbLightSensor = isPlayerLightSensor ? null : __instance.GetWorldObject<QSBLightSensor>();
 
 		if (__instance._lightDetector != null)
@@ -67,8 +68,6 @@ internal class LightSensorPatches : QSBPatch
 			{
 				if (isPlayerLightSensor)
 				{
-					var qsbPlayerLightSensor = __instance.GetComponent<QSBPlayerLightSensor>();
-
 					qsbPlayerLightSensor._locallyIlluminated = true;
 					new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, true).Send();
 				}
@@ -94,6 +93,7 @@ internal class LightSensorPatches : QSBPatch
 		}
 
 		var isPlayerLightSensor = LightSensorManager.IsPlayerLightSensor(__instance);
+		var qsbPlayerLightSensor = isPlayerLightSensor ? __instance.GetComponent<QSBPlayerLightSensor>() : null;
 		var qsbLightSensor = isPlayerLightSensor ? null : __instance.GetWorldObject<QSBLightSensor>();
 
 		var containsAnyOccupants = __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe);
@@ -114,8 +114,6 @@ internal class LightSensorPatches : QSBPatch
 			{
 				if (isPlayerLightSensor)
 				{
-					var qsbPlayerLightSensor = __instance.GetComponent<QSBPlayerLightSensor>();
-
 					if (qsbPlayerLightSensor._locallyIlluminated)
 					{
 						qsbPlayerLightSensor._locallyIlluminated = false;
@@ -152,6 +150,7 @@ internal class LightSensorPatches : QSBPatch
 		}
 
 		var isPlayerLightSensor = LightSensorManager.IsPlayerLightSensor(__instance);
+		var qsbPlayerLightSensor = isPlayerLightSensor ? __instance.GetComponent<QSBPlayerLightSensor>() : null;
 		var qsbLightSensor = isPlayerLightSensor ? null : __instance.GetWorldObject<QSBLightSensor>();
 
 		if (__instance._fixedUpdateFrameDelayCount > 0)
@@ -168,11 +167,8 @@ internal class LightSensorPatches : QSBPatch
 		var illuminated = __instance._illuminated;
 		__instance.UpdateIllumination();
 		bool locallyIlluminated;
-		QSBPlayerLightSensor qsbPlayerLightSensor = null;
 		if (isPlayerLightSensor)
 		{
-			qsbPlayerLightSensor = __instance.GetComponent<QSBPlayerLightSensor>();
-
 			locallyIlluminated = qsbPlayerLightSensor._locallyIlluminated;
 			qsbPlayerLightSensor._locallyIlluminated = __instance._illuminated;
 		}
