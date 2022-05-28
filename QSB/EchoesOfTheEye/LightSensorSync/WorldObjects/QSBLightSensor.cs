@@ -1,4 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.EchoesOfTheEye.LightSensorSync.Messages;
+using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
 using System;
@@ -14,11 +16,12 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;
 
-	private readonly List<uint> _illuminatedBy = new();
+	internal readonly List<uint> _illuminatedBy = new();
 
 	public override void SendInitialState(uint to)
 	{
-		// todo
+		this.SendMessage(new IlluminatedByMessage(_illuminatedBy.ToArray()) { To = to });
+		this.SendMessage(new IlluminatingLanternsMessage(AttachedObject._illuminatingDreamLanternList) { To = to });
 	}
 
 	public override async UniTask Init(CancellationToken ct) => QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
