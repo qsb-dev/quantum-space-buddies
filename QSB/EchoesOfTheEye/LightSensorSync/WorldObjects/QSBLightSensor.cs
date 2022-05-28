@@ -11,10 +11,10 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 internal class QSBLightSensor : WorldObject<SingleLightSensor>
 {
 	public bool LocallyIlluminated;
+
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;
 
-	internal bool _clientIlluminated;
 	private readonly List<uint> _illuminatedBy = new();
 
 	public override void SendInitialState(uint to)
@@ -26,10 +26,10 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 	private void OnPlayerLeave(PlayerInfo player) => SetIlluminated(player.PlayerId, false);
 
-	public void SetIlluminated(uint playerId, bool clientIlluminated)
+	public void SetIlluminated(uint playerId, bool locallyIlluminated)
 	{
 		var illuminated = _illuminatedBy.Count > 0;
-		if (clientIlluminated)
+		if (locallyIlluminated)
 		{
 			_illuminatedBy.SafeAdd(playerId);
 		}
