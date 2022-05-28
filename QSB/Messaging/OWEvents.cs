@@ -31,4 +31,6 @@ public static class OWEvents
 	public const string FlickerOffAndOn = nameof(FlickerOffAndOn);
 	public const string EnterDreamWorld = nameof(EnterDreamWorld);
 	public const string ExitDreamWorld = nameof(ExitDreamWorld);
+	public const string EnterRemoteFlightConsole = nameof(EnterRemoteFlightConsole);
+	public const string ExitRemoteFlightConsole = nameof(ExitRemoteFlightConsole);
 }
