@@ -42,13 +42,13 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 
 		if (_illuminatedBy.Count > 0)
 		{
-			DebugLog.DebugWrite($"{this} _illuminated by {playerId}");
+			DebugLog.DebugWrite($"{this} _illuminated = true by {playerId}");
 			AttachedObject._illuminated = true;
 			AttachedObject.OnDetectLight.Invoke();
 		}
 		else
 		{
-			DebugLog.DebugWrite($"{this} !_illuminated by {playerId}");
+			DebugLog.DebugWrite($"{this} _illuminated = false by {playerId}");
 			AttachedObject._illuminated = false;
 			AttachedObject.OnDetectDarkness.Invoke();
 		}

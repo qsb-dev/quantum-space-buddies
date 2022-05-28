@@ -40,23 +40,23 @@ internal class LightSensorPatches : QSBPatch
 		__instance.UpdateIllumination();
 		if (!locallyIlluminated && qsbLightSensor.LocallyIlluminated)
 		{
-			DebugLog.DebugWrite($"{qsbLightSensor} LocallyIlluminated");
+			DebugLog.DebugWrite($"{qsbLightSensor} LocallyIlluminated = true");
 			qsbLightSensor.OnDetectLocalLight?.Invoke();
 		}
 		else if (locallyIlluminated && !qsbLightSensor.LocallyIlluminated)
 		{
-			DebugLog.DebugWrite($"{qsbLightSensor} !LocallyIlluminated");
+			DebugLog.DebugWrite($"{qsbLightSensor} LocallyIlluminated = false");
 			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 		}
 
 		if (!illuminated && qsbLightSensor._illuminated)
 		{
-			DebugLog.DebugWrite($"{qsbLightSensor} _illuminated");
+			DebugLog.DebugWrite($"{qsbLightSensor} _illuminated = true");
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
 		}
 		else if (illuminated && !qsbLightSensor._illuminated)
 		{
-			DebugLog.DebugWrite($"{qsbLightSensor} !_illuminated");
+			DebugLog.DebugWrite($"{qsbLightSensor} _illuminated = false");
 			qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 		}
 
