@@ -137,9 +137,9 @@ The template for this file is this :
   "drawLines": false,
   "drawLabels": false,
   "drawQuantumVisibilityObjects": false,
+  "drawGhostAI": false,
   "skipTitleScreen": false,
-  "greySkybox": false,
-  "drawGhostAI": false
+  "greySkybox": false
 }
 ```
 
@@ -153,9 +153,9 @@ The template for this file is this :
 - drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
 - drawLabels - Draws GUI labels attached to some objects. LAGGY.
 - drawQuantumVisibilityObjects - Indicates visibility objects with an orange shape.
+- drawGhostAI - Draws debug lines and labels just for the ghosts.
 - skipTitleScreen - Auto-skips the splash screen.
 - greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.
-- drawGhostAI - Draws debug lines and labels just for the ghosts.
 
 **Warning : Mod development can lead to unexpected errors in your computer system.** 
 - **When editing the networking code, mistakes can lead to QSB overwhelming your network connection with excess packets**.
