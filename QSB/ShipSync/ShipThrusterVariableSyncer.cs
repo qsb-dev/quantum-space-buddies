@@ -24,7 +24,7 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 			return;
 		}
 
-		if (AccelerationSyncer.HasChanged())
+		if (AccelerationSyncer.HasChanged)
 		{
 			if (AccelerationSyncer.Value == Vector3.zero)
 			{
