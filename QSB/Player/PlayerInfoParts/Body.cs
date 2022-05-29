@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.EchoesOfTheEye.LightSensorSync;
 using QSB.Utility;
 using UnityEngine;
 
@@ -72,6 +73,8 @@ public partial class PlayerInfo
 			return CameraBody.transform.Find("REMOTE_CameraDetector").GetComponent<LightSensor>();
 		}
 	}
+
+	public QSBPlayerLightSensor QSBPlayerLightSensor;
 
 	public Vector3 Velocity
 	{
