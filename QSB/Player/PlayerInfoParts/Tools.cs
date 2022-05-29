@@ -5,6 +5,7 @@ using QSB.RoastingSync;
 using QSB.Tools;
 using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeLauncherTool;
+using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using UnityEngine;
@@ -18,7 +19,7 @@ public partial class PlayerInfo
 	public QSBFlashlight FlashLight => CameraBody == null ? null : CameraBody.GetComponentInChildren<QSBFlashlight>();
 	public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 	public QSBTool Translator => GetToolByType(ToolType.Translator);
-	public QSBProbeLauncherTool ProbeLauncher => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
+	public QSBProbeLauncherTool ProbeLauncherTool => (QSBProbeLauncherTool)GetToolByType(ToolType.ProbeLauncher);
 	private Transform _handPivot;
 	public Transform HandPivot
 	{
@@ -80,9 +81,10 @@ public partial class PlayerInfo
 	public IQSBItem HeldItem { get; set; }
 	public bool FlashlightActive { get; set; }
 	public bool SuitedUp { get; set; }
-	public bool ProbeLauncherEquipped { get; set; }
+	public bool LocalProbeLauncherEquipped { get; set; }
 	public bool SignalscopeEquipped { get; set; }
 	public bool TranslatorEquipped { get; set; }
 	public bool ProbeActive { get; set; }
 	public GameObject RoastingStick { get; set; }
+	public QSBProbeLauncher ProbeLauncherEquipped { get; set; }
 }

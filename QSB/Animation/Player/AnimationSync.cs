@@ -102,7 +102,7 @@ public class AnimationSync : PlayerSyncObject
 
 	private void InitCrouchSync()
 	{
-		_crouchSync = GetComponent<CrouchSync>();
+		_crouchSync = this.GetRequiredComponent<CrouchSync>();
 		_crouchSync.Init(_playerController, VisibleAnimator);
 	}
 

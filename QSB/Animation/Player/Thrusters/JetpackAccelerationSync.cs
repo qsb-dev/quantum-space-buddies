@@ -6,7 +6,6 @@ namespace QSB.Animation.Player.Thrusters;
 public class JetpackAccelerationSync : NetworkBehaviour
 {
 	public Vector3VariableSyncer AccelerationVariableSyncer;
-	public BoolVariableSyncer ThrustingVariableSyncer;
 
 	private ThrusterModel _thrusterModel;
 
@@ -25,7 +24,6 @@ public class JetpackAccelerationSync : NetworkBehaviour
 		if (_thrusterModel != null)
 		{
 			AccelerationVariableSyncer.Value = _thrusterModel.GetLocalAcceleration();
-			ThrustingVariableSyncer.Value = _thrusterModel.IsTranslationalThrusterFiring();
 		}
 	}
 }

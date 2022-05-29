@@ -252,4 +252,90 @@ internal class ShipPatches : QSBPatch
 
 		return false;
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipCockpitController), nameof(ShipCockpitController.EnterLandingView))]
+	public static void EnterLandingView() =>
+		new LandingCameraMessage(true).Send();
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipCockpitController), nameof(ShipCockpitController.ExitLandingView))]
+	public static void ExitLandingView() =>
+		new LandingCameraMessage(false).Send();
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipLight), nameof(ShipLight.SetOn))]
+	public static void SetOn(ShipLight __instance, bool on)
+	{
+		if (Remote)
+		{
+			return;
+		}
+
+		if (__instance._on == on)
+		{
+			return;
+		}
+
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		if (!__instance.TryGetWorldObject(out QSBShipLight qsbShipLight))
+		{
+			return;
+		}
+
+		qsbShipLight.SendMessage(new ShipLightMessage(on));
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipCockpitUI), nameof(ShipCockpitUI.UpdateSignalscopeCanvas))]
+	public static bool UpdateSignalscopeCanvas(ShipCockpitUI __instance)
+	{
+		var flag = false;
+		if (Locator.GetToolModeSwapper().GetToolMode() != ToolMode.SignalScope)
+		{
+			if (__instance._signalscopeUI.IsActivated())
+			{
+				__instance._signalscopeUI.Deactivate();
+			}
+		}
+		else if (ShipManager.Instance.CurrentFlyer != uint.MaxValue)
+		{
+			flag = true;
+			if (!__instance._signalscopeUI.IsActivated())
+			{
+				if (__instance._reticuleController == null)
+				{
+					Debug.LogError("ReticuleController cannot be null!");
+				}
+
+				__instance._signalscopeUI.Activate(__instance._signalscopeTool, __instance._reticuleController);
+			}
+		}
+
+		__instance._scopeScreenMaterial.SetColor(__instance._propID_EmissionColor, __instance._scopeScreenColor * (flag ? 1f : 0f));
+		__instance._sigScopeScreenLight.SetOn(flag);
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ShipReactorComponent), nameof(ShipReactorComponent.OnComponentDamaged))]
+	public static bool ByeByeReactor(ShipReactorComponent __instance)
+	{
+		if (!QSBCore.IsHost)
+		{
+			return false;
+		}
+
+		__instance._criticalCountdown = UnityEngine.Random.Range(__instance._minCountdown, __instance._maxCountdown);
+		__instance._criticalTimer = __instance._criticalCountdown;
+		__instance.enabled = true;
+		new ReactorCountdownMessage(__instance._criticalCountdown).Send();
+
+		return false;
+	}
 }

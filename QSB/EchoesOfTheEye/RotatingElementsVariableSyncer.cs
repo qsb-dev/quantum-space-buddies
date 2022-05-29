@@ -33,7 +33,7 @@ internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVaria
 
 	protected abstract Transform[] RotatingElements { get; }
 
-	protected override bool HasChanged()
+	protected override bool CheckChanged()
 	{
 		var rotatingElements = RotatingElements;
 		Value ??= new Quaternion[rotatingElements.Length];
