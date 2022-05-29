@@ -36,8 +36,8 @@ public abstract class UnsectoredRigidbodySync : BaseUnsectoredSync
 		ReferenceRigidbody = ReferenceTransform ? ReferenceTransform.GetAttachedOWRigidbody() : null;
 	}
 
-	public override bool HasChanged() =>
-		base.HasChanged() ||
+	protected override bool CheckChanged() =>
+		base.CheckChanged() ||
 		Vector3.Distance(Velocity, _prevVelocity) > VelocityChangeThreshold ||
 		Vector3.Distance(AngularVelocity, _prevAngularVelocity) > AngularVelocityChangeThreshold;
 
