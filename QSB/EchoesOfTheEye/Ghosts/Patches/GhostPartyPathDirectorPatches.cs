@@ -60,7 +60,7 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 			var ghostBrain = __instance._dispatchedGhosts[i].GetWorldObject<QSBGhostBrain>();
 			if (ghostBrain.GetCurrentActionName() == GhostAction.Name.PartyPath)
 			{
-				var partyPathAction = ghostBrain.GetCurrentAction() as QSBPartyPathAction;
+				var partyPathAction = (QSBPartyPathAction)ghostBrain.GetCurrentAction();
 				if (partyPathAction.hasReachedEndOfPath)
 				{
 					if (!partyPathAction.isMovingToFinalPosition)
@@ -101,7 +101,7 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 			var num = Random.Range(0, __instance._ghostSpawns.Length);
 			ghostBrain2.AttachedObject.transform.position = __instance._ghostSpawns[num].spawnTransform.position;
 			ghostBrain2.AttachedObject.transform.eulerAngles = Vector3.up * __instance._ghostSpawns[num].spawnTransform.eulerAngles.y;
-			(ghostBrain2.GetCurrentAction() as QSBPartyPathAction).StartFollowPath();
+			((QSBPartyPathAction)ghostBrain2.GetCurrentAction()).StartFollowPath();
 			__instance._ghostSpawns[num].spawnDoor.Open();
 			__instance._ghostSpawns[num].spawnDoorTimer = Time.timeSinceLevelLoad + 4f;
 			__instance._waitingGhosts.RemoveAt(0);
