@@ -91,7 +91,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		var num2 = _data.isIlluminated ? 8f : 0.8f;
 		AttachedObject._eyeGlow = Mathf.MoveTowards(AttachedObject._eyeGlow, target, Time.deltaTime * num2);
 		var closestPlayer = QSBPlayerManager.GetClosestPlayerToWorldPoint(AttachedObject.transform.position, true);
-		var num3 = (closestPlayer.AssignedSimulationLantern.AttachedObject.GetLanternController().GetLight().GetFlickerScale() - 1f + 0.07f) / 0.14f;
+		var num3 = (closestPlayer?.AssignedSimulationLantern?.AttachedObject?.GetLanternController()?.GetLight()?.GetFlickerScale() - 1f + 0.07f) / 0.14f ?? 0;
 		num3 = Mathf.Lerp(0.7f, 1f, num3);
 		AttachedObject.SetEyeGlow(AttachedObject._eyeGlow * num3);
 
