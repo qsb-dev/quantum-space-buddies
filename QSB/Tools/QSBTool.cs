@@ -48,7 +48,7 @@ public class QSBTool : PlayerTool
 
 	public virtual void OnEnable()
 	{
-		if (!Player.FlyingShip)
+		if (!Player?.FlyingShip ?? false)
 		{
 			ToolGameObject?.SetActive(true);
 		}
