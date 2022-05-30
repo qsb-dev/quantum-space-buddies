@@ -73,7 +73,7 @@ internal class RemoteThrusterFlameController : MonoBehaviour
 
 		transform.localScale = Vector3.one * _currentScale;
 		_light.range = _baseLightRadius * _currentScale;
-		_thrusterRenderer.enabled = _currentScale > 0f;
+		_thrusterRenderer.enabled = _currentScale > 0f && _attachedPlayer.Visible;
 		_light.enabled = _currentScale > 0f;
 	}
 
