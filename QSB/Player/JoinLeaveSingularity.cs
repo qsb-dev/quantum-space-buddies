@@ -40,10 +40,8 @@ public static class JoinLeaveSingularity
 		}
 
 		var go = new GameObject($"player {player} JoinLeaveSingularity");
-		var ct = CancellationTokenSource.CreateLinkedTokenSource(
-			go.GetCancellationTokenOnDestroy(),
-			player.TransformSync.GetCancellationTokenOnDestroy()
-		).Token;
+		// yes, it throws sometimes, but i cant destroy when the transform sync destroy or else the black hole doesn't happen
+		var ct = go.GetCancellationTokenOnDestroy();
 		UniTask.Create(async () =>
 		{
 			DebugLog.DebugWrite($"{go.name}: WARP TASK");
