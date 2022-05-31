@@ -78,6 +78,24 @@ public class RemotePlayerFluidDetector : PriorityDetector
 		return _fluidDataByType[(int)fluidType].count > 0;
 	}
 
+	public override void AddVolume(EffectVolume eVol)
+	{
+		var fluidVolume = eVol as FluidVolume;
+		if (fluidVolume != null && (!fluidVolume.IsInheritible()))
+		{
+			base.AddVolume(eVol);
+		}
+	}
+
+	public override void RemoveVolume(EffectVolume eVol)
+	{
+		var fluidVolume = eVol as FluidVolume;
+		if (fluidVolume != null && (!fluidVolume.IsInheritible()))
+		{
+			base.RemoveVolume(eVol);
+		}
+	}
+
 	public override void OnVolumeActivated(PriorityVolume volume)
 	{
 		var fluidVolume = volume as FluidVolume;
