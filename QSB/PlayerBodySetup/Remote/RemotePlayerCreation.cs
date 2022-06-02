@@ -43,6 +43,7 @@ public static class RemotePlayerCreation
 		// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
 		var REMOTE_Player_Body = Object.Instantiate(GetPrefab());
+		var REMOTE_PlayerDetector = REMOTE_Player_Body.transform.Find("REMOTE_PlayerDetector");
 		var REMOTE_PlayerCamera = REMOTE_Player_Body.transform.Find("REMOTE_PlayerCamera").gameObject;
 		var REMOTE_RoastingSystem = REMOTE_Player_Body.transform.Find("REMOTE_RoastingSystem").gameObject;
 		var REMOTE_Stick_Root = REMOTE_RoastingSystem.transform.Find("REMOTE_Stick_Root").gameObject;
@@ -56,6 +57,7 @@ public static class RemotePlayerCreation
 
 		player.Body = REMOTE_Player_Body;
 		player.ThrusterLightTracker = player.Body.GetComponentInChildren<ThrusterLightTracker>();
+		player.FluidDetector = REMOTE_PlayerDetector.GetComponent<RemotePlayerFluidDetector>();
 
 		player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
 

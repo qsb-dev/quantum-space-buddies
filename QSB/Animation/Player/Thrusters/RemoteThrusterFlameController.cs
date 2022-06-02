@@ -25,7 +25,8 @@ internal class RemoteThrusterFlameController : MonoBehaviour
 	private Vector3 _thrusterFilter;
 	private float _baseLightRadius;
 	private float _currentScale;
-
+	private RemotePlayerFluidDetector _fluidDetector;
+	private bool _underwater;
 	private bool _initialized;
 	private PlayerInfo _attachedPlayer;
 
@@ -43,6 +44,19 @@ internal class RemoteThrusterFlameController : MonoBehaviour
 		_light.enabled = false;
 		_light.shadows = LightShadows.Soft;
 		_initialized = true;
+		_underwater = false;
+		_fluidDetector = player.FluidDetector;
+		_fluidDetector.OnEnterFluidType += OnEnterExitFluidType;
+		_fluidDetector.OnExitFluidType += OnEnterExitFluidType;
+	}
+
+	private void OnDestroy()
+	{
+		if (_fluidDetector != null)
+		{
+			_fluidDetector.OnEnterFluidType -= OnEnterExitFluidType;
+			_fluidDetector.OnExitFluidType -= OnEnterExitFluidType;
+		}
 	}
 
 	private void Update()
@@ -52,7 +66,10 @@ internal class RemoteThrusterFlameController : MonoBehaviour
 			return;
 		}
 
-		var num = _scaleByThrust.Evaluate(GetThrustFraction());
+		var num = _underwater
+			? 0f
+			: _scaleByThrust.Evaluate(GetThrustFraction());
+
 		if (_belowMaxThrustScalar < 1f)
 		{
 			num *= _belowMaxThrustScalar;
@@ -65,7 +82,7 @@ internal class RemoteThrusterFlameController : MonoBehaviour
 			_scaleSpring.ResetVelocity();
 		}
 
-		if (_currentScale <= 0.001f)
+		if (_underwater && _currentScale <= 0.001f)
 		{
 			_currentScale = 0f;
 			_scaleSpring.ResetVelocity();
@@ -75,6 +92,11 @@ internal class RemoteThrusterFlameController : MonoBehaviour
 		_light.range = _baseLightRadius * _currentScale;
 		_thrusterRenderer.enabled = _currentScale > 0f && _attachedPlayer.Visible;
 		_light.enabled = _currentScale > 0f;
+	}
+
+	private void OnEnterExitFluidType(FluidVolume.Type type)
+	{
+		this._underwater = this._fluidDetector.InFluidType(FluidVolume.Type.WATER);
 	}
 
 	private float GetThrustFraction() => Vector3.Dot(_attachedPlayer.JetpackAcceleration.AccelerationVariableSyncer.Value, _thrusterFilter);
