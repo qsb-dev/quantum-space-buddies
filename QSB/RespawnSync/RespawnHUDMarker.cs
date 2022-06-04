@@ -1,4 +1,5 @@
-﻿using QSB.ShipSync;
+﻿using QSB.Localisation;
+using QSB.ShipSync;
 using UnityEngine;
 
 namespace QSB.RespawnSync;
@@ -11,7 +12,7 @@ public class RespawnHUDMarker : HUDDistanceMarker
 	{
 		_markerRadius = 0.2f;
 		_markerTarget = transform;
-		_markerLabel = "RESPAWN PLAYER";
+		_markerLabel = QSBLocalisation.Current.RespawnPlayer;
 		_isReady = true;
 
 		base.InitCanvasMarker();

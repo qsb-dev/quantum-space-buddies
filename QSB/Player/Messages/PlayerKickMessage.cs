@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using QSB.Localisation;
 using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
@@ -46,15 +47,15 @@ internal class PlayerKickMessage : QSBMessage<string>
 		{
 			if (QSBPlayerManager.PlayerExists(PlayerId))
 			{
-				DebugLog.ToAll($"{QSBPlayerManager.GetPlayer(PlayerId).Name} was kicked.");
+				DebugLog.ToAll(string.Format(QSBLocalisation.Current.PlayerWasKicked, QSBPlayerManager.GetPlayer(PlayerId).Name));
 				return;
 			}
 
-			DebugLog.ToAll($"Player id:{PlayerId} was kicked.");
+			DebugLog.ToAll(string.Format(QSBLocalisation.Current.PlayerWasKicked, PlayerId));
 			return;
 		}
 
-		DebugLog.ToAll($"Kicked from server. Reason : {Data}");
+		DebugLog.ToAll(string.Format(QSBLocalisation.Current.KickedFromServer, Data));
 		MenuManager.Instance.OnKicked(Data);
 	}
 }

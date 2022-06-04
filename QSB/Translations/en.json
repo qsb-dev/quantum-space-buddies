@@ -1,0 +1,112 @@
+﻿{
+  "Language": "ENGLISH",
+  "MainMenuHost": "OPEN TO MULTIPLAYER",
+  "MainMenuConnect": "CONNECT TO MULTIPLAYER",
+  "PauseMenuDisconnect": "DISCONNECT",
+  "PauseMenuStopHosting": "STOP HOSTING",
+  "PublicIPAddress": "Public IP Address",
+  "ProductUserID": "Product User ID",
+  "Connect": "CONNECT",
+  "Cancel": "CANCEL",
+  "HostExistingOrNew": "Do you want to host an existing expedition, or host a new expedition?",
+  "ExistingSave": "EXISTING SAVE",
+  "NewSave": "NEW SAVE",
+  "DisconnectAreYouSure": "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.",
+  "Yes": "YES",
+  "No": "NO",
+  "StopHostingAreYouSure": "Are you sure you want to stop hosting?\r\nThis will disconnect all clients and send everyone back to the main menu.",
+  "CopyProductUserIDToClipboard": "Hosting server.\r\nClients will connect using your product user id, which is :\r\n{0}\r\nDo you want to copy this to the clipboard?",
+  "Connecting": "CONNECTING...",
+  "OK": "OK",
+  "ServerRefusedConnection": "Server refused connection.\r\n{0}",
+  "ClientDisconnectWithError": "Client disconnected with error!\r\n{0}",
+  "QSBVersionMismatch": "QSB version does not match. (Client:{0}, Server:{1})",
+  "OWVersionMismatch": "Outer Wilds version does not match. (Client:{0}, Server:{1})",
+  "DLCMismatch": "DLC installation state does not match. (Client:{0}, Server:{1})",
+  "GameProgressLimit": "Game has progressed too far.",
+  "AddonMismatch": "Addon mismatch. (Client:{0} addons, Server:{1} addons)",
+  "IncompatibleMod": "Using an incompatible/disallowed mod. First mod found was {0}",
+  "PlayerJoinedTheGame": "{0} joined!",
+  "PlayerWasKicked": "{0} was kicked.",
+  "KickedFromServer": "Kicked from server. Reason : {0}",
+  "RespawnPlayer": "Respawn Player",
+  "DeathMessages": {
+    "Default": [
+      "{0} died",
+      "{0} was killed"
+    ],
+    "Impact": [
+      "{0} forgot to use retro-rockets",
+      "{0} bonked into the ground too hard",
+      "{0} hit the ground too hard",
+      "{0} went splat",
+      "{0} died due to impact",
+      "{0} impacted the ground too hard"
+    ],
+    "Asphyxiation": [
+      "{0} forgot to breathe",
+      "{0} asphyxiated",
+      "{0} died due to asphyxiation",
+      "{0} forgot how to breathe",
+      "{0} forgot to check their oxygen",
+      "{0} ran out of air",
+      "{0} ran out of oxygen",
+      "{0} didn't need air anyway"
+    ],
+    "Energy": [
+      "{0} was cooked"
+    ],
+    "Supernova": [
+      "{0} ran out of time",
+      "{0} burnt up",
+      "{0} was cooked",
+      "{0} got vaporized",
+      "{0} lost track of time"
+    ],
+    "Digestion": [
+      "{0} was eaten",
+      "{0} found a fish",
+      "{0} encountered an evil creature",
+      "{0} messed with the wrong fish",
+      "{0} was digested",
+      "{0} died due to digestion"
+    ],
+    "Crushed": [
+      "{0} was crushed",
+      "{0} was squished",
+      "{0} was buried",
+      "{0} didn't make it out in time",
+      "{0} went swimming in the sand",
+      "{0} underestimated sand",
+      "{0} got trapped under the sand"
+    ],
+    "Lava": [
+      "{0} died in lava",
+      "{0} was melted",
+      "{0} tried to swim in lava",
+      "{0} fell into lava",
+      "{0} died due to lava",
+      "{0} took a swim in lava",
+      "{0} got burnt in the lava"
+    ],
+    "BlackHole": [
+      "{0} chased their memories"
+    ],
+    "DreamExplosion": [
+      "{0} exploded",
+      "{0} was an early adopter",
+      "{0} went kaboom",
+      "{0} was fried",
+      "{0} died due to explosion",
+      "{0} used the wrong artifact"
+    ],
+    "CrushedByElevator": [
+      "{0} was crushed",
+      "{0} was squished",
+      "{0} was crushed by an elevator",
+      "{0} stood under an elevator",
+      "{0} became a flat-hearther",
+      "{0} was squished by an elevator"
+    ]
+  }
+}

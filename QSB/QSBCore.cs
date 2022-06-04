@@ -2,6 +2,7 @@
 using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
+using QSB.Localisation;
 using QSB.Menus;
 using QSB.Patches;
 using QSB.QuantumSync;
@@ -122,6 +123,7 @@ public class QSBCore : ModBehaviour
 
 		QSBPatchManager.Init();
 		DeterministicManager.Init();
+		QSBLocalisation.Init();
 
 		var components = typeof(IAddComponentOnStart).GetDerivedTypes()
 			.Select(x => gameObject.AddComponent(x))
