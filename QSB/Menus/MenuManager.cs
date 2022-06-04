@@ -109,7 +109,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalisation.Current.MainMenuHost;
 		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalisation.Current.MainMenuConnect;
 		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalisation.Current.PublicIPAddress : QSBLocalisation.Current.ProductUserID;
-		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalisation.Current.Connect), new ScreenPrompt(QSBLocalisation.Current.Cancel), true, true);
+		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalisation.Current.Connect), new ScreenPrompt(QSBLocalisation.Current.Cancel), false);
 		ConnectPopup.SetInputFieldPlaceholderText(text);
 		HostGameTypePopup.SetUpPopup(QSBLocalisation.Current.HostExistingOrNew,
 			InputLibrary.menuConfirm,
@@ -117,9 +117,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			InputLibrary.cancel,
 			new ScreenPrompt(QSBLocalisation.Current.ExistingSave),
 			new ScreenPrompt(QSBLocalisation.Current.NewSave),
-			new ScreenPrompt(QSBLocalisation.Current.Cancel),
-			true,
-			true);
+			new ScreenPrompt(QSBLocalisation.Current.Cancel));
 	}
 
 	private void Update()
