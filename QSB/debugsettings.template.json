@@ -4,6 +4,7 @@
   "instanceIdInLogs": false,
   "hookDebugLogs": false,
   "avoidTimeSync": false,
+  "autoStart": false,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
