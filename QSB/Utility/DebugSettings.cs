@@ -6,8 +6,7 @@ namespace QSB.Utility;
 public class DebugSettings
 {
 	[JsonProperty("useKcpTransport")]
-	private bool _useKcpTransport;
-	public bool UseKcpTransport => _useKcpTransport || AutoStart;
+	public bool UseKcpTransport;
 
 	[JsonProperty("dumpWorldObjects")]
 	public bool DumpWorldObjects;
