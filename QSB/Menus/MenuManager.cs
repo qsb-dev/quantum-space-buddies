@@ -70,6 +70,23 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			QSBCore.Helper.Storage.Save(QSBCore.Storage, "storage.json");
 			QSBCore.MenuApi.RegisterStartupPopup(UpdateChangelog);
 		}
+
+		if (QSBCore.DebugSettings.AutoStart)
+		{
+			// auto host/connect
+			Delay.RunWhen(PlayerData.IsLoaded, () =>
+			{
+				if (DebugLog.ProcessInstanceId == 0)
+				{
+					Host(false);
+				}
+				else
+				{
+					QSBCore.DefaultServerIP = "localhost";
+					Connect();
+				}
+			});
+		}
 	}
 
 	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isUniverse)
