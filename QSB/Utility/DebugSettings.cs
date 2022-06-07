@@ -47,6 +47,10 @@ public class DebugSettings
 	private bool _drawGhostAI;
 	public bool DrawGhostAI => DebugMode && _drawGhostAI;
 
+	[JsonProperty("skipTitleScreen")]
+	private bool _skipTitleScreen;
+	public bool SkipTitleScreen => DebugMode && _skipTitleScreen;
+
 	[JsonProperty("greySkybox")]
 	private bool _greySkybox;
 	public bool GreySkybox => DebugMode && _greySkybox;
