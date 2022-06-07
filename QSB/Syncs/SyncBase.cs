@@ -198,7 +198,7 @@ public abstract class SyncBase : QSBNetworkTransform
 	/// <summary>
 	/// call the base method FIRST
 	/// </summary>
-	protected override bool CheckChanged()
+	protected override bool HasChanged()
 	{
 		GetFromAttached();
 		if (UseInterpolation)
@@ -207,7 +207,7 @@ public abstract class SyncBase : QSBNetworkTransform
 			SmoothRotation = transform.rotation;
 		}
 
-		return base.CheckChanged();
+		return base.HasChanged();
 	}
 
 	/// <summary>
