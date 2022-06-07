@@ -148,13 +148,13 @@ The template for this file is this :
 - instanceIdInLogs - Appends the game instance id to every log message sent.
 - hookDebugLogs - Print Unity logs and warnings.
 - avoidTimeSync - Disables the syncing of time.
+- autoStart - Host/connect automatically, use kcp transport, and skip title screen.
 - debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
 - drawGui - Draws a GUI at the top of the screen that gives information on many things.
 - drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
 - drawLabels - Draws GUI labels attached to some objects. LAGGY.
 - drawQuantumVisibilityObjects - Indicates visibility objects with an orange shape.
 - drawGhostAI - Draws debug lines and labels just for the ghosts.
-- skipTitleScreen - Auto-skips the splash screen.
 - greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.
 
 **Warning : Mod development can lead to unexpected errors in your computer system.** 

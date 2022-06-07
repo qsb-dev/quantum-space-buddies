@@ -320,8 +320,9 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 		SetButtonActive(NewGameButton, true);
 
-		if (QSBCore.DebugSettings.SkipTitleScreen)
+		if (QSBCore.DebugSettings.AutoStart)
 		{
+			// skip title screen
 			Application.runInBackground = true;
 			var titleScreenManager = FindObjectOfType<TitleScreenManager>();
 			var titleScreenAnimation = titleScreenManager._cameraController;
