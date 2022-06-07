@@ -148,6 +148,7 @@ The template for this file is this :
 - instanceIdInLogs - Appends the game instance id to every log message sent.
 - hookDebugLogs - Print Unity logs and warnings.
 - avoidTimeSync - Disables the syncing of time.
+- autoStart - Host/connect automatically for faster testing.
 - debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
 - drawGui - Draws a GUI at the top of the screen that gives information on many things.
 - drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
