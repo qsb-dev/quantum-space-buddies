@@ -47,6 +47,11 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 		}
 	}
 
-	private void GetFromShip() => AccelerationSyncer.Value = _thrusterModel.GetLocalAcceleration();
+	private void GetFromShip()
+	{
+		if (_thrusterModel)
+		{
+			AccelerationSyncer.Value = _thrusterModel.GetLocalAcceleration();
+		}
+	}
 }
- 
