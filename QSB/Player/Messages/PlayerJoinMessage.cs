@@ -118,7 +118,7 @@ public class PlayerJoinMessage : QSBMessage
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.Name = PlayerName;
-		DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
+		DebugLog.ToAll(string.Format(QSBLocalisation.Current.PlayerJoinedTheGame, player.Name), MessageType.Info);
 		DebugLog.DebugWrite($"{player} joined. qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
 	}
 
@@ -126,6 +126,5 @@ public class PlayerJoinMessage : QSBMessage
 	{
 		var player = QSBPlayerManager.GetPlayer(QSBPlayerManager.LocalPlayerId);
 		player.Name = PlayerName;
-		DebugLog.ToAll($"Connected to server as {player.Name}.", MessageType.Info);
 	}
 }

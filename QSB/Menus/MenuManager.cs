@@ -461,7 +461,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 			};
 
-			OpenInfoPopup(QSBLocalisation.Current.CopyProductUserIDToClipboard
+			OpenInfoPopup(string.Format(QSBLocalisation.Current.CopyProductUserIDToClipboard, productUserId)
 				, QSBLocalisation.Current.Yes
 				, QSBLocalisation.Current.No);
 		}
