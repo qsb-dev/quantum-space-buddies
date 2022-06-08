@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.Inputs;
 using QSB.Patches;
 using QSB.Utility;
 
@@ -16,6 +17,16 @@ internal class TimePatches : QSBPatch
 		DebugLog.DebugWrite($"OnStartOfTimeLoop");
 		return false;
 	}
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PlayerCameraEffectController), nameof(PlayerCameraEffectController.WakeUp))]
+	public static void PlayerCameraEffectController_WakeUp(PlayerCameraEffectController __instance)
+	{
+		// prevent funny thing when you pause while waking up
+		QSBInputManager.Instance.SetInputsEnabled(false);
+		Delay.RunWhen(() => !__instance._isOpeningEyes, () => QSBInputManager.Instance.SetInputsEnabled(true));
+	}
+
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(OWTime), nameof(OWTime.Pause))]

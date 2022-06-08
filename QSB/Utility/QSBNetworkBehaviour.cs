@@ -20,12 +20,10 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 
 	public override void OnStopClient() => RequestInitialStatesMessage.SendInitialState -= SendInitialState;
 
-	public bool HasChanged { get; private set; }
-
 	/// <summary>
 	/// checked before serializing
 	/// </summary>
-	protected abstract bool CheckChanged();
+	protected abstract bool HasChanged();
 
 	protected abstract void Serialize(NetworkWriter writer);
 
@@ -56,8 +54,7 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 		{
 			_lastSendTime = NetworkTime.localTime;
 
-			HasChanged = CheckChanged();
-			if (!HasChanged)
+			if (!HasChanged())
 			{
 				return;
 			}

@@ -132,14 +132,15 @@ The template for this file is this :
   "instanceIdInLogs": false,
   "hookDebugLogs": false,
   "avoidTimeSync": false,
+  "autoStart": false,
+  "skipTitleScreen": false,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
   "drawLabels": false,
   "drawQuantumVisibilityObjects": false,
-  "skipTitleScreen": false,
-  "greySkybox": false,
-  "drawGhostAI": false
+  "drawGhostAI": false,
+  "greySkybox": false
 }
 ```
 
@@ -148,14 +149,15 @@ The template for this file is this :
 - instanceIdInLogs - Appends the game instance id to every log message sent.
 - hookDebugLogs - Print Unity logs and warnings.
 - avoidTimeSync - Disables the syncing of time.
+- autoStart - Host/connect automatically for faster testing.
+- skipTitleScreen - Auto-skips the splash screen.
 - debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
 - drawGui - Draws a GUI at the top of the screen that gives information on many things.
 - drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
 - drawLabels - Draws GUI labels attached to some objects. LAGGY.
 - drawQuantumVisibilityObjects - Indicates visibility objects with an orange shape.
-- skipTitleScreen - Auto-skips the splash screen.
-- greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.
 - drawGhostAI - Draws debug lines and labels just for the ghosts.
+- greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.
 
 **Warning : Mod development can lead to unexpected errors in your computer system.** 
 - **When editing the networking code, mistakes can lead to QSB overwhelming your network connection with excess packets**.

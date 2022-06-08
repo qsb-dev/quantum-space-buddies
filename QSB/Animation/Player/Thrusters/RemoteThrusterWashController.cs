@@ -60,7 +60,7 @@ internal class RemoteThrusterWashController : MonoBehaviour
 
 		emissionThrusterScale = (!aboveSurface) ? 0f : (emissionThrusterScale * _emissionDistanceScale.Evaluate(hitInfo.distance));
 
-		if (emissionThrusterScale > 0f)
+		if (emissionThrusterScale > 0f && _attachedPlayer.Visible)
 		{
 			var position = hitInfo.point + (hitInfo.normal * 0.25f);
 			var rotation = Quaternion.LookRotation(hitInfo.normal);

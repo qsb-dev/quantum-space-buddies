@@ -69,13 +69,12 @@ public partial class PlayerInfo
 		SignalscopeEquipped = default;
 		TranslatorEquipped = default;
 		ProbeActive = default;
-
 		ProbeLauncherEquipped = default;
 	}
 
 	public void UpdateObjectsFromStates()
 	{
-		FlashLight.UpdateState(FlashlightActive);
+		FlashLight.UpdateState(FlashlightActive && Visible);
 		Translator.ChangeEquipState(TranslatorEquipped);
 		ProbeLauncherTool.ChangeEquipState(LocalProbeLauncherEquipped);
 		Signalscope.ChangeEquipState(SignalscopeEquipped);
@@ -138,6 +137,14 @@ public partial class PlayerInfo
 		}
 
 		_ditheringAnimator.SetVisible(visible, seconds);
+		if (!visible)
+		{
+			FlashLight.UpdateState(false);
+		}
+		else
+		{
+			FlashLight.UpdateState(FlashlightActive);
+		}
 	}
 
 	public override string ToString() => $"{PlayerId}:{GetType().Name} ({Name})";

@@ -26,7 +26,7 @@ public class PlayerFlashlightMessage : QSBMessage<bool>
 	{
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.FlashlightActive = Data;
-		player.FlashLight?.UpdateState(Data);
+		player.FlashLight?.UpdateState(Data && player.Visible);
 	}
 
 	public override void OnReceiveLocal() =>

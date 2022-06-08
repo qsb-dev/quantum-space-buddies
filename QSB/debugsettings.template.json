@@ -4,12 +4,13 @@
   "instanceIdInLogs": false,
   "hookDebugLogs": false,
   "avoidTimeSync": false,
+  "autoStart": false,
+  "skipTitleScreen": false,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
   "drawLabels": false,
   "drawQuantumVisibilityObjects": false,
   "drawGhostAI": false,
-  "skipTitleScreen": false,
   "greySkybox": false
 }

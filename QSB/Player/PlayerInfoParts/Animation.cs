@@ -11,4 +11,5 @@ public partial class PlayerInfo
 	public JetpackAccelerationSync JetpackAcceleration { get; set; }
 	internal QSBDitheringAnimator _ditheringAnimator;
 	public DreamWorldSpawnAnimator DreamWorldSpawnAnimator { get; set; }
+	public RemotePlayerFluidDetector FluidDetector { get; set; }
 }
