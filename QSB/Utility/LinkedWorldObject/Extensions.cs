@@ -22,8 +22,6 @@ public static class Extensions
 	/// </summary>
 	public static void SpawnLinked(this ILinkedWorldObject<NetworkBehaviour> worldObject, GameObject prefab, bool spawnWithServerAuthority)
 	{
-		DebugLog.DebugWrite($"SpawnLinked {prefab.name}");
-
 		var go = Object.Instantiate(prefab);
 		var networkBehaviour = go.GetComponent<ILinkedNetworkBehaviour>();
 

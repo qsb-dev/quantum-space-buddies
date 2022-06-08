@@ -13,6 +13,7 @@ using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
+using QSB.ModelShip.TransformSync;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
 using QSB.OrbSync.WorldObjects;
@@ -53,6 +54,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject AirlockPrefab { get; private set; }
 	public GameObject ShipModulePrefab { get; private set; }
 	public GameObject ShipLegPrefab { get; private set; }
+	public GameObject ModelShipPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
 	private GameObject _probePrefab;
@@ -142,6 +144,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		ShipLegPrefab = MakeNewNetworkObject(13, "NetworkShipLeg", typeof(ShipLegTransformSync));
 		spawnPrefabs.Add(ShipLegPrefab);
+
+		ModelShipPrefab = MakeNewNetworkObject(14, "NetworkModelShip", typeof(ModelShipTransformSync));
+		spawnPrefabs.Add(ModelShipPrefab);
 
 		ConfigureNetworkManager();
 	}

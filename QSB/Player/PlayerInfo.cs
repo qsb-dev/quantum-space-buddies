@@ -69,7 +69,6 @@ public partial class PlayerInfo
 		SignalscopeEquipped = default;
 		TranslatorEquipped = default;
 		ProbeActive = default;
-
 		ProbeLauncherEquipped = default;
 	}
 

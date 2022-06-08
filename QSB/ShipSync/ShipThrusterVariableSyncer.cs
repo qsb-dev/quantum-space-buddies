@@ -24,7 +24,7 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 			return;
 		}
 
-		if (AccelerationSyncer.HasChanged)
+		if (AccelerationSyncer.public_HasChanged())
 		{
 			if (AccelerationSyncer.Value == Vector3.zero)
 			{
@@ -47,6 +47,11 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 		}
 	}
 
-	private void GetFromShip() => AccelerationSyncer.Value = _thrusterModel.GetLocalAcceleration();
+	private void GetFromShip()
+	{
+		if (_thrusterModel)
+		{
+			AccelerationSyncer.Value = _thrusterModel.GetLocalAcceleration();
+		}
+	}
 }
- 
