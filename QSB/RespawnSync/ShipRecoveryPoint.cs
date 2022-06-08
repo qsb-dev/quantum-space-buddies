@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using QSB.Localisation;
+using QSB.Messaging;
 using QSB.ShipSync;
 using QSB.Utility;
 using UnityEngine;
@@ -15,7 +16,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 	private int _respawnIndex;
 	private bool _wearingSuit;
 
-	private static readonly UITextType _respawnPlayerText = UIHelper.AddToUITable("Respawn Player");
+	private static readonly UITextType _respawnPlayerText = UIHelper.AddToUITable(QSBLocalisation.Current.RespawnPlayer);
 
 	private void Awake()
 	{
