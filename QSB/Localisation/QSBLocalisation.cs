@@ -20,7 +20,7 @@ public static class QSBLocalisation
 		var files = directory.GetFiles("*.json");
 		foreach (var file in files)
 		{
-			var translation = QSBCore.Helper.Storage.Load<Translation>($"Translations\\{file.Name}");
+			var translation = QSBCore.Helper.Storage.Load<Translation>($"Translations\\{file.Name}", false);
 			_translations.Add(translation);
 			DebugLog.DebugWrite($"- Added translation for language {translation.Language}");
 		}
