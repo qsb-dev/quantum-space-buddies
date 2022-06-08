@@ -2,6 +2,7 @@
 using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
+using QSB.Localisation;
 using QSB.Menus;
 using QSB.Patches;
 using QSB.QuantumSync;
@@ -73,9 +74,7 @@ public class QSBCore : ModBehaviour
 	public void Awake()
 	{
 		EpicRerouter.ModSide.Interop.Go();
-
-		UIHelper.ReplaceUI(UITextType.PleaseUseController,
-			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
+		UIHelper.ReplaceUI(UITextType.PleaseUseController, QSBLocalisation.Current.SplashScreenText);
 	}
 
 	public void Start()
@@ -129,6 +128,7 @@ public class QSBCore : ModBehaviour
 
 		QSBPatchManager.Init();
 		DeterministicManager.Init();
+		QSBLocalisation.Init();
 
 		var components = typeof(IAddComponentOnStart).GetDerivedTypes()
 			.Select(x => gameObject.AddComponent(x))
