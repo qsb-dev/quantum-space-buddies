@@ -23,7 +23,7 @@ internal class UseFlightConsole : QSBMessage<bool>
 		}
 	}
 
-	public UseFlightConsole(bool active) : base(active) { }
+	private UseFlightConsole(bool active) : base(active) { }
 
 	public override void OnReceiveLocal()
 	{
@@ -41,7 +41,7 @@ internal class UseFlightConsole : QSBMessage<bool>
 
 		if (Data)
 		{
-			console._modelShipBody.Unsuspend(true);
+			console._modelShipBody.Unsuspend();
 			console._interactVolume.ResetInteraction();
 			console._interactVolume.DisableInteraction();
 		}
