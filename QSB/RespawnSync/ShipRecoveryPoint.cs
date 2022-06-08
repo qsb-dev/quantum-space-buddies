@@ -16,7 +16,12 @@ internal class ShipRecoveryPoint : MonoBehaviour
 	private int _respawnIndex;
 	private bool _wearingSuit;
 
-	private static readonly UITextType _respawnPlayerText = UIHelper.AddToUITable(QSBLocalization.Current.RespawnPlayer);
+	private static UITextType _respawnPlayerText;
+
+	static ShipRecoveryPoint() =>
+		QSBLocalization.LanguageChanged += () => 
+			// language change clears the table, so we have to add this back
+			_respawnPlayerText = UIHelper.AddToUITable(QSBLocalization.Current.RespawnPlayer);
 
 	private void Awake()
 	{
