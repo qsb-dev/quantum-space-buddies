@@ -499,7 +499,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			}
 		};
 
-		OpenInfoPopup(QSBLocalisation.Current.ServerRefusedConnection, QSBLocalisation.Current.OK);
+		OpenInfoPopup(string.Format(QSBLocalisation.Current.ServerRefusedConnection, reason), QSBLocalisation.Current.OK);
 	}
 
 	private void OnDisconnected(string error)
