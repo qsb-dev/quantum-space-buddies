@@ -1,11 +1,6 @@
 ﻿using QSB.Syncs.Sectored.Rigidbodies;
-using QSB.Utility.LinkedWorldObject;
+using QSB.Utility;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QSB.ModelShip.TransformSync;
 
@@ -34,5 +29,30 @@ internal class ModelShipTransformSync : SectoredRigidbodySync
 		var modelShip = QSBWorldSync.GetUnityObject<RemoteFlightConsole>()._modelShipBody;
 		SectorDetector.Init(modelShip.transform.Find("Detector").GetComponent<SectorDetector>());
 		return modelShip;
+	}
+
+	/// <summary>
+	/// replacement for base method
+	/// using SetPos/Rot instead of Move
+	/// </summary>
+	protected override void ApplyToAttached()
+	{
+		ApplyToSector();
+		if (!ReferenceTransform)
+		{
+			return;
+		}
+
+		var targetPos = ReferenceTransform.FromRelPos(SmoothPosition);
+		var targetRot = ReferenceTransform.FromRelRot(SmoothRotation);
+
+		AttachedRigidbody.SetPosition(targetPos);
+		AttachedRigidbody.SetRotation(targetRot);
+
+		var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
+		var targetAngularVelocity = ReferenceRigidbody.FromRelAngVel(AngularVelocity);
+
+		AttachedRigidbody.SetVelocity(targetVelocity);
+		AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
 	}
 }
