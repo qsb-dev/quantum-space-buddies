@@ -96,7 +96,7 @@ public static class QSBWorldSync
 		AllObjectsReady = true;
 		DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
 
-		DeterministicManager.WorldObjectsReady();
+		DeterministicManager.OnWorldObjectsReady();
 
 		if (!QSBCore.IsHost)
 		{
