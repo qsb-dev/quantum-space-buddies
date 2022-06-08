@@ -8,9 +8,9 @@ using QSB.WorldSync;
 
 namespace QSB.ModelShip.Messages;
 
-internal class UseFlightConsole : QSBMessage<bool>
+internal class UseFlightConsoleMessage : QSBMessage<bool>
 {
-	static UseFlightConsole()
+	static UseFlightConsoleMessage()
 	{
 		GlobalMessenger<OWRigidbody>.AddListener(OWEvents.EnterRemoteFlightConsole, _ => Handler(true));
 		GlobalMessenger.AddListener(OWEvents.ExitRemoteFlightConsole, () => Handler(false));
@@ -20,11 +20,11 @@ internal class UseFlightConsole : QSBMessage<bool>
 	{
 		if (PlayerTransformSync.LocalInstance != null)
 		{
-			new UseFlightConsole(active).Send();
+			new UseFlightConsoleMessage(active).Send();
 		}
 	}
 
-	private UseFlightConsole(bool active) : base(active) { }
+	private UseFlightConsoleMessage(bool active) : base(active) { }
 
 	public override void OnReceiveLocal()
 	{
