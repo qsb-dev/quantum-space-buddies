@@ -3,6 +3,7 @@ using QSB.Messaging;
 using QSB.ModelShip.TransformSync;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.ModelShip.Messages;
@@ -58,6 +59,9 @@ internal class UseFlightConsole : QSBMessage<bool>
 			console._modelShipBody.Suspend(console._suspensionBody);
 			console._interactVolume.EnableInteraction();
 		}
+
+		QSBWorldSync.GetUnityObject<ModelShipController>()._detector.SetActive(Data);
+		QSBWorldSync.GetUnityObjects<ModelShipLandingSpot>().ForEach(x => x._owCollider.SetActivation(Data));
 
 		if (QSBCore.IsHost)
 		{
