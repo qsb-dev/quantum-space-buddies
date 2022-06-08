@@ -36,6 +36,5 @@ public class Translation
 	public string PlayerWasKicked;
 	public string KickedFromServer;
 	public string RespawnPlayer;
-	public string SplashScreenText;
 	public Dictionary<DeathType, string[]> DeathMessages;
 }

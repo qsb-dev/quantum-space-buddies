@@ -30,7 +30,6 @@
   "PlayerWasKicked": "{0} was kicked.",
   "KickedFromServer": "Kicked from server. Reason : {0}",
   "RespawnPlayer": "Respawn Player",
-  "SplashScreenText": "<color=orange>Quantum Space Buddies</color> is best experienced with friends...",
   "DeathMessages": {
     "Default": [
       "{0} died",
