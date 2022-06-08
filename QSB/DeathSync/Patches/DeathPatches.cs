@@ -3,7 +3,6 @@ using QSB.DeathSync.Messages;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.ShipSync.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -115,6 +114,12 @@ public class DeathPatches : QSBPatch
 	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 	private static bool DeathManager_KillPlayer(DeathManager __instance, DeathType deathType)
 	{
+		// funny moment for eye
+		if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
+		{
+			return true;
+		}
+
 		Original(__instance, deathType);
 		return false;
 
@@ -163,7 +168,7 @@ public class DeathPatches : QSBPatch
 						PlayerData.SetPersistentCondition("THERE_IS_BUT_VOID", true);
 					}
 
-					if ((TimeLoop.GetLoopCount() != 1 && TimeLoop.GetSecondsElapsed() < 60f || TimeLoop.GetLoopCount() == 1 && Time.timeSinceLevelLoad < 60f && !TimeLoop.IsTimeFlowing()) && deathType != DeathType.Meditation && LoadManager.GetCurrentScene() == OWScene.SolarSystem)
+					if (((TimeLoop.GetLoopCount() != 1 && TimeLoop.GetSecondsElapsed() < 60f) || (TimeLoop.GetLoopCount() == 1 && Time.timeSinceLevelLoad < 60f && !TimeLoop.IsTimeFlowing())) && deathType != DeathType.Meditation && LoadManager.GetCurrentScene() == OWScene.SolarSystem)
 					{
 						Achievements.Earn(Achievements.Type.GONE_IN_60_SECONDS);
 					}
