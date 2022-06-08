@@ -74,9 +74,7 @@ public class QSBCore : ModBehaviour
 	public void Awake()
 	{
 		EpicRerouter.ModSide.Interop.Go();
-
-		UIHelper.ReplaceUI(UITextType.PleaseUseController,
-			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
+		UIHelper.ReplaceUI(UITextType.PleaseUseController, QSBLocalisation.Current.SplashScreenText);
 	}
 
 	public void Start()
