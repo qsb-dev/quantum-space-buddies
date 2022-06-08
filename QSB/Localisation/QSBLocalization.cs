@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace QSB.Localisation;
 
-public static class QSBLocalisation
+public static class QSBLocalization
 {
 	private readonly static List<Translation> _translations = new();
 	public static Translation Current;

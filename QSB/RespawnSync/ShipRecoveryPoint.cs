@@ -16,7 +16,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 	private int _respawnIndex;
 	private bool _wearingSuit;
 
-	private static readonly UITextType _respawnPlayerText = UIHelper.AddToUITable(QSBLocalisation.Current.RespawnPlayer);
+	private static readonly UITextType _respawnPlayerText = UIHelper.AddToUITable(QSBLocalization.Current.RespawnPlayer);
 
 	private void Awake()
 	{

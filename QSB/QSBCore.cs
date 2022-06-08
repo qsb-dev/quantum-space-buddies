@@ -130,7 +130,7 @@ public class QSBCore : ModBehaviour
 
 		QSBPatchManager.Init();
 		DeterministicManager.Init();
-		QSBLocalisation.Init();
+		QSBLocalization.Init();
 
 		var components = typeof(IAddComponentOnStart).GetDerivedTypes()
 			.Select(x => gameObject.AddComponent(x))

@@ -74,28 +74,28 @@ public class PlayerJoinMessage : QSBMessage
 			if (QSBVersion != QSBCore.QSBVersion)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong QSB version. (Client:{QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
-				new PlayerKickMessage(From, string.Format(QSBLocalisation.Current.QSBVersionMismatch, QSBVersion, QSBCore.QSBVersion)).Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.QSBVersionMismatch, QSBVersion, QSBCore.QSBVersion)).Send();
 				return;
 			}
 
 			if (GameVersion != QSBCore.GameVersion)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game version. (Client:{GameVersion}, Server:{QSBCore.GameVersion})", MessageType.Error);
-				new PlayerKickMessage(From, string.Format(QSBLocalisation.Current.OWVersionMismatch, GameVersion, QSBCore.GameVersion)).Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.OWVersionMismatch, GameVersion, QSBCore.GameVersion)).Send();
 				return;
 			}
 
 			if (DlcInstalled != QSBCore.DLCInstalled)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong DLC installation state. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
-				new PlayerKickMessage(From, string.Format(QSBLocalisation.Current.DLCMismatch, DlcInstalled, QSBCore.DLCInstalled)).Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.DLCMismatch, DlcInstalled, QSBCore.DLCInstalled)).Send();
 				return;
 			}
 
 			if (QSBPlayerManager.PlayerList.Any(x => x.EyeState >= EyeState.Observatory))
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting too late into eye scene.", MessageType.Error);
-				new PlayerKickMessage(From, QSBLocalisation.Current.GameProgressLimit).Send();
+				new PlayerKickMessage(From, QSBLocalization.Current.GameProgressLimit).Send();
 				return;
 			}
 
@@ -105,20 +105,20 @@ public class PlayerJoinMessage : QSBMessage
 			if (!AddonHashes.SequenceEqual(addonHashes))
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with addon mismatch. (Client:{AddonHashes.Join()}, Server:{addonHashes.Join()})", MessageType.Error);
-				new PlayerKickMessage(From, string.Format(QSBLocalisation.Current.AddonMismatch, AddonHashes.Length, addonHashes.Length)).Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.AddonMismatch, AddonHashes.Length, addonHashes.Length)).Send();
 				return;
 			}
 
 			if (FirstIncompatibleMod != "" && !QSBCore.IncompatibleModsAllowed)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with incompatible mod. (First mod found was {FirstIncompatibleMod})");
-				new PlayerKickMessage(From, string.Format(QSBLocalisation.Current.IncompatibleMod, FirstIncompatibleMod)).Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.IncompatibleMod, FirstIncompatibleMod)).Send();
 			}
 		}
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.Name = PlayerName;
-		DebugLog.ToAll(string.Format(QSBLocalisation.Current.PlayerJoinedTheGame, player.Name), MessageType.Info);
+		DebugLog.ToAll(string.Format(QSBLocalization.Current.PlayerJoinedTheGame, player.Name), MessageType.Info);
 		DebugLog.DebugWrite($"{player} joined. qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
 	}
 

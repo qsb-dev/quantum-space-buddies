@@ -68,7 +68,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			QSBCore.MenuApi.RegisterStartupPopup(UpdateChangelog);
 		}
 
-		QSBLocalisation.LanguageChanged += OnLanguageChanged;
+		QSBLocalization.LanguageChanged += OnLanguageChanged;
 
 		if (QSBCore.DebugSettings.AutoStart)
 		{
@@ -123,18 +123,18 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalisation.Current.MainMenuHost;
-		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalisation.Current.MainMenuConnect;
-		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalisation.Current.PublicIPAddress : QSBLocalisation.Current.ProductUserID;
-		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalisation.Current.Connect), new ScreenPrompt(QSBLocalisation.Current.Cancel), false);
+		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuHost;
+		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuConnect;
+		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
+		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalization.Current.Connect), new ScreenPrompt(QSBLocalization.Current.Cancel), false);
 		ConnectPopup.SetInputFieldPlaceholderText(text);
-		HostGameTypePopup.SetUpPopup(QSBLocalisation.Current.HostExistingOrNew,
+		HostGameTypePopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNew,
 			InputLibrary.menuConfirm,
 			InputLibrary.confirm2,
 			InputLibrary.cancel,
-			new ScreenPrompt(QSBLocalisation.Current.ExistingSave),
-			new ScreenPrompt(QSBLocalisation.Current.NewSave),
-			new ScreenPrompt(QSBLocalisation.Current.Cancel));
+			new ScreenPrompt(QSBLocalization.Current.ExistingSave),
+			new ScreenPrompt(QSBLocalization.Current.NewSave),
+			new ScreenPrompt(QSBLocalization.Current.Cancel));
 	}
 
 	private void Update()
@@ -266,8 +266,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void CreateCommonPopups()
 	{
-		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalisation.Current.PublicIPAddress : QSBLocalisation.Current.ProductUserID;
-		ConnectPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, QSBLocalisation.Current.Connect, QSBLocalisation.Current.Cancel);
+		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
+		ConnectPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, QSBLocalization.Current.Connect, QSBLocalization.Current.Cancel);
 		ConnectPopup.CloseMenuOnOk(false);
 		ConnectPopup.OnPopupConfirm += () =>
 		{
@@ -289,7 +289,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		TwoButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
 		TwoButtonInfoPopup.OnPopupCancel += () => OnCloseInfoPopup(false);
 
-		HostGameTypePopup = CreateThreeChoicePopup(QSBLocalisation.Current.HostExistingOrNew, QSBLocalisation.Current.ExistingSave, QSBLocalisation.Current.NewSave, QSBLocalisation.Current.Cancel);
+		HostGameTypePopup = CreateThreeChoicePopup(QSBLocalization.Current.HostExistingOrNew, QSBLocalization.Current.ExistingSave, QSBLocalization.Current.NewSave, QSBLocalization.Current.Cancel);
 		HostGameTypePopup.OnPopupConfirm1 += () => Host(false);
 		HostGameTypePopup.OnPopupConfirm2 += () => Host(true);
 	}
@@ -313,10 +313,10 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		CreateCommonPopups();
 
-		DisconnectPopup = QSBCore.MenuApi.MakeTwoChoicePopup(QSBLocalisation.Current.DisconnectAreYouSure, QSBLocalisation.Current.Yes, QSBLocalisation.Current.No);
+		DisconnectPopup = QSBCore.MenuApi.MakeTwoChoicePopup(QSBLocalization.Current.DisconnectAreYouSure, QSBLocalization.Current.Yes, QSBLocalization.Current.No);
 		DisconnectPopup.OnPopupConfirm += Disconnect;
 
-		DisconnectButton = QSBCore.MenuApi.PauseMenu_MakeMenuOpenButton(QSBLocalisation.Current.PauseMenuDisconnect, DisconnectPopup);
+		DisconnectButton = QSBCore.MenuApi.PauseMenu_MakeMenuOpenButton(QSBLocalization.Current.PauseMenuDisconnect, DisconnectPopup);
 
 		QuitButton = FindObjectOfType<PauseMenuManager>()._exitToMainMenuAction.gameObject;
 
@@ -332,8 +332,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		var text = QSBCore.IsHost
-			? QSBLocalisation.Current.PauseMenuStopHosting
-			: QSBLocalisation.Current.PauseMenuDisconnect;
+			? QSBLocalization.Current.PauseMenuStopHosting
+			: QSBLocalization.Current.PauseMenuDisconnect;
 		DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
 
 		var popupText = QSBCore.IsHost
@@ -352,10 +352,10 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		CreateCommonPopups();
 
-		HostButton = QSBCore.MenuApi.TitleScreen_MakeSimpleButton(QSBLocalisation.Current.MainMenuHost, _titleButtonIndex);
+		HostButton = QSBCore.MenuApi.TitleScreen_MakeSimpleButton(QSBLocalization.Current.MainMenuHost, _titleButtonIndex);
 		HostButton.onClick.AddListener(PreHost);
 
-		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(QSBLocalisation.Current.MainMenuConnect, _titleButtonIndex + 1, ConnectPopup);
+		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(QSBLocalization.Current.MainMenuConnect, _titleButtonIndex + 1, ConnectPopup);
 
 		ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 		NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
@@ -461,9 +461,9 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalisation.Current.CopyProductUserIDToClipboard, productUserId)
-				, QSBLocalisation.Current.Yes
-				, QSBLocalisation.Current.No);
+			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, productUserId)
+				, QSBLocalization.Current.Yes
+				, QSBLocalization.Current.No);
 		}
 		else
 		{
@@ -486,7 +486,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(ResumeGameButton, false);
 		SetButtonActive(NewGameButton, false);
 		_loadingText = ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
-		_loadingText.text = QSBLocalisation.Current.Connecting;
+		_loadingText.text = QSBLocalization.Current.Connecting;
 		Locator.GetMenuInputModule().DisableInputs();
 
 		QSBNetworkManager.singleton.networkAddress = address;
@@ -516,7 +516,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			}
 		};
 
-		OpenInfoPopup(string.Format(QSBLocalisation.Current.ServerRefusedConnection, reason), QSBLocalisation.Current.OK);
+		OpenInfoPopup(string.Format(QSBLocalization.Current.ServerRefusedConnection, reason), QSBLocalization.Current.OK);
 	}
 
 	private void OnDisconnected(string error)
@@ -536,7 +536,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				}
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalisation.Current.ClientDisconnectWithError, error), QSBLocalisation.Current.OK);
+			OpenInfoPopup(string.Format(QSBLocalization.Current.ClientDisconnectWithError, error), QSBLocalization.Current.OK);
 		}
 
 		SetButtonActive(DisconnectButton, false);
@@ -547,12 +547,12 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(NewGameButton, true);
 		if (ConnectButton)
 		{
-			ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalisation.Current.MainMenuConnect;
+			ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuConnect;
 		}
 
 		if (HostButton)
 		{
-			HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalisation.Current.MainMenuHost;
+			HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuHost;
 		}
 
 		_loadingText = null;

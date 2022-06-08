@@ -47,15 +47,15 @@ internal class PlayerKickMessage : QSBMessage<string>
 		{
 			if (QSBPlayerManager.PlayerExists(PlayerId))
 			{
-				DebugLog.ToAll(string.Format(QSBLocalisation.Current.PlayerWasKicked, QSBPlayerManager.GetPlayer(PlayerId).Name));
+				DebugLog.ToAll(string.Format(QSBLocalization.Current.PlayerWasKicked, QSBPlayerManager.GetPlayer(PlayerId).Name));
 				return;
 			}
 
-			DebugLog.ToAll(string.Format(QSBLocalisation.Current.PlayerWasKicked, PlayerId));
+			DebugLog.ToAll(string.Format(QSBLocalization.Current.PlayerWasKicked, PlayerId));
 			return;
 		}
 
-		DebugLog.ToAll(string.Format(QSBLocalisation.Current.KickedFromServer, Data));
+		DebugLog.ToAll(string.Format(QSBLocalization.Current.KickedFromServer, Data));
 		MenuManager.Instance.OnKicked(Data);
 	}
 }
