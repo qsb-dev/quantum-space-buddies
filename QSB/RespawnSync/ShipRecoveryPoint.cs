@@ -19,7 +19,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 	private static UITextType _respawnPlayerText;
 
 	static ShipRecoveryPoint() =>
-		QSBLocalization.LanguageChanged += () => 
+		QSBLocalization.LanguageChanged += () =>
 			// language change clears the table, so we have to add this back
 			_respawnPlayerText = UIHelper.AddToUITable(QSBLocalization.Current.RespawnPlayer);
 
