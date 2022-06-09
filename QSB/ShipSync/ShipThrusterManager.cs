@@ -5,7 +5,7 @@ namespace QSB.ShipSync;
 
 public static class ShipThrusterManager
 {
-	public static List<ThrusterFlameController> ShipFlameControllers = new();
+	public static readonly List<ThrusterFlameController> ShipFlameControllers = new();
 	public static ThrusterWashController ShipWashController = new();
 
 	public static void CreateShipVFX()
