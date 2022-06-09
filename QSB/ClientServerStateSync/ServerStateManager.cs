@@ -131,6 +131,21 @@ internal class ServerStateManager : MonoBehaviour
 			return;
 		}
 
+		if (_currentState == ServerState.NotLoaded
+			&& QSBSceneManager.IsInUniverse
+			&& QSBPlayerManager.LocalPlayer.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye)
+		{
+			switch (QSBSceneManager.CurrentScene)
+			{
+				case OWScene.SolarSystem:
+					new ServerStateMessage(ServerState.InSolarSystem).Send();
+					break;
+				case OWScene.EyeOfTheUniverse:
+					new ServerStateMessage(ServerState.InEye).Send();
+					break;
+			}
+		}
+
 		if (_currentState == ServerState.WaitingForAllPlayersToReady)
 		{
 			if (QSBPlayerManager.PlayerList.All(x
