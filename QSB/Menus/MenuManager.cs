@@ -337,8 +337,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
 
 		var popupText = QSBCore.IsHost
-			? "Are you sure you want to stop hosting?\r\nThis will disconnect all clients and send everyone back to the main menu."
-			: "Are you sure you want to disconnect?\r\nThis will send you back to the main menu.";
+			? QSBLocalization.Current.StopHostingAreYouSure
+			: QSBLocalization.Current.DisconnectAreYouSure;
 		DisconnectPopup._labelText.text = popupText;
 
 		var langController = QSBWorldSync.GetUnityObject<PauseMenuManager>().transform.GetChild(0).GetComponent<FontAndLanguageController>();
