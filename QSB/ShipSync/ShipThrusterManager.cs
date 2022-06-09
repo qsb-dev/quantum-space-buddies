@@ -20,6 +20,7 @@ public static class ShipThrusterManager
 		var Module_Supplies = shipBody.transform.Find("Module_Supplies");
 		var Effects_Supplies = Module_Supplies.Find("Effects_Supplies");
 		var SuppliesThrusters = Effects_Supplies.Find("Thrusters");
+		ShipFlameControllers.Clear();
 		foreach (Transform thruster in SuppliesThrusters)
 		{
 			if (thruster.name == "Particles")
