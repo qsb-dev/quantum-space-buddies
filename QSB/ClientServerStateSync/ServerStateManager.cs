@@ -83,7 +83,15 @@ internal class ServerStateManager : MonoBehaviour
 				break;
 
 			case OWScene.EyeOfTheUniverse:
-				new ServerStateMessage(ServerState.WaitingForAllPlayersToReady).Send();
+				if (oldScene == OWScene.SolarSystem)
+				{
+					new ServerStateMessage(ServerState.WaitingForAllPlayersToReady).Send();
+				}
+				else
+				{
+					new ServerStateMessage(ServerState.InEye).Send();
+				}
+
 				break;
 
 			case OWScene.None:
