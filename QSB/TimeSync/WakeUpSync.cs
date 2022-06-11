@@ -373,7 +373,7 @@ public class WakeUpSync : NetworkBehaviour
 			StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
 		}
 
-		if (serverState == ServerState.WaitingForAllPlayersToDie && clientState == ClientState.WaitingForOthersToBeReady)
+		if (serverState == ServerState.WaitingForAllPlayersToDie && CurrentState != State.Pausing && clientState == ClientState.WaitingForOthersToBeReady)
 		{
 			StartPausing(PauseReason.WaitingForAllPlayersToBeReady);
 		}
