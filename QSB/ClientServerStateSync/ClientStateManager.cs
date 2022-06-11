@@ -46,7 +46,6 @@ internal class ClientStateManager : MonoBehaviour
 
 		if (QSBCore.IsHost)
 		{
-
 			switch (newScene)
 			{
 				case OWScene.TitleScreen:
@@ -73,7 +72,17 @@ internal class ClientStateManager : MonoBehaviour
 
 					break;
 				case OWScene.EyeOfTheUniverse:
-					newState = ClientState.AliveInEye;
+					if (oldScene == OWScene.SolarSystem)
+					{
+						// coming from solar system
+						newState = ClientState.WaitingForOthersToBeReady;
+					}
+					else
+					{
+						// loading in from title screen
+						newState = ClientState.AliveInEye;
+					}
+
 					break;
 				default:
 					newState = ClientState.NotLoaded;
@@ -121,13 +130,22 @@ internal class ClientStateManager : MonoBehaviour
 
 					break;
 				case OWScene.EyeOfTheUniverse:
-					if (serverState == ServerState.WaitingForAllPlayersToReady)
+					if (oldScene == OWScene.SolarSystem)
 					{
+						// coming from solar system
 						newState = ClientState.WaitingForOthersToBeReady;
 					}
 					else
 					{
-						newState = ClientState.AliveInEye;
+						// loading in from title screen
+						if (serverState == ServerState.WaitingForAllPlayersToReady)
+						{
+							newState = ClientState.WaitingForOthersToBeReady;
+						}
+						else
+						{
+							newState = ClientState.AliveInEye;
+						}
 					}
 
 					break;
