@@ -29,7 +29,7 @@ internal class ServerStateManager : MonoBehaviour
 			return;
 		}
 
-		QSBSceneManager.OnPostSceneLoad += OnPostSceneLoaded;
+		QSBSceneManager.OnPostSceneLoad += OnPostSceneLoad;
 		GlobalMessenger.AddListener("TriggerSupernova", OnTriggerSupernova);
 
 		Delay.RunWhen(() => PlayerTransformSync.LocalInstance != null,
@@ -38,7 +38,7 @@ internal class ServerStateManager : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		QSBSceneManager.OnPostSceneLoad -= OnPostSceneLoaded;
+		QSBSceneManager.OnPostSceneLoad -= OnPostSceneLoad;
 		GlobalMessenger.RemoveListener("TriggerSupernova", OnTriggerSupernova);
 	}
 
@@ -56,7 +56,7 @@ internal class ServerStateManager : MonoBehaviour
 	public ServerState GetServerState()
 		=> _currentState;
 
-	private static void OnPostSceneLoaded(OWScene oldScene, OWScene newScene)
+	private static void OnPostSceneLoad(OWScene oldScene, OWScene newScene)
 	{
 		switch (newScene)
 		{
