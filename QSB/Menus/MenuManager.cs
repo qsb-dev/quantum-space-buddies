@@ -421,7 +421,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void PreHost()
 	{
-		var doesSaveExist = StandaloneProfileManager.SharedInstance.currentProfileGameSave.loopCount > 1;
+		var doesSaveExist = PlayerData.LoadLoopCount() > 1;
 
 		if (!doesSaveExist)
 		{
