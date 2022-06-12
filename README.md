@@ -176,7 +176,8 @@ The template for this file is this :
 ### Contributers
 
 - [ShoosGun](https://github.com/ShoosGun)
-- [Chris Yeninas](https://github.com/PhantomGamers)
+- [Chris Yeninas](https://github.com/PhantomGamers) - Help with project files and GitHub workflows.
+- [Tyla](https://github.com/Tllya) - Russian translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.
