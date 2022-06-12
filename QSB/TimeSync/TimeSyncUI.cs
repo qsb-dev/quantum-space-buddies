@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.Localisation;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Linq;
@@ -94,9 +95,7 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 						var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 						var seconds = Mathf.FloorToInt(totalSeconds) % 60;
 						var milliseconds = totalSeconds % 1 * 1000;
-						text = $"{minutes:D2}:{seconds:D2}.{milliseconds:000}"
-						       + Environment.NewLine
-						       + "Fast-forwarding to match server time...";
+						text = string.Format(QSBLocalization.Current.TimeSyncTooFarBehind, $"{minutes:D2}:{seconds:D2}.{milliseconds:000}");
 						break;
 				}
 
@@ -106,7 +105,7 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 				switch ((PauseReason)_currentReason)
 				{
 					case PauseReason.ServerNotStarted:
-						text = "Waiting for server to start...";
+						text = QSBLocalization.Current.TimeSyncWaitingForStartOfServer;
 						break;
 
 					case PauseReason.TooFarAhead:
@@ -114,17 +113,15 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 						var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 						var seconds = Mathf.FloorToInt(totalSeconds) % 60;
 						var milliseconds = totalSeconds % 1 * 1000;
-						text = $"{minutes:D2}:{seconds:D2}.{milliseconds:000}"
-						       + Environment.NewLine
-						       + "Pausing to match server time...";
+						text = string.Format(QSBLocalization.Current.TimeSyncTooFarAhead, $"{minutes:D2}:{seconds:D2}.{milliseconds:000}");
 						break;
 
 					case PauseReason.WaitingForAllPlayersToBeReady:
-						text = "Waiting for start of loop...";
+						text = QSBLocalization.Current.TimeSyncWaitForAllToReady;
 						break;
 
 					case PauseReason.WaitingForAllPlayersToDie:
-						text = "Waiting for end of loop...";
+						text = QSBLocalization.Current.TimeSyncWaitForAllToDie;
 						break;
 				}
 

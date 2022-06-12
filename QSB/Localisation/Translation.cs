@@ -36,5 +36,10 @@ public class Translation
 	public string PlayerWasKicked;
 	public string KickedFromServer;
 	public string RespawnPlayer;
+	public string TimeSyncTooFarBehind;
+	public string TimeSyncWaitingForStartOfServer;
+	public string TimeSyncTooFarAhead;
+	public string TimeSyncWaitForAllToReady;
+	public string TimeSyncWaitForAllToDie;
 	public Dictionary<DeathType, string[]> DeathMessages;
 }

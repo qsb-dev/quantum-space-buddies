@@ -30,6 +30,11 @@
   "PlayerWasKicked": "{0} was kicked.",
   "KickedFromServer": "Kicked from server. Reason : {0}",
   "RespawnPlayer": "Respawn Player",
+  "TimeSyncTooFarBehind": "{0}\nFast-forwarding to match server time...",
+  "TimeSyncWaitingForStartOfServer": "Waiting for server to start...",
+  "TimeSyncTooFarAhead": "{0}\nPausing to match server time...",
+  "TimeSyncWaitForAllToReady": "Waiting for start of loop...",
+  "TimeSyncWaitForAllToDie": "Waiting for end of loop...",
   "DeathMessages": {
     "Default": [
       "{0} died",
