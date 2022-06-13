@@ -60,7 +60,7 @@ public class QSBCore : ModBehaviour
 	public static DebugSettings DebugSettings { get; private set; } = new();
 	public static Storage Storage { get; private set; } = new();
 
-	public static readonly string[] IncompatibleMods = new[]
+	public static readonly string[] IncompatibleMods =
 	{
 		// cheats mods
 		"Glitch.AltDebugMenu",
@@ -161,9 +161,9 @@ public class QSBCore : ModBehaviour
 
 	public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
 
-	private static void RegisterAddons()
+	private void RegisterAddons()
 	{
-		var addons = Helper.Interaction.GetDependants(Helper.Manifest.UniqueName);
+		var addons = GetDependants();
 		foreach (var addon in addons)
 		{
 			Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
