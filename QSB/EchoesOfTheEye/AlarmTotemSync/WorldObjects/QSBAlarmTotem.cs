@@ -70,6 +70,11 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 				Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
 			}
 			*/
+			if (IsLocallyVisible)
+			{
+				IsLocallyVisible = false;
+				this.SendMessage(new TotemVisibleMessage(false));
+			}
 		}
 	}
 }
