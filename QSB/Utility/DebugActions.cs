@@ -60,7 +60,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 			{
 				var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
 
-				var location = Keyboard.current[Key.LeftShift].isPressed ? DreamArrivalPoint.Location.Zone4 : DreamArrivalPoint.Location.Zone2;
+				var location = Keyboard.current[Key.LeftShift].isPressed ? DreamArrivalPoint.Location.Zone4 : DreamArrivalPoint.Location.Zone3;
 				var arrivalPoint = Locator.GetDreamArrivalPoint(location);
 				var dreamCampfire = Locator.GetDreamCampfire(location);
 				if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
