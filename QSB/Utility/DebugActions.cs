@@ -58,6 +58,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		{
 			if (!QSBPlayerManager.LocalPlayer.InDreamWorld)
 			{
+				// modified from DayDream debug thing
 				var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
 
 				var location = Keyboard.current[Key.LeftShift].isPressed ? DreamArrivalPoint.Location.Zone4 : DreamArrivalPoint.Location.Zone3;
