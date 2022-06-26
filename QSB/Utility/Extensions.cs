@@ -214,5 +214,11 @@ public static class Extensions
 		}
 	}
 
+	public static string LocalizedToUpper(this string orig)
+	{
+		var culture = UIHelper.GetCurrentCultureInfo();
+		return culture.TextInfo.ToUpper(orig);
+	}
+
 	#endregion
 }

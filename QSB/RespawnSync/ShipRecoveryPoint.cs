@@ -18,13 +18,13 @@ internal class ShipRecoveryPoint : MonoBehaviour
 
 	private static UITextType _respawnPlayerText;
 
-	static ShipRecoveryPoint() =>
-		QSBLocalization.LanguageChanged += () =>
-			// language change clears the table, so we have to add this back
-			_respawnPlayerText = UIHelper.AddToUITable(QSBLocalization.Current.RespawnPlayer);
-
 	private void Awake()
 	{
+		if (_respawnPlayerText == UITextType.None)
+		{
+			_respawnPlayerText = UIHelper.AddToUITable(QSBLocalization.Current.RespawnPlayer);
+		}
+
 		_interactVolume = this.GetRequiredComponent<MultipleInteractionVolume>();
 		_interactVolume.OnPressInteract += OnPressInteract;
 		_interactVolume.OnGainFocus += OnGainFocus;
