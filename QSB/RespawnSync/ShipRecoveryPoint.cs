@@ -15,15 +15,11 @@ internal class ShipRecoveryPoint : MonoBehaviour
 	private int _refillIndex;
 	private int _respawnIndex;
 	private bool _wearingSuit;
-
-	private static UITextType _respawnPlayerText;
+	private UITextType _respawnPlayerText;
 
 	private void Awake()
 	{
-		if (_respawnPlayerText == UITextType.None)
-		{
-			_respawnPlayerText = UIHelper.AddToUITable(QSBLocalization.Current.RespawnPlayer);
-		}
+		_respawnPlayerText = UIHelper.AddToUITable(QSBLocalization.Current.RespawnPlayer);
 
 		_interactVolume = this.GetRequiredComponent<MultipleInteractionVolume>();
 		_interactVolume.OnPressInteract += OnPressInteract;
@@ -48,7 +44,6 @@ internal class ShipRecoveryPoint : MonoBehaviour
 		_interactVolume.OnGainFocus -= OnGainFocus;
 		GlobalMessenger.RemoveListener(OWEvents.SuitUp, OnSuitUp);
 		GlobalMessenger.RemoveListener(OWEvents.RemoveSuit, OnRemoveSuit);
-		_respawnPlayerText = UITextType.None;
 	}
 
 	private void OnSuitUp()
