@@ -48,6 +48,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 		_interactVolume.OnGainFocus -= OnGainFocus;
 		GlobalMessenger.RemoveListener(OWEvents.SuitUp, OnSuitUp);
 		GlobalMessenger.RemoveListener(OWEvents.RemoveSuit, OnRemoveSuit);
+		_respawnPlayerText = UITextType.None;
 	}
 
 	private void OnSuitUp()
