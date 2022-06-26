@@ -161,13 +161,13 @@ public static class Extensions
 	public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
 	{
 		const BindingFlags flags = BindingFlags.Instance
-		                           | BindingFlags.Static
-		                           | BindingFlags.Public
-		                           | BindingFlags.NonPublic
-		                           | BindingFlags.DeclaredOnly;
+			| BindingFlags.Static
+			| BindingFlags.Public
+			| BindingFlags.NonPublic
+			| BindingFlags.DeclaredOnly;
 		if (typeof(T)
-			    .GetField(eventName, flags)?
-			    .GetValue(instance) is not MulticastDelegate multiDelegate)
+				.GetField(eventName, flags)?
+				.GetValue(instance) is not MulticastDelegate multiDelegate)
 		{
 			return;
 		}
@@ -212,12 +212,6 @@ public static class Extensions
 		{
 			DebugLog.ToConsole($"{self} - error {doingWhat} : {e}", MessageType.Error);
 		}
-	}
-
-	public static string LocalizedToUpper(this string orig)
-	{
-		var culture = UIHelper.GetCurrentCultureInfo();
-		return culture.TextInfo.ToUpper(orig);
 	}
 
 	#endregion
