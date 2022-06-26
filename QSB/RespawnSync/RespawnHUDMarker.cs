@@ -13,7 +13,7 @@ public class RespawnHUDMarker : HUDDistanceMarker
 	{
 		_markerRadius = 0.2f;
 		_markerTarget = transform;
-		_markerLabel = QSBLocalization.Current.RespawnPlayer.LocalizedToUpper();
+		_markerLabel = QSBLocalization.Current.RespawnPlayer.ToUpper(UIHelper.GetCurrentCultureInfo());
 		_isReady = true;
 
 		base.InitCanvasMarker();
