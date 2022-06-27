@@ -87,6 +87,10 @@ Let me know if you find an answer.
 
 **Update**: a plausible answer is the enjoyment you get seeing/hearing about others playing with their friends :) 
 
+## Translating
+
+See [TRANSLATING.md](TRANSLATING.md)
+
 ## Development Setup
 
 - [Download the Outer Wilds Mod Manager](https://github.com/raicuparta/ow-mod-manager) and install it anywhere you like;
