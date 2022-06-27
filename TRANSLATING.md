@@ -32,6 +32,8 @@ Go through each of the English items and translate them into your language.
 
 You can test your translation by putting your file in `Mods\QSB\Translations\`, alongside the other translation files.
 
+Note: The "Language" field at the top should be set as one of these options : `ENGLISH`, `SPANISH_LA`, `GERMAN`, `FRENCH`, `ITALIAN`, `POLISH`, `PORTUGUESE_BR`, `JAPANESE`, `RUSSIAN`, `CHINESE_SIMPLE`, `KOREAN`, `TURKISH`
+
 Once you are happy with it, go to [this page](https://github.com/misternebula/quantum-space-buddies/new/dev/QSB/Translations) to create a PR with your translation file. In the "Name your file..." box put your file name and extension (e.g. `de.json`), and in the text box copy and paste the contents of your translation file.
 
 Scroll down to the "Propose new file" box. In the title box (default "Create new file") write something along the lines of "Add translation for (language)".
