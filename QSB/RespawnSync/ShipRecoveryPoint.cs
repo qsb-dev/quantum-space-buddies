@@ -1,4 +1,4 @@
-﻿using QSB.Localisation;
+﻿using QSB.Localization;
 using QSB.Messaging;
 using QSB.ShipSync;
 using QSB.Utility;

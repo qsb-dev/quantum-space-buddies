@@ -1,6 +1,6 @@
 ﻿using EpicTransport;
 using Mirror;
-using QSB.Localisation;
+using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.SaveSync.Messages;

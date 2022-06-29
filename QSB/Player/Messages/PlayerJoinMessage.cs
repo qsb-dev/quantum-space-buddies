@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Mirror;
 using OWML.Common;
-using QSB.Localisation;
+using QSB.Localization;
 using QSB.Messaging;
 using QSB.Utility;
 using System.Linq;

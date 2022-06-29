@@ -1,4 +1,4 @@
-﻿using QSB.Localisation;
+﻿using QSB.Localization;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;

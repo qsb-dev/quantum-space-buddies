@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QSB.Localisation;
+namespace QSB.Localization;
 
 public class Translation
 {

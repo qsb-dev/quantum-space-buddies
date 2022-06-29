@@ -2,7 +2,7 @@
 using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
-using QSB.Localisation;
+using QSB.Localization;
 using QSB.Menus;
 using QSB.Patches;
 using QSB.QuantumSync;

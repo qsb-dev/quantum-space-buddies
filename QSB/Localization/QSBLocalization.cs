@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace QSB.Localisation;
+namespace QSB.Localization;
 
 public static class QSBLocalization
 {

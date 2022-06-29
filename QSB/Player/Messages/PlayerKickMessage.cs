@@ -1,5 +1,5 @@
 ﻿using Mirror;
-using QSB.Localisation;
+using QSB.Localization;
 using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
