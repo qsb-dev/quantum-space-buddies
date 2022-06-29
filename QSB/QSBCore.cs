@@ -47,7 +47,6 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle NetworkAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
-	public static AssetBundle TextAssetsBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
 	public static string QSBVersion => Helper.Manifest.Version;
@@ -126,7 +125,6 @@ public class QSBCore : ModBehaviour
 		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
 		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
 		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
-		TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
 
 		QSBPatchManager.Init();
 		DeterministicManager.Init();

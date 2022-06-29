@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace QSB.Localisation;
 
@@ -42,4 +41,5 @@ public class Translation
 	public string TimeSyncWaitForAllToReady;
 	public string TimeSyncWaitForAllToDie;
 	public Dictionary<DeathType, string[]> DeathMessages;
+	public string GalaxyMapEveryoneNotPresent;
 }
