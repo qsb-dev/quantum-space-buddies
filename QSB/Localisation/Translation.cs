@@ -40,6 +40,6 @@ public class Translation
 	public string TimeSyncTooFarAhead;
 	public string TimeSyncWaitForAllToReady;
 	public string TimeSyncWaitForAllToDie;
-	public Dictionary<DeathType, string[]> DeathMessages;
 	public string GalaxyMapEveryoneNotPresent;
+	public Dictionary<DeathType, string[]> DeathMessages;
 }
