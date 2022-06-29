@@ -115,7 +115,7 @@ public class QSBCore : ModBehaviour
 
 		InitAssemblies();
 
-		MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
+		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
 		DebugLog.DebugWrite("loading qsb_network_big bundle", MessageType.Info);
 		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/qsb_network_big");
