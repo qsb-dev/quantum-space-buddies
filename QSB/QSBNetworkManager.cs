@@ -38,7 +38,7 @@ namespace QSB;
 
 public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 {
-	public static new QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
+	public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
 	public event Action OnClientConnected;
 	public event Action<string> OnClientDisconnected;
@@ -101,7 +101,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		base.Awake();
 
 		InitPlayerName();
-		StandaloneProfileManager.SharedInstance.OnProfileSignInComplete += (ProfileManagerSignInResult result) => InitPlayerName();
+		StandaloneProfileManager.SharedInstance.OnProfileSignInComplete += _ => InitPlayerName();
 
 		playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
 		playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", 1.ToGuid().ToString("N"));
@@ -185,7 +185,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	/// see https://docs.unity3d.com/Manual/AssetBundles-Native.html.
 	private static GameObject MakeNewNetworkObject(int assetId, string name, Type networkBehaviourType)
 	{
-		var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/empty");
+		var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/qsb_empty");
 		var template = bundle.LoadAsset<GameObject>("Assets/Prefabs/Empty.prefab");
 		bundle.Unload(false);
 
@@ -234,7 +234,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 	public override void OnServerAddPlayer(NetworkConnectionToClient connection) // Called on the server when a client joins
 	{
-		DebugLog.DebugWrite($"OnServerAddPlayer", MessageType.Info);
+		DebugLog.DebugWrite("OnServerAddPlayer", MessageType.Info);
 		base.OnServerAddPlayer(connection);
 
 		NetworkServer.Spawn(Instantiate(_probePrefab), connection);
