@@ -2,7 +2,7 @@
 using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
-using QSB.Localisation;
+using QSB.Localization;
 using QSB.Menus;
 using QSB.Patches;
 using QSB.QuantumSync;
@@ -47,7 +47,6 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle NetworkAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
-	public static AssetBundle TextAssetsBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
 	public static string QSBVersion => Helper.Manifest.Version;
@@ -116,17 +115,16 @@ public class QSBCore : ModBehaviour
 
 		InitAssemblies();
 
-		MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
+		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
-		DebugLog.DebugWrite("loading network-big bundle", MessageType.Info);
-		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/network-big");
+		DebugLog.DebugWrite("loading qsb_network_big bundle", MessageType.Info);
+		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/qsb_network_big");
 		var request = AssetBundle.LoadFromFileAsync(path);
-		request.completed += _ => DebugLog.DebugWrite("network-big bundle loaded", MessageType.Success);
+		request.completed += _ => DebugLog.DebugWrite("qsb_network_big bundle loaded", MessageType.Success);
 
-		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
-		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
-		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
-		TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
+		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_network");
+		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_conversation");
+		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_debug");
 
 		QSBPatchManager.Init();
 		DeterministicManager.Init();

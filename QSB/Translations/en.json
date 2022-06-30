@@ -35,6 +35,7 @@
   "TimeSyncTooFarAhead": "{0}\nPausing to match server time...",
   "TimeSyncWaitForAllToReady": "Waiting for start of loop...",
   "TimeSyncWaitForAllToDie": "Waiting for end of loop...",
+  "GalaxyMapEveryoneNotPresent": "It's not yet time. Everyone should be here to witness this.",
   "DeathMessages": {
     "Default": [
       "{0} died",

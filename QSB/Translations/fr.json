@@ -35,6 +35,7 @@
   "TimeSyncTooFarAhead": "{0}\nArrêtez le temps pour correspondre au serveur...",
   "TimeSyncWaitForAllToReady": "Attendez le début de la boucle...",
   "TimeSyncWaitForAllToDie": "Attendez la fin de la boucle...",
+  "GalaxyMapEveryoneNotPresent": "Ce n’est pas encore le moment. Tout le monde doit être ici pour continuer.",
   "DeathMessages": {
     "Default": [
       "{0} est mort",

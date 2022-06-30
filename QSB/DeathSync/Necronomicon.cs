@@ -1,4 +1,4 @@
-﻿using QSB.Localisation;
+﻿using QSB.Localization;
 using System;
 using System.Collections.Generic;
 
