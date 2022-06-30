@@ -120,10 +120,12 @@ internal class QSBNomaiTranslator : QSBTool
 				if (nomaiTextLine && !nomaiTextLine.IsHidden() && nomaiTextLine.IsActive())
 				{
 					distToClosestTextCenter = Vector3.Distance(raycastHit.point, nomaiTextLine.GetWorldCenter());
+					_translatorProp.SetNomaiText(_currentNomaiText, nomaiTextLine.GetEntryID());
 					_translatorProp.SetNomaiTextLine(nomaiTextLine);
 				}
 				else
 				{
+					_translatorProp.ClearNomaiText();
 					_translatorProp.ClearNomaiTextLine();
 					_lastHighlightedTextLine = null;
 					_lastLineWasTranslated = false;
@@ -136,6 +138,7 @@ internal class QSBNomaiTranslator : QSBTool
 				if (closestRing)
 				{
 					distToClosestTextCenter = Mathf.Min(num2 * 2f, 1f);
+					_translatorProp.SetNomaiText(_currentNomaiText, closestRing.GetEntryID());
 					_translatorProp.SetNomaiComputerRing(closestRing);
 				}
 			}
@@ -145,19 +148,32 @@ internal class QSBNomaiTranslator : QSBTool
 				if (closestRing2)
 				{
 					distToClosestTextCenter = Mathf.Min(num3 * 2f, 1f);
+					_translatorProp.SetNomaiText(_currentNomaiText, closestRing2.GetEntryID());
 					_translatorProp.SetNomaiVesselComputerRing(closestRing2);
 				}
 			}
 			else if (_currentNomaiText is GhostWallText ghostWallText)
 			{
+				_translatorProp.SetTargetingGhostText(true);
 				_translatorProp.SetNomaiTextLine(ghostWallText.GetTextLine());
+			}
+			else if (raycastHit.textureCoord2 == Vector2.zero)
+			{
+				_translatorProp.SetNomaiText(this._currentNomaiText);
+			}
+			else
+			{
+				var textID = Mathf.RoundToInt(raycastHit.textureCoord2.x * 10f);
+				_translatorProp.SetNomaiText(this._currentNomaiText, textID);
 			}
 		}
 		else
 		{
+			_translatorProp.ClearNomaiText();
 			_translatorProp.ClearNomaiTextLine();
 			_translatorProp.ClearNomaiComputerRing();
 			_translatorProp.ClearNomaiVesselComputerRing();
+			_translatorProp.SetTargetingGhostText(false);
 		}
 
 		_translatorProp.SetTooCloseToTarget(tooCloseToTarget);
