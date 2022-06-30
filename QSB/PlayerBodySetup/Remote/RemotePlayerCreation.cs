@@ -21,6 +21,7 @@ public static class RemotePlayerCreation
 
 		_prefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/REMOTE_Player_Body.prefab");
 		ShaderReplacer.ReplaceShaders(_prefab);
+		FontReplacer.ReplaceFonts(_prefab);
 		QSBDopplerFixer.AddDopplerFixers(_prefab);
 		return _prefab;
 	}
