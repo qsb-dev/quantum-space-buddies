@@ -9,7 +9,7 @@ namespace QSB.Localization;
 
 public static class QSBLocalization
 {
-	private static readonly List<Translation> _translations = new();
+	private readonly static List<Translation> _translations = new();
 	public static Translation Current;
 
 	public static Action LanguageChanged;
@@ -17,16 +17,18 @@ public static class QSBLocalization
 	public static void Init()
 	{
 		// get all translation files
-		foreach (var path in Directory.EnumerateFiles(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "Translations"), "*.json"))
+		var directory = new DirectoryInfo(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "Translations\\"));
+		var files = directory.GetFiles("*.json");
+		foreach (var file in files)
 		{
-			var translation = QSBCore.Helper.Storage.Load<Translation>(path, false);
+			var translation = QSBCore.Helper.Storage.Load<Translation>($"Translations\\{file.Name}", false);
 			_translations.Add(translation);
 			DebugLog.DebugWrite($"- Added translation for language {translation.Language}");
 		}
 
 		if (_translations.Count == 0)
 		{
-			DebugLog.ToConsole("FATAL - No translation files found!", OWML.Common.MessageType.Fatal);
+			DebugLog.ToConsole($"FATAL - No translation files found!", OWML.Common.MessageType.Fatal);
 			return;
 		}
 
