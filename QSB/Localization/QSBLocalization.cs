@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using OWML.Common;
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,13 +23,19 @@ public static class QSBLocalization
 		foreach (var file in files)
 		{
 			var translation = QSBCore.Helper.Storage.Load<Translation>($"Translations\\{file.Name}", false);
+
+			if (translation == null)
+			{
+				DebugLog.ToConsole($"Error - could not load translation at {Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, $"Translations\\{file.Name}")}", MessageType.Error);
+			}
+
 			_translations.Add(translation);
 			DebugLog.DebugWrite($"- Added translation for language {translation.Language}");
 		}
 
 		if (_translations.Count == 0)
 		{
-			DebugLog.ToConsole($"FATAL - No translation files found!", OWML.Common.MessageType.Fatal);
+			DebugLog.ToConsole($"FATAL - No translation files found!", MessageType.Fatal);
 			return;
 		}
 
