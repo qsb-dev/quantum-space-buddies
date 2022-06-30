@@ -186,6 +186,13 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private static GameObject MakeNewNetworkObject(int assetId, string name, Type networkBehaviourType)
 	{
 		var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/qsb_empty");
+
+		if (bundle == null)
+		{
+			DebugLog.ToConsole($"FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
+			return null;
+		}
+
 		var template = bundle.LoadAsset<GameObject>("Assets/Prefabs/Empty.prefab");
 		bundle.Unload(false);
 

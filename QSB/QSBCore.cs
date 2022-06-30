@@ -127,6 +127,12 @@ public class QSBCore : ModBehaviour
 		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_conversation");
 		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_debug");
 
+		if (NetworkAssetBundle == null || ConversationAssetBundle == null || DebugAssetBundle == null)
+		{
+			DebugLog.ToConsole($"FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
+			return;
+		}
+
 		QSBPatchManager.Init();
 		DeterministicManager.Init();
 		QSBLocalization.Init();
