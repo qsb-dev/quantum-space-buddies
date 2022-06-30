@@ -74,6 +74,7 @@ public class QSBCore : ModBehaviour
 	{
 		EpicRerouter.ModSide.Interop.Go();
 
+		// no, we cant localize this - languages are loaded after the splash screen
 		UIHelper.ReplaceUI(UITextType.PleaseUseController,
 			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
 	}
