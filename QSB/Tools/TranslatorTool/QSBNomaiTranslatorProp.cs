@@ -16,8 +16,8 @@ internal class QSBNomaiTranslatorProp : MonoBehaviour
 	public Font _defaultPropFont;
 	public Font _defaultPropFontDynamic;
 	public float _defaultFontSpacing = 0.7f;
-	private Text _textField;
-	private Text _pageNumberTextField;
+	public Text _textField;
+	public Text _pageNumberTextField;
 
 	private Font _fontInUse;
 	private Font _dynamicFontInUse;
