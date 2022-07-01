@@ -70,6 +70,7 @@ public partial class PlayerInfo
 		TranslatorEquipped = default;
 		ProbeActive = default;
 		ProbeLauncherEquipped = default;
+		IsTranslating = default;
 	}
 
 	public void UpdateObjectsFromStates()
