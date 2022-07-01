@@ -35,7 +35,7 @@ public static class QSBLocalization
 
 		if (_translations.Count == 0)
 		{
-			DebugLog.ToConsole($"FATAL - No translation files found!", MessageType.Fatal);
+			DebugLog.ToConsole("FATAL - No translation files found!", MessageType.Fatal);
 			return;
 		}
 
