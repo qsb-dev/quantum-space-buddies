@@ -74,6 +74,7 @@ public class QSBCore : ModBehaviour
 	{
 		EpicRerouter.ModSide.Interop.Go();
 
+		// no, we cant localize this - languages are loaded after the splash screen
 		UIHelper.ReplaceUI(UITextType.PleaseUseController,
 			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
 	}
@@ -125,6 +126,12 @@ public class QSBCore : ModBehaviour
 		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_network");
 		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_conversation");
 		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_debug");
+
+		if (NetworkAssetBundle == null || ConversationAssetBundle == null || DebugAssetBundle == null)
+		{
+			DebugLog.ToConsole($"FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
+			return;
+		}
 
 		QSBPatchManager.Init();
 		DeterministicManager.Init();
