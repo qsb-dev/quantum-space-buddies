@@ -87,4 +87,5 @@ public partial class PlayerInfo
 	public bool ProbeActive { get; set; }
 	public GameObject RoastingStick { get; set; }
 	public QSBProbeLauncher ProbeLauncherEquipped { get; set; }
+	public bool IsTranslating { get; set; }
 }

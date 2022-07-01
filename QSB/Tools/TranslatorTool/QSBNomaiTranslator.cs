@@ -2,7 +2,7 @@
 
 namespace QSB.Tools.TranslatorTool;
 
-internal class QSBNomaiTranslator : QSBTool
+public class QSBNomaiTranslator : QSBTool
 {
 	public static float distToClosestTextCenter = 1f;
 
@@ -49,6 +49,12 @@ internal class QSBNomaiTranslator : QSBTool
 		base.FinishDitherOut();
 		_translatorProp.OnFinishUnequipAnimation();
 	}
+
+	public void SetScroll(float scrollPosition)
+		=> _translatorProp.SetScroll(scrollPosition);
+
+	public void UpdateTranslating(bool translating)
+		=> _translatorProp.UpdateTranslating(translating);
 
 	public override void Update()
 	{

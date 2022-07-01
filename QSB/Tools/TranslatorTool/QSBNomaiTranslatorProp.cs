@@ -51,9 +51,11 @@ internal class QSBNomaiTranslatorProp : MonoBehaviour
 	private bool _isTranslating;
 	private bool _hasUsedTranslator;
 	private bool _isTimeFrozen;
+	private QSBNomaiTranslator _nomaiTranslator;
 
 	private void Awake()
 	{
+		_nomaiTranslator = base.GetComponentInParent<QSBNomaiTranslator>();
 		this._listDisplayWords = new List<TranslatorWord>(1024);
 		this._listDisplayWordsByLength = new List<TranslatorWord>(1024);
 		this._lengthComparer = new TranslatorWordLengthComparer();
@@ -288,6 +290,22 @@ internal class QSBNomaiTranslatorProp : MonoBehaviour
 		}
 	}
 
+	public void SetScroll(float scrollPos)
+		=> _scrollRect.verticalNormalizedPosition = scrollPos;
+
+	public void UpdateTranslating(bool translating)
+	{
+		if (translating)
+		{
+			_isTranslating = true;
+			_audioController.PlayTranslateAudio();
+		}
+		else
+		{
+			StopTranslating();
+		}
+	}
+
 	protected virtual void Update()
 	{
 		var textIsTranslated = _nomaiTextComponent != null && _nomaiTextComponent.IsTranslated(_currentTextID);
@@ -320,19 +338,7 @@ internal class QSBNomaiTranslatorProp : MonoBehaviour
 
 		_textField.rectTransform.sizeDelta = new Vector2(_textField.rectTransform.sizeDelta.x, _textField.preferredHeight);
 		_scrollRect.content.sizeDelta = new Vector2(_scrollRect.content.sizeDelta.x, _textField.preferredHeight);
-		var num = (float)_textField.fontSize / (_textField.preferredHeight - _scrollRect.viewport.sizeDelta.y);
 
-		/*
-		if (OWInput.IsNewlyPressed(InputLibrary.toolOptionUp, InputMode.All))
-		{
-			this._scrollRect.verticalNormalizedPosition = Mathf.Clamp01(this._scrollRect.verticalNormalizedPosition + num);
-		}
-		if (OWInput.IsNewlyPressed(InputLibrary.toolOptionDown, InputMode.All))
-		{
-			this._scrollRect.verticalNormalizedPosition = Mathf.Clamp01(this._scrollRect.verticalNormalizedPosition - num);
-		}*/
-
-		var num2 = _currentTextID;
 		if (_pageNumberTextField != null && _pageNumberTextField.text != "")
 		{
 			_pageNumberTextField.text = "";
@@ -343,21 +349,12 @@ internal class QSBNomaiTranslatorProp : MonoBehaviour
 	{
 		if (!_nomaiTextComponent.IsTranslated(_currentTextID))
 		{
-			if (OWInput.IsPressed(InputLibrary.toolActionPrimary, 0f))
+			if (_nomaiTranslator.Player.IsTranslating)
 			{
 				_translationTimeElapsed += Time.deltaTime;
-				if (!_isTranslating)
-				{
-					_isTranslating = true;
-					_audioController.PlayTranslateAudio();
-				}
-			}
-			else if (_isTranslating)
-			{
-				StopTranslating();
 			}
 		}
-		else if (_nomaiTextComponent.IsTranslated(_currentTextID))
+		else
 		{
 			_translationTimeElapsed += Time.deltaTime;
 		}
