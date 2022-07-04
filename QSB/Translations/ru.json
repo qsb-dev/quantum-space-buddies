@@ -35,6 +35,7 @@
   "TimeSyncTooFarAhead": "{0}\nПауза, что-бы соответствовать времени сервера...",
   "TimeSyncWaitForAllToReady": "Ожидаю начало цикла...",
   "TimeSyncWaitForAllToDie": "Ожидаю конец цикла...",
+  "GalaxyMapEveryoneNotPresent": "Ещё не время. Все должны быть здесь, что-бы начать.",
   "DeathMessages": {
     "Default": [
       "{0} умер",
