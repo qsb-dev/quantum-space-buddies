@@ -172,7 +172,7 @@ public static class Extensions
 			return;
 		}
 
-		multiDelegate.GetInvocationList().ForEach(dl => dl.DynamicInvoke(args));
+		multiDelegate.SafeInvoke(args);
 	}
 
 	public static IEnumerable<Type> GetDerivedTypes(this Type type) =>
