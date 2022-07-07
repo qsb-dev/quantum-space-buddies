@@ -33,7 +33,7 @@ internal class FlyShipMessage : QSBMessage<bool>
 	public override void OnReceiveRemote()
 	{
 		SetCurrentFlyer(From, Data);
-		var shipCockpitController = GameObject.Find("ShipCockpitController").GetComponent<ShipCockpitController>();
+		var shipCockpitController = ShipManager.Instance.CockpitController;
 		if (Data)
 		{
 			shipCockpitController._interactVolume.DisableInteraction();
