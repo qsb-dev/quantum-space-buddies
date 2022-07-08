@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace QSB.Localization;
 
@@ -23,11 +24,15 @@ public static class QSBLocalization
 		foreach (var file in files)
 		{
 			var translation = QSBCore.Helper.Storage.Load<Translation>($"Translations\\{file.Name}", false);
+			var filePath = Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, $"Translations\\{file.Name}");
 
 			if (translation == null)
 			{
-				DebugLog.ToConsole($"Error - could not load translation at {Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, $"Translations\\{file.Name}")}", MessageType.Error);
+				DebugLog.ToConsole($"Error - could not load translation at {filePath}", MessageType.Error);
+				continue;
 			}
+
+			FixMissingEntries(translation);
 
 			_translations.Add(translation);
 			DebugLog.DebugWrite($"- Added translation for language {translation.Language}");
@@ -43,6 +48,23 @@ public static class QSBLocalization
 		Current = _translations[0];
 
 		TextTranslation.Get().OnLanguageChanged += OnLanguageChanged;
+	}
+
+	private static void FixMissingEntries(Translation translation)
+	{
+		var publicFields = typeof(Translation).GetFields(BindingFlags.Public | BindingFlags.Instance);
+
+		var stringFields = publicFields.Where(x => x.FieldType == typeof(string));
+
+		foreach (var stringField in stringFields)
+		{
+			var value = (string)stringField.GetValue(translation);
+			if (string.IsNullOrEmpty(value))
+			{
+				DebugLog.DebugWrite($"Warning - Language {translation.Language} has missing field of name {stringField.Name}", MessageType.Warning);
+				stringField.SetValue(translation, stringField.Name);
+			}
+		}
 	}
 
 	private static void OnLanguageChanged()
