@@ -13,6 +13,6 @@ public class RemotePlayerVelocity : MonoBehaviour
 		var reference = Locator.GetCenterOfTheUniverse().GetStaticReferenceFrame().transform;
 		var currentRelPosition = reference.InverseTransformPoint(transform.position);
 		Velocity = (currentRelPosition - _prevRelPosition) / Time.fixedDeltaTime;
-		_prevRelPosition = reference.InverseTransformPoint(transform.position);
+		_prevRelPosition = currentRelPosition;
 	}
 }
