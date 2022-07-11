@@ -1,6 +1,6 @@
-﻿using QSB.Utility;
+﻿using QSB.Localization;
+using QSB.Utility;
 using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap;
@@ -29,7 +29,17 @@ internal class GalaxyMapManager : MonoBehaviour, IAddComponentOnStart
 
 		map.SetActive(false);
 		Tree = map.AddComponent<CustomDialogueTree>();
-		Tree._xmlCharacterDialogueAsset = QSBCore.TextAssetsBundle.LoadAsset<TextAsset>("Assets/TextAssets/GalaxyMap.txt");
+		Tree._xmlCharacterDialogueAsset = new TextAsset(
+			$@"<DialogueTree>
+				<NameField>SIGN</NameField>
+			    <DialogueNode>
+			        <EntryCondition>DEFAULT</EntryCondition>
+			        <Dialogue>
+			            <Page>{QSBLocalization.Current.GalaxyMapEveryoneNotPresent}</Page>
+			        </Dialogue>
+			    </DialogueNode>
+			</DialogueTree>"
+		);
 		Tree._attentionPoint = map.transform;
 		Tree._attentionPointOffset = new Vector3(0, 1, 0);
 		Tree._turnOffFlashlight = true;

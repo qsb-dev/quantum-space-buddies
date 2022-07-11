@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Mirror;
 using OWML.Common;
+using QSB.Localization;
 using QSB.Messaging;
 using QSB.Utility;
 using System.Linq;
@@ -28,6 +29,7 @@ public class PlayerJoinMessage : QSBMessage
 		var allEnabledMods = QSBCore.Helper.Interaction.GetMods();
 
 		FirstIncompatibleMod = "";
+
 		foreach (var mod in allEnabledMods)
 		{
 			if (QSBCore.IncompatibleMods.Contains(mod.ModHelper.Manifest.UniqueName))
@@ -72,28 +74,28 @@ public class PlayerJoinMessage : QSBMessage
 			if (QSBVersion != QSBCore.QSBVersion)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong QSB version. (Client:{QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
-				new PlayerKickMessage(From, $"QSB version does not match. (Client:{QSBVersion}, Server:{QSBCore.QSBVersion})").Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.QSBVersionMismatch, QSBVersion, QSBCore.QSBVersion)).Send();
 				return;
 			}
 
 			if (GameVersion != QSBCore.GameVersion)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong game version. (Client:{GameVersion}, Server:{QSBCore.GameVersion})", MessageType.Error);
-				new PlayerKickMessage(From, $"Outer Wilds version does not match. (Client:{GameVersion}, Server:{QSBCore.GameVersion})").Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.OWVersionMismatch, GameVersion, QSBCore.GameVersion)).Send();
 				return;
 			}
 
 			if (DlcInstalled != QSBCore.DLCInstalled)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong DLC installation state. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})", MessageType.Error);
-				new PlayerKickMessage(From, $"DLC installation state does not match. (Client:{DlcInstalled}, Server:{QSBCore.DLCInstalled})").Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.DLCMismatch, DlcInstalled, QSBCore.DLCInstalled)).Send();
 				return;
 			}
 
 			if (QSBPlayerManager.PlayerList.Any(x => x.EyeState >= EyeState.Observatory))
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting too late into eye scene.", MessageType.Error);
-				new PlayerKickMessage(From, "Game has progressed too far.").Send();
+				new PlayerKickMessage(From, QSBLocalization.Current.GameProgressLimit).Send();
 				return;
 			}
 
@@ -103,20 +105,20 @@ public class PlayerJoinMessage : QSBMessage
 			if (!AddonHashes.SequenceEqual(addonHashes))
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with addon mismatch. (Client:{AddonHashes.Join()}, Server:{addonHashes.Join()})", MessageType.Error);
-				new PlayerKickMessage(From, $"Addon mismatch. (Client:{AddonHashes.Length} addons, Server:{addonHashes.Length} addons)").Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.AddonMismatch, AddonHashes.Length, addonHashes.Length)).Send();
 				return;
 			}
 
 			if (FirstIncompatibleMod != "" && !QSBCore.IncompatibleModsAllowed)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with incompatible mod. (First mod found was {FirstIncompatibleMod})");
-				new PlayerKickMessage(From, $"Using an incompatible/disallowed mod. First mod found was {FirstIncompatibleMod}").Send();
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.IncompatibleMod, FirstIncompatibleMod)).Send();
 			}
 		}
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.Name = PlayerName;
-		DebugLog.ToAll($"{player.Name} joined!", MessageType.Info);
+		DebugLog.ToAll(string.Format(QSBLocalization.Current.PlayerJoinedTheGame, player.Name), MessageType.Info);
 		DebugLog.DebugWrite($"{player} joined. qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
 	}
 
@@ -124,6 +126,5 @@ public class PlayerJoinMessage : QSBMessage
 	{
 		var player = QSBPlayerManager.GetPlayer(QSBPlayerManager.LocalPlayerId);
 		player.Name = PlayerName;
-		DebugLog.ToAll($"Connected to server as {player.Name}.", MessageType.Info);
 	}
 }

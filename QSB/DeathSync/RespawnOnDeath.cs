@@ -87,6 +87,8 @@ public class RespawnOnDeath : MonoBehaviour
 
 		_playerResources._isSuffocating = false;
 		_playerResources.DebugRefillResources();
+		// death by oxygen turns this off, so we gotta enable it again
+		Delay.RunNextFrame(() => _playerResources.enabled = true);
 		_spaceSuit.RemoveSuit(true);
 
 		foreach (var pickupVolume in _suitPickupVolumes)

@@ -35,7 +35,6 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 		QSBPlayerManager.OnRemovePlayer += player =>
 		{
 			_playersPendingRespawn.Remove(player);
-			UpdateRespawnNotification();
 		};
 	}
 
@@ -148,7 +147,6 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 		player.IsDead = true;
 
 		_playersPendingRespawn.Add(player);
-		UpdateRespawnNotification();
 
 		var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
 
@@ -172,7 +170,6 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 		player.IsDead = false;
 
 		_playersPendingRespawn.Remove(player);
-		UpdateRespawnNotification();
 
 		player.SetVisible(true, 1);
 	}
@@ -181,19 +178,5 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 	{
 		var playerToRespawn = _playersPendingRespawn.First();
 		new PlayerRespawnMessage(playerToRespawn.PlayerId).Send();
-	}
-
-	private void UpdateRespawnNotification()
-	{
-		NotificationManager.SharedInstance.UnpinNotification(_previousNotification);
-
-		if (_playersPendingRespawn.Count == 0)
-		{
-			return;
-		}
-
-		var data = new NotificationData(NotificationTarget.Player, $"[{_playersPendingRespawn.Count}] PLAYER(S) AWAITING RESPAWN");
-		NotificationManager.SharedInstance.PostNotification(data, true);
-		_previousNotification = data;
 	}
 }

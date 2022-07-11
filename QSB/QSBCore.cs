@@ -2,6 +2,7 @@
 using Mirror;
 using OWML.Common;
 using OWML.ModHelper;
+using QSB.Localization;
 using QSB.Menus;
 using QSB.Patches;
 using QSB.QuantumSync;
@@ -46,7 +47,6 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle NetworkAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
-	public static AssetBundle TextAssetsBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
 	public static string QSBVersion => Helper.Manifest.Version;
@@ -59,7 +59,7 @@ public class QSBCore : ModBehaviour
 	public static DebugSettings DebugSettings { get; private set; } = new();
 	public static Storage Storage { get; private set; } = new();
 
-	public static readonly string[] IncompatibleMods = new[]
+	public static readonly string[] IncompatibleMods =
 	{
 		// cheats mods
 		"Glitch.AltDebugMenu",
@@ -74,6 +74,7 @@ public class QSBCore : ModBehaviour
 	{
 		EpicRerouter.ModSide.Interop.Go();
 
+		// no, we cant localize this - languages are loaded after the splash screen
 		UIHelper.ReplaceUI(UITextType.PleaseUseController,
 			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
 	}
@@ -104,24 +105,37 @@ public class QSBCore : ModBehaviour
 				);
 		}
 
+		if (DebugSettings.AutoStart)
+		{
+			DebugSettings.UseKcpTransport = true;
+			DebugSettings.SkipTitleScreen = true;
+			DebugSettings.DebugMode = true;
+		}
+
 		RegisterAddons();
 
 		InitAssemblies();
 
-		MenuApi = ModHelper.Interaction.GetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
+		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
-		DebugLog.DebugWrite("loading network-big bundle", MessageType.Info);
-		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/network-big");
+		DebugLog.DebugWrite("loading qsb_network_big bundle", MessageType.Info);
+		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/qsb_network_big");
 		var request = AssetBundle.LoadFromFileAsync(path);
-		request.completed += _ => DebugLog.DebugWrite("network-big bundle loaded", MessageType.Success);
+		request.completed += _ => DebugLog.DebugWrite("qsb_network_big bundle loaded", MessageType.Success);
 
-		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/network");
-		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/conversation");
-		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/debug");
-		TextAssetsBundle = Helper.Assets.LoadBundle("AssetBundles/textassets");
+		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_network");
+		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_conversation");
+		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_debug");
+
+		if (NetworkAssetBundle == null || ConversationAssetBundle == null || DebugAssetBundle == null)
+		{
+			DebugLog.ToConsole($"FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
+			return;
+		}
 
 		QSBPatchManager.Init();
 		DeterministicManager.Init();
+		QSBLocalization.Init();
 
 		var components = typeof(IAddComponentOnStart).GetDerivedTypes()
 			.Select(x => gameObject.AddComponent(x))
@@ -152,9 +166,9 @@ public class QSBCore : ModBehaviour
 
 	public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
 
-	private static void RegisterAddons()
+	private void RegisterAddons()
 	{
-		var addons = Helper.Interaction.GetDependants(Helper.Manifest.UniqueName);
+		var addons = GetDependants();
 		foreach (var addon in addons)
 		{
 			Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);

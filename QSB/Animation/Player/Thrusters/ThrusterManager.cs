@@ -9,11 +9,12 @@ internal static class ThrusterManager
 	{
 		var newVfx = player.Body.transform.Find("REMOTE_PlayerVFX").gameObject;
 
-		CreateThrusterWashController(newVfx.transform.Find("ThrusterWash").gameObject, player);
-		CreateThrusterFlameController(newVfx, player);
+		InitWashController(newVfx.transform.Find("ThrusterWash").gameObject, player);
+		InitFlameControllers(newVfx, player);
+		InitParticleControllers(newVfx, player);
 	}
 
-	private static void CreateThrusterFlameController(GameObject root, PlayerInfo player)
+	private static void InitFlameControllers(GameObject root, PlayerInfo player)
 	{
 		var existingControllers = root.GetComponentsInChildren<RemoteThrusterFlameController>(true);
 		foreach (var controller in existingControllers)
@@ -22,7 +23,16 @@ internal static class ThrusterManager
 		}
 	}
 
-	private static void CreateThrusterWashController(GameObject root, PlayerInfo player)
+	private static void InitParticleControllers(GameObject root, PlayerInfo player)
+	{
+		var existingBehaviours = root.GetComponentsInChildren<RemoteThrusterParticlesBehaviour>(true);
+		foreach (var item in existingBehaviours)
+		{
+			item.Init(player);
+		}
+	}
+
+	private static void InitWashController(GameObject root, PlayerInfo player)
 	{
 		var newObj = root.GetComponent<RemoteThrusterWashController>();
 		newObj.Init(player);

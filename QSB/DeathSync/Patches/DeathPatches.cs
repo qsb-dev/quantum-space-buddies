@@ -3,7 +3,6 @@ using QSB.DeathSync.Messages;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.ShipSync.TransformSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -14,30 +13,6 @@ namespace QSB.DeathSync.Patches;
 public class DeathPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
-
-	// TODO : Remove with future functionality.
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ShipEjectionSystem), nameof(ShipEjectionSystem.OnPressInteract))]
-	public static bool DisableEjection()
-		=> false;
-
-	// TODO : Remove with future functionality.
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ShipDetachableLeg), nameof(ShipDetachableLeg.Detach))]
-	public static bool ShipDetachableLeg_Detach(out OWRigidbody __result)
-	{
-		__result = null;
-		return false;
-	}
-
-	// TODO : Remove with future functionality.
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ShipDetachableModule), nameof(ShipDetachableModule.Detach))]
-	public static bool ShipDetachableModule_Detach(out OWRigidbody __result)
-	{
-		__result = null;
-		return false;
-	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(PlayerResources), nameof(PlayerResources.OnImpact))]
@@ -139,6 +114,12 @@ public class DeathPatches : QSBPatch
 	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 	private static bool DeathManager_KillPlayer(DeathManager __instance, DeathType deathType)
 	{
+		// funny moment for eye
+		if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
+		{
+			return true;
+		}
+
 		Original(__instance, deathType);
 		return false;
 
@@ -187,7 +168,7 @@ public class DeathPatches : QSBPatch
 						PlayerData.SetPersistentCondition("THERE_IS_BUT_VOID", true);
 					}
 
-					if ((TimeLoop.GetLoopCount() != 1 && TimeLoop.GetSecondsElapsed() < 60f || TimeLoop.GetLoopCount() == 1 && Time.timeSinceLevelLoad < 60f && !TimeLoop.IsTimeFlowing()) && deathType != DeathType.Meditation && LoadManager.GetCurrentScene() == OWScene.SolarSystem)
+					if (((TimeLoop.GetLoopCount() != 1 && TimeLoop.GetSecondsElapsed() < 60f) || (TimeLoop.GetLoopCount() == 1 && Time.timeSinceLevelLoad < 60f && !TimeLoop.IsTimeFlowing())) && deathType != DeathType.Meditation && LoadManager.GetCurrentScene() == OWScene.SolarSystem)
 					{
 						Achievements.Earn(Achievements.Type.GONE_IN_60_SECONDS);
 					}
@@ -261,34 +242,28 @@ public class DeathPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.Explode))]
-	public static bool ShipDamageController_Explode()
-		// prevent ship from exploding
-		// todo remove this when sync ship explosions
-		=> false;
-
-	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishShip))]
-	public static bool DestructionVolume_VanishShip(DestructionVolume __instance)
+	public static bool DestructionVolume_VanishShip(DestructionVolume __instance, OWRigidbody shipBody, RelativeLocationData entryLocation)
 	{
-		if (RespawnOnDeath.Instance == null)
+		var cockpitIntact = !shipBody.GetComponent<ShipDamageController>().IsCockpitDetached();
+		if (PlayerState.IsInsideShip() || PlayerState.UsingShipComputer() || (cockpitIntact && PlayerState.AtFlightConsole()))
 		{
-			return true;
-		}
+			var autopilot = shipBody.GetComponent<Autopilot>();
+			if (autopilot != null && autopilot.IsFlyingToDestination())
+			{
+				var astroObject = __instance.GetComponentInParent<AstroObject>();
+				if (astroObject != null && astroObject.GetAstroObjectType() == AstroObject.Type.Star)
+				{
+					PlayerData.SetPersistentCondition("AUTOPILOT_INTO_SUN", true);
+					MonoBehaviour.print("AUTOPILOT_INTO_SUN");
+				}
+			}
 
-		// apparently this is to fix a weird bug when flying into the sun. idk this is 2-year-old code.
-		if (!ShipTransformSync.LocalInstance.hasAuthority)
-		{
-			return false;
-		}
-
-		if (PlayerState.IsInsideShip() || PlayerState.UsingShipComputer() || PlayerState.AtFlightConsole())
-		{
 			Locator.GetDeathManager().KillPlayer(__instance._deathType);
 		}
 
-		// don't actually delete the ship to allow respawns or something
-
-		return true;
+		__instance.Vanish(shipBody, entryLocation);
+		GlobalMessenger.FireEvent("ShipDestroyed");
+		return false;
 	}
 }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using QSB.Localization;
+using QSB.ShipSync;
+using UnityEngine;
 
 namespace QSB.RespawnSync;
 
@@ -10,7 +12,7 @@ public class RespawnHUDMarker : HUDDistanceMarker
 	{
 		_markerRadius = 0.2f;
 		_markerTarget = transform;
-		_markerLabel = "RESPAWN PLAYER";
+		_markerLabel = QSBLocalization.Current.RespawnPlayer.ToUpper(QSBLocalization.CultureInfo);
 		_isReady = true;
 
 		base.InitCanvasMarker();
@@ -26,10 +28,12 @@ public class RespawnHUDMarker : HUDDistanceMarker
 		if (_canvasMarker != null)
 		{
 			var isVisible = _canvasMarker.IsVisible();
+			var shouldBeVisible = RespawnManager.Instance.RespawnNeeded
+				&& !ShipManager.Instance.ShipCockpitUI._shipDamageCtrlr.IsDestroyed();
 
-			if (RespawnManager.Instance.RespawnNeeded != isVisible)
+			if (shouldBeVisible != isVisible)
 			{
-				_isVisible = RespawnManager.Instance.RespawnNeeded;
+				_isVisible = shouldBeVisible;
 				_canvasMarker.SetVisibility(_isVisible);
 			}
 		}

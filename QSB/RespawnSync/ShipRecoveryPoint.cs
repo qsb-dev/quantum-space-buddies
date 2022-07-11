@@ -1,4 +1,6 @@
-﻿using QSB.Messaging;
+﻿using QSB.Localization;
+using QSB.Messaging;
+using QSB.ShipSync;
 using QSB.Utility;
 using UnityEngine;
 
@@ -13,11 +15,12 @@ internal class ShipRecoveryPoint : MonoBehaviour
 	private int _refillIndex;
 	private int _respawnIndex;
 	private bool _wearingSuit;
-
-	private static readonly UITextType _respawnPlayerText = UIHelper.AddToUITable("Respawn Player");
+	private UITextType _respawnPlayerText;
 
 	private void Awake()
 	{
+		_respawnPlayerText = UIHelper.AddToUITable(QSBLocalization.Current.RespawnPlayer);
+
 		_interactVolume = this.GetRequiredComponent<MultipleInteractionVolume>();
 		_interactVolume.OnPressInteract += OnPressInteract;
 		_interactVolume.OnGainFocus += OnGainFocus;
@@ -56,7 +59,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 			_playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
 		}
 
-		if (RespawnManager.Instance.RespawnNeeded)
+		if (RespawnManager.Instance.RespawnNeeded && !ShipManager.Instance.ShipCockpitUI._shipDamageCtrlr.IsDestroyed())
 		{
 			_interactVolume.EnableSingleInteraction(true, _respawnIndex);
 			_interactVolume.SetKeyCommandVisible(true, _respawnIndex);
@@ -124,7 +127,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 		}
 		else if (inputCommand == _interactVolume.GetInteractionAt(_respawnIndex).inputCommand)
 		{
-			if (!RespawnManager.Instance.RespawnNeeded)
+			if (!RespawnManager.Instance.RespawnNeeded || ShipManager.Instance.ShipCockpitUI._shipDamageCtrlr.IsDestroyed())
 			{
 				return;
 			}

@@ -46,19 +46,6 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		/*
-		 * 1 - Warp to first non local player
-		 * 2 - Enter dream world
-		 * 3 - Destroy probe
-		 * 4 - Damage ship electricals
-		 * 5 - Trigger supernova
-		 * 6 - Set MET_SOLANUM
-		 * 7 - Warp to vessel
-		 * 8 - Place warp core into vessel
-		 * 9 - Load eye scene
-		 * 0 - Respawn some player
-		 */
-
 		if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
 		{
 			var otherPlayers = QSBPlayerManager.PlayerList.Where(x => !x.IsLocalPlayer).ToList();
@@ -71,6 +58,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		{
 			if (!QSBPlayerManager.LocalPlayer.InDreamWorld)
 			{
+				// modified from DayDream debug thing
 				var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
 
 				var location = Keyboard.current[Key.LeftShift].isPressed ? DreamArrivalPoint.Location.Zone4 : DreamArrivalPoint.Location.Zone3;

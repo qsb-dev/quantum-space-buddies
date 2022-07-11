@@ -13,6 +13,7 @@ using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
+using QSB.ModelShip.TransformSync;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
 using QSB.OrbSync.WorldObjects;
@@ -20,11 +21,13 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
+using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Syncs.Occasional;
 using QSB.TimeSync;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
+using QSB.Utility.VariableSync;
 using QSB.WorldSync;
 using System;
 using System.Linq;
@@ -35,7 +38,7 @@ namespace QSB;
 
 public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 {
-	public static new QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
+	public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
 	public event Action OnClientConnected;
 	public event Action<string> OnClientDisconnected;
@@ -49,6 +52,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject DoorPrefab { get; private set; }
 	public GameObject ElevatorPrefab { get; private set; }
 	public GameObject AirlockPrefab { get; private set; }
+	public GameObject ShipModulePrefab { get; private set; }
+	public GameObject ShipLegPrefab { get; private set; }
+	public GameObject ModelShipPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
 	private GameObject _probePrefab;
@@ -95,12 +101,15 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		base.Awake();
 
 		InitPlayerName();
-		StandaloneProfileManager.SharedInstance.OnProfileSignInComplete += (ProfileManagerSignInResult result) => InitPlayerName();
+		StandaloneProfileManager.SharedInstance.OnProfileSignInComplete += _ => InitPlayerName();
 
 		playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
 		playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", 1.ToGuid().ToString("N"));
 
 		ShipPrefab = MakeNewNetworkObject(2, "NetworkShip", typeof(ShipTransformSync));
+		var shipVector3Sync = ShipPrefab.AddComponent<Vector3VariableSyncer>();
+		var shipThrustSync = ShipPrefab.AddComponent<ShipThrusterVariableSyncer>();
+		shipThrustSync.AccelerationSyncer = shipVector3Sync;
 		spawnPrefabs.Add(ShipPrefab);
 
 		_probePrefab = MakeNewNetworkObject(3, "NetworkProbe", typeof(PlayerProbeSync));
@@ -129,6 +138,15 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		AirlockPrefab = MakeNewNetworkObject(11, "NetworkGhostAirlock", typeof(AirlockVariableSyncer));
 		spawnPrefabs.Add(AirlockPrefab);
+
+		ShipModulePrefab = MakeNewNetworkObject(12, "NetworkShipModule", typeof(ShipModuleTransformSync));
+		spawnPrefabs.Add(ShipModulePrefab);
+
+		ShipLegPrefab = MakeNewNetworkObject(13, "NetworkShipLeg", typeof(ShipLegTransformSync));
+		spawnPrefabs.Add(ShipLegPrefab);
+
+		ModelShipPrefab = MakeNewNetworkObject(14, "NetworkModelShip", typeof(ModelShipTransformSync));
+		spawnPrefabs.Add(ModelShipPrefab);
 
 		ConfigureNetworkManager();
 	}
@@ -167,7 +185,14 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	/// see https://docs.unity3d.com/Manual/AssetBundles-Native.html.
 	private static GameObject MakeNewNetworkObject(int assetId, string name, Type networkBehaviourType)
 	{
-		var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/empty");
+		var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/qsb_empty");
+
+		if (bundle == null)
+		{
+			DebugLog.ToConsole($"FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
+			return null;
+		}
+
 		var template = bundle.LoadAsset<GameObject>("Assets/Prefabs/Empty.prefab");
 		bundle.Unload(false);
 
@@ -216,7 +241,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 	public override void OnServerAddPlayer(NetworkConnectionToClient connection) // Called on the server when a client joins
 	{
-		DebugLog.DebugWrite($"OnServerAddPlayer", MessageType.Info);
+		DebugLog.DebugWrite("OnServerAddPlayer", MessageType.Info);
 		base.OnServerAddPlayer(connection);
 
 		NetworkServer.Spawn(Instantiate(_probePrefab), connection);

@@ -46,7 +46,13 @@ public class QSBTool : PlayerTool
 		_ditheringAnimator.SetVisible(false);
 	}
 
-	public virtual void OnEnable() => ToolGameObject?.SetActive(true);
+	public virtual void OnEnable()
+	{
+		if (!Player?.FlyingShip ?? false)
+		{
+			ToolGameObject?.SetActive(true);
+		}
+	}
 
 	public virtual void OnDisable()
 	{
@@ -71,13 +77,17 @@ public class QSBTool : PlayerTool
 	{
 		base.EquipTool();
 
-		if (_ditheringAnimator != null)
+		if (!Player.FlyingShip)
 		{
 			ToolGameObject?.SetActive(true);
-			_ditheringAnimator.SetVisible(true, .2f);
+			Player.AudioController.PlayEquipTool();
 		}
 
-		Player.AudioController.PlayEquipTool();
+		if (_ditheringAnimator != null)
+		{
+			
+			_ditheringAnimator.SetVisible(true, .2f);
+		}
 	}
 
 	public override void UnequipTool()

@@ -28,7 +28,7 @@ public static class DeterministicManager
 			}
 		};
 
-	public static void WorldObjectsReady()
+	public static void OnWorldObjectsReady()
 	{
 		if (QSBCore.DebugSettings.DumpWorldObjects)
 		{

@@ -20,6 +20,12 @@ public class DebugSettings
 	[JsonProperty("avoidTimeSync")]
 	public bool AvoidTimeSync;
 
+	[JsonProperty("autoStart")]
+	public bool AutoStart;
+
+	[JsonProperty("skipTitleScreen")]
+	public bool SkipTitleScreen;
+
 	[JsonProperty("debugMode")]
 	public bool DebugMode;
 
@@ -42,10 +48,6 @@ public class DebugSettings
 	[JsonProperty("drawGhostAI")]
 	private bool _drawGhostAI;
 	public bool DrawGhostAI => DebugMode && _drawGhostAI;
-
-	[JsonProperty("skipTitleScreen")]
-	private bool _skipTitleScreen;
-	public bool SkipTitleScreen => DebugMode && _skipTitleScreen;
 
 	[JsonProperty("greySkybox")]
 	private bool _greySkybox;

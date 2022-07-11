@@ -1,0 +1,118 @@
+﻿{
+  "Language": "FRENCH",
+  "MainMenuHost": "OUVRIR AU MULTIJOUEUR",
+  "MainMenuConnect": "SE CONNECTER AU MULTIJOUEUR",
+  "PauseMenuDisconnect": "DÉCONNECTER",
+  "PauseMenuStopHosting": "ARRÊTEZ L'HÉBERGEMENT",
+  "PublicIPAddress": "Adresse IP publique\n\n(CELA EFFACERA VOTRE PROGRESSION)",
+  "ProductUserID": "ID utilisateur\n\n(CELA EFFACERA VOTRE PROGRESSION)",
+  "Connect": "SE CONNECTER",
+  "Cancel": "ANNULER",
+  "HostExistingOrNew": "Veux-tu héberger une expédition existante, ou héberger une nouvelle expédition?",
+  "ExistingSave": "SAUVEGARDE EXISTANTE",
+  "NewSave": "NOUVELLE SAUVEGARDE",
+  "DisconnectAreYouSure": "Veux-tu vraiment te déconnecter?\n Cela te ramènera au menu principal.",
+  "Yes": "OUI",
+  "No": "NON",
+  "StopHostingAreYouSure": "Veux-tu vraiment arrêter l'hébergement?\n Cela déconnectera tous les clients et renverra tout le monde au menu principal.",
+  "CopyProductUserIDToClipboard": "Le serveur est maintenant hébergé. Les clients se connecteront en utilisant votre ID utilisateur, qui est : \n{0}\nVeux-tu copier ceci dans le presse-papier ?",
+  "Connecting": "CONNEXION EN COURS...",
+  "OK": "D'ACCORD",
+  "ServerRefusedConnection": "Le serveur a refusé la connexion.\n{0}",
+  "ClientDisconnectWithError": "Client déconnecté avec erreur!\n{0}",
+  "QSBVersionMismatch": "Les versions du QSB ne correspondent pas. (Client:{0}, Serveur:{1})",
+  "OWVersionMismatch": "Les versions de Outer Wilds ne correspondent pas. (Client:{0}, Serveur:{1})",
+  "DLCMismatch": "Les états d'installation du DLC ne correspondent pas. (Client:{0}, Serveur:{1})",
+  "GameProgressLimit": "Le jeu a trop progressé.",
+  "AddonMismatch": "Non-concordance des addons. (Client:{0} addons, Serveur:{1} addons)",
+  "IncompatibleMod": "Utiliser un mod incompatible/non autorisé. Le premier mod trouvé était {0}",
+  "PlayerJoinedTheGame": "{0} a rejoint!",
+  "PlayerWasKicked": "{0} a été expulsé.",
+  "KickedFromServer": "Tu as été expulsé du serveur. Raison : {0}",
+  "RespawnPlayer": "Faire réapparaître le joueur",
+  "TimeSyncTooFarBehind": "{0}\nRattraper pour correspondre à l’heure du serveur...",
+  "TimeSyncWaitingForStartOfServer": "Attendez que le serveur démarre...",
+  "TimeSyncTooFarAhead": "{0}\nArrêtez le temps pour correspondre au serveur...",
+  "TimeSyncWaitForAllToReady": "Attendez le début de la boucle...",
+  "TimeSyncWaitForAllToDie": "Attendez la fin de la boucle...",
+  "GalaxyMapEveryoneNotPresent": "Ce n’est pas encore le moment. Tout le monde doit être ici pour continuer.",
+  "DeathMessages": {
+    "Default": [
+      "{0} est mort",
+      "{0} a été tué"
+    ],
+    "Impact": [
+      "{0} a oublié d'utiliser des rétro-fusées",
+      "{0} a heurté le sol trop fort",
+      "{0} a foncé dans le sol trop fort",
+      "{0} a fait splat",
+      "{0} est mort à cause d'un impact",
+      "{0} a heurté le sol trop fort"
+    ],
+    "Asphyxiation": [
+      "{0} a oublié de respirer",
+      "{0} a asphyxié",
+      "{0} est mort par asphyxie",
+      "{0} a oublié comment respirer",
+      "{0} a oublié de vérifier leur réservoir d'oxygène",
+      "{0} a manqué d'air",
+      "{0} a manqué d'oxygène",
+      "{0} n'avait pas vraiment besoin d'air"
+    ],
+    "Energy": [
+      "{0} était cuit"
+    ],
+    "Supernova": [
+      "{0} a manqué de temps",
+      "{0} a brûlé",
+      "{0} était cuit",
+      "{0} s'est vaporisé",
+      "{0} a perdu la notion du temps"
+    ],
+    "Digestion": [
+      "{0} a été mangé",
+      "{0} a trouvé un poisson",
+      "{0} a rencontré une créature maléfique",
+      "{0} s'est trompé de poisson",
+      "{0} a été digéré",
+      "{0} est mort à cause de la digestion"
+    ],
+    "Crushed": [
+      "{0} a été écrasé",
+      "{0} a été écrabouillé",
+      "{0} a été enterré",
+      "{0} ne s'en est pas sorti à temps",
+      "{0} est allé nager dans le sable",
+      "{0} a sous-estimé le sable",
+      "{0} était coincé sous le sable"
+    ],
+    "Lava": [
+      "{0} est mort dans la lave",
+      "{0} a été fondu",
+      "{0} a essayé de nager dans la lave",
+      "{0} est tombé dans la lave",
+      "{0} est mort à cause de la lave",
+      "{0} s'est baigné dans la lave",
+      "{0} s'est brûlé dans la lave"
+    ],
+    "BlackHole": [
+      "{0} a chassé leurs souvenirs"
+    ],
+    "DreamExplosion": [
+      "{0} a explosé",
+      "{0} était bêta-testeur",
+      "{0} est allé kaboom",
+      "{0} a été frit",
+      "{0} est mort causé par une explosion",
+      "{0} a utilisé le mauvais artefact"
+    ],
+    "CrushedByElevator": [
+      "{0} a été écrasé",
+      "{0} a été écrabouillé",
+      "{0} a été écrasé par un ascenseur",
+      "{0} se tenait sous un ascenseur",
+      "{0} est devenu un vrai platiste",
+      "{0} a été écrabouillé par un ascenseur"
+    ]
+  }
+}

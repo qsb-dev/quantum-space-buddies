@@ -13,6 +13,6 @@ internal class PlayerRetrieveProbeMessage : QSBMessage<bool>
 	public override void OnReceiveRemote()
 	{
 		var player = QSBPlayerManager.GetPlayer(From);
-		player.ProbeLauncher.RetrieveProbe(Data);
+		player.ProbeLauncherTool.RetrieveProbe(Data);
 	}
 }

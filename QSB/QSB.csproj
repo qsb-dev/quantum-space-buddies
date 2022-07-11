@@ -77,6 +77,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Remove="Assets\*.pdn" />
+	  <None Include="Translations\*">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
     <None Include="AssetBundles\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -94,6 +97,6 @@
     <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
     <PackageReference Include="HarmonyX" Version="2.10.0" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.3.3" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.5.1" IncludeAssets="compile" />
   </ItemGroup>
 </Project>

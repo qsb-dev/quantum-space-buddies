@@ -15,7 +15,6 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 
 	public override void SendInitialState(uint to)
 	{
-		this.SendMessage(new TotemFaceOpenMessage(AttachedObject._isFaceOpen) { To = to });
 		this.SendMessage(new TotemEnabledMessage(AttachedObject.enabled) { To = to });
 		this.SendMessage(new TotemVisibleForMessage(VisibleFor) { To = to });
 	}
@@ -71,6 +70,11 @@ public class QSBAlarmTotem : WorldObject<AlarmTotem>
 				Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
 			}
 			*/
+			if (IsLocallyVisible)
+			{
+				IsLocallyVisible = false;
+				this.SendMessage(new TotemVisibleMessage(false));
+			}
 		}
 	}
 }

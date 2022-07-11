@@ -1,19 +1,22 @@
 ﻿using OWML.Common;
+using OWML.Logging;
+using QSB.WorldSync;
 using System.Diagnostics;
 using System.Linq;
+using UnityEngine;
 
 namespace QSB.Utility;
 
 public static class DebugLog
 {
-	private static readonly int _processInstanceId = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName)
+	public static readonly int ProcessInstanceId = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName)
 		.IndexOf(x => x.Id == Process.GetCurrentProcess().Id);
 
 	public static void ToConsole(string message, MessageType type = MessageType.Message)
 	{
 		if (QSBCore.DebugSettings.InstanceIdInLogs)
 		{
-			message = $"[{_processInstanceId}] " + message;
+			message = $"[{ProcessInstanceId}] " + message;
 		}
 
 		QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));
@@ -38,6 +41,13 @@ public static class DebugLog
 
 	public static void DebugWrite(string message, MessageType type = MessageType.Message)
 	{
+		if (QSBCore.Helper == null)
+		{
+			// yes i know this is only meant for OWML, but it's useful as a backup
+			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType(new StackTrace()));
+			return;
+		}
+
 		if (QSBCore.DebugSettings.DebugMode)
 		{
 			ToConsole(message, type);
