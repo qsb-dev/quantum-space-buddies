@@ -182,6 +182,7 @@ The template for this file is this :
 - [ShoosGun](https://github.com/ShoosGun)
 - [Chris Yeninas](https://github.com/PhantomGamers) - Help with project files and GitHub workflows.
 - [Tlya](https://github.com/Tllya) - Russian translation.
+- [Xen](https://github.com/xen-42) - French translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.
