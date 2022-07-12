@@ -198,6 +198,7 @@ The template for this file is this :
 - [EpicOnlineTransport](https://github.com/FakeByte/EpicOnlineTransport)
 - [HarmonyX](https://github.com/BepInEx/HarmonyX)
 - [UniTask](https://github.com/Cysharp/UniTask)
+- Modified code from [Popcron's Gizmos](https://github.com/popcron/gizmos)
 
 ## Help / Discuss development / Whatever
 
