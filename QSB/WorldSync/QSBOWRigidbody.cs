@@ -6,4 +6,6 @@
 internal class QSBOWRigidbody : WorldObject<OWRigidbody>
 {
 	public override void SendInitialState(uint to) { }
+
+	public override bool ShouldDisplayDebug() => false;
 }
