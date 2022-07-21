@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.Player;
 using QSB.Tools.ProbeTool.Messages;
 using UnityEngine;
 
@@ -35,19 +36,34 @@ internal class ProbeListener : MonoBehaviour
 	}
 
 	private static void OnLaunchProbe()
-		=> new PlayerProbeEventMessage(ProbeEvent.Launch).Send();
+	{
+		QSBPlayerManager.LocalPlayer.ProbeActive = true;
+		new PlayerProbeEventMessage(ProbeEvent.Launch).Send();
+	}
 
 	private static void OnAnchorProbe()
-		=> new PlayerProbeEventMessage(ProbeEvent.Anchor).Send();
+	{
+		QSBPlayerManager.LocalPlayer.ProbeActive = true;
+		new PlayerProbeEventMessage(ProbeEvent.Anchor).Send();
+	}
 
 	private static void OnUnanchorProbe()
-		=> new PlayerProbeEventMessage(ProbeEvent.Unanchor).Send();
+	{
+		QSBPlayerManager.LocalPlayer.ProbeActive = true;
+		new PlayerProbeEventMessage(ProbeEvent.Unanchor).Send();
+	}
 
 	private static void OnRetrieveProbe()
-		=> new PlayerProbeEventMessage(ProbeEvent.Retrieve).Send();
+	{
+		QSBPlayerManager.LocalPlayer.ProbeActive = false;
+		new PlayerProbeEventMessage(ProbeEvent.Retrieve).Send();
+	}
 
 	private static void OnProbeDestroyed()
-		=> new PlayerProbeEventMessage(ProbeEvent.Destroy).Send();
+	{
+		QSBPlayerManager.LocalPlayer.ProbeActive = false;
+		new PlayerProbeEventMessage(ProbeEvent.Destroy).Send();
+	}
 
 	private static void OnStartRetrieveProbe(float length)
 		=> new ProbeStartRetrieveMessage(length).Send();

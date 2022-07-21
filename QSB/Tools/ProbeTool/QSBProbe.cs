@@ -43,9 +43,25 @@ public class QSBProbe : MonoBehaviour, ILightSource
 	{
 		_lightSourceVol = this.GetRequiredComponentInChildren<LightSourceVolume>();
 		_lightSourceVol.LinkLightSource(this);
-		_lightSourceVol.SetVolumeActivation(false);
 
-		gameObject.SetActive(false);
+		if (_owner == null)
+		{
+			// i dont *think* this is possible, but honestly i dont fucking know anymore
+			DebugLog.DebugWrite($"Warning - QSBProbe ran Start() without an assigned owner!", OWML.Common.MessageType.Warning);
+			_lightSourceVol.SetVolumeActivation(false);
+			gameObject.SetActive(false);
+		}
+
+		if (_owner.ProbeActive)
+		{
+			_lightSourceVol.SetVolumeActivation(true);
+			gameObject.SetActive(true);
+		}
+		else
+		{
+			_lightSourceVol.SetVolumeActivation(false);
+			gameObject.SetActive(false);
+		}
 	}
 
 	protected void OnDestroy() => _warpEffect.OnWarpComplete -= OnWarpComplete;
@@ -83,7 +99,7 @@ public class QSBProbe : MonoBehaviour, ILightSource
 		{
 			case ProbeEvent.Launch:
 				_anchored = false;
-
+				_owner.ProbeActive = true;
 				gameObject.SetActive(true);
 				_lightSourceVol.SetVolumeActivation(true);
 				transform.position = _owner.ProbeLauncherTool.transform.position;
@@ -99,7 +115,7 @@ public class QSBProbe : MonoBehaviour, ILightSource
 				break;
 			case ProbeEvent.Anchor:
 				_anchored = true;
-
+				_owner.ProbeActive = true; // just in case it was missed
 				if (OnAnchorProbe == null)
 				{
 					DebugLog.ToConsole($"Warning - OnAnchorProbe is null!", OWML.Common.MessageType.Warning);
@@ -110,10 +126,12 @@ public class QSBProbe : MonoBehaviour, ILightSource
 				break;
 			case ProbeEvent.Unanchor:
 				_anchored = false;
+				_owner.ProbeActive = true; // just in case it was missed
 				OnUnanchorProbe();
 				break;
 			case ProbeEvent.Retrieve:
 				_anchored = false;
+				_owner.ProbeActive = false;
 				if (OnRetrieveProbe == null)
 				{
 					DebugLog.ToConsole($"Warning - OnRetrieveProbe is null!", OWML.Common.MessageType.Warning);
@@ -125,7 +143,7 @@ public class QSBProbe : MonoBehaviour, ILightSource
 			case ProbeEvent.Destroy:
 				_anchored = false;
 				Destroy(gameObject);
-
+				_owner.ProbeActive = false;
 				if (OnProbeDestroyed == null)
 				{
 					DebugLog.ToConsole($"Warning - OnProbeDestroyed is null!", OWML.Common.MessageType.Warning);
@@ -163,6 +181,10 @@ public class QSBProbe : MonoBehaviour, ILightSource
 			}
 
 			OnStartRetrieveProbe(duration);
+		}
+		else
+		{
+			DebugLog.DebugWrite($"Warning - Tried to retrieve probe (owner: {_owner}) that was already retrieving?", OWML.Common.MessageType.Warning);
 		}
 	}
 

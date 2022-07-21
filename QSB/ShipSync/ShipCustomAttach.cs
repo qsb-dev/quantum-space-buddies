@@ -33,10 +33,6 @@ public class ShipCustomAttach : MonoBehaviour
 	{
 		_attachPrompt.SetVisibility(false);
 		_detachPrompt.SetVisibility(false);
-		if (!PlayerState.IsInsideShip())
-		{
-			return;
-		}
 
 		var attachedToUs = _playerAttachPoint.enabled;
 		_detachPrompt.SetVisibility(attachedToUs);
@@ -44,6 +40,11 @@ public class ShipCustomAttach : MonoBehaviour
 		{
 			_playerAttachPoint.DetachPlayer();
 			ShipManager.Instance.CockpitController._shipAudioController.PlayUnbuckle();
+		}
+
+		if (!PlayerState.IsInsideShip())
+		{
+			return;
 		}
 
 		if (!attachedToUs)
@@ -61,8 +62,8 @@ public class ShipCustomAttach : MonoBehaviour
 
 		_attachPrompt.SetVisibility(!attachedToUs);
 		if (!attachedToUs &&
-		    OWInput.IsPressed(InputLibrary.interactSecondary, InputMode.Character) &&
-		    OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Character))
+			OWInput.IsPressed(InputLibrary.interactSecondary, InputMode.Character) &&
+			OWInput.IsNewlyPressed(InputLibrary.interact, InputMode.Character))
 		{
 			transform.position = Locator.GetPlayerTransform().position;
 			_playerAttachPoint.AttachPlayer();
