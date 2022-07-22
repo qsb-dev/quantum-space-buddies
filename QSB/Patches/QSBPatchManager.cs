@@ -14,6 +14,7 @@ public static class QSBPatchManager
 
 	private static readonly List<QSBPatch> _patchList = new();
 	private static readonly List<QSBPatchTypes> _patchedTypes = new();
+	private static PatchVendor _vendor = PatchVendor.None;
 
 	public static Dictionary<QSBPatchTypes, Harmony> TypeToInstance = new();
 
@@ -29,6 +30,30 @@ public static class QSBPatchManager
 			TypeToInstance.Add(type, new Harmony(type.ToString()));
 		}
 
+		var gameAssemblyTypes = typeof(AstroObject).Assembly.GetTypes();
+		var isEpic = gameAssemblyTypes.Any(x => x.Name == "EpicEntitlementRetriever");
+		var isSteam = gameAssemblyTypes.Any(x => x.Name == "SteamEntitlementRetriever");
+		var isUWP = gameAssemblyTypes.Any(x => x.Name == "MSStoreEntitlementRetriever");
+
+		if (isEpic && !isSteam && !isUWP)
+		{
+			_vendor = PatchVendor.Epic;
+		}
+		else if (!isEpic && isSteam && !isUWP)
+		{
+			_vendor = PatchVendor.Steam;
+		}
+		else if (!isEpic && !isSteam && isUWP)
+		{
+			_vendor = PatchVendor.Gamepass;
+		}
+		else
+		{
+			// ???
+			DebugLog.ToConsole($"FATAL - Could not determine game vendor.", MessageType.Fatal);
+		}
+
+		DebugLog.DebugWrite($"Determined game vendor as {_vendor}", MessageType.Info);
 		DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
 	}
 
@@ -42,7 +67,7 @@ public static class QSBPatchManager
 
 		OnPatchType?.SafeInvoke(type);
 		//DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
-		foreach (var patch in _patchList.Where(x => x.Type == type))
+		foreach (var patch in _patchList.Where(x => x.Type == type && x.PatchVendor.HasFlag(_vendor)))
 		{
 			//DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
 			try
