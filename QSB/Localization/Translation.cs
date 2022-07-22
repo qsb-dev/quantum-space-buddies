@@ -16,6 +16,7 @@ public class Translation
 	public string HostExistingOrNew;
 	public string ExistingSave;
 	public string NewSave;
+	public string CopySave;
 	public string DisconnectAreYouSure;
 	public string Yes;
 	public string No;

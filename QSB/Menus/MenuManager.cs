@@ -3,6 +3,7 @@ using Mirror;
 using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
+using QSB.SaveSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -33,7 +34,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private Button HostButton;
 	private GameObject ConnectButton;
 	private PopupInputMenu ConnectPopup;
-	private ThreeChoicePopupMenu HostGameTypePopup;
+	private FourChoicePopupMenu HostGameTypePopup;
 	private Text _loadingText;
 	private StringBuilder _nowLoadingSB;
 	private const int _titleButtonIndex = 2;
@@ -131,9 +132,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		HostGameTypePopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNew,
 			InputLibrary.menuConfirm,
 			InputLibrary.confirm2,
+			InputLibrary.signalscope,
 			InputLibrary.cancel,
 			new ScreenPrompt(QSBLocalization.Current.ExistingSave),
 			new ScreenPrompt(QSBLocalization.Current.NewSave),
+			new ScreenPrompt(QSBLocalization.Current.CopySave),
 			new ScreenPrompt(QSBLocalization.Current.Cancel));
 	}
 
@@ -201,6 +204,67 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			InputLibrary.cancel,
 			new ScreenPrompt(confirm1Text),
 			new ScreenPrompt(confirm2Text),
+			new ScreenPrompt(cancelText),
+			true,
+			true);
+		return popup;
+	}
+
+	public FourChoicePopupMenu CreateFourChoicePopup(string message, string confirm1Text, string confirm2Text, string confirm3Text, string cancelText)
+	{
+		var newPopup = Instantiate(_threeChoicePopupBase);
+
+		switch (LoadManager.GetCurrentScene())
+		{
+			case OWScene.TitleScreen:
+				newPopup.transform.parent = GameObject.Find("/TitleMenu/PopupCanvas").transform;
+				break;
+			case OWScene.SolarSystem:
+			case OWScene.EyeOfTheUniverse:
+				newPopup.transform.parent = GameObject.Find("/PauseMenu/PopupCanvas").transform;
+				break;
+		}
+
+		newPopup.transform.localPosition = Vector3.zero;
+		newPopup.transform.localScale = Vector3.one;
+		newPopup.GetComponentsInChildren<LocalizedText>().ToList().ForEach(x => Destroy(x));
+
+		var originalPopup = newPopup.GetComponent<PopupMenu>();
+
+		var ok1Button = originalPopup._confirmButton.gameObject;
+
+		var ok2Button = Instantiate(ok1Button, ok1Button.transform.parent);
+		ok2Button.transform.SetSiblingIndex(1);
+
+		var ok3Button = Instantiate(ok1Button, ok1Button.transform.parent);
+		ok3Button.transform.SetSiblingIndex(2);
+
+		var popup = newPopup.AddComponent<FourChoicePopupMenu>();
+		popup._labelText = originalPopup._labelText;
+		popup._cancelAction = originalPopup._cancelAction;
+		popup._ok1Action = originalPopup._okAction;
+		popup._ok2Action = ok2Button.GetComponent<SubmitAction>();
+		popup._ok3Action = ok3Button.GetComponent<SubmitAction>();
+		popup._cancelButton = originalPopup._cancelButton;
+		popup._confirmButton1 = originalPopup._confirmButton;
+		popup._confirmButton2 = ok2Button.GetComponent<ButtonWithHotkeyImageElement>();
+		popup._confirmButton3 = ok3Button.GetComponent<ButtonWithHotkeyImageElement>();
+		popup._rootCanvas = originalPopup._rootCanvas;
+		popup._menuActivationRoot = originalPopup._menuActivationRoot;
+		popup._startEnabled = originalPopup._startEnabled;
+		popup._selectOnActivate = originalPopup._selectOnActivate;
+		popup._selectableItemsRoot = originalPopup._selectableItemsRoot;
+		popup._subMenus = originalPopup._subMenus;
+		popup._menuOptions = originalPopup._menuOptions;
+		popup.SetUpPopup(
+			message,
+			InputLibrary.menuConfirm,
+			InputLibrary.confirm2,
+			InputLibrary.signalscope,
+			InputLibrary.cancel,
+			new ScreenPrompt(confirm1Text),
+			new ScreenPrompt(confirm2Text),
+			new ScreenPrompt(confirm3Text),
 			new ScreenPrompt(cancelText),
 			true,
 			true);
@@ -289,9 +353,16 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		TwoButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
 		TwoButtonInfoPopup.OnPopupCancel += () => OnCloseInfoPopup(false);
 
-		HostGameTypePopup = CreateThreeChoicePopup(QSBLocalization.Current.HostExistingOrNew, QSBLocalization.Current.ExistingSave, QSBLocalization.Current.NewSave, QSBLocalization.Current.Cancel);
+		HostGameTypePopup = CreateFourChoicePopup(QSBLocalization.Current.HostExistingOrNew, QSBLocalization.Current.ExistingSave, QSBLocalization.Current.NewSave, QSBLocalization.Current.CopySave, QSBLocalization.Current.Cancel);
 		HostGameTypePopup.OnPopupConfirm1 += () => Host(false);
 		HostGameTypePopup.OnPopupConfirm2 += () => Host(true);
+		HostGameTypePopup.OnPopupConfirm3 += () =>
+		{
+			DebugLog.DebugWrite($"Replacing multiplayer save with singleplayer save");
+			QSBCore.IsInMultiplayer = true;
+			StandaloneProfileManager.SharedInstance.SaveGame(QSBProfileManager._currentProfile.gameSave, null, null, null);
+			Host(false);
+		};
 	}
 
 	private static void SetButtonActive(Button button, bool active)
@@ -421,22 +492,45 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void PreHost()
 	{
-		var doesSaveExist = PlayerData.LoadLoopCount() > 1;
+		var profile = QSBProfileManager._currentProfile;
+		var doesSingleplayerSaveExist = profile.gameSave.loopCount > 1;
+		var doesMultiplayerSaveExist = profile.multiplayerGameSave.loopCount > 1;
 
-		if (!doesSaveExist)
+		if (!doesSingleplayerSaveExist)
 		{
-			Host(true);
-			return;
+			DebugLog.DebugWrite($"No singleplayer save exists.");
+			if (!doesMultiplayerSaveExist)
+			{
+				DebugLog.DebugWrite($"No saves exist.");
+				Host(true);
+				return;
+			}
+			else
+			{
+				DebugLog.DebugWrite($"Multiplayer save exists.");
+				Host(false);
+				return;
+			}
 		}
 
+		DebugLog.DebugWrite($"A singleplayer save exists.");
 		HostGameTypePopup.EnableMenu(true);
 	}
 
-	private void Host(bool newSave)
+	private void Host(bool newMultiplayerSave)
 	{
-		if (newSave)
+		QSBCore.IsInMultiplayer = true;
+
+		if (newMultiplayerSave)
 		{
+			DebugLog.DebugWrite($"Resetting game...");
 			PlayerData.ResetGame();
+		}
+		else
+		{
+			DebugLog.DebugWrite($"Loading multiplayer game...");
+			var profile = QSBProfileManager._currentProfile;
+			PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
 		}
 
 		_intentionalDisconnect = false;
@@ -474,7 +568,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void Connect()
 	{
+		QSBCore.IsInMultiplayer = true;
 		_intentionalDisconnect = false;
+
+		var profile = QSBProfileManager._currentProfile;
+		PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
 
 		var address = ConnectPopup.GetInputText();
 		if (address == string.Empty)
@@ -506,6 +604,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	public void OnKicked(string reason)
 	{
+		QSBCore.IsInMultiplayer = false;
 		_intentionalDisconnect = true;
 
 		PopupClose += _ =>
@@ -521,6 +620,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void OnDisconnected(string error)
 	{
+		QSBCore.IsInMultiplayer = false;
+
 		if (_intentionalDisconnect)
 		{
 			DebugLog.DebugWrite("intentional disconnect. dont show popup");

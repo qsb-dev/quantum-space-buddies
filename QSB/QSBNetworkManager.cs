@@ -21,6 +21,7 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
+using QSB.SaveSync;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Syncs.Occasional;
@@ -164,7 +165,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 				}
 				else
 				{
-					PlayerName = StandaloneProfileManager.SharedInstance.currentProfile.profileName;
+					PlayerName = QSBProfileManager._currentProfile.profileName;
 				}
 			}
 			catch (Exception ex)
