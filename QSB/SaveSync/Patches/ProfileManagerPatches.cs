@@ -623,6 +623,327 @@ internal class ProfileManagerPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
+	[HarmonyPatch(typeof(StandaloneProfileManager), "get_mostRecentProfile")]
+	public static bool MostRecentProfile(ref StandaloneProfileManager.ProfileData __result)
+	{
+		DebugLog.DebugWrite($"Error - StandaloneProfileManager.mostRecentProfile should not be used anymore." +
+			$"{Environment.NewLine}Called by : {Environment.NewLine}{Environment.StackTrace}", OWML.Common.MessageType.Error);
+		__result = null;
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(StandaloneProfileManager), "get_profiles")]
+	public static bool Profiles(ref List<StandaloneProfileManager.ProfileData> __result)
+	{
+		DebugLog.DebugWrite($"Error - StandaloneProfileManager.profiles should not be used anymore." +
+			$"{Environment.NewLine}Called by : {Environment.NewLine}{Environment.StackTrace}", OWML.Common.MessageType.Error);
+		__result = null;
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.TryCreateProfile))]
+	public static bool TryCreateProfile(StandaloneProfileManager __instance, string profileName, ref bool __result)
+	{
+		bool savedProfile = __instance.ValidateProfileName(profileName);
+		if (savedProfile)
+		{
+			bool noProfilesExist = QSBProfileManager._profiles.Count == 0;
+			QSBProfileData profileData = new QSBProfileData();
+			profileData.profileName = profileName;
+			profileData.lastModifiedTime = DateTime.UtcNow;
+			GameSave gameSave = new GameSave();
+			GameSave multGameSave = new GameSave();
+			SettingsSave settingsSave = new SettingsSave();
+			GraphicSettings graphicSettings = __instance.currentProfileGraphicsSettings;
+			if (graphicSettings == null)
+			{
+				graphicSettings = new GraphicSettings(init: true);
+			}
+			string text = ((InputManager)OWInput.SharedInputManager).commandManager.DefaultInputActions.ToJson();
+			QSBProfileManager._profiles.Add(profileData);
+			profileData.gameSave = gameSave;
+			profileData.multiplayerGameSave = multGameSave;
+			profileData.settingsSave = settingsSave;
+			profileData.graphicsSettings = graphicSettings;
+			profileData.inputJSON = text;
+			savedProfile = TrySaveProfile(profileData, gameSave, settingsSave, graphicSettings, text);
+			if (savedProfile)
+			{
+				if (QSBProfileManager._currentProfile != null && QSBProfileManager._currentProfile.profileName != string.Empty)
+				{
+					__instance.RaiseEvent(nameof(StandaloneProfileManager.OnProfileSignOutComplete));
+				}
+
+				QSBProfileManager._currentProfile = profileData;
+				if (noProfilesExist)
+				{
+					__instance.RaiseEvent(nameof(StandaloneProfileManager.OnProfileSignInComplete), ProfileManagerSignInResult.COMPLETE);
+					__instance.RaiseEvent(nameof(StandaloneProfileManager.OnProfileReadDone));
+				}
+				else
+				{
+					__instance.RaiseEvent(nameof(StandaloneProfileManager.OnProfileSignInComplete), ProfileManagerSignInResult.COMPLETE);
+					__instance.RaiseEvent(nameof(StandaloneProfileManager.OnProfileReadDone));
+					__instance.RaiseEvent(nameof(StandaloneProfileManager.OnUpdatePlayerProfiles));
+				}
+			}
+			else
+			{
+				__instance.DeleteProfile(profileName);
+			}
+		}
+
+		__result = savedProfile;
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.DeleteProfile))]
+	public static bool DeleteProfile(StandaloneProfileManager __instance, string profileName)
+	{
+		Debug.Log("DeleteProfile");
+		bool flag = false;
+		QSBProfileData profileData = new QSBProfileData();
+		profileData.profileName = string.Empty;
+		for (int i = 0; i < QSBProfileManager._profiles.Count; i++)
+		{
+			if (profileName == QSBProfileManager._profiles[i].profileName)
+			{
+				profileData = QSBProfileManager._profiles[i];
+				flag = true;
+				break;
+			}
+		}
+		if (!flag)
+		{
+			return false;
+		}
+		__instance.MarkBusyWithFileOps(isBusy: true);
+		string profileManifestPath = __instance._profilesPath + "/" + profileData.profileName + ".owprofile";
+		string profilePath = __instance._profilesPath + "/" + profileData.profileName;
+		string gameSavePath = profilePath + "/data.owsave";
+		string multGameSavePath = profilePath + "/dataMult.owsave";
+		string settingsPath = profilePath + "/player.owsett";
+		string graphicsPath = profilePath + "/graphics.owsett";
+		string oldInputsPath = profilePath + "/input.owsett";
+		string inputsPath = profilePath + "/input_new.owsett";
+
+		string backupProfilePath = __instance._profileBackupPath + "/" + profileData.profileName;
+		string backupGameSave = backupProfilePath + "/data.owsave";
+		string backupMultGameSave = backupProfilePath + "/dataMult.owsave";
+		string backupSettingsPath = backupProfilePath + "/player.owsett";
+		string backupGraphicsPath = backupProfilePath + "/graphics.owsett";
+		string backupOldInputsPath = backupProfilePath + "/input.owsett";
+		string backupInputsPath = backupProfilePath + "/input_new.owsett";
+		Stream stream = null;
+		try
+		{
+			if (File.Exists(profileManifestPath))
+			{
+				File.Delete(profileManifestPath);
+				Debug.Log("Delete " + profileManifestPath);
+			}
+
+			if (File.Exists(gameSavePath))
+			{
+				File.Delete(gameSavePath);
+				Debug.Log("Delete " + gameSavePath);
+			}
+
+			if (File.Exists(multGameSavePath))
+			{
+				File.Delete(multGameSavePath);
+				Debug.Log("Delete " + multGameSavePath);
+			}
+
+			if (File.Exists(settingsPath))
+			{
+				File.Delete(settingsPath);
+				Debug.Log("Delete " + settingsPath);
+			}
+
+			if (File.Exists(graphicsPath))
+			{
+				File.Delete(graphicsPath);
+				Debug.Log("Delete " + graphicsPath);
+			}
+
+			if (File.Exists(oldInputsPath))
+			{
+				File.Delete(oldInputsPath);
+				Debug.Log("Delete " + oldInputsPath);
+			}
+
+			if (File.Exists(inputsPath))
+			{
+				File.Delete(inputsPath);
+				Debug.Log("Delete " + inputsPath);
+			}
+
+			if (File.Exists(backupGameSave))
+			{
+				File.Delete(backupGameSave);
+				Debug.Log("Delete " + backupGameSave);
+			}
+
+			if (File.Exists(backupMultGameSave))
+			{
+				File.Delete(backupMultGameSave);
+				Debug.Log("Delete " + backupMultGameSave);
+			}
+
+			if (File.Exists(backupSettingsPath))
+			{
+				File.Delete(backupSettingsPath);
+				Debug.Log("Delete " + backupSettingsPath);
+			}
+
+			if (File.Exists(backupGraphicsPath))
+			{
+				File.Delete(backupGraphicsPath);
+				Debug.Log("Delete " + backupGraphicsPath);
+			}
+
+			if (File.Exists(backupOldInputsPath))
+			{
+				File.Delete(backupOldInputsPath);
+				Debug.Log("Delete " + backupOldInputsPath);
+			}
+
+			if (File.Exists(backupInputsPath))
+			{
+				File.Delete(backupInputsPath);
+				Debug.Log("Delete " + backupInputsPath);
+			}
+
+			QSBProfileManager._profiles.Remove(profileData);
+			string[] files = Directory.GetFiles(profilePath);
+			string[] directories = Directory.GetDirectories(profilePath);
+			if (files.Length == 0 && directories.Length == 0)
+			{
+				Directory.Delete(profilePath);
+			}
+			else
+			{
+				Debug.LogWarning(" Directory not empty. Cannot delete. ");
+			}
+
+			if (Directory.Exists(backupProfilePath))
+			{
+				files = Directory.GetFiles(backupProfilePath);
+				directories = Directory.GetDirectories(backupProfilePath);
+				if (files.Length == 0 && directories.Length == 0)
+				{
+					Directory.Delete(backupProfilePath);
+				}
+				else
+				{
+					Debug.LogWarning("Backup Directory not empty. Cannot delete.");
+				}
+			}
+
+			__instance.RaiseEvent(nameof(StandaloneProfileManager.OnUpdatePlayerProfiles));
+		}
+		catch (Exception ex)
+		{
+			stream?.Close();
+			Debug.LogError("[" + ex.Message + "] Failed to delete all profile data");
+			__instance.MarkBusyWithFileOps(isBusy: false);
+		}
+
+		__instance.MarkBusyWithFileOps(isBusy: false);
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.SwitchProfile))]
+	public static bool SwitchProfile(StandaloneProfileManager __instance, string profileName, ref bool __result)
+	{
+		__instance.LoadSaveFilesFromProfiles();
+		bool flag = false;
+		for (int i = 0; i < QSBProfileManager._profiles.Count; i++)
+		{
+			if (profileName == QSBProfileManager._profiles[i].profileName)
+			{
+				if (QSBProfileManager._currentProfile != null && QSBProfileManager._currentProfile.profileName != string.Empty)
+				{
+					__instance.RaiseEvent(nameof(StandaloneProfileManager.OnProfileSignOutComplete));
+				}
+
+				QSBProfileManager._currentProfile = QSBProfileManager._profiles[i];
+				flag = true;
+				break;
+			}
+		}
+
+		if (flag)
+		{
+			QSBProfileManager._currentProfile.lastModifiedTime = DateTime.UtcNow;
+			TrySaveProfile(QSBProfileManager._currentProfile, null, null, null, null);
+			__instance.RaiseEvent(nameof(StandaloneProfileManager.OnProfileSignInComplete), ProfileManagerSignInResult.COMPLETE);
+
+			if (__instance.CurrentProfileHasBrokenData())
+			{
+				__instance.RaiseEvent(nameof(StandaloneProfileManager.OnBrokenDataExists));
+				__result = false;
+				return false;
+			}
+
+			__instance.RaiseEvent(nameof(StandaloneProfileManager.OnProfileReadDone));
+		}
+
+		__result = true;
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.ValidateProfileName))]
+	public static bool ValidateProfileName(StandaloneProfileManager __instance, string profileName, ref bool __result)
+	{
+		bool result = true;
+		if (profileName == "")
+		{
+			result = false;
+		}
+		else if (profileName.Length > 16)
+		{
+			result = false;
+		}
+		else if (QSBProfileManager._profiles.Count > 0)
+		{
+			for (int i = 0; i < QSBProfileManager._profiles.Count; i++)
+			{
+				if (QSBProfileManager._profiles[i].profileName == profileName)
+				{
+					result = false;
+				}
+			}
+		}
+
+		__result = result;
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.PerformPendingSaveOperation))]
+	public static bool PerformPendingSaveOperation(StandaloneProfileManager __instance)
+	{
+		if (!__instance.isBusyWithFileOps && !LoadManager.IsBusy())
+		{
+			TrySaveProfile(QSBProfileManager._currentProfile, __instance._pendingGameSave, __instance._pendingSettingsSave, __instance._pendingGfxSettingsSave, __instance._pendingInputJSONSave);
+			__instance._pendingGameSave = null;
+			__instance._pendingSettingsSave = null;
+			__instance._pendingGfxSettingsSave = null;
+			__instance._pendingInputJSONSave = "";
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ProfileMenuManager), nameof(ProfileMenuManager.PopulateProfiles))]
 	public static bool PopulateProfiles(ProfileMenuManager __instance)
 	{
