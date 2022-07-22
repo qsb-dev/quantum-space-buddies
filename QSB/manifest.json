@@ -4,10 +4,10 @@
 	"name": "Quantum Space Buddies",
 	"warning": {
 		"title": "Follow these steps before playing multiplayer :",
-		"body": "- Disable *all* other mods. (Can heavily affect performance)\n- Make sure you are not running any other network-intensive applications."
+		"body": "- Disable *all* other mods. (Can heavily affect performance)\n- Make sure you are not running any other network-intensive applications.\n- THIS MOD EDITS SAVE FILES. Make a backup if you are particularly attached to them."
 	},
 	"uniqueName": "Raicuparta.QuantumSpaceBuddies",
-	"version": "0.20.2",
+	"version": "0.21.0",
 	"owmlVersion": "2.5.2",
 	"dependencies": [ "_nebula.MenuFramework", "JohnCorby.VanillaFix" ],
 	"pathsToPreserve": [ "debugsettings.json", "storage.json" ]
