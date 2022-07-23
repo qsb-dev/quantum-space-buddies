@@ -48,7 +48,7 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
-	public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
+	public static bool IsInMultiplayer;
 	public static string QSBVersion => Helper.Manifest.Version;
 	public static string GameVersion =>
 		// ignore the last patch numbers like the title screen does
