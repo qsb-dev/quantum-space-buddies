@@ -13,12 +13,12 @@ internal class IlluminatedByMessage : QSBWorldObjectMessage<QSBLightSensor, uint
 
 	public override void OnReceiveRemote()
 	{
-		foreach (var added in Data.Except(WorldObject._illuminatedBy).ToList())
+		foreach (var added in Data.Except(WorldObject._illuminatedBy))
 		{
 			WorldObject.SetIlluminated(added, true);
 		}
 
-		foreach (var removed in WorldObject._illuminatedBy.Except(Data).ToList())
+		foreach (var removed in WorldObject._illuminatedBy.Except(Data))
 		{
 			WorldObject.SetIlluminated(removed, false);
 		}
