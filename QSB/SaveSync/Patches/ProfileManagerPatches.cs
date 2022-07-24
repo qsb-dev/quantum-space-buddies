@@ -162,7 +162,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.CurrentProfileHasBrokenData))]
-	public static bool CurrentProfileHasBrokenData(StandaloneProfileManager __instance, ref bool __result)
+	public static bool CurrentProfileHasBrokenData(StandaloneProfileManager __instance, out bool __result)
 	{
 		if (QSBProfileManager._currentProfile == null)
 		{
@@ -183,7 +183,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.BackupExistsForBrokenData))]
-	public static bool BackupExistsForBrokenData(StandaloneProfileManager __instance, ref bool __result)
+	public static bool BackupExistsForBrokenData(StandaloneProfileManager __instance, out bool __result)
 	{
 		var text = __instance._profileBackupPath + "/" + QSBProfileManager._currentProfile.profileName;
 		var savePath = text + "/data.owsave";
@@ -582,7 +582,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), "get_currentProfileGameSave")]
-	public static bool CurrentProfileGameSave(ref GameSave __result)
+	public static bool CurrentProfileGameSave(out GameSave __result)
 	{
 		__result = QSBProfileManager._currentProfile?.gameSave;
 		return false;
@@ -590,7 +590,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), "get_currentProfileGameSettings")]
-	public static bool CurrentProfileGameSettings(ref SettingsSave __result)
+	public static bool CurrentProfileGameSettings(out SettingsSave __result)
 	{
 		__result = QSBProfileManager._currentProfile?.settingsSave;
 		return false;
@@ -598,7 +598,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), "get_currentProfileGraphicsSettings")]
-	public static bool CurrentProfileGraphicsSettings(ref GraphicSettings __result)
+	public static bool CurrentProfileGraphicsSettings(out GraphicSettings __result)
 	{
 		__result = QSBProfileManager._currentProfile?.graphicsSettings;
 		return false;
@@ -606,7 +606,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), "get_currentProfileInputJSON")]
-	public static bool CurrentProfileInputJSON(ref string __result)
+	public static bool CurrentProfileInputJSON(out string __result)
 	{
 		__result = QSBProfileManager._currentProfile?.inputJSON;
 		return false;
@@ -614,7 +614,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), "get_currentProfile")]
-	public static bool CurrentProfile(ref StandaloneProfileManager.ProfileData __result)
+	public static bool CurrentProfile(out StandaloneProfileManager.ProfileData __result)
 	{
 		DebugLog.DebugWrite($"Error - StandaloneProfileManager.currentProfile should not be used anymore." +
 			$"{Environment.NewLine}Called by : {Environment.NewLine}{Environment.StackTrace}", OWML.Common.MessageType.Error);
@@ -624,7 +624,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), "get_mostRecentProfile")]
-	public static bool MostRecentProfile(ref StandaloneProfileManager.ProfileData __result)
+	public static bool MostRecentProfile(out StandaloneProfileManager.ProfileData __result)
 	{
 		DebugLog.DebugWrite($"Error - StandaloneProfileManager.mostRecentProfile should not be used anymore." +
 			$"{Environment.NewLine}Called by : {Environment.NewLine}{Environment.StackTrace}", OWML.Common.MessageType.Error);
@@ -634,7 +634,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), "get_profiles")]
-	public static bool Profiles(ref List<StandaloneProfileManager.ProfileData> __result)
+	public static bool Profiles(out List<StandaloneProfileManager.ProfileData> __result)
 	{
 		DebugLog.DebugWrite($"Error - StandaloneProfileManager.profiles should not be used anymore." +
 			$"{Environment.NewLine}Called by : {Environment.NewLine}{Environment.StackTrace}", OWML.Common.MessageType.Error);
@@ -644,7 +644,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.TryCreateProfile))]
-	public static bool TryCreateProfile(StandaloneProfileManager __instance, string profileName, ref bool __result)
+	public static bool TryCreateProfile(StandaloneProfileManager __instance, string profileName, out bool __result)
 	{
 		bool savedProfile = __instance.ValidateProfileName(profileName);
 		if (savedProfile)
@@ -860,7 +860,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.SwitchProfile))]
-	public static bool SwitchProfile(StandaloneProfileManager __instance, string profileName, ref bool __result)
+	public static bool SwitchProfile(StandaloneProfileManager __instance, string profileName, out bool __result)
 	{
 		__instance.LoadSaveFilesFromProfiles();
 		bool flag = false;
@@ -901,7 +901,7 @@ internal class ProfileManagerPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.ValidateProfileName))]
-	public static bool ValidateProfileName(StandaloneProfileManager __instance, string profileName, ref bool __result)
+	public static bool ValidateProfileName(StandaloneProfileManager __instance, string profileName, out bool __result)
 	{
 		bool result = true;
 		if (profileName == "")
