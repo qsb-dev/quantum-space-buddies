@@ -7,6 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
+/*
+ * For those who come here,
+ * leave while you still can.
+ */
+
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 
 /// <summary>
