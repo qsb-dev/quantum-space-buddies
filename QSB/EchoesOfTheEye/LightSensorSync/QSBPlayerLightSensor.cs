@@ -16,7 +16,6 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 
 /// <summary>
 /// stores a bit of extra data needed for player light sensor sync
-/// todo you might be able to remove when you simplify light sensor after the fake sector thingy
 /// </summary>
 [RequireComponent(typeof(SingleLightSensor))]
 public class QSBPlayerLightSensor : MonoBehaviour

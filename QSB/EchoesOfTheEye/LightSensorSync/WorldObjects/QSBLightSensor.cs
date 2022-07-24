@@ -14,9 +14,6 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 
-/// <summary>
-/// todo: simplify this after we do fake sectors (we dont need to store a list, we can just do it locally and then sync if it's disabled)
-/// </summary>
 internal class QSBLightSensor : WorldObject<SingleLightSensor>
 {
 	internal bool _locallyIlluminated;
