@@ -45,7 +45,9 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 			{
 				_locallyIlluminated = true;
 				OnDetectLocalLight?.Invoke();
-				this.SendMessage(new SetIlluminatedMessage(true));
+				// do it manually so as not to invoke OnDetectLight, since that's handled by Start
+				// BUG? should add all players to the list, not just local
+				_illuminatedBy.SafeAdd(QSBPlayerManager.LocalPlayerId);
 			}
 		}
 	}

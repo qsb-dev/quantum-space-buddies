@@ -41,7 +41,9 @@ public class QSBPlayerLightSensor : MonoBehaviour
 			if (_lightSensor._startIlluminated)
 			{
 				_locallyIlluminated = true;
-				new PlayerSetIlluminatedMessage(PlayerId, true).Send();
+				// do it manually so as not to invoke OnDetectLight, since that's handled by Start
+				// BUG? should add all players to the list, not just local
+				_illuminatedBy.SafeAdd(PlayerId);
 			}
 		}
 	}
