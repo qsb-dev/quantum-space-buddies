@@ -143,7 +143,7 @@ internal class LightSensorPatches : QSBPatch
 	/// <summary>
 	/// to prevent allocating a new list every frame
 	/// </summary>
-	private static readonly List<DreamLanternController> _prevIlluminatingDreamLanternList = new();
+	private static readonly List<DreamLanternController> _illuminatingDreamLanternList = new();
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SingleLightSensor.ManagedFixedUpdate))]
@@ -165,8 +165,8 @@ internal class LightSensorPatches : QSBPatch
 
 		if (__instance._illuminatingDreamLanternList != null)
 		{
-			_prevIlluminatingDreamLanternList.Clear();
-			_prevIlluminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
+			_illuminatingDreamLanternList.Clear();
+			_illuminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
 		}
 
 		var illuminated = __instance._illuminated;
@@ -215,7 +215,7 @@ internal class LightSensorPatches : QSBPatch
 		}
 
 		if (__instance._illuminatingDreamLanternList != null
-			&& !__instance._illuminatingDreamLanternList.SequenceEqual(_prevIlluminatingDreamLanternList))
+			&& !__instance._illuminatingDreamLanternList.SequenceEqual(_illuminatingDreamLanternList))
 		{
 			if (isPlayerLightSensor)
 			{
