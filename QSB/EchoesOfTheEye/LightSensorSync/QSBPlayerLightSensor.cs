@@ -35,14 +35,13 @@ public class QSBPlayerLightSensor : MonoBehaviour
 		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 
+		// normally done in Start, but world objects arent ready by that point
 		if (_lightSensor._sector != null)
 		{
 			if (_lightSensor._startIlluminated)
 			{
 				_locallyIlluminated = true;
-				// do it manually so as not to invoke OnDetectLight, since that's handled by Start
-				// BUG? should add all players to the list, not just local
-				_illuminatedBy.SafeAdd(PlayerId);
+				new PlayerSetIlluminatedMessage(PlayerId, true).Send();
 			}
 		}
 	}

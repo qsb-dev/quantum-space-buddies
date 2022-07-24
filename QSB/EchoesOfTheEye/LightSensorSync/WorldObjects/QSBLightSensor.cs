@@ -36,15 +36,14 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	{
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 
+		// normally done in Start, but world objects arent ready by that point
 		if (AttachedObject._sector != null)
 		{
 			if (AttachedObject._startIlluminated)
 			{
 				_locallyIlluminated = true;
 				OnDetectLocalLight?.Invoke();
-				// do it manually so as not to invoke OnDetectLight, since that's handled by Start
-				// BUG? should add all players to the list, not just local
-				_illuminatedBy.SafeAdd(QSBPlayerManager.LocalPlayerId);
+				this.SendMessage(new SetIlluminatedMessage(true));
 			}
 		}
 	}

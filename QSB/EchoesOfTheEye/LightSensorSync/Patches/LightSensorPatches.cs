@@ -6,6 +6,7 @@ using QSB.Patches;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 /*
  * For those who come here,
@@ -18,6 +19,52 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
 internal class LightSensorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(SingleLightSensor.Start))]
+	private static bool Start(SingleLightSensor __instance)
+	{
+		if (__instance._lightDetector != null)
+		{
+			__instance._lightSources = new List<ILightSource>();
+			__instance._lightSourceMask = LightSourceType.VOLUME_ONLY;
+			if (__instance._detectFlashlight)
+			{
+				__instance._lightSourceMask |= LightSourceType.FLASHLIGHT;
+			}
+
+			if (__instance._detectProbe)
+			{
+				__instance._lightSourceMask |= LightSourceType.PROBE;
+			}
+
+			if (__instance._detectDreamLanterns)
+			{
+				__instance._lightSourceMask |= LightSourceType.DREAM_LANTERN;
+			}
+
+			if (__instance._detectSimpleLanterns)
+			{
+				__instance._lightSourceMask |= LightSourceType.SIMPLE_LANTERN;
+			}
+
+			__instance._lightDetector.OnLightVolumeEnter += __instance.OnLightSourceEnter;
+			__instance._lightDetector.OnLightVolumeExit += __instance.OnLightSourceExit;
+		}
+		else
+		{
+			Debug.LogError("LightSensor has no LightSourceDetector", __instance);
+		}
+
+		if (__instance._sector != null)
+		{
+			__instance.enabled = false;
+			__instance._lightDetector.GetShape().enabled = false;
+			// dont do _startIlluminated stuff here since its done in the worldobject
+		}
+
+		return false;
+	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SingleLightSensor.OnSectorOccupantsUpdated))]
