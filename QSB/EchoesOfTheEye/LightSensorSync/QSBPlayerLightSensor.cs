@@ -35,6 +35,15 @@ public class QSBPlayerLightSensor : MonoBehaviour
 
 		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
+
+		if (_lightSensor._sector != null)
+		{
+			if (_lightSensor._startIlluminated)
+			{
+				_locallyIlluminated = true;
+				new PlayerSetIlluminatedMessage(PlayerId, true).Send();
+			}
+		}
 	}
 
 	private void OnDestroy()

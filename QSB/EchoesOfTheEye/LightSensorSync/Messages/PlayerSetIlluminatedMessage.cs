@@ -3,9 +3,9 @@ using QSB.Player;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.Messages;
 
-internal class SetPlayerIlluminatedMessage : QSBMessage<(uint playerId, bool illuminated)>
+internal class PlayerSetIlluminatedMessage : QSBMessage<(uint playerId, bool illuminated)>
 {
-	public SetPlayerIlluminatedMessage(uint playerId, bool illuminated) : base((playerId, illuminated)) { }
+	public PlayerSetIlluminatedMessage(uint playerId, bool illuminated) : base((playerId, illuminated)) { }
 	public override void OnReceiveLocal() => OnReceiveRemote();
 
 	public override void OnReceiveRemote() =>

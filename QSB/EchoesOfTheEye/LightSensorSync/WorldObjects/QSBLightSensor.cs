@@ -38,11 +38,15 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	public override async UniTask Init(CancellationToken ct)
 	{
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
-		_locallyIlluminated = AttachedObject._startIlluminated;
 
-		if (_locallyIlluminated)
+		if (AttachedObject._sector != null)
 		{
-			_illuminatedBy.Add(QSBPlayerManager.LocalPlayerId);
+			if (AttachedObject._startIlluminated)
+			{
+				_locallyIlluminated = true;
+				OnDetectLocalLight?.Invoke();
+				this.SendMessage(new SetIlluminatedMessage(true));
+			}
 		}
 	}
 
