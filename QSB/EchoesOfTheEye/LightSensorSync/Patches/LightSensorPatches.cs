@@ -8,6 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/*
+ * For those who come here,
+ * leave while you still can.
+ */
+
 namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
 
 [HarmonyPatch(typeof(SingleLightSensor))]
