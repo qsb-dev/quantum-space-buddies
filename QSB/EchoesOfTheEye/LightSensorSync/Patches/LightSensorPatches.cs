@@ -61,6 +61,7 @@ internal class LightSensorPatches : QSBPatch
 			__instance.enabled = false;
 			__instance._lightDetector.GetShape().enabled = false;
 			// dont do _startIlluminated stuff here since its done in the worldobject
+			// player light sensors dont have it either so its okay
 		}
 
 		return false;
