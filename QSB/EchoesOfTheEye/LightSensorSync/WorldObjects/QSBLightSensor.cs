@@ -2,6 +2,7 @@
 using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
@@ -37,15 +38,18 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 
 		// normally done in Start, but world objects arent ready by that point
-		if (AttachedObject._sector != null)
+		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
 		{
-			if (AttachedObject._startIlluminated)
+			if (AttachedObject._sector != null)
 			{
-				_locallyIlluminated = true;
-				OnDetectLocalLight?.Invoke();
-				this.SendMessage(new SetIlluminatedMessage(true));
+				if (AttachedObject._startIlluminated)
+				{
+					_locallyIlluminated = true;
+					OnDetectLocalLight?.Invoke();
+					this.SendMessage(new SetIlluminatedMessage(true));
+				}
 			}
-		}
+		});
 	}
 
 	public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;

@@ -75,9 +75,8 @@ internal class LightSensorPatches : QSBPatch
 			return true;
 		}
 
-		var isPlayerLightSensor = LightSensorManager.IsPlayerLightSensor(__instance);
-		var qsbPlayerLightSensor = isPlayerLightSensor ? __instance.GetComponent<QSBPlayerLightSensor>() : null;
-		var qsbLightSensor = isPlayerLightSensor ? null : __instance.GetWorldObject<QSBLightSensor>();
+		// player light sensors dont have a sector, so no need to worry about them
+		var qsbLightSensor = __instance.GetWorldObject<QSBLightSensor>();
 
 		var containsAnyOccupants = __instance._sector.ContainsAnyOccupants(DynamicOccupant.Player | DynamicOccupant.Probe);
 		if (containsAnyOccupants && !__instance.enabled)
@@ -95,22 +94,11 @@ internal class LightSensorPatches : QSBPatch
 			__instance._lightDetector.GetShape().enabled = false;
 			if (!__instance._preserveStateWhileDisabled)
 			{
-				if (isPlayerLightSensor)
+				if (qsbLightSensor._locallyIlluminated)
 				{
-					if (qsbPlayerLightSensor._locallyIlluminated)
-					{
-						qsbPlayerLightSensor._locallyIlluminated = false;
-						new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, false).Send();
-					}
-				}
-				else
-				{
-					if (qsbLightSensor._locallyIlluminated)
-					{
-						qsbLightSensor._locallyIlluminated = false;
-						qsbLightSensor.OnDetectLocalDarkness?.Invoke();
-						qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
-					}
+					qsbLightSensor._locallyIlluminated = false;
+					qsbLightSensor.OnDetectLocalDarkness?.Invoke();
+					qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 				}
 			}
 		}
