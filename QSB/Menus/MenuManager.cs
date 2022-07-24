@@ -501,12 +501,10 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				Host(true);
 				return;
 			}
-			else
-			{
-				DebugLog.DebugWrite("Multiplayer save exists.");
-				Host(false);
-				return;
-			}
+
+			DebugLog.DebugWrite("Multiplayer save exists.");
+			Host(false);
+			return;
 		}
 
 		DebugLog.DebugWrite("A singleplayer save exists.");
