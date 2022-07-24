@@ -152,7 +152,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			WriteLine(2, $"Ready : {player.IsReady}");
 			WriteLine(2, $"Suited Up : {player.SuitedUp}");
 			WriteLine(2, $"InDreamWorld : {player.InDreamWorld}");
-			
 
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
 			{
@@ -260,7 +259,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 					}
 					else
 					{
-						WriteLine(4, $"- LANTERN NULL", Color.red);
+						WriteLine(4, "- LANTERN NULL", Color.red);
 					}
 
 					var playerCamera = player.player.Camera;
@@ -273,7 +272,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 					}
 					else
 					{
-						WriteLine(4, $"- CAMERA NULL", Color.red);
+						WriteLine(4, "- CAMERA NULL", Color.red);
 					}
 				}
 			}
@@ -356,8 +355,8 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		if (QSBCore.DebugSettings.DrawLines)
 		{
 			var list = DebugActions.WorldObjectSelection == null
-				   ? QSBWorldSync.GetWorldObjects()
-				   : QSBWorldSync.GetWorldObjects(DebugActions.WorldObjectSelection);
+				? QSBWorldSync.GetWorldObjects()
+				: QSBWorldSync.GetWorldObjects(DebugActions.WorldObjectSelection);
 
 			foreach (var obj in list)
 			{

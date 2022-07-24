@@ -47,7 +47,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 	private const int UpdatesUntilScroll = 30;
 	private const int UpdatesBetweenScroll = 5;
 
-	private void GoForwardOneObject()
+	private static void GoForwardOneObject()
 	{
 		var allWorldObjects = typeof(IWorldObject).GetDerivedTypes().ToArray();
 		if (WorldObjectSelection == null)
@@ -66,7 +66,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		WorldObjectSelection = allWorldObjects[index];
 	}
 
-	private void GoBackOneObject()
+	private static void GoBackOneObject()
 	{
 		var allWorldObjects = typeof(IWorldObject).GetDerivedTypes().ToArray();
 		if (WorldObjectSelection == null)
@@ -119,7 +119,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 					}
 				}
 			}
-			else if (!Keyboard.current[Key.Comma].isPressed)
+			else
 			{
 				_backTimer = 0;
 			}
@@ -137,7 +137,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 					}
 				}
 			}
-			else if (!Keyboard.current[Key.Period].isPressed)
+			else
 			{
 				_forwardTimer = 0;
 			}
