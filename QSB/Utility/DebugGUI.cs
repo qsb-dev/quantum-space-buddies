@@ -133,6 +133,8 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 				WriteLine(1, $"TimeLoop IsTimeFlowing : {TimeLoop.IsTimeFlowing()}");
 				WriteLine(1, $"TimeLoop IsTimeLoopEnabled : {TimeLoop.IsTimeLoopEnabled()}");
 			}
+
+			WriteLine(1, $"Selected WorldObject : {(DebugActions.WorldObjectSelection == null ? "All" : DebugActions.WorldObjectSelection.Name)}");
 		}
 
 		#endregion
@@ -323,7 +325,11 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 	{
 		if (QSBCore.DebugSettings.DrawLabels)
 		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects())
+			var list = DebugActions.WorldObjectSelection == null
+				? QSBWorldSync.GetWorldObjects()
+				: QSBWorldSync.GetWorldObjects(DebugActions.WorldObjectSelection);
+
+			foreach (var obj in list)
 			{
 				if (obj.ShouldDisplayDebug())
 				{
@@ -349,7 +355,11 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 	{
 		if (QSBCore.DebugSettings.DrawLines)
 		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects())
+			var list = DebugActions.WorldObjectSelection == null
+				   ? QSBWorldSync.GetWorldObjects()
+				   : QSBWorldSync.GetWorldObjects(DebugActions.WorldObjectSelection);
+
+			foreach (var obj in list)
 			{
 				if (obj.ShouldDisplayDebug())
 				{

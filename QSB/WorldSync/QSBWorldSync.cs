@@ -233,6 +233,9 @@ public static class QSBWorldSync
 		where TWorldObject : IWorldObject
 		=> WorldObjects.OfType<TWorldObject>();
 
+	public static IEnumerable<IWorldObject> GetWorldObjects(Type type = default)
+		=> WorldObjects.Where(x => type.IsAssignableFrom(x.GetType()));
+
 	public static TWorldObject GetWorldObject<TWorldObject>(this int objectId)
 		where TWorldObject : IWorldObject
 	{
