@@ -12,6 +12,9 @@ using UnityEngine.UI;
 
 namespace QSB.SaveSync.Patches;
 
+/// <summary>
+/// all these patches are to use QSBProfileData instead of the existing profile in order to support a separate multiplayer save 
+/// </summary>
 internal class ProfileManagerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
@@ -581,7 +584,7 @@ internal class ProfileManagerPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(StandaloneProfileManager), "get_currentProfileGameSave")]
+	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.currentProfileGameSave), MethodType.Getter)]
 	public static bool CurrentProfileGameSave(out GameSave __result)
 	{
 		__result = QSBProfileManager._currentProfile?.gameSave;
@@ -589,7 +592,7 @@ internal class ProfileManagerPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(StandaloneProfileManager), "get_currentProfileGameSettings")]
+	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.currentProfileGameSettings), MethodType.Getter)]
 	public static bool CurrentProfileGameSettings(out SettingsSave __result)
 	{
 		__result = QSBProfileManager._currentProfile?.settingsSave;
@@ -597,7 +600,7 @@ internal class ProfileManagerPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(StandaloneProfileManager), "get_currentProfileGraphicsSettings")]
+	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.currentProfileGraphicsSettings), MethodType.Getter)]
 	public static bool CurrentProfileGraphicsSettings(out GraphicSettings __result)
 	{
 		__result = QSBProfileManager._currentProfile?.graphicsSettings;
@@ -605,7 +608,7 @@ internal class ProfileManagerPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(StandaloneProfileManager), "get_currentProfileInputJSON")]
+	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.currentProfileInputJSON), MethodType.Getter)]
 	public static bool CurrentProfileInputJSON(out string __result)
 	{
 		__result = QSBProfileManager._currentProfile?.inputJSON;
