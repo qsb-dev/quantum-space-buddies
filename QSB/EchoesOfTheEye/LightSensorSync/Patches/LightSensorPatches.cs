@@ -69,7 +69,7 @@ internal class LightSensorPatches : QSBPatch
 				if (isPlayerLightSensor)
 				{
 					qsbPlayerLightSensor._locallyIlluminated = true;
-					new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, true).Send();
+					new SetPlayerIlluminatedMessage(qsbPlayerLightSensor.PlayerId, true).Send();
 				}
 				else
 				{
@@ -117,7 +117,7 @@ internal class LightSensorPatches : QSBPatch
 					if (qsbPlayerLightSensor._locallyIlluminated)
 					{
 						qsbPlayerLightSensor._locallyIlluminated = false;
-						new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, false).Send();
+						new SetPlayerIlluminatedMessage(qsbPlayerLightSensor.PlayerId, false).Send();
 					}
 				}
 				else
@@ -185,12 +185,12 @@ internal class LightSensorPatches : QSBPatch
 			if (!locallyIlluminated && qsbPlayerLightSensor._locallyIlluminated)
 			{
 				qsbPlayerLightSensor._locallyIlluminated = true;
-				new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, true).Send();
+				new SetPlayerIlluminatedMessage(qsbPlayerLightSensor.PlayerId, true).Send();
 			}
 			else if (locallyIlluminated && !qsbPlayerLightSensor._locallyIlluminated)
 			{
 				qsbPlayerLightSensor._locallyIlluminated = false;
-				new PlayerSetIlluminatedMessage(qsbPlayerLightSensor.PlayerId, false).Send();
+				new SetPlayerIlluminatedMessage(qsbPlayerLightSensor.PlayerId, false).Send();
 			}
 		}
 		else
