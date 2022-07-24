@@ -40,7 +40,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const int _titleButtonIndex = 2;
 	private float _connectPopupOpenTime;
 
-	private const string UpdateChangelog = $"QSB Version 0.20.2\r\nFixed issues with the Little Scout and attaching/detaching from the ship.";
+	private const string UpdateChangelog = "QSB Version 0.20.2\r\nFixed issues with the Little Scout and attaching/detaching from the ship.";
 
 	private Action<bool> PopupClose;
 
@@ -120,7 +120,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
 		{
-			DebugLog.ToConsole($"Error - Language changed while not in title screen?! Should be impossible!", OWML.Common.MessageType.Error);
+			DebugLog.ToConsole("Error - Language changed while not in title screen?! Should be impossible!", OWML.Common.MessageType.Error);
 			return;
 		}
 
@@ -173,7 +173,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		newPopup.transform.localPosition = Vector3.zero;
 		newPopup.transform.localScale = Vector3.one;
-		newPopup.GetComponentsInChildren<LocalizedText>().ToList().ForEach(x => Destroy(x));
+		newPopup.GetComponentsInChildren<LocalizedText>().ForEach(Destroy);
 
 		var originalPopup = newPopup.GetComponent<PopupMenu>();
 
@@ -204,9 +204,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			InputLibrary.cancel,
 			new ScreenPrompt(confirm1Text),
 			new ScreenPrompt(confirm2Text),
-			new ScreenPrompt(cancelText),
-			true,
-			true);
+			new ScreenPrompt(cancelText));
 		return popup;
 	}
 
@@ -227,7 +225,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		newPopup.transform.localPosition = Vector3.zero;
 		newPopup.transform.localScale = Vector3.one;
-		newPopup.GetComponentsInChildren<LocalizedText>().ToList().ForEach(x => Destroy(x));
+		newPopup.GetComponentsInChildren<LocalizedText>().ForEach(Destroy);
 
 		var originalPopup = newPopup.GetComponent<PopupMenu>();
 
@@ -265,9 +263,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			new ScreenPrompt(confirm1Text),
 			new ScreenPrompt(confirm2Text),
 			new ScreenPrompt(confirm3Text),
-			new ScreenPrompt(cancelText),
-			true,
-			true);
+			new ScreenPrompt(cancelText));
 		return popup;
 	}
 
@@ -358,7 +354,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		HostGameTypePopup.OnPopupConfirm2 += () => Host(true);
 		HostGameTypePopup.OnPopupConfirm3 += () =>
 		{
-			DebugLog.DebugWrite($"Replacing multiplayer save with singleplayer save");
+			DebugLog.DebugWrite("Replacing multiplayer save with singleplayer save");
 			QSBCore.IsInMultiplayer = true;
 			StandaloneProfileManager.SharedInstance.SaveGame(QSBProfileManager._currentProfile.gameSave, null, null, null);
 			Host(false);
@@ -413,10 +409,10 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		DisconnectPopup._labelText.text = popupText;
 
 		var langController = QSBWorldSync.GetUnityObject<PauseMenuManager>().transform.GetChild(0).GetComponent<FontAndLanguageController>();
-		langController.AddTextElement(DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>(), true, true, false);
-		langController.AddTextElement(DisconnectPopup._labelText, false, true, false);
-		langController.AddTextElement(DisconnectPopup._confirmButton._buttonText, false, true, false);
-		langController.AddTextElement(DisconnectPopup._cancelButton._buttonText, false, true, false);
+		langController.AddTextElement(DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
+		langController.AddTextElement(DisconnectPopup._labelText, false);
+		langController.AddTextElement(DisconnectPopup._confirmButton._buttonText, false);
+		langController.AddTextElement(DisconnectPopup._cancelButton._buttonText, false);
 	}
 
 	private void MakeTitleMenus()
@@ -455,24 +451,24 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		var mainMenuFontController = GameObject.Find("MainMenu").GetComponent<FontAndLanguageController>();
-		mainMenuFontController.AddTextElement(HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>(), true, true, false);
-		mainMenuFontController.AddTextElement(ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>(), true, true, false);
+		mainMenuFontController.AddTextElement(HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
+		mainMenuFontController.AddTextElement(ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
 
-		mainMenuFontController.AddTextElement(OneButtonInfoPopup._labelText, false, true, false);
-		mainMenuFontController.AddTextElement(OneButtonInfoPopup._confirmButton._buttonText, false, true, false);
+		mainMenuFontController.AddTextElement(OneButtonInfoPopup._labelText, false);
+		mainMenuFontController.AddTextElement(OneButtonInfoPopup._confirmButton._buttonText, false);
 
-		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._labelText, false, true, false);
-		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._confirmButton._buttonText, false, true, false);
-		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._cancelButton._buttonText, false, true, false);
+		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._labelText, false);
+		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._confirmButton._buttonText, false);
+		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._cancelButton._buttonText, false);
 
-		mainMenuFontController.AddTextElement(ConnectPopup._labelText, false, true, false);
-		mainMenuFontController.AddTextElement(ConnectPopup._confirmButton._buttonText, false, true, false);
-		mainMenuFontController.AddTextElement(ConnectPopup._cancelButton._buttonText, false, true, false);
+		mainMenuFontController.AddTextElement(ConnectPopup._labelText, false);
+		mainMenuFontController.AddTextElement(ConnectPopup._confirmButton._buttonText, false);
+		mainMenuFontController.AddTextElement(ConnectPopup._cancelButton._buttonText, false);
 
-		mainMenuFontController.AddTextElement(HostGameTypePopup._labelText, false, true, false);
-		mainMenuFontController.AddTextElement(HostGameTypePopup._confirmButton1._buttonText, false, true, false);
-		mainMenuFontController.AddTextElement(HostGameTypePopup._confirmButton2._buttonText, false, true, false);
-		mainMenuFontController.AddTextElement(HostGameTypePopup._cancelButton._buttonText, false, true, false);
+		mainMenuFontController.AddTextElement(HostGameTypePopup._labelText, false);
+		mainMenuFontController.AddTextElement(HostGameTypePopup._confirmButton1._buttonText, false);
+		mainMenuFontController.AddTextElement(HostGameTypePopup._confirmButton2._buttonText, false);
+		mainMenuFontController.AddTextElement(HostGameTypePopup._cancelButton._buttonText, false);
 	}
 
 	private void Disconnect()
@@ -498,22 +494,22 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (!doesSingleplayerSaveExist)
 		{
-			DebugLog.DebugWrite($"No singleplayer save exists.");
+			DebugLog.DebugWrite("No singleplayer save exists.");
 			if (!doesMultiplayerSaveExist)
 			{
-				DebugLog.DebugWrite($"No saves exist.");
+				DebugLog.DebugWrite("No saves exist.");
 				Host(true);
 				return;
 			}
 			else
 			{
-				DebugLog.DebugWrite($"Multiplayer save exists.");
+				DebugLog.DebugWrite("Multiplayer save exists.");
 				Host(false);
 				return;
 			}
 		}
 
-		DebugLog.DebugWrite($"A singleplayer save exists.");
+		DebugLog.DebugWrite("A singleplayer save exists.");
 		HostGameTypePopup.EnableMenu(true);
 	}
 
@@ -523,12 +519,12 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (newMultiplayerSave)
 		{
-			DebugLog.DebugWrite($"Resetting game...");
+			DebugLog.DebugWrite("Resetting game...");
 			PlayerData.ResetGame();
 		}
 		else
 		{
-			DebugLog.DebugWrite($"Loading multiplayer game...");
+			DebugLog.DebugWrite("Loading multiplayer game...");
 			var profile = QSBProfileManager._currentProfile;
 			PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
 		}
