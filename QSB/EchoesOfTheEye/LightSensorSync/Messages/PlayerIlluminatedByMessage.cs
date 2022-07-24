@@ -15,12 +15,12 @@ internal class PlayerIlluminatedByMessage : QSBMessage<(uint playerId, uint[] il
 	{
 		var qsbPlayerLightSensor = QSBPlayerManager.GetPlayer(Data.playerId).QSBPlayerLightSensor;
 
-		foreach (var added in Data.illuminatedBy.Except(qsbPlayerLightSensor._illuminatedBy))
+		foreach (var added in Data.illuminatedBy.Except(qsbPlayerLightSensor._illuminatedBy).ToList())
 		{
 			qsbPlayerLightSensor.SetIlluminated(added, true);
 		}
 
-		foreach (var removed in qsbPlayerLightSensor._illuminatedBy.Except(Data.illuminatedBy))
+		foreach (var removed in qsbPlayerLightSensor._illuminatedBy.Except(Data.illuminatedBy).ToList())
 		{
 			qsbPlayerLightSensor.SetIlluminated(removed, false);
 		}
