@@ -3,10 +3,18 @@ using UnityEngine;
 
 namespace QSB.ItemSync;
 
+/// <summary>
+/// used for initial state sync.
+/// we have to store this separately because its not saved in the item itself, unfortunately.
+/// </summary>
 public class ItemState
 {
-	public ItemStateType State;
+	/// <summary>
+	/// if this is false, there's no need to sync initial state for this item
+	/// </summary>
 	public bool HasBeenInteractedWith;
+
+	public ItemStateType State;
 
 	// on ground
 	public Transform Parent;
