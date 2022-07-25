@@ -5,7 +5,7 @@ namespace QSB.ItemSync;
 
 /// <summary>
 /// used for initial state sync.
-/// we have to store this separately because its not saved in the item itself, unfortunately.
+/// we have to store this separately because it's not saved in the item itself, unfortunately.
 /// </summary>
 public class ItemState
 {
