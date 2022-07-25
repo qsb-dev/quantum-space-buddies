@@ -6,6 +6,7 @@ using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.TimeSync;
 using QSB.WorldSync;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -134,7 +135,9 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 				WriteLine(1, $"TimeLoop IsTimeLoopEnabled : {TimeLoop.IsTimeLoopEnabled()}");
 			}
 
-			WriteLine(1, $"Selected WorldObject : {(DebugActions.WorldObjectSelection == null ? "All" : DebugActions.WorldObjectSelection.Name)}");
+			var allWorldObjects = typeof(IWorldObject).GetDerivedTypes().ToArray();
+			var selection = DebugActions.WorldObjectSelection;
+			WriteLine(1, $"W.O Filter : {(selection == null ? "All" : $"{selection.Name} ({Array.IndexOf(allWorldObjects, selection) + 1}/{allWorldObjects.Length})")}");
 		}
 
 		#endregion
