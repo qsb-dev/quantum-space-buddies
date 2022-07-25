@@ -32,7 +32,7 @@ internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem, uint>
 		};
 
 		WorldObject.PickUpItem(itemSocket);
-		WorldObject.HasBeenPickedUp = true;
+		WorldObject.ItemState.HasBeenInteractedWith = true;
 		WorldObject.ItemState.State = ItemStateType.Held;
 		WorldObject.ItemState.HoldingPlayer = player;
 

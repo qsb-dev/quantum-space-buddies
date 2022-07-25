@@ -14,7 +14,6 @@ namespace QSB.ItemSync.WorldObjects.Items;
 public class QSBItem<T> : WorldObject<T>, IQSBItem
 	where T : OWItem
 {
-	public bool HasBeenPickedUp { get; set; }
 	public ItemState ItemState { get; } = new();
 
 	private Transform _lastParent;
@@ -87,7 +86,7 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 
 	public override void SendInitialState(uint to)
 	{
-		if (!HasBeenPickedUp)
+		if (!ItemState.HasBeenInteractedWith)
 		{
 			return;
 		}

@@ -5,7 +5,6 @@ namespace QSB.ItemSync.WorldObjects.Items;
 
 public interface IQSBItem : IWorldObject
 {
-	bool HasBeenPickedUp { get; set; }
 	ItemState ItemState { get; }
 
 	ItemType GetItemType();

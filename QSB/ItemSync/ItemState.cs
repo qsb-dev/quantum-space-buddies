@@ -6,6 +6,7 @@ namespace QSB.ItemSync;
 public class ItemState
 {
 	public ItemStateType State;
+	public bool HasBeenInteractedWith;
 
 	// on ground
 	public Transform Parent;
