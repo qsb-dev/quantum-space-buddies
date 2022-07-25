@@ -27,6 +27,9 @@ internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int Socke
 					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
 
 					qsbItemSocket.PlaceIntoSocket(qsbItem);
+					qsbItem.HasBeenPickedUp = true;
+					qsbItem.ItemState.State = ItemStateType.Socketed;
+					qsbItem.ItemState.Socket = qsbItemSocket.AttachedObject;
 
 					var player = QSBPlayerManager.GetPlayer(From);
 					player.HeldItem = null;

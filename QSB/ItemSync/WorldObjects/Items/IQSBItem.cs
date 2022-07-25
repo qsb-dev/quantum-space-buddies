@@ -5,6 +5,9 @@ namespace QSB.ItemSync.WorldObjects.Items;
 
 public interface IQSBItem : IWorldObject
 {
+	bool HasBeenPickedUp { get; set; }
+	ItemState ItemState { get; }
+
 	ItemType GetItemType();
 	void PickUpItem(Transform itemSocket);
 	void DropItem(Vector3 position, Vector3 normal, Transform parent, Sector sector, IItemDropTarget customDropTarget);

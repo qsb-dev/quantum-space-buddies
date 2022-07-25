@@ -5,13 +5,15 @@ using QSB.Utility;
 
 namespace QSB.ItemSync.Messages;
 
-internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem>
+internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem, uint>
 {
+	public MoveToCarryMessage(uint playerHolding) : base(playerHolding) { }
+
 	public override void OnReceiveRemote()
 	{
 		WorldObject.StoreLocation();
 
-		var player = QSBPlayerManager.GetPlayer(From);
+		var player = QSBPlayerManager.GetPlayer(Data);
 		var itemType = WorldObject.GetItemType();
 
 		player.HeldItem = WorldObject;
@@ -30,6 +32,9 @@ internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem>
 		};
 
 		WorldObject.PickUpItem(itemSocket);
+		WorldObject.HasBeenPickedUp = true;
+		WorldObject.ItemState.State = ItemStateType.Held;
+		WorldObject.ItemState.HoldingPlayer = player;
 
 		switch (itemType)
 		{

@@ -58,6 +58,14 @@ internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
 		var sector = Data.sectorId != -1 ? Data.sectorId.GetWorldObject<QSBSector>().AttachedObject : null;
 
 		WorldObject.DropItem(worldPos, worldNormal, parent, sector, customDropTarget);
+		WorldObject.HasBeenPickedUp = true;
+		WorldObject.ItemState.State = ItemStateType.OnGround;
+		WorldObject.ItemState.LocalPosition = Data.localPosition;
+		WorldObject.ItemState.Parent = parent;
+		WorldObject.ItemState.LocalNormal = Data.localNormal;
+		WorldObject.ItemState.Sector = sector;
+		WorldObject.ItemState.CustomDropTarget = customDropTarget;
+		WorldObject.ItemState.Rigidbody = parent.GetComponent<OWRigidbody>();
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.HeldItem = null;
