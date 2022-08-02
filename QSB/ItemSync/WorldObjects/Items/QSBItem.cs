@@ -75,6 +75,7 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 		}
 		else
 		{
+			// TODO at some point we should probably call the proper drop item code to account for funny overrides
 			AttachedObject.transform.parent = _lastParent;
 			AttachedObject.transform.localPosition = _lastPosition;
 			AttachedObject.transform.localRotation = _lastRotation;
