@@ -40,7 +40,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const int _titleButtonIndex = 2;
 	private float _connectPopupOpenTime;
 
-	private const string UpdateChangelog = "QSB Version 0.20.2\r\nFixed issues with the Little Scout and attaching/detaching from the ship.";
+	private const string UpdateChangelog = "QSB Version 0.21.0\r\nMultiplayer saves are now seperate from singleplayer, and items got an overhaul.";
 
 	private Action<bool> PopupClose;
 
