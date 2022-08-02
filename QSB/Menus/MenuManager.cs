@@ -48,15 +48,15 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private bool _intentionalDisconnect;
 
-	private GameObject _threeChoicePopupBase;
+	private GameObject _choicePopupPrefab;
 
 	public void Start()
 	{
 		Instance = this;
 
-		_threeChoicePopupBase = Instantiate(Resources.FindObjectsOfTypeAll<PopupMenu>().First(x => x.name == "TwoButton-Popup" && x.transform.parent.name == "PopupCanvas" && x.transform.parent.parent.name == "TitleMenu").gameObject);
-		DontDestroyOnLoad(_threeChoicePopupBase);
-		_threeChoicePopupBase.SetActive(false);
+		_choicePopupPrefab = Instantiate(Resources.FindObjectsOfTypeAll<PopupMenu>().First(x => x.name == "TwoButton-Popup" && x.transform.parent.name == "PopupCanvas" && x.transform.parent.parent.name == "TitleMenu").gameObject);
+		DontDestroyOnLoad(_choicePopupPrefab);
+		_choicePopupPrefab.SetActive(false);
 
 		MakeTitleMenus();
 		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -176,7 +176,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	public ThreeChoicePopupMenu CreateThreeChoicePopup(string message, string confirm1Text, string confirm2Text, string cancelText)
 	{
-		var newPopup = Instantiate(_threeChoicePopupBase);
+		var newPopup = Instantiate(_choicePopupPrefab);
 
 		switch (LoadManager.GetCurrentScene())
 		{
@@ -228,7 +228,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	public FourChoicePopupMenu CreateFourChoicePopup(string message, string confirm1Text, string confirm2Text, string confirm3Text, string cancelText)
 	{
-		var newPopup = Instantiate(_threeChoicePopupBase);
+		var newPopup = Instantiate(_choicePopupPrefab);
 
 		switch (LoadManager.GetCurrentScene())
 		{
