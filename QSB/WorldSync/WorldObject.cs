@@ -19,5 +19,5 @@ public abstract class WorldObject<T> : IWorldObject
 	public virtual string ReturnLabel() => ToString();
 	public virtual void DisplayLines() { }
 
-	public abstract void SendInitialState(uint to);
+	public virtual void SendInitialState(uint to) { }
 }

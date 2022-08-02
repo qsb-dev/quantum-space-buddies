@@ -17,9 +17,7 @@ public class QSBOtherDropTarget : WorldObject<MonoBehaviour>, IQSBDropTarget
 	{
 		if (AttachedObject is not IItemDropTarget)
 		{
-			throw new ArgumentException("QSBDropTarget.AttachedObject is not an IItemDropTarget!");
+			throw new ArgumentException("QSBOtherDropTarget.AttachedObject is not an IItemDropTarget!");
 		}
 	}
-
-	public override void SendInitialState(uint to) { }
 }

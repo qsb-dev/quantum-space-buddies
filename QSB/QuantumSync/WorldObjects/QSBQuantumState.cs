@@ -13,6 +13,4 @@ internal class QSBQuantumState : WorldObject<QuantumState>
 	}
 
 	public override bool ShouldDisplayDebug() => false;
-
-	public override void SendInitialState(uint to) { }
 }
