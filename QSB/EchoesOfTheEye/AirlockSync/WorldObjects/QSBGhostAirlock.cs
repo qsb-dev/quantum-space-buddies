@@ -12,5 +12,6 @@ internal class QSBGhostAirlock : WorldObject<GhostAirlock>
 				AttachedObject._innerDoor.IsOpen(),
 				AttachedObject._outerDoor.IsOpen(),
 				AttachedObject._pressurized
-				));
+			)
+		);
 }
