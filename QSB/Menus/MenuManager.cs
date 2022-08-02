@@ -547,26 +547,26 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (doesSingleplayerSaveExist && doesMultiplayerSaveExist)
 		{
-			DebugLog.DebugWrite($"CASE 1 - Both singleplayer and multiplayer saves exist.");
+			DebugLog.DebugWrite("CASE 1 - Both singleplayer and multiplayer saves exist.");
 			// ask if we want to use the existing multiplayer save,
 			// start a new multiplayer save, or copy the singleplayer save
 			ExistingNewCopyPopup.EnableMenu(true);
 		}
 		else if (doesSingleplayerSaveExist && !doesMultiplayerSaveExist)
 		{
-			DebugLog.DebugWrite($"CASE 2 - Only a singleplayer save exists.");
+			DebugLog.DebugWrite("CASE 2 - Only a singleplayer save exists.");
 			// ask if we want to start a new multiplayer save or copy the singleplayer save
 			NewCopyPopup.EnableMenu(true);
 		}
 		else if (!doesSingleplayerSaveExist && doesMultiplayerSaveExist)
 		{
-			DebugLog.DebugWrite($"CASE 3 - Only multiplayer save exists.");
+			DebugLog.DebugWrite("CASE 3 - Only multiplayer save exists.");
 			// ask if we want to use the existing multiplayer save or start a new one
 			ExistingNewPopup.EnableMenu(true);
 		}
 		else if (!doesSingleplayerSaveExist && !doesMultiplayerSaveExist)
 		{
-			DebugLog.DebugWrite($"CASE 4 - Neither a singleplayer or a multiplayer save exists.");
+			DebugLog.DebugWrite("CASE 4 - Neither a singleplayer or a multiplayer save exists.");
 			// create a new multiplayer save - nothing to copy or load
 			Host(true);
 		}
