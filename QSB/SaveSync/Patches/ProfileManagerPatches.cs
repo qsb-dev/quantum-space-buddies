@@ -167,20 +167,20 @@ internal class ProfileManagerPatches : QSBPatch
 	[HarmonyPatch(typeof(StandaloneProfileManager), nameof(StandaloneProfileManager.CurrentProfileHasBrokenData))]
 	public static bool CurrentProfileHasBrokenData(StandaloneProfileManager __instance, out bool __result)
 	{
-		if (QSBProfileManager._currentProfile == null)
+		var currentProfile = QSBProfileManager._currentProfile;
+
+		if (currentProfile == null)
 		{
-			UnityEngine.Debug.LogError("QSBProfileManager.CurrentProfileHasBrokenData We should never get here outside of the Unity Editor");
+			Debug.LogError("QSBProfileManager.CurrentProfileHasBrokenData We should never get here outside of the Unity Editor");
 			__result = false;
 			return false;
 		}
 
-		if (!QSBProfileManager._currentProfile.brokenSaveData && !QSBProfileManager._currentProfile.brokenSettingsData && !QSBProfileManager._currentProfile.brokenGfxSettingsData)
-		{
-			__result = QSBProfileManager._currentProfile.brokenRebindingData;
-			return false;
-		}
-
-		__result = true;
+		__result = currentProfile.brokenSaveData
+			|| currentProfile.brokenMultSaveData
+			|| currentProfile.brokenSettingsData
+			|| currentProfile.brokenGfxSettingsData
+			|| currentProfile.brokenRebindingData;
 		return false;
 	}
 
