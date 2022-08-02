@@ -34,7 +34,9 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private Button HostButton;
 	private GameObject ConnectButton;
 	private PopupInputMenu ConnectPopup;
-	private FourChoicePopupMenu HostGameTypePopup;
+	private FourChoicePopupMenu ExistingNewCopyPopup;
+	private ThreeChoicePopupMenu NewCopyPopup;
+	private ThreeChoicePopupMenu ExistingNewPopup;
 	private Text _loadingText;
 	private StringBuilder _nowLoadingSB;
 	private const int _titleButtonIndex = 2;
@@ -129,7 +131,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
 		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalization.Current.Connect), new ScreenPrompt(QSBLocalization.Current.Cancel), false);
 		ConnectPopup.SetInputFieldPlaceholderText(text);
-		HostGameTypePopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNew,
+		ExistingNewCopyPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNew,
 			InputLibrary.menuConfirm,
 			InputLibrary.confirm2,
 			InputLibrary.signalscope,
@@ -137,6 +139,22 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			new ScreenPrompt(QSBLocalization.Current.ExistingSave),
 			new ScreenPrompt(QSBLocalization.Current.NewSave),
 			new ScreenPrompt(QSBLocalization.Current.CopySave),
+			new ScreenPrompt(QSBLocalization.Current.Cancel));
+
+		NewCopyPopup.SetUpPopup(QSBLocalization.Current.HostNewOrCopy,
+			InputLibrary.menuConfirm,
+			InputLibrary.confirm2,
+			InputLibrary.cancel,
+			new ScreenPrompt(QSBLocalization.Current.NewSave),
+			new ScreenPrompt(QSBLocalization.Current.CopySave),
+			new ScreenPrompt(QSBLocalization.Current.Cancel));
+
+		ExistingNewPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNew,
+			InputLibrary.menuConfirm,
+			InputLibrary.confirm2,
+			InputLibrary.cancel,
+			new ScreenPrompt(QSBLocalization.Current.ExistingSave),
+			new ScreenPrompt(QSBLocalization.Current.NewSave),
 			new ScreenPrompt(QSBLocalization.Current.Cancel));
 	}
 
@@ -349,16 +367,40 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		TwoButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
 		TwoButtonInfoPopup.OnPopupCancel += () => OnCloseInfoPopup(false);
 
-		HostGameTypePopup = CreateFourChoicePopup(QSBLocalization.Current.HostExistingOrNew, QSBLocalization.Current.ExistingSave, QSBLocalization.Current.NewSave, QSBLocalization.Current.CopySave, QSBLocalization.Current.Cancel);
-		HostGameTypePopup.OnPopupConfirm1 += () => Host(false);
-		HostGameTypePopup.OnPopupConfirm2 += () => Host(true);
-		HostGameTypePopup.OnPopupConfirm3 += () =>
+		ExistingNewCopyPopup = CreateFourChoicePopup(QSBLocalization.Current.HostExistingOrNew,
+			QSBLocalization.Current.ExistingSave,
+			QSBLocalization.Current.NewSave,
+			QSBLocalization.Current.CopySave,
+			QSBLocalization.Current.Cancel);
+		ExistingNewCopyPopup.OnPopupConfirm1 += () => Host(false);
+		ExistingNewCopyPopup.OnPopupConfirm2 += () => Host(true);
+		ExistingNewCopyPopup.OnPopupConfirm3 += () =>
 		{
 			DebugLog.DebugWrite("Replacing multiplayer save with singleplayer save");
 			QSBCore.IsInMultiplayer = true;
 			StandaloneProfileManager.SharedInstance.SaveGame(QSBProfileManager._currentProfile.gameSave, null, null, null);
 			Host(false);
 		};
+
+		NewCopyPopup = CreateThreeChoicePopup(QSBLocalization.Current.HostNewOrCopy,
+			QSBLocalization.Current.NewSave,
+			QSBLocalization.Current.CopySave,
+			QSBLocalization.Current.Cancel);
+		NewCopyPopup.OnPopupConfirm1 += () => Host(true);
+		NewCopyPopup.OnPopupConfirm2 += () =>
+		{
+			DebugLog.DebugWrite("Replacing multiplayer save with singleplayer save");
+			QSBCore.IsInMultiplayer = true;
+			StandaloneProfileManager.SharedInstance.SaveGame(QSBProfileManager._currentProfile.gameSave, null, null, null);
+			Host(false);
+		};
+
+		ExistingNewPopup = CreateThreeChoicePopup(QSBLocalization.Current.HostExistingOrNew,
+			QSBLocalization.Current.ExistingSave,
+			QSBLocalization.Current.NewSave,
+			QSBLocalization.Current.Cancel);
+		ExistingNewPopup.OnPopupConfirm1 += () => Host(false);
+		ExistingNewPopup.OnPopupConfirm2 += () => Host(true);
 	}
 
 	private static void SetButtonActive(Button button, bool active)
@@ -465,10 +507,21 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		mainMenuFontController.AddTextElement(ConnectPopup._confirmButton._buttonText, false);
 		mainMenuFontController.AddTextElement(ConnectPopup._cancelButton._buttonText, false);
 
-		mainMenuFontController.AddTextElement(HostGameTypePopup._labelText, false);
-		mainMenuFontController.AddTextElement(HostGameTypePopup._confirmButton1._buttonText, false);
-		mainMenuFontController.AddTextElement(HostGameTypePopup._confirmButton2._buttonText, false);
-		mainMenuFontController.AddTextElement(HostGameTypePopup._cancelButton._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._labelText, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._confirmButton1._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._confirmButton2._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._confirmButton3._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._cancelButton._buttonText, false);
+
+		mainMenuFontController.AddTextElement(NewCopyPopup._labelText, false);
+		mainMenuFontController.AddTextElement(NewCopyPopup._confirmButton1._buttonText, false);
+		mainMenuFontController.AddTextElement(NewCopyPopup._confirmButton2._buttonText, false);
+		mainMenuFontController.AddTextElement(NewCopyPopup._cancelButton._buttonText, false);
+
+		mainMenuFontController.AddTextElement(ExistingNewPopup._labelText, false);
+		mainMenuFontController.AddTextElement(ExistingNewPopup._confirmButton1._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewPopup._confirmButton2._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewPopup._cancelButton._buttonText, false);
 	}
 
 	private void Disconnect()
@@ -492,23 +545,31 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		var doesSingleplayerSaveExist = profile.gameSave.loopCount > 1;
 		var doesMultiplayerSaveExist = profile.multiplayerGameSave.loopCount > 1;
 
-		if (!doesSingleplayerSaveExist)
+		if (doesSingleplayerSaveExist && doesMultiplayerSaveExist)
 		{
-			DebugLog.DebugWrite("No singleplayer save exists.");
-			if (!doesMultiplayerSaveExist)
-			{
-				DebugLog.DebugWrite("No saves exist.");
-				Host(true);
-				return;
-			}
-
-			DebugLog.DebugWrite("Multiplayer save exists.");
-			Host(false);
-			return;
+			DebugLog.DebugWrite($"CASE 1 - Both singleplayer and multiplayer saves exist.");
+			// ask if we want to use the existing multiplayer save,
+			// start a new multiplayer save, or copy the singleplayer save
+			ExistingNewCopyPopup.EnableMenu(true);
 		}
-
-		DebugLog.DebugWrite("A singleplayer save exists.");
-		HostGameTypePopup.EnableMenu(true);
+		else if (doesSingleplayerSaveExist && !doesMultiplayerSaveExist)
+		{
+			DebugLog.DebugWrite($"CASE 2 - Only a singleplayer save exists.");
+			// ask if we want to start a new multiplayer save or copy the singleplayer save
+			NewCopyPopup.EnableMenu(true);
+		}
+		else if (!doesSingleplayerSaveExist && doesMultiplayerSaveExist)
+		{
+			DebugLog.DebugWrite($"CASE 3 - Only multiplayer save exists.");
+			// ask if we want to use the existing multiplayer save or start a new one
+			ExistingNewPopup.EnableMenu(true);
+		}
+		else if (!doesSingleplayerSaveExist && !doesMultiplayerSaveExist)
+		{
+			DebugLog.DebugWrite($"CASE 4 - Neither a singleplayer or a multiplayer save exists.");
+			// create a new multiplayer save - nothing to copy or load
+			Host(true);
+		}
 	}
 
 	private void Host(bool newMultiplayerSave)

@@ -13,6 +13,8 @@ public class Translation
 	public string ProductUserID;
 	public string Connect;
 	public string Cancel;
+	public string HostExistingOrNewOrCopy;
+	public string HostNewOrCopy;
 	public string HostExistingOrNew;
 	public string ExistingSave;
 	public string NewSave;
