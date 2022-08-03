@@ -17,12 +17,12 @@ public class TriggerInitialStateMessage : QSBWorldObjectMessage<IQSBTrigger, uin
 	public override void OnReceiveRemote()
 	{
 		var serverOccupants = Data.Select(QSBPlayerManager.GetPlayer).ToList();
-		foreach (var added in serverOccupants.Except(WorldObject.Occupants))
+		foreach (var added in serverOccupants.Except(WorldObject.Occupants).ToList())
 		{
 			WorldObject.Enter(added);
 		}
 
-		foreach (var removed in WorldObject.Occupants.Except(serverOccupants))
+		foreach (var removed in WorldObject.Occupants.Except(serverOccupants).ToList())
 		{
 			WorldObject.Exit(removed);
 		}
