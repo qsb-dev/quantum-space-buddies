@@ -9,7 +9,6 @@ using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
 using QSB.Utility;
-using QSB.WorldSync;
 using System;
 using UnityEngine;
 
@@ -129,9 +128,10 @@ public class WakeUpSync : NetworkBehaviour
 			}
 			else
 			{
+				// dont bother sleeping, just instantly wake up
 				if (!_hasWokenUp)
 				{
-					Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
+					WakeUp();
 				}
 			}
 		}
@@ -162,7 +162,7 @@ public class WakeUpSync : NetworkBehaviour
 		var myTime = Time.timeSinceLevelLoad;
 		var diff = myTime - _serverTime;
 
-		if (ServerStateManager.Instance.GetServerState() is not ServerState.InSolarSystem and not ServerState.InEye)
+		if (ServerStateManager.Instance.GetServerState() is not (ServerState.InSolarSystem or ServerState.InEye))
 		{
 			return;
 		}
@@ -170,12 +170,14 @@ public class WakeUpSync : NetworkBehaviour
 		if (diff > PauseOrFastForwardThreshold)
 		{
 			StartPausing(PauseReason.TooFarAhead);
-			return;
 		}
-
-		if (diff < -PauseOrFastForwardThreshold)
+		else if (diff < -PauseOrFastForwardThreshold)
 		{
 			StartFastForwarding(FastForwardReason.TooFarBehind);
+		}
+		else
+		{
+			WakeUp();
 		}
 	}
 
@@ -422,7 +424,7 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		var diff = GetTimeDifference();
 
-		if (diff is > PauseOrFastForwardThreshold or < (-PauseOrFastForwardThreshold))
+		if (diff is > PauseOrFastForwardThreshold or < -PauseOrFastForwardThreshold)
 		{
 			WakeUpOrSleep();
 			return;
