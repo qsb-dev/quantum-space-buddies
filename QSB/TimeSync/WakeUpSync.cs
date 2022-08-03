@@ -9,6 +9,7 @@ using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using UnityEngine;
 
@@ -128,10 +129,10 @@ public class WakeUpSync : NetworkBehaviour
 			}
 			else
 			{
-				// dont bother sleeping, just instantly wake up
+				// dont bother sleeping, just wake up
 				if (!_hasWokenUp)
 				{
-					WakeUp();
+					Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
 				}
 			}
 		}
@@ -177,7 +178,8 @@ public class WakeUpSync : NetworkBehaviour
 		}
 		else
 		{
-			WakeUp();
+			// should only happen from Init so we gotta wait
+			Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
 		}
 	}
 
@@ -252,9 +254,6 @@ public class WakeUpSync : NetworkBehaviour
 		}
 	}
 
-	/// <summary>
-	/// BUG: nre's but it seems to be okay? do further testing
-	/// </summary>
 	private void WakeUp()
 		=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().WakeUp();
 
