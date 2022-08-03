@@ -179,7 +179,10 @@ public class WakeUpSync : NetworkBehaviour
 		else
 		{
 			// should only happen from Init so we gotta wait
-			Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
+			if (!_hasWokenUp)
+			{
+				Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
+			}
 		}
 	}
 
