@@ -252,6 +252,9 @@ public class WakeUpSync : NetworkBehaviour
 		}
 	}
 
+	/// <summary>
+	/// BUG: nre's but it seems to be okay? do further testing
+	/// </summary>
 	private void WakeUp()
 		=> Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().WakeUp();
 
