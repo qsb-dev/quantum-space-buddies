@@ -12,7 +12,7 @@ internal class BurnSlideReelMessage : QSBWorldObjectMessage<QSBSlideReelItem, in
 
 	public override void OnReceiveRemote()
 	{
-		var campfire = QSBWorldSync.GetWorldObject<QSBCampfire>(Data).AttachedObject;
+		var campfire = Data.GetWorldObject<QSBCampfire>().AttachedObject;
 		var fromPlayer = QSBPlayerManager.GetPlayer(From);
 		WorldObject.DropItem(
 			campfire._burnedSlideReelSocket.position,
