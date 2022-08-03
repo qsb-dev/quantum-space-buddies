@@ -11,6 +11,6 @@ internal class QSBGhostNodeMap : WorldObject<GhostNodeMap>
 {
 	public override void SendInitialState(uint to)
 	{
-
+		// todo SendInitialState??
 	}
 }

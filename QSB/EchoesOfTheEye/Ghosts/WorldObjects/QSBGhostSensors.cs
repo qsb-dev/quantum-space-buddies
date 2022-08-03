@@ -15,7 +15,7 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 {
 	public override void SendInitialState(uint to)
 	{
-
+		// todo SendInitialState
 	}
 
 	public override string ReturnLabel() => "";

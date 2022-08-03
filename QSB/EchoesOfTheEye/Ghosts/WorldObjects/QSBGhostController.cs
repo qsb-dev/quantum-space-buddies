@@ -17,7 +17,7 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 {
 	public override void SendInitialState(uint to)
 	{
-
+		// todo SendInitialState
 	}
 
 	public QSBGhostEffects _effects;

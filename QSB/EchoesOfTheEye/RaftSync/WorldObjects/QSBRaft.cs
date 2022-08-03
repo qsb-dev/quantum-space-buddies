@@ -52,9 +52,4 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 			NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
 		}
 	}
-
-	public override void SendInitialState(uint to)
-	{
-		// not really needed. things work fine without it
-	}
 }

@@ -21,7 +21,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public override void SendInitialState(uint to)
 	{
-
+		// todo SendInitialState
 	}
 
 	public override async UniTask Init(CancellationToken ct)

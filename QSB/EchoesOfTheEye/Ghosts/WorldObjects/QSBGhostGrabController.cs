@@ -11,7 +11,7 @@ public class QSBGhostGrabController : WorldObject<GhostGrabController>
 {
 	public override void SendInitialState(uint to)
 	{
-
+		// todo SendInitialState
 	}
 
 	public void GrabPlayer(float speed, GhostPlayer player, bool remote = false)

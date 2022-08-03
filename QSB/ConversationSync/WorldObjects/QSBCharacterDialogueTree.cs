@@ -11,6 +11,6 @@ public class QSBCharacterDialogueTree : WorldObject<CharacterDialogueTree>
 {
 	public override void SendInitialState(uint to)
 	{
-		// todo : implement this
+		// todo : implement this??? does it need it?
 	}
 }
