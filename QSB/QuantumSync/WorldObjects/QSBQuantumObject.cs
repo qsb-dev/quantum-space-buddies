@@ -12,6 +12,9 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects;
 
+/// <summary>
+/// TODO: just use OnSectorOccupantsUpdated instead of this shape bullshit
+/// </summary>
 internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 	where T : QuantumObject
 {
