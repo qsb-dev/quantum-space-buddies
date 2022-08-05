@@ -5,6 +5,7 @@ using QSB.ModelShip.TransformSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Threading;
+using UnityEngine;
 
 namespace QSB.ModelShip;
 
@@ -15,6 +16,13 @@ internal class ModelShipManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
+		var remoteFlight = Resources.FindObjectsOfTypeAll<RemoteFlightConsole>();
+		if (remoteFlight == null)
+		{
+			DebugLog.ToConsole($"Error - Couldn't find model ship!", MessageType.Error);
+			return;
+		}
+
 		if (QSBCore.IsHost)
 		{
 			Instantiate(QSBNetworkManager.singleton.ModelShipPrefab).SpawnWithServerAuthority();
