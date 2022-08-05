@@ -89,17 +89,6 @@ internal class ShipManager : WorldObjectManager
 
 		if (QSBCore.IsHost)
 		{
-			if (ShipTransformSync.LocalInstance != null)
-			{
-				if (ShipTransformSync.LocalInstance.gameObject == null)
-				{
-					DebugLog.ToConsole($"Warning - ShipTransformSync's LocalInstance is not null, but it's gameobject is null!", MessageType.Warning);
-					return;
-				}
-
-				NetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
-			}
-
 			if (QSBPlayerManager.LocalPlayer.TransformSync == null)
 			{
 				DebugLog.ToConsole($"Error - Tried to spawn ship, but LocalPlayer's TransformSync is null!", MessageType.Error);
@@ -115,7 +104,7 @@ internal class ShipManager : WorldObjectManager
 		_shipCustomAttach.transform.SetParent(shipBody.transform, false);
 		_shipCustomAttach.AddComponent<ShipCustomAttach>();
 
-		QSBWorldSync.Init<QSBShipLight, ShipLight>(new List<ShipLight>()
+		QSBWorldSync.Init<QSBShipLight, ShipLight>(new[]
 		{
 			CockpitController._headlight,
 			CockpitController._landingLight,
@@ -134,7 +123,24 @@ internal class ShipManager : WorldObjectManager
 		QSBWorldSync.Init<QSBShipDetachableLeg, ShipDetachableLeg>();
 	}
 
-	public override void UnbuildWorldObjects() => Destroy(_shipCustomAttach);
+	public override void UnbuildWorldObjects()
+	{
+		if (QSBCore.IsHost)
+		{
+			if (ShipTransformSync.LocalInstance != null)
+			{
+				if (ShipTransformSync.LocalInstance.gameObject == null)
+				{
+					DebugLog.ToConsole($"Warning - ShipTransformSync's LocalInstance is not null, but it's gameobject is null!", MessageType.Warning);
+					return;
+				}
+
+				NetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
+			}
+		}
+
+		Destroy(_shipCustomAttach);
+	}
 
 	public void AddPlayerToShip(PlayerInfo player)
 	{
