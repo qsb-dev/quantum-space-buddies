@@ -17,6 +17,14 @@ internal class ModelShipManager : WorldObjectManager
 	{
 		if (QSBCore.IsHost)
 		{
+			Instantiate(QSBNetworkManager.singleton.ModelShipPrefab).SpawnWithServerAuthority();
+		}
+	}
+
+	public override void UnbuildWorldObjects()
+	{
+		if (QSBCore.IsHost)
+		{
 			if (ModelShipTransformSync.LocalInstance != null)
 			{
 				if (ModelShipTransformSync.LocalInstance.gameObject == null)
@@ -27,8 +35,6 @@ internal class ModelShipManager : WorldObjectManager
 
 				NetworkServer.Destroy(ModelShipTransformSync.LocalInstance.gameObject);
 			}
-
-			Instantiate(QSBNetworkManager.singleton.ModelShipPrefab).SpawnWithServerAuthority();
 		}
 	}
 }
