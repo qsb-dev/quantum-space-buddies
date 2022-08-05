@@ -301,7 +301,7 @@ public class WakeUpSync : NetworkBehaviour
 
 		if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.WaitingForAllPlayersToBeReady)
 		{
-			if (clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem)
+			if ((clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem) || (clientState == ClientState.AliveInEye && serverState == ServerState.InEye))
 			{
 				ResetTimeScale();
 			}
