@@ -1,9 +1,7 @@
 ﻿using OWML.Common;
 using OWML.Logging;
-using QSB.WorldSync;
 using System.Diagnostics;
 using System.Linq;
-using UnityEngine;
 
 namespace QSB.Utility;
 
@@ -19,7 +17,7 @@ public static class DebugLog
 			message = $"[{ProcessInstanceId}] " + message;
 		}
 
-		QSBCore.Helper.Console.WriteLine(message, type, GetCallingType(new StackTrace()));
+		QSBCore.Helper.Console.WriteLine(message, type, GetCallingType());
 	}
 
 	public static void ToHud(string message)
@@ -44,7 +42,7 @@ public static class DebugLog
 		if (QSBCore.Helper == null)
 		{
 			// yes i know this is only meant for OWML, but it's useful as a backup
-			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType(new StackTrace()));
+			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType());
 			return;
 		}
 
@@ -54,8 +52,9 @@ public static class DebugLog
 		}
 	}
 
-	private static string GetCallingType(StackTrace frame) =>
-		frame.GetFrames()!
+	private static string GetCallingType() =>
+		new StackTrace(2) // skip this function and calling function
+			.GetFrames()!
 			.Select(x => x.GetMethod().DeclaringType!.Name)
 			.First(x => x != nameof(DebugLog));
 }
