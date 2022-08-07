@@ -2,6 +2,8 @@
 using OWML.Logging;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace QSB.Utility;
 
@@ -55,6 +57,7 @@ public static class DebugLog
 	private static string GetCallingType() =>
 		new StackTrace(2) // skip this function and calling function
 			.GetFrames()!
-			.Select(x => x.GetMethod().DeclaringType!.Name)
-			.First(x => x != nameof(DebugLog));
+			.Select(x => x.GetMethod().DeclaringType!)
+			.First(x => x != typeof(DebugLog) && !x.IsDefined(typeof(CompilerGeneratedAttribute)))
+			.Name;
 }

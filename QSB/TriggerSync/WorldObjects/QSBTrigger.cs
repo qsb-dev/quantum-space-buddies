@@ -52,6 +52,8 @@ public abstract class QSBTrigger<TO> : WorldObject<OWTriggerVolume>, IQSBTrigger
 		QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 	}
 
+	private void OnPlayerLeave(PlayerInfo player) => Exit(player);
+
 	public override void SendInitialState(uint to) =>
 		((IQSBTrigger)this).SendMessage(new TriggerInitialStateMessage(Occupants) { To = to });
 
@@ -68,14 +70,6 @@ public abstract class QSBTrigger<TO> : WorldObject<OWTriggerVolume>, IQSBTrigger
 		if (hitObj.CompareTag(CompareTag))
 		{
 			((IQSBTrigger)this).SendMessage(new TriggerMessage(false));
-		}
-	}
-
-	private void OnPlayerLeave(PlayerInfo player)
-	{
-		if (Occupants.Contains(player))
-		{
-			Exit(player);
 		}
 	}
 
