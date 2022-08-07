@@ -18,7 +18,6 @@ internal class TitleScreenManagerPatchesCommon : QSBPatch
 	[HarmonyPatch(nameof(TitleScreenManager.Awake))]
 	public static bool Awake(TitleScreenManager __instance)
 	{
-		DebugLog.DebugWrite($"AWAKE");
 		__instance._profileManager = QSBCore.ProfileManager;
 		__instance._profileManager.PreInitialize();
 		LoadManager.OnStartSceneLoad += __instance.OnStartSceneLoad;

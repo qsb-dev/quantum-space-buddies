@@ -106,8 +106,6 @@ public class QSBCore : ModBehaviour
 
 	public void Awake()
 	{
-		DebugLog.DebugWrite($"Awake of QSB.");
-
 		EpicRerouter.ModSide.Interop.Go();
 
 		// no, we cant localize this - languages are loaded after the splash screen

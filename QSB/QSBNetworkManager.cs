@@ -168,13 +168,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 					if (currentProfile == null)
 					{
 						// probably havent created a profile yet
-						DebugLog.DebugWrite($"waiting until profile exists");
 						Delay.RunWhen(() => QSBStandaloneProfileManager.SharedInstance.currentProfile != null, () => InitPlayerName());
 						return;
 					}
 
 					PlayerName = currentProfile.profileName;
-					DebugLog.DebugWrite($"Set player name to {PlayerName}");
 				}
 			}
 			catch (Exception ex)

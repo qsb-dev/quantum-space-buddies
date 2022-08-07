@@ -101,7 +101,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	public void PreInitialize()
 	{
-		DebugLog.DebugWrite($"PreInitialize");
 		_fileOpsBusyLocks = 0;
 		_pendingGameSave = null;
 		_pendingSettingsSave = null;
@@ -111,7 +110,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	public void Initialize()
 	{
-		DebugLog.DebugWrite($"Initialize");
 		_profilesPath = Application.persistentDataPath + _saveDirectory;
 		_profileBackupPath = Application.persistentDataPath + _backupDirectory;
 		_profileTempPath = Application.persistentDataPath + _tempDirectory;
@@ -131,7 +129,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	public void InitializeForEditor()
 	{
-		DebugLog.DebugWrite($"InitializeForEditor");
 		_profilesPath = Application.persistentDataPath + _saveDirectory;
 		_profileBackupPath = Application.persistentDataPath + _backupDirectory;
 		_profileTempPath = Application.persistentDataPath + _tempDirectory;
@@ -171,7 +168,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private void MarkBusyWithFileOps(bool isBusy)
 	{
-		DebugLog.DebugWrite($"MarkBusyWithFileOps:{isBusy}");
 		if (isBusy)
 		{
 			_fileOpsBusyLocks++;
@@ -189,7 +185,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	public void PerformPendingSaveOperation()
 	{
-		DebugLog.DebugWrite($"PerformPendingSaveOperation");
 		if (!isBusyWithFileOps && !LoadManager.IsBusy())
 		{
 			TrySaveProfile(currentProfile, _pendingGameSave, _pendingSettingsSave, _pendingGfxSettingsSave, _pendingInputJSONSave);
@@ -202,10 +197,8 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	public void SaveGame(GameSave gameSave, SettingsSave settSave, GraphicSettings graphicSettings, string inputBindings)
 	{
-		DebugLog.DebugWrite($"SaveGame");
 		if (isBusyWithFileOps || LoadManager.IsBusy())
 		{
-			DebugLog.DebugWrite($"Set pending save operation.");
 			_pendingGameSave = gameSave;
 			_pendingSettingsSave = settSave;
 			_pendingGfxSettingsSave = graphicSettings;
@@ -218,7 +211,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private void InitializeProfileData()
 	{
-		DebugLog.DebugWrite($"InitializeProfileData");
 		LoadProfiles();
 		currentProfile = mostRecentProfile;
 		if (currentProfile != null)
@@ -238,7 +230,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private void LoadSaveFilesFromProfiles()
 	{
-		DebugLog.DebugWrite($"LoadSaveFilesFromProfiles");
 		MarkBusyWithFileOps(isBusy: true);
 		foreach (var profile in profiles)
 		{
@@ -319,7 +310,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private bool TryLoadSaveData<T>(ref Stream stream, string fileName, DirectoryInfo directoryInfo, out T saveData)
 	{
-		DebugLog.DebugWrite($"TryLoadSaveData");
 		saveData = default;
 		var flag = true;
 		var files = directoryInfo.GetFiles(fileName);
@@ -345,7 +335,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private bool TryLoadInputBindingsSave(ref Stream stream, DirectoryInfo directoryInfo, out string inputJSON)
 	{
-		DebugLog.DebugWrite($"TryLoadInputBindingsSave");
 		inputJSON = null;
 		var result = true;
 		var files = directoryInfo.GetFiles(_inputActionsSettingsFilename);
@@ -369,7 +358,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private bool TryOpenFile(string fullPath, ref Stream dataStream)
 	{
-		DebugLog.DebugWrite($"TryOpenFile");
 		bool result;
 		try
 		{
@@ -387,7 +375,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private bool TryDeserializeBinary<T>(Stream dataStream, out T saveData)
 	{
-		DebugLog.DebugWrite($"TryDeserializeBinary");
 		bool result;
 		try
 		{
@@ -415,7 +402,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private bool TryDeserializeJson<T>(JsonTextReader jsonReader, out T rebindingData)
 	{
-		DebugLog.DebugWrite($"TryDeserializeJson");
 		bool result;
 		try
 		{
@@ -482,7 +468,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private void LoadProfiles()
 	{
-		DebugLog.DebugWrite($"LoadProfiles");
 		MarkBusyWithFileOps(true);
 		profiles.Clear();
 		if (Directory.Exists(_profilesPath))
@@ -651,7 +636,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 
 	private bool TrySaveProfile(QSBProfileData profileData, GameSave gameSave, SettingsSave settingsSave, GraphicSettings graphicsSettings, string inputJson)
 	{
-		DebugLog.DebugWrite($"TRY SAVE PROFILE - null checks - pd:{profileData == null}, gameSave:{gameSave == null}, settingsSave:{settingsSave == null}, graphicsSettings:{graphicsSettings == null}");
 		MarkBusyWithFileOps(isBusy: true);
 		var profilePath = _profilesPath + "/" + profileData.profileName;
 		var profileManifestPath = _profilesPath + "/" + profileData.profileName + ".owprofile";
@@ -676,13 +660,10 @@ internal class QSBStandaloneProfileManager : IProfileManager
 		var backupGraphicsPath = backupProfilePath + "/" + _gfxSettingsFilename;
 		var backupInputsPath = backupProfilePath + "/" + _inputActionsSettingsFilename;
 
-		DebugLog.DebugWrite($"pre try-catch block");
-
 		Stream stream = null;
 		try
 		{
 			// Create folders if they don't exist
-			DebugLog.DebugWrite($"Creating folders if they don't exist");
 
 			if (!Directory.Exists(_profilesPath))
 			{
@@ -715,7 +696,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 			}
 
 			// create temp files
-			DebugLog.DebugWrite($"Creating temp files");
 
 			SaveData(tempProfileManifestPath, profileData);
 			if (gameSave != null)
@@ -747,7 +727,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 			}
 
 			// create backups of old files
-			DebugLog.DebugWrite($"Creating backups of old files");
 
 			if (File.Exists(saveDataPath))
 			{
@@ -775,7 +754,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 			}
 
 			// delete old files and move temp files
-			DebugLog.DebugWrite($"Delete old files and move temp files");
 
 			File.Delete(profileManifestPath);
 			File.Move(tempProfileManifestPath, profileManifestPath);
@@ -812,7 +790,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 				File.Move(tempInputsPath, inputsPath);
 			}
 
-			DebugLog.DebugWrite("Wrote save data to file for " + profileData.profileName);
 			OnProfileDataSaved?.Invoke(true);
 		}
 		catch (Exception ex)
