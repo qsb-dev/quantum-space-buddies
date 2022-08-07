@@ -134,7 +134,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
 		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalization.Current.Connect), new ScreenPrompt(QSBLocalization.Current.Cancel), false);
 		ConnectPopup.SetInputFieldPlaceholderText(text);
-		ExistingNewCopyPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNew,
+		ExistingNewCopyPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNewOrCopy,
 			InputLibrary.menuConfirm,
 			InputLibrary.confirm2,
 			InputLibrary.signalscope,
@@ -370,7 +370,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		TwoButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
 		TwoButtonInfoPopup.OnPopupCancel += () => OnCloseInfoPopup(false);
 
-		ExistingNewCopyPopup = CreateFourChoicePopup(QSBLocalization.Current.HostExistingOrNew,
+		ExistingNewCopyPopup = CreateFourChoicePopup(QSBLocalization.Current.HostExistingOrNewOrCopy,
 			QSBLocalization.Current.ExistingSave,
 			QSBLocalization.Current.NewSave,
 			QSBLocalization.Current.CopySave,
@@ -381,7 +381,18 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		{
 			DebugLog.DebugWrite("Replacing multiplayer save with singleplayer save");
 			QSBCore.IsInMultiplayer = true;
-			StandaloneProfileManager.SharedInstance.SaveGame(QSBProfileManager._currentProfile.gameSave, null, null, null);
+
+			if (QSBCore.IsStandalone)
+			{
+				var currentProfile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+				QSBStandaloneProfileManager.SharedInstance.SaveGame(currentProfile.gameSave, null, null, null);
+			}
+			else
+			{
+				var gameSave = QSBMSStoreProfileManager.SharedInstance.currentProfileGameSave;
+				QSBMSStoreProfileManager.SharedInstance.SaveGame(gameSave, null, null, null);
+			}
+
 			Host(false);
 		};
 
@@ -394,7 +405,18 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		{
 			DebugLog.DebugWrite("Replacing multiplayer save with singleplayer save");
 			QSBCore.IsInMultiplayer = true;
-			StandaloneProfileManager.SharedInstance.SaveGame(QSBProfileManager._currentProfile.gameSave, null, null, null);
+
+			if (QSBCore.IsStandalone)
+			{
+				var currentProfile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+				QSBStandaloneProfileManager.SharedInstance.SaveGame(currentProfile.gameSave, null, null, null);
+			}
+			else
+			{
+				var gameSave = QSBMSStoreProfileManager.SharedInstance.currentProfileGameSave;
+				QSBMSStoreProfileManager.SharedInstance.SaveGame(gameSave, null, null, null);
+			}
+
 			Host(false);
 		};
 
@@ -544,9 +566,20 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void PreHost()
 	{
-		var profile = QSBProfileManager._currentProfile;
-		var doesSingleplayerSaveExist = profile.gameSave.loopCount > 1;
-		var doesMultiplayerSaveExist = profile.multiplayerGameSave.loopCount > 1;
+		bool doesSingleplayerSaveExist = false;
+		bool doesMultiplayerSaveExist = false;
+		if (!QSBCore.IsStandalone)
+		{
+			var manager = QSBMSStoreProfileManager.SharedInstance;
+			doesSingleplayerSaveExist = manager.currentProfileGameSave.loopCount > 1;
+			doesMultiplayerSaveExist = manager.currentProfileMultiplayerGameSave.loopCount > 1;
+		}
+		else
+		{
+			var profile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+			doesSingleplayerSaveExist = profile.gameSave.loopCount > 1;
+			doesMultiplayerSaveExist = profile.multiplayerGameSave.loopCount > 1;
+		}
 
 		if (doesSingleplayerSaveExist && doesMultiplayerSaveExist)
 		{
@@ -587,8 +620,16 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		else
 		{
 			DebugLog.DebugWrite("Loading multiplayer game...");
-			var profile = QSBProfileManager._currentProfile;
-			PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
+			if (QSBCore.IsStandalone)
+			{
+				var profile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+				PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
+			}
+			else
+			{
+				var manager = QSBMSStoreProfileManager.SharedInstance;
+				PlayerData.Init(manager.currentProfileMultiplayerGameSave, manager.currentProfileGameSettings, manager.currentProfileGraphicsSettings, manager.currentProfileInputJSON);
+			}
 		}
 
 		_intentionalDisconnect = false;
@@ -629,8 +670,16 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		QSBCore.IsInMultiplayer = true;
 		_intentionalDisconnect = false;
 
-		var profile = QSBProfileManager._currentProfile;
-		PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
+		if (QSBCore.IsStandalone)
+		{
+			var profile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+			PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
+		}
+		else
+		{
+			var manager = QSBMSStoreProfileManager.SharedInstance;
+			PlayerData.Init(manager.currentProfileMultiplayerGameSave, manager.currentProfileGameSettings, manager.currentProfileGraphicsSettings, manager.currentProfileInputJSON);
+		}
 
 		var address = ConnectPopup.GetInputText();
 		if (address == string.Empty)
