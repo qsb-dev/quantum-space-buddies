@@ -102,7 +102,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		base.Awake();
 
 		InitPlayerName();
-		StandaloneProfileManager.SharedInstance.OnProfileSignInComplete += _ => InitPlayerName();
+		QSBCore.ProfileManager.OnProfileSignInComplete += _ => InitPlayerName();
 
 		playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
 		playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", 1.ToGuid().ToString("N"));
@@ -157,15 +157,22 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			try
 			{
-				var titleScreenManager = FindObjectOfType<TitleScreenManager>();
-				var profileManager = titleScreenManager._profileManager;
-				if (profileManager.GetType().Name == "MSStoreProfileManager")
+				if (!QSBCore.IsStandalone)
 				{
-					PlayerName = (string)profileManager.GetType().GetProperty("userDisplayName").GetValue(profileManager);
+					PlayerName = QSBMSStoreProfileManager.SharedInstance.userDisplayName;
 				}
 				else
 				{
-					PlayerName = QSBProfileManager._currentProfile.profileName;
+					var currentProfile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+
+					if (currentProfile == null)
+					{
+						// probably havent created a profile yet
+						Delay.RunWhen(() => QSBStandaloneProfileManager.SharedInstance.currentProfile != null, () => InitPlayerName());
+						return;
+					}
+
+					PlayerName = currentProfile.profileName;
 				}
 			}
 			catch (Exception ex)
