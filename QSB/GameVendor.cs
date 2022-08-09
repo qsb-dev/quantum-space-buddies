@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace QSB.Patches;
+namespace QSB;
 
 [Flags]
-public enum PatchVendor 
+public enum GameVendor 
 { 
 	None = 0,
 	Epic = 1,

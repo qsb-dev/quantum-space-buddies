@@ -8,7 +8,7 @@ public abstract class QSBPatch
 {
 	public abstract QSBPatchTypes Type { get; }
 
-	public virtual PatchVendor PatchVendor => PatchVendor.Epic | PatchVendor.Steam | PatchVendor.Gamepass;
+	public virtual GameVendor PatchVendor => GameVendor.Epic | GameVendor.Steam | GameVendor.Gamepass;
 
 	public void DoPatches(Harmony instance) => instance.PatchAll(GetType());
 
