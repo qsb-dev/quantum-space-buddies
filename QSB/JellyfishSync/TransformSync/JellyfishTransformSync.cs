@@ -84,6 +84,7 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 		AttachedRigidbody.SetRotation(ReferenceTransform.FromRelRot(transform.rotation));
 		AttachedRigidbody.SetVelocity(ReferenceRigidbody.FromRelVel(Velocity, pos));
 		AttachedRigidbody.SetAngularVelocity(ReferenceRigidbody.FromRelAngVel(AngularVelocity));
+		DebugLog.DebugWrite($"{this} APPLY TO ATTACHED");
 	}
 
 	protected override void OnRenderObject()
