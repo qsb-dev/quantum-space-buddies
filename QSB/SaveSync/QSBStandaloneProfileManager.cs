@@ -59,9 +59,7 @@ internal class QSBStandaloneProfileManager : IProfileManager
 	public QSBProfileData currentProfile { get; private set; }
 
 	public QSBProfileData mostRecentProfile
-		=> (from profile in profiles 
-			orderby profile.lastModifiedTime descending
-			select profile).FirstOrDefault();
+		=> profiles.OrderByDescending(profile => profile.lastModifiedTime).FirstOrDefault();
 
 	public int profileNameCharacterLimit => _profileNameCharLimit;
 
