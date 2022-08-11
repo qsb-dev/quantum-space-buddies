@@ -1,5 +1,4 @@
-﻿using QSB.Animation.NPC.Messages;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.WorldSync;
 
 namespace QSB.Animation.NPC.WorldObjects;
