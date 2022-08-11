@@ -2,6 +2,7 @@
 using OWML.Common;
 using QSB.Animation.NPC.WorldObjects;
 using QSB.ConversationSync;
+using QSB.ConversationSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
@@ -92,7 +93,7 @@ public class CharacterAnimationPatches : QSBPatch
 		return false;
 
 	}
-
+	
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(FacePlayerWhenTalking), nameof(FacePlayerWhenTalking.OnStartConversation))]
 	public static bool OnStartConversation(FacePlayerWhenTalking __instance)

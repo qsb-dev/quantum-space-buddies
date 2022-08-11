@@ -31,6 +31,20 @@ public class ConversationPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
+	[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.SetEntryNode))]
+	public static bool CharacterDialogueTree_SetEntryNode(CharacterDialogueTree __instance)
+	{
+		var worldObject = __instance.GetWorldObject<QSBCharacterDialogueTree>();
+
+		if (__instance._mapDialogueNodes.TryGetValue(worldObject.OverridenCurentNodeName, out DialogueNode node))
+		{
+			__instance._currentNode = node;
+			return false;
+		}
+		return true;
+	}
+
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.EndConversation))]
 	public static bool CharacterDialogueTree_EndConversation(CharacterDialogueTree __instance)
 	{

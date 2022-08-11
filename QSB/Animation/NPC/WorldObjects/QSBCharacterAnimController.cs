@@ -6,21 +6,23 @@ namespace QSB.Animation.NPC.WorldObjects;
 
 internal class QSBCharacterAnimController : WorldObject<CharacterAnimController>
 {
+    //Not needed as by syncing the intial state of QSBCharacterDialogueTree this is automatically synced too
     public override void SendInitialState(uint to)
-        => this.SendMessage(new CharacterAnimControllerMessage(InConversation()) { To = to });
+    {
+    }
+     //   => this.SendMessage(new CharacterAnimControllerMessage(InConversation()) { To = to });
 
     public CharacterDialogueTree GetDialogueTree()
         => AttachedObject._dialogueTree;
 
-    public void SetInConversation(bool inConversation)
-    {
-        AttachedObject._inConversation = inConversation;
-        if (AttachedObject._hasTalkAnimation && AttachedObject._animator != null)
-        {
-            string animationState = inConversation ? "Talking" : "Idle";
-            AttachedObject._animator.SetTrigger(animationState);
-        }
-    }
+    //public void SetInConversation(bool inConversation)
+    //{
+    //    AttachedObject._inConversation = inConversation;
+    //    if (inConversation)
+    //        AttachedObject.OnStartConversation();
+    //    else
+    //        AttachedObject.OnEndConversation();
+    //}
 
     public bool InConversation()
         => AttachedObject._inConversation;

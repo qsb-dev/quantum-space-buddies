@@ -3,6 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.Animation.NPC.Messages;
 
+//TODO Remove this
 internal class CharacterAnimControllerMessage : QSBWorldObjectMessage<QSBCharacterAnimController, bool>
 {
 	public CharacterAnimControllerMessage(bool isInConversation) : base(isInConversation) { }
