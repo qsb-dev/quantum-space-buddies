@@ -56,7 +56,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (!_choicePopupPrefab)
 		{
-			_choicePopupPrefab = Instantiate(Resources.FindObjectsOfTypeAll<PopupMenu>().First(x => x.name == "TwoButton-Popup" && x.transform.parent.name == "PopupCanvas" && x.transform.parent.parent.name == "TitleMenu").gameObject);
+			_choicePopupPrefab = Instantiate(Resources.FindObjectsOfTypeAll<PopupMenu>().First(x => x.name == "TwoButton-Popup" && x.transform.parent?.name == "PopupCanvas" && x.transform.parent?.parent?.name == "TitleMenu").gameObject);
 			DontDestroyOnLoad(_choicePopupPrefab);
 			_choicePopupPrefab.SetActive(false);
 		}

@@ -57,13 +57,20 @@ public class ShipTransformSync : SectoredRigidbodySync
 		}
 
 		var targetPos = ReferenceTransform.FromRelPos(transform.position);
+		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
 
-		if (Time.unscaledTime >= _lastSetPositionTime + ForcePositionAfterTime)
+		if (PlayerState.IsInsideShip())
 		{
-			_lastSetPositionTime = Time.unscaledTime;
+			if (Time.unscaledTime >= _lastSetPositionTime + ForcePositionAfterTime)
+			{
+				_lastSetPositionTime = Time.unscaledTime;
 
-			var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
-
+				AttachedRigidbody.SetPosition(targetPos);
+				AttachedRigidbody.SetRotation(targetRot);
+			}
+		}
+		else
+		{
 			AttachedRigidbody.SetPosition(targetPos);
 			AttachedRigidbody.SetRotation(targetRot);
 		}
