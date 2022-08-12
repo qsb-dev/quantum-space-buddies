@@ -105,8 +105,8 @@ public class OccasionalTransformSync : UnsectoredRigidbodySync
 		_toMove.Add(new MoveData
 		{
 			Child = child,
-			RelPos = AttachedRigidbody.transform.ToRelPos(pos),
-			RelRot = AttachedRigidbody.transform.ToRelRot(child.GetRotation()),
+			RelPos = AttachedTransform.ToRelPos(pos),
+			RelRot = AttachedTransform.ToRelRot(child.GetRotation()),
 			RelVel = AttachedRigidbody.ToRelVel(child.GetVelocity(), pos),
 			RelAngVel = AttachedRigidbody.ToRelAngVel(child.GetAngularVelocity())
 		});
@@ -116,9 +116,9 @@ public class OccasionalTransformSync : UnsectoredRigidbodySync
 	{
 		foreach (var data in _toMove)
 		{
-			var pos = AttachedRigidbody.transform.FromRelPos(data.RelPos);
+			var pos = AttachedTransform.FromRelPos(data.RelPos);
 			data.Child.SetPosition(pos);
-			data.Child.SetRotation(AttachedRigidbody.transform.FromRelRot(data.RelRot));
+			data.Child.SetRotation(AttachedTransform.FromRelRot(data.RelRot));
 			data.Child.SetVelocity(AttachedRigidbody.FromRelVel(data.RelVel, pos));
 			data.Child.SetAngularVelocity(AttachedRigidbody.FromRelAngVel(data.RelAngVel));
 		}

@@ -84,14 +84,14 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 			{
 				_lastSetPositionTime = Time.unscaledTime;
 
-				var relPos = AttachedRigidbody.transform.ToRelPos(Locator.GetPlayerTransform().position);
-				var relRot = AttachedRigidbody.transform.ToRelRot(Locator.GetPlayerTransform().rotation);
+				var relPos = AttachedTransform.ToRelPos(Locator.GetPlayerTransform().position);
+				var relRot = AttachedTransform.ToRelRot(Locator.GetPlayerTransform().rotation);
 
 				AttachedRigidbody.SetPosition(targetPos);
 				AttachedRigidbody.SetRotation(targetRot);
 
-				Locator.GetPlayerTransform().position = AttachedRigidbody.transform.FromRelPos(relPos);
-				Locator.GetPlayerTransform().rotation = AttachedRigidbody.transform.FromRelRot(relRot);
+				Locator.GetPlayerTransform().position = AttachedTransform.FromRelPos(relPos);
+				Locator.GetPlayerTransform().rotation = AttachedTransform.FromRelRot(relRot);
 			}
 		}
 		else
