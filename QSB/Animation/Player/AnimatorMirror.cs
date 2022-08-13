@@ -78,16 +78,19 @@ public class AnimatorMirror : MonoBehaviour
 					_to.SetBool(fromParam.name, _from.GetBool(fromParam.name));
 					break;
 
+				case AnimatorControllerParameterType.Int:
+					_to.SetInteger(fromParam.name, _from.GetInteger(fromParam.name));
+					break;
+
 				case AnimatorControllerParameterType.Trigger:
 					if (_from.GetBool(fromParam.name) && !_to.GetBool(fromParam.name))
 					{
 						_to.SetTrigger(fromParam.name);
 					}
-
-					break;
-
-				case AnimatorControllerParameterType.Int:
-					_to.SetInteger(fromParam.name, _from.GetInteger(fromParam.name));
+					if (!_from.GetBool(fromParam.name) && _to.GetBool(fromParam.name))
+					{
+						_to.ResetTrigger(fromParam.name);
+					}
 					break;
 			}
 		}
