@@ -5,21 +5,21 @@ using QSB.Utility;
 
 namespace QSB.ConversationSync.Messages;
 
-public class ConversationStartEndMessage : QSBWorldObjectMessage<QSBCharacterDialogueTree, bool>
+public class ConversationStartEndMessage : QSBWorldObjectMessage<QSBCharacterDialogueTree, (uint playerId, bool start)>
 {
-	public ConversationStartEndMessage(bool start) : base(start) { }
+	public ConversationStartEndMessage(uint playerId, bool start) : base((playerId, start)) { }
 
 	public override void OnReceiveRemote()
 	{
-		if (Data)
+		if (Data.start)
 		{
-			QSBPlayerManager.GetPlayer(From).CurrentCharacterDialogueTree = WorldObject;
+			QSBPlayerManager.GetPlayer(Data.playerId).CurrentCharacterDialogueTree = WorldObject;
 			WorldObject.AttachedObject.GetInteractVolume().DisableInteraction();
 			WorldObject.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnStartConversation));
 		}
 		else
 		{
-			QSBPlayerManager.GetPlayer(From).CurrentCharacterDialogueTree = null;
+			QSBPlayerManager.GetPlayer(Data.playerId).CurrentCharacterDialogueTree = null;
 			WorldObject.AttachedObject.GetInteractVolume().EnableInteraction();
 			WorldObject.AttachedObject.RaiseEvent(nameof(CharacterDialogueTree.OnEndConversation));
 		}
