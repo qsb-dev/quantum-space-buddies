@@ -67,6 +67,7 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
+		QSBPatchManager.DoUnpatchType(QSBPatchTypes.RespawnTime);
 		QSBPlayerManager.ShowAllPlayers();
 		QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
 		QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);
