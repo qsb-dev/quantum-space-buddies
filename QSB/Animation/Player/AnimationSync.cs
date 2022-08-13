@@ -176,12 +176,12 @@ public class AnimationSync : PlayerSyncObject
 		// Avoids "jumping" when putting on suit
 		if (VisibleAnimator != null)
 		{
-			VisibleAnimator.SetTrigger("Grounded");
+			VisibleAnimator.SetBool("Grounded", true);
 		}
 
 		if (InvisibleAnimator != null)
 		{
-			InvisibleAnimator.SetTrigger("Grounded");
+			InvisibleAnimator.SetBool("Grounded", true);
 		}
 
 		if (NetworkAnimator == null)
