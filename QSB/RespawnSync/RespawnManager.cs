@@ -67,6 +67,7 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
+		QSBPatchManager.DoUnpatchType(QSBPatchTypes.RespawnTime);
 		QSBPlayerManager.ShowAllPlayers();
 		QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
 		QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);
@@ -138,15 +139,16 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 
 	public void OnPlayerDeath(PlayerInfo player)
 	{
+		player.IsDead = true;
+
 		if (_playersPendingRespawn.Contains(player))
 		{
 			DebugLog.ToConsole($"Warning - Received death message for player who is already in _playersPendingRespawn!", OWML.Common.MessageType.Warning);
-			return;
 		}
-
-		player.IsDead = true;
-
-		_playersPendingRespawn.Add(player);
+		else
+		{
+			_playersPendingRespawn.Add(player);
+		}
 
 		var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
 
@@ -161,15 +163,16 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 
 	public void OnPlayerRespawn(PlayerInfo player)
 	{
+		player.IsDead = false;
+
 		if (!_playersPendingRespawn.Contains(player))
 		{
 			DebugLog.ToConsole($"Warning - Received respawn message for player who is not in _playersPendingRespawn!", OWML.Common.MessageType.Warning);
-			return;
 		}
-
-		player.IsDead = false;
-
-		_playersPendingRespawn.Remove(player);
+		else
+		{
+			_playersPendingRespawn.Remove(player);
+		}
 
 		player.SetVisible(true, 1);
 	}
@@ -177,6 +180,14 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 	public void RespawnSomePlayer()
 	{
 		var playerToRespawn = _playersPendingRespawn.First();
+
+		if (!playerToRespawn.IsDead)
+		{
+			DebugLog.ToConsole($"Warning - Tried to respawn player {playerToRespawn.PlayerId} who isn't dead!", OWML.Common.MessageType.Warning);
+			_playersPendingRespawn.Remove(playerToRespawn);
+			return;
+		}
+
 		new PlayerRespawnMessage(playerToRespawn.PlayerId).Send();
 	}
 }

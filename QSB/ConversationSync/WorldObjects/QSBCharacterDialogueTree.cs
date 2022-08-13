@@ -1,4 +1,4 @@
-﻿using QSB.ConversationSync.Messages;
+using QSB.ConversationSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;

@@ -45,7 +45,7 @@ public class ConversationManager : WorldObjectManager
 		QSBWorldSync.Init<QSBCharacterDialogueTree, CharacterDialogueTree>();
 	}
 
-	public uint GetPlayerTalkingToTree(CharacterDialogueTree tree) => 
+	public uint GetPlayerTalkingToTree(CharacterDialogueTree tree) =>
 		QSBPlayerManager.PlayerList.FirstOrDefault(x => x.CurrentCharacterDialogueTree?.AttachedObject == tree)
 			?.PlayerId ?? uint.MaxValue;
 
@@ -62,7 +62,7 @@ public class ConversationManager : WorldObjectManager
 		new ConversationMessage(ConversationType.CloseCharacter, id).Send();
 
 	public void SendConvState(QSBCharacterDialogueTree tree, bool state)
-		=> tree.SendMessage(new ConversationStartEndMessage(state));
+		=> tree.SendMessage(new ConversationStartEndMessage(QSBPlayerManager.LocalPlayerId, state));
 
 	public void DisplayPlayerConversationBox(uint playerId, string text)
 	{

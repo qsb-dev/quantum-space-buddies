@@ -73,7 +73,12 @@ public class QSBCore : ModBehaviour
 		// incompatible mods
 		"Raicuparta.NomaiVR",
 		"xen.NewHorizons",
-		"Vesper.AutoResume"
+		"Vesper.AutoResume",
+		"Vesper.OuterWildsMMO",
+		"_nebula.StopTime",
+		"Leadpogrommer.PeacefulGhosts",
+		"PacificEngine.OW_Randomizer",
+		"xen.DayDream"
 	};
 
 	private static void DetermineGameVendor()

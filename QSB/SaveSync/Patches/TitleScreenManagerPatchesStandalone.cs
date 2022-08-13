@@ -42,4 +42,48 @@ internal class TitleScreenManagerPatchesStandalone : QSBPatch
 		__instance._okCancelPopup.OnPopupCancel -= __instance.OnUserCancelRestoreData;
 		return false;
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(TitleScreenManager.InitializeProfileManagerCallbacks))]
+	public static bool InitializeProfileManagerCallbacks(TitleScreenManager __instance)
+	{
+		QSBStandaloneProfileManager.SharedInstance.OnNoProfilesExist += __instance.OnNoStandaloneProfilesExist;
+		QSBStandaloneProfileManager.SharedInstance.OnUpdatePlayerProfiles += __instance.OnUpdatePlayerProfiles;
+		QSBStandaloneProfileManager.SharedInstance.OnBrokenDataExists += __instance.OnBrokenDataExists;
+
+		__instance._profileManager.OnProfileSignInStart += __instance.OnProfileSignInStart;
+		__instance._profileManager.OnProfileSignInComplete += __instance.OnProfileSignInComplete;
+		__instance._profileManager.OnProfileSignOutStart += __instance.OnProfileSignOutStart;
+		__instance._profileManager.OnProfileSignOutComplete += __instance.OnProfileSignOutComplete;
+		__instance._profileManager.OnProfileReadDone += __instance.OnProfileManagerReadDone;
+		__instance._profileManager.Initialize();
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(TitleScreenManager.OnDestroy))]
+	public static bool OnDestroy(TitleScreenManager __instance)
+	{
+		QSBStandaloneProfileManager.SharedInstance.OnNoProfilesExist -= __instance.OnNoStandaloneProfilesExist;
+		QSBStandaloneProfileManager.SharedInstance.OnUpdatePlayerProfiles -= __instance.OnUpdatePlayerProfiles;
+		QSBStandaloneProfileManager.SharedInstance.OnBrokenDataExists -= __instance.OnBrokenDataExists;
+
+		__instance._profileManager.OnProfileSignInStart -= __instance.OnProfileSignInStart;
+		__instance._profileManager.OnProfileSignInComplete -= __instance.OnProfileSignInComplete;
+		__instance._profileManager.OnProfileSignOutStart -= __instance.OnProfileSignOutStart;
+		__instance._profileManager.OnProfileSignOutComplete -= __instance.OnProfileSignOutComplete;
+		__instance._profileManager.OnProfileReadDone -= __instance.OnProfileManagerReadDone;
+		LoadManager.OnStartSceneLoad -= __instance.OnStartSceneLoad;
+		LoadManager.OnCompleteSceneLoad -= __instance.OnCompleteSceneLoad;
+		TextTranslation.Get().OnLanguageChanged -= __instance.OnLanguageChanged;
+		__instance._newGameAction.OnSubmitAction -= __instance.OnNewGameSubmit;
+		__instance._newGameAction.OnPostSetupPopup -= __instance.OnNewGameSetupPopup;
+		__instance._resetGameAction.OnSubmitAction -= __instance.OnResetGameSubmit;
+		__instance._accountPickerSubmitAction.OnAccountPickerSubmitEvent -= __instance.OnAccountPickerSubmitEvent;
+		MenuStackManager.SharedInstance.OnMenuPush -= __instance.OnMenuPush;
+		MenuStackManager.SharedInstance.OnMenuPop -= __instance.OnMenuPop;
+
+		return false;
+	}
 }

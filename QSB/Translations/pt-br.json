@@ -1,0 +1,121 @@
+{
+  "Language": "PORTUGUESE_BR",
+  "MainMenuHost": "ABRIR PARA MULTIJOGADORES",
+  "MainMenuConnect": "CONECTAR PARA JOGO DE MULTIJOGADORES",
+  "PauseMenuDisconnect": "DESCONECTAR",
+  "PauseMenuStopHosting": "PARAR DE HOSPEDAR",
+  "PublicIPAddress": "Endereço de IP Público\n\n(O DADOS DO SEU SAVE DE MULTIJOGADORES SERÃO SOBRESCRITOS)",
+  "ProductUserID": "ID de Produto de Usuário\n\n(O DADOS DO SEU SAVE DE MULTIJOGADORES SERÃO SOBRESCRITOS)",
+  "Connect": "CONECTAR",
+  "Cancel": "CANCELAR",
+  "HostExistingOrNewOrCopy": "Você quer hospedar uma expedição de multijogadores pré-existente, hospedar uma nova expedição, ou copiar a já existente expedição do seu save para multiplos jogadores?",
+  "HostNewOrCopy": "Você quer hospedar uma nova expedição, ou copiar a já existente expedição do seu save para multiplos jogadores?",
+  "HostExistingOrNew": "Você quer hospedar uma expedição de multijogadores pré-existente, ou hospedar uma nova expedição?",
+  "ExistingSave": "SAVE PRÉ-EXISTENTE",
+  "NewSave": "NOVO SAVE",
+  "CopySave": "COPIAR SAVE",
+  "DisconnectAreYouSure": "Você tem certeza que quer desconectar?\nEssa ação irá de enviar de volta ao menu principal.",
+  "Yes": "SIM",
+  "No": "NÃO",
+  "StopHostingAreYouSure": "Você tem certeza que quer parar de hospedar\nEssa ação irá de desconectar os jogadores conectados e eviará todos de volta ao menu principal.",
+  "CopyProductUserIDToClipboard": "Hospedando servidor.\nOutros jogadores poderão se conectar usando o seu ID de produto de usuário, o qual é :\n{0}\nVocê quer copia-lo para a área de transferência?",
+  "Connecting": "CONECTANDO...",
+  "OK": "OK",
+  "ServerRefusedConnection": "Servidor recusou a conexão.\n{0}",
+  "ClientDisconnectWithError": "Cliente desconectou com um erro!\n{0}",
+  "QSBVersionMismatch": "As versão do QSB não correspondem. (Cliente:{0}, Servidor:{1})",
+  "OWVersionMismatch": "As versão de Outer Wilds não correspondem. (Cliente:{0}, Servidor:{1})",
+  "DLCMismatch": "O estado da instalação da DLC não correspondem. (Cliente:{0}, Servidor:{1})",
+  "GameProgressLimit": "O jogo progrediu além do limite.",
+  "AddonMismatch": "Incompatibilidade de Addons. (Cliente:{0} addons, Servidor:{1} addons)",
+  "IncompatibleMod": "Usando um mod incompativel ou não permitido. Primeiro mod encontrado foi {0}",
+  "PlayerJoinedTheGame": "{0} entrou!",
+  "PlayerWasKicked": "{0} foi expulso.",
+  "KickedFromServer": "Expulso do servidor. Motivo : {0}",
+  "RespawnPlayer": "Renascer Jogador",
+  "TimeSyncTooFarBehind": "{0}\nAvançando o tempo para corresponder com o tempo do servidor...",
+  "TimeSyncWaitingForStartOfServer": "Esperando para o servidor começar...",
+  "TimeSyncTooFarAhead": "{0}\nParando para corresponder com o tempo do servidor...",
+  "TimeSyncWaitForAllToReady": "Esperando para o começo do loop...",
+  "TimeSyncWaitForAllToDie": "Esperando para o fim do loop...",
+  "GalaxyMapEveryoneNotPresent": "Ainda não é a hora. Todos deveriam estar aqui para presenciar isso.",
+  "DeathMessages": {
+    "Default": [
+      "{0} morreu",
+      "{0} foi morto"
+    ],
+    "Impact": [
+      "{0} esqueceu de usar os retro-foguetes",
+      "{0} experienciou a inércia",
+      "{0} bateu muito forte no chão",
+      "{0} virou uma panqueca",
+      "{0} morreu no impacto",
+      "{0} impactou o chão muito forte",
+      "{0} morreu graças a brusca desaceleração"
+    ],
+    "Asphyxiation": [
+      "{0} esqueceu de respirar",
+      "{0} asfixiou",
+      "{0} moreu de asfixiação",
+      "{0} esqueceu de como respirar",
+      "{0} esqueceu de checar o seu oxigênio",
+      "{0} ficou sem ar",
+      "{0} ficou sem oxigênio",
+      "{0} não precisava de ar de qualquer maneira"
+    ],
+    "Energy": [
+      "{0} foi cozinhado"
+    ],
+    "Supernova": [
+      "{0} ficou sem tempo",
+      "{0} queimou",
+      "{0} foi cozinhado",
+      "{0} foi vaporizado",
+      "{0} perdeu a noção do tempo"
+    ],
+    "Digestion": [
+      "{0} foi comido",
+      "{0} encontrou um peixe",
+      "{0} encontrou uma horrenda criatura",
+      "{0} se meteu com o peixe errado",
+      "{0} foi digerido",
+      "{0} morreu pela digestão"
+    ],
+    "Crushed": [
+      "{0} foi esmagado",
+      "{0} foi amassado",
+      "{0} foi enterrado",
+      "{0} não saiu a tempo",
+      "{0} foi nadar na areia",
+      "{0} subestimou a areia",
+      "{0} ficou preso embaixo da areia"
+    ],
+    "Lava": [
+      "{0} morreu na lava",
+      "{0} foi derretido",
+      "{0} tentou nadar na lava",
+      "{0} caiu na lava",
+      "{0} morreu pela lava",
+      "{0} foi nadar na lava",
+      "{0} acabou queimado pela lava"
+    ],
+    "BlackHole": [
+      "{0} foi atrás de suas mamórias"
+    ],
+    "DreamExplosion": [
+      "{0} explodiu",
+      "{0} foi um dos primeiros a testar",
+      "{0} foi frito",
+      "{0} morreu graças a uma explosão",
+      "{0} usou o artefato errado"
+    ],
+    "CrushedByElevator": [
+      "{0} foi esmagado",
+      "{0} foi amassado",
+      "{0} foi esmagado por um elevador",
+      "{0} ficou embaixo de um elevador",
+      "{0} virou uma panqueca",
+      "{0} foi amassado por um elevador"
+    ]
+  }
+}
