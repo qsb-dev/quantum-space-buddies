@@ -63,7 +63,7 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 
 		_currentType = type;
 		_currentReason = reason;
-		_startTime = WakeUpSync.GetSecondsElapsed();
+		_startTime = Time.timeSinceLevelLoad;
 		enabled = true;
 		_canvas.enabled = true;
 		Canvas.willRenderCanvases += OnWillRenderCanvases;
@@ -91,7 +91,7 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 				switch ((FastForwardReason)_currentReason)
 				{
 					case FastForwardReason.TooFarBehind:
-						var totalSeconds = Mathf.Max(TargetTime - WakeUpSync.GetSecondsElapsed(), 0f);
+						var totalSeconds = Mathf.Max(TargetTime - Time.timeSinceLevelLoad, 0f);
 						var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 						var seconds = Mathf.FloorToInt(totalSeconds) % 60;
 						var milliseconds = totalSeconds % 1 * 1000;
@@ -109,7 +109,7 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 						break;
 
 					case PauseReason.TooFarAhead:
-						var totalSeconds = Mathf.Max(WakeUpSync.GetSecondsElapsed() - TargetTime, 0f);
+						var totalSeconds = Mathf.Max(Time.timeSinceLevelLoad - TargetTime, 0f);
 						var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 						var seconds = Mathf.FloorToInt(totalSeconds) % 60;
 						var milliseconds = totalSeconds % 1 * 1000;
