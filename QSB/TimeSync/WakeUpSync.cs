@@ -78,7 +78,7 @@ public class WakeUpSync : NetworkBehaviour
 
 	public float GetTimeDifference()
 	{
-		var myTime = Time.timeSinceLevelLoad;
+		var myTime = GetSecondsElapsed();
 		return myTime - _serverTime;
 	}
 
@@ -165,7 +165,7 @@ public class WakeUpSync : NetworkBehaviour
 			return;
 		}
 
-		var myTime = Time.timeSinceLevelLoad;
+		var myTime = GetSecondsElapsed();
 		var diff = myTime - _serverTime;
 
 		if (ServerStateManager.Instance.GetServerState() is not (ServerState.InSolarSystem or ServerState.InEye))
@@ -199,7 +199,7 @@ public class WakeUpSync : NetworkBehaviour
 			return;
 		}
 
-		DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
+		DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{GetSecondsElapsed()})", MessageType.Info);
 		if (Locator.GetActiveCamera() != null)
 		{
 			Locator.GetActiveCamera().enabled = false;
@@ -224,7 +224,7 @@ public class WakeUpSync : NetworkBehaviour
 			return;
 		}
 
-		DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
+		DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{GetSecondsElapsed()})", MessageType.Info);
 		Locator.GetActiveCamera().enabled = false;
 
 		//OWInput.ChangeInputMode(InputMode.None);
@@ -279,7 +279,7 @@ public class WakeUpSync : NetworkBehaviour
 
 	private void UpdateServer()
 	{
-		_serverTime = Time.timeSinceLevelLoad;
+		_serverTime = GetSecondsElapsed();
 
 		if (ServerStateManager.Instance == null)
 		{
@@ -353,7 +353,7 @@ public class WakeUpSync : NetworkBehaviour
 				Locator.GetPlayerCamera().enabled = false;
 			}
 
-			var diff = _serverTime - Time.timeSinceLevelLoad;
+			var diff = _serverTime - GetSecondsElapsed();
 			OWTime.SetTimeScale(Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff));
 
 			TimeSyncUI.TargetTime = _serverTime;
@@ -412,7 +412,7 @@ public class WakeUpSync : NetworkBehaviour
 
 		if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.TooFarAhead)
 		{
-			if (Time.timeSinceLevelLoad <= _serverTime)
+			if (GetSecondsElapsed() <= _serverTime)
 			{
 				ResetTimeScale();
 			}
@@ -420,7 +420,7 @@ public class WakeUpSync : NetworkBehaviour
 
 		if (CurrentState == State.FastForwarding && (FastForwardReason)CurrentReason == FastForwardReason.TooFarBehind)
 		{
-			if (Time.timeSinceLevelLoad >= _serverTime)
+			if (GetSecondsElapsed() >= _serverTime)
 			{
 				ResetTimeScale();
 			}
