@@ -40,6 +40,14 @@ public class PlayerTransformSync : SectoredTransformSync
 		}
 
 		_hasRanOnStartClient = true;
+		if (QSBPlayerManager.PlayerList.Any(x => x.TransformSync == this))
+		{
+			// this really shouldnt happen...
+			DebugLog.ToConsole($"Error - A PlayerInfo already exists with TransformSync {gameObject.name}", MessageType.Error);
+			Destroy(this);
+			return;
+		}
+
 		var player = new PlayerInfo(this);
 		QSBPlayerManager.PlayerList.SafeAdd(player);
 		base.OnStartClient();
