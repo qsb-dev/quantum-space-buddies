@@ -10,14 +10,6 @@ internal class TimePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(PlayerCameraEffectController), nameof(PlayerCameraEffectController.OnStartOfTimeLoop))]
-	public static bool PlayerCameraEffectController_OnStartOfTimeLoop()
-	{
-		DebugLog.DebugWrite($"OnStartOfTimeLoop");
-		return false;
-	}
-
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(PlayerCameraEffectController), nameof(PlayerCameraEffectController.WakeUp))]
 	public static void PlayerCameraEffectController_WakeUp(PlayerCameraEffectController __instance)
@@ -26,7 +18,6 @@ internal class TimePatches : QSBPatch
 		QSBInputManager.Instance.SetInputsEnabled(false);
 		Delay.RunWhen(() => !__instance._isOpeningEyes, () => QSBInputManager.Instance.SetInputsEnabled(true));
 	}
-
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(OWTime), nameof(OWTime.Pause))]
