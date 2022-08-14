@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,17 @@ public class AnimatorMirror : MonoBehaviour
 
 	private Animator _from;
 	private Animator _to;
+	private NetworkAnimator _networkAnimator;
 
 	private readonly Dictionary<string, AnimFloatParam> _floatParams = new();
 
-	public void Init(Animator from, Animator to)
+	/// <summary>
+	/// Initializes the Animator Mirror
+	/// </summary>
+	/// <param name="from">The Animator to take the values from.</param>
+	/// <param name="to">The Animator to set the values on to.</param>
+	/// <param name="netAnimator">The NetworkAnimator to sync triggers through. Set only if you have auth over "<paramref name="from"/>", otherwise set to null.</param>
+	public void Init(Animator from, Animator to, NetworkAnimator netAnimator)
 	{
 		if (from == null)
 		{
@@ -43,6 +51,8 @@ public class AnimatorMirror : MonoBehaviour
 		{
 			_to.runtimeAnimatorController = _from.runtimeAnimatorController;
 		}
+
+		_networkAnimator = netAnimator;
 
 		RebuildFloatParams();
 	}
@@ -86,12 +96,24 @@ public class AnimatorMirror : MonoBehaviour
 				case AnimatorControllerParameterType.Trigger:
 					if (_from.GetBool(fromParam.name) && !_to.GetBool(fromParam.name))
 					{
+						if (_networkAnimator != null)
+						{
+							_networkAnimator.SetTrigger(fromParam.name);
+						}
+
 						_to.SetTrigger(fromParam.name);
 					}
+
 					if (!_from.GetBool(fromParam.name) && _to.GetBool(fromParam.name))
 					{
+						if (_networkAnimator != null)
+						{
+							_networkAnimator.ResetTrigger(fromParam.name);
+						}
+
 						_to.ResetTrigger(fromParam.name);
 					}
+
 					break;
 			}
 		}

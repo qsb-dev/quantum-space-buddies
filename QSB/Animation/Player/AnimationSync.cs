@@ -46,11 +46,11 @@ public class AnimationSync : PlayerSyncObject
 			Mirror = modelRoot.gameObject.AddComponent<AnimatorMirror>();
 			if (isLocalPlayer)
 			{
-				Mirror.Init(VisibleAnimator, InvisibleAnimator);
+				Mirror.Init(VisibleAnimator, InvisibleAnimator, NetworkAnimator);
 			}
 			else
 			{
-				Mirror.Init(InvisibleAnimator, VisibleAnimator);
+				Mirror.Init(InvisibleAnimator, VisibleAnimator, null);
 			}
 
 			NetworkAnimator.enabled = true;
