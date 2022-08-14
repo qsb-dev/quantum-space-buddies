@@ -71,11 +71,6 @@ public class WakeUpSync : NetworkBehaviour
 		GlobalMessenger.AddListener(OWEvents.WakeUp, OnWakeUp);
 	}
 
-	/// <summary>
-	/// same as TimeLoop.GetSecondsElapsed, but tracks time even when time is not flowing yet
-	/// </summary>
-	public static float GetSecondsElapsed() => Time.timeSinceLevelLoad + TimeLoop._timeOffset;
-
 	public float GetTimeDifference()
 	{
 		var myTime = Time.timeSinceLevelLoad;
