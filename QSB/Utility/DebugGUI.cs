@@ -152,6 +152,8 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			WriteLine(2, $"Ready : {player.IsReady}");
 			WriteLine(2, $"Suited Up : {player.SuitedUp}");
 			WriteLine(2, $"InDreamWorld : {player.InDreamWorld}");
+			WriteLine(2, $"ConnectionToClient : {player.TransformSync.netIdentity.connectionToClient}");
+			WriteLine(2, $"ConnectionToServer : {player.TransformSync.netIdentity.connectionToServer}");
 
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
 			{

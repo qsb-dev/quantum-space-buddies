@@ -5,6 +5,7 @@ using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -125,4 +126,71 @@ public static class QSBPlayerManager
 
 	public static IEnumerable<(PlayerInfo Player, IQSBItem HeldItem)> GetPlayerCarryItems()
 		=> PlayerList.Select(x => (x, x.HeldItem));
+
+	private static Dictionary<int, PlayerInfo> _connectionIdToPlayer = new();
+
+	public static IEnumerator ValidatePlayers()
+	{
+		while (true)
+		{
+			if (QSBCore.IsInMultiplayer && QSBCore.IsHost)
+			{
+				_connectionIdToPlayer.Clear();
+
+				var playersToRemove = new List<PlayerInfo>();
+
+				foreach (var player in PlayerList)
+				{
+					var transformSync = player.TransformSync;
+
+					if (transformSync == null)
+					{
+						DebugLog.ToConsole($"Error - {player.PlayerId}'s TransformSync is null.", MessageType.Error);
+						playersToRemove.Add(player);
+						continue;
+					}
+
+					var networkIdentity = transformSync.netIdentity;
+
+					if (networkIdentity == null)
+					{
+						DebugLog.ToConsole($"Error - {player.PlayerId}'s TransformSync's NetworkIdentity is null.", MessageType.Error);
+						playersToRemove.Add(player);
+						continue;
+					}
+
+					var connectionToClient = networkIdentity.connectionToClient;
+
+					if (_connectionIdToPlayer.ContainsKey(connectionToClient.connectionId))
+					{
+						// oh god oh fuck
+						DebugLog.ToConsole($"Error - {player.PlayerId}'s connectionToClient.connectionId is already being used?!?", MessageType.Error);
+						playersToRemove.Add(player);
+						continue;
+					}
+
+					_connectionIdToPlayer.Add(connectionToClient.connectionId, player);
+				}
+
+				if (playersToRemove.Count == 0)
+				{
+					DebugLog.DebugWrite($"Validated {PlayerList.Count} player(s), no issues found.", MessageType.Success);
+				}
+				else
+				{
+					DebugLog.DebugWrite($"Validated {PlayerList.Count} player(s), removing {playersToRemove.Count} invalid players.", MessageType.Success);
+
+					foreach (var player in playersToRemove)
+					{
+						OnRemovePlayer?.Invoke(player);
+						player.HudMarker?.Remove();
+						PlayerList.Remove(player);
+						DebugLog.DebugWrite($"Remove Invalid Player : {player}", MessageType.Info);
+					}
+				}
+			}
+
+			yield return new WaitForSecondsRealtime(5);
+		}
+	}
 }

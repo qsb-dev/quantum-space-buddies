@@ -1,4 +1,5 @@
-﻿using QSB.ItemSync.WorldObjects.Items;
+﻿using OWML.Common;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.RespawnSync;
@@ -216,11 +217,17 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		if (Keyboard.current[Key.Numpad7].wasPressedThisFrame)
 		{
 			GoToVessel();
+			InsertWarpCore();
 		}
 
 		if (Keyboard.current[Key.Numpad8].wasPressedThisFrame)
 		{
-			InsertWarpCore();
+			var player = new PlayerInfo(QSBPlayerManager.LocalPlayer.TransformSync);
+			QSBPlayerManager.PlayerList.SafeAdd(player);
+			QSBPlayerManager.OnAddPlayer?.Invoke(player);
+			DebugLog.DebugWrite($"Create Player : {player}", MessageType.Info);
+
+			JoinLeaveSingularity.Create(player, true);
 		}
 
 		if (Keyboard.current[Key.Numpad9].wasPressedThisFrame)
