@@ -63,7 +63,7 @@ public static class RemotePlayerCreation
 		player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
 
 		REMOTE_Player_Body.GetComponent<PlayerHUDMarker>().Init(player);
-		REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = player.Name;
+		REMOTE_Player_Body.GetComponent<PlayerMapMarker>().Init(player);
 		player._ditheringAnimator = REMOTE_Player_Body.GetComponent<QSBDitheringAnimator>();
 		player.DreamWorldSpawnAnimator = REMOTE_Player_Body.GetComponent<DreamWorldSpawnAnimator>();
 		player.AudioController = REMOTE_Player_Body.transform.Find("REMOTE_Audio_Player").GetComponent<QSBPlayerAudioController>();
