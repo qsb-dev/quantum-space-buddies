@@ -225,7 +225,7 @@ public class FourChoicePopupMenu : Menu
 			return;
 		}
 
-		Debug.LogError("Cannot disable Menu unless it is on the top the MenuLayerManager stack. Current menu on top: " + MenuStackManager.SharedInstance.Peek().gameObject.name);
+		Debug.LogError("Cannot disable Menu unless it is on the top the MenuLayerManager stack. Current menu on top: " + MenuStackManager.SharedInstance.Peek().name);
 	}
 
 	public override void Activate()

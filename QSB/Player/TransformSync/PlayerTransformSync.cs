@@ -43,7 +43,7 @@ public class PlayerTransformSync : SectoredTransformSync
 		if (QSBPlayerManager.PlayerList.Any(x => x.TransformSync == this))
 		{
 			// this really shouldnt happen...
-			DebugLog.ToConsole($"Error - A PlayerInfo already exists with TransformSync {gameObject.name}", MessageType.Error);
+			DebugLog.ToConsole($"Error - A PlayerInfo already exists with TransformSync {name}", MessageType.Error);
 			Destroy(this);
 			return;
 		}
