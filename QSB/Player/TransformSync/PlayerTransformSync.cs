@@ -8,6 +8,7 @@ using QSB.Syncs.Sectored.Transforms;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 using Gizmos = Popcron.Gizmos;
 
 namespace QSB.Player.TransformSync;
@@ -29,8 +30,17 @@ public class PlayerTransformSync : SectoredTransformSync
 	private Transform _visibleStickTip;
 	private Transform _networkStickTip => _networkStickPivot.GetChild(0);
 
+	private bool _hasRanOnStartClient;
+
 	public override void OnStartClient()
 	{
+		if (_hasRanOnStartClient)
+		{
+			DebugLog.ToConsole($"ERROR - OnStartClient is being called AGAIN for {Player.PlayerId}'s PlayerTransformSync!", MessageType.Error);
+			return;
+		}
+
+		_hasRanOnStartClient = true;
 		var player = new PlayerInfo(this);
 		QSBPlayerManager.PlayerList.SafeAdd(player);
 		base.OnStartClient();
@@ -40,7 +50,26 @@ public class PlayerTransformSync : SectoredTransformSync
 		JoinLeaveSingularity.Create(Player, true);
 	}
 
-	public override void OnStartLocalPlayer() => LocalInstance = this;
+	public override void OnStartLocalPlayer()
+	{
+		base.OnStartLocalPlayer();
+
+		if (LocalInstance != null)
+		{
+			DebugLog.ToConsole($"ERROR - LocalInstance is already non-null in OnStartLocalPlayer!", MessageType.Error);
+			Destroy(this);
+			return;
+		}
+
+		LocalInstance = this;
+	}
+
+	public override void OnStopLocalPlayer()
+	{
+		base.OnStopLocalPlayer();
+
+		LocalInstance = null;
+	}
 
 	public override void OnStopClient()
 	{
