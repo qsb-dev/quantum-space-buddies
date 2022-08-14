@@ -139,12 +139,13 @@ public class WakeUpSync : NetworkBehaviour
 	}
 
 	private void SendServerTime()
-		=> new ServerTimeMessage(_serverTime, PlayerData.LoadLoopCount()).Send();
+		=> new ServerTimeMessage(_serverTime, PlayerData.LoadLoopCount(), TimeLoop.GetSecondsRemaining()).Send();
 
-	public void OnClientReceiveMessage(float time, int count)
+	public void OnClientReceiveMessage(float time, int count, float secondsRemaining)
 	{
 		_serverTime = time;
 		_serverLoopCount = count;
+		TimeLoop.SetSecondsRemaining(secondsRemaining);
 	}
 
 	private void WakeUpOrSleep()
