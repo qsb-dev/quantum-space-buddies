@@ -8,7 +8,6 @@ using QSB.Syncs.Sectored.Transforms;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 using Gizmos = Popcron.Gizmos;
 
 namespace QSB.Player.TransformSync;
@@ -52,8 +51,6 @@ public class PlayerTransformSync : SectoredTransformSync
 
 	public override void OnStartLocalPlayer()
 	{
-		base.OnStartLocalPlayer();
-
 		if (LocalInstance != null)
 		{
 			DebugLog.ToConsole($"ERROR - LocalInstance is already non-null in OnStartLocalPlayer!", MessageType.Error);
@@ -64,12 +61,7 @@ public class PlayerTransformSync : SectoredTransformSync
 		LocalInstance = this;
 	}
 
-	public override void OnStopLocalPlayer()
-	{
-		base.OnStopLocalPlayer();
-
-		LocalInstance = null;
-	}
+	public override void OnStopLocalPlayer() => LocalInstance = null;
 
 	public override void OnStopClient()
 	{
