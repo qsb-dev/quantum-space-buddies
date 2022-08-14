@@ -172,13 +172,9 @@ public static class QSBPlayerManager
 					_connectionIdToPlayer.Add(connectionToClient.connectionId, player);
 				}
 
-				if (playersToRemove.Count == 0)
+				if (playersToRemove.Count != 0)
 				{
-					DebugLog.DebugWrite($"Validated {PlayerList.Count} player(s), no issues found.", MessageType.Success);
-				}
-				else
-				{
-					DebugLog.DebugWrite($"Validated {PlayerList.Count} player(s), removing {playersToRemove.Count} invalid players.", MessageType.Success);
+					DebugLog.DebugWrite($"Removing {playersToRemove.Count} invalid players.", MessageType.Success);
 
 					foreach (var player in playersToRemove)
 					{
