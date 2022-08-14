@@ -17,8 +17,6 @@ public class AnimationSync : PlayerSyncObject
 	private AnimatorOverrideController _unsuitedAnimController;
 	private GameObject _suitedGraphics;
 	private GameObject _unsuitedGraphics;
-	private PlayerCharacterController _playerController;
-	private CrouchSync _crouchSync;
 
 	public AnimatorMirror Mirror { get; private set; }
 	public bool InSuitedUpState { get; set; }
@@ -74,10 +72,6 @@ public class AnimationSync : PlayerSyncObject
 	public void InitLocal(Transform body)
 	{
 		InitCommon(body);
-
-		_playerController = body.parent.GetComponent<PlayerCharacterController>();
-
-		InitCrouchSync();
 		InitAccelerationSync();
 	}
 
@@ -85,7 +79,6 @@ public class AnimationSync : PlayerSyncObject
 	{
 		InitCommon(body);
 		SetSuitState(QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse);
-		InitCrouchSync();
 		InitAccelerationSync();
 		ThrusterManager.CreateRemotePlayerVFX(Player);
 
@@ -98,12 +91,6 @@ public class AnimationSync : PlayerSyncObject
 		Player.JetpackAcceleration = GetComponent<JetpackAccelerationSync>();
 		var thrusterModel = hasAuthority ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
 		Player.JetpackAcceleration.Init(thrusterModel);
-	}
-
-	private void InitCrouchSync()
-	{
-		_crouchSync = this.GetRequiredComponent<CrouchSync>();
-		_crouchSync.Init(_playerController, VisibleAnimator);
 	}
 
 	public void SetSuitState(bool suitedUp)

@@ -61,6 +61,7 @@ public class AnimatorMirror : MonoBehaviour
 		}
 
 		SyncParams();
+		SyncLayerWeights();
 		SmoothFloats();
 	}
 
@@ -93,6 +94,15 @@ public class AnimatorMirror : MonoBehaviour
 					}
 					break;
 			}
+		}
+	}
+
+	private void SyncLayerWeights()
+	{
+		for (var i = 0; i < _from.layerCount; i++)
+		{
+			var weight = _from.GetLayerWeight(i);
+			_to.SetLayerWeight(i, weight);
 		}
 	}
 
