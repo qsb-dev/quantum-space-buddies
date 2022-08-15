@@ -35,10 +35,11 @@ public class AnimationSync : PlayerSyncObject
 
 	protected void OnDestroy() => RequestInitialStatesMessage.SendInitialState -= SendInitialState;
 
-	private void SendInitialState(uint to) =>
-		// This wipes the NetworkAnimator's fields, so it assumes the parameters have changed.
-		// Basically just forces it to set all its dirty flags.
-		NetworkAnimator.Invoke("Awake");
+	/// <summary>
+	/// This wipes the NetworkAnimator's fields, so it assumes the parameters have changed.
+	/// Basically just forces it to set all its dirty flags.
+	/// </summary>
+	private void SendInitialState(uint to) => NetworkAnimator.Invoke("Awake");
 
 	private void InitCommon(Transform modelRoot)
 	{
