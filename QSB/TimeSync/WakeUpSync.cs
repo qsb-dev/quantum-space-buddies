@@ -5,6 +5,7 @@ using QSB.ClientServerStateSync.Messages;
 using QSB.DeathSync;
 using QSB.Inputs;
 using QSB.Messaging;
+using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
@@ -145,7 +146,7 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		_serverTime = time;
 		_serverLoopCount = count;
-		TimeLoop.SetSecondsRemaining(secondsRemaining);
+		QSBPatch.RemoteCall(() => TimeLoop.SetSecondsRemaining(secondsRemaining));
 	}
 
 	private void WakeUpOrSleep()
