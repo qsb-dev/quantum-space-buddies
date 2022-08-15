@@ -15,7 +15,7 @@ public class AlarmTotemManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		QSBWorldSync.Init<QSBAlarmTotem, AlarmTotem>();
+		// QSBWorldSync.Init<QSBAlarmTotem, AlarmTotem>();
 		QSBWorldSync.Init<QSBAlarmBell, AlarmBell>();
 
 		_qsbAlarmSequenceController = new GameObject(nameof(QSBAlarmSequenceController))
