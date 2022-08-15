@@ -12,6 +12,14 @@ internal class TimePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	/// <summary>
+	/// prevents wakeup prompt since we automatically wake you up.
+	/// (doesn't happen for host because we don't patch until TimeLoop._initialized I.E. after Start)
+	/// </summary>
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(PlayerCameraEffectController), nameof(PlayerCameraEffectController.OnStartOfTimeLoop))]
+	public static bool PlayerCameraEffectController_OnStartOfTimeLoop() => false;
+
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(PlayerCameraEffectController), nameof(PlayerCameraEffectController.WakeUp))]
 	public static void PlayerCameraEffectController_WakeUp(PlayerCameraEffectController __instance)
