@@ -30,13 +30,10 @@ public class AnimationSync : PlayerSyncObject
 		InvisibleAnimator = gameObject.GetRequiredComponent<Animator>();
 		NetworkAnimator = gameObject.GetRequiredComponent<NetworkAnimator>();
 		NetworkAnimator.enabled = false;
+		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 	}
 
-	protected void Start()
-		=> RequestInitialStatesMessage.SendInitialState += SendInitialState;
-
-	protected void OnDestroy()
-		=> RequestInitialStatesMessage.SendInitialState -= SendInitialState;
+	protected void OnDestroy() => RequestInitialStatesMessage.SendInitialState -= SendInitialState;
 
 	private void SendInitialState(uint to) =>
 		// This wipes the NetworkAnimator's fields, so it assumes the parameters have changed.
