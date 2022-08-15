@@ -14,7 +14,7 @@ internal class TimePatches : QSBPatch
 
 	/// <summary>
 	/// prevents wakeup prompt since we automatically wake you up.
-	/// (doesn't happen for host because we don't patch until TimeLoop._initialized I.E. after Start)
+	/// (doesn't happen for host because we don't patch until TimeLoop._initialized i.e. after Start)
 	/// </summary>
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(PlayerCameraEffectController), nameof(PlayerCameraEffectController.OnStartOfTimeLoop))]

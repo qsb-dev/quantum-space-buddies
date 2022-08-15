@@ -187,7 +187,7 @@ public static class QSBWorldSync
 			if (QSBCore.IsInMultiplayer && loadScene.IsUniverseScene())
 			{
 				// So objects have time to be deleted, made, whatever
-				// I.E. wait until Start has been called
+				// i.e. wait until Start has been called
 				Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
 			}
 		};
