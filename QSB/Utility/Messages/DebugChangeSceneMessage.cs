@@ -12,8 +12,7 @@ public class DebugChangeSceneMessage : QSBMessage<bool>
 	{
 		if (Data)
 		{
-			PlayerData._currentGameSave.warpedToTheEye = false;
-			PlayerData.SaveCurrentGame();
+			PlayerData.SaveEyeCompletion();
 			LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack);
 		}
 		else
