@@ -16,6 +16,12 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 
 /// <summary>
 /// stores a bit of extra data needed for player light sensor sync
+///
+/// 2 uses:
+/// - AlarmTotem.CheckPlayerVisible
+/// GhostSensors.FixedUpdate_Sensors
+///
+/// TODO this can probably be massively simplified to work with these uses only
 /// </summary>
 [RequireComponent(typeof(SingleLightSensor))]
 public class QSBPlayerLightSensor : MonoBehaviour
