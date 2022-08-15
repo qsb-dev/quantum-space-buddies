@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
+using OWML.Utils;
 using QSB.Patches;
-using System.Reflection;
 using UnityEngine.UI;
 
 namespace QSB.SaveSync.Patches;
@@ -15,7 +15,7 @@ internal class TitleScreenManagerPatchesGamepass : QSBPatch
 	[HarmonyPatch("SetUserAccountDisplayInfo")]
 	public static bool SetUserAccountDisplayInfo(TitleScreenManager __instance)
 	{
-		var text = (Text)__instance.GetType().GetField("_gamertagDisplay", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
+		var text = __instance.GetValue<Text>("_gamertagDisplay");
 		text.text = ""; // no idea why, mobius be like
 		text.text = QSBMSStoreProfileManager.SharedInstance.userDisplayName;
 		return false;

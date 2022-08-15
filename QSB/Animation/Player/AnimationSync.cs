@@ -8,7 +8,6 @@ using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
-using System.Reflection;
 using UnityEngine;
 
 namespace QSB.Animation.Player;
@@ -39,37 +38,18 @@ public class AnimationSync : PlayerSyncObject
 	protected void OnDestroy()
 		=> RequestInitialStatesMessage.SendInitialState -= SendInitialState;
 
-	private void SendInitialState(uint to)
-	{
-		if (PlayerId == to)
-		{
-			return;
-		}
-
-		/*
-		 * This wipes the NetworkAnimator's "last_X_Parameters" fields, so it assumes the parameters have changed.
-		 * Basically just forces the networkanimator to set all it's dirty flags.
-		 * I tried just manually sending the parameter message myself, but that made the client get very angry and disconnect.
-		 */
-
-		var parameters = (AnimatorControllerParameter[])NetworkAnimator.GetType().GetField("parameters", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(NetworkAnimator);
-		var lastIntParams = NetworkAnimator.GetType().GetField("lastIntParameters", BindingFlags.NonPublic | BindingFlags.Instance);
-		var lastFloatParams = NetworkAnimator.GetType().GetField("lastFloatParameters", BindingFlags.NonPublic | BindingFlags.Instance);
-		var lastBoolParams = NetworkAnimator.GetType().GetField("lastBoolParameters", BindingFlags.NonPublic | BindingFlags.Instance);
-
-		lastIntParams.SetValue(NetworkAnimator, new int[parameters.Length]);
-		lastFloatParams.SetValue(NetworkAnimator, new float[parameters.Length]);
-		lastBoolParams.SetValue(NetworkAnimator, new bool[parameters.Length]);
-	}
+	private void SendInitialState(uint to) =>
+		// This wipes the NetworkAnimator's fields, so it assumes the parameters have changed.
+		// Basically just forces it to set all its dirty flags.
+		NetworkAnimator.Invoke("Awake");
 
 	private void InitCommon(Transform modelRoot)
 	{
 		try
 		{
-
 			if (modelRoot == null)
 			{
-				DebugLog.ToConsole($"Error - Trying to InitCommon with null body!", MessageType.Error);
+				DebugLog.ToConsole("Error - Trying to InitCommon with null body!", MessageType.Error);
 				return;
 			}
 
