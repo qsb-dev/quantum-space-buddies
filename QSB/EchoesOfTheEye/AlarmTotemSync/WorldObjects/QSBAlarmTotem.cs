@@ -9,7 +9,7 @@ using System.Threading;
 namespace QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 
 /// <summary>
-/// todo make this not NRE (by not doing enable sync) and then readd it back in
+/// TODO: make this not NRE (by not doing enable sync) and then readd it back in
 /// </summary>
 public class QSBAlarmTotem : WorldObject<AlarmTotem>
 {

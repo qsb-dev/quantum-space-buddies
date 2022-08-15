@@ -16,11 +16,11 @@ using System.Threading;
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 
 /// <summary>
-/// TODO switch this over to some sort of auth system.
+/// TODO: switch this over to some sort of auth system.
 /// list of illuminators doesn't work because if a player illuminates and then leaves,
 /// it'll be considered illuminated forever until they come back.
 ///
-/// BUG this also breaks in zone2.
+/// BUG: this also breaks in zone2.
 /// the sector it's enabled in is bigger than the sector the zone2 walls are enabled in :(
 /// maybe this can be fixed by making the collision group use the same sector.
 /// </summary>
