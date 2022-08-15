@@ -181,7 +181,6 @@ The template for this file is this :
 
 ### Contributers
 
-- [ShoosGun](https://github.com/ShoosGun)
 - [Chris Yeninas](https://github.com/PhantomGamers) - Help with project files and GitHub workflows.
 - [Tlya](https://github.com/Tllya) - Russian translation.
 - [Xen](https://github.com/xen-42) - French translation.
