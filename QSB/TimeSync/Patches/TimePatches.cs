@@ -41,6 +41,12 @@ internal class ClientTimePatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(TimeLoop), nameof(TimeLoop.SetSecondsRemaining))]
-	private static void SetSecondsRemaining(float secondsRemaining) =>
+	private static void SetSecondsRemaining(float secondsRemaining)
+	{
+		if (Remote)
+		{
+			return;
+		}
 		new SetSecondsRemainingMessage(secondsRemaining).Send();
+	}
 }

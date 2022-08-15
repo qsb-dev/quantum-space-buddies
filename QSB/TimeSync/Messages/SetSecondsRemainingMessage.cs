@@ -1,4 +1,5 @@
 ﻿using QSB.Messaging;
+using QSB.Patches;
 
 namespace QSB.TimeSync.Messages;
 
@@ -8,5 +9,5 @@ namespace QSB.TimeSync.Messages;
 public class SetSecondsRemainingMessage : QSBMessage<float>
 {
 	public SetSecondsRemainingMessage(float secondsRemaining) : base(secondsRemaining) => To = 0;
-	public override void OnReceiveRemote() => TimeLoop.SetSecondsRemaining(Data);
+	public override void OnReceiveRemote() => QSBPatch.RemoteCall(() => TimeLoop.SetSecondsRemaining(Data));
 }

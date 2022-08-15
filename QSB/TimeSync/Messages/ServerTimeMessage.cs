@@ -3,10 +3,6 @@ using QSB.Messaging;
 
 namespace QSB.TimeSync.Messages;
 
-/// <summary>
-/// sent from the host to non-hosts.
-/// syncs time since level load, loop count, and seconds remaining.
-/// </summary>
 public class ServerTimeMessage : QSBMessage
 {
 	private float ServerTime;
