@@ -59,7 +59,6 @@ internal class LightSensorPatches : QSBPatch
 				{
 					qsbLightSensor._locallyIlluminated = false;
 					qsbLightSensor.OnDetectLocalDarkness?.Invoke();
-					;
 					// wait because someone could send a message getting ownership again
 					// i hate this so fucking much
 					Delay.RunFramesLater(10, () =>
