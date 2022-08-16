@@ -27,9 +27,12 @@ public abstract class AuthWorldObject<T> : WorldObject<T>, IAuthWorldObject
 
 	private void OnPlayerLeave(PlayerInfo player)
 	{
+		if (!QSBCore.IsHost)
+		{
+			return;
+		}
 		if (Owner == player.PlayerId)
 		{
-			// BUG: called once per player
 			this.ReleaseOwnership();
 		}
 	}
