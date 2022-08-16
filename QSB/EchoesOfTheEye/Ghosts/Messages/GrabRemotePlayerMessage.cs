@@ -2,11 +2,7 @@
 using QSB.Messaging;
 using QSB.Player;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 

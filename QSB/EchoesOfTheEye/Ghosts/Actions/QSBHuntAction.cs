@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using GhostEnums;
+﻿using GhostEnums;
 using QSB.EchoesOfTheEye.Ghosts;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Utility;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class QSBHuntAction : QSBGhostAction

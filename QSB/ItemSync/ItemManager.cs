@@ -5,7 +5,6 @@ using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;

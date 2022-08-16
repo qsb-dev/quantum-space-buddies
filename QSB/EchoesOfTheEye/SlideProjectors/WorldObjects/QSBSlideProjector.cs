@@ -2,7 +2,6 @@
 using QSB.EchoesOfTheEye.SlideProjectors.Messages;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using System.Threading;
 

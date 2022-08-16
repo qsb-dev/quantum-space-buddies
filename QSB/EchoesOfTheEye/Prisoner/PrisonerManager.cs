@@ -1,12 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.EchoesOfTheEye.Prisoner.WorldObjects;
 using QSB.WorldSync;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Prisoner;

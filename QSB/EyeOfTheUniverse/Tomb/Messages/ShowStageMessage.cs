@@ -1,5 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.EyeOfTheUniverse.Tomb.Messages;

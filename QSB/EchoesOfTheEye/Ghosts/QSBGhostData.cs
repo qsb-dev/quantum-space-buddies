@@ -1,6 +1,4 @@
-﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
-using QSB.Player;
-using QSB.Utility;
+﻿using QSB.Player;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

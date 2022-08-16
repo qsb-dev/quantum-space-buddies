@@ -4,7 +4,6 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.ShipSync.TransformSync;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.ShipSync.Messages;
 

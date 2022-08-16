@@ -1,14 +1,11 @@
 ﻿using HarmonyLib;
 using OWML.Common;
-using QSB.Animation.NPC.WorldObjects;
 using QSB.ConversationSync;
-using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Animation.NPC.Patches;

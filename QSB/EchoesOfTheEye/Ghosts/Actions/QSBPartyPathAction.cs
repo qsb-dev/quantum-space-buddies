@@ -1,5 +1,4 @@
-﻿using System;
-using GhostEnums;
+﻿using GhostEnums;
 using QSB.EchoesOfTheEye.Ghosts;
 using UnityEngine;
 

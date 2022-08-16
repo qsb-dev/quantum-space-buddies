@@ -1,13 +1,7 @@
 ﻿using QSB.EchoesOfTheEye.Ghosts.Messages;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.WorldObjects;

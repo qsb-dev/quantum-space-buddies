@@ -3,7 +3,6 @@ using QSB.EchoesOfTheEye.Prisoner.Messages;
 using QSB.EchoesOfTheEye.Prisoner.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using UnityEngine;

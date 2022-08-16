@@ -2,11 +2,6 @@
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Tools.TranslatorTool.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.Tools.TranslatorTool.Patches;

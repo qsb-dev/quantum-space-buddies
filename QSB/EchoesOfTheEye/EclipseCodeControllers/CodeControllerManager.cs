@@ -1,12 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.EchoesOfTheEye.EclipseCodeControllers.WorldObjects;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.EclipseCodeControllers;
 

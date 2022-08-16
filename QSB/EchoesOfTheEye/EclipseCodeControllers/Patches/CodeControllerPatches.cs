@@ -4,11 +4,6 @@ using QSB.EchoesOfTheEye.EclipseCodeControllers.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseCodeControllers.Patches;

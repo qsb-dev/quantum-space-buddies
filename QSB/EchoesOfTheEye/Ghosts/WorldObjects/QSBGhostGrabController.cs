@@ -1,7 +1,5 @@
 ﻿using QSB.EchoesOfTheEye.Ghosts.Messages;
 using QSB.Messaging;
-using QSB.Player;
-using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 

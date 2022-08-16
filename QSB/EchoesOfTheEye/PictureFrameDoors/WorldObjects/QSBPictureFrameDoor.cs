@@ -1,7 +1,6 @@
 ﻿using QSB.EchoesOfTheEye.PictureFrameDoors.Messages;
 using QSB.Messaging;
 using QSB.WorldSync;
-using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.PictureFrameDoors.WorldObjects;
 

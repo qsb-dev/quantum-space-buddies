@@ -1,11 +1,6 @@
 ﻿using QSB.EchoesOfTheEye.EclipseCodeControllers.WorldObjects;
 using QSB.Messaging;
 using QSB.Player;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.EclipseCodeControllers.Messages;
 

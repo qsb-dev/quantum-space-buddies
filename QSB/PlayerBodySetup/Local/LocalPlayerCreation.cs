@@ -6,7 +6,6 @@ using QSB.SectorSync;
 using QSB.Tools;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.PlayerBodySetup.Local;

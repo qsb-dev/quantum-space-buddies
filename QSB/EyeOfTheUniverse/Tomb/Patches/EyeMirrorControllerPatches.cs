@@ -4,11 +4,6 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.Tomb.Patches;

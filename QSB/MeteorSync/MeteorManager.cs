@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.MeteorSync.WorldObjects;
 using QSB.WorldSync;
-using System.Linq;
 using System.Threading;
 
 namespace QSB.MeteorSync;

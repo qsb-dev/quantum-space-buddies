@@ -1,7 +1,6 @@
 ﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
