@@ -31,6 +31,6 @@ public static class IAuthWorldObject_Extensions
 		{
 			return;
 		}
-		authWorldObject.SendMessage(new AuthWorldObjectMessage(QSBPlayerManager.LocalPlayerId));
+		authWorldObject.SendMessage(new AuthWorldObjectMessage(0));
 	}
 }
