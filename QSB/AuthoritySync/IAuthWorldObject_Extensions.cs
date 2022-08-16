@@ -3,7 +3,7 @@ using QSB.Player;
 
 namespace QSB.AuthoritySync;
 
-public static class Extensions
+public static class IAuthWorldObject_Extensions
 {
 	/// <summary>
 	/// try and gain authority over the object

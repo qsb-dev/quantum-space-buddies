@@ -29,6 +29,7 @@ public abstract class AuthWorldObject<T> : WorldObject<T>, IAuthWorldObject
 	{
 		if (Owner == player.PlayerId)
 		{
+			// BUG: called once per player
 			this.ReleaseOwnership();
 		}
 	}

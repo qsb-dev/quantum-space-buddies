@@ -1,12 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.AuthoritySync;
-using QSB.EchoesOfTheEye.LightSensorSync.Messages;
-using QSB.Messaging;
-using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 
 /*
@@ -42,7 +38,7 @@ internal class QSBLightSensor : AuthWorldObject<SingleLightSensor>
 
 	public override async UniTask Init(CancellationToken ct)
 	{
-		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
+		await base.Init(ct);
 
 		// do this stuff here instead of Start, since world objects won't be ready by that point
 		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
@@ -56,13 +52,5 @@ internal class QSBLightSensor : AuthWorldObject<SingleLightSensor>
 				}
 			}
 		});
-	}
-
-	public override void OnRemoval() => QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
-	private void OnPlayerLeave(PlayerInfo player) => SetIlluminated(player.PlayerId, false);
-
-	public void SetIlluminated(uint playerId, bool locallyIlluminated)
-	{
-		// todo remove
 	}
 }

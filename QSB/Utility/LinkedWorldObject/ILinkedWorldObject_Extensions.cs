@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.Utility.LinkedWorldObject;
 
-public static class Extensions
+public static class ILinkedWorldObject_Extensions
 {
 	/// <summary>
 	/// link a world object and a network behaviour

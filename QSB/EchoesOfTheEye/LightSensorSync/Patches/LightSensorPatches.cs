@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Patches;
+using QSB.Player;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
@@ -84,14 +85,17 @@ internal class LightSensorPatches : QSBPatch
 		var illuminated = __instance._illuminated;
 		var locallyIlluminated = qsbLightSensor._locallyIlluminated;
 		__instance.UpdateIllumination();
-		if (!illuminated && __instance._illuminated)
+		if (qsbLightSensor.Owner == QSBPlayerManager.LocalPlayerId)
 		{
-			__instance.OnDetectLight.Invoke();
-			return false;
-		}
-		if (illuminated && !__instance._illuminated)
-		{
-			__instance.OnDetectDarkness.Invoke();
+			if (!illuminated && __instance._illuminated)
+			{
+				__instance.OnDetectLight.Invoke();
+				return false;
+			}
+			if (illuminated && !__instance._illuminated)
+			{
+				__instance.OnDetectDarkness.Invoke();
+			}
 		}
 		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
 		{
