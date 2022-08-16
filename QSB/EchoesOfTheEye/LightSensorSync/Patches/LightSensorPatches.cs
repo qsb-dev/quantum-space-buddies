@@ -153,6 +153,7 @@ internal class LightSensorPatches : QSBPatch
 		}
 		foreach (var lightSource in __instance._lightSources)
 		{
+			// todo do all the funny FUCKING checks
 			if ((__instance._lightSourceMask & lightSource.GetLightSourceType()) == lightSource.GetLightSourceType() &&
 				lightSource.CheckIlluminationAtPoint(sensorWorldPos, __instance._sensorRadius, __instance._maxDistance))
 			{
