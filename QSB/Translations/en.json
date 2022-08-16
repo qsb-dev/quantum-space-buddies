@@ -39,6 +39,9 @@
   "TimeSyncWaitForAllToReady": "Waiting for start of loop...",
   "TimeSyncWaitForAllToDie": "Waiting for end of loop...",
   "GalaxyMapEveryoneNotPresent": "It's not yet time. Everyone should be here to witness this.",
+  "YouAreDead": "You are dead.",
+  "WaitingForRespawn": "Waiting for someone to respawn you...",
+  "WaitingForAllToDie": "Waiting for {0} player(s) to die...",
   "DeathMessages": {
     "Default": [
       "{0} died",

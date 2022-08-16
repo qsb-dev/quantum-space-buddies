@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.Localization;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.RespawnSync;
@@ -146,14 +147,14 @@ public class RespawnOnDeath : MonoBehaviour
 
 			// it is good day to be not dead
 
-			if (ShipManager.Instance.IsShipWrecked)
-			{
-				GUI.Label(new Rect((Screen.width / 2) - (width / 2), (Screen.height / 2) - (height / 2) + (height * 2), width, height), $"You are dead.\nWaiting for {QSBPlayerManager.PlayerList.Count(x => !x.IsDead)} player(s) to die...", _deadTextStyle);
-			}
-			else
-			{
-				GUI.Label(new Rect((Screen.width / 2) - (width / 2), (Screen.height / 2) - (height / 2) + (height * 2), width, height), "You are dead.\nWaiting for someone to respawn you...", _deadTextStyle);
-			}
+			var secondText = ShipManager.Instance.IsShipWrecked
+				? string.Format(QSBLocalization.Current.WaitingForAllToDie, QSBPlayerManager.PlayerList.Count(x => !x.IsDead))
+				: QSBLocalization.Current.WaitingForRespawn;
+
+			GUI.Label(
+				new Rect((Screen.width / 2) - (width / 2), (Screen.height / 2) - (height / 2) + (height * 2), width, height),
+				$"{QSBLocalization.Current.YouAreDead}\n{secondText}",
+				_deadTextStyle);
 		}
 	}
 }
