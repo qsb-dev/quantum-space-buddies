@@ -42,15 +42,28 @@ internal class ShipManager : WorldObjectManager
 			_currentFlyer = value;
 		}
 	}
+	public bool IsShipWrecked => _shipDestroyed || ShipCockpitUI._shipDamageCtrlr.IsDestroyed();
 
 	private readonly List<PlayerInfo> _playersInShip = new();
 
 	private uint _currentFlyer = uint.MaxValue;
+	private bool _shipDestroyed;
 
 	public void Start()
 	{
 		Instance = this;
 		QSBPlayerManager.OnRemovePlayer += OnRemovePlayer;
+		GlobalMessenger.AddListener("ShipDestroyed", OnShipDestroyed);
+	}
+
+	public void OnDestroy()
+	{
+		GlobalMessenger.RemoveListener("ShipDestroyed", OnShipDestroyed);
+	}
+
+	private void OnShipDestroyed()
+	{
+		_shipDestroyed = true;
 	}
 
 	private void OnRemovePlayer(PlayerInfo player)
@@ -63,6 +76,8 @@ internal class ShipManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
+		_shipDestroyed = false;
+
 		var shipBody = Locator.GetShipBody();
 		if (shipBody == null)
 		{

@@ -59,7 +59,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 			_playerResources = Locator.GetPlayerTransform().GetComponent<PlayerResources>();
 		}
 
-		if (RespawnManager.Instance.RespawnNeeded && !ShipManager.Instance.ShipCockpitUI._shipDamageCtrlr.IsDestroyed())
+		if (RespawnManager.Instance.RespawnNeeded && !ShipManager.Instance.IsShipWrecked)
 		{
 			_interactVolume.EnableSingleInteraction(true, _respawnIndex);
 			_interactVolume.SetKeyCommandVisible(true, _respawnIndex);
@@ -127,7 +127,7 @@ internal class ShipRecoveryPoint : MonoBehaviour
 		}
 		else if (inputCommand == _interactVolume.GetInteractionAt(_respawnIndex).inputCommand)
 		{
-			if (!RespawnManager.Instance.RespawnNeeded || ShipManager.Instance.ShipCockpitUI._shipDamageCtrlr.IsDestroyed())
+			if (!RespawnManager.Instance.RespawnNeeded || ShipManager.Instance.IsShipWrecked)
 			{
 				return;
 			}

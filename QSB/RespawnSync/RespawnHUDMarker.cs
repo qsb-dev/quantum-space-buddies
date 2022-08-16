@@ -29,7 +29,7 @@ public class RespawnHUDMarker : HUDDistanceMarker
 		{
 			var isVisible = _canvasMarker.IsVisible();
 			var shouldBeVisible = RespawnManager.Instance.RespawnNeeded
-				&& !ShipManager.Instance.ShipCockpitUI._shipDamageCtrlr.IsDestroyed();
+				&& !ShipManager.Instance.IsShipWrecked;
 
 			if (shouldBeVisible != isVisible)
 			{
