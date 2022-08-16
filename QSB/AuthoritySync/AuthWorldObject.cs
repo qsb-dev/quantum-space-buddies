@@ -33,7 +33,7 @@ public abstract class AuthWorldObject<T> : WorldObject<T>, IAuthWorldObject
 		}
 		if (Owner == player.PlayerId)
 		{
-			this.ReleaseOwnership();
+			((IAuthWorldObject)this).SendMessage(new AuthWorldObjectMessage(CanOwn ? QSBPlayerManager.LocalPlayerId : 0));
 		}
 	}
 }
