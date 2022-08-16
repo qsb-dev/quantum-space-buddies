@@ -1,5 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.Player;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -17,27 +16,5 @@ public abstract class AuthWorldObject<T> : WorldObject<T>, IAuthWorldObject
 	public override void SendInitialState(uint to)
 	{
 		((IAuthWorldObject)this).SendMessage(new WorldObjectAuthMessage(Owner) { To = to });
-	}
-
-	public void RequestOwnership()
-	{
-		if (!CanOwn)
-		{
-			return;
-		}
-		if (Owner != 0)
-		{
-			return;
-		}
-		((IAuthWorldObject)this).SendMessage(new WorldObjectAuthMessage(QSBPlayerManager.LocalPlayerId));
-	}
-
-	public void ReleaseOwnership()
-	{
-		if (Owner == 0)
-		{
-			return;
-		}
-		((IAuthWorldObject)this).SendMessage(new WorldObjectAuthMessage(QSBPlayerManager.LocalPlayerId));
 	}
 }

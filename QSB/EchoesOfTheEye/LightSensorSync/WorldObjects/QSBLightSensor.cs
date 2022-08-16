@@ -25,19 +25,18 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 /// the sector it's enabled in is bigger than the sector the zone2 walls are enabled in :(
 /// maybe this can be fixed by making the collision group use the same sector.
 /// </summary>
-internal class QSBLightSensor : WorldObject<SingleLightSensor>, IAuthWorldObject
+internal class QSBLightSensor : AuthWorldObject<SingleLightSensor>
 {
 	internal bool _locallyIlluminated;
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;
 
 
-	public uint Owner { get; set; }
-	public bool CanOwn => AttachedObject.enabled;
-
+	public override bool CanOwn => AttachedObject.enabled;
 
 	public override void SendInitialState(uint to)
 	{
+		base.SendInitialState(to);
 		// todo initial state
 	}
 
