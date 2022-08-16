@@ -1,4 +1,5 @@
 ﻿using QSB.Audio;
+using QSB.EchoesOfTheEye.LightSensorSync;
 using QSB.Player;
 using QSB.RoastingSync;
 using QSB.Tools;
@@ -32,13 +33,13 @@ public static class RemotePlayerCreation
 		out Transform visibleStickPivot,
 		out Transform visibleStickTip)
 	{
-		DebugLog.DebugWrite("CREATE PLAYER");
+		DebugLog.DebugWrite($"CREATE PLAYER");
 
 		/*
 		 * CREATE PLAYER STRUCTURE
 		 */
 
-		DebugLog.DebugWrite("CREATE PLAYER STRUCTURE");
+		DebugLog.DebugWrite($"CREATE PLAYER STRUCTURE");
 
 		// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
@@ -53,7 +54,7 @@ public static class RemotePlayerCreation
 		 * SET UP PLAYER BODY
 		 */
 
-		DebugLog.DebugWrite("SET UP PLAYER BODY");
+		DebugLog.DebugWrite($"SET UP PLAYER BODY");
 
 		player.Body = REMOTE_Player_Body;
 		player.ThrusterLightTracker = player.Body.GetComponentInChildren<ThrusterLightTracker>();
@@ -71,7 +72,7 @@ public static class RemotePlayerCreation
 		 * SET UP PLAYER CAMERA
 		 */
 
-		DebugLog.DebugWrite("SET UP PLAYER CAMERA");
+		DebugLog.DebugWrite($"SET UP PLAYER CAMERA");
 
 		REMOTE_PlayerCamera.GetComponent<Camera>().enabled = false;
 		var owcamera = REMOTE_PlayerCamera.GetComponent<OWCamera>();
@@ -79,13 +80,15 @@ public static class RemotePlayerCreation
 		player.CameraBody = REMOTE_PlayerCamera;
 		visibleCameraRoot = REMOTE_PlayerCamera.transform;
 
+		player.QSBPlayerLightSensor = player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
+
 		PlayerToolsManager.InitRemote(player);
 
 		/*
 		 * SET UP ROASTING STICK
 		 */
 
-		DebugLog.DebugWrite("SET UP ROASTING STICK");
+		DebugLog.DebugWrite($"SET UP ROASTING STICK");
 
 		var REMOTE_Stick_Pivot = REMOTE_Stick_Root.transform.GetChild(0);
 		var mallowRoot = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip/Mallow_Root");
