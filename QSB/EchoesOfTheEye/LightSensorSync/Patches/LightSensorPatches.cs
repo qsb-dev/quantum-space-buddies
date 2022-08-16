@@ -82,6 +82,7 @@ internal class LightSensorPatches : QSBPatch
 			return false;
 		}
 		var illuminated = __instance._illuminated;
+		var locallyIlluminated = qsbLightSensor._locallyIlluminated;
 		__instance.UpdateIllumination();
 		if (!illuminated && __instance._illuminated)
 		{
@@ -91,6 +92,15 @@ internal class LightSensorPatches : QSBPatch
 		if (illuminated && !__instance._illuminated)
 		{
 			__instance.OnDetectDarkness.Invoke();
+		}
+		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
+		{
+			qsbLightSensor.OnDetectLocalLight.Invoke();
+			return false;
+		}
+		if (locallyIlluminated && !qsbLightSensor._locallyIlluminated)
+		{
+			qsbLightSensor.OnDetectLocalDarkness.Invoke();
 		}
 		return false;
 	}

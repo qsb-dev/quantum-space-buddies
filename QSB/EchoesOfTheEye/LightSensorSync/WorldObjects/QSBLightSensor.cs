@@ -20,14 +20,13 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 /// list of illuminators doesn't work because if a player illuminates and then leaves,
 /// it'll be considered illuminated forever until they come back.
 ///
-/// BUG: this also breaks in zone2.
+/// BUG: this breaks in zone2.
 /// the sector it's enabled in is bigger than the sector the zone2 walls are enabled in :(
 /// maybe this can be fixed by making the collision group use the same sector.
 /// </summary>
 internal class QSBLightSensor : WorldObject<SingleLightSensor>
 {
 	internal bool _locallyIlluminated;
-
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;
 
@@ -46,7 +45,7 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 	{
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 
-		// normally done in Start, but world objects arent ready by that point
+		// do this stuff here instead of Start, since world objects won't be ready by that point
 		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
 		{
 			if (AttachedObject._sector != null)
@@ -55,7 +54,6 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 				{
 					_locallyIlluminated = true;
 					OnDetectLocalLight?.Invoke();
-					this.SendMessage(new SetIlluminatedMessage(true));
 				}
 			}
 		});
