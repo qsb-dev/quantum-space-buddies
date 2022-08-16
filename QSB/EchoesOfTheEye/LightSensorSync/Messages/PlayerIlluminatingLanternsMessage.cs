@@ -19,12 +19,6 @@ internal class PlayerIlluminatingLanternsMessage : QSBMessage<(uint playerId, in
 	{
 		var lightSensor = (SingleLightSensor)QSBPlayerManager.GetPlayer(Data.playerId).LightSensor;
 
-		if (lightSensor.enabled)
-		{
-			// sensor is enabled, so this will already be synced
-			return;
-		}
-
 		lightSensor._illuminatingDreamLanternList.Clear();
 		lightSensor._illuminatingDreamLanternList.AddRange(
 			Data.lanterns.Select(x => x.GetWorldObject<QSBDreamLantern>().AttachedObject));
