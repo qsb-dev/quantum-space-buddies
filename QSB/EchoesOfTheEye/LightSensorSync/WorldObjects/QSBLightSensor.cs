@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
@@ -24,21 +25,20 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 /// the sector it's enabled in is bigger than the sector the zone2 walls are enabled in :(
 /// maybe this can be fixed by making the collision group use the same sector.
 /// </summary>
-internal class QSBLightSensor : WorldObject<SingleLightSensor>
+internal class QSBLightSensor : WorldObject<SingleLightSensor>, IAuthWorldObject
 {
 	internal bool _locallyIlluminated;
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;
 
-	internal readonly List<uint> _illuminatedBy = new();
+
+	public uint Owner { get; set; }
+	public bool CanOwn => AttachedObject.enabled;
+
 
 	public override void SendInitialState(uint to)
 	{
-		this.SendMessage(new IlluminatedByMessage(_illuminatedBy.ToArray()) { To = to });
-		if (AttachedObject._illuminatingDreamLanternList != null)
-		{
-			this.SendMessage(new IlluminatingLanternsMessage(AttachedObject._illuminatingDreamLanternList) { To = to });
-		}
+		// todo initial state
 	}
 
 	public override async UniTask Init(CancellationToken ct)
@@ -64,25 +64,6 @@ internal class QSBLightSensor : WorldObject<SingleLightSensor>
 
 	public void SetIlluminated(uint playerId, bool locallyIlluminated)
 	{
-		var illuminated = _illuminatedBy.Count > 0;
-		if (locallyIlluminated)
-		{
-			_illuminatedBy.SafeAdd(playerId);
-		}
-		else
-		{
-			_illuminatedBy.QuickRemove(playerId);
-		}
-
-		if (!illuminated && _illuminatedBy.Count > 0)
-		{
-			AttachedObject._illuminated = true;
-			AttachedObject.OnDetectLight.Invoke();
-		}
-		else if (illuminated && _illuminatedBy.Count == 0)
-		{
-			AttachedObject._illuminated = false;
-			AttachedObject.OnDetectDarkness.Invoke();
-		}
+		// todo remove
 	}
 }

@@ -7,6 +7,9 @@ namespace QSB.AuthoritySync;
 /// </summary>
 public interface IAuthWorldObject : IWorldObject
 {
+	/// <summary>
+	/// 0 = owned by no one
+	/// </summary>
 	public uint Owner { get; set; }
 	/// <summary>
 	/// can the world object have authority
