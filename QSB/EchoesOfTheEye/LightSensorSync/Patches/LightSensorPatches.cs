@@ -18,8 +18,6 @@ using UnityEngine;
  * leave while you still can.
  */
 
-// TODO PLEASE TEST THIS AND DEBUG YOU HAVE TO
-
 namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
 
 [HarmonyPatch(typeof(SingleLightSensor))]

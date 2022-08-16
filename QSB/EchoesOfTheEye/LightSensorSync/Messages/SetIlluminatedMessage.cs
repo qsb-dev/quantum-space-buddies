@@ -9,6 +9,11 @@ internal class SetIlluminatedMessage : QSBWorldObjectMessage<QSBLightSensor, boo
 
 	public override void OnReceiveRemote()
 	{
+		if (WorldObject.AttachedObject._illuminated == Data)
+		{
+			return;
+		}
+
 		WorldObject.AttachedObject._illuminated = Data;
 		if (Data)
 		{

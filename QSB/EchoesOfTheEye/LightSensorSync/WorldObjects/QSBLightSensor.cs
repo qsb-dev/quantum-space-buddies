@@ -1,5 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.AuthoritySync;
+using QSB.EchoesOfTheEye.LightSensorSync.Messages;
+using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -13,10 +15,6 @@ using System.Threading;
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 
 /// <summary>
-/// TODO: switch this over to some sort of auth system.
-/// list of illuminators doesn't work because if a player illuminates and then leaves,
-/// it'll be considered illuminated forever until they come back.
-///
 /// BUG: this breaks in zone2.
 /// the sector it's enabled in is bigger than the sector the zone2 walls are enabled in :(
 /// maybe this can be fixed by making the collision group use the same sector.
@@ -34,7 +32,9 @@ internal class QSBLightSensor : AuthWorldObject<SingleLightSensor>
 	public override void SendInitialState(uint to)
 	{
 		base.SendInitialState(to);
-		// todo initial state
+
+		this.SendMessage(new SetIlluminatedMessage(AttachedObject._illuminated) { To = to });
+		this.SendMessage(new IlluminatingLanternsMessage(AttachedObject._illuminatingDreamLanternList) { To = to });
 	}
 
 	public override async UniTask Init(CancellationToken ct)
