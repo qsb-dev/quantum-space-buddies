@@ -17,7 +17,7 @@ public abstract class AuthWorldObject<T> : WorldObject<T>, IAuthWorldObject
 	public abstract bool CanOwn { get; }
 
 	public override void SendInitialState(uint to) =>
-		((IAuthWorldObject)this).SendMessage(new WorldObjectAuthMessage(Owner) { To = to });
+		((IAuthWorldObject)this).SendMessage(new AuthWorldObjectMessage(Owner) { To = to });
 
 	public override async UniTask Init(CancellationToken ct) =>
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
