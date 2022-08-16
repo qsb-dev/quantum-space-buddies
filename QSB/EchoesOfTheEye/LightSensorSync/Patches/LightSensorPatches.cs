@@ -250,6 +250,9 @@ internal class LightSensorPatches : QSBPatch
 							{
 								__instance._illuminatingDreamLanternList.Add(dreamLanternController);
 								__instance._illuminated = true;
+
+								var dreamLanternItem = dreamLanternController.GetComponent<DreamLanternItem>();
+								qsbLightSensor._locallyIlluminated |= QSBPlayerManager.LocalPlayer.HeldItem?.AttachedObject == dreamLanternItem;
 							}
 							break;
 						}
@@ -263,6 +266,9 @@ internal class LightSensorPatches : QSBPatch
 								!__instance.CheckOcclusion(owlight.transform.position, sensorWorldPos, sensorWorldDir, occludableLight))
 							{
 								__instance._illuminated = true;
+
+								var simpleLanternItem = (SimpleLanternItem)lightSource;
+								qsbLightSensor._locallyIlluminated |= QSBPlayerManager.LocalPlayer.HeldItem?.AttachedObject == simpleLanternItem;
 							}
 						}
 						break;

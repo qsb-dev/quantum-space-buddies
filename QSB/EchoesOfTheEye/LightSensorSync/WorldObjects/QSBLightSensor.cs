@@ -24,6 +24,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 internal class QSBLightSensor : AuthWorldObject<SingleLightSensor>
 {
 	internal bool _locallyIlluminated;
+
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;
 
