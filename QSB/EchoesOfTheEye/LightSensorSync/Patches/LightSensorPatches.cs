@@ -5,6 +5,8 @@ using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Tools.FlashlightTool;
+using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -115,9 +117,8 @@ internal class LightSensorPatches : QSBPatch
 			{
 				__instance.OnDetectLight.Invoke();
 				qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
-				return false;
 			}
-			if (illuminated && !__instance._illuminated)
+			else if (illuminated && !__instance._illuminated)
 			{
 				__instance.OnDetectDarkness.Invoke();
 				qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
@@ -131,13 +132,11 @@ internal class LightSensorPatches : QSBPatch
 		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
 		{
 			qsbLightSensor.OnDetectLocalLight?.Invoke();
-			return false;
 		}
-		if (locallyIlluminated && !qsbLightSensor._locallyIlluminated)
+		else if (locallyIlluminated && !qsbLightSensor._locallyIlluminated)
 		{
 			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 		}
-
 		return false;
 	}
 
@@ -170,7 +169,6 @@ internal class LightSensorPatches : QSBPatch
 		}
 		foreach (var lightSource in __instance._lightSources)
 		{
-			// todo do all the funny FUCKING checks
 			if ((__instance._lightSourceMask & lightSource.GetLightSourceType()) == lightSource.GetLightSourceType() &&
 				lightSource.CheckIlluminationAtPoint(sensorWorldPos, __instance._sensorRadius, __instance._maxDistance))
 			{
@@ -190,25 +188,55 @@ internal class LightSensorPatches : QSBPatch
 						}
 					case LightSourceType.FLASHLIGHT:
 						{
-							var position = Locator.GetPlayerCamera().transform.position;
-							var vector3 = __instance.transform.position - position;
-							if (Vector3.Angle(Locator.GetPlayerCamera().transform.forward, vector3) <= __instance._maxSpotHalfAngle &&
-								!__instance.CheckOcclusion(position, sensorWorldPos, sensorWorldDir))
+							if (lightSource is QSBFlashlight qsbFlashlight)
 							{
-								__instance._illuminated = true;
+								var position = qsbFlashlight.Player.Camera.transform.position;
+								var vector3 = __instance.transform.position - position;
+								if (Vector3.Angle(qsbFlashlight.Player.Camera.transform.forward, vector3) <= __instance._maxSpotHalfAngle &&
+									!__instance.CheckOcclusion(position, sensorWorldPos, sensorWorldDir))
+								{
+									__instance._illuminated = true;
+								}
+							}
+							else
+							{
+								var position = Locator.GetPlayerCamera().transform.position;
+								var vector3 = __instance.transform.position - position;
+								if (Vector3.Angle(Locator.GetPlayerCamera().transform.forward, vector3) <= __instance._maxSpotHalfAngle &&
+									!__instance.CheckOcclusion(position, sensorWorldPos, sensorWorldDir))
+								{
+									__instance._illuminated = true;
+									qsbLightSensor._locallyIlluminated = true;
+								}
 							}
 							break;
 						}
 					case LightSourceType.PROBE:
 						{
-							var probe = Locator.GetProbe();
-							if (probe != null &&
-								probe.IsLaunched() &&
-								!probe.IsRetrieving() &&
-								probe.CheckIlluminationAtPoint(sensorWorldPos, __instance._sensorRadius, __instance._maxDistance) &&
-								!__instance.CheckOcclusion(probe.GetLightSourcePosition(), sensorWorldPos, sensorWorldDir))
+							if (lightSource is QSBProbe qsbProbe)
 							{
-								__instance._illuminated = true;
+								var probe = qsbProbe;
+								if (probe != null &&
+									probe.IsLaunched() &&
+									!probe.IsRetrieving() &&
+									probe.CheckIlluminationAtPoint(sensorWorldPos, __instance._sensorRadius, __instance._maxDistance) &&
+									!__instance.CheckOcclusion(probe.GetLightSourcePosition(), sensorWorldPos, sensorWorldDir))
+								{
+									__instance._illuminated = true;
+								}
+							}
+							else
+							{
+								var probe = Locator.GetProbe();
+								if (probe != null &&
+									probe.IsLaunched() &&
+									!probe.IsRetrieving() &&
+									probe.CheckIlluminationAtPoint(sensorWorldPos, __instance._sensorRadius, __instance._maxDistance) &&
+									!__instance.CheckOcclusion(probe.GetLightSourcePosition(), sensorWorldPos, sensorWorldDir))
+								{
+									__instance._illuminated = true;
+									qsbLightSensor._locallyIlluminated = true;
+								}
 							}
 							break;
 						}
@@ -235,7 +263,6 @@ internal class LightSensorPatches : QSBPatch
 								!__instance.CheckOcclusion(owlight.transform.position, sensorWorldPos, sensorWorldDir, occludableLight))
 							{
 								__instance._illuminated = true;
-								break;
 							}
 						}
 						break;
