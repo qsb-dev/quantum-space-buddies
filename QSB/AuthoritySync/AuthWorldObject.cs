@@ -1,5 +1,8 @@
-﻿using QSB.Messaging;
+﻿using Cysharp.Threading.Tasks;
+using QSB.Messaging;
+using QSB.Player;
 using QSB.WorldSync;
+using System.Threading;
 using UnityEngine;
 
 namespace QSB.AuthoritySync;
@@ -13,8 +16,20 @@ public abstract class AuthWorldObject<T> : WorldObject<T>, IAuthWorldObject
 	public uint Owner { get; set; }
 	public abstract bool CanOwn { get; }
 
-	public override void SendInitialState(uint to)
-	{
+	public override void SendInitialState(uint to) =>
 		((IAuthWorldObject)this).SendMessage(new WorldObjectAuthMessage(Owner) { To = to });
+
+	public override async UniTask Init(CancellationToken ct) =>
+		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
+
+	public override void OnRemoval() =>
+		QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
+
+	private void OnPlayerLeave(PlayerInfo player)
+	{
+		if (Owner == player.PlayerId)
+		{
+			this.ReleaseOwnership();
+		}
 	}
 }
