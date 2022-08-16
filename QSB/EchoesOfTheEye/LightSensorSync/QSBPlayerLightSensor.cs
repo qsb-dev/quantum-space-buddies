@@ -22,6 +22,8 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 /// GhostSensors.FixedUpdate_Sensors
 ///
 /// TODO: this can probably be massively simplified to work with these uses only
+///
+/// we don't have to worry about start illuminated or sectors
 /// </summary>
 [RequireComponent(typeof(SingleLightSensor))]
 public class QSBPlayerLightSensor : MonoBehaviour
