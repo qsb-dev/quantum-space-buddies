@@ -14,6 +14,8 @@ using UnityEngine;
  * leave while you still can.
  */
 
+// TODO PLEASE TEST THIS AND DEBUG YOU HAVE TO
+
 namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
 
 [HarmonyPatch(typeof(SingleLightSensor))]
@@ -56,7 +58,8 @@ internal class LightSensorPatches : QSBPatch
 				if (__instance._illuminated)
 				{
 					qsbLightSensor._locallyIlluminated = false;
-					qsbLightSensor.OnDetectLocalDarkness?.Invoke();;
+					qsbLightSensor.OnDetectLocalDarkness?.Invoke();
+					;
 					// wait because someone could send a message getting ownership again
 					// i hate this so fucking much
 					Delay.RunFramesLater(10, () =>
