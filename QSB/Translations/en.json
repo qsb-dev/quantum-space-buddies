@@ -42,6 +42,8 @@
   "YouAreDead": "You are dead.",
   "WaitingForRespawn": "Waiting for someone to respawn you...",
   "WaitingForAllToDie": "Waiting for {0} player(s) to die...",
+  "AttachToShip": "Attach to ship",
+  "DetachFromShip": "Detach from ship",
   "DeathMessages": {
     "Default": [
       "{0} died",

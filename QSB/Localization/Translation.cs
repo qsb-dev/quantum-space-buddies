@@ -47,5 +47,7 @@ public class Translation
 	public string YouAreDead;
 	public string WaitingForRespawn;
 	public string WaitingForAllToDie;
+	public string AttachToShip;
+	public string DetachFromShip;
 	public Dictionary<DeathType, string[]> DeathMessages;
 }
