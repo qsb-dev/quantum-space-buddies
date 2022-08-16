@@ -27,7 +27,7 @@ public static class IAuthWorldObject_Extensions
 	/// </summary>
 	public static void ReleaseOwnership(this IAuthWorldObject authWorldObject)
 	{
-		if (authWorldObject.Owner == 0)
+		if (authWorldObject.Owner != QSBPlayerManager.LocalPlayerId)
 		{
 			return;
 		}
