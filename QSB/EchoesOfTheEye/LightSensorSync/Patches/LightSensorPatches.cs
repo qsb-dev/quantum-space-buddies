@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using QSB.AuthoritySync;
+using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
@@ -112,16 +114,18 @@ internal class LightSensorPatches : QSBPatch
 			if (!illuminated && __instance._illuminated)
 			{
 				__instance.OnDetectLight.Invoke();
+				qsbLightSensor.SendMessage(new SetIlluminatedMessage(true));
 				return false;
 			}
 			if (illuminated && !__instance._illuminated)
 			{
 				__instance.OnDetectDarkness.Invoke();
+				qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 			}
 			if (__instance._illuminatingDreamLanternList != null &&
 				!__instance._illuminatingDreamLanternList.SequenceEqual(_illuminatingDreamLanternList))
 			{
-				// todo send a message about it
+				qsbLightSensor.SendMessage(new IlluminatingLanternsMessage(__instance._illuminatingDreamLanternList));
 			}
 		}
 		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)

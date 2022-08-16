@@ -14,12 +14,6 @@ internal class IlluminatingLanternsMessage : QSBWorldObjectMessage<QSBLightSenso
 
 	public override void OnReceiveRemote()
 	{
-		if (WorldObject.AttachedObject.enabled)
-		{
-			// sensor is enabled, so this will already be synced
-			return;
-		}
-
 		WorldObject.AttachedObject._illuminatingDreamLanternList.Clear();
 		WorldObject.AttachedObject._illuminatingDreamLanternList.AddRange(
 			Data.Select(x => x.GetWorldObject<QSBDreamLantern>().AttachedObject));
