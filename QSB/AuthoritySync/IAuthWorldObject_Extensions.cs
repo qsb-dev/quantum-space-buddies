@@ -10,10 +10,6 @@ public static class IAuthWorldObject_Extensions
 	/// </summary>
 	public static void RequestOwnership(this IAuthWorldObject authWorldObject)
 	{
-		if (!authWorldObject.CanOwn)
-		{
-			return;
-		}
 		if (authWorldObject.Owner != 0)
 		{
 			return;
