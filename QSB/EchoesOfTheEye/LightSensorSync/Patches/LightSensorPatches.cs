@@ -6,6 +6,7 @@ using QSB.Player;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /*
@@ -98,6 +99,11 @@ internal class LightSensorPatches : QSBPatch
 		}
 		var illuminated = __instance._illuminated;
 		var locallyIlluminated = qsbLightSensor._locallyIlluminated;
+		if (__instance._illuminatingDreamLanternList != null)
+		{
+			_illuminatingDreamLanternList.Clear();
+			_illuminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
+		}
 		__instance.UpdateIllumination();
 		if (qsbLightSensor.Owner == QSBPlayerManager.LocalPlayerId)
 		{
@@ -109,6 +115,11 @@ internal class LightSensorPatches : QSBPatch
 			if (illuminated && !__instance._illuminated)
 			{
 				__instance.OnDetectDarkness.Invoke();
+			}
+			if (__instance._illuminatingDreamLanternList != null &&
+				!__instance._illuminatingDreamLanternList.SequenceEqual(_illuminatingDreamLanternList))
+			{
+				// todo send a message about it
 			}
 		}
 		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
