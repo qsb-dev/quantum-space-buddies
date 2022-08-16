@@ -44,5 +44,10 @@ public class Translation
 	public string TimeSyncWaitForAllToReady;
 	public string TimeSyncWaitForAllToDie;
 	public string GalaxyMapEveryoneNotPresent;
+	public string YouAreDead;
+	public string WaitingForRespawn;
+	public string WaitingForAllToDie;
+	public string AttachToShip;
+	public string DetachFromShip;
 	public Dictionary<DeathType, string[]> DeathMessages;
 }
