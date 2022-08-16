@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
+using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,6 +39,7 @@ internal class LightSensorPatches : QSBPatch
 		{
 			__instance.enabled = true;
 			__instance._lightDetector.GetShape().enabled = true;
+			qsbLightSensor.RequestOwnership();
 			if (__instance._preserveStateWhileDisabled)
 			{
 				__instance._fixedUpdateFrameDelayCount = 10;
@@ -46,11 +49,20 @@ internal class LightSensorPatches : QSBPatch
 		{
 			__instance.enabled = false;
 			__instance._lightDetector.GetShape().enabled = false;
+			qsbLightSensor.ReleaseOwnership();
 			if (!__instance._preserveStateWhileDisabled)
 			{
 				if (__instance._illuminated)
 				{
-					__instance.OnDetectDarkness.Invoke();
+					// wait because someone could send a message getting ownership again
+					// i hate this so fucking much
+					Delay.RunFramesLater(10, () =>
+					{
+						if (qsbLightSensor.Owner == 0)
+						{
+							__instance.OnDetectDarkness.Invoke();
+						}
+					});
 				}
 				__instance._illuminated = false;
 			}
@@ -106,6 +118,7 @@ internal class LightSensorPatches : QSBPatch
 		{
 			qsbLightSensor.OnDetectLocalDarkness.Invoke();
 		}
+
 		return false;
 	}
 
