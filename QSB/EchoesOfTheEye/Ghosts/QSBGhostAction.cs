@@ -30,7 +30,7 @@ public abstract class QSBGhostAction
 				ghostAction = new QSBWaitAction();
 				break;
 			case GhostAction.Name.Sleep:
-				ghostAction =  new QSBSleepAction();
+				ghostAction = new QSBSleepAction();
 				break;
 			case GhostAction.Name.Sleepwalk:
 				ghostAction = new QSBSleepwalkAction();

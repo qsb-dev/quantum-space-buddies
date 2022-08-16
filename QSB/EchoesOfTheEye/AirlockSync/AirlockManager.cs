@@ -15,4 +15,4 @@ internal class AirlockManager : WorldObjectManager
 		QSBWorldSync.Init<QSBAirlockInterface, AirlockInterface>();
 		QSBWorldSync.Init<QSBGhostAirlock, GhostAirlock>();
 	}
-}	
+}

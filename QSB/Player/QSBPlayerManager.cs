@@ -22,7 +22,7 @@ public static class QSBPlayerManager
 			if (localInstance == null)
 			{
 				DebugLog.ToConsole("Error - Trying to get LocalPlayer when the local PlayerTransformSync instance is null." +
-				                   $"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
+								   $"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
 				return null;
 			}
 
@@ -66,8 +66,8 @@ public static class QSBPlayerManager
 	{
 		var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
 		if (includeLocalCamera
-		    && LocalPlayer != default
-		    && LocalPlayer.Camera != null)
+			&& LocalPlayer != default
+			&& LocalPlayer.Camera != null)
 		{
 			cameraList.Add(LocalPlayer);
 		}

@@ -33,7 +33,7 @@ internal class ShipFlameWashPatches : QSBPatch
 		{
 			__result = Vector3.Dot(ShipTransformSync.LocalInstance.ThrusterVariableSyncer.AccelerationSyncer.Value, __instance._thrusterFilter);
 		}
-		
+
 		return false;
 	}
 

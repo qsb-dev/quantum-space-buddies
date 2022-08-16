@@ -7,7 +7,7 @@ internal class LandingCameraMessage : QSBMessage<bool>
 {
 	public LandingCameraMessage(bool on) : base(on) { }
 
-	public override void OnReceiveRemote() 
+	public override void OnReceiveRemote()
 	{
 		if (From != ShipManager.Instance.CurrentFlyer)
 		{

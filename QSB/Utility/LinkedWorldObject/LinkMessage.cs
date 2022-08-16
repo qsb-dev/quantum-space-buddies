@@ -11,7 +11,8 @@ namespace QSB.Utility.LinkedWorldObject;
 public class LinkMessage : QSBMessage<(int ObjectId, uint NetId)>
 {
 	public LinkMessage(IWorldObject worldObject, NetworkBehaviour networkBehaviour) :
-		base((worldObject.ObjectId, networkBehaviour.netId)) { }
+		base((worldObject.ObjectId, networkBehaviour.netId))
+	{ }
 
 	public override void OnReceiveRemote()
 	{

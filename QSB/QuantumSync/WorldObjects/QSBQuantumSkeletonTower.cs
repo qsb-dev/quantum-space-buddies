@@ -3,8 +3,8 @@
 internal class QSBQuantumSkeletonTower : QSBQuantumObject<QuantumSkeletonTower>
 {
 	public override string ReturnLabel() => $"{base.ReturnLabel()}"
-	                                        + $"{AttachedObject._index} {AttachedObject._waitForPlayerToLookAtTower}\n"
-	                                        + $"{AttachedObject._waitForFlicker} {AttachedObject._flickering}";
+											+ $"{AttachedObject._index} {AttachedObject._waitForPlayerToLookAtTower}\n"
+											+ $"{AttachedObject._waitForFlicker} {AttachedObject._flickering}";
 
 	public void MoveSkeleton(int index)
 	{

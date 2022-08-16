@@ -26,7 +26,7 @@ public class QuantumAuthorityMessage : QSBWorldObjectMessage<IQSBQuantumObject, 
 			// Obj
 
 			return (WorldObject.ControllingPlayer == 0 || Data == 0)
-			       && WorldObject.ControllingPlayer != Data;
+				   && WorldObject.ControllingPlayer != Data;
 		}
 	}
 

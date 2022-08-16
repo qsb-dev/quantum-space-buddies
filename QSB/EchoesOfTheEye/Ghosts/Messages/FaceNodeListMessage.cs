@@ -20,7 +20,7 @@ internal class FaceNodeListMessage : QSBWorldObjectMessage<QSBGhostController, (
 		ret.turnSpeed = turnSpeed;
 		ret.nodeDelay = nodeDelay;
 		ret.autoFocusLantern = autoFocusLantern;
-		
+
 		if (numNodes == 0)
 		{
 			ret.mapId = -1;

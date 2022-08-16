@@ -29,8 +29,9 @@ public class RequestStateResyncMessage : QSBMessage
 		QSBMessageManager.Send(this);
 	}
 
-	public override void OnReceiveLocal() => Delay.RunFramesLater(60, 
-		() => {
+	public override void OnReceiveLocal() => Delay.RunFramesLater(60,
+		() =>
+		{
 			if (_waitingForEvent)
 			{
 				if (QSBPlayerManager.PlayerList.Count > 1)

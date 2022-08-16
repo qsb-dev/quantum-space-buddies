@@ -13,7 +13,8 @@ internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int Socke
 		type,
 		socket ? socket.GetWorldObject<QSBItemSocket>().ObjectId : -1,
 		item ? item.GetWorldObject<IQSBItem>().ObjectId : -1
-	)) { }
+	))
+	{ }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

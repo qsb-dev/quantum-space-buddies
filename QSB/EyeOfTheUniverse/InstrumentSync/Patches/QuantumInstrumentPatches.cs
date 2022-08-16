@@ -25,7 +25,7 @@ internal class QuantumInstrumentPatches : QSBPatch
 		{
 			__instance._scopeGatherPrompt.SetVisibility(false);
 			if (Locator.GetToolModeSwapper().GetSignalScope().InZoomMode()
-			    && Vector3.Angle(__instance.transform.position - Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward) < 1f)
+				&& Vector3.Angle(__instance.transform.position - Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward) < 1f)
 			{
 				__instance._scopeGatherPrompt.SetVisibility(true);
 				if (OWInput.IsNewlyPressed(InputLibrary.interact))

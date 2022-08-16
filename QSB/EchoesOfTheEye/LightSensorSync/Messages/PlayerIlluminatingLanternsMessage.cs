@@ -13,7 +13,8 @@ internal class PlayerIlluminatingLanternsMessage : QSBMessage<(uint playerId, in
 		base((
 			playerId,
 			lanterns.Select(x => x.GetWorldObject<QSBDreamLantern>().ObjectId).ToArray()
-		)) { }
+		))
+	{ }
 
 	public override void OnReceiveRemote()
 	{

@@ -249,8 +249,8 @@ public class AnglerPatches : QSBPatch
 
 		var attachedOWRigidbody = impact.otherCollider.GetAttachedOWRigidbody();
 		if ((attachedOWRigidbody.CompareTag("Player") || attachedOWRigidbody.CompareTag("Ship"))
-		    && __instance._currentState != AnglerfishController.AnglerState.Consuming
-		    && __instance._currentState != AnglerfishController.AnglerState.Stunned)
+			&& __instance._currentState != AnglerfishController.AnglerState.Consuming
+			&& __instance._currentState != AnglerfishController.AnglerState.Stunned)
 		{
 			qsbAngler.TargetTransform = attachedOWRigidbody.transform;
 			__instance.ChangeState(AnglerfishController.AnglerState.Chasing);

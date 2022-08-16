@@ -12,7 +12,8 @@ namespace QSB.TriggerSync.Messages;
 public class TriggerInitialStateMessage : QSBWorldObjectMessage<IQSBTrigger, uint[]>
 {
 	public TriggerInitialStateMessage(IEnumerable<PlayerInfo> occupants) :
-		base(occupants.Select(x => x.PlayerId).ToArray()) { }
+		base(occupants.Select(x => x.PlayerId).ToArray())
+	{ }
 
 	public override void OnReceiveRemote()
 	{

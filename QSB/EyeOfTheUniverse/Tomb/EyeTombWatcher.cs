@@ -24,7 +24,7 @@ internal class EyeTombWatcher : MonoBehaviour
 		_observedGrave = true;
 		tomb._graveObserveTrigger.OnGainFocus -= OnObserveGrave;
 	}
-	
+
 	private void FixedUpdate()
 	{
 		if (!_observedGrave)
