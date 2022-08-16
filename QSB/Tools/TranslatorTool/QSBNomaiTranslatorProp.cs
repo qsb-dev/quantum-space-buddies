@@ -367,7 +367,7 @@ internal class QSBNomaiTranslatorProp : MonoBehaviour
 		}
 		else
 		{
-			if (_translationTimeElapsed > (float)(_numTranslatedWords + 1) * _perWordTranslationTime && _numTranslatedWords < _listDisplayWords.Count)
+			if (_translationTimeElapsed > (_numTranslatedWords + 1) * _perWordTranslationTime && _numTranslatedWords < _listDisplayWords.Count)
 			{
 				_listDisplayWordsByLength[_numTranslatedWords].BeginTranslation(_perWordTranslationTime);
 				_numTranslatedWords++;
@@ -438,7 +438,7 @@ internal class QSBNomaiTranslatorProp : MonoBehaviour
 
 		_listDisplayWordsByLength.Sort(_lengthComparer);
 		_numTranslatedWords = 0;
-		_perWordTranslationTime = _fullTextTranslationTime / (float)_listDisplayWords.Count;
+		_perWordTranslationTime = _fullTextTranslationTime / _listDisplayWords.Count;
 	}
 
 	private string CleanupText(string text)

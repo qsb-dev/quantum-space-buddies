@@ -93,7 +93,7 @@ public class QSBSearchAction : QSBGhostAction
 			num += num2;
 		}
 
-		num /= (float)searchNodesOnLayer.Length;
+		num /= searchNodesOnLayer.Length;
 		GhostNode ghostNode = null;
 		for (var j = 0; j < 5; j++)
 		{

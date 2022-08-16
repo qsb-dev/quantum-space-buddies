@@ -69,7 +69,7 @@ internal class GhostPartyDirectorPatches : QSBPatch
 			((QSBPartyHouseAction)__instance._fireplaceGhost.GetWorldObject<QSBGhostBrain>().GetAction(GhostAction.Name.PartyHouse)).LookAtPlayer(0f, TurnSpeed.MEDIUM);
 			for (int i = 0; i < __instance._ambushGhosts.Length; i++)
 			{
-				float delay = (float)i;
+				float delay = i;
 				// BUG: breaks on client cuz cast
 				((QSBPartyHouseAction)__instance._ambushGhosts[i].GetWorldObject<QSBGhostBrain>().GetAction(GhostAction.Name.PartyHouse)).LookAtPlayer(delay, TurnSpeed.SLOWEST);
 			}

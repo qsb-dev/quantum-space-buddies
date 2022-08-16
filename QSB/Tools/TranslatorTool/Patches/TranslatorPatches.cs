@@ -155,7 +155,7 @@ internal class TranslatorPatches : QSBPatch
 		}
 		else
 		{
-			if (__instance._translationTimeElapsed > (float)(__instance._numTranslatedWords + 1) * __instance._perWordTranslationTime && __instance._numTranslatedWords < __instance._listDisplayWords.Count)
+			if (__instance._translationTimeElapsed > (__instance._numTranslatedWords + 1) * __instance._perWordTranslationTime && __instance._numTranslatedWords < __instance._listDisplayWords.Count)
 			{
 				__instance._listDisplayWordsByLength[__instance._numTranslatedWords].BeginTranslation(__instance._perWordTranslationTime);
 				__instance._numTranslatedWords++;

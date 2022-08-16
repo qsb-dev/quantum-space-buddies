@@ -159,7 +159,7 @@ public class RemotePlayerFluidDetector : PriorityDetector
 		var num = -1;
 		for (var i = 0; i < _splashEffects.Length; i++)
 		{
-			if (_splashEffects[i].fluidType == fluid.GetFluidType() && magnitude > _splashEffects[i].minImpactSpeed && (triggerEvent & _splashEffects[i].triggerEvent) > (SplashEffect.TriggerEvent)0 && (num == -1 || _splashEffects[i].minImpactSpeed > _splashEffects[num].minImpactSpeed))
+			if (_splashEffects[i].fluidType == fluid.GetFluidType() && magnitude > _splashEffects[i].minImpactSpeed && (triggerEvent & _splashEffects[i].triggerEvent) > 0 && (num == -1 || _splashEffects[i].minImpactSpeed > _splashEffects[num].minImpactSpeed))
 			{
 				num = i;
 			}

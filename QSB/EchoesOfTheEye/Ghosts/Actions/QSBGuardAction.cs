@@ -143,7 +143,7 @@ public class QSBGuardAction : QSBGhostAction
 			num += num2;
 		}
 
-		num /= (float)_searchNodes.Length;
+		num /= _searchNodes.Length;
 		GhostNode ghostNode = null;
 		for (var j = 0; j < 5; j++)
 		{
