@@ -54,6 +54,8 @@ internal class LightSensorPatches : QSBPatch
 			{
 				if (__instance._illuminated)
 				{
+					qsbLightSensor._locallyIlluminated = false;
+					qsbLightSensor.OnDetectLocalDarkness?.Invoke();;
 					// wait because someone could send a message getting ownership again
 					// i hate this so fucking much
 					Delay.RunFramesLater(10, () =>
@@ -111,12 +113,12 @@ internal class LightSensorPatches : QSBPatch
 		}
 		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
 		{
-			qsbLightSensor.OnDetectLocalLight.Invoke();
+			qsbLightSensor.OnDetectLocalLight?.Invoke();
 			return false;
 		}
 		if (locallyIlluminated && !qsbLightSensor._locallyIlluminated)
 		{
-			qsbLightSensor.OnDetectLocalDarkness.Invoke();
+			qsbLightSensor.OnDetectLocalDarkness?.Invoke();
 		}
 
 		return false;
