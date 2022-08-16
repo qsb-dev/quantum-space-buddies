@@ -4,7 +4,7 @@ using QSB.Player;
 namespace QSB.AuthoritySync;
 
 /// <summary>
-/// request ownership of a world object
+/// request or release ownership of a world object
 /// </summary>
 public class WorldObjectAuthMessage : QSBWorldObjectMessage<IAuthWorldObject, uint>
 {
