@@ -5,15 +5,17 @@ namespace QSB.ShipSync;
 
 public class ShipCustomAttach : MonoBehaviour
 {
-	private static readonly ScreenPrompt _attachPrompt = new(
+	private readonly ScreenPrompt _attachPrompt = new(
 		InputLibrary.interactSecondary,
 		InputLibrary.interact,
 		QSBLocalization.Current.AttachToShip + "   <CMD>",
-		ScreenPrompt.MultiCommandType.HOLD_ONE_AND_PRESS_2ND);
+		ScreenPrompt.MultiCommandType.HOLD_ONE_AND_PRESS_2ND
+	);
 
-	private static readonly ScreenPrompt _detachPrompt = new(
+	private readonly ScreenPrompt _detachPrompt = new(
 		InputLibrary.cancel,
-		QSBLocalization.Current.DetachFromShip + "   <CMD>");
+		QSBLocalization.Current.DetachFromShip + "   <CMD>"
+	);
 
 	private PlayerAttachPoint _playerAttachPoint;
 
