@@ -80,7 +80,7 @@ public static class RemotePlayerCreation
 		player.CameraBody = REMOTE_PlayerCamera;
 		visibleCameraRoot = REMOTE_PlayerCamera.transform;
 
-		player.QSBPlayerLightSensor = player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
+		player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
 
 		PlayerToolsManager.InitRemote(player);
 

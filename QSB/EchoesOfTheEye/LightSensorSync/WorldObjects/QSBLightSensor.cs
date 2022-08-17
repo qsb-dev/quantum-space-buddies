@@ -34,7 +34,10 @@ internal class QSBLightSensor : AuthWorldObject<SingleLightSensor>
 		base.SendInitialState(to);
 
 		this.SendMessage(new SetIlluminatedMessage(AttachedObject._illuminated) { To = to });
-		this.SendMessage(new IlluminatingLanternsMessage(AttachedObject._illuminatingDreamLanternList) { To = to });
+		if (AttachedObject._illuminatingDreamLanternList != null)
+		{
+			this.SendMessage(new IlluminatingLanternsMessage(AttachedObject._illuminatingDreamLanternList) { To = to });
+		}
 	}
 
 	public override async UniTask Init(CancellationToken ct)

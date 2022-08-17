@@ -54,6 +54,10 @@ public partial class PlayerInfo
 	}
 	private GameObject _body;
 
+	/// <summary>
+	/// remote light sensor is disabled.
+	/// it only acts as a storage of data and is always synced with the local light sensor.
+	/// </summary>
 	public LightSensor LightSensor
 	{
 		get

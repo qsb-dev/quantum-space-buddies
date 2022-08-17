@@ -38,7 +38,7 @@ public static class LocalPlayerCreation
 		player.CameraBody = cameraBody.gameObject;
 		visibleCameraRoot = cameraBody;
 
-		player.QSBPlayerLightSensor = player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
+		player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
 
 		PlayerToolsManager.InitLocal();
 
