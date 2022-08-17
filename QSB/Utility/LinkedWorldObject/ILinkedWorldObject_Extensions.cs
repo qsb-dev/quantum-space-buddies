@@ -10,22 +10,22 @@ public static class ILinkedWorldObject_Extensions
 	/// <summary>
 	/// link a world object and a network behaviour
 	/// </summary>
-	public static void LinkTo(this ILinkedWorldObject<NetworkBehaviour> worldObject, ILinkedNetworkBehaviour networkBehaviour)
+	public static void LinkTo(this ILinkedWorldObject<NetworkBehaviour> @this, ILinkedNetworkBehaviour networkBehaviour)
 	{
-		worldObject.SetNetworkBehaviour((NetworkBehaviour)networkBehaviour);
-		networkBehaviour.SetWorldObject(worldObject);
+		@this.SetNetworkBehaviour((NetworkBehaviour)networkBehaviour);
+		networkBehaviour.SetWorldObject(@this);
 	}
 
 	/// <summary>
 	/// link a world object and network object, then spawn it.
 	/// (host only)
 	/// </summary>
-	public static void SpawnLinked(this ILinkedWorldObject<NetworkBehaviour> worldObject, GameObject prefab, bool spawnWithServerAuthority)
+	public static void SpawnLinked(this ILinkedWorldObject<NetworkBehaviour> @this, GameObject prefab, bool spawnWithServerAuthority)
 	{
 		var go = Object.Instantiate(prefab);
 		var networkBehaviour = go.GetComponent<ILinkedNetworkBehaviour>();
 
-		worldObject.LinkTo(networkBehaviour);
+		@this.LinkTo(networkBehaviour);
 
 		if (spawnWithServerAuthority)
 		{
@@ -41,6 +41,6 @@ public static class ILinkedWorldObject_Extensions
 	/// wait for a world object to be linked.
 	/// (non host only)
 	/// </summary>
-	public static async UniTask WaitForLink(this ILinkedWorldObject<NetworkBehaviour> worldObject, CancellationToken ct) =>
-		await UniTask.WaitUntil(() => worldObject.NetworkBehaviour, cancellationToken: ct);
+	public static async UniTask WaitForLink(this ILinkedWorldObject<NetworkBehaviour> @this, CancellationToken ct) =>
+		await UniTask.WaitUntil(() => @this.NetworkBehaviour, cancellationToken: ct);
 }

@@ -8,25 +8,25 @@ public static class IAuthWorldObject_Extensions
 	/// <summary>
 	/// try and gain authority over the object
 	/// </summary>
-	public static void RequestOwnership(this IAuthWorldObject authWorldObject)
+	public static void RequestOwnership(this IAuthWorldObject @this)
 	{
-		if (authWorldObject.Owner != 0)
+		if (@this.Owner != 0)
 		{
 			return;
 		}
-		authWorldObject.SendMessage(new AuthWorldObjectMessage(QSBPlayerManager.LocalPlayerId));
+		@this.SendMessage(new AuthWorldObjectMessage(QSBPlayerManager.LocalPlayerId));
 	}
 
 	/// <summary>
 	/// release authority over the object,
 	/// potentially to giving it to someone else
 	/// </summary>
-	public static void ReleaseOwnership(this IAuthWorldObject authWorldObject)
+	public static void ReleaseOwnership(this IAuthWorldObject @this)
 	{
-		if (authWorldObject.Owner != QSBPlayerManager.LocalPlayerId)
+		if (@this.Owner != QSBPlayerManager.LocalPlayerId)
 		{
 			return;
 		}
-		authWorldObject.SendMessage(new AuthWorldObjectMessage(0));
+		@this.SendMessage(new AuthWorldObjectMessage(0));
 	}
 }
