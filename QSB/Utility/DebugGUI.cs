@@ -159,9 +159,13 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			{
 				WriteLine(2, $"Illuminated : {player.LightSensor.IsIlluminated()}");
 				var singleLightSensor = (SingleLightSensor)player.LightSensor;
-				foreach (var item in singleLightSensor._lightSources)
+				// will be null for remote player light sensors
+				if (singleLightSensor._lightSources != null)
 				{
-					WriteLine(2, $"- {item.GetLightSourceType()}");
+					foreach (var item in singleLightSensor._lightSources)
+					{
+						WriteLine(2, $"- {item.GetLightSourceType()}");
+					}
 				}
 
 				var networkTransform = player.TransformSync;
