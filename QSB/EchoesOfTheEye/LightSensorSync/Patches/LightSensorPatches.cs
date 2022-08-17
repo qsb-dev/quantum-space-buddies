@@ -62,6 +62,7 @@ internal class LightSensorPatches : QSBPatch
 					Delay.RunFramesLater(10, () =>
 					{
 						// no one else took ownership, so we can safely make not illuminated
+						// ie turn off when no one else is there
 						if (qsbLightSensor.Owner == 0)
 						{
 							__instance._illuminated = false;
