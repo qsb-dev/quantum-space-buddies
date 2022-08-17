@@ -13,9 +13,10 @@ using UnityEngine;
 namespace QSB.EchoesOfTheEye.LightSensorSync;
 
 /// <summary>
-/// only purpose is to handle initial state sync
+/// only purpose is to handle initial state sync.
 ///
-/// we don't have to worry about start illuminated or sectors
+/// we don't have to worry about start illuminated or sectors.
+/// authority is always given to local player light sensor.
 ///
 /// 2 uses:
 /// - AlarmTotem.CheckPlayerVisible
