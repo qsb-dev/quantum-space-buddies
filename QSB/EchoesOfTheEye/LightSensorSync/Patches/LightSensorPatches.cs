@@ -59,18 +59,23 @@ internal class LightSensorPatches : QSBPatch
 			{
 				if (__instance._illuminated)
 				{
-					qsbLightSensor._locallyIlluminated = false;
-					qsbLightSensor.OnDetectLocalDarkness?.Invoke();
-					// wait because someone could send a message getting ownership again
 					Delay.RunFramesLater(10, () =>
 					{
+						// no one else took ownership, so we can safely make not illuminated
 						if (qsbLightSensor.Owner == 0)
 						{
+							__instance._illuminated = false;
 							__instance.OnDetectDarkness.Invoke();
+							qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
 						}
 					});
 				}
-				__instance._illuminated = false;
+
+				if (qsbLightSensor._locallyIlluminated)
+				{
+					qsbLightSensor._locallyIlluminated = false;
+					qsbLightSensor.OnDetectLocalDarkness?.Invoke();
+				}
 			}
 		}
 		return false;
