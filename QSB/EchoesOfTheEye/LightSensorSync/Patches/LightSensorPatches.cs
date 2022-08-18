@@ -350,7 +350,7 @@ internal class LightSensorPatches : QSBPatch
 						}
 					case LightSourceType.PROBE:
 						{
-							if (lightSource is not QSBProbe qsbProbe)
+							if (lightSource is not QSBProbe)
 							{
 								var probe = Locator.GetProbe();
 								if (probe != null &&
