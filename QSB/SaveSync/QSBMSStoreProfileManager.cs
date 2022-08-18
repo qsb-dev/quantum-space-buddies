@@ -86,14 +86,9 @@ internal class QSBMSStoreProfileManager : IProfileManager
 		}
 
 		OnProfileSignInComplete?.Invoke(ProfileManagerSignInResult.COMPLETE);
+		OnProfileReadDone?.Invoke();
 
-		var onProfileReadDone = OnProfileReadDone;
-		if (onProfileReadDone == null)
-		{
-			return;
-		}
-
-		onProfileReadDone();
+		DebugLog.DebugWrite($"INITIALIZED");
 	}
 
 	public void PreInitialize()
@@ -316,18 +311,14 @@ internal class QSBMSStoreProfileManager : IProfileManager
 		if (_isLoadingSettingsBlob)
 		{
 			_isLoadingSettingsBlob = false;
-			var onProfileReadDone = OnProfileReadDone;
-			if (onProfileReadDone == null)
-			{
-				return;
-			}
-
-			onProfileReadDone();
+			OnProfileReadDone?.Invoke();
+			DebugLog.DebugWrite($"LOADED SETTINGS BLOB");
 		}
 	}
 
 	private void OnGameSaveLoadFailed(object sender, string blobName)
 	{
+		DebugLog.DebugWrite($"OnGameSaveLoadFailed");
 		_fileOpsBusyLocks--;
 		if (_isLoadingGameBlob)
 		{
@@ -346,13 +337,8 @@ internal class QSBMSStoreProfileManager : IProfileManager
 			_saveData.inputActionsJson = ((InputManager)OWInput.SharedInputManager).commandManager.DefaultInputActions.ToJson();
 			SaveGame(null, _saveData.settings, _saveData.gfxSettings, _saveData.inputActionsJson);
 			_isLoadingSettingsBlob = false;
-			var onProfileReadDone = OnProfileReadDone;
-			if (onProfileReadDone == null)
-			{
-				return;
-			}
-
-			onProfileReadDone();
+			OnProfileReadDone?.Invoke();
+			DebugLog.DebugWrite($"LOADING SETTINGS BLOB - FROM FAILED GAME LOAD");
 		}
 	}
 
