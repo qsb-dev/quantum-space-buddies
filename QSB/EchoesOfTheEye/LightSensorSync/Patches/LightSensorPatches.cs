@@ -29,10 +29,6 @@ internal class LightSensorPatches : QSBPatch
 	[HarmonyPatch(nameof(SingleLightSensor.OnSectorOccupantsUpdated))]
 	private static bool OnSectorOccupantsUpdated(SingleLightSensor __instance)
 	{
-		if (LightSensorManager.IsPlayerLightSensor(__instance))
-		{
-			return true;
-		}
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return true;
@@ -187,12 +183,9 @@ internal class LightSensorPatches : QSBPatch
 
 	#endregion
 
+
 	private static bool UpdateLocalIllumination(SingleLightSensor __instance)
 	{
-		if (LightSensorManager.IsPlayerLightSensor(__instance))
-		{
-			return true;
-		}
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return true;
