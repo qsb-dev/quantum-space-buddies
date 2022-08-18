@@ -106,16 +106,8 @@ internal class QSBMSStoreProfileManager : IProfileManager
 		_preInitialized = true;
 	}
 
-	public void InvokeProfileSignInComplete()
-	{
-		var onProfileSignInComplete = OnProfileSignInComplete;
-		if (onProfileSignInComplete == null)
-		{
-			return;
-		}
-
-		onProfileSignInComplete(ProfileManagerSignInResult.COMPLETE);
-	}
+	public void InvokeProfileSignInComplete() => 
+		OnProfileSignInComplete?.Invoke(ProfileManagerSignInResult.COMPLETE);
 
 	public void InvokeSaveSetupComplete()
 	{
