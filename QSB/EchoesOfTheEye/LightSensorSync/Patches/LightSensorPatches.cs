@@ -102,16 +102,15 @@ internal class LightSensorPatches : QSBPatch
 			__instance._fixedUpdateFrameDelayCount--;
 			return false;
 		}
-		var illuminated = __instance._illuminated;
-		var locallyIlluminated = qsbLightSensor._locallyIlluminated;
-		if (__instance._illuminatingDreamLanternList != null)
-		{
-			_illuminatingDreamLanternList.Clear();
-			_illuminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
-		}
-		__instance.UpdateIllumination();
 		if (qsbLightSensor.Owner == QSBPlayerManager.LocalPlayerId)
 		{
+			var illuminated = __instance._illuminated;
+			if (__instance._illuminatingDreamLanternList != null)
+			{
+				_illuminatingDreamLanternList.Clear();
+				_illuminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
+			}
+			__instance.UpdateIllumination();
 			if (!illuminated && __instance._illuminated)
 			{
 				__instance.OnDetectLight.Invoke();
@@ -128,6 +127,9 @@ internal class LightSensorPatches : QSBPatch
 				qsbLightSensor.SendMessage(new IlluminatingLanternsMessage(__instance._illuminatingDreamLanternList));
 			}
 		}
+
+		var locallyIlluminated = qsbLightSensor._locallyIlluminated;
+		UpdateLocalIllumination(__instance);
 		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
 		{
 			qsbLightSensor.OnDetectLocalLight?.Invoke();
