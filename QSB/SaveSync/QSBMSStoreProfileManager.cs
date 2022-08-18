@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xbox;
 using Newtonsoft.Json;
+using QSB.Utility;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
@@ -85,14 +86,9 @@ internal class QSBMSStoreProfileManager : IProfileManager
 		}
 
 		OnProfileSignInComplete?.Invoke(ProfileManagerSignInResult.COMPLETE);
+		OnProfileReadDone?.Invoke();
 
-		var onProfileReadDone = OnProfileReadDone;
-		if (onProfileReadDone == null)
-		{
-			return;
-		}
-
-		onProfileReadDone();
+		DebugLog.DebugWrite($"INITIALIZED");
 	}
 
 	public void PreInitialize()
@@ -135,7 +131,7 @@ internal class QSBMSStoreProfileManager : IProfileManager
 
 	public void SaveGame(GameSave gameSave, SettingsSave settSave, GraphicSettings gfxSettings, string inputJSON)
 	{
-		Debug.Log("MSStoreProfileManager.SaveGame");
+		DebugLog.DebugWrite("MSStoreProfileManager.SaveGame");
 		if (isBusyWithFileOps || LoadManager.IsBusy())
 		{
 			_pendingGameSave = gameSave;
@@ -215,13 +211,14 @@ internal class QSBMSStoreProfileManager : IProfileManager
 
 	private void LoadGame(string blobName)
 	{
+		DebugLog.DebugWrite($"LoadGame blobName:{blobName}");
 		_fileOpsBusyLocks++;
 		Gdk.Helpers.LoadSaveData(blobName);
 	}
 
 	private void WriteSaveToStorage(QSBX1SaveData saveData, string blobName)
 	{
-		Debug.Log("Saving to storage: " + blobName);
+		DebugLog.DebugWrite("Saving to storage: " + blobName);
 		_fileOpsBusyLocks++;
 		var memoryStream = new MemoryStream();
 		using (JsonWriter jsonWriter = new JsonTextWriter(new StreamWriter(memoryStream)))
@@ -248,19 +245,19 @@ internal class QSBMSStoreProfileManager : IProfileManager
 	private void OnGameSaveComplete(object sender, string blobName)
 	{
 		_fileOpsBusyLocks--;
-		Debug.Log("[GDK] save to blob " + blobName + " complete");
+		DebugLog.DebugWrite("[GDK] save to blob " + blobName + " complete");
 	}
 
 	private void OnGameSaveFailed(object sender, string blobName)
 	{
 		_fileOpsBusyLocks--;
-		Debug.Log("[GDK] save to blob " + blobName + " failed");
+		DebugLog.DebugWrite("[GDK] save to blob " + blobName + " failed");
 	}
 
 	private void OnGameSaveLoaded(object sender, string blobName, GameSaveLoadedArgs saveData)
 	{
 		_fileOpsBusyLocks--;
-		Debug.Log("[GDK] save file load complete! blob name: " + blobName);
+		DebugLog.DebugWrite("[GDK] save file load complete! blob name: " + blobName);
 		var memoryStream = new MemoryStream(saveData.Data);
 		memoryStream.Seek(0L, SeekOrigin.Begin);
 		using (var jsonTextReader = new JsonTextReader(new StreamReader(memoryStream)))
@@ -272,14 +269,14 @@ internal class QSBMSStoreProfileManager : IProfileManager
 				{
 					if (x1SaveData.gameSave == null)
 					{
-						Debug.Log("[GDK] tempSaveData.gameSave is null (oh no)");
+						DebugLog.DebugWrite("[GDK] tempSaveData.gameSave is null (oh no)");
 					}
 
 					_saveData.gameSave = x1SaveData.gameSave ?? new GameSave();
 				}
 				else
 				{
-					Debug.Log("[GDK] tempSaveData is null (oh no)");
+					DebugLog.DebugWrite("[GDK] tempSaveData is null (oh no)");
 					_saveData.gameSave = new GameSave();
 				}
 			}
@@ -298,8 +295,8 @@ internal class QSBMSStoreProfileManager : IProfileManager
 					_saveData.inputActionsJson = ((InputManager)OWInput.SharedInputManager).commandManager.DefaultInputActions.ToJson();
 				}
 
-				Debug.Log(string.Format("after settings load, _saveData.gameSave is null: {0}", _saveData.gameSave == null));
-				Debug.Log(string.Format("_saveData loopCount: {0}", _saveData.gameSave.loopCount));
+				DebugLog.DebugWrite(string.Format("after settings load, _saveData.gameSave is null: {0}", _saveData.gameSave == null));
+				DebugLog.DebugWrite(string.Format("_saveData loopCount: {0}", _saveData.gameSave.loopCount));
 			}
 		}
 
@@ -314,18 +311,14 @@ internal class QSBMSStoreProfileManager : IProfileManager
 		if (_isLoadingSettingsBlob)
 		{
 			_isLoadingSettingsBlob = false;
-			var onProfileReadDone = OnProfileReadDone;
-			if (onProfileReadDone == null)
-			{
-				return;
-			}
-
-			onProfileReadDone();
+			OnProfileReadDone?.Invoke();
+			DebugLog.DebugWrite($"LOADED SETTINGS BLOB");
 		}
 	}
 
 	private void OnGameSaveLoadFailed(object sender, string blobName)
 	{
+		DebugLog.DebugWrite($"OnGameSaveLoadFailed");
 		_fileOpsBusyLocks--;
 		if (_isLoadingGameBlob)
 		{
@@ -344,13 +337,8 @@ internal class QSBMSStoreProfileManager : IProfileManager
 			_saveData.inputActionsJson = ((InputManager)OWInput.SharedInputManager).commandManager.DefaultInputActions.ToJson();
 			SaveGame(null, _saveData.settings, _saveData.gfxSettings, _saveData.inputActionsJson);
 			_isLoadingSettingsBlob = false;
-			var onProfileReadDone = OnProfileReadDone;
-			if (onProfileReadDone == null)
-			{
-				return;
-			}
-
-			onProfileReadDone();
+			OnProfileReadDone?.Invoke();
+			DebugLog.DebugWrite($"LOADING SETTINGS BLOB - FROM FAILED GAME LOAD");
 		}
 	}
 
