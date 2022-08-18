@@ -12,6 +12,7 @@ public class AlarmTotemPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	/*
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.OnSectorOccupantAdded))]
 	private static void OnSectorOccupantAdded(AlarmTotem __instance, SectorDetector sectorDetector)
@@ -80,6 +81,7 @@ public class AlarmTotemPatches : QSBPatch
 
 		return false;
 	}
+	*/
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmBell), nameof(AlarmBell.OnEntry))]

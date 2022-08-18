@@ -6,13 +6,16 @@ using QSB.WorldSync;
 
 namespace QSB.CampfireSync.Messages;
 
+/// <summary>
+/// TODO: initial state on campfire and item
+/// </summary>
 internal class BurnSlideReelMessage : QSBWorldObjectMessage<QSBSlideReelItem, int>
 {
 	public BurnSlideReelMessage(QSBCampfire campfire) : base(campfire.ObjectId) { }
 
 	public override void OnReceiveRemote()
 	{
-		var campfire = QSBWorldSync.GetWorldObject<QSBCampfire>(Data).AttachedObject;
+		var campfire = Data.GetWorldObject<QSBCampfire>().AttachedObject;
 		var fromPlayer = QSBPlayerManager.GetPlayer(From);
 		WorldObject.DropItem(
 			campfire._burnedSlideReelSocket.position,

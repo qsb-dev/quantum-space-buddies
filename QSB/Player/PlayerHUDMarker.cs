@@ -26,6 +26,16 @@ public class PlayerHUDMarker : HUDDistanceMarker
 		_needsInitializing = true;
 	}
 
+	private bool ShouldBeVisible()
+	{ 
+		if (_player == null)
+		{
+			return false;
+		}
+
+		return _player.IsReady && !_player.IsDead && !_player.InDreamWorld && _player.Visible;
+	}
+
 	private void Update()
 	{
 		if (_needsInitializing)
@@ -42,9 +52,9 @@ public class PlayerHUDMarker : HUDDistanceMarker
 		{
 			var isVisible = _canvasMarker.IsVisible();
 
-			if (_player.Visible != isVisible)
+			if (ShouldBeVisible() != isVisible)
 			{
-				_canvasMarker.SetVisibility(_player.Visible);
+				_canvasMarker.SetVisibility(ShouldBeVisible());
 			}
 		}
 		else

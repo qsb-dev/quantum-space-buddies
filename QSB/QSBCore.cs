@@ -5,7 +5,9 @@ using OWML.ModHelper;
 using QSB.Localization;
 using QSB.Menus;
 using QSB.Patches;
+using QSB.Player;
 using QSB.QuantumSync;
+using QSB.SaveSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -48,13 +50,18 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
-	public static bool IsInMultiplayer => QSBNetworkManager.singleton.isNetworkActive;
+	public static bool IsInMultiplayer;
 	public static string QSBVersion => Helper.Manifest.Version;
 	public static string GameVersion =>
 		// ignore the last patch numbers like the title screen does
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static bool IncompatibleModsAllowed { get; private set; }
+	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
+	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
+	public static IProfileManager ProfileManager => IsStandalone
+		? QSBStandaloneProfileManager.SharedInstance
+		: QSBMSStoreProfileManager.SharedInstance;
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
 	public static Storage Storage { get; private set; } = new();
@@ -67,8 +74,41 @@ public class QSBCore : ModBehaviour
 		// incompatible mods
 		"Raicuparta.NomaiVR",
 		"xen.NewHorizons",
-		"Vesper.AutoResume"
+		"Vesper.AutoResume",
+		"Vesper.OuterWildsMMO",
+		"_nebula.StopTime",
+		"Leadpogrommer.PeacefulGhosts",
+		"PacificEngine.OW_Randomizer",
+		"xen.DayDream"
 	};
+
+	private static void DetermineGameVendor()
+	{
+		var gameAssemblyTypes = typeof(AstroObject).Assembly.GetTypes();
+		var isEpic = gameAssemblyTypes.Any(x => x.Name == "EpicEntitlementRetriever");
+		var isSteam = gameAssemblyTypes.Any(x => x.Name == "SteamEntitlementRetriever");
+		var isUWP = gameAssemblyTypes.Any(x => x.Name == "MSStoreEntitlementRetriever");
+
+		if (isEpic && !isSteam && !isUWP)
+		{
+			GameVendor = GameVendor.Epic;
+		}
+		else if (!isEpic && isSteam && !isUWP)
+		{
+			GameVendor = GameVendor.Steam;
+		}
+		else if (!isEpic && !isSteam && isUWP)
+		{
+			GameVendor = GameVendor.Gamepass;
+		}
+		else
+		{
+			// ???
+			DebugLog.ToConsole($"FATAL - Could not determine game vendor.", MessageType.Fatal);
+		}
+
+		DebugLog.DebugWrite($"Determined game vendor as {GameVendor}", MessageType.Info);
+	}
 
 	public void Awake()
 	{
@@ -77,6 +117,11 @@ public class QSBCore : ModBehaviour
 		// no, we cant localize this - languages are loaded after the splash screen
 		UIHelper.ReplaceUI(UITextType.PleaseUseController,
 			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
+
+		DetermineGameVendor();
+
+		QSBPatchManager.Init();
+		QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 	}
 
 	public void Start()
@@ -133,7 +178,6 @@ public class QSBCore : ModBehaviour
 			return;
 		}
 
-		QSBPatchManager.Init();
 		DeterministicManager.Init();
 		QSBLocalization.Init();
 
@@ -145,7 +189,7 @@ public class QSBCore : ModBehaviour
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
 
-		QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
+		StartCoroutine(QSBPlayerManager.ValidatePlayers());
 	}
 
 	private static void OnPatchType(QSBPatchTypes type)

@@ -15,8 +15,6 @@ internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 	where T : MonoBehaviour
 	where U : NetworkBehaviour
 {
-	public override void SendInitialState(uint to) { }
-
 	protected abstract IEnumerable<SingleLightSensor> LightSensors { get; }
 	private QSBLightSensor[] _qsbLightSensors;
 	private int _litSensors;

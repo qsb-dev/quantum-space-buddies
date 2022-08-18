@@ -16,7 +16,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 {
 	public override void SendInitialState(uint to)
 	{
-
+		// todo SendInitialState
 	}
 
 	public override bool ShouldDisplayDebug() => false;

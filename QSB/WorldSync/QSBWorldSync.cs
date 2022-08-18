@@ -187,7 +187,7 @@ public static class QSBWorldSync
 			if (QSBCore.IsInMultiplayer && loadScene.IsUniverseScene())
 			{
 				// So objects have time to be deleted, made, whatever
-				// I.E. wait until Start has been called
+				// i.e. wait until Start has been called
 				Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
 			}
 		};
@@ -232,6 +232,9 @@ public static class QSBWorldSync
 	public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 		where TWorldObject : IWorldObject
 		=> WorldObjects.OfType<TWorldObject>();
+
+	public static IEnumerable<IWorldObject> GetWorldObjects(Type type)
+		=> WorldObjects.Where(type.IsInstanceOfType);
 
 	public static TWorldObject GetWorldObject<TWorldObject>(this int objectId)
 		where TWorldObject : IWorldObject

@@ -11,14 +11,14 @@ internal class QSBShipHull : WorldObject<ShipHull>
 	{
 		if (AttachedObject._damaged)
 		{
-			this.SendMessage(new HullDamagedMessage());
+			this.SendMessage(new HullDamagedMessage { To = to });
 		}
 		else
 		{
-			this.SendMessage(new HullRepairedMessage());
+			this.SendMessage(new HullRepairedMessage { To = to });
 		}
 
-		this.SendMessage(new HullChangeIntegrityMessage(AttachedObject._integrity));
+		this.SendMessage(new HullChangeIntegrityMessage(AttachedObject._integrity) { To = to });
 	}
 
 	public void SetDamaged()

@@ -33,13 +33,9 @@ public static class RemotePlayerCreation
 		out Transform visibleStickPivot,
 		out Transform visibleStickTip)
 	{
-		DebugLog.DebugWrite($"CREATE PLAYER");
-
 		/*
 		 * CREATE PLAYER STRUCTURE
 		 */
-
-		DebugLog.DebugWrite($"CREATE PLAYER STRUCTURE");
 
 		// Variable naming convention is broken here to reflect OW unity project (with REMOTE_ prefixed) for readability
 
@@ -54,8 +50,6 @@ public static class RemotePlayerCreation
 		 * SET UP PLAYER BODY
 		 */
 
-		DebugLog.DebugWrite($"SET UP PLAYER BODY");
-
 		player.Body = REMOTE_Player_Body;
 		player.ThrusterLightTracker = player.Body.GetComponentInChildren<ThrusterLightTracker>();
 		player.FluidDetector = REMOTE_PlayerDetector.GetComponent<RemotePlayerFluidDetector>();
@@ -63,7 +57,7 @@ public static class RemotePlayerCreation
 		player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
 
 		REMOTE_Player_Body.GetComponent<PlayerHUDMarker>().Init(player);
-		REMOTE_Player_Body.GetComponent<PlayerMapMarker>().PlayerName = player.Name;
+		REMOTE_Player_Body.GetComponent<PlayerMapMarker>().Init(player);
 		player._ditheringAnimator = REMOTE_Player_Body.GetComponent<QSBDitheringAnimator>();
 		player.DreamWorldSpawnAnimator = REMOTE_Player_Body.GetComponent<DreamWorldSpawnAnimator>();
 		player.AudioController = REMOTE_Player_Body.transform.Find("REMOTE_Audio_Player").GetComponent<QSBPlayerAudioController>();
@@ -72,23 +66,19 @@ public static class RemotePlayerCreation
 		 * SET UP PLAYER CAMERA
 		 */
 
-		DebugLog.DebugWrite($"SET UP PLAYER CAMERA");
-
 		REMOTE_PlayerCamera.GetComponent<Camera>().enabled = false;
 		var owcamera = REMOTE_PlayerCamera.GetComponent<OWCamera>();
 		player.Camera = owcamera;
 		player.CameraBody = REMOTE_PlayerCamera;
 		visibleCameraRoot = REMOTE_PlayerCamera.transform;
 
-		player.QSBPlayerLightSensor = player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
+		player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
 
 		PlayerToolsManager.InitRemote(player);
 
 		/*
 		 * SET UP ROASTING STICK
 		 */
-
-		DebugLog.DebugWrite($"SET UP ROASTING STICK");
 
 		var REMOTE_Stick_Pivot = REMOTE_Stick_Root.transform.GetChild(0);
 		var mallowRoot = REMOTE_Stick_Pivot.Find("REMOTE_Stick_Tip/Mallow_Root");

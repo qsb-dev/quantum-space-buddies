@@ -115,23 +115,4 @@ public class CharacterAnimationPatches : QSBPatch
 
 		return false;
 	}
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(KidRockController), nameof(KidRockController.Update))]
-	public static bool UpdateReplacement(KidRockController __instance)
-	{
-		if (!QSBWorldSync.AllObjectsReady)
-		{
-			return true;
-		}
-
-		var qsbObj = QSBWorldSync.GetWorldObjects<QSBCharacterAnimController>().First(x => x.GetDialogueTree() == __instance._dialogueTree);
-
-		if (!__instance._throwingRock && !qsbObj.InConversation() && Time.time > __instance._nextThrowTime)
-		{
-			__instance.StartRockThrow();
-		}
-
-		return false;
-	}
 }

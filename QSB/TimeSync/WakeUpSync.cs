@@ -5,6 +5,7 @@ using QSB.ClientServerStateSync.Messages;
 using QSB.DeathSync;
 using QSB.Inputs;
 using QSB.Messaging;
+using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
@@ -129,6 +130,7 @@ public class WakeUpSync : NetworkBehaviour
 			}
 			else
 			{
+				// dont bother sleeping, just wake up
 				if (!_hasWokenUp)
 				{
 					Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
@@ -138,12 +140,13 @@ public class WakeUpSync : NetworkBehaviour
 	}
 
 	private void SendServerTime()
-		=> new ServerTimeMessage(_serverTime, PlayerData.LoadLoopCount()).Send();
+		=> new ServerTimeMessage(_serverTime, PlayerData.LoadLoopCount(), TimeLoop.GetSecondsRemaining()).Send();
 
-	public void OnClientReceiveMessage(float time, int count)
+	public void OnClientReceiveMessage(float time, int count, float secondsRemaining)
 	{
 		_serverTime = time;
 		_serverLoopCount = count;
+		QSBPatch.RemoteCall(() => TimeLoop.SetSecondsRemaining(secondsRemaining));
 	}
 
 	private void WakeUpOrSleep()
@@ -162,7 +165,7 @@ public class WakeUpSync : NetworkBehaviour
 		var myTime = Time.timeSinceLevelLoad;
 		var diff = myTime - _serverTime;
 
-		if (ServerStateManager.Instance.GetServerState() is not ServerState.InSolarSystem and not ServerState.InEye)
+		if (ServerStateManager.Instance.GetServerState() is not (ServerState.InSolarSystem or ServerState.InEye))
 		{
 			return;
 		}
@@ -170,12 +173,18 @@ public class WakeUpSync : NetworkBehaviour
 		if (diff > PauseOrFastForwardThreshold)
 		{
 			StartPausing(PauseReason.TooFarAhead);
-			return;
 		}
-
-		if (diff < -PauseOrFastForwardThreshold)
+		else if (diff < -PauseOrFastForwardThreshold)
 		{
 			StartFastForwarding(FastForwardReason.TooFarBehind);
+		}
+		else
+		{
+			// should only happen from Init so we gotta wait
+			if (!_hasWokenUp)
+			{
+				Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
+			}
 		}
 	}
 
@@ -294,7 +303,8 @@ public class WakeUpSync : NetworkBehaviour
 
 		if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.WaitingForAllPlayersToBeReady)
 		{
-			if (clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem)
+			if ((clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem) ||
+				(clientState == ClientState.AliveInEye && serverState == ServerState.InEye))
 			{
 				ResetTimeScale();
 			}
@@ -390,7 +400,8 @@ public class WakeUpSync : NetworkBehaviour
 
 		if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.WaitingForAllPlayersToBeReady)
 		{
-			if (clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem)
+			if ((clientState == ClientState.AliveInSolarSystem && serverState == ServerState.InSolarSystem) ||
+				(clientState == ClientState.AliveInEye && serverState == ServerState.InEye))
 			{
 				ResetTimeScale();
 			}
@@ -422,7 +433,7 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		var diff = GetTimeDifference();
 
-		if (diff is > PauseOrFastForwardThreshold or < (-PauseOrFastForwardThreshold))
+		if (diff is > PauseOrFastForwardThreshold or < -PauseOrFastForwardThreshold)
 		{
 			WakeUpOrSleep();
 			return;

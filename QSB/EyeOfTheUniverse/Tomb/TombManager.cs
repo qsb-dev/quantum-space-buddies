@@ -11,11 +11,8 @@ internal class TombManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		if (QSBCore.IsHost)
-		{
-			// sike!! no worldobjects here
-			var tomb = QSBWorldSync.GetUnityObject<EyeTombController>();
-			tomb.gameObject.AddComponent<EyeTombWatcher>();
-		}
+		// sike!! no worldobjects here
+		var tomb = QSBWorldSync.GetUnityObject<EyeTombController>();
+		tomb.gameObject.AddComponent<EyeTombWatcher>();
 	}
 }

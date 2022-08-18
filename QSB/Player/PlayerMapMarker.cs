@@ -4,10 +4,10 @@ namespace QSB.Player;
 
 public class PlayerMapMarker : MonoBehaviour
 {
-	public string PlayerName;
-	private Transform _playerTransform;
+	private PlayerInfo _player;
 	private CanvasMapMarker _canvasMarker;
 	private bool _canvasMarkerInitialized;
+	private bool _hasBeenSetUpForInit;
 
 	public void Awake()
 	{
@@ -18,7 +18,6 @@ public class PlayerMapMarker : MonoBehaviour
 	public void Start()
 	{
 		enabled = false;
-		_playerTransform = Locator.GetPlayerTransform();
 	}
 
 	public void OnDestroy()
@@ -27,22 +26,20 @@ public class PlayerMapMarker : MonoBehaviour
 		GlobalMessenger.RemoveListener("ExitMapView", new Callback(OnExitMapView));
 	}
 
+	public void Init(PlayerInfo player)
+	{
+		_player = player;
+		_hasBeenSetUpForInit = true;
+	}
+
 	public void InitMarker()
 	{
 		var obj = GameObject.FindWithTag("MapCamera");
 		var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
 		_canvasMarker = markerManager.InstantiateNewMarker(true);
-		var component = GetComponent<OWRigidbody>();
-		if (component != null)
-		{
-			markerManager.RegisterMarker(_canvasMarker, component);
-		}
-		else
-		{
-			markerManager.RegisterMarker(_canvasMarker, transform);
-		}
+		markerManager.RegisterMarker(_canvasMarker, transform);
 
-		_canvasMarker.SetLabel(PlayerName.ToUpper());
+		_canvasMarker.SetLabel(_player.Name.ToUpper());
 		_canvasMarker.SetColor(Color.white);
 		_canvasMarker.SetVisibility(false);
 		_canvasMarkerInitialized = true;
@@ -51,21 +48,31 @@ public class PlayerMapMarker : MonoBehaviour
 	private void OnEnterMapView() => enabled = true;
 	private void OnExitMapView() => enabled = false;
 
+	private bool ShouldBeVisible()
+	{
+		if (_player == null)
+		{
+			return false;
+		}
+
+		var playerScreenPos = Locator.GetActiveCamera().WorldToScreenPoint(transform.position);
+		var isInfrontOfCamera = playerScreenPos.z > 0f;
+
+		return _player.IsReady && !_player.IsDead && !_player.InDreamWorld && _player.Visible && isInfrontOfCamera;
+	}
+
 	public void LateUpdate()
 	{
-		if (!_canvasMarkerInitialized)
+		if (!_canvasMarkerInitialized && _hasBeenSetUpForInit)
 		{
 			InitMarker();
 		}
 
-		var a = Locator.GetActiveCamera().WorldToScreenPoint(transform.position);
-		var b = Locator.GetActiveCamera().WorldToScreenPoint(_playerTransform.position);
-		var vector = a - b;
-		vector.z = 0f;
-		var flag = a.z > 0f;
-		if (_canvasMarker.IsVisible() != flag)
+		var shouldBeVisible = ShouldBeVisible();
+		
+		if (_canvasMarker.IsVisible() != shouldBeVisible)
 		{
-			_canvasMarker.SetVisibility(flag);
+			_canvasMarker.SetVisibility(shouldBeVisible);
 		}
 	}
 }

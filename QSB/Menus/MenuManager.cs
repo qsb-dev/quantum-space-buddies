@@ -3,6 +3,7 @@ using Mirror;
 using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
+using QSB.SaveSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -33,27 +34,32 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private Button HostButton;
 	private GameObject ConnectButton;
 	private PopupInputMenu ConnectPopup;
-	private ThreeChoicePopupMenu HostGameTypePopup;
+	private FourChoicePopupMenu ExistingNewCopyPopup;
+	private ThreeChoicePopupMenu NewCopyPopup;
+	private ThreeChoicePopupMenu ExistingNewPopup;
 	private Text _loadingText;
 	private StringBuilder _nowLoadingSB;
 	private const int _titleButtonIndex = 2;
 	private float _connectPopupOpenTime;
 
-	private const string UpdateChangelog = $"QSB Version 0.20.2\r\nFixed issues with the Little Scout and attaching/detaching from the ship.";
+	private const string UpdateChangelog = "QSB Version 0.21.0\r\nMultiplayer saves are now seperate from singleplayer, and items got an overhaul. A lot of bug fixes too.";
 
 	private Action<bool> PopupClose;
 
 	private bool _intentionalDisconnect;
 
-	private GameObject _threeChoicePopupBase;
+	private GameObject _choicePopupPrefab;
 
 	public void Start()
 	{
 		Instance = this;
 
-		_threeChoicePopupBase = Instantiate(Resources.FindObjectsOfTypeAll<PopupMenu>().First(x => x.name == "TwoButton-Popup" && x.transform.parent.name == "PopupCanvas" && x.transform.parent.parent.name == "TitleMenu").gameObject);
-		DontDestroyOnLoad(_threeChoicePopupBase);
-		_threeChoicePopupBase.SetActive(false);
+		if (!_choicePopupPrefab)
+		{
+			_choicePopupPrefab = Instantiate(Resources.FindObjectsOfTypeAll<PopupMenu>().First(x => x.name == "TwoButton-Popup" && x.transform.parent?.name == "PopupCanvas" && x.transform.parent?.parent?.name == "TitleMenu").gameObject);
+			DontDestroyOnLoad(_choicePopupPrefab);
+			_choicePopupPrefab.SetActive(false);
+		}
 
 		MakeTitleMenus();
 		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
@@ -119,7 +125,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
 		{
-			DebugLog.ToConsole($"Error - Language changed while not in title screen?! Should be impossible!", OWML.Common.MessageType.Error);
+			DebugLog.ToConsole("Error - Language changed while not in title screen?! Should be impossible!", OWML.Common.MessageType.Error);
 			return;
 		}
 
@@ -128,7 +134,25 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
 		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalization.Current.Connect), new ScreenPrompt(QSBLocalization.Current.Cancel), false);
 		ConnectPopup.SetInputFieldPlaceholderText(text);
-		HostGameTypePopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNew,
+		ExistingNewCopyPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNewOrCopy,
+			InputLibrary.menuConfirm,
+			InputLibrary.confirm2,
+			InputLibrary.signalscope,
+			InputLibrary.cancel,
+			new ScreenPrompt(QSBLocalization.Current.ExistingSave),
+			new ScreenPrompt(QSBLocalization.Current.NewSave),
+			new ScreenPrompt(QSBLocalization.Current.CopySave),
+			new ScreenPrompt(QSBLocalization.Current.Cancel));
+
+		NewCopyPopup.SetUpPopup(QSBLocalization.Current.HostNewOrCopy,
+			InputLibrary.menuConfirm,
+			InputLibrary.confirm2,
+			InputLibrary.cancel,
+			new ScreenPrompt(QSBLocalization.Current.NewSave),
+			new ScreenPrompt(QSBLocalization.Current.CopySave),
+			new ScreenPrompt(QSBLocalization.Current.Cancel));
+
+		ExistingNewPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNew,
 			InputLibrary.menuConfirm,
 			InputLibrary.confirm2,
 			InputLibrary.cancel,
@@ -155,7 +179,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	public ThreeChoicePopupMenu CreateThreeChoicePopup(string message, string confirm1Text, string confirm2Text, string cancelText)
 	{
-		var newPopup = Instantiate(_threeChoicePopupBase);
+		var newPopup = Instantiate(_choicePopupPrefab);
 
 		switch (LoadManager.GetCurrentScene())
 		{
@@ -170,7 +194,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		newPopup.transform.localPosition = Vector3.zero;
 		newPopup.transform.localScale = Vector3.one;
-		newPopup.GetComponentsInChildren<LocalizedText>().ToList().ForEach(x => Destroy(x));
+		newPopup.GetComponentsInChildren<LocalizedText>().ForEach(Destroy);
 
 		var originalPopup = newPopup.GetComponent<PopupMenu>();
 
@@ -201,9 +225,66 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			InputLibrary.cancel,
 			new ScreenPrompt(confirm1Text),
 			new ScreenPrompt(confirm2Text),
-			new ScreenPrompt(cancelText),
-			true,
-			true);
+			new ScreenPrompt(cancelText));
+		return popup;
+	}
+
+	public FourChoicePopupMenu CreateFourChoicePopup(string message, string confirm1Text, string confirm2Text, string confirm3Text, string cancelText)
+	{
+		var newPopup = Instantiate(_choicePopupPrefab);
+
+		switch (LoadManager.GetCurrentScene())
+		{
+			case OWScene.TitleScreen:
+				newPopup.transform.parent = GameObject.Find("/TitleMenu/PopupCanvas").transform;
+				break;
+			case OWScene.SolarSystem:
+			case OWScene.EyeOfTheUniverse:
+				newPopup.transform.parent = GameObject.Find("/PauseMenu/PopupCanvas").transform;
+				break;
+		}
+
+		newPopup.transform.localPosition = Vector3.zero;
+		newPopup.transform.localScale = Vector3.one;
+		newPopup.GetComponentsInChildren<LocalizedText>().ForEach(Destroy);
+
+		var originalPopup = newPopup.GetComponent<PopupMenu>();
+
+		var ok1Button = originalPopup._confirmButton.gameObject;
+
+		var ok2Button = Instantiate(ok1Button, ok1Button.transform.parent);
+		ok2Button.transform.SetSiblingIndex(1);
+
+		var ok3Button = Instantiate(ok1Button, ok1Button.transform.parent);
+		ok3Button.transform.SetSiblingIndex(2);
+
+		var popup = newPopup.AddComponent<FourChoicePopupMenu>();
+		popup._labelText = originalPopup._labelText;
+		popup._cancelAction = originalPopup._cancelAction;
+		popup._ok1Action = originalPopup._okAction;
+		popup._ok2Action = ok2Button.GetComponent<SubmitAction>();
+		popup._ok3Action = ok3Button.GetComponent<SubmitAction>();
+		popup._cancelButton = originalPopup._cancelButton;
+		popup._confirmButton1 = originalPopup._confirmButton;
+		popup._confirmButton2 = ok2Button.GetComponent<ButtonWithHotkeyImageElement>();
+		popup._confirmButton3 = ok3Button.GetComponent<ButtonWithHotkeyImageElement>();
+		popup._rootCanvas = originalPopup._rootCanvas;
+		popup._menuActivationRoot = originalPopup._menuActivationRoot;
+		popup._startEnabled = originalPopup._startEnabled;
+		popup._selectOnActivate = originalPopup._selectOnActivate;
+		popup._selectableItemsRoot = originalPopup._selectableItemsRoot;
+		popup._subMenus = originalPopup._subMenus;
+		popup._menuOptions = originalPopup._menuOptions;
+		popup.SetUpPopup(
+			message,
+			InputLibrary.menuConfirm,
+			InputLibrary.confirm2,
+			InputLibrary.signalscope,
+			InputLibrary.cancel,
+			new ScreenPrompt(confirm1Text),
+			new ScreenPrompt(confirm2Text),
+			new ScreenPrompt(confirm3Text),
+			new ScreenPrompt(cancelText));
 		return popup;
 	}
 
@@ -289,9 +370,62 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		TwoButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
 		TwoButtonInfoPopup.OnPopupCancel += () => OnCloseInfoPopup(false);
 
-		HostGameTypePopup = CreateThreeChoicePopup(QSBLocalization.Current.HostExistingOrNew, QSBLocalization.Current.ExistingSave, QSBLocalization.Current.NewSave, QSBLocalization.Current.Cancel);
-		HostGameTypePopup.OnPopupConfirm1 += () => Host(false);
-		HostGameTypePopup.OnPopupConfirm2 += () => Host(true);
+		ExistingNewCopyPopup = CreateFourChoicePopup(QSBLocalization.Current.HostExistingOrNewOrCopy,
+			QSBLocalization.Current.ExistingSave,
+			QSBLocalization.Current.NewSave,
+			QSBLocalization.Current.CopySave,
+			QSBLocalization.Current.Cancel);
+		ExistingNewCopyPopup.OnPopupConfirm1 += () => Host(false);
+		ExistingNewCopyPopup.OnPopupConfirm2 += () => Host(true);
+		ExistingNewCopyPopup.OnPopupConfirm3 += () =>
+		{
+			DebugLog.DebugWrite("Replacing multiplayer save with singleplayer save");
+			QSBCore.IsInMultiplayer = true;
+
+			if (QSBCore.IsStandalone)
+			{
+				var currentProfile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+				QSBStandaloneProfileManager.SharedInstance.SaveGame(currentProfile.gameSave, null, null, null);
+			}
+			else
+			{
+				var gameSave = QSBMSStoreProfileManager.SharedInstance.currentProfileGameSave;
+				QSBMSStoreProfileManager.SharedInstance.SaveGame(gameSave, null, null, null);
+			}
+
+			Host(false);
+		};
+
+		NewCopyPopup = CreateThreeChoicePopup(QSBLocalization.Current.HostNewOrCopy,
+			QSBLocalization.Current.NewSave,
+			QSBLocalization.Current.CopySave,
+			QSBLocalization.Current.Cancel);
+		NewCopyPopup.OnPopupConfirm1 += () => Host(true);
+		NewCopyPopup.OnPopupConfirm2 += () =>
+		{
+			DebugLog.DebugWrite("Replacing multiplayer save with singleplayer save");
+			QSBCore.IsInMultiplayer = true;
+
+			if (QSBCore.IsStandalone)
+			{
+				var currentProfile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+				QSBStandaloneProfileManager.SharedInstance.SaveGame(currentProfile.gameSave, null, null, null);
+			}
+			else
+			{
+				var gameSave = QSBMSStoreProfileManager.SharedInstance.currentProfileGameSave;
+				QSBMSStoreProfileManager.SharedInstance.SaveGame(gameSave, null, null, null);
+			}
+
+			Host(false);
+		};
+
+		ExistingNewPopup = CreateThreeChoicePopup(QSBLocalization.Current.HostExistingOrNew,
+			QSBLocalization.Current.ExistingSave,
+			QSBLocalization.Current.NewSave,
+			QSBLocalization.Current.Cancel);
+		ExistingNewPopup.OnPopupConfirm1 += () => Host(false);
+		ExistingNewPopup.OnPopupConfirm2 += () => Host(true);
 	}
 
 	private static void SetButtonActive(Button button, bool active)
@@ -342,10 +476,10 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		DisconnectPopup._labelText.text = popupText;
 
 		var langController = QSBWorldSync.GetUnityObject<PauseMenuManager>().transform.GetChild(0).GetComponent<FontAndLanguageController>();
-		langController.AddTextElement(DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>(), true, true, false);
-		langController.AddTextElement(DisconnectPopup._labelText, false, true, false);
-		langController.AddTextElement(DisconnectPopup._confirmButton._buttonText, false, true, false);
-		langController.AddTextElement(DisconnectPopup._cancelButton._buttonText, false, true, false);
+		langController.AddTextElement(DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
+		langController.AddTextElement(DisconnectPopup._labelText, false);
+		langController.AddTextElement(DisconnectPopup._confirmButton._buttonText, false);
+		langController.AddTextElement(DisconnectPopup._cancelButton._buttonText, false);
 	}
 
 	private void MakeTitleMenus()
@@ -384,24 +518,35 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		var mainMenuFontController = GameObject.Find("MainMenu").GetComponent<FontAndLanguageController>();
-		mainMenuFontController.AddTextElement(HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>(), true, true, false);
-		mainMenuFontController.AddTextElement(ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>(), true, true, false);
+		mainMenuFontController.AddTextElement(HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
+		mainMenuFontController.AddTextElement(ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
 
-		mainMenuFontController.AddTextElement(OneButtonInfoPopup._labelText, false, true, false);
-		mainMenuFontController.AddTextElement(OneButtonInfoPopup._confirmButton._buttonText, false, true, false);
+		mainMenuFontController.AddTextElement(OneButtonInfoPopup._labelText, false);
+		mainMenuFontController.AddTextElement(OneButtonInfoPopup._confirmButton._buttonText, false);
 
-		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._labelText, false, true, false);
-		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._confirmButton._buttonText, false, true, false);
-		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._cancelButton._buttonText, false, true, false);
+		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._labelText, false);
+		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._confirmButton._buttonText, false);
+		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._cancelButton._buttonText, false);
 
-		mainMenuFontController.AddTextElement(ConnectPopup._labelText, false, true, false);
-		mainMenuFontController.AddTextElement(ConnectPopup._confirmButton._buttonText, false, true, false);
-		mainMenuFontController.AddTextElement(ConnectPopup._cancelButton._buttonText, false, true, false);
+		mainMenuFontController.AddTextElement(ConnectPopup._labelText, false);
+		mainMenuFontController.AddTextElement(ConnectPopup._confirmButton._buttonText, false);
+		mainMenuFontController.AddTextElement(ConnectPopup._cancelButton._buttonText, false);
 
-		mainMenuFontController.AddTextElement(HostGameTypePopup._labelText, false, true, false);
-		mainMenuFontController.AddTextElement(HostGameTypePopup._confirmButton1._buttonText, false, true, false);
-		mainMenuFontController.AddTextElement(HostGameTypePopup._confirmButton2._buttonText, false, true, false);
-		mainMenuFontController.AddTextElement(HostGameTypePopup._cancelButton._buttonText, false, true, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._labelText, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._confirmButton1._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._confirmButton2._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._confirmButton3._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._cancelButton._buttonText, false);
+
+		mainMenuFontController.AddTextElement(NewCopyPopup._labelText, false);
+		mainMenuFontController.AddTextElement(NewCopyPopup._confirmButton1._buttonText, false);
+		mainMenuFontController.AddTextElement(NewCopyPopup._confirmButton2._buttonText, false);
+		mainMenuFontController.AddTextElement(NewCopyPopup._cancelButton._buttonText, false);
+
+		mainMenuFontController.AddTextElement(ExistingNewPopup._labelText, false);
+		mainMenuFontController.AddTextElement(ExistingNewPopup._confirmButton1._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewPopup._confirmButton2._buttonText, false);
+		mainMenuFontController.AddTextElement(ExistingNewPopup._cancelButton._buttonText, false);
 	}
 
 	private void Disconnect()
@@ -421,22 +566,70 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void PreHost()
 	{
-		var doesSaveExist = PlayerData.LoadLoopCount() > 1;
-
-		if (!doesSaveExist)
+		bool doesSingleplayerSaveExist = false;
+		bool doesMultiplayerSaveExist = false;
+		if (!QSBCore.IsStandalone)
 		{
-			Host(true);
-			return;
+			var manager = QSBMSStoreProfileManager.SharedInstance;
+			doesSingleplayerSaveExist = manager.currentProfileGameSave.loopCount > 1;
+			doesMultiplayerSaveExist = manager.currentProfileMultiplayerGameSave.loopCount > 1;
+		}
+		else
+		{
+			var profile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+			doesSingleplayerSaveExist = profile.gameSave.loopCount > 1;
+			doesMultiplayerSaveExist = profile.multiplayerGameSave.loopCount > 1;
 		}
 
-		HostGameTypePopup.EnableMenu(true);
+		if (doesSingleplayerSaveExist && doesMultiplayerSaveExist)
+		{
+			DebugLog.DebugWrite("CASE 1 - Both singleplayer and multiplayer saves exist.");
+			// ask if we want to use the existing multiplayer save,
+			// start a new multiplayer save, or copy the singleplayer save
+			ExistingNewCopyPopup.EnableMenu(true);
+		}
+		else if (doesSingleplayerSaveExist && !doesMultiplayerSaveExist)
+		{
+			DebugLog.DebugWrite("CASE 2 - Only a singleplayer save exists.");
+			// ask if we want to start a new multiplayer save or copy the singleplayer save
+			NewCopyPopup.EnableMenu(true);
+		}
+		else if (!doesSingleplayerSaveExist && doesMultiplayerSaveExist)
+		{
+			DebugLog.DebugWrite("CASE 3 - Only multiplayer save exists.");
+			// ask if we want to use the existing multiplayer save or start a new one
+			ExistingNewPopup.EnableMenu(true);
+		}
+		else if (!doesSingleplayerSaveExist && !doesMultiplayerSaveExist)
+		{
+			DebugLog.DebugWrite("CASE 4 - Neither a singleplayer or a multiplayer save exists.");
+			// create a new multiplayer save - nothing to copy or load
+			Host(true);
+		}
 	}
 
-	private void Host(bool newSave)
+	private void Host(bool newMultiplayerSave)
 	{
-		if (newSave)
+		QSBCore.IsInMultiplayer = true;
+
+		if (newMultiplayerSave)
 		{
+			DebugLog.DebugWrite("Resetting game...");
 			PlayerData.ResetGame();
+		}
+		else
+		{
+			DebugLog.DebugWrite("Loading multiplayer game...");
+			if (QSBCore.IsStandalone)
+			{
+				var profile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+				PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
+			}
+			else
+			{
+				var manager = QSBMSStoreProfileManager.SharedInstance;
+				PlayerData.Init(manager.currentProfileMultiplayerGameSave, manager.currentProfileGameSettings, manager.currentProfileGraphicsSettings, manager.currentProfileInputJSON);
+			}
 		}
 
 		_intentionalDisconnect = false;
@@ -474,7 +667,19 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void Connect()
 	{
+		QSBCore.IsInMultiplayer = true;
 		_intentionalDisconnect = false;
+
+		if (QSBCore.IsStandalone)
+		{
+			var profile = QSBStandaloneProfileManager.SharedInstance.currentProfile;
+			PlayerData.Init(profile.multiplayerGameSave, profile.settingsSave, profile.graphicsSettings, profile.inputJSON);
+		}
+		else
+		{
+			var manager = QSBMSStoreProfileManager.SharedInstance;
+			PlayerData.Init(manager.currentProfileMultiplayerGameSave, manager.currentProfileGameSettings, manager.currentProfileGraphicsSettings, manager.currentProfileInputJSON);
+		}
 
 		var address = ConnectPopup.GetInputText();
 		if (address == string.Empty)
@@ -506,6 +711,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	public void OnKicked(string reason)
 	{
+		QSBCore.IsInMultiplayer = false;
 		_intentionalDisconnect = true;
 
 		PopupClose += _ =>
@@ -521,6 +727,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void OnDisconnected(string error)
 	{
+		QSBCore.IsInMultiplayer = false;
+
 		if (_intentionalDisconnect)
 		{
 			DebugLog.DebugWrite("intentional disconnect. dont show popup");

@@ -1,7 +1,9 @@
 ﻿using OWML.Common;
+using QSB.Localization;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.RespawnSync;
+using QSB.ShipSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -26,6 +28,7 @@ public class RespawnOnDeath : MonoBehaviour
 	private PlayerSpacesuit _spaceSuit;
 	private SuitPickupVolume[] _suitPickupVolumes;
 	private Vector3 _deathPositionRelative;
+	private GUIStyle _deadTextStyle;
 
 	public Transform DeathClosestAstroObject { get; private set; }
 	public Vector3 DeathPositionWorld
@@ -47,6 +50,11 @@ public class RespawnOnDeath : MonoBehaviour
 		_suitPickupVolumes = FindObjectsOfType<SuitPickupVolume>();
 		_fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
 		_playerSpawnPoint = GetSpawnPoint();
+		_deadTextStyle = new();
+		_deadTextStyle.font = (Font)Resources.Load(@"fonts\english - latin\SpaceMono-Regular_Dynamic");
+		_deadTextStyle.alignment = TextAnchor.MiddleCenter;
+		_deadTextStyle.normal.textColor = Color.white;
+		_deadTextStyle.fontSize = 20;
 	}
 
 	public void ResetPlayer()
@@ -121,5 +129,32 @@ public class RespawnOnDeath : MonoBehaviour
 		return spawnList.FirstOrDefault(spawnPoint =>
 			spawnPoint.GetSpawnLocation() == SpawnLocation.TimberHearth
 			&& spawnPoint.IsShipSpawn() == false);
+	}
+
+	void OnGUI()
+	{
+		if (PlayerTransformSync.LocalInstance == null || ShipManager.Instance.ShipCockpitUI == null)
+		{
+			return;
+		}
+
+		if (QSBPlayerManager.LocalPlayer.IsDead)
+		{
+			GUI.contentColor = Color.white;
+
+			var width = 200;
+			var height = 100;
+
+			// it is good day to be not dead
+
+			var secondText = ShipManager.Instance.IsShipWrecked
+				? string.Format(QSBLocalization.Current.WaitingForAllToDie, QSBPlayerManager.PlayerList.Count(x => !x.IsDead))
+				: QSBLocalization.Current.WaitingForRespawn;
+
+			GUI.Label(
+				new Rect((Screen.width / 2) - (width / 2), (Screen.height / 2) - (height / 2) + (height * 2), width, height),
+				$"{QSBLocalization.Current.YouAreDead}\n{secondText}",
+				_deadTextStyle);
+		}
 	}
 }

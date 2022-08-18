@@ -29,7 +29,6 @@ public class QSBSlideProjector : WorldObject<SlideProjector>
 	/// </summary>
 	public void SetUser(uint user)
 	{
-		DebugLog.DebugWrite($"{this} - user = {user}");
 		AttachedObject._interactReceiver.SetInteractionEnabled(user == 0 || user == _user);
 		_user = user;
 	}

@@ -13,25 +13,26 @@ public class CellevatorPatches : QSBPatch
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(nameof(PrisonCellElevator.CallElevatorToFloor))]
-	public static void CallElevatorToFloor(PrisonCellElevator __instance, int floorIndex)
+	[HarmonyPatch(nameof(PrisonCellElevator.CallToTopFloor))]
+	public static void CallToTopFloor(PrisonCellElevator __instance)
 	{
-		if (Remote)
-		{
-			return;
-		}
-
-		if (__instance._targetFloorIndex == floorIndex)
-		{
-			return;
-		}
-
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
-
 		__instance.GetWorldObject<QSBPrisonCellElevator>()
-			.SendMessage(new CellevatorCallMessage(floorIndex));
+			.SendMessage(new CellevatorCallMessage(1));
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(PrisonCellElevator.CallToBottomFloor))]
+	public static void CallToBottomFloor(PrisonCellElevator __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+		__instance.GetWorldObject<QSBPrisonCellElevator>()
+			.SendMessage(new CellevatorCallMessage(0));
 	}
 }

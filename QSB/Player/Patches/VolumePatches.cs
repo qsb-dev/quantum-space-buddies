@@ -40,4 +40,11 @@ internal class VolumePatches : QSBPatch
 			comp.AddVolume(__instance);
 		}
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(ElectricityVolume), nameof(ElectricityVolume.OnEffectVolumeEnter))]
+	public static bool OnEffectVolumeEnter(ElectricityVolume __instance, GameObject hitObj) =>
+		// this is a dogshit fix to a bug where this would ApplyShock to remote players,
+		// which would actually apply the shock affects to the entire planet / sector
+		hitObj.name != "REMOTE_PlayerDetector";
 }

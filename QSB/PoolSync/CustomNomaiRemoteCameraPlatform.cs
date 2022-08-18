@@ -728,7 +728,7 @@ internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 			DebugLog.ToConsole($"Warning - {playerId}'s VisibleAnimator is null!", MessageType.Error);
 		}
 
-		mirror.Init(player.AnimationSync.VisibleAnimator, hologramCopy.GetChild(0).gameObject.GetComponent<Animator>());
+		mirror.Init(player.AnimationSync.VisibleAnimator, hologramCopy.GetChild(0).gameObject.GetComponent<Animator>(), null);
 
 		_playerToHologram.Add(player, hologramCopy.gameObject);
 

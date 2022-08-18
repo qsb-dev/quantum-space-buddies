@@ -1,10 +1,12 @@
-﻿using QSB.ItemSync.WorldObjects.Items;
+﻿using OWML.Common;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.RespawnSync;
 using QSB.ShipSync;
 using QSB.Utility.Messages;
 using QSB.WorldSync;
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,6 +15,8 @@ namespace QSB.Utility;
 
 public class DebugActions : MonoBehaviour, IAddComponentOnStart
 {
+	public static Type WorldObjectSelection;
+
 	private static void GoToVessel()
 	{
 		var spawnPoint = GameObject.Find("Spawn_Vessel").GetComponent<SpawnPoint>();
@@ -38,12 +42,106 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 	private void Awake() => enabled = QSBCore.DebugSettings.DebugMode;
 
 	private int _otherPlayerToTeleportTo;
+	private int _backTimer;
+	private int _forwardTimer;
+
+	private const int UpdatesUntilScroll = 30;
+	private const int UpdatesBetweenScroll = 5;
+
+	private static void GoForwardOneObject()
+	{
+		var allWorldObjects = typeof(IWorldObject).GetDerivedTypes().ToArray();
+		if (WorldObjectSelection == null)
+		{
+			WorldObjectSelection = allWorldObjects.First();
+			return;
+		}
+
+		var index = Array.IndexOf(allWorldObjects, WorldObjectSelection) + 1;
+
+		if (index == allWorldObjects.Length)
+		{
+			index = 0;
+		}
+
+		WorldObjectSelection = allWorldObjects[index];
+	}
+
+	private static void GoBackOneObject()
+	{
+		var allWorldObjects = typeof(IWorldObject).GetDerivedTypes().ToArray();
+		if (WorldObjectSelection == null)
+		{
+			WorldObjectSelection = allWorldObjects.Last();
+			return;
+		}
+
+		var index = Array.IndexOf(allWorldObjects, WorldObjectSelection) - 1;
+
+		if (index < 0)
+		{
+			index = allWorldObjects.Length - 1;
+		}
+
+		WorldObjectSelection = allWorldObjects[index];
+	}
 
 	public void Update()
 	{
 		if (!Keyboard.current[Key.Q].isPressed)
 		{
 			return;
+		}
+
+		if (Keyboard.current[Key.Comma].isPressed && Keyboard.current[Key.Period].isPressed)
+		{
+			WorldObjectSelection = null;
+		}
+		else if (Keyboard.current[Key.Comma].wasPressedThisFrame)
+		{
+			GoBackOneObject();
+		}
+		else if (Keyboard.current[Key.Period].wasPressedThisFrame)
+		{
+			GoForwardOneObject();
+		}
+		else
+		{
+			if (Keyboard.current[Key.Comma].isPressed)
+			{
+				_backTimer++;
+
+				if (_backTimer >= UpdatesUntilScroll)
+				{
+					if (_backTimer == UpdatesUntilScroll + UpdatesBetweenScroll)
+					{
+						_backTimer = UpdatesUntilScroll;
+						GoBackOneObject();
+					}
+				}
+			}
+			else
+			{
+				_backTimer = 0;
+			}
+
+			if (Keyboard.current[Key.Period].isPressed)
+			{
+				_forwardTimer++;
+
+				if (_forwardTimer >= UpdatesUntilScroll)
+				{
+					if (_forwardTimer == UpdatesUntilScroll + UpdatesBetweenScroll)
+					{
+						_forwardTimer = UpdatesUntilScroll;
+						GoForwardOneObject();
+					}
+				}
+			}
+			else
+			{
+				_forwardTimer = 0;
+			}
 		}
 
 		if (Keyboard.current[Key.Numpad1].wasPressedThisFrame)
@@ -119,11 +217,17 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		if (Keyboard.current[Key.Numpad7].wasPressedThisFrame)
 		{
 			GoToVessel();
+			InsertWarpCore();
 		}
 
 		if (Keyboard.current[Key.Numpad8].wasPressedThisFrame)
 		{
-			InsertWarpCore();
+			var player = new PlayerInfo(QSBPlayerManager.LocalPlayer.TransformSync);
+			QSBPlayerManager.PlayerList.SafeAdd(player);
+			QSBPlayerManager.OnAddPlayer?.Invoke(player);
+			DebugLog.DebugWrite($"Create Player : {player}", MessageType.Info);
+
+			JoinLeaveSingularity.Create(player, true);
 		}
 
 		if (Keyboard.current[Key.Numpad9].wasPressedThisFrame)

@@ -16,6 +16,6 @@ internal class QSBShipDetachableLeg : LinkedWorldObject<ShipDetachableLeg, ShipL
 
 	public override void SendInitialState(uint to)
 	{
-
+		// todo SendInitialState?
 	}
 }

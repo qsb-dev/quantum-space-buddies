@@ -11,6 +11,4 @@ internal class QSBSolanumAnimController : WorldObject<SolanumAnimController>
 {
 	private QSBSolanumTrigger _trigger;
 	public QSBSolanumTrigger Trigger => _trigger ??= QSBWorldSync.GetWorldObjects<QSBSolanumTrigger>().First();
-
-	public override void SendInitialState(uint to) { }
 }

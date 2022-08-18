@@ -7,35 +7,30 @@ namespace QSB.EyeOfTheUniverse.Tomb;
 
 internal class EyeTombWatcher : MonoBehaviour
 {
-	private EyeTombController tomb;
-	private bool _observedGrave;
+	private EyeTombController _tomb;
 
-	private void Start()
+	private void Awake()
 	{
-		tomb = GetComponent<EyeTombController>();
-		tomb._graveObserveTrigger.OnGainFocus += OnObserveGrave;
+		_tomb = GetComponent<EyeTombController>();
+		_tomb._graveObserveTrigger.OnGainFocus += OnObserveGrave;
+		enabled = false;
 	}
 
-	private void OnDestroy()
-		=> tomb._graveObserveTrigger.OnGainFocus -= OnObserveGrave;
+	private void OnDestroy() =>
+		_tomb._graveObserveTrigger.OnGainFocus -= OnObserveGrave;
 
 	private void OnObserveGrave()
 	{
-		_observedGrave = true;
-		tomb._graveObserveTrigger.OnGainFocus -= OnObserveGrave;
+		_tomb._graveObserveTrigger.OnGainFocus -= OnObserveGrave;
+		enabled = true;
 	}
-	
+
 	private void FixedUpdate()
 	{
-		if (!_observedGrave)
-		{
-			return;
-		}
-
 		var canShowStage = true;
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
-			var playerToStage = tomb._stageRoot.transform.position - player.Body.transform.position;
+			var playerToStage = _tomb._stageRoot.transform.position - player.Body.transform.position;
 			var playerLookDirection = player.Body.transform.forward;
 			var angle = Vector3.Angle(playerLookDirection, playerToStage);
 			if (angle < 70)
@@ -46,9 +41,9 @@ internal class EyeTombWatcher : MonoBehaviour
 
 		if (canShowStage)
 		{
-			tomb._stageRoot.SetActive(true);
+			_tomb._stageRoot.SetActive(true);
 			new ShowStageMessage().Send();
-			enabled = false;
+			Destroy(this);
 		}
 	}
 }

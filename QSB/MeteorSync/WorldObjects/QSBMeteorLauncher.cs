@@ -5,11 +5,6 @@ namespace QSB.MeteorSync.WorldObjects;
 
 public class QSBMeteorLauncher : WorldObject<MeteorLauncher>
 {
-	public override void SendInitialState(uint to)
-	{
-		// we don't really need to sync initial state
-	}
-
 	public void PreLaunchMeteor()
 	{
 		foreach (var launchParticle in AttachedObject._launchParticles)

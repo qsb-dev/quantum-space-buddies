@@ -4,9 +4,7 @@ using QSB.Player;
 using QSB.Player.Messages;
 using QSB.SectorSync;
 using QSB.Tools;
-using QSB.Utility;
 using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.PlayerBodySetup.Local;
@@ -21,8 +19,6 @@ public static class LocalPlayerCreation
 		out Transform visibleStickPivot,
 		out Transform visibleStickTip)
 	{
-		DebugLog.DebugWrite($"CREATE PLAYER");
-
 		sectorDetector.Init(Locator.GetPlayerSectorDetector());
 
 		// player body
@@ -38,7 +34,7 @@ public static class LocalPlayerCreation
 		player.CameraBody = cameraBody.gameObject;
 		visibleCameraRoot = cameraBody;
 
-		player.QSBPlayerLightSensor = player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
+		player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
 
 		PlayerToolsManager.InitLocal();
 

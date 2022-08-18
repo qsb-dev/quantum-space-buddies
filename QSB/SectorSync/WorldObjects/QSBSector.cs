@@ -23,8 +23,6 @@ public class QSBSector : WorldObject<Sector>
 		}
 	}
 
-	public override void SendInitialState(uint to) { }
-
 	private static EyeShuttleController _cachedShuttleController;
 
 	public bool ShouldSyncTo(DynamicOccupant occupantType)

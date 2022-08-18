@@ -39,6 +39,7 @@ public class PlayerHeadRotationSync : MonoBehaviour
 		var bone = _attachedAnimator.GetBoneTransform(HumanBodyBones.Head);
 		// Get the camera's local rotation with respect to the player body
 		var lookLocalRotation = Quaternion.Inverse(_attachedAnimator.transform.rotation) * _lookBase.rotation;
+		// no idea why this rotation is like this, but this is the only way it looks right
 		bone.localRotation = Quaternion.Euler(-lookLocalRotation.eulerAngles.y, -lookLocalRotation.eulerAngles.z, lookLocalRotation.eulerAngles.x);
 	}
 }

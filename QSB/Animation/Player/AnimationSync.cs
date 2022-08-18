@@ -6,6 +6,7 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
+using QSB.WorldSync;
 using System;
 using UnityEngine;
 
@@ -17,8 +18,6 @@ public class AnimationSync : PlayerSyncObject
 	private AnimatorOverrideController _unsuitedAnimController;
 	private GameObject _suitedGraphics;
 	private GameObject _unsuitedGraphics;
-	private PlayerCharacterController _playerController;
-	private CrouchSync _crouchSync;
 
 	public AnimatorMirror Mirror { get; private set; }
 	public bool InSuitedUpState { get; set; }
@@ -31,16 +30,26 @@ public class AnimationSync : PlayerSyncObject
 		InvisibleAnimator = gameObject.GetRequiredComponent<Animator>();
 		NetworkAnimator = gameObject.GetRequiredComponent<NetworkAnimator>();
 		NetworkAnimator.enabled = false;
+		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 	}
+
+	protected void OnDestroy() => RequestInitialStatesMessage.SendInitialState -= SendInitialState;
+
+	/// <summary>
+	/// This wipes the NetworkAnimator's fields, so it assumes the parameters have changed.
+	/// Basically just forces it to set all its dirty flags.
+	/// </summary>
+	private void SendInitialState(uint to) => NetworkAnimator.Invoke("Awake");
+
+	public void Reset() => InSuitedUpState = false;
 
 	private void InitCommon(Transform modelRoot)
 	{
 		try
 		{
-
 			if (modelRoot == null)
 			{
-				DebugLog.ToConsole($"Error - Trying to InitCommon with null body!", MessageType.Error);
+				DebugLog.ToConsole("Error - Trying to InitCommon with null body!", MessageType.Error);
 				return;
 			}
 
@@ -48,11 +57,11 @@ public class AnimationSync : PlayerSyncObject
 			Mirror = modelRoot.gameObject.AddComponent<AnimatorMirror>();
 			if (isLocalPlayer)
 			{
-				Mirror.Init(VisibleAnimator, InvisibleAnimator);
+				Mirror.Init(VisibleAnimator, InvisibleAnimator, NetworkAnimator);
 			}
 			else
 			{
-				Mirror.Init(InvisibleAnimator, VisibleAnimator);
+				Mirror.Init(InvisibleAnimator, VisibleAnimator, null);
 			}
 
 			NetworkAnimator.enabled = true;
@@ -74,10 +83,6 @@ public class AnimationSync : PlayerSyncObject
 	public void InitLocal(Transform body)
 	{
 		InitCommon(body);
-
-		_playerController = body.parent.GetComponent<PlayerCharacterController>();
-
-		InitCrouchSync();
 		InitAccelerationSync();
 	}
 
@@ -85,7 +90,6 @@ public class AnimationSync : PlayerSyncObject
 	{
 		InitCommon(body);
 		SetSuitState(QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse);
-		InitCrouchSync();
 		InitAccelerationSync();
 		ThrusterManager.CreateRemotePlayerVFX(Player);
 
@@ -98,12 +102,6 @@ public class AnimationSync : PlayerSyncObject
 		Player.JetpackAcceleration = GetComponent<JetpackAccelerationSync>();
 		var thrusterModel = hasAuthority ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
 		Player.JetpackAcceleration.Init(thrusterModel);
-	}
-
-	private void InitCrouchSync()
-	{
-		_crouchSync = this.GetRequiredComponent<CrouchSync>();
-		_crouchSync.Init(_playerController, VisibleAnimator);
 	}
 
 	public void SetSuitState(bool suitedUp)
@@ -176,12 +174,12 @@ public class AnimationSync : PlayerSyncObject
 		// Avoids "jumping" when putting on suit
 		if (VisibleAnimator != null)
 		{
-			VisibleAnimator.SetTrigger("Grounded");
+			VisibleAnimator.SetBool("Grounded", true);
 		}
 
 		if (InvisibleAnimator != null)
 		{
-			InvisibleAnimator.SetTrigger("Grounded");
+			InvisibleAnimator.SetBool("Grounded", true);
 		}
 
 		if (NetworkAnimator == null)

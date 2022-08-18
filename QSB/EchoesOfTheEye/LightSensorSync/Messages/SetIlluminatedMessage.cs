@@ -6,6 +6,22 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Messages;
 internal class SetIlluminatedMessage : QSBWorldObjectMessage<QSBLightSensor, bool>
 {
 	public SetIlluminatedMessage(bool illuminated) : base(illuminated) { }
-	public override void OnReceiveLocal() => OnReceiveRemote();
-	public override void OnReceiveRemote() => WorldObject.SetIlluminated(From, Data);
+
+	public override void OnReceiveRemote()
+	{
+		if (WorldObject.AttachedObject._illuminated == Data)
+		{
+			return;
+		}
+
+		WorldObject.AttachedObject._illuminated = Data;
+		if (Data)
+		{
+			WorldObject.AttachedObject.OnDetectLight.Invoke();
+		}
+		else
+		{
+			WorldObject.AttachedObject.OnDetectDarkness.Invoke();
+		}
+	}
 }

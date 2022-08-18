@@ -13,7 +13,7 @@ namespace QSB.MeteorSync.Patches;
 /// <summary>
 /// server only
 /// </summary>
-public class MeteorServerPatches : QSBPatch
+public class ServerMeteorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnServerClientConnect;
 
@@ -165,7 +165,7 @@ public class MeteorServerPatches : QSBPatch
 /// <summary>
 /// client only
 /// </summary>
-public class MeteorClientPatches : QSBPatch
+public class ClientMeteorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 

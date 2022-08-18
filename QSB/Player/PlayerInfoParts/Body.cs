@@ -1,5 +1,4 @@
 ﻿using OWML.Common;
-using QSB.EchoesOfTheEye.LightSensorSync;
 using QSB.Utility;
 using UnityEngine;
 
@@ -55,6 +54,10 @@ public partial class PlayerInfo
 	}
 	private GameObject _body;
 
+	/// <summary>
+	/// remote light sensor is disabled.
+	/// it only acts as a storage of data and is always synced with the local light sensor.
+	/// </summary>
 	public LightSensor LightSensor
 	{
 		get
@@ -73,8 +76,6 @@ public partial class PlayerInfo
 			return CameraBody.transform.Find("REMOTE_CameraDetector").GetComponent<LightSensor>();
 		}
 	}
-
-	public QSBPlayerLightSensor QSBPlayerLightSensor;
 
 	public Vector3 Velocity
 	{

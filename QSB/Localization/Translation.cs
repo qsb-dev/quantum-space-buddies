@@ -13,9 +13,12 @@ public class Translation
 	public string ProductUserID;
 	public string Connect;
 	public string Cancel;
+	public string HostExistingOrNewOrCopy;
+	public string HostNewOrCopy;
 	public string HostExistingOrNew;
 	public string ExistingSave;
 	public string NewSave;
+	public string CopySave;
 	public string DisconnectAreYouSure;
 	public string Yes;
 	public string No;
@@ -41,5 +44,10 @@ public class Translation
 	public string TimeSyncWaitForAllToReady;
 	public string TimeSyncWaitForAllToDie;
 	public string GalaxyMapEveryoneNotPresent;
+	public string YouAreDead;
+	public string WaitingForRespawn;
+	public string WaitingForAllToDie;
+	public string AttachToShip;
+	public string DetachFromShip;
 	public Dictionary<DeathType, string[]> DeathMessages;
 }

@@ -1,5 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.ItemSync.Messages;
 using QSB.ItemSync.WorldObjects.Sockets;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
@@ -12,11 +14,23 @@ namespace QSB.ItemSync.WorldObjects.Items;
 public class QSBItem<T> : WorldObject<T>, IQSBItem
 	where T : OWItem
 {
+	public ItemState ItemState { get; } = new();
+
 	private Transform _lastParent;
 	private Vector3 _lastPosition;
 	private Quaternion _lastRotation;
 	private QSBSector _lastSector;
 	private QSBItemSocket _lastSocket;
+
+	public override string ReturnLabel()
+	{
+		return $"{ToString()}" +
+			$"\r\nState:{ItemState.State}" +
+			$"\r\nParent:{ItemState.Parent?.name}" +
+			$"\r\nLocalPosition:{ItemState.LocalPosition}" +
+			$"\r\nLocalNormal:{ItemState.LocalNormal}" +
+			$"\r\nHoldingPlayer:{ItemState.HoldingPlayer?.PlayerId}";
+	}
 
 	public override async UniTask Init(CancellationToken ct)
 	{
@@ -61,6 +75,7 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 		}
 		else
 		{
+			// TODO at some point we should probably call the proper drop item code to account for funny overrides
 			AttachedObject.transform.parent = _lastParent;
 			AttachedObject.transform.localPosition = _lastPosition;
 			AttachedObject.transform.localRotation = _lastRotation;
@@ -72,7 +87,30 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 
 	public override void SendInitialState(uint to)
 	{
-		// todo SendInitialState
+		if (!ItemState.HasBeenInteractedWith)
+		{
+			return;
+		}
+
+		switch (ItemState.State)
+		{
+			case ItemStateType.Held:
+				((IQSBItem)this).SendMessage(new MoveToCarryMessage(ItemState.HoldingPlayer.PlayerId));
+				break;
+			case ItemStateType.Socketed:
+				new SocketItemMessage(SocketMessageType.Socket, ItemState.Socket, AttachedObject).Send();
+				break;
+			case ItemStateType.OnGround:
+				((IQSBItem)this).SendMessage(
+					new DropItemMessage(
+						ItemState.WorldPosition,
+						ItemState.WorldNormal,
+						ItemState.Parent,
+						ItemState.Sector,
+						ItemState.CustomDropTarget,
+						ItemState.Rigidbody));
+				break;
+		}
 	}
 
 	public ItemType GetItemType() => AttachedObject.GetItemType();

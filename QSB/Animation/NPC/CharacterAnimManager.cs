@@ -9,9 +9,6 @@ internal class CharacterAnimManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
-	{
-		QSBWorldSync.Init<QSBCharacterAnimController, CharacterAnimController>();
+	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) => 
 		QSBWorldSync.Init<QSBSolanumAnimController, SolanumAnimController>();
-	}
 }

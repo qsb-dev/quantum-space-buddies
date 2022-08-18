@@ -133,6 +133,8 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 				WriteLine(1, $"TimeLoop IsTimeFlowing : {TimeLoop.IsTimeFlowing()}");
 				WriteLine(1, $"TimeLoop IsTimeLoopEnabled : {TimeLoop.IsTimeLoopEnabled()}");
 			}
+
+			WriteLine(1, $"Selected WorldObject : {(DebugActions.WorldObjectSelection == null ? "All" : DebugActions.WorldObjectSelection.Name)}");
 		}
 
 		#endregion
@@ -142,23 +144,26 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		WriteLine(2, "Player data :");
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
-			WriteLine(2, player.ToString());
+			WriteLine(2, player.ToString(), Color.cyan);
 			WriteLine(2, $"State : {player.State}");
 			WriteLine(2, $"Eye State : {player.EyeState}");
 			WriteLine(2, $"Dead : {player.IsDead}");
-			WriteLine(2, $"Visible : {player.Visible}");
 			WriteLine(2, $"Ready : {player.IsReady}");
 			WriteLine(2, $"Suited Up : {player.SuitedUp}");
+			WriteLine(2, $"In Suited Up State : {player.AnimationSync.InSuitedUpState}");
 			WriteLine(2, $"InDreamWorld : {player.InDreamWorld}");
-			
 
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
 			{
 				WriteLine(2, $"Illuminated : {player.LightSensor.IsIlluminated()}");
 				var singleLightSensor = (SingleLightSensor)player.LightSensor;
-				foreach (var item in singleLightSensor._lightSources)
+				// will be null for remote player light sensors
+				if (singleLightSensor._lightSources != null)
 				{
-					WriteLine(2, $"- {item.GetLightSourceType()}");
+					foreach (var item in singleLightSensor._lightSources)
+					{
+						WriteLine(2, $"- {item.GetLightSourceType()}");
+					}
 				}
 
 				var networkTransform = player.TransformSync;
@@ -258,7 +263,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 					}
 					else
 					{
-						WriteLine(4, $"- LANTERN NULL", Color.red);
+						WriteLine(4, "- LANTERN NULL", Color.red);
 					}
 
 					var playerCamera = player.player.Camera;
@@ -271,7 +276,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 					}
 					else
 					{
-						WriteLine(4, $"- CAMERA NULL", Color.red);
+						WriteLine(4, "- CAMERA NULL", Color.red);
 					}
 				}
 			}
@@ -323,7 +328,11 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 	{
 		if (QSBCore.DebugSettings.DrawLabels)
 		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects())
+			var list = DebugActions.WorldObjectSelection == null
+				? QSBWorldSync.GetWorldObjects()
+				: QSBWorldSync.GetWorldObjects(DebugActions.WorldObjectSelection);
+
+			foreach (var obj in list)
 			{
 				if (obj.ShouldDisplayDebug())
 				{
@@ -349,7 +358,11 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 	{
 		if (QSBCore.DebugSettings.DrawLines)
 		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects())
+			var list = DebugActions.WorldObjectSelection == null
+				? QSBWorldSync.GetWorldObjects()
+				: QSBWorldSync.GetWorldObjects(DebugActions.WorldObjectSelection);
+
+			foreach (var obj in list)
 			{
 				if (obj.ShouldDisplayDebug())
 				{

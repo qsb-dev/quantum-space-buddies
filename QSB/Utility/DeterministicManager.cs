@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace QSB.Utility;
 
+/// <summary>
+/// TODO make this only do cache clearing on pre scene load when HOSTING instead of just all the time
+/// </summary>
 public static class DeterministicManager
 {
 	private static readonly Harmony _harmony = new(typeof(DeterministicManager).FullName);
