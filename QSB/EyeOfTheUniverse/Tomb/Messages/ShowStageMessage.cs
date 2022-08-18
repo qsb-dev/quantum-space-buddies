@@ -1,6 +1,6 @@
 ﻿using QSB.Messaging;
-using QSB.Utility;
 using QSB.WorldSync;
+using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.Tomb.Messages;
 
@@ -10,5 +10,6 @@ internal class ShowStageMessage : QSBMessage
 	{
 		var tomb = QSBWorldSync.GetUnityObject<EyeTombController>();
 		tomb._stageRoot.SetActive(true);
+		Object.Destroy(tomb.GetComponent<EyeTombWatcher>());
 	}
 }

@@ -44,7 +44,7 @@ public class PlayerTransformSync : SectoredTransformSync
 		{
 			// this really shouldnt happen...
 			DebugLog.ToConsole($"Error - A PlayerInfo already exists with TransformSync {name}", MessageType.Error);
-			Destroy(this);
+			Destroy(gameObject); // probably bad
 			return;
 		}
 
@@ -62,7 +62,7 @@ public class PlayerTransformSync : SectoredTransformSync
 		if (LocalInstance != null)
 		{
 			DebugLog.ToConsole($"ERROR - LocalInstance is already non-null in OnStartLocalPlayer!", MessageType.Error);
-			Destroy(this);
+			Destroy(gameObject); // probably bad
 			return;
 		}
 
