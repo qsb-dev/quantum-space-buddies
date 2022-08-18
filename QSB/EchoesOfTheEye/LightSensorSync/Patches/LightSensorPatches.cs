@@ -186,18 +186,18 @@ internal class LightSensorPatches : QSBPatch
 	#endregion
 
 
-	private static bool UpdateLocalIllumination(SingleLightSensor __instance)
+	private static void UpdateLocalIllumination(SingleLightSensor __instance)
 	{
 		if (!QSBWorldSync.AllObjectsReady)
 		{
-			return true;
+			return;
 		}
 		var qsbLightSensor = __instance.GetWorldObject<QSBLightSensor>();
 
 		qsbLightSensor._locallyIlluminated = false;
 		if (__instance._lightSources == null || __instance._lightSources.Count == 0)
 		{
-			return false;
+			return;
 		}
 		var sensorWorldPos = __instance.transform.TransformPoint(__instance._localSensorOffset);
 		var sensorWorldDir = Vector3.zero;
@@ -272,7 +272,6 @@ internal class LightSensorPatches : QSBPatch
 				}
 			}
 		}
-		return false;
 	}
 
 
