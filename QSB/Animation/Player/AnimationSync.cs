@@ -41,6 +41,8 @@ public class AnimationSync : PlayerSyncObject
 	/// </summary>
 	private void SendInitialState(uint to) => NetworkAnimator.Invoke("Awake");
 
+	public void Reset() => InSuitedUpState = false;
+
 	private void InitCommon(Transform modelRoot)
 	{
 		try

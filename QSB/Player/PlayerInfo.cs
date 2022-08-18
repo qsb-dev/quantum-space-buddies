@@ -48,6 +48,11 @@ public partial class PlayerInfo
 	/// </summary>
 	public void Reset()
 	{
+		if (AnimationSync != null)
+		{
+			AnimationSync.Reset();
+		}
+
 		EyeState = default;
 		IsDead = default;
 		IsReady = default;
@@ -92,7 +97,8 @@ public partial class PlayerInfo
 		else
 		{
 			FlashlightActive = Locator.GetFlashlight()._flashlightOn;
-			SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit();
+			SuitedUp = Locator.GetPlayerBody().GetComponent<PlayerSpacesuit>().IsWearingSuit()
+				|| QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse;
 		}
 
 		new PlayerInformationMessage().Send();
