@@ -16,36 +16,21 @@ public class WarpPadPatches : QSBPatch
 	private static void NomaiWarpPlatform_OpenBlackHole(NomaiWarpPlatform __instance,
 		NomaiWarpPlatform linkedPlatform, bool stayOpen = false)
 	{
-		if (Remote)
-		{
-			return;
-		}
-		if (__instance.IsBlackHoleOpen())
-		{
-			return;
-		}
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
-		__instance.GetWorldObject<QSBWarpPad>().SendMessage(new OpenBlackHoleMessage(
-			linkedPlatform.GetWorldObject<QSBWarpPad>().ObjectId,
-			stayOpen
-		));
+		__instance.GetWorldObject<QSBWarpPad>().SendMessage(new OpenCloseMessage(true, linkedPlatform));
 	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(NomaiWarpPlatform), nameof(NomaiWarpPlatform.CloseBlackHole))]
 	private static void NomaiWarpPlatform_CloseBlackHole(NomaiWarpPlatform __instance)
 	{
-		if (Remote)
-		{
-			return;
-		}
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
-		__instance.GetWorldObject<QSBWarpPad>().SendMessage(new CloseBlackHoleMessage());
+		__instance.GetWorldObject<QSBWarpPad>().SendMessage(new OpenCloseMessage(false, __instance._linkedPlatform));
 	}
 }
