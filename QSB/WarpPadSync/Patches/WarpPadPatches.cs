@@ -11,6 +11,7 @@ public class WarpPadPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	/*
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(NomaiWarpPlatform), nameof(NomaiWarpPlatform.OpenBlackHole))]
 	private static void NomaiWarpPlatform_OpenBlackHole(NomaiWarpPlatform __instance,
@@ -33,4 +34,7 @@ public class WarpPadPatches : QSBPatch
 		}
 		__instance.GetWorldObject<QSBWarpPad>().SendMessage(new OpenCloseMessage(false, __instance._linkedPlatform));
 	}
+	*/
+	
+	
 }
