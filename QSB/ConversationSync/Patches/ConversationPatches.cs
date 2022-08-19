@@ -64,6 +64,7 @@ public class ConversationPatches : QSBPatch
 		}
 
 		var selectedOption = __instance._currentDialogueBox.OptionFromUIIndex(optionIndex);
+		// BUG: uses translated value instead of key
 		ConversationManager.Instance.SendPlayerOption(selectedOption.Text);
 		return true;
 	}
