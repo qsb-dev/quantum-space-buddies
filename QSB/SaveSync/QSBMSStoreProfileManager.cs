@@ -24,7 +24,6 @@ internal class QSBMSStoreProfileManager : IProfileManager
 	private GraphicSettings _pendingGfxSettingsSave;
 	private string _pendingInputActionsSave = "";
 	private JsonSerializer _jsonSerializer;
-	private bool _initialized;
 	private int _fileOpsBusyLocks;
 	private bool _preInitialized;
 	private bool _isLoadingGameBlob;
@@ -48,7 +47,7 @@ internal class QSBMSStoreProfileManager : IProfileManager
 	public SettingsSave currentProfileGameSettings => _saveData.settings;
 	public GraphicSettings currentProfileGraphicsSettings => _saveData.gfxSettings;
 	public string currentProfileInputJSON => _saveData.inputActionsJson;
-	public bool isInitialized { get; }
+	public bool isInitialized { get; private set; }
 	public bool isBusyWithFileOps => _fileOpsBusyLocks > 0;
 	public bool hasPendingSaveOperation => _pendingGameSave != null || _pendingSettingsSave != null || _pendingGfxSettingsSave != null || _pendingInputActionsSave != null;
 	public bool saveSystemAvailable { get; private set; }
@@ -66,7 +65,7 @@ internal class QSBMSStoreProfileManager : IProfileManager
 
 	public void Initialize()
 	{
-		if (!_initialized)
+		if (!isInitialized)
 		{
 			Gdk.Helpers.SignIn();
 			SpinnerUI.Show();
@@ -81,14 +80,14 @@ internal class QSBMSStoreProfileManager : IProfileManager
 			{
 				SerializationBinder = serializationBinder
 			};
-			_initialized = true;
+			isInitialized = true;
 			return;
 		}
 
 		OnProfileSignInComplete?.Invoke(ProfileManagerSignInResult.COMPLETE);
 		OnProfileReadDone?.Invoke();
 
-		DebugLog.DebugWrite($"INITIALIZED");
+		DebugLog.DebugWrite("INITIALIZED");
 	}
 
 	public void PreInitialize()
@@ -106,7 +105,7 @@ internal class QSBMSStoreProfileManager : IProfileManager
 		_preInitialized = true;
 	}
 
-	public void InvokeProfileSignInComplete() => 
+	public void InvokeProfileSignInComplete() =>
 		OnProfileSignInComplete?.Invoke(ProfileManagerSignInResult.COMPLETE);
 
 	public void InvokeSaveSetupComplete()
@@ -117,9 +116,7 @@ internal class QSBMSStoreProfileManager : IProfileManager
 		LoadGame(OW_GAME_SAVE_BLOB_NAME);
 	}
 
-	public void InitializeForEditor()
-	{
-	}
+	public void InitializeForEditor() { }
 
 	public void SaveGame(GameSave gameSave, SettingsSave settSave, GraphicSettings gfxSettings, string inputJSON)
 	{
@@ -304,13 +301,13 @@ internal class QSBMSStoreProfileManager : IProfileManager
 		{
 			_isLoadingSettingsBlob = false;
 			OnProfileReadDone?.Invoke();
-			DebugLog.DebugWrite($"LOADED SETTINGS BLOB");
+			DebugLog.DebugWrite("LOADED SETTINGS BLOB");
 		}
 	}
 
 	private void OnGameSaveLoadFailed(object sender, string blobName)
 	{
-		DebugLog.DebugWrite($"OnGameSaveLoadFailed");
+		DebugLog.DebugWrite("OnGameSaveLoadFailed");
 		_fileOpsBusyLocks--;
 		if (_isLoadingGameBlob)
 		{
@@ -330,7 +327,7 @@ internal class QSBMSStoreProfileManager : IProfileManager
 			SaveGame(null, _saveData.settings, _saveData.gfxSettings, _saveData.inputActionsJson);
 			_isLoadingSettingsBlob = false;
 			OnProfileReadDone?.Invoke();
-			DebugLog.DebugWrite($"LOADING SETTINGS BLOB - FROM FAILED GAME LOAD");
+			DebugLog.DebugWrite("LOADING SETTINGS BLOB - FROM FAILED GAME LOAD");
 		}
 	}
 
