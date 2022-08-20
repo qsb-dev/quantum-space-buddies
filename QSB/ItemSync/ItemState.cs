@@ -6,6 +6,8 @@ namespace QSB.ItemSync;
 /// <summary>
 /// used for initial state sync.
 /// we have to store this separately because it's not saved in the item itself, unfortunately.
+///
+/// BUG: there are some cases (like remote unsocket) where HasBeenInteractedWith or other state isn't set.
 /// </summary>
 public class ItemState
 {

@@ -218,13 +218,7 @@ internal class QSBStandaloneProfileManager : IProfileManager
 			return;
 		}
 
-		var onNoProfilesExist = OnNoProfilesExist;
-		if (onNoProfilesExist == null)
-		{
-			return;
-		}
-
-		onNoProfilesExist();
+		OnNoProfilesExist?.Invoke();
 	}
 
 	private void LoadSaveFilesFromProfiles()
