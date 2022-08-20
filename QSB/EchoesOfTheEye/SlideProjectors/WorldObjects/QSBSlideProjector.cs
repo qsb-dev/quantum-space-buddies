@@ -36,5 +36,17 @@ public class QSBSlideProjector : WorldObject<SlideProjector>
 	{
 		AttachedObject._interactReceiver.SetInteractionEnabled(user == 0 || user == _user);
 		_user = user;
+
+		if (user != 0)
+		{
+			if (AttachedObject._slideItem != null && AttachedObject.IsProjectorFullyLit())
+			{
+				AttachedObject._slideItem.slidesContainer.TryPlayMusicForCurrentSlideInclusive();
+			}
+		}
+		else
+		{
+			Locator.GetSlideReelMusicManager().OnExitSlideProjector();
+		}
 	}
 }
