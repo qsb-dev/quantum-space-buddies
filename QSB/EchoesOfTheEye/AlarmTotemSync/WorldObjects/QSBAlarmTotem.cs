@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
@@ -11,8 +12,11 @@ namespace QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 /// <summary>
 /// TODO: make this not NRE (by not doing enable sync) and then readd it back in
 /// </summary>
-public class QSBAlarmTotem : WorldObject<AlarmTotem>
+public class QSBAlarmTotem : AuthWorldObject<AlarmTotem>
 {
+	public override bool CanOwn => AttachedObject.enabled;
+
+
 	public readonly List<uint> VisibleFor = new();
 	public bool IsLocallyVisible;
 
