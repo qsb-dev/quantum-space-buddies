@@ -222,26 +222,6 @@ public class QSBGhostController : WorldObject<GhostController>, IGhostObject
 		AttachedObject.FaceNode(node, turnSpeed, nodeDelay, autoFocusLantern);
 	}
 
-	public void FaceLocalDirection(Vector3 localDirection, TurnSpeed turnSpeed)
-	{
-		FaceLocalDirection(localDirection, GhostConstants.GetTurnSpeed(turnSpeed), GhostConstants.GetTurnAcceleration(turnSpeed));
-	}
-
-	public void FaceLocalDirection(Vector3 localDirection, float degreesPerSecond, float turnAcceleration = 360f, bool remote = false)
-	{
-		if (!remote)
-		{
-			if (!QSBCore.IsHost)
-			{
-				return;
-			}
-
-			this.SendMessage(new FaceLocalDirectionMessage(localDirection, degreesPerSecond, turnAcceleration));
-		}
-
-		AttachedObject.FaceLocalDirection(localDirection, degreesPerSecond, turnAcceleration);
-	}
-
 	public void StopMoving()
 	{
 		if (!QSBCore.IsHost)
