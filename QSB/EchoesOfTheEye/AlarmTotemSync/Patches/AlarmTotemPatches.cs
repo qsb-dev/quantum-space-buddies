@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
+using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
+using QSB.Localization;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
@@ -13,27 +15,47 @@ public class AlarmTotemPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-	/*
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.OnSectorOccupantAdded))]
-	private static void OnSectorOccupantAdded(AlarmTotem __instance, SectorDetector sectorDetector)
+	private static bool OnSectorOccupantAdded(AlarmTotem __instance, SectorDetector sectorDetector)
 	{
-		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && QSBWorldSync.AllObjectsReady)
+		if (!QSBWorldSync.AllObjectsReady)
 		{
-			__instance.GetWorldObject<QSBAlarmTotem>()
-				.SendMessage(new TotemEnabledMessage(true));
+			return true;
 		}
+		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
+
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player)
+		{
+			__instance.enabled = true;
+		}
+		return false;
 	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.OnSectorOccupantRemoved))]
-	private static void OnSectorOccupantRemoved(AlarmTotem __instance, SectorDetector sectorDetector)
+	private static bool OnSectorOccupantRemoved(AlarmTotem __instance, SectorDetector sectorDetector)
 	{
-		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player && QSBWorldSync.AllObjectsReady)
+		if (!QSBWorldSync.AllObjectsReady)
 		{
-			__instance.GetWorldObject<QSBAlarmTotem>()
-				.SendMessage(new TotemEnabledMessage(false));
+			return true;
 		}
+		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
+
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player)
+		{
+			__instance.enabled = false;
+			__instance._pulseLightController.SetIntensity(0f);
+			__instance._simTotemMaterials[0] = __instance._origSimEyeMaterial;
+			__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
+			__instance._simVisionConeRenderer.SetColor(__instance._simVisionConeRenderer.GetOriginalColor());
+			if (__instance._isPlayerVisible)
+			{
+				__instance._isPlayerVisible = false;
+				Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
+			}
+		}
+		return false;
 	}
 
 	[HarmonyPrefix]
@@ -44,22 +66,10 @@ public class AlarmTotemPatches : QSBPatch
 		{
 			return true;
 		}
-
 		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
 
-		var isLocallyVisible = qsbAlarmTotem.IsLocallyVisible;
-		qsbAlarmTotem.IsLocallyVisible = __instance.CheckPlayerVisible();
-		if (qsbAlarmTotem.IsLocallyVisible && !isLocallyVisible)
-		{
-			qsbAlarmTotem.SendMessage(new TotemVisibleMessage(true));
-		}
-		else if (isLocallyVisible && !qsbAlarmTotem.IsLocallyVisible)
-		{
-			qsbAlarmTotem.SendMessage(new TotemVisibleMessage(false));
-		}
-
 		var isPlayerVisible = __instance._isPlayerVisible;
-		__instance._isPlayerVisible = qsbAlarmTotem.VisibleFor.Count > 0;
+		__instance._isPlayerVisible = __instance.CheckPlayerVisible();
 		if (__instance._isPlayerVisible && !isPlayerVisible)
 		{
 			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
@@ -79,10 +89,8 @@ public class AlarmTotemPatches : QSBPatch
 			__instance._simVisionConeRenderer.SetColor(__instance._simVisionConeRenderer.GetOriginalColor());
 			__instance._pulseLightController.FadeTo(0f, 0.5f);
 		}
-
 		return false;
 	}
-	*/
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.CheckPlayerVisible))]
