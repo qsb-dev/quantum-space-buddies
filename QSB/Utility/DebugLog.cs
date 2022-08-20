@@ -14,6 +14,13 @@ public static class DebugLog
 
 	public static void ToConsole(string message, MessageType type = MessageType.Message)
 	{
+		if (QSBCore.Helper == null)
+		{
+			// yes i know this is only meant for OWML, but it's useful as a backup
+			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType());
+			return;
+		}
+
 		if (QSBCore.DebugSettings.InstanceIdInLogs)
 		{
 			message = $"[{ProcessInstanceId}] " + message;
