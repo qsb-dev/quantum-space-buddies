@@ -251,31 +251,38 @@ internal class QSBMSStoreProfileManager : IProfileManager
 		memoryStream.Seek(0L, SeekOrigin.Begin);
 		using (var jsonTextReader = new JsonTextReader(new StreamReader(memoryStream)))
 		{
-			var x1SaveData = _jsonSerializer.Deserialize<QSBX1SaveData>(jsonTextReader);
+			var tempSaveData = _jsonSerializer.Deserialize<QSBX1SaveData>(jsonTextReader);
 			if (_isLoadingGameBlob)
 			{
-				if (x1SaveData != null)
+				if (tempSaveData != null)
 				{
-					if (x1SaveData.gameSave == null)
+					if (tempSaveData.gameSave == null)
 					{
 						DebugLog.DebugWrite("[GDK] tempSaveData.gameSave is null (oh no)");
 					}
 
-					_saveData.gameSave = x1SaveData.gameSave ?? new GameSave();
+					if (tempSaveData.gameMultSave == null)
+					{
+						DebugLog.DebugWrite("[GDK] tempSaveData.gameMultSave is null (oh no)");
+					}
+
+					_saveData.gameSave = tempSaveData.gameSave ?? new GameSave();
+					_saveData.gameMultSave = tempSaveData.gameMultSave ?? new GameSave();
 				}
 				else
 				{
 					DebugLog.DebugWrite("[GDK] tempSaveData is null (oh no)");
 					_saveData.gameSave = new GameSave();
+					_saveData.gameMultSave = new GameSave();
 				}
 			}
 			else
 			{
-				if (x1SaveData != null)
+				if (tempSaveData != null)
 				{
-					_saveData.gfxSettings = x1SaveData.gfxSettings ?? new GraphicSettings(true);
-					_saveData.settings = x1SaveData.settings ?? new SettingsSave();
-					_saveData.inputActionsJson = x1SaveData.inputActionsJson ?? ((InputManager)OWInput.SharedInputManager).commandManager.DefaultInputActions.ToJson();
+					_saveData.gfxSettings = tempSaveData.gfxSettings ?? new GraphicSettings(true);
+					_saveData.settings = tempSaveData.settings ?? new SettingsSave();
+					_saveData.inputActionsJson = tempSaveData.inputActionsJson ?? ((InputManager)OWInput.SharedInputManager).commandManager.DefaultInputActions.ToJson();
 				}
 				else
 				{
