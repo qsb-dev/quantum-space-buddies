@@ -12,27 +12,55 @@ internal class SlideProjectorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SlideProjector.OnPressInteract))]
-	public static void OnPressInteract(SlideProjector __instance) =>
-		__instance.GetWorldObject<QSBSlideProjector>()
-			.SendMessage(new UseSlideProjectorMessage(true));
+	public static void OnPressInteract(SlideProjector __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+		__instance.GetWorldObject<QSBSlideProjector>().SendMessage(new UseSlideProjectorMessage(true));
+	}
 
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SlideProjector.CancelInteraction))]
-	public static void CancelInteraction(SlideProjector __instance) =>
-		__instance.GetWorldObject<QSBSlideProjector>()
-			.SendMessage(new UseSlideProjectorMessage(false));
+	public static void CancelInteraction(SlideProjector __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+		__instance.GetWorldObject<QSBSlideProjector>().SendMessage(new UseSlideProjectorMessage(false));
+	}
 
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SlideProjector.NextSlide))]
-	public static void NextSlide(SlideProjector __instance) =>
-		__instance.GetWorldObject<QSBSlideProjector>()
-			.SendMessage(new NextSlideMessage());
+	public static void NextSlide(SlideProjector __instance)
+	{
+		if (Remote)
+		{
+			return;
+		}
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+		__instance.GetWorldObject<QSBSlideProjector>().SendMessage(new NextSlideMessage());
+	}
 
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SlideProjector.PreviousSlide))]
-	public static void PreviousSlide(SlideProjector __instance) =>
-		__instance.GetWorldObject<QSBSlideProjector>()
-			.SendMessage(new PreviousSlideMessage());
+	public static void PreviousSlide(SlideProjector __instance)
+	{
+		if (Remote)
+		{
+			return;
+		}
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+		__instance.GetWorldObject<QSBSlideProjector>().SendMessage(new PreviousSlideMessage());
+	}
 }
