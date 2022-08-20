@@ -42,7 +42,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const int _titleButtonIndex = 2;
 	private float _connectPopupOpenTime;
 
-	private const string UpdateChangelog = "QSB Version 0.21.1\r\nFixed gamepass not working with qsb and the last small light sensor bug.";
+	private const string UpdateChangelog = "QSB Version 0.21.1\r\nFixed gamepass not working, and fixed a small bug with light sensors.";
 
 	private Action<bool> PopupClose;
 
