@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.201" IncludeAssets="compile" />
-    <PackageReference Include="HarmonyX" Version="2.10.0" IncludeAssets="compile" />
-  </ItemGroup>
-</Project>
