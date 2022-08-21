@@ -29,7 +29,9 @@ using QSB.Utility;
 using QSB.Utility.VariableSync;
 using QSB.WorldSync;
 using System;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -95,6 +97,14 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			eosTransport.SetTransportError = error => _lastTransportError = error;
 			transport = eosTransport;
 			*/
+
+
+			[DllImport("kernel32.dll")]
+			static extern IntPtr LoadLibrary(string dllToLoad);
+
+			// makes DllImport work :)
+			LoadLibrary(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "discord_game_sdk.dll"));
+
 			var discordTransport = gameObject.AddComponent<DiscordMirror.DiscordTransport>();
 			discordTransport.discordGameID = 1010975130287100014;
 			transport = discordTransport;
@@ -195,7 +205,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		if (bundle == null)
 		{
-			DebugLog.ToConsole($"FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
+			DebugLog.ToConsole("FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
 			return null;
 		}
 
