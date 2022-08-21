@@ -142,7 +142,9 @@ namespace DiscordMirror
 
         public override bool ServerActive()
         {
-            return currentLobby.Id == 0 ? false : currentLobby.OwnerId == userManager.GetCurrentUser().Id;
+            var active = currentLobby.Id == 0 ? false : currentLobby.OwnerId == userManager.GetCurrentUser().Id;
+            Debug.LogError($"ACTIVE:{active}");
+            return active;
         }
 
         public override void ServerDisconnect(int connectionId)
