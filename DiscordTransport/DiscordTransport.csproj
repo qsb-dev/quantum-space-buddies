@@ -5,6 +5,7 @@
   <ItemGroup>
     <Reference Include="../Mirror/*.dll" />
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.201" IncludeAssets="compile" />
+    <PackageReference Include="HarmonyX" Version="2.10.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib/x86_64/discord_game_sdk.dll">
