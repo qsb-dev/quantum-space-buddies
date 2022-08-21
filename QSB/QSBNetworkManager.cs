@@ -1,6 +1,4 @@
-﻿using Epic.OnlineServices.Logging;
-using EpicTransport;
-using Mirror;
+﻿using Mirror;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -78,6 +76,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		}
 		else
 		{
+			/*
 			// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
 			var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
 			eosApiKey.epicProductName = "QSB";
@@ -95,6 +94,10 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			var eosTransport = gameObject.AddComponent<EosTransport>();
 			eosTransport.SetTransportError = error => _lastTransportError = error;
 			transport = eosTransport;
+			*/
+			var discordTransport = gameObject.AddComponent<DiscordMirror.DiscordTransport>();
+			discordTransport.discordGameID = 1010975130287100014;
+			transport = discordTransport;
 		}
 
 		gameObject.SetActive(true);
@@ -179,11 +182,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			{
 				DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 				PlayerName = "Player";
-			}
-
-			if (!QSBCore.DebugSettings.UseKcpTransport)
-			{
-				EOSSDKComponent.DisplayName = PlayerName;
 			}
 		});
 

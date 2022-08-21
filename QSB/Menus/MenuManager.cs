@@ -1,5 +1,4 @@
-﻿using EpicTransport;
-using Mirror;
+﻿using Mirror;
 using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
@@ -641,7 +640,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (!QSBCore.DebugSettings.UseKcpTransport)
 		{
-			var productUserId = EOSSDKComponent.LocalUserProductIdString;
+			var productUserId = Transport.activeTransport.ServerUri().ToString();
 
 			PopupClose += confirm =>
 			{
