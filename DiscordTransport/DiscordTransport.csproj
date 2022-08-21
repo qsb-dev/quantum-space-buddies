@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>DiscordMirror</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="../Mirror/*.dll" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.201" IncludeAssets="compile" />
+  </ItemGroup>
+</Project>
