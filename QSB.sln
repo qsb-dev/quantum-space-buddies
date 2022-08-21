@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QSB", "QSB\QSB.csproj", "{1F00090A-C697-4C55-B401-192F3CFB9DC2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D35CE983-B75C-42B2-A78B-C72B7F9235D2} = {D35CE983-B75C-42B2-A78B-C72B7F9235D2}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2569F98D-F671-42AA-82DE-505B05CDCEF2}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,11 +18,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MirrorWeaver", "MirrorWeaver\MirrorWeaver.csproj", "{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicOnlineTransport", "EpicOnlineTransport\EpicOnlineTransport.csproj", "{971AA4A1-6729-40DE-AADF-2754F1E8783A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpicOnlineTransport", "EpicOnlineTransport\EpicOnlineTransport.csproj", "{971AA4A1-6729-40DE-AADF-2754F1E8783A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicRerouter", "EpicRerouter\EpicRerouter.csproj", "{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpicRerouter", "EpicRerouter\EpicRerouter.csproj", "{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordTransport", "DiscordTransport\DiscordTransport.csproj", "{B9E1D543-1985-4115-96EC-167F7C2D1FCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordTransport", "DiscordTransport\DiscordTransport.csproj", "{B9E1D543-1985-4115-96EC-167F7C2D1FCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSBPatcher", "QSBPatcher\QSBPatcher.csproj", "{D35CE983-B75C-42B2-A78B-C72B7F9235D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +52,10 @@ Global
 		{B9E1D543-1985-4115-96EC-167F7C2D1FCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9E1D543-1985-4115-96EC-167F7C2D1FCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9E1D543-1985-4115-96EC-167F7C2D1FCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D35CE983-B75C-42B2-A78B-C72B7F9235D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D35CE983-B75C-42B2-A78B-C72B7F9235D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D35CE983-B75C-42B2-A78B-C72B7F9235D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D35CE983-B75C-42B2-A78B-C72B7F9235D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
