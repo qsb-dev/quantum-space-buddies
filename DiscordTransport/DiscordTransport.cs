@@ -57,6 +57,7 @@ namespace DiscordMirror
             try
             {
                 discordClient = new Discord.Discord(discordGameID, (ulong)createFlags);
+                discordClient.SetLogHook(LogLevel.Debug, (Discord.LogLevel level, string message) => Debug.LogError(message));
             }
             catch (ResultException result)
             {
