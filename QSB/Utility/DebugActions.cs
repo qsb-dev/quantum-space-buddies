@@ -191,9 +191,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 			sarcoController.secondSealProjector.SetLit(false);
 			sarcoController.thirdSealProjector.SetLit(false);
 
-			sarcoController._attemptOpenAfterDelay = true;
-			sarcoController._openAttemptTime = Time.time + 0.5f;
-			sarcoController.enabled = true;
+			sarcoController.OnPressInteract();
 		}
 
 		if (Keyboard.current[Key.Numpad4].wasPressedThisFrame)
