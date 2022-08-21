@@ -203,6 +203,23 @@ namespace DiscordMirror
                     break;
                 System.Threading.Thread.Sleep(100);
             }
+
+            var activity = new Discord.Activity
+            {
+                State = "Hosting",
+                Details = "In Solar System",
+                Party =
+                {
+                    Id = $"{currentLobby.Id}"
+                },
+                Secrets =
+				{
+                    Join = currentLobby.Secret
+				}
+            };
+
+            discordClient.GetActivityManager().UpdateActivity(activity, null);
+
             lobbyCreated = false;
         }
 
