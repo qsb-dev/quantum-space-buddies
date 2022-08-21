@@ -7,7 +7,7 @@
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.201" IncludeAssets="compile" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="discord_game_sdk.dll">
+    <None Include="lib/x86_64/discord_game_sdk.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
