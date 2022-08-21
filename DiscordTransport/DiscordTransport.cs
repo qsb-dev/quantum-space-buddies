@@ -410,7 +410,7 @@ namespace DiscordMirror
 
         private void LobbyManager_OnMemberUpdate(long lobbyId, long userId)
         {
-            Debug.LogError($"LOBBY OnMemberUpdate");
+            Debug.LogError($"LOBBY OnMemberUpdate lobbyId:{lobbyId} userId:{userId}");
 
             if (userId == userManager.GetCurrentUser().Id)
             {
