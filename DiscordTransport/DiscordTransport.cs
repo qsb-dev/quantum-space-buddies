@@ -203,7 +203,11 @@ namespace DiscordMirror
                     break;
                 System.Threading.Thread.Sleep(100);
             }
+            lobbyCreated = false;
 
+            
+            
+            // temp testing
             var activity = new Discord.Activity
             {
                 State = "Hosting",
@@ -213,14 +217,12 @@ namespace DiscordMirror
                     Id = $"{currentLobby.Id}"
                 },
                 Secrets =
-				{
+                {
                     Join = currentLobby.Secret
-				}
+                }
             };
 
             discordClient.GetActivityManager().UpdateActivity(activity, null);
-
-            lobbyCreated = false;
 
             discordClient.GetActivityManager().OnActivityJoin += secret =>
             {
