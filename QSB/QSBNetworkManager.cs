@@ -99,12 +99,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			*/
 
 
-			[DllImport("kernel32.dll")]
-			static extern IntPtr LoadLibrary(string dllToLoad);
-
-			// makes DllImport work :)
-			LoadLibrary(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "lib/x86_64/discord_game_sdk.dll"));
-
 			var discordTransport = gameObject.AddComponent<DiscordMirror.DiscordTransport>();
 			discordTransport.discordGameID = 1010975130287100014;
 			transport = discordTransport;
