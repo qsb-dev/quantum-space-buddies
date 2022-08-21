@@ -1,10 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net35</TargetFramework>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <ApplicationIcon />
-	  <OutputType>exe</OutputType>
-    <StartupObject />
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 </Project>
