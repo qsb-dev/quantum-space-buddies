@@ -375,7 +375,7 @@ namespace DiscordMirror
 
         private void LobbyManager_OnNetworkMessage(long lobbyId, long userId, byte channelId, byte[] data)
         {
-            Debug.LogError($"LOBBY OnNetworkMessage");
+            Debug.LogError($"LOBBY OnNetworkMessage lobbyId:{lobbyId} userId:{userId}, channelId:{channelId} data:{data}");
             if (ServerActive())
             {
                 OnServerDataReceived?.Invoke(clients.GetByFirst(userId), new ArraySegment<byte>(data), channelId);
