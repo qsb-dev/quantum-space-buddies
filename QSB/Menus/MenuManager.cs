@@ -650,7 +650,13 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				}
 
 				LoadGame(PlayerData.GetWarpedToTheEye());
-				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
+				Delay.RunWhen(() => TimeLoop._initialized, () =>
+				{
+					QSBNetworkManager.singleton.StartHost();
+					
+					Delay.RunFramesLater(60, () =>
+						DebugLog.ToAll($"hello ur id is {Transport.activeTransport.ServerUri()} or {((DiscordMirror.DiscordTransport)Transport.activeTransport).GetConnectString()} maybe i hope idk"));
+				});
 			};
 
 			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, productUserId)
