@@ -221,6 +221,18 @@ namespace DiscordMirror
             discordClient.GetActivityManager().UpdateActivity(activity, null);
 
             lobbyCreated = false;
+
+            discordClient.GetActivityManager().OnActivityJoin += secret =>
+            {
+                Debug.LogError($"ONJOIN SECRET:{secret}");
+                lobbyManager.ConnectLobbyWithActivitySecret(secret, (Discord.Result result, ref Discord.Lobby lobby) =>
+                {
+                    Debug.LogError($"CONNECTED TO LOBBY {lobby.Id}");
+                });
+
+            };
+
+            discordClient.GetActivityManager().OnActivityJoinRequest += (ref Discord.User user) => Debug.LogError($"OnJoinRequest username:{user.Username} id:{user.Id}");
         }
 
         public override void ServerStop()
