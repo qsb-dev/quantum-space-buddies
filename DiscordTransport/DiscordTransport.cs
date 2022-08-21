@@ -359,7 +359,7 @@ namespace DiscordMirror
 
         private void LobbyManager_OnMemberConnect(long lobbyId, long userId)
         {
-            Debug.LogError($"LOBBY OnMemberConnect");
+            Debug.LogError($"LOBBY OnMemberConnect lobbyId:{lobbyId} userId:{userId}");
             if (ServerActive())
             {
                 clients.Add(userId, currentMemberId);
