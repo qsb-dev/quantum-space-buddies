@@ -115,16 +115,14 @@ namespace DiscordMirror
             currentLobby = new Lobby();
         }
 
-        public override bool ClientSend(int channelId, ArraySegment<byte> segment)
+        public override void ClientSend(ArraySegment<byte> segment, int channelId = 0)
         {
             try
             {
                 lobbyManager.SendNetworkMessage(currentLobby.Id, currentLobby.OwnerId, (byte)channelId, segment.Array);
-                return true;
             }
             catch
             {
-                return false;
             }
         }
 
@@ -139,18 +137,16 @@ namespace DiscordMirror
             return currentLobby.Id == 0 ? false : currentLobby.OwnerId == userManager.GetCurrentUser().Id;
         }
 
-        public override bool ServerDisconnect(int connectionId)
+        public override void ServerDisconnect(int connectionId)
         {
             try
             {
                 var txn = lobbyManager.GetMemberUpdateTransaction(currentLobby.Id, clients.GetBySecond(connectionId));
                 txn.SetMetadata("kicked", "true");
                 lobbyManager.UpdateMember(currentLobby.Id, clients.GetBySecond(connectionId), txn, (result) => { });
-                return true;
             }
             catch
             {
-                return false;
             }
         }
 
@@ -159,22 +155,16 @@ namespace DiscordMirror
             return clients.GetBySecond(connectionId).ToString();
         }
 
-        public override bool ServerSend(List<int> connectionIds, int channelId, ArraySegment<byte> segment)
+        public override void ServerSend(int connectionId, ArraySegment<byte> segment, int channelId = 0)
         {
-            bool failed = false;
-            for (int i = 0; i < connectionIds.Count; i++)
+            try
             {
-                try
-                {
-                    lobbyManager.SendNetworkMessage(currentLobby.Id, clients.GetBySecond(connectionIds[i]), (byte)channelId, segment.Array);
-                }
-                catch (Exception e)
-                {
-                    OnServerError?.Invoke(connectionIds[i], new Exception("Error sending data to client: " + e.ToString()));
-                    failed = true;
-                }
+                lobbyManager.SendNetworkMessage(currentLobby.Id, clients.GetBySecond(connectionId), (byte)channelId, segment.Array);
             }
-            return !failed;
+            catch (Exception e)
+            {
+                OnServerError?.Invoke(connectionId, new Exception("Error sending data to client: " + e.ToString()));
+            }
         }
 
         public override void ServerStart()
