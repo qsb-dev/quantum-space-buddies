@@ -107,6 +107,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 			var discordTransport = gameObject.AddComponent<DiscordMirror.DiscordTransport>();
 			discordTransport.discordGameID = 1010975130287100014;
+			discordTransport.SetTransportError = error => _lastTransportError = error;
 			transport = discordTransport;
 		}
 

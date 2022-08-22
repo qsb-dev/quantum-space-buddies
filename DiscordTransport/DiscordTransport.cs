@@ -30,6 +30,8 @@ public class DiscordTransport : Transport
 	public long discordGameID;
 	public CreateFlags createFlags;
 
+	public Action<string> SetTransportError;
+
 	private void SetupCallbacks()
 	{
 		lobbyManager.OnMemberConnect += LobbyManager_OnMemberConnect;
@@ -297,6 +299,7 @@ public class DiscordTransport : Transport
 				Debug.LogError("Already Connected?");
 				break;
 			default:
+				SetTransportError("Discord Transport - ERROR: " + result);
 				Debug.LogError("Discord Transport - ERROR: " + result);
 				OnClientDisconnected?.Invoke();
 				break;
