@@ -26,6 +26,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private GameObject QuitButton;
 	private GameObject DisconnectButton;
 	private PopupMenu DisconnectPopup;
+	private Button CopyIdButton;
 
 	// title screen only
 	private GameObject ResumeGameButton;
@@ -450,6 +451,12 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		DisconnectPopup.OnPopupConfirm += Disconnect;
 
 		DisconnectButton = QSBCore.MenuApi.PauseMenu_MakeMenuOpenButton(QSBLocalization.Current.PauseMenuDisconnect, DisconnectPopup);
+		CopyIdButton = QSBCore.MenuApi.PauseMenu_MakeSimpleButton(QSBLocalization.Current.CopyId);
+		CopyIdButton.onClick.AddListener(() =>
+		{
+			var lobbyActivitySecret = ((DiscordMirror.DiscordTransport)Transport.activeTransport).GetConnectString();
+			GUIUtility.systemCopyBuffer = lobbyActivitySecret;
+		});
 
 		QuitButton = FindObjectOfType<PauseMenuManager>()._exitToMainMenuAction.gameObject;
 
@@ -457,11 +464,13 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		{
 			SetButtonActive(DisconnectButton, true);
 			SetButtonActive(QuitButton, false);
+			SetButtonActive(CopyIdButton, !QSBCore.DebugSettings.UseKcpTransport);
 		}
 		else
 		{
 			SetButtonActive(DisconnectButton, false);
 			SetButtonActive(QuitButton, true);
+			SetButtonActive(CopyIdButton, false);
 		}
 
 		var text = QSBCore.IsHost
@@ -476,6 +485,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		var langController = QSBWorldSync.GetUnityObject<PauseMenuManager>().transform.GetChild(0).GetComponent<FontAndLanguageController>();
 		langController.AddTextElement(DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
+		langController.AddTextElement(CopyIdButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
 		langController.AddTextElement(DisconnectPopup._labelText, false);
 		langController.AddTextElement(DisconnectPopup._confirmButton._buttonText, false);
 		langController.AddTextElement(DisconnectPopup._cancelButton._buttonText, false);
@@ -555,6 +565,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		QSBNetworkManager.singleton.StopHost();
 
 		SetButtonActive(DisconnectButton, false);
+		SetButtonActive(CopyIdButton, false);
 
 		Locator.GetSceneMenuManager().pauseMenu._pauseMenu.EnableMenu(false);
 		Locator.GetSceneMenuManager().pauseMenu._isPaused = false;
@@ -638,34 +649,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(NewGameButton, false);
 		_loadingText = HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
-		if (!QSBCore.DebugSettings.UseKcpTransport)
-		{
-			var lobbyActivitySecret = ((DiscordMirror.DiscordTransport)Transport.activeTransport).GetConnectString();
-
-			PopupClose += confirm =>
-			{
-				if (confirm)
-				{
-					GUIUtility.systemCopyBuffer = lobbyActivitySecret;
-				}
-
-				LoadGame(PlayerData.GetWarpedToTheEye());
-				Delay.RunWhen(() => TimeLoop._initialized, () =>
-				{
-					QSBNetworkManager.singleton.StartHost();
-					DebugLog.ToAll($"lobby activity secret = {((DiscordMirror.DiscordTransport)Transport.activeTransport).GetConnectString()}");
-				});
-			};
-
-			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, lobbyActivitySecret)
-				, QSBLocalization.Current.Yes
-				, QSBLocalization.Current.No);
-		}
-		else
-		{
-			LoadGame(PlayerData.GetWarpedToTheEye());
-			Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
-		}
+		LoadGame(PlayerData.GetWarpedToTheEye());
+		Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 	}
 
 	private void Connect()
@@ -756,6 +741,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(HostButton, true);
 		SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1);
 		SetButtonActive(NewGameButton, true);
+		SetButtonActive(CopyIdButton, false);
 		if (ConnectButton)
 		{
 			ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuConnect;

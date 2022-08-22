@@ -23,7 +23,7 @@ public class Translation
 	public string Yes;
 	public string No;
 	public string StopHostingAreYouSure;
-	public string CopyProductUserIDToClipboard;
+	public string CopyId;
 	public string Connecting;
 	public string OK;
 	public string ServerRefusedConnection;
