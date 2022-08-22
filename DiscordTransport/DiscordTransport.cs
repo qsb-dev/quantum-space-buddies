@@ -121,7 +121,7 @@ namespace DiscordMirror
             currentLobby = new Lobby();
         }
 
-        public override void ClientSend(ArraySegment<byte> segment, int channelId = 0)
+        public override void ClientSend(ArraySegment<byte> segment, int channelId = Channels.Reliable)
         {
             Debug.LogError($"CLIENT SEND {segment.Join()} on {channelId}");
 
@@ -167,7 +167,7 @@ namespace DiscordMirror
             return clients.GetBySecond(connectionId).ToString();
         }
 
-        public override void ServerSend(int connectionId, ArraySegment<byte> segment, int channelId = 0)
+        public override void ServerSend(int connectionId, ArraySegment<byte> segment, int channelId = Channels.Reliable)
         {
             Debug.LogError($"SERVER SEND {segment.Join()} to {connectionId} on {channelId}");
             try
