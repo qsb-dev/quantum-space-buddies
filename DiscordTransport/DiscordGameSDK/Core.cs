@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using UnityEngine;
 
 namespace Discord;
 
@@ -1777,7 +1776,6 @@ public partial class ActivityManager
 
 	private void InitEvents(IntPtr eventsPtr, ref FFIEvents events)
 	{
-		Debug.LogError($"InitEvents");
 		events.OnActivityJoin = OnActivityJoinImpl;
 		events.OnActivitySpectate = OnActivitySpectateImpl;
 		events.OnActivityJoinRequest = OnActivityJoinRequestImpl;
@@ -1836,7 +1834,6 @@ public partial class ActivityManager
 	[MonoPInvokeCallback]
 	private static void SendRequestReplyCallbackImpl(IntPtr ptr, Result result)
 	{
-		Debug.LogError($"SendRequestReplyCallbackImpl");
 		var h = GCHandle.FromIntPtr(ptr);
 		var callback = (SendRequestReplyHandler)h.Target;
 		h.Free();
@@ -1845,7 +1842,6 @@ public partial class ActivityManager
 
 	public void SendRequestReply(long userId, ActivityJoinRequestReply reply, SendRequestReplyHandler callback)
 	{
-		Debug.LogError($"SendRequestReply");
 		var wrapped = GCHandle.Alloc(callback);
 		Methods.SendRequestReply(MethodsPtr, userId, reply, GCHandle.ToIntPtr(wrapped), SendRequestReplyCallbackImpl);
 	}
@@ -1853,7 +1849,6 @@ public partial class ActivityManager
 	[MonoPInvokeCallback]
 	private static void SendInviteCallbackImpl(IntPtr ptr, Result result)
 	{
-		Debug.LogError($"SendInviteCallbackImpl");
 		var h = GCHandle.FromIntPtr(ptr);
 		var callback = (SendInviteHandler)h.Target;
 		h.Free();
@@ -1862,7 +1857,6 @@ public partial class ActivityManager
 
 	public void SendInvite(long userId, ActivityActionType type, string content, SendInviteHandler callback)
 	{
-		Debug.LogError($"SendInvite");
 		var wrapped = GCHandle.Alloc(callback);
 		Methods.SendInvite(MethodsPtr, userId, type, content, GCHandle.ToIntPtr(wrapped), SendInviteCallbackImpl);
 	}
@@ -1870,7 +1864,6 @@ public partial class ActivityManager
 	[MonoPInvokeCallback]
 	private static void AcceptInviteCallbackImpl(IntPtr ptr, Result result)
 	{
-		Debug.LogError($"AcceptInviteCallbackImpl");
 		var h = GCHandle.FromIntPtr(ptr);
 		var callback = (AcceptInviteHandler)h.Target;
 		h.Free();
@@ -1879,7 +1872,6 @@ public partial class ActivityManager
 
 	public void AcceptInvite(long userId, AcceptInviteHandler callback)
 	{
-		Debug.LogError($"AcceptInvite");
 		var wrapped = GCHandle.Alloc(callback);
 		Methods.AcceptInvite(MethodsPtr, userId, GCHandle.ToIntPtr(wrapped), AcceptInviteCallbackImpl);
 	}
@@ -1887,8 +1879,6 @@ public partial class ActivityManager
 	[MonoPInvokeCallback]
 	private static void OnActivityJoinImpl(IntPtr ptr, string secret)
 	{
-		Debug.LogError($"OnActivityJoinImpl");
-
 		var h = GCHandle.FromIntPtr(ptr);
 		var d = (Discord)h.Target;
 		if (d.ActivityManagerInstance.OnActivityJoin != null)
@@ -1900,7 +1890,6 @@ public partial class ActivityManager
 	[MonoPInvokeCallback]
 	private static void OnActivitySpectateImpl(IntPtr ptr, string secret)
 	{
-		Debug.LogError($"OnActivitySpectateImpl");
 		var h = GCHandle.FromIntPtr(ptr);
 		var d = (Discord)h.Target;
 		if (d.ActivityManagerInstance.OnActivitySpectate != null)
@@ -1912,7 +1901,6 @@ public partial class ActivityManager
 	[MonoPInvokeCallback]
 	private static void OnActivityJoinRequestImpl(IntPtr ptr, ref User user)
 	{
-		Debug.LogError($"OnActivityJoinRequestImpl");
 		var h = GCHandle.FromIntPtr(ptr);
 		var d = (Discord)h.Target;
 		if (d.ActivityManagerInstance.OnActivityJoinRequest != null)
@@ -1924,7 +1912,6 @@ public partial class ActivityManager
 	[MonoPInvokeCallback]
 	private static void OnActivityInviteImpl(IntPtr ptr, ActivityActionType type, ref User user, ref Activity activity)
 	{
-		Debug.LogError($"OnActivityInviteImpl");
 		var h = GCHandle.FromIntPtr(ptr);
 		var d = (Discord)h.Target;
 		if (d.ActivityManagerInstance.OnActivityInvite != null)

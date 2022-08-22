@@ -9,9 +9,6 @@ namespace QSB.RichPresence;
 
 internal class DiscordJoinManager : MonoBehaviour, IAddComponentOnStart
 {
-	private Discord.ActivityManager _activityManager;
-	private Discord.LobbyManager _lobbyManager;
-
 	public void Start()
 	{
 		if (QSBCore.DebugSettings.UseKcpTransport)
@@ -21,11 +18,10 @@ internal class DiscordJoinManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		var discordTransport = (DiscordTransport)Transport.activeTransport;
-		_activityManager = discordTransport.discordClient.GetActivityManager();
-		_activityManager.OnActivityJoin += OnActivityJoin;
-		_activityManager.OnActivityJoinRequest += OnActivityJoinRequest;
+		var activityManager = discordTransport.discordClient.GetActivityManager();
 
-		_lobbyManager = discordTransport.discordClient.GetLobbyManager();
+		activityManager.OnActivityJoin += OnActivityJoin;
+		activityManager.OnActivityJoinRequest += OnActivityJoinRequest;
 	}
 
 	private void OnActivityJoin(string secret)
