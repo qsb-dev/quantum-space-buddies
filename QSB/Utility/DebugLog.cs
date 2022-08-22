@@ -61,6 +61,16 @@ public static class DebugLog
 		}
 	}
 
+	public static void DebugWrite(string message, Discord.Result result)
+	{
+		var type = result switch
+		{
+			Discord.Result.Ok => MessageType.Success,
+			_ => MessageType.Error,
+		};
+		DebugWrite(message, type);
+	}
+
 	private static string GetCallingType() =>
 		new StackTrace(2) // skip this function and calling function
 			.GetFrames()!

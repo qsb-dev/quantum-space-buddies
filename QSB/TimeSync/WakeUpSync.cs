@@ -8,6 +8,7 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
+using QSB.RichPresence;
 using QSB.TimeSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -140,13 +141,18 @@ public class WakeUpSync : NetworkBehaviour
 	}
 
 	private void SendServerTime()
-		=> new ServerTimeMessage(_serverTime, PlayerData.LoadLoopCount(), TimeLoop.GetSecondsRemaining()).Send();
+	{
+		var secondsRemaining = TimeLoop.GetSecondsRemaining();
+		new ServerTimeMessage(_serverTime, PlayerData.LoadLoopCount(), secondsRemaining).Send();
+		ActivityManager.Instance.UpdateSecondsRemaining((long)secondsRemaining);
+	}
 
 	public void OnClientReceiveMessage(float time, int count, float secondsRemaining)
 	{
 		_serverTime = time;
 		_serverLoopCount = count;
 		QSBPatch.RemoteCall(() => TimeLoop.SetSecondsRemaining(secondsRemaining));
+		ActivityManager.Instance.UpdateSecondsRemaining((long)secondsRemaining);
 	}
 
 	private void WakeUpOrSleep()
