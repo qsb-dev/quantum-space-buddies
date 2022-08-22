@@ -83,7 +83,7 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 				Id = $"{discordTransport.currentLobby.Id}",
 				Size =
 				{
-					MaxSize = 16
+					MaxSize = (int)discordTransport.serverCapacity
 				}
 			},
 			Timestamps =
