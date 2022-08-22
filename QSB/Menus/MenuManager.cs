@@ -565,8 +565,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void PreHost()
 	{
-		bool doesSingleplayerSaveExist = false;
-		bool doesMultiplayerSaveExist = false;
+		var doesSingleplayerSaveExist = false;
+		var doesMultiplayerSaveExist = false;
 		if (!QSBCore.IsStandalone)
 		{
 			var manager = QSBMSStoreProfileManager.SharedInstance;
@@ -640,26 +640,24 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (!QSBCore.DebugSettings.UseKcpTransport)
 		{
-			var productUserId = Transport.activeTransport.ServerUri().ToString();
+			var lobbyActivitySecret = ((DiscordMirror.DiscordTransport)Transport.activeTransport).GetConnectString();
 
 			PopupClose += confirm =>
 			{
 				if (confirm)
 				{
-					GUIUtility.systemCopyBuffer = productUserId;
+					GUIUtility.systemCopyBuffer = lobbyActivitySecret;
 				}
 
 				LoadGame(PlayerData.GetWarpedToTheEye());
 				Delay.RunWhen(() => TimeLoop._initialized, () =>
 				{
 					QSBNetworkManager.singleton.StartHost();
-					
-					Delay.RunFramesLater(60, () =>
-						DebugLog.ToAll($"hello ur id is {Transport.activeTransport.ServerUri()} or {((DiscordMirror.DiscordTransport)Transport.activeTransport).GetConnectString()} maybe i hope idk"));
+					DebugLog.ToAll($"lobby activity secret = {((DiscordMirror.DiscordTransport)Transport.activeTransport).GetConnectString()}");
 				});
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, productUserId)
+			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, lobbyActivitySecret)
 				, QSBLocalization.Current.Yes
 				, QSBLocalization.Current.No);
 		}
