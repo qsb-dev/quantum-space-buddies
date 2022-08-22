@@ -33,9 +33,6 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 		QSBNetworkManager.singleton.OnClientDisconnected += OnClientDisconnected;
 		QSBPlayerManager.OnAddPlayer += OnAddPlayer;
 		QSBPlayerManager.OnRemovePlayer += OnRemovePlayer;
-
-		Delay.RunWhen(() => ClientStateManager.Instance != null,
-			() => ClientStateManager.Instance.OnChangeState += OnChangeClientState);
 	}
 
 	private void UpdateActivityCallback(Result result)
@@ -137,7 +134,7 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 		_activityManager.UpdateActivity(_currentActivity, UpdateActivityCallback);
 	}
 
-	private void OnChangeClientState(ClientState newState)
+	public void OnChangeClientState(ClientState newState)
 	{
 		DebugLog.DebugWrite($"OnChangeClientState {newState}");
 		switch (newState)
