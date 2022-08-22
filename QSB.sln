@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QSB", "QSB\QSB.csproj", "{1F00090A-C697-4C55-B401-192F3CFB9DC2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D35CE983-B75C-42B2-A78B-C72B7F9235D2} = {D35CE983-B75C-42B2-A78B-C72B7F9235D2}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2569F98D-F671-42AA-82DE-505B05CDCEF2}"
 	ProjectSection(SolutionItems) = preProject
