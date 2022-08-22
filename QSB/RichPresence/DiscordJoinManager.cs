@@ -35,6 +35,7 @@ internal class DiscordJoinManager : MonoBehaviour, IAddComponentOnStart
 	private void OnActivityJoinRequest(ref User user)
 	{
 		// called when someone clicks "ask to join" in discord
+		// BUG: this doesn't get called right now. Maybe make it work one day?
 		DebugLog.DebugWrite($"OnActivityJoinRequest {user.Username} {user.Id}");
 	}
 }
