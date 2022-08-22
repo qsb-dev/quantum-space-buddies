@@ -87,8 +87,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				}
 				else
 				{
-					QSBCore.DefaultServerIP = "localhost";
-					Connect();
+					ConnectToAddress("localhost");
 				}
 			});
 		}
