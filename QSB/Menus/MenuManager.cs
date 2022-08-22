@@ -686,7 +686,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			PlayerData.Init(manager.currentProfileMultiplayerGameSave, manager.currentProfileGameSettings, manager.currentProfileGraphicsSettings, manager.currentProfileInputJSON);
 		}
 
-		var address = ConnectPopup.GetInputText();
+		var address = ConnectPopup.GetInputText().Trim();
 		if (address == string.Empty)
 		{
 			address = QSBCore.DefaultServerIP;
