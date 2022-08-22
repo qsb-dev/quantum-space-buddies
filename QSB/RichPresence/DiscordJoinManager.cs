@@ -1,6 +1,7 @@
 ﻿using Discord;
 using DiscordMirror;
 using Mirror;
+using QSB.Menus;
 using QSB.Utility;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace QSB.RichPresence;
 internal class DiscordJoinManager : MonoBehaviour, IAddComponentOnStart
 {
 	private Discord.ActivityManager _activityManager;
+	private Discord.LobbyManager _lobbyManager;
 
 	public void Start()
 	{
@@ -22,12 +24,16 @@ internal class DiscordJoinManager : MonoBehaviour, IAddComponentOnStart
 		_activityManager = discordTransport.discordClient.GetActivityManager();
 		_activityManager.OnActivityJoin += OnActivityJoin;
 		_activityManager.OnActivityJoinRequest += OnActivityJoinRequest;
+
+		_lobbyManager = discordTransport.discordClient.GetLobbyManager();
 	}
 
 	private void OnActivityJoin(string secret)
 	{
 		// called when the LOCAL player clicks "join" in discord
 		DebugLog.DebugWrite($"OnActivityJoin {secret}");
+
+		MenuManager.Instance.ConnectToAddress(secret);
 	}
 
 	private void OnActivityJoinRequest(ref User user)

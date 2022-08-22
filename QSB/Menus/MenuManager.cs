@@ -655,6 +655,17 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void Connect()
 	{
+		var address = ConnectPopup.GetInputText().Trim();
+		if (address == string.Empty)
+		{
+			address = QSBCore.DefaultServerIP;
+		}
+
+		ConnectToAddress(address);
+	}
+
+	public void ConnectToAddress(string address)
+	{
 		QSBCore.IsInMultiplayer = true;
 		_intentionalDisconnect = false;
 
@@ -667,12 +678,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		{
 			var manager = QSBMSStoreProfileManager.SharedInstance;
 			PlayerData.Init(manager.currentProfileMultiplayerGameSave, manager.currentProfileGameSettings, manager.currentProfileGraphicsSettings, manager.currentProfileInputJSON);
-		}
-
-		var address = ConnectPopup.GetInputText().Trim();
-		if (address == string.Empty)
-		{
-			address = QSBCore.DefaultServerIP;
 		}
 
 		SetButtonActive(HostButton, false);
