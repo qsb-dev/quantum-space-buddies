@@ -89,7 +89,12 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 			Timestamps =
 			{
 				End = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-			}
+			},
+			Secrets =
+			{
+				Join = discordTransport.GetConnectString()
+			},
+			Instance = true
 		};
 
 		activity.State = QSBCore.IsHost
