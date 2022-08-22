@@ -13,7 +13,6 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static ActivityManager Instance { get; private set; }
 
-	private Discord.Discord _client;
 	private Discord.ActivityManager _activityManager;
 	private bool _activityHasBeenSet;
 	private Activity _currentActivity;
@@ -58,11 +57,7 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 	private void OnClientConnected()
 	{
 		var discordTransport = (DiscordTransport)Transport.activeTransport;
-		if (_client == default)
-		{
-			_client = discordTransport.discordClient;
-			_activityManager = _client.GetActivityManager();
-		}
+		_activityManager = discordTransport.discordClient.GetActivityManager();
 
 		var activity = new Activity
 		{
