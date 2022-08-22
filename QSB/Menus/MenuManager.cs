@@ -683,7 +683,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		Locator.GetMenuInputModule().DisableInputs();
 
 		QSBNetworkManager.singleton.networkAddress = address;
-		// hack to get disconnect call if start client fails immediately
+		// hack to get disconnect call if start client fails immediately (happens on kcp transport when failing to resolve host name)
 		typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection))!.SetValue(null, new NetworkConnectionToServer());
 		QSBNetworkManager.singleton.StartClient();
 	}
