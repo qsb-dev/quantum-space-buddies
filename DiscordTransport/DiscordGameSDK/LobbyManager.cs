@@ -13,6 +13,7 @@ public partial class LobbyManager
 		{
 			members.Add(GetMemberUser(lobbyID, GetMemberUserId(lobbyID, i)));
 		}
+
 		return members;
 	}
 

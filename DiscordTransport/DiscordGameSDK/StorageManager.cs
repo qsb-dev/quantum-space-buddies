@@ -12,6 +12,7 @@ public partial class StorageManager
 		{
 			files.Add(StatAt(i));
 		}
+
 		return files;
 	}
 }

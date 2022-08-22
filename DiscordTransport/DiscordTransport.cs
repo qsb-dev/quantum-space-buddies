@@ -66,6 +66,7 @@ public class DiscordTransport : Transport
 			Debug.LogError("Failed initializing Discord! Reason: " + result);
 			return;
 		}
+
 		lobbyManager = discordClient.GetLobbyManager();
 		userManager = discordClient.GetUserManager();
 		SetupCallbacks();
@@ -101,6 +102,7 @@ public class DiscordTransport : Transport
 			Debug.Log("Already connecting...");
 			return;
 		}
+
 		canReconnect = false;
 		lobbyManager.ConnectLobbyWithActivitySecret(address, LobbyJoined);
 	}
@@ -195,8 +197,10 @@ public class DiscordTransport : Transport
 			{
 				break;
 			}
+
 			System.Threading.Thread.Sleep(100);
 		}
+
 		lobbyCreated = false;
 	}
 
@@ -220,10 +224,12 @@ public class DiscordTransport : Transport
 
 	public override Uri ServerUri()
 	{
-		var builder = new UriBuilder();
-		builder.Scheme = Scheme;
-		builder.Host = currentLobby.Id.ToString();
-		builder.Query = currentLobby.Secret;
+		var builder = new UriBuilder
+		{
+			Scheme = Scheme,
+			Host = currentLobby.Id.ToString(),
+			Query = currentLobby.Secret
+		};
 		return builder.Uri;
 	}
 
@@ -245,6 +251,7 @@ public class DiscordTransport : Transport
 			Debug.Log("Already connecting...");
 			return;
 		}
+
 		canReconnect = false;
 
 		lobbyManager.ConnectLobbyWithActivitySecret(string.Format("{0}:{1}", uri.Host, uri.Query.Replace("?", "")), LobbyJoined);

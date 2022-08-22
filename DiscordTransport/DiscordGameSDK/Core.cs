@@ -458,6 +458,7 @@ public struct LobbyTransaction
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -564,6 +565,7 @@ public struct LobbyMemberTransaction
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -632,6 +634,7 @@ public struct LobbySearchQuery
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -934,6 +937,7 @@ public class Discord : IDisposable
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -1018,6 +1022,7 @@ public class Discord : IDisposable
 		{
 			Methods.Destroy(MethodsPtr);
 		}
+
 		SelfHandle.Free();
 		Marshal.FreeHGlobal(EventsPtr);
 		Marshal.FreeHGlobal(ApplicationEventsPtr);
@@ -1061,6 +1066,7 @@ public class Discord : IDisposable
 		{
 			setLogHook.Value.Free();
 		}
+
 		setLogHook = GCHandle.Alloc(callback);
 		Methods.SetLogHook(MethodsPtr, minLevel, GCHandle.ToIntPtr(setLogHook.Value), SetLogHookCallbackImpl);
 	}
@@ -1075,6 +1081,7 @@ public class Discord : IDisposable
 				ref ApplicationEvents
 			);
 		}
+
 		return ApplicationManagerInstance;
 	}
 
@@ -1088,6 +1095,7 @@ public class Discord : IDisposable
 				ref UserEvents
 			);
 		}
+
 		return UserManagerInstance;
 	}
 
@@ -1101,6 +1109,7 @@ public class Discord : IDisposable
 				ref ImageEvents
 			);
 		}
+
 		return ImageManagerInstance;
 	}
 
@@ -1114,6 +1123,7 @@ public class Discord : IDisposable
 				ref ActivityEvents
 			);
 		}
+
 		return ActivityManagerInstance;
 	}
 
@@ -1127,6 +1137,7 @@ public class Discord : IDisposable
 				ref RelationshipEvents
 			);
 		}
+
 		return RelationshipManagerInstance;
 	}
 
@@ -1140,6 +1151,7 @@ public class Discord : IDisposable
 				ref LobbyEvents
 			);
 		}
+
 		return LobbyManagerInstance;
 	}
 
@@ -1153,6 +1165,7 @@ public class Discord : IDisposable
 				ref NetworkEvents
 			);
 		}
+
 		return NetworkManagerInstance;
 	}
 
@@ -1166,6 +1179,7 @@ public class Discord : IDisposable
 				ref OverlayEvents
 			);
 		}
+
 		return OverlayManagerInstance;
 	}
 
@@ -1179,6 +1193,7 @@ public class Discord : IDisposable
 				ref StorageEvents
 			);
 		}
+
 		return StorageManagerInstance;
 	}
 
@@ -1192,6 +1207,7 @@ public class Discord : IDisposable
 				ref StoreEvents
 			);
 		}
+
 		return StoreManagerInstance;
 	}
 
@@ -1205,6 +1221,7 @@ public class Discord : IDisposable
 				ref VoiceEvents
 			);
 		}
+
 		return VoiceManagerInstance;
 	}
 
@@ -1218,6 +1235,7 @@ public class Discord : IDisposable
 				ref AchievementEvents
 			);
 		}
+
 		return AchievementManagerInstance;
 	}
 }
@@ -1285,6 +1303,7 @@ public class ApplicationManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -1295,6 +1314,7 @@ public class ApplicationManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -1422,6 +1442,7 @@ public class UserManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -1434,6 +1455,7 @@ public class UserManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -1456,6 +1478,7 @@ public class UserManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -1482,6 +1505,7 @@ public class UserManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -1493,6 +1517,7 @@ public class UserManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -1549,6 +1574,7 @@ public partial class ImageManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -1559,6 +1585,7 @@ public partial class ImageManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -1595,6 +1622,7 @@ public partial class ImageManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -1718,6 +1746,7 @@ public partial class ActivityManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -1736,6 +1765,7 @@ public partial class ActivityManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -1952,6 +1982,7 @@ public class RelationshipManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -1966,6 +1997,7 @@ public class RelationshipManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -2004,6 +2036,7 @@ public class RelationshipManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2015,6 +2048,7 @@ public class RelationshipManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2026,6 +2060,7 @@ public class RelationshipManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2350,6 +2385,7 @@ public partial class LobbyManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -2376,6 +2412,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -2405,6 +2442,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2416,6 +2454,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2427,6 +2466,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2530,6 +2570,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2541,6 +2582,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret.ToString();
 	}
 
@@ -2552,6 +2594,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret.ToString();
 	}
 
@@ -2563,6 +2606,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret.ToString();
 	}
 
@@ -2574,6 +2618,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2585,6 +2630,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2596,6 +2642,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2607,6 +2654,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2618,6 +2666,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret.ToString();
 	}
 
@@ -2629,6 +2678,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret.ToString();
 	}
 
@@ -2640,6 +2690,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2682,6 +2733,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2716,6 +2768,7 @@ public partial class LobbyManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -2963,6 +3016,7 @@ public class NetworkManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -2977,6 +3031,7 @@ public class NetworkManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -3190,6 +3245,7 @@ public class OverlayManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -3202,6 +3258,7 @@ public class OverlayManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -3393,6 +3450,7 @@ public partial class StorageManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -3403,6 +3461,7 @@ public partial class StorageManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -3424,6 +3483,7 @@ public partial class StorageManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3502,6 +3562,7 @@ public partial class StorageManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3520,6 +3581,7 @@ public partial class StorageManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3531,6 +3593,7 @@ public partial class StorageManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3542,6 +3605,7 @@ public partial class StorageManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret.ToString();
 	}
 }
@@ -3647,6 +3711,7 @@ public partial class StoreManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -3661,6 +3726,7 @@ public partial class StoreManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -3706,6 +3772,7 @@ public partial class StoreManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3717,6 +3784,7 @@ public partial class StoreManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3750,6 +3818,7 @@ public partial class StoreManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3761,6 +3830,7 @@ public partial class StoreManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3772,6 +3842,7 @@ public partial class StoreManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3897,6 +3968,7 @@ public class VoiceManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -3909,6 +3981,7 @@ public class VoiceManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -3931,6 +4004,7 @@ public class VoiceManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3957,6 +4031,7 @@ public class VoiceManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3977,6 +4052,7 @@ public class VoiceManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -3997,6 +4073,7 @@ public class VoiceManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -4017,6 +4094,7 @@ public class VoiceManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -4105,6 +4183,7 @@ public class AchievementManager
 			{
 				MethodsStructure = Marshal.PtrToStructure(MethodsPtr, typeof(FFIMethods));
 			}
+
 			return (FFIMethods)MethodsStructure;
 		}
 	}
@@ -4117,6 +4196,7 @@ public class AchievementManager
 		{
 			throw new ResultException(Result.InternalError);
 		}
+
 		InitEvents(eventsPtr, ref events);
 		MethodsPtr = ptr;
 		if (MethodsPtr == IntPtr.Zero)
@@ -4176,6 +4256,7 @@ public class AchievementManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 
@@ -4187,6 +4268,7 @@ public class AchievementManager
 		{
 			throw new ResultException(res);
 		}
+
 		return ret;
 	}
 

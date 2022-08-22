@@ -19,6 +19,7 @@ internal class BiDictionary<TFirst, TSecond>
 		{
 			throw new ArgumentException("Duplicate first or second");
 		}
+
 		firstToSecond.Add(first, second);
 		secondToFirst.Add(second, first);
 	}

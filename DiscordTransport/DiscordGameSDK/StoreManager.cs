@@ -12,6 +12,7 @@ public partial class StoreManager
 		{
 			entitlements.Add(GetEntitlementAt(i));
 		}
+
 		return entitlements;
 	}
 
@@ -23,6 +24,7 @@ public partial class StoreManager
 		{
 			skus.Add(GetSkuAt(i));
 		}
+
 		return skus;
 	}
 }
