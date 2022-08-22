@@ -1,47 +1,50 @@
 ﻿using System;
 
-namespace EpicTransport {
-    public struct Packet {
-        public const int headerSize = sizeof(uint) + sizeof(uint) + 1;
-        public int size => headerSize + data.Length;
+namespace EpicTransport;
 
-        // header
-        public int id;
-        public int fragment;
-        public bool moreFragments;
+public struct Packet
+{
+	public const int headerSize = sizeof(uint) + sizeof(uint) + 1;
+	public int size => headerSize + data.Length;
 
-        // body
-        public byte[] data;
+	// header
+	public int id;
+	public int fragment;
+	public bool moreFragments;
 
-        public byte[] ToBytes() {
-            byte[] array = new byte[size];
+	// body
+	public byte[] data;
 
-            // Copy id
-            array[0] = (byte)  id;
-            array[1] = (byte) (id >> 8);
-            array[2] = (byte) (id >> 0x10);
-            array[3] = (byte) (id >> 0x18);
+	public byte[] ToBytes()
+	{
+		var array = new byte[size];
 
-            // Copy fragment
-            array[4] = (byte) fragment;
-            array[5] = (byte) (fragment >> 8);
-            array[6] = (byte) (fragment >> 0x10);
-            array[7] = (byte) (fragment >> 0x18);
+		// Copy id
+		array[0] = (byte)id;
+		array[1] = (byte)(id >> 8);
+		array[2] = (byte)(id >> 0x10);
+		array[3] = (byte)(id >> 0x18);
 
-            array[8] = moreFragments ? (byte)1 : (byte)0;
+		// Copy fragment
+		array[4] = (byte)fragment;
+		array[5] = (byte)(fragment >> 8);
+		array[6] = (byte)(fragment >> 0x10);
+		array[7] = (byte)(fragment >> 0x18);
 
-            Array.Copy(data, 0, array, 9, data.Length);
+		array[8] = moreFragments ? (byte)1 : (byte)0;
 
-            return array;
-        }
+		Array.Copy(data, 0, array, 9, data.Length);
 
-        public void FromBytes(byte[] array) {
-            id = BitConverter.ToInt32(array, 0);
-            fragment = BitConverter.ToInt32(array, 4);
-            moreFragments = array[8] == 1;
+		return array;
+	}
 
-            data = new byte[array.Length - 9];
-            Array.Copy(array, 9, data, 0, data.Length);
-        }
-    }
+	public void FromBytes(byte[] array)
+	{
+		id = BitConverter.ToInt32(array, 0);
+		fragment = BitConverter.ToInt32(array, 4);
+		moreFragments = array[8] == 1;
+
+		data = new byte[array.Length - 9];
+		Array.Copy(array, 9, data, 0, data.Length);
+	}
 }
