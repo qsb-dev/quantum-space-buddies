@@ -78,27 +78,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		}
 		else
 		{
-			/*
-			// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
-			var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
-			eosApiKey.epicProductName = "QSB";
-			eosApiKey.epicProductVersion = "1.0";
-			eosApiKey.epicProductId = "d4623220acb64419921c72047931b165";
-			eosApiKey.epicSandboxId = "d9bc4035269747668524931b0840ca29";
-			eosApiKey.epicDeploymentId = "1f164829371e4cdcb23efedce98d99ad";
-			eosApiKey.epicClientId = "xyza7891TmlpkaiDv6KAnJH0f07aAbTu";
-			eosApiKey.epicClientSecret = "ft17miukylHF877istFuhTgq+Kw1le3Pfigvf9Dtu20";
-
-			var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
-			eosSdkComponent.apiKeys = eosApiKey;
-			eosSdkComponent.epicLoggerLevel = LogLevel.VeryVerbose;
-
-			var eosTransport = gameObject.AddComponent<EosTransport>();
-			eosTransport.SetTransportError = error => _lastTransportError = error;
-			transport = eosTransport;
-			*/
-
-
 			[DllImport("kernel32.dll")]
 			static extern IntPtr LoadLibrary(string dllToLoad);
 
@@ -107,6 +86,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 			var discordTransport = gameObject.AddComponent<DiscordMirror.DiscordTransport>();
 			discordTransport.discordGameID = 1010975130287100014;
+			discordTransport.serverCapacity = (uint)maxConnections;
 			discordTransport.SetTransportError = error => _lastTransportError = error;
 			transport = discordTransport;
 		}
