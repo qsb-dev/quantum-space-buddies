@@ -153,7 +153,7 @@ namespace EpicTransport {
             ClientConnect(uri.Host);
         }
 
-        public override void ClientSend(int channelId, ArraySegment<byte> segment) {
+        public override void ClientSend(ArraySegment<byte> segment, int channelId = 0) {
             Send(channelId, segment);
         }
 
@@ -213,7 +213,7 @@ namespace EpicTransport {
             return epicBuilder.Uri;
         }
 
-        public override void ServerSend(int connectionId, int channelId, ArraySegment<byte> segment) {
+        public override void ServerSend(int connectionId, ArraySegment<byte> segment, int channelId = 0) {
             if (ServerActive()) {
                 Send( channelId, segment, connectionId);
             }
@@ -281,9 +281,9 @@ namespace EpicTransport {
 
         public int GetMaxSinglePacketSize(int channelId) => P2PInterface.MaxPacketSize - 10; // 1159 bytes, we need to remove 10 bytes for the packet header (id (4 bytes) + fragment (4 bytes) + more fragments (1 byte)) 
 
-        public override int GetMaxPacketSize(int channelId) => P2PInterface.MaxPacketSize * maxFragments; 
+        public override int GetMaxPacketSize(int channelId = 0) => P2PInterface.MaxPacketSize * maxFragments; 
 
-        public override int GetMaxBatchSize(int channelId) => P2PInterface.MaxPacketSize; // Use P2PInterface.MaxPacketSize as everything above will get fragmentated and will be counter effective to batching
+        public override int GetBatchThreshold(int channelId = 0) => P2PInterface.MaxPacketSize; // Use P2PInterface.MaxPacketSize as everything above will get fragmentated and will be counter effective to batching
 
         public override bool Available() {
             try {
