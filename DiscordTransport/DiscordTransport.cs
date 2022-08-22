@@ -8,7 +8,6 @@ using UnityEngine;
 using Mirror;
 using System;
 using Discord;
-using HarmonyLib;
 using System.Linq;
 
 namespace DiscordMirror
@@ -59,7 +58,6 @@ namespace DiscordMirror
             try
             {
                 discordClient = new Discord.Discord(discordGameID, (ulong)createFlags);
-                discordClient.SetLogHook(LogLevel.Debug, (Discord.LogLevel level, string message) => Debug.LogError(message));
             }
             catch (ResultException result)
             {
@@ -88,8 +86,6 @@ namespace DiscordMirror
 
         public override void ClientConnect(string address)
         {
-            Debug.LogError($"CLIENT CONNECT {address}");
-
             if (discordClient == null || lobbyManager == null)
             {
                 Debug.Log("Cannot create server as discord is not initialized!");
@@ -112,8 +108,6 @@ namespace DiscordMirror
 
         public override void ClientDisconnect()
         {
-            Debug.LogError($"CLIENT DISCONNECT");
-
             if (currentLobby.Id == 0)
                 return;
 
@@ -124,11 +118,9 @@ namespace DiscordMirror
 
         public override void ClientSend(ArraySegment<byte> segment, int channelId = Channels.Reliable)
         {
-            Debug.LogError($"CLIENT SEND {segment.Join()} on {channelId}");
-
             try
             {
-                lobbyManager.SendNetworkMessage(currentLobby.Id, currentLobby.OwnerId, (byte)channelId, segment.ToArray() /*TODO: allocates, make this faster*/);
+                lobbyManager.SendNetworkMessage(currentLobby.Id, currentLobby.OwnerId, (byte)channelId, segment.ToArray()/*TODO: bad*/);
             }
             catch
             {
@@ -143,15 +135,11 @@ namespace DiscordMirror
 
         public override bool ServerActive()
         {
-            var active = currentLobby.Id == 0 ? false : currentLobby.OwnerId == userManager.GetCurrentUser().Id;
-            Debug.LogError($"ACTIVE:{active}");
-            return active;
+            return currentLobby.Id == 0 ? false : currentLobby.OwnerId == userManager.GetCurrentUser().Id;
         }
 
         public override void ServerDisconnect(int connectionId)
         {
-            Debug.LogError($"SERVER DISCONNECT {connectionId}");
-
             try
             {
                 var txn = lobbyManager.GetMemberUpdateTransaction(currentLobby.Id, clients.GetBySecond(connectionId));
@@ -170,10 +158,9 @@ namespace DiscordMirror
 
         public override void ServerSend(int connectionId, ArraySegment<byte> segment, int channelId = Channels.Reliable)
         {
-            Debug.LogError($"SERVER SEND {segment.Join()} to {connectionId} on {channelId}");
             try
             {
-                lobbyManager.SendNetworkMessage(currentLobby.Id, clients.GetBySecond(connectionId), (byte)channelId, segment.ToArray() /*TODO: allocates, make this faster*/);
+                lobbyManager.SendNetworkMessage(currentLobby.Id, clients.GetBySecond(connectionId), (byte)channelId, segment.ToArray()/*TODO: bad*/);
             }
             catch (Exception e)
             {
@@ -183,8 +170,6 @@ namespace DiscordMirror
 
         public override void ServerStart()
         {
-            Debug.LogError($"SERVER START");
-
             if (ClientConnected())
             {
                 Debug.Log("Client is already active!");
@@ -220,42 +205,10 @@ namespace DiscordMirror
                 System.Threading.Thread.Sleep(100);
             }
             lobbyCreated = false;
-
-            
-            
-            // temp testing
-            var activity = new Discord.Activity
-            {
-                State = "Hosting",
-                Details = "In Solar System",
-                Party =
-                {
-                    Id = $"{currentLobby.Id}"
-                },
-                Secrets =
-                {
-                    Join = currentLobby.Secret
-                }
-            };
-
-            discordClient.GetActivityManager().UpdateActivity(activity, null);
-
-            discordClient.GetActivityManager().OnActivityJoin += secret =>
-            {
-                Debug.LogError($"ONJOIN SECRET:{secret}");
-                lobbyManager.ConnectLobbyWithActivitySecret(secret, (Discord.Result result, ref Discord.Lobby lobby) =>
-                {
-                    Debug.LogError($"CONNECTED TO LOBBY {lobby.Id}");
-                });
-
-            };
-
-            discordClient.GetActivityManager().OnActivityJoinRequest += (ref Discord.User user) => Debug.LogError($"OnJoinRequest username:{user.Username} id:{user.Id}");
         }
 
         public override void ServerStop()
         {
-            Debug.LogError($"SERVER STOP");
             if (currentLobby.Id == 0)
                 return;
 
@@ -279,8 +232,6 @@ namespace DiscordMirror
 
         public override void ClientConnect(Uri uri)
         {
-            Debug.LogError($"CLIENT CONNECT {uri}");
-
             if (uri.Scheme != Scheme)
                 throw new ArgumentException($"Invalid url {uri}, use {Scheme}://LobbyID/?Secret instead", nameof(uri));
 
@@ -302,7 +253,6 @@ namespace DiscordMirror
 
         public override void Shutdown()
         {
-            Debug.LogError($"SHUTDOWN");
             if (discordClient != null)
                 discordClient.Dispose();
         }
@@ -312,7 +262,6 @@ namespace DiscordMirror
         #region Callbacks
         void LobbyCreated(Result result, ref Lobby lobby)
         {
-            Debug.LogError($"LOBBY CREATED {result} {lobby.Id}");
             lobbyCreated = true;
             switch (result)
             {
@@ -334,7 +283,6 @@ namespace DiscordMirror
 
         void LobbyJoined(Result result, ref Lobby lobby)
         {
-            Debug.LogError($"LOBBY JOINED {result} {lobby.Id}");
             canReconnect = true;
             switch (result)
             {
@@ -357,13 +305,11 @@ namespace DiscordMirror
 
         void LobbyDisconnected(Result result)
         {
-            Debug.LogError($"LOBBY DISCONNECTED {result}");
             currentLobby = new Lobby();
         }
 
         private void LobbyManager_OnMemberConnect(long lobbyId, long userId)
         {
-            Debug.LogError($"LOBBY OnMemberConnect {lobbyId} {userId}");
             if (ServerActive())
             {
                 clients.Add(userId, currentMemberId);
@@ -379,7 +325,6 @@ namespace DiscordMirror
 
         private void LobbyManager_OnNetworkMessage(long lobbyId, long userId, byte channelId, byte[] data)
         {
-            Debug.LogError($"LOBBY OnNetworkMessage {lobbyId} {userId} {channelId} {data.Join()}");
             if (ServerActive())
             {
                 OnServerDataReceived?.Invoke(clients.GetByFirst(userId), new ArraySegment<byte>(data), channelId);
@@ -392,13 +337,11 @@ namespace DiscordMirror
 
         private void LobbyManager_OnLobbyDelete(long lobbyId, uint reason)
         {
-            Debug.LogError($"LOBBY OnLobbyDelete {lobbyId} {reason}");
             OnClientDisconnected?.Invoke();
         }
 
         private void LobbyManager_OnMemberDisconnect(long lobbyId, long userId)
         {
-            Debug.LogError($"LOBBY OnMemberDisconnect {lobbyId} {userId}");
             if (ServerActive())
             {
                 OnServerDisconnected?.Invoke(clients.GetByFirst(userId));
@@ -414,8 +357,6 @@ namespace DiscordMirror
 
         private void LobbyManager_OnMemberUpdate(long lobbyId, long userId)
         {
-            Debug.LogError($"LOBBY OnMemberUpdate {lobbyId} {userId}");
-
             if (userId == userManager.GetCurrentUser().Id)
             {
                 try
