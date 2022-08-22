@@ -9,6 +9,7 @@ using Mirror;
 using System;
 using Discord;
 using HarmonyLib;
+using System.Linq;
 
 namespace DiscordMirror
 {
@@ -127,7 +128,7 @@ namespace DiscordMirror
 
             try
             {
-                lobbyManager.SendNetworkMessage(currentLobby.Id, currentLobby.OwnerId, (byte)channelId, segment.Array);
+                lobbyManager.SendNetworkMessage(currentLobby.Id, currentLobby.OwnerId, (byte)channelId, segment.ToArray() /*TODO: allocates, make this faster*/);
             }
             catch
             {
@@ -172,7 +173,7 @@ namespace DiscordMirror
             Debug.LogError($"SERVER SEND {segment.Join()} to {connectionId} on {channelId}");
             try
             {
-                lobbyManager.SendNetworkMessage(currentLobby.Id, clients.GetBySecond(connectionId), (byte)channelId, segment.Array);
+                lobbyManager.SendNetworkMessage(currentLobby.Id, clients.GetBySecond(connectionId), (byte)channelId, segment.ToArray() /*TODO: allocates, make this faster*/);
             }
             catch (Exception e)
             {
