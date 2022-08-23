@@ -56,8 +56,8 @@ public class ShipTransformSync : SectoredRigidbodySync
 			return;
 		}
 
-		var targetPos = ReferenceTransform.FromRelPos(transform.position);
-		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
+		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
+		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 
 		if (PlayerState.IsInsideShip())
 		{
