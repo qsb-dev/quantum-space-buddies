@@ -139,17 +139,20 @@ public class DiscordTransport : Transport
 		// Don't know if this is correct, or if discord fragments. But this should be a safe number to use for now.
 		1200;
 
-	public override bool ServerActive() => currentLobby.Id == 0 ? false : currentLobby.OwnerId == userManager.GetCurrentUser().Id;
+	public override bool ServerActive() => currentLobby.Id != 0
+		&& currentLobby.OwnerId == userManager.GetCurrentUser().Id;
 
 	public override void ServerDisconnect(int connectionId)
 	{
-		Debug.Log($"ServerDisconnect");
+		Debug.LogError($"ServerDisconnect connectionId:{connectionId}");
 		try
 		{
-			var txn = lobbyManager.GetMemberUpdateTransaction(currentLobby.Id, clients.GetBySecond(connectionId));
+			var userId = clients.GetBySecond(connectionId);
+			Debug.LogError($" - userId to disconnect is {userId}");
+			var txn = lobbyManager.GetMemberUpdateTransaction(currentLobby.Id, userId);
 			txn.SetMetadata("kicked", "true");
 			Debug.LogError($"Sending kick metadata!");
-			lobbyManager.UpdateMember(currentLobby.Id, clients.GetBySecond(connectionId), txn, result => { });
+			lobbyManager.UpdateMember(currentLobby.Id, userId, txn, result => { });
 		}
 		catch { }
 	}
@@ -340,14 +343,18 @@ public class DiscordTransport : Transport
 
 		if (ServerActive())
 		{
+			Debug.LogError($"- server active");
 			clients.Add(userId, currentMemberId);
+			Debug.LogError($"- Add to clients! userId:{userId}, memberId:{currentMemberId}");
 			OnServerConnected?.Invoke(currentMemberId);
 			currentMemberId++;
 		}
 		else
 		{
+			Debug.LogError($"- server not active");
 			if (userId == userManager.GetCurrentUser().Id)
 			{
+				Debug.LogError($"- member connecting is us! id:{userId}");
 				OnClientConnected?.Invoke();
 			}
 		}
@@ -390,9 +397,10 @@ public class DiscordTransport : Transport
 
 	private void LobbyManager_OnMemberUpdate(long lobbyId, long userId)
 	{
-		Debug.LogError("LobbyManager_OnMemberUpdate");
+		Debug.LogError($"LobbyManager_OnMemberUpdate userId:{userId}");
 		if (userId == userManager.GetCurrentUser().Id)
 		{
+			Debug.LogError($"- given userId:{userId} matches current userId:{userManager.GetCurrentUser().Id}");
 			try
 			{
 				if (lobbyManager.GetMemberMetadataValue(currentLobby.Id, userId, "kicked") == "true")
