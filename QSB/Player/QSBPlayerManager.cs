@@ -131,6 +131,7 @@ public static class QSBPlayerManager
 
 	public static IEnumerator ValidatePlayers()
 	{
+		// BUG: this does not work. try using a ping (heartbeat) message to detect whether the player actually exists. if they dont, kick the player.
 		while (true)
 		{
 			if (QSBCore.IsInMultiplayer && QSBCore.IsHost)
