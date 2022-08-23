@@ -566,8 +566,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void PreHost()
 	{
-		bool doesSingleplayerSaveExist = false;
-		bool doesMultiplayerSaveExist = false;
+		var doesSingleplayerSaveExist = false;
+		var doesMultiplayerSaveExist = false;
 		if (!QSBCore.IsStandalone)
 		{
 			var manager = QSBMSStoreProfileManager.SharedInstance;
@@ -681,7 +681,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			PlayerData.Init(manager.currentProfileMultiplayerGameSave, manager.currentProfileGameSettings, manager.currentProfileGraphicsSettings, manager.currentProfileInputJSON);
 		}
 
-		var address = ConnectPopup.GetInputText();
+		var address = ConnectPopup.GetInputText().Trim();
 		if (address == string.Empty)
 		{
 			address = QSBCore.DefaultServerIP;
@@ -695,7 +695,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		Locator.GetMenuInputModule().DisableInputs();
 
 		QSBNetworkManager.singleton.networkAddress = address;
-		// hack to get disconnect call if start client fails immediately
+		// hack to get disconnect call if start client fails immediately (happens on kcp transport when failing to resolve host name)
 		typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection))!.SetValue(null, new NetworkConnectionToServer());
 		QSBNetworkManager.singleton.StartClient();
 	}
