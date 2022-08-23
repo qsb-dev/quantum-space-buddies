@@ -33,7 +33,7 @@ public class PlayerHUDMarker : HUDDistanceMarker
 			return false;
 		}
 
-		return _player.IsReady && !_player.IsDead && !_player.InDreamWorld && _player.Visible;
+		return _player.IsReady && !_player.IsDead && (!_player.InDreamWorld || QSBPlayerManager.LocalPlayer.InDreamWorld) && _player.Visible;
 	}
 
 	private void Update()
