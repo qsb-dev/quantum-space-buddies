@@ -98,5 +98,5 @@ public class ShipTransformSync : SectoredRigidbodySync
 		rigidbody._currentVelocity = newVelocity;
 	}
 
-	protected override bool UseInterpolation => !PlayerState.IsInsideShip();
+	protected override bool UseInterpolation => !PlayerState.IsInsideShip(); /*TODO: test that this doesnt NRE*/
 }
