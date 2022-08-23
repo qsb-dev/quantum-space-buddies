@@ -148,10 +148,12 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			WriteLine(2, $"State : {player.State}");
 			WriteLine(2, $"Eye State : {player.EyeState}");
 			WriteLine(2, $"Dead : {player.IsDead}");
-			WriteLine(2, $"Ready : {player.IsReady}");
-			WriteLine(2, $"Suited Up : {player.SuitedUp}");
-			WriteLine(2, $"In Suited Up State : {player.AnimationSync.InSuitedUpState}");
-			WriteLine(2, $"InDreamWorld : {player.InDreamWorld}");
+			//WriteLine(2, $"Ready : {player.IsReady}");
+			//WriteLine(2, $"Suited Up : {player.SuitedUp}");
+			//WriteLine(2, $"In Suited Up State : {player.AnimationSync.InSuitedUpState}");
+			//WriteLine(2, $"InDreamWorld : {player.InDreamWorld}");
+			WriteLine(2, $"ConnectionToServer : {player.TransformSync?.connectionToServer}");
+			WriteLine(2, $"ConnectionToClient : {player.TransformSync?.connectionToClient}");
 
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
 			{

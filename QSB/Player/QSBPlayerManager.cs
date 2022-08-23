@@ -184,6 +184,10 @@ public static class QSBPlayerManager
 						DebugLog.DebugWrite($"Remove Invalid Player : {player}", MessageType.Info);
 					}
 				}
+				else
+				{
+					DebugLog.DebugWrite($"Validated {PlayerList.Count} players.", MessageType.Success);
+				}
 			}
 
 			yield return new WaitForSecondsRealtime(5);

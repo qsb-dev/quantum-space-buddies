@@ -305,6 +305,7 @@ public class DiscordTransport : Transport
 
 	private void LobbyJoined(Result result, ref Lobby lobby)
 	{
+		Debug.LogError($"LobbyJoined");
 		canReconnect = true;
 		switch (result)
 		{
@@ -328,11 +329,14 @@ public class DiscordTransport : Transport
 
 	private void LobbyDisconnected(Result result)
 	{
+		Debug.LogError($"LobbyDisconnected");
 		currentLobby = new Lobby();
 	}
 
 	private void LobbyManager_OnMemberConnect(long lobbyId, long userId)
 	{
+		Debug.LogError($"LobbyManager_OnMemberConnect");
+
 		if (ServerActive())
 		{
 			clients.Add(userId, currentMemberId);
@@ -362,11 +366,14 @@ public class DiscordTransport : Transport
 
 	private void LobbyManager_OnLobbyDelete(long lobbyId, uint reason)
 	{
+		Debug.LogError($"LobbyManager_OnLobbyDelete");
 		OnClientDisconnected?.Invoke();
 	}
 
 	private void LobbyManager_OnMemberDisconnect(long lobbyId, long userId)
 	{
+		Debug.LogError($"LobbyManager_OnMemberDisconnect");
+
 		if (ServerActive())
 		{
 			OnServerDisconnected?.Invoke(clients.GetByFirst(userId));

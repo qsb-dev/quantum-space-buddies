@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.Syncs.Sectored;
@@ -23,6 +24,7 @@ public abstract class BaseSectoredSync : SyncBase
 
 	public override void OnStopClient()
 	{
+		DebugLog.DebugWrite($"OnStopClient");
 		base.OnStopClient();
 		QSBSectorManager.Instance.SectoredSyncs.Remove(this);
 		Destroy(SectorDetector);

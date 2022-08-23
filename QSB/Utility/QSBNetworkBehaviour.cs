@@ -18,7 +18,11 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 	}
 
-	public override void OnStopClient() => RequestInitialStatesMessage.SendInitialState -= SendInitialState;
+	public override void OnStopClient()
+	{
+		DebugLog.DebugWrite($"OnStopClient");
+		RequestInitialStatesMessage.SendInitialState -= SendInitialState;
+	}
 
 	/// <summary>
 	/// checked before serializing
