@@ -71,6 +71,13 @@ public class PlayerJoinMessage : QSBMessage
 	{
 		if (QSBCore.IsHost)
 		{
+			if (QSBCore.DebugSettings.KickEveryone)
+			{
+				DebugLog.DebugWrite($"Kicking player - debug override.");
+				new PlayerKickMessage(From, "DEBUG").Send();
+				return;
+			}
+
 			if (QSBVersion != QSBCore.QSBVersion)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong QSB version. (Client:{QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);

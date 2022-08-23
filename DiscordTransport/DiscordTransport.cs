@@ -91,6 +91,8 @@ public class DiscordTransport : Transport
 
 	public override void ClientConnect(string address)
 	{
+		Debug.Log($"ClientConnect (Address)");
+
 		if (discordClient == null || lobbyManager == null)
 		{
 			Debug.Log("Cannot create server as discord is not initialized!");
@@ -141,6 +143,7 @@ public class DiscordTransport : Transport
 
 	public override void ServerDisconnect(int connectionId)
 	{
+		Debug.Log($"ServerDisconnect");
 		try
 		{
 			var txn = lobbyManager.GetMemberUpdateTransaction(currentLobby.Id, clients.GetBySecond(connectionId));
@@ -166,6 +169,8 @@ public class DiscordTransport : Transport
 
 	public override void ServerStart()
 	{
+		Debug.Log($"ServerStart");
+
 		if (ClientConnected())
 		{
 			Debug.Log("Client is already active!");
@@ -241,6 +246,8 @@ public class DiscordTransport : Transport
 
 	public override void ClientConnect(Uri uri)
 	{
+		Debug.Log($"ClientConnect (URI)");
+
 		if (uri.Scheme != Scheme)
 		{
 			throw new ArgumentException($"Invalid url {uri}, use {Scheme}://LobbyID/?Secret instead", nameof(uri));
@@ -259,7 +266,7 @@ public class DiscordTransport : Transport
 		}
 
 		canReconnect = false;
-
+		Debug.LogError($"ConnectLobbyWithActivitySecret");
 		lobbyManager.ConnectLobbyWithActivitySecret(string.Format("{0}:{1}", uri.Host, uri.Query.Replace("?", "")), LobbyJoined);
 	}
 

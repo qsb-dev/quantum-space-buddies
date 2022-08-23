@@ -244,8 +244,14 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		NetworkServer.Spawn(Instantiate(_probePrefab), connection);
 	}
 
+	public override void OnServerConnect(NetworkConnectionToClient conn)
+	{
+		DebugLog.DebugWrite("OnServerConnect", MessageType.Info);
+	}
+
 	public override void OnStartClient()
 	{
+		DebugLog.DebugWrite("OnStartClient", MessageType.Info);
 		QSBCore.DefaultServerIP = networkAddress;
 		var config = QSBCore.Helper.Config;
 		config.SetSettingsValue("defaultServerIP", networkAddress);
@@ -314,7 +320,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 	public override void OnClientDisconnect()
 	{
-		DebugLog.DebugWrite("OnClientDisconnect");
+		DebugLog.DebugWrite("OnClientDisconnect", MessageType.Info);
 		base.OnClientDisconnect();
 		OnClientDisconnected?.SafeInvoke(_lastTransportError);
 		_lastTransportError = null;
