@@ -12,6 +12,7 @@ internal class ClientStateManager : MonoBehaviour
 {
 	public static ClientStateManager Instance { get; private set; }
 
+	public event ChangeStateEvent OnChangeState;
 	public delegate void ChangeStateEvent(ClientState newState);
 
 	private void Awake()
@@ -35,6 +36,7 @@ internal class ClientStateManager : MonoBehaviour
 		}
 
 		QSBPlayerManager.LocalPlayer.State = newState;
+		OnChangeState?.Invoke(newState);
 		ActivityManager.Instance.OnChangeClientState(newState);
 	}
 
