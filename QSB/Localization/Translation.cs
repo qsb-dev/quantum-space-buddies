@@ -10,7 +10,7 @@ public class Translation
 	public string PauseMenuDisconnect;
 	public string PauseMenuStopHosting;
 	public string PublicIPAddress;
-	public string ProductUserID;
+	public string LobbyID;
 	public string Connect;
 	public string Cancel;
 	public string HostExistingOrNewOrCopy;
@@ -23,7 +23,7 @@ public class Translation
 	public string Yes;
 	public string No;
 	public string StopHostingAreYouSure;
-	public string CopyId;
+	public string CopyLobbyID;
 	public string Connecting;
 	public string OK;
 	public string ServerRefusedConnection;
