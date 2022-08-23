@@ -104,6 +104,7 @@ public class DiscordTransport : Transport
 		}
 
 		canReconnect = false;
+		Debug.LogError($"ConnectLobbyWithActivitySecret");
 		lobbyManager.ConnectLobbyWithActivitySecret(address, LobbyJoined);
 	}
 
@@ -111,8 +112,10 @@ public class DiscordTransport : Transport
 
 	public override void ClientDisconnect()
 	{
+		Debug.LogError($"ClientDisconnect");
 		if (currentLobby.Id == 0)
 		{
+			Debug.LogError($" - ID is zero!");
 			return;
 		}
 
@@ -206,8 +209,11 @@ public class DiscordTransport : Transport
 
 	public override void ServerStop()
 	{
+		Debug.LogError($"ServerStop");
+
 		if (currentLobby.Id == 0)
 		{
+			Debug.LogError($"- ID is zero!");
 			return;
 		}
 
