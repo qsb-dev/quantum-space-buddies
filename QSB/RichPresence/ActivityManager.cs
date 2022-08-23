@@ -36,7 +36,7 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 
 	private void UpdateActivityCallback(Result result)
 	{
-		DebugLog.DebugWrite($"[UpdateActivityCallback] : {result}", result);
+		//DebugLog.DebugWrite($"[UpdateActivityCallback] : {result}", result);
 	}
 
 	public void UpdateSecondsRemaining(long timeRemaining)
@@ -46,10 +46,10 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 
 		if (Math.Abs(_endUnixEpoch - end) >= 5f)
 		{
-			DebugLog.DebugWrite($"Calculated epoch ({end}) is significantly different from stored epoch {currentEpoch}). Updating activity.");
+			//DebugLog.DebugWrite($"Calculated epoch ({end}) is significantly different from stored epoch {currentEpoch}). Updating activity.");
 			_currentActivity.Timestamps.End = end;
 			_endUnixEpoch = end;
-			DebugLog.DebugWrite("update activity - end epoch");
+			//DebugLog.DebugWrite("update activity - end epoch");
 			_activityManager.UpdateActivity(_currentActivity, UpdateActivityCallback);
 		}
 	}
@@ -95,13 +95,13 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 
 		_activityHasBeenSet = true;
 		_currentActivity = activity;
-		DebugLog.DebugWrite("update activity - OnClientConnected");
+		//DebugLog.DebugWrite("update activity - OnClientConnected");
 		_activityManager.UpdateActivity(activity, UpdateActivityCallback);
 	}
 
 	private void OnClientDisconnected(string error)
 	{
-		DebugLog.DebugWrite("update activity - OnClientDisconnected");
+		//DebugLog.DebugWrite("update activity - OnClientDisconnected");
 		_activityManager.ClearActivity(UpdateActivityCallback);
 	}
 
@@ -113,7 +113,7 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		_currentActivity.Party.Size.CurrentSize = QSBPlayerManager.PlayerList.Count;
-		DebugLog.DebugWrite("update activity - OnAddPlayer");
+		//DebugLog.DebugWrite("update activity - OnAddPlayer");
 		_activityManager.UpdateActivity(_currentActivity, UpdateActivityCallback);
 	}
 
@@ -125,13 +125,13 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		_currentActivity.Party.Size.CurrentSize = QSBPlayerManager.PlayerList.Count;
-		DebugLog.DebugWrite("update activity - OnRemovePlayer");
+		//DebugLog.DebugWrite("update activity - OnRemovePlayer");
 		_activityManager.UpdateActivity(_currentActivity, UpdateActivityCallback);
 	}
 
 	public void OnChangeClientState(ClientState newState)
 	{
-		DebugLog.DebugWrite($"OnChangeClientState {newState}");
+		//DebugLog.DebugWrite($"OnChangeClientState {newState}");
 		switch (newState)
 		{
 			case ClientState.InTitleScreen:
@@ -156,7 +156,7 @@ internal class ActivityManager : MonoBehaviour, IAddComponentOnStart
 				break;
 		}
 
-		DebugLog.DebugWrite("update activity - OnChangeClientState");
+		//DebugLog.DebugWrite("update activity - OnChangeClientState");
 		_activityManager.UpdateActivity(_currentActivity, UpdateActivityCallback);
 	}
 }

@@ -148,6 +148,7 @@ public class DiscordTransport : Transport
 		{
 			var txn = lobbyManager.GetMemberUpdateTransaction(currentLobby.Id, clients.GetBySecond(connectionId));
 			txn.SetMetadata("kicked", "true");
+			Debug.LogError($"Sending kick metadata!");
 			lobbyManager.UpdateMember(currentLobby.Id, clients.GetBySecond(connectionId), txn, result => { });
 		}
 		catch { }
@@ -389,12 +390,14 @@ public class DiscordTransport : Transport
 
 	private void LobbyManager_OnMemberUpdate(long lobbyId, long userId)
 	{
+		Debug.LogError("LobbyManager_OnMemberUpdate");
 		if (userId == userManager.GetCurrentUser().Id)
 		{
 			try
 			{
 				if (lobbyManager.GetMemberMetadataValue(currentLobby.Id, userId, "kicked") == "true")
 				{
+					Debug.LogError($"Kick metadata recieved!");
 					ClientDisconnect();
 				}
 			}

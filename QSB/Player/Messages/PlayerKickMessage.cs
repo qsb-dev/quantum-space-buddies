@@ -39,7 +39,10 @@ internal class PlayerKickMessage : QSBMessage<string>
 	}
 
 	private void KickPlayer()
-		=> PlayerId.GetNetworkConnection().Disconnect();
+	{
+		DebugLog.DebugWrite($"KICK PLAYER !!!!");
+		PlayerId.GetNetworkConnection().Disconnect();
+	}
 
 	public override void OnReceiveRemote()
 	{
