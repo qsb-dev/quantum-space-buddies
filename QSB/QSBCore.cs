@@ -188,8 +188,6 @@ public class QSBCore : ModBehaviour
 		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
-
-		StartCoroutine(QSBPlayerManager.ValidatePlayers());
 	}
 
 	private static void OnPatchType(QSBPatchTypes type)
