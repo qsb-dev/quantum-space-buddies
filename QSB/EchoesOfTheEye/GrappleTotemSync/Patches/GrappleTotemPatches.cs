@@ -15,7 +15,6 @@ public class GrappleTotemPatches : QSBPatch
 	[HarmonyPatch(typeof(LanternZoomPoint), nameof(LanternZoomPoint.OnDetectLight))]
 	private static bool OnDetectLight(LanternZoomPoint __instance) =>
 		// only trigger with local player lantern
-		// BUG: this is somehow broken. maybe something to do with light sensor authority? see the forum on discord
 		__instance._lightSensor.IsIlluminatedByLantern(Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController());
 
 	[HarmonyPostfix]
