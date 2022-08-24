@@ -59,7 +59,7 @@ public class ShipTransformSync : SectoredRigidbodySync
 		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
 		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 
-		if (PlayerState.IsInsideShip())
+		if (IsInsideShip)
 		{
 			if (Time.unscaledTime >= _lastSetPositionTime + ForcePositionAfterTime)
 			{
@@ -98,5 +98,7 @@ public class ShipTransformSync : SectoredRigidbodySync
 		rigidbody._currentVelocity = newVelocity;
 	}
 
-	protected override bool UseInterpolation => !PlayerState.IsInsideShip();
+	private static bool IsInsideShip => PlayerState.IsInsideShip();
+	protected override bool UseInterpolation => !IsInsideShip;
+	protected override bool UseReliableRpc => IsInsideShip;
 }
