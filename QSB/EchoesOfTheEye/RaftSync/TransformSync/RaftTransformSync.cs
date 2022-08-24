@@ -10,7 +10,7 @@ namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
 
 public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour
 {
-	protected override bool UseInterpolation => Locator.GetPlayerController().GetGroundBody() != AttachedRigidbody; /*TODO: test that this doesnt NRE*/
+	protected override bool UseInterpolation => Locator.GetPlayerController().GetGroundBody() != AttachedRigidbody;
 
 	private float _lastSetPositionTime;
 	private const float ForcePositionAfterTime = 1;
@@ -74,8 +74,8 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 	/// </summary>
 	protected override void ApplyToAttached()
 	{
-		var targetPos = ReferenceTransform.FromRelPos(transform.position);
-		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
+		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
+		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 
 		var onRaft = Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody;
 		if (onRaft)
