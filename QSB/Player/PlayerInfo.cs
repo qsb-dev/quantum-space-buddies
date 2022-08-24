@@ -34,8 +34,11 @@ public partial class PlayerInfo
 	public bool IsLocalPlayer => TransformSync.isLocalPlayer; // if TransformSync is ever null, i give permission for nebula to make fun of me about it for the rest of time - johncorby
 	public ThrusterLightTracker ThrusterLightTracker;
 	public bool FlyingShip => ShipManager.Instance.CurrentFlyer == PlayerId;
-	public bool WaitingForHeartbeat;
-	public int HeartbeatsRemaining = PlayerHeartbeatMessage.TOTAL_HEARTBEAT_TRIES;
+
+	/// <summary>
+	/// only used on host
+	/// </summary>
+	public bool HeartbeatReceived;
 
 	public PlayerInfo(PlayerTransformSync transformSync)
 	{

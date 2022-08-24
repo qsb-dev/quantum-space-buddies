@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player.Messages;
@@ -24,7 +25,7 @@ public static class QSBPlayerManager
 			if (localInstance == null)
 			{
 				DebugLog.ToConsole("Error - Trying to get LocalPlayer when the local PlayerTransformSync instance is null." +
-				                   $"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
+					$"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
 				return null;
 			}
 
@@ -68,8 +69,8 @@ public static class QSBPlayerManager
 	{
 		var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
 		if (includeLocalCamera
-		    && LocalPlayer != default
-		    && LocalPlayer.Camera != null)
+			&& LocalPlayer != default
+			&& LocalPlayer.Camera != null)
 		{
 			cameraList.Add(LocalPlayer);
 		}
@@ -77,11 +78,11 @@ public static class QSBPlayerManager
 		{
 			if (LocalPlayer == default)
 			{
-				DebugLog.ToConsole($"Error - LocalPlayer is null.", MessageType.Error);
+				DebugLog.ToConsole("Error - LocalPlayer is null.", MessageType.Error);
 				return cameraList;
 			}
 
-			DebugLog.ToConsole($"Error - LocalPlayer.Camera is null.", MessageType.Error);
+			DebugLog.ToConsole("Error - LocalPlayer.Camera is null.", MessageType.Error);
 			LocalPlayer.Camera = Locator.GetPlayerCamera();
 		}
 
@@ -111,7 +112,7 @@ public static class QSBPlayerManager
 	{
 		if (playerList == null)
 		{
-			DebugLog.ToConsole($"Error - Cannot get closest player from null player list.", MessageType.Error);
+			DebugLog.ToConsole("Error - Cannot get closest player from null player list.", MessageType.Error);
 			return null;
 		}
 
@@ -119,7 +120,7 @@ public static class QSBPlayerManager
 
 		if (playerList.Count == 0)
 		{
-			DebugLog.ToConsole($"Error - Cannot get closest player from empty (ready) player list.", MessageType.Error);
+			DebugLog.ToConsole("Error - Cannot get closest player from empty (ready) player list.", MessageType.Error);
 			return null;
 		}
 
@@ -131,36 +132,30 @@ public static class QSBPlayerManager
 
 	public static IEnumerator SendHeartbeat()
 	{
-		// yeah mirror has it's own hearbeat stuff, but we have problems with "ghost" PlayerInfos
+		// yeah mirror has it's own hearbeat stuff, but we have problems with "ghost" PlayerInfos due to epic transport being goofy
 		while (true)
 		{
 			if (QSBCore.IsInMultiplayer && QSBCore.IsHost)
 			{
-				for (var i = 0; i < PlayerList.Count; i++)
+				foreach (var player in PlayerList)
 				{
-					var player = PlayerList[i];
-
-					if (player.WaitingForHeartbeat)
+					// if we didnt receive a response in the last loop then we should kick them
+					if (!player.HeartbeatReceived)
 					{
-						player.HeartbeatsRemaining--;
-						DebugLog.DebugWrite($"Didn't hear from {player.PlayerId} in time. HeartbeatsRemaining is now {player.HeartbeatsRemaining}", MessageType.Warning);
+						DebugLog.DebugWrite($"Didn't receive heartbeat from {player.PlayerId} in time. Removing them.", MessageType.Warning);
 
-						if (player.HeartbeatsRemaining == 0)
-						{
-							OnRemovePlayer?.Invoke(player);
-							player.HudMarker?.Remove();
-							PlayerList.Remove(player);
-							DebugLog.ToConsole($"Haven't heard from {player.PlayerId} in {PlayerHeartbeatMessage.TOTAL_HEARTBEAT_TRIES} beats, removing...", MessageType.Error);
-						}
+						NetworkServer.Destroy(player.TransformSync.gameObject);
 					}
 
-					player.WaitingForHeartbeat = true;
+					// reset the state for the next send
+					player.HeartbeatReceived = false;
 				}
 
+				// send out the ping
 				new PlayerHeartbeatMessage().Send();
 			}
 
-			yield return new WaitForSecondsRealtime(3);
+			yield return new WaitForSecondsRealtime(10);
 		}
 	}
 }
