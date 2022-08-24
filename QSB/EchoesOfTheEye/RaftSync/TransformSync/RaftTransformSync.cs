@@ -12,7 +12,6 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 {
 	private bool IsRidingRaft => Locator.GetPlayerController() && Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody;
 	protected override bool UseInterpolation => !IsRidingRaft;
-	protected override bool UseReliableRpc => IsRidingRaft;
 
 	private float _lastSetPositionTime;
 	private const float ForcePositionAfterTime = 1;

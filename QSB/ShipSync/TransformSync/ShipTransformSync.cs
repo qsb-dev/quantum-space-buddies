@@ -100,5 +100,4 @@ public class ShipTransformSync : SectoredRigidbodySync
 
 	private static bool IsInsideShip => PlayerState.IsInsideShip();
 	protected override bool UseInterpolation => !IsInsideShip;
-	protected override bool UseReliableRpc => IsInsideShip;
 }
