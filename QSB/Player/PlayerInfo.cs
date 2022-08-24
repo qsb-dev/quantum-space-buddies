@@ -31,7 +31,7 @@ public partial class PlayerInfo
 	public bool IsInEyeShuttle { get; set; }
 	public IQSBQuantumObject EntangledObject { get; set; }
 	public QSBPlayerAudioController AudioController { get; set; }
-	public bool IsLocalPlayer => TransformSync?.isLocalPlayer == true;
+	public bool IsLocalPlayer => TransformSync.isLocalPlayer; // if TransformSync is ever null, i give permission for nebula to laugh at me - johncorby
 	public ThrusterLightTracker ThrusterLightTracker;
 	public bool FlyingShip => ShipManager.Instance.CurrentFlyer == PlayerId;
 	public bool WaitingForHeartbeat;
