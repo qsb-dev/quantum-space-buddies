@@ -142,7 +142,7 @@ public static class QSBPlayerManager
 					// if we didnt receive a response in the last loop then we should kick them
 					if (!player.HeartbeatReceived)
 					{
-						DebugLog.DebugWrite($"Didn't receive heartbeat from {player.PlayerId} in time. Removing them.", MessageType.Warning);
+						DebugLog.DebugWrite($"Didn't receive heartbeat from {player} in time. Removing them.", MessageType.Warning);
 
 						NetworkServer.Destroy(player.TransformSync.gameObject);
 					}
