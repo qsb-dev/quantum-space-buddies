@@ -1,5 +1,7 @@
 ﻿using OWML.Common;
 using QSB.ItemSync.WorldObjects.Items;
+using QSB.Messaging;
+using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeTool;
@@ -126,4 +128,39 @@ public static class QSBPlayerManager
 
 	public static IEnumerable<(PlayerInfo Player, IQSBItem HeldItem)> GetPlayerCarryItems()
 		=> PlayerList.Select(x => (x, x.HeldItem));
+
+	public static IEnumerator SendHeartbeat()
+	{
+		// yeah mirror has it's own hearbeat stuff, but we have problems with "ghost" PlayerInfos
+		while (true)
+		{
+			if (QSBCore.IsInMultiplayer && QSBCore.IsHost)
+			{
+				for (var i = 0; i < PlayerList.Count; i++)
+				{
+					var player = PlayerList[i];
+
+					if (player.WaitingForHeartbeat)
+					{
+						player.HeartbeatsRemaining--;
+						DebugLog.DebugWrite($"Didn't hear from {player.PlayerId} in time. HeartbeatsRemaining is now {player.HeartbeatsRemaining}", MessageType.Warning);
+
+						if (player.HeartbeatsRemaining == 0)
+						{
+							OnRemovePlayer?.Invoke(player);
+							player.HudMarker?.Remove();
+							PlayerList.Remove(player);
+							DebugLog.ToConsole($"Haven't heard from {player.PlayerId} in {PlayerHeartbeatMessage.TOTAL_HEARTBEAT_TRIES} beats, removing...", MessageType.Error);
+						}
+					}
+
+					player.WaitingForHeartbeat = true;
+				}
+
+				new PlayerHeartbeatMessage().Send();
+			}
+
+			yield return new WaitForSecondsRealtime(3);
+		}
+	}
 }

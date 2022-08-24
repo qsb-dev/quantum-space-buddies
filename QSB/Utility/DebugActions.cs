@@ -8,6 +8,7 @@ using QSB.Utility.Messages;
 using QSB.WorldSync;
 using System;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -223,9 +224,16 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 			var player = new PlayerInfo(QSBPlayerManager.LocalPlayer.TransformSync);
 			QSBPlayerManager.PlayerList.SafeAdd(player);
 			QSBPlayerManager.OnAddPlayer?.Invoke(player);
-			DebugLog.DebugWrite($"Create Player : {player}", MessageType.Info);
+			DebugLog.DebugWrite($"CREATING FAKE PLAYER : {player}", MessageType.Info);
 
 			JoinLeaveSingularity.Create(player, true);
+
+			if (Keyboard.current[Key.LeftShift].isPressed)
+			{
+				// this is HORRIBLE TRASH, but it's just for testing
+				var field = typeof(PlayerInfo).GetField($"<{nameof(PlayerInfo.TransformSync)}>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic);
+				field.SetValue(player, null);
+			}
 		}
 
 		if (Keyboard.current[Key.Numpad9].wasPressedThisFrame)

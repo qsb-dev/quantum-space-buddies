@@ -31,9 +31,11 @@ public partial class PlayerInfo
 	public bool IsInEyeShuttle { get; set; }
 	public IQSBQuantumObject EntangledObject { get; set; }
 	public QSBPlayerAudioController AudioController { get; set; }
-	public bool IsLocalPlayer => TransformSync.isLocalPlayer;
+	public bool IsLocalPlayer => TransformSync?.isLocalPlayer == true;
 	public ThrusterLightTracker ThrusterLightTracker;
 	public bool FlyingShip => ShipManager.Instance.CurrentFlyer == PlayerId;
+	public bool WaitingForHeartbeat;
+	public int HeartbeatsRemaining = PlayerHeartbeatMessage.TOTAL_HEARTBEAT_TRIES;
 
 	public PlayerInfo(PlayerTransformSync transformSync)
 	{
