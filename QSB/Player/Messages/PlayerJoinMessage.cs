@@ -92,7 +92,7 @@ public class PlayerJoinMessage : QSBMessage
 				return;
 			}
 
-			if (QSBPlayerManager.PlayerList.Any(x => x.EyeState >= EyeState.Observatory))
+			if (QSBPlayerManager.PlayerList.Any(x => x.EyeState > EyeState.Observatory))
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting too late into eye scene.", MessageType.Error);
 				new PlayerKickMessage(From, QSBLocalization.Current.GameProgressLimit).Send();
