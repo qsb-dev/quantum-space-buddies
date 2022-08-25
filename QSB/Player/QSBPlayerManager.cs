@@ -137,6 +137,7 @@ public static class QSBPlayerManager
 		{
 			if (QSBCore.IsInMultiplayer && QSBCore.IsHost)
 			{
+				// iterate backwards since we sometimes remove
 				for (var i = PlayerList.Count - 1; i >= 0; i--)
 				{
 					var player = PlayerList[i];
@@ -146,7 +147,7 @@ public static class QSBPlayerManager
 						continue;
 					}
 
-					// if we didn't receive a response in the last loop then we should remove them
+					// if we didn't receive a response in the last iteration then we should remove them
 					if (!player.HeartbeatReceived)
 					{
 						DebugLog.DebugWrite($"Didn't receive heartbeat from {player} in time. Removing them.", MessageType.Warning);
