@@ -137,7 +137,7 @@ public static class QSBPlayerManager
 		{
 			if (QSBCore.IsInMultiplayer && QSBCore.IsHost)
 			{
-				foreach (var player in PlayerList)
+				foreach (var player in PlayerList.ToList())
 				{
 					// if we didn't receive a response in the last loop then we should remove them
 					if (!player.HeartbeatReceived)
