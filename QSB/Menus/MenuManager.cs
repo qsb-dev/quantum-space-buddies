@@ -361,7 +361,13 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			ConnectPopup.EnableMenu(false);
 			Connect();
 		};
-		ConnectPopup.OnActivateMenu += () => _connectPopupOpenTime = Time.time;
+
+		ConnectPopup.OnActivateMenu += () =>
+		{
+			_connectPopupOpenTime = Time.time;
+			// ClearInputTextField is called AFTER OnActivateMenu
+			Delay.RunNextFrame(() => ConnectPopup._inputField.SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
+		};
 
 		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
 		OneButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
