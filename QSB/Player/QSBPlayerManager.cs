@@ -137,7 +137,7 @@ public static class QSBPlayerManager
 		{
 			if (QSBCore.IsInMultiplayer && QSBCore.IsHost)
 			{
-				for (var i = 0; i < PlayerList.Count; i++)
+				for (var i = PlayerList.Count - 1; i >= 0; i--)
 				{
 					var player = PlayerList[i];
 
