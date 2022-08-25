@@ -14,8 +14,7 @@ internal class PlayerHeartbeatMessage : QSBMessage
 		else
 		{
 			// note that we got a response
-			var player = QSBPlayerManager.GetPlayer(From);
-			player.HeartbeatReceived = true;
+			QSBPlayerManager.GetPlayer(From).HeartbeatReceived = true;
 		}
 	}
 }
