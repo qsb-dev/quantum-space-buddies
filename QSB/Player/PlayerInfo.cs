@@ -35,11 +35,6 @@ public partial class PlayerInfo
 	public ThrusterLightTracker ThrusterLightTracker;
 	public bool FlyingShip => ShipManager.Instance.CurrentFlyer == PlayerId;
 
-	/// <summary>
-	/// only used on host
-	/// </summary>
-	public bool HeartbeatReceived;
-
 	public PlayerInfo(PlayerTransformSync transformSync)
 	{
 		PlayerId = transformSync.netId;

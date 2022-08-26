@@ -1,14 +1,10 @@
-﻿using Mirror;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.ItemSync.WorldObjects.Items;
-using QSB.Messaging;
-using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -129,41 +125,4 @@ public static class QSBPlayerManager
 
 	public static IEnumerable<(PlayerInfo Player, IQSBItem HeldItem)> GetPlayerCarryItems()
 		=> PlayerList.Select(x => (x, x.HeldItem));
-
-	public static IEnumerator SendHeartbeat()
-	{
-		// yeah mirror has its own hearbeat stuff, but we have problems with "ghost" PlayerInfos due to epic transport being goofy
-		while (true)
-		{
-			if (QSBCore.IsInMultiplayer && QSBCore.IsHost)
-			{
-				// iterate backwards since we sometimes remove
-				for (var i = PlayerList.Count - 1; i >= 0; i--)
-				{
-					var player = PlayerList[i];
-
-					if (player.IsLocalPlayer)
-					{
-						continue;
-					}
-
-					// if we didn't receive a response in the last iteration then we should remove them
-					if (!player.HeartbeatReceived)
-					{
-						DebugLog.DebugWrite($"Didn't receive heartbeat from {player} in time. Removing them.", MessageType.Warning);
-
-						NetworkServer.Destroy(player.TransformSync.gameObject);
-					}
-
-					// reset the state for the next send
-					player.HeartbeatReceived = false;
-				}
-
-				// send out the ping
-				new PlayerHeartbeatMessage().Send();
-			}
-
-			yield return new WaitForSecondsRealtime(10);
-		}
-	}
 }
