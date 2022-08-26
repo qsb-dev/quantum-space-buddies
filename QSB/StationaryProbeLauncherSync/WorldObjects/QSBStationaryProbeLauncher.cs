@@ -74,7 +74,7 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 	{
 		base.SendInitialState(to);
 
-		// BUG: will make host be the user and have authority instead of the actual user
+		// BUG: will make host be the user and have authority instead of the actual user. can probably copy paste from UseSlideProjectorMessage
 		this.SendMessage(new StationaryProbeLauncherMessage(_isInUse) { To = to });
 	}
 
