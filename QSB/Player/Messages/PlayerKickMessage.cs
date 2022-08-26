@@ -35,7 +35,7 @@ internal class PlayerKickMessage : QSBMessage<string>
 			return;
 		}
 
-		Delay.RunFramesLater(10, KickPlayer);
+		Delay.RunFramesLater(20, KickPlayer);
 	}
 
 	private void KickPlayer()
