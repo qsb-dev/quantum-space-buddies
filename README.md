@@ -40,8 +40,7 @@ Spoilers within!
 
 #### Hosting a server
 
-- Enter a game. This can be a new expedition or an existing save file.
-- On the pause screen, click the option `OPEN TO MULTIPLAYER`.
+- On the title screen, click the option `OPEN TO MULTIPLAYER`.
 - Share your Product User ID with the people who want to connect.
 - Enjoy!
 

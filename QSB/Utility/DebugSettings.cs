@@ -26,6 +26,9 @@ public class DebugSettings
 	[JsonProperty("skipTitleScreen")]
 	public bool SkipTitleScreen;
 
+	[JsonProperty("kickEveryone")]
+	public bool KickEveryone;
+
 	[JsonProperty("debugMode")]
 	public bool DebugMode;
 

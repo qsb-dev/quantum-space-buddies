@@ -5,7 +5,6 @@ using OWML.ModHelper;
 using QSB.Localization;
 using QSB.Menus;
 using QSB.Patches;
-using QSB.Player;
 using QSB.QuantumSync;
 using QSB.SaveSync;
 using QSB.Utility;
@@ -79,7 +78,6 @@ public class QSBCore : ModBehaviour
 		"_nebula.StopTime",
 		"Leadpogrommer.PeacefulGhosts",
 		"PacificEngine.OW_Randomizer",
-		"xen.DayDream"
 	};
 
 	private static void DetermineGameVendor()
@@ -188,8 +186,6 @@ public class QSBCore : ModBehaviour
 		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
-
-		StartCoroutine(QSBPlayerManager.ValidatePlayers());
 	}
 
 	private static void OnPatchType(QSBPatchTypes type)

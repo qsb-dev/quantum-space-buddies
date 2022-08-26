@@ -146,7 +146,11 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		_serverTime = time;
 		_serverLoopCount = count;
-		QSBPatch.RemoteCall(() => TimeLoop.SetSecondsRemaining(secondsRemaining));
+		// prevents accidental supernova at start of loop
+		if (_serverLoopCount == PlayerData.LoadLoopCount())
+		{
+			QSBPatch.RemoteCall(() => TimeLoop.SetSecondsRemaining(secondsRemaining));
+		}
 	}
 
 	private void WakeUpOrSleep()

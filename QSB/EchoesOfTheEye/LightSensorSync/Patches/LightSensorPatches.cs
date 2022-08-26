@@ -111,6 +111,11 @@ internal class LightSensorPatches : QSBPatch
 				_illuminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
 			}
 			__instance.UpdateIllumination();
+			if (__instance._illuminatingDreamLanternList != null &&
+				!__instance._illuminatingDreamLanternList.SequenceEqual(_illuminatingDreamLanternList))
+			{
+				qsbLightSensor.SendMessage(new IlluminatingLanternsMessage(__instance._illuminatingDreamLanternList));
+			}
 			if (!illuminated && __instance._illuminated)
 			{
 				__instance.OnDetectLight.Invoke();
@@ -120,11 +125,6 @@ internal class LightSensorPatches : QSBPatch
 			{
 				__instance.OnDetectDarkness.Invoke();
 				qsbLightSensor.SendMessage(new SetIlluminatedMessage(false));
-			}
-			if (__instance._illuminatingDreamLanternList != null &&
-				!__instance._illuminatingDreamLanternList.SequenceEqual(_illuminatingDreamLanternList))
-			{
-				qsbLightSensor.SendMessage(new IlluminatingLanternsMessage(__instance._illuminatingDreamLanternList));
 			}
 		}
 
@@ -165,6 +165,11 @@ internal class LightSensorPatches : QSBPatch
 			_illuminatingDreamLanternList.AddRange(__instance._illuminatingDreamLanternList);
 		}
 		__instance.UpdateIllumination();
+		if (__instance._illuminatingDreamLanternList != null &&
+			!__instance._illuminatingDreamLanternList.SequenceEqual(_illuminatingDreamLanternList))
+		{
+			new PlayerIlluminatingLanternsMessage(QSBPlayerManager.LocalPlayerId, __instance._illuminatingDreamLanternList).Send();
+		}
 		if (!illuminated && __instance._illuminated)
 		{
 			__instance.OnDetectLight.Invoke();
@@ -174,11 +179,6 @@ internal class LightSensorPatches : QSBPatch
 		{
 			__instance.OnDetectDarkness.Invoke();
 			new PlayerSetIlluminatedMessage(QSBPlayerManager.LocalPlayerId, false).Send();
-		}
-		if (__instance._illuminatingDreamLanternList != null &&
-			!__instance._illuminatingDreamLanternList.SequenceEqual(_illuminatingDreamLanternList))
-		{
-			new PlayerIlluminatingLanternsMessage(QSBPlayerManager.LocalPlayerId, __instance._illuminatingDreamLanternList).Send();
 		}
 		return false;
 	}

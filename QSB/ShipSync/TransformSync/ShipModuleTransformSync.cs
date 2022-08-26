@@ -15,7 +15,11 @@ internal class ShipModuleTransformSync : SectoredRigidbodySync, ILinkedNetworkBe
 		=> AttachedTransform
 			&& base.CheckValid();
 
-	protected override bool CheckReady() => base.CheckReady() && _qsbModule.AttachedObject.isDetached;
+	protected override bool CheckReady()
+		=> base.CheckReady()
+			&& _qsbModule != null // not sure how either of these can be null, but i guess better safe than sorry
+			&& _qsbModule.AttachedObject != null
+			&& _qsbModule.AttachedObject.isDetached;
 
 	protected override bool UseInterpolation => true;
 
