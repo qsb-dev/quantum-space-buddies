@@ -12,7 +12,7 @@ internal class ProbeLauncherManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher));
+		QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(typeof(PlayerProbeLauncher), typeof(StationaryProbeLauncher));
 		if (scene == OWScene.SolarSystem)
 		{
 			QSBWorldSync.Init<QSBProbeLauncher, ProbeLauncher>(new[]

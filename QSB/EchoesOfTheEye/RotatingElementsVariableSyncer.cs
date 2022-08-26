@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye;
 
-internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVariableSyncer<Quaternion[]>, ILinkedNetworkBehaviour
+public abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVariableSyncer<Quaternion[]>, ILinkedNetworkBehaviour
 	where TWorldObject : IWorldObject
 {
 	public override void OnStartClient()
