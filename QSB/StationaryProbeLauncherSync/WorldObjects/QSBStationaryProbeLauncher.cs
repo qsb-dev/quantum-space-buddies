@@ -61,7 +61,10 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 	{
 		// Whoever is using it needs authority to be able to rotate it
 		// If this is a client they'll get authority from the host when the message is received otherwise give now
-		if (QSBCore.IsHost) NetworkBehaviour.netIdentity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+		if (QSBCore.IsHost)
+		{
+			NetworkBehaviour.netIdentity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+		}
 
 		_isInUse = true;
 		this.SendMessage(new StationaryProbeLauncherMessage(_isInUse));
@@ -77,7 +80,10 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 	public void OnRemoteUseStateChanged(bool isInUse, uint from)
 	{
 		// Whoever is using it needs authority to be able to rotate it
-		if (QSBCore.IsHost) NetworkBehaviour.netIdentity.SetAuthority(from);
+		if (QSBCore.IsHost)
+		{
+			NetworkBehaviour.netIdentity.SetAuthority(from);
+		}
 
 		_isInUse = isInUse;
 
@@ -88,7 +94,10 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 	{
 		// Stuff can be null when its sending the initial state info
 		// BUG: uhhh how? this shouldnt be possible since initial state happens AFTER AllObjectsReady
-		if (!_isInit) return;
+		if (!_isInit)
+		{
+			return;
+		}
 
 		// If somebody is using this we disable the interaction shape
 		_stationaryProbeLauncher._interactVolume.SetInteractionEnabled(!_isInUse);
