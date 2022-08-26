@@ -67,16 +67,12 @@ public class QSBCore : ModBehaviour
 
 	public static readonly string[] IncompatibleMods =
 	{
-		// cheats mods
-		"Glitch.AltDebugMenu",
-		"PacificEngine.CheatsMod",
 		// incompatible mods
 		"Raicuparta.NomaiVR",
 		"xen.NewHorizons",
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
-		"Leadpogrommer.PeacefulGhosts",
 		"PacificEngine.OW_Randomizer",
 	};
 
