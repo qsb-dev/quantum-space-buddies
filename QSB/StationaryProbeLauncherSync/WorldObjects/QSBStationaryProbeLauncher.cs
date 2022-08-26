@@ -4,17 +4,17 @@ using QSB.AuthoritySync;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.StationaryProbeLauncherSync.Messages;
-using QSB.StationaryProbeLauncherSync.TransformSync;
+using QSB.StationaryProbeLauncherSync.VariableSync;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.Utility.LinkedWorldObject;
 using System.Threading;
 
 namespace QSB.StationaryProbeLauncherSync.WorldObjects;
 
-public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<StationaryProbeLauncherTransformSync>
+public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<StationaryProbeLauncherVariableSync>
 {
-	public StationaryProbeLauncherTransformSync NetworkBehaviour { get; private set; }
-	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (StationaryProbeLauncherTransformSync)networkBehaviour;
+	public StationaryProbeLauncherVariableSync NetworkBehaviour { get; private set; }
+	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (StationaryProbeLauncherVariableSync)networkBehaviour;
 
 	private bool _isInit;
 	private bool _isInUse;
