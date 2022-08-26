@@ -15,7 +15,6 @@ public class StationaryProbeLauncherTransformSync : RotatingElementsVariableSync
 
 		var launcher = (WorldObject.AttachedObject as StationaryProbeLauncher);
 
-		writer.Write(launcher.transform.localRotation);
 		writer.Write(launcher._degreesX);
 		writer.Write(launcher._degreesY);
 		writer.Write(launcher._audioSource.GetLocalVolume());
@@ -27,7 +26,6 @@ public class StationaryProbeLauncherTransformSync : RotatingElementsVariableSync
 
 		var launcher = (WorldObject.AttachedObject as StationaryProbeLauncher);
 
-		launcher.transform.localRotation = reader.Read<Quaternion>();
 		launcher._degreesX = reader.Read<float>();
 		launcher._degreesY = reader.Read<float>();
 		launcher._audioSource.SetLocalVolume(reader.Read<float>());
