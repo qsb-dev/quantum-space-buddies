@@ -74,15 +74,16 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 	{
 		base.SendInitialState(to);
 
+		// BUG: will make host be the user and have authority instead of the actual user
 		this.SendMessage(new StationaryProbeLauncherMessage(_isInUse) { To = to });
 	}
 
-	public void OnRemoteUseStateChanged(bool isInUse, uint from)
+	public void OnRemoteUseStateChanged(bool isInUse, uint user)
 	{
 		// Whoever is using it needs authority to be able to rotate it
 		if (QSBCore.IsHost)
 		{
-			NetworkBehaviour.netIdentity.SetAuthority(from);
+			NetworkBehaviour.netIdentity.SetAuthority(isInUse ? user : uint.MaxValue);
 		}
 
 		_isInUse = isInUse;
