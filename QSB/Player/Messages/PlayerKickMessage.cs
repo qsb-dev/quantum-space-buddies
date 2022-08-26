@@ -40,9 +40,9 @@ internal class PlayerKickMessage : QSBMessage<string>
 
 	private void KickPlayer()
 	{
-		var connectionToClient = PlayerId.GetNetworkConnection();
-		connectionToClient.Disconnect();
-		Transport.activeTransport.OnServerDisconnected(connectionToClient.connectionId);
+		//var connectionToClient = PlayerId.GetNetworkConnection();
+		//connectionToClient.Disconnect();
+		//Transport.activeTransport.OnServerDisconnected(connectionToClient.connectionId);
 	}
 
 	public override void OnReceiveRemote()
@@ -61,5 +61,7 @@ internal class PlayerKickMessage : QSBMessage<string>
 
 		DebugLog.ToAll(string.Format(QSBLocalization.Current.KickedFromServer, Data));
 		MenuManager.Instance.OnKicked(Data);
+
+		NetworkClient.Disconnect();
 	}
 }
