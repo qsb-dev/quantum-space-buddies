@@ -120,8 +120,6 @@ public abstract class Common
 
 	protected void SendInternal(ProductUserId target, SocketId socketId, InternalMessages type)
 	{
-		Debug.LogError($"SendInternal type:{type} to {target}");
-
 		EOSSDKComponent.GetP2PInterface().SendPacket(new SendPacketOptions()
 		{
 			AllowDelayedDelivery = true,
