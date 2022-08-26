@@ -29,5 +29,5 @@ public class StationaryProbeLauncherVariableSync : RotatingElementsVariableSynce
         launcher._degreesX = reader.Read<float>();
         launcher._degreesY = reader.Read<float>();
         launcher._audioSource.SetLocalVolume(reader.Read<float>());
-    }
+	}
 }

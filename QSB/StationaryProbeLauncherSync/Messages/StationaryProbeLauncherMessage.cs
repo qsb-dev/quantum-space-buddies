@@ -7,5 +7,5 @@ public class StationaryProbeLauncherMessage : QSBWorldObjectMessage<QSBStationar
 {
 	public StationaryProbeLauncherMessage(bool inUse) : base(inUse) { }
 
-	public override void OnReceiveRemote() => WorldObject.OnUseStateChanged(Data, From);
+	public override void OnReceiveRemote() => WorldObject.OnRemoteUseStateChanged(Data, From);
 }

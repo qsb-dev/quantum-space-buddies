@@ -77,26 +77,7 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 		this.SendMessage(new StationaryProbeLauncherMessage(_isInUse) { To = to });
 	}
 
-	private void UpdateUse()
-	{
-		// Stuff can be null when its sending the initial state info
-		if (!_isInit) return;
-
-		// If somebody is using this we disable the interaction shape
-		_shape.enabled = !_isInUse;
-		
-		if (_isInUse)
-		{
-			_stationaryProbeLauncher._audioSource.SetLocalVolume(0f);
-			_stationaryProbeLauncher._audioSource.Start();
-		}
-		else
-		{
-			_stationaryProbeLauncher._audioSource.Stop();
-		}
-	}
-
-	public void OnUseStateChanged(bool isInUse, uint from)
+	public void OnRemoteUseStateChanged(bool isInUse, uint from)
 	{
 		// Whoever is using it needs authority to be able to rotate it
 		if (QSBCore.IsHost) NetworkBehaviour.netIdentity.SetAuthority(from);
@@ -104,5 +85,24 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 		_isInUse = isInUse;
 
 		UpdateUse();
+	}
+
+	private void UpdateUse()
+	{
+		// Stuff can be null when its sending the initial state info
+		if (!_isInit) return;
+
+		// If somebody is using this we disable the interaction shape
+		_shape.enabled = !_isInUse;
+
+		if (_isInUse)
+		{
+			_stationaryProbeLauncher._audioSource.SetLocalVolume(0f);
+			_stationaryProbeLauncher._audioSource.Play();
+		}
+		else
+		{
+			_stationaryProbeLauncher._audioSource.Stop();
+		}
 	}
 }
