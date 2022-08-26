@@ -78,7 +78,6 @@ public class QSBCore : ModBehaviour
 		"_nebula.StopTime",
 		"Leadpogrommer.PeacefulGhosts",
 		"PacificEngine.OW_Randomizer",
-		"xen.DayDream"
 	};
 
 	private static void DetermineGameVendor()
