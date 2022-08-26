@@ -18,7 +18,6 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 
 	private bool _isInit;
 	private bool _isInUse;
-	private Shape _shape;
 	private StationaryProbeLauncher _stationaryProbeLauncher;
 
 	public override async UniTask Init(CancellationToken ct)
@@ -38,9 +37,7 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 
 		await base.Init(ct);
 
-		_stationaryProbeLauncher = AttachedObject as StationaryProbeLauncher;
-		_shape = ((InteractZone)_stationaryProbeLauncher._interactVolume)._trigger._shape;
-
+		_stationaryProbeLauncher = (StationaryProbeLauncher)AttachedObject;
 		_stationaryProbeLauncher._interactVolume.OnPressInteract += OnPressInteract;
 
 		UpdateUse();
@@ -90,10 +87,11 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 	private void UpdateUse()
 	{
 		// Stuff can be null when its sending the initial state info
+		// BUG: uhhh how? this shouldnt be possible since initial state happens AFTER AllObjectsReady
 		if (!_isInit) return;
 
 		// If somebody is using this we disable the interaction shape
-		_shape.enabled = !_isInUse;
+		_stationaryProbeLauncher._interactVolume.SetInteractionEnabled(!_isInUse);
 
 		if (_isInUse)
 		{
