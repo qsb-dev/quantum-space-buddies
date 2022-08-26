@@ -35,11 +35,15 @@ internal class PlayerKickMessage : QSBMessage<string>
 			return;
 		}
 
-		Delay.RunFramesLater(20, KickPlayer);
+		Delay.RunFramesLater(10, KickPlayer);
 	}
 
 	private void KickPlayer()
-		=> PlayerId.GetNetworkConnection().Disconnect();
+	{
+		var connectionToClient = PlayerId.GetNetworkConnection();
+		connectionToClient.Disconnect();
+		Transport.activeTransport.OnServerDisconnected(connectionToClient.connectionId);
+	}
 
 	public override void OnReceiveRemote()
 	{

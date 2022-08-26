@@ -67,14 +67,19 @@ public class Server : Common
 
 	protected override void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserId, SocketId socketId)
 	{
+		Debug.LogError($"OnReceiveInteralData type:{type} from {clientUserId}");
+
 		if (ignoreAllMessages)
 		{
+			Debug.LogError($"- IgnoreAllMessages :/");
 			return;
 		}
 
 		switch (type)
 		{
 			case InternalMessages.CONNECT:
+				Debug.LogError($"- CONNECT connectedId:{nextConnectionID + 1}");
+
 				if (epicToMirrorIds.Count >= maxConnections)
 				{
 					Debug.LogError("Reached max connections");
@@ -97,6 +102,7 @@ public class Server : Common
 			case InternalMessages.DISCONNECT:
 				if (epicToMirrorIds.TryGetValue(clientUserId, out var connId))
 				{
+					Debug.LogError($"- DISCONNECT connectedId:{connId}");
 					OnDisconnected.Invoke(connId);
 					//CloseP2PSessionWithUser(clientUserId, socketId);
 					epicToMirrorIds.Remove(clientUserId);
@@ -142,6 +148,7 @@ public class Server : Common
 
 	public void Disconnect(int connectionId)
 	{
+		Debug.LogError($"DISCONNECT {connectionId}");
 		if (epicToMirrorIds.TryGetValue(connectionId, out var userId))
 		{
 			SocketId socketId;
@@ -152,7 +159,7 @@ public class Server : Common
 		}
 		else
 		{
-			Debug.LogWarning("Trying to disconnect unknown connection id: " + connectionId);
+			Debug.LogError("Trying to disconnect unknown connection id: " + connectionId);
 		}
 	}
 
@@ -205,8 +212,11 @@ public class Server : Common
 
 	protected override void OnConnectionFailed(ProductUserId remoteId)
 	{
+		Debug.LogError($"OnConnectionFailed");
+
 		if (ignoreAllMessages)
 		{
+			Debug.LogError($"- IgnoreAllMessages :/");
 			return;
 		}
 
