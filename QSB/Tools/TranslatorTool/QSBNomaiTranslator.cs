@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Tools.TranslatorTool;
 
+[UsedInUnityProject]
 public class QSBNomaiTranslator : QSBTool
 {
 	public static float distToClosestTextCenter = 1f;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool;
 
+[UsedInUnityProject]
 public class QSBProbe : MonoBehaviour, ILightSource
 {
 	public delegate void SurveyorProbeEvent();

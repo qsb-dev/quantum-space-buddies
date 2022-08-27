@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace QSB.Animation.Player;
 
+[UsedInUnityProject]
 public class PlayerHeadRotationSync : MonoBehaviour
 {
 	private Animator _attachedAnimator;

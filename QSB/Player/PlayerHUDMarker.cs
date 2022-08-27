@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace QSB.Player;
 
+[UsedInUnityProject]
 public class PlayerHUDMarker : HUDDistanceMarker
 {
 	private PlayerInfo _player;

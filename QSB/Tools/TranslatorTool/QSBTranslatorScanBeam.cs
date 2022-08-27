@@ -1,8 +1,10 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Tools.TranslatorTool;
 
+[UsedInUnityProject]
 internal class QSBTranslatorScanBeam : MonoBehaviour
 {
 	public Renderer _projectorRenderer;

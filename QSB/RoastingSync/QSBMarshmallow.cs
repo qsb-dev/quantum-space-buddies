@@ -1,9 +1,11 @@
 ﻿using QSB.Player;
+using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.RoastingSync;
 
+[UsedInUnityProject]
 public class QSBMarshmallow : MonoBehaviour
 {
 	public const float RAW_TOASTED_FRACTION = 0.2f;

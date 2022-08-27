@@ -1,9 +1,11 @@
 ﻿using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Animation.Player.Thrusters;
 
+[UsedInUnityProject]
 internal class RemoteThrusterFlameController : MonoBehaviour
 {
 	[SerializeField]

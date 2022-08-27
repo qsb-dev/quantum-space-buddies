@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace QSB.Tools.FlashlightTool;
 
+[UsedInUnityProject]
 public class QSBFlashlight : MonoBehaviour, ILightSource
 {
 	[SerializeField]

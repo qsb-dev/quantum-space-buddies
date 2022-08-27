@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool;
 
+[UsedInUnityProject]
 internal class QSBProbeSpotlight : MonoBehaviour
 {
 	public ProbeCamera.ID _id;
