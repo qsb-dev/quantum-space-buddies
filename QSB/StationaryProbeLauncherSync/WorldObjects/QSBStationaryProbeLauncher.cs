@@ -16,14 +16,11 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 	public StationaryProbeLauncherVariableSync NetworkBehaviour { get; private set; }
 	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (StationaryProbeLauncherVariableSync)networkBehaviour;
 
-	private bool _isInit;
 	private bool _isInUse;
 	private StationaryProbeLauncher _stationaryProbeLauncher;
 
 	public override async UniTask Init(CancellationToken ct)
 	{
-		_isInit = true;
-
 		// This is implemented by inheriting LinkedWorldObject normally, however I want to inherit from QSBProbeLauncher
 		// Else we'd have to redo the sync for the effects
 		if (QSBCore.IsHost)
@@ -45,8 +42,6 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 
 	public override void OnRemoval()
 	{
-		_isInit = false;
-
 		if (QSBCore.IsHost)
 		{
 			NetworkServer.Destroy(NetworkBehaviour.gameObject);
@@ -94,13 +89,6 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 
 	private void UpdateUse()
 	{
-		// Stuff can be null when its sending the initial state info
-		// QSB BUG (not xen fault): uhhh how? this shouldnt be possible since initial state happens AFTER AllObjectsReady
-		if (!_isInit)
-		{
-			return;
-		}
-
 		// If somebody is using this we disable the interaction shape
 		_stationaryProbeLauncher._interactVolume.SetInteractionEnabled(!_isInUse);
 
