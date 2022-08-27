@@ -60,4 +60,15 @@ public class QSBProbeLauncher : WorldObject<ProbeLauncher>
 			AttachedObject._effects.PlayLaunchParticles(false);
 		}
 	}
+
+	public void ChangeMode()
+	{
+		AttachedObject._effects.PlayChangeModeClip();
+	}
+
+	public void TakeSnapshot()
+	{
+		// Not using PlaySnapshotClip because that uses Locator.GetPlayerAudioController() instead of owAudioSource for some reason
+		AttachedObject._effects._owAudioSource.PlayOneShot(global::AudioType.ToolProbeTakePhoto, 1f);
+	}
 }
