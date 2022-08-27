@@ -22,14 +22,11 @@ public class QSBPlayerAudioController : MonoBehaviour
 		=> _oneShotExternalSource?.PlayOneShot(AudioType.ToolFlashlightOff);
 
 	public void PlayWearSuit()
-		=> _oneShotExternalSource?.PlayOneShot(AudioType.PlayerSuitWearSuit);
+		=> PlayOneShot(AudioType.PlayerSuitWearSuit);
 
 	public void PlayRemoveSuit()
-		=> _oneShotExternalSource?.PlayOneShot(AudioType.PlayerSuitRemoveSuit);
+		=> PlayOneShot(AudioType.PlayerSuitRemoveSuit);
 
-	public void PlayWearHelmet()
-		=> _oneShotExternalSource?.PlayOneShot(AudioType.PlayerSuitWearHelmet);
-
-	public void PlayRemoveHelmet()
-		=> _oneShotExternalSource?.PlayOneShot(AudioType.PlayerSuitRemoveHelmet);
+	public void PlayOneShot(AudioType audioType) 
+		=> _oneShotExternalSource?.PlayOneShot(audioType, 1f);
 }
