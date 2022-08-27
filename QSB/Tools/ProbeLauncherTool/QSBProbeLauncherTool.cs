@@ -8,12 +8,17 @@ public class QSBProbeLauncherTool : QSBTool
 	public ProbeLauncherEffects Effects;
 	public SingularityWarpEffect ProbeRetrievalEffect;
 
-	public void RetrieveProbe(bool playEffects)
+	private void VerifyAudioSource()
 	{
 		if (Effects._owAudioSource == null)
 		{
 			Effects._owAudioSource = Player.AudioController._repairToolSource;
 		}
+	}
+
+	public void RetrieveProbe(bool playEffects)
+	{
+		VerifyAudioSource();
 
 		PreLaunchProbeProxy.SetActive(true);
 		if (playEffects)
@@ -27,13 +32,28 @@ public class QSBProbeLauncherTool : QSBTool
 	{
 		PreLaunchProbeProxy.SetActive(false);
 
-		if (Effects._owAudioSource == null)
-		{
-			Effects._owAudioSource = Player.AudioController._repairToolSource;
-		}
+		VerifyAudioSource();
 
 		// TODO : make this do underwater stuff correctly
 		Effects.PlayLaunchClip(false);
 		Effects.PlayLaunchParticles(false);
+	}
+
+	public void ChangeMode()
+	{
+		VerifyAudioSource();
+
+		Effects.PlayChangeModeClip();
+	}
+
+	public void TakeSnapshot()
+	{
+		VerifyAudioSource();
+
+		// Vanilla method uses the global player audio controller -> bad
+		Effects._owAudioSource.PlayOneShot(AudioType.ToolProbeTakePhoto, 1f);
+
+		// Also make the probe itself play the sound effect
+		if (Player.Probe.IsLaunched()) Player.Probe.TakeSnapshot();
 	}
 }
