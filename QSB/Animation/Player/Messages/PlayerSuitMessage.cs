@@ -37,6 +37,15 @@ public class PlayerSuitMessage : QSBMessage<bool>
 
 		var animator = player.AnimationSync;
 		animator.SetSuitState(Data);
+
+		if (player.SuitedUp)
+		{
+			player.AudioController.PlayWearSuit();
+		}
+		else
+		{
+			player.AudioController.PlayRemoveSuit();
+		}
 	}
 
 	public override void OnReceiveLocal()
