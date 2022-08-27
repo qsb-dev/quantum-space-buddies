@@ -16,11 +16,6 @@ public class StationaryProbeLauncherPatches : QSBPatch
 	[HarmonyPatch(typeof(StationaryProbeLauncher), nameof(StationaryProbeLauncher.FinishExitSequence))]
 	public static void StationaryProbeLauncher_FinishExitSequence(StationaryProbeLauncher __instance)
 	{
-		if (Remote)
-		{
-			return;
-		}
-
 		var qsbStationaryProbe = __instance.GetWorldObject<QSBStationaryProbeLauncher>();
 		qsbStationaryProbe.SendMessage(new StationaryProbeLauncherMessage(false));
 	}
