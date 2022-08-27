@@ -96,8 +96,8 @@ internal class LauncherPatches : QSBPatch
 	{
 		if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher._effects)
 		{
-			__instance.gameObject.GetComponent<ProbeLauncher>().GetWorldObject<QSBProbeLauncher>()
-				.SendMessage(new ChangeModeMessage());
+			__instance.gameObject.GetComponent<ProbeLauncher>()?.GetWorldObject<QSBProbeLauncher>()
+				?.SendMessage(new ChangeModeMessage());
 		}
 		else
 		{
@@ -111,8 +111,8 @@ internal class LauncherPatches : QSBPatch
 	{
 		if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher._effects)
 		{
-			__instance.gameObject.GetComponent<ProbeLauncher>().GetWorldObject<QSBProbeLauncher>()
-				.SendMessage(new TakeSnapshotMessage());
+			__instance.gameObject.GetComponent<ProbeLauncher>()?.GetWorldObject<QSBProbeLauncher>()
+				?.SendMessage(new TakeSnapshotMessage());
 		}
 		else
 		{
