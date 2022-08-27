@@ -24,9 +24,9 @@ using QSB.Player.TransformSync;
 using QSB.SaveSync;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
-using QSB.StationaryProbeLauncherSync.VariableSync;
 using QSB.Syncs.Occasional;
 using QSB.TimeSync;
+using QSB.Tools.ProbeLauncherTool.VariableSync;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
 using QSB.Utility.VariableSync;
@@ -151,7 +151,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		ModelShipPrefab = MakeNewNetworkObject(14, "NetworkModelShip", typeof(ModelShipTransformSync));
 		spawnPrefabs.Add(ModelShipPrefab);
 
-		StationaryProbeLauncherPrefab = MakeNewNetworkObject(15, "NetworkStationaryProbeLauncher", typeof(StationaryProbeLauncherVariableSyncer));
+		StationaryProbeLauncherPrefab = MakeNewNetworkObject(15, "NetworkStationaryProbeLauncher", typeof(StationaryProbeLauncherVariableSync));
 		spawnPrefabs.Add(StationaryProbeLauncherPrefab);
 
 		ConfigureNetworkManager();

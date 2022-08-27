@@ -3,20 +3,19 @@ using Mirror;
 using QSB.AuthoritySync;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.StationaryProbeLauncherSync.Messages;
-using QSB.StationaryProbeLauncherSync.VariableSync;
-using QSB.Tools.ProbeLauncherTool.WorldObjects;
+using QSB.Tools.ProbeLauncherTool.Messages;
+using QSB.Tools.ProbeLauncherTool.VariableSync;
 using QSB.Utility.LinkedWorldObject;
 using System.Threading;
 
-namespace QSB.StationaryProbeLauncherSync.WorldObjects;
+namespace QSB.Tools.ProbeLauncherTool.WorldObjects;
 
-public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<StationaryProbeLauncherVariableSyncer>
+public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<StationaryProbeLauncherVariableSync>
 {
 	private uint _currentUser = uint.MaxValue;
 
-	public StationaryProbeLauncherVariableSyncer NetworkBehaviour { get; private set; }
-	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (StationaryProbeLauncherVariableSyncer)networkBehaviour;
+	public StationaryProbeLauncherVariableSync NetworkBehaviour { get; private set; }
+	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (StationaryProbeLauncherVariableSync)networkBehaviour;
 
 	private bool _isInUse;
 	private StationaryProbeLauncher _stationaryProbeLauncher;
@@ -38,6 +37,10 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 
 		_stationaryProbeLauncher = (StationaryProbeLauncher)AttachedObject;
 		_stationaryProbeLauncher._interactVolume.OnPressInteract += OnPressInteract;
+
+		// Fix spatial blend of sound effects
+		_stationaryProbeLauncher._effects._owAudioSource.spatialBlend = 1;
+		_stationaryProbeLauncher._audioSource.spatialBlend = 1;
 
 		UpdateUse();
 	}

@@ -25,6 +25,7 @@ internal class QSBProbeEffects : MonoBehaviour
 		_probe.OnAnchorProbe += OnAnchor;
 		_probe.OnUnanchorProbe += OnUnanchor;
 		_probe.OnStartRetrieveProbe += OnStartRetrieve;
+		_probe.OnTakeSnapshot += OnTakeSnapshot;
 	}
 
 	private void OnDestroy()
@@ -33,6 +34,7 @@ internal class QSBProbeEffects : MonoBehaviour
 		_probe.OnAnchorProbe -= OnAnchor;
 		_probe.OnUnanchorProbe -= OnUnanchor;
 		_probe.OnStartRetrieveProbe -= OnStartRetrieve;
+		_probe.OnTakeSnapshot -= OnTakeSnapshot;
 	}
 
 	private void OnLaunch() => _flightLoopAudio.FadeIn(0.1f, true, true);
@@ -58,4 +60,7 @@ internal class QSBProbeEffects : MonoBehaviour
 
 	private void OnStartRetrieve(float retrieveLength)
 		=> _flightLoopAudio.FadeOut(retrieveLength);
+
+	private void OnTakeSnapshot()
+		=> _anchorAudio.PlayOneShot(AudioType.ToolProbeTakePhoto);
 }

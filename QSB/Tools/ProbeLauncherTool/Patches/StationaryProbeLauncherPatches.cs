@@ -1,12 +1,9 @@
 ﻿using HarmonyLib;
-using QSB.Messaging;
 using QSB.Patches;
-using QSB.Player;
-using QSB.StationaryProbeLauncherSync.Messages;
-using QSB.StationaryProbeLauncherSync.WorldObjects;
+using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.WorldSync;
 
-namespace QSB.StationaryProbeLauncherSync.Patches;
+namespace QSB.Tools.ProbeLauncherTool.Patches;
 
 [HarmonyPatch]
 public class StationaryProbeLauncherPatches : QSBPatch

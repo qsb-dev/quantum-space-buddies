@@ -1,13 +1,13 @@
 ﻿using Mirror;
-using QSB.StationaryProbeLauncherSync.WorldObjects;
+using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.Utility.LinkedWorldObject;
 using QSB.Utility.VariableSync;
 using QSB.WorldSync;
 using UnityEngine;
 
-namespace QSB.StationaryProbeLauncherSync.VariableSync;
+namespace QSB.Tools.ProbeLauncherTool.VariableSync;
 
-public class StationaryProbeLauncherVariableSyncer : BaseVariableSyncer<(float, float, float)>, ILinkedNetworkBehaviour
+public class StationaryProbeLauncherVariableSync : BaseVariableSyncer<(float, float, float)>, ILinkedNetworkBehaviour
 {
 	protected override bool HasChanged()
 	{
