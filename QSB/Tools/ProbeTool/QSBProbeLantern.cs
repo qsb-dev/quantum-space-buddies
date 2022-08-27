@@ -13,7 +13,7 @@ internal class QSBProbeLantern : MonoBehaviour
 	public OWEmissiveRenderer _emissiveRenderer;
 	public float _originalRange;
 
-	private QSBSurveyorProbe _probe;
+	private QSBProbe _probe;
 	private OWLight2 _light;
 	private float _fadeFraction;
 	private float _targetFade;
@@ -23,7 +23,7 @@ internal class QSBProbeLantern : MonoBehaviour
 
 	private void Awake()
 	{
-		_probe = QSBWorldSync.GetUnityObjects<QSBSurveyorProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
+		_probe = QSBWorldSync.GetUnityObjects<QSBProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
 		if (_probe == null)
 		{
 			DebugLog.ToConsole($"Error - Couldn't find QSBProbe!", OWML.Common.MessageType.Error);
