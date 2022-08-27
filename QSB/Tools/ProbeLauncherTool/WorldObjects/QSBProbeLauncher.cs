@@ -13,7 +13,7 @@ namespace QSB.Tools.ProbeLauncherTool.WorldObjects;
 public class QSBProbeLauncher : WorldObject<ProbeLauncher>
 {
 	private uint _probeOwnerID = uint.MaxValue;
-	protected QSBProbe LaunchedProbe { get; private set; }
+	protected QSBSurveyorProbe LaunchedProbe { get; private set; }
 
 	public override async UniTask Init(CancellationToken ct) =>
 		AttachedObject.OnLaunchProbe += OnLaunchProbe;
