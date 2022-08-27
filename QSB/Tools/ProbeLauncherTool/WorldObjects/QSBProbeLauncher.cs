@@ -1,5 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.Messaging;
+using QSB.Player;
+using QSB.QuantumSync;
 using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.WorldSync;
 using System.Threading;
@@ -66,9 +68,10 @@ public class QSBProbeLauncher : WorldObject<ProbeLauncher>
 		AttachedObject._effects.PlayChangeModeClip();
 	}
 
-	public void TakeSnapshot()
+	public void TakeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId)
 	{
 		// Not using PlaySnapshotClip because that uses Locator.GetPlayerAudioController() instead of owAudioSource for some reason
 		AttachedObject._effects._owAudioSource.PlayOneShot(global::AudioType.ToolProbeTakePhoto, 1f);
+		QuantumManager.OnTakeProbeSnapshot(player, cameraId);
 	}
 }
