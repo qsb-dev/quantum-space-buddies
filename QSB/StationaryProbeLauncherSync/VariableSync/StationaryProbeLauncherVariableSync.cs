@@ -1,14 +1,22 @@
 ﻿using Mirror;
-using QSB.EchoesOfTheEye;
 using QSB.StationaryProbeLauncherSync.WorldObjects;
+using QSB.Utility.LinkedWorldObject;
+using QSB.Utility.VariableSync;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.StationaryProbeLauncherSync.VariableSync;
 
-// TODO: use base variable sync instead of doing transform, uses less network bandwidth lol
-public class StationaryProbeLauncherVariableSync : RotatingElementsVariableSyncer<QSBStationaryProbeLauncher>
+public class StationaryProbeLauncherVariableSync : BaseVariableSyncer<(float, float, float)>, ILinkedNetworkBehaviour
 {
-	protected override Transform[] RotatingElements => new[] { WorldObject.AttachedObject.transform };
+	protected override bool HasChanged()
+	{
+		var launcher = (StationaryProbeLauncher)WorldObject.AttachedObject;
+
+		Value = (launcher._degreesX, launcher._degreesY, launcher._audioSource._localVolume);
+
+		return Value != PrevValue;
+	}
 
 	protected override void Serialize(NetworkWriter writer)
 	{
@@ -30,5 +38,14 @@ public class StationaryProbeLauncherVariableSync : RotatingElementsVariableSynce
 		launcher._degreesX = reader.Read<float>();
 		launcher._degreesY = reader.Read<float>();
 		launcher._audioSource.SetLocalVolume(reader.Read<float>());
+
+		// Update rotation based on x and y degrees
+		launcher.transform.localRotation = Quaternion.AngleAxis(launcher._degreesX, launcher._localUpAxis) * launcher._initRotX;
+		launcher._verticalPivot.localRotation = Quaternion.AngleAxis(launcher._degreesY, -Vector3.right) * launcher._initRotY;
+
+		Value = (launcher._degreesX, launcher._degreesY, launcher._audioSource._localVolume);
 	}
+
+	protected QSBStationaryProbeLauncher WorldObject { get; private set; }
+	public void SetWorldObject(IWorldObject worldObject) => WorldObject = (QSBStationaryProbeLauncher)worldObject;
 }
