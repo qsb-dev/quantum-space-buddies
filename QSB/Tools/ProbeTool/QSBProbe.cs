@@ -18,6 +18,7 @@ public class QSBProbe : MonoBehaviour, ILightSource
 	public event SurveyorProbeEvent OnUnanchorProbe;
 	public event SurveyorProbeEvent OnRetrieveProbe;
 	public event SurveyorProbeEvent OnProbeDestroyed;
+	public event SurveyorProbeEvent OnTakeSnapshot;
 	public event RetrieveEvent OnStartRetrieveProbe;
 
 	private GameObject _detectorObj;
@@ -205,4 +206,6 @@ public class QSBProbe : MonoBehaviour, ILightSource
 	public LightSourceType GetLightSourceType() => LightSourceType.PROBE;
 	public OWLight2[] GetLights() => _illuminationCheckLights;
 	public Vector3 GetLightSourcePosition() => _lightSourceVol.transform.position;
+
+	public void TakeSnapshot() => OnTakeSnapshot?.Invoke();
 }

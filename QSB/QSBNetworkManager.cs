@@ -26,6 +26,7 @@ using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Syncs.Occasional;
 using QSB.TimeSync;
+using QSB.Tools.ProbeLauncherTool.VariableSync;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
 using QSB.Utility.VariableSync;
@@ -56,6 +57,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject ShipModulePrefab { get; private set; }
 	public GameObject ShipLegPrefab { get; private set; }
 	public GameObject ModelShipPrefab { get; private set; }
+	public GameObject StationaryProbeLauncherPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
 	private GameObject _probePrefab;
@@ -148,6 +150,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		ModelShipPrefab = MakeNewNetworkObject(14, "NetworkModelShip", typeof(ModelShipTransformSync));
 		spawnPrefabs.Add(ModelShipPrefab);
+
+		StationaryProbeLauncherPrefab = MakeNewNetworkObject(15, "NetworkStationaryProbeLauncher", typeof(StationaryProbeLauncherVariableSyncer));
+		spawnPrefabs.Add(StationaryProbeLauncherPrefab);
 
 		ConfigureNetworkManager();
 	}
