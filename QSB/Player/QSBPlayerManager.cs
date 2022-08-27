@@ -88,7 +88,7 @@ public static class QSBPlayerManager
 	public static (Flashlight LocalFlashlight, IEnumerable<QSBFlashlight> RemoteFlashlights) GetPlayerFlashlights()
 		=> (Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 
-	public static (SurveyorProbe LocalProbe, IEnumerable<QSBSurveyorProbe> RemoteProbes) GetPlayerProbes()
+	public static (SurveyorProbe LocalProbe, IEnumerable<QSBProbe> RemoteProbes) GetPlayerProbes()
 		=> (Locator.GetProbe(), PlayerList.Where(x => x.Probe != null).Select(x => x.Probe));
 
 	public static IEnumerable<ThrusterLightTracker> GetThrusterLightTrackers()

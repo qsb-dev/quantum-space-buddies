@@ -15,7 +15,7 @@ namespace QSB.Player;
 public partial class PlayerInfo
 {
 	public GameObject ProbeBody { get; set; }
-	public QSBSurveyorProbe Probe { get; set; }
+	public QSBProbe Probe { get; set; }
 	public QSBFlashlight FlashLight => CameraBody == null ? null : CameraBody.GetComponentInChildren<QSBFlashlight>();
 	public QSBTool Signalscope => GetToolByType(ToolType.Signalscope);
 	public QSBTool Translator => GetToolByType(ToolType.Translator);
