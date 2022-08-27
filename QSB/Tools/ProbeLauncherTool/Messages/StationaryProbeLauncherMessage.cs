@@ -1,7 +1,7 @@
 ﻿using QSB.Messaging;
-using QSB.StationaryProbeLauncherSync.WorldObjects;
+using QSB.Tools.ProbeLauncherTool.WorldObjects;
 
-namespace QSB.StationaryProbeLauncherSync.Messages;
+namespace QSB.Tools.ProbeLauncherTool.Messages;
 
 public class StationaryProbeLauncherMessage : QSBWorldObjectMessage<QSBStationaryProbeLauncher, (bool, uint)>
 {
