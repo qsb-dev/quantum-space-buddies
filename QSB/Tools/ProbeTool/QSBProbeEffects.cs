@@ -59,7 +59,10 @@ internal class QSBProbeEffects : MonoBehaviour
 		=> _flightLoopAudio.FadeIn(0.5f);
 
 	private void OnStartRetrieve(float retrieveLength)
-		=> _flightLoopAudio.FadeOut(retrieveLength);
+	{
+		_flightLoopAudio.FadeOut(retrieveLength);
+		_anchorAudio.PlayOneShot(AudioType.ToolProbeRetrieve);
+	}
 
 	private void OnTakeSnapshot()
 		=> _anchorAudio.PlayOneShot(AudioType.ToolProbeTakePhoto);
