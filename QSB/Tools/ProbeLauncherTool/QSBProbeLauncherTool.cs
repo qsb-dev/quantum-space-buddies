@@ -51,6 +51,9 @@ public class QSBProbeLauncherTool : QSBTool
 		VerifyAudioSource();
 
 		// Vanilla method uses the global player audio controller -> bad
-		Effects._owAudioSource.PlayOneShot(global::AudioType.ToolProbeTakePhoto, 1f);
+		Effects._owAudioSource.PlayOneShot(AudioType.ToolProbeTakePhoto, 1f);
+
+		// Also make the probe itself play the sound effect
+		if (Player.Probe.IsLaunched()) Player.Probe.TakeSnapshot();
 	}
 }

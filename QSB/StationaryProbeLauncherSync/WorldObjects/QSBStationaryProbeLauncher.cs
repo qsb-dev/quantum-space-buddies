@@ -39,6 +39,10 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 		_stationaryProbeLauncher = (StationaryProbeLauncher)AttachedObject;
 		_stationaryProbeLauncher._interactVolume.OnPressInteract += OnPressInteract;
 
+		// Fix spatial blend of sound effects
+		_stationaryProbeLauncher._effects._owAudioSource.spatialBlend = 1;
+		_stationaryProbeLauncher._audioSource.spatialBlend = 1;
+
 		UpdateUse();
 	}
 
