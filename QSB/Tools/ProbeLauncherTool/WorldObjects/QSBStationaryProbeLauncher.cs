@@ -10,12 +10,12 @@ using System.Threading;
 
 namespace QSB.Tools.ProbeLauncherTool.WorldObjects;
 
-public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<StationaryProbeLauncherVariableSync>
+public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<StationaryProbeLauncherVariableSyncer>
 {
 	private uint _currentUser = uint.MaxValue;
 
-	public StationaryProbeLauncherVariableSync NetworkBehaviour { get; private set; }
-	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (StationaryProbeLauncherVariableSync)networkBehaviour;
+	public StationaryProbeLauncherVariableSyncer NetworkBehaviour { get; private set; }
+	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (StationaryProbeLauncherVariableSyncer)networkBehaviour;
 
 	private bool _isInUse;
 	private StationaryProbeLauncher _stationaryProbeLauncher;
