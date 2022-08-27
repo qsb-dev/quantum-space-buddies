@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace QSB.Player;
 
+[UsedInUnityProject]
 public class RemotePlayerFluidDetector : PriorityDetector
 {
 	private SplashEffect[] _splashEffects;

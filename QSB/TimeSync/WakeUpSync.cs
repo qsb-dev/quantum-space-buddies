@@ -16,6 +16,7 @@ using UnityEngine;
 
 namespace QSB.TimeSync;
 
+[UsedInUnityProject]
 public class WakeUpSync : NetworkBehaviour
 {
 	public static WakeUpSync LocalInstance { get; private set; }

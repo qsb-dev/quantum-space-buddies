@@ -1,5 +1,8 @@
-﻿namespace QSB.Audio;
+﻿using QSB.Utility;
 
+namespace QSB.Audio;
+
+[UsedInUnityProject]
 internal class QSBJetpackThrusterAudio : QSBThrusterAudio
 {
 	public OWAudioSource _underwaterSource;

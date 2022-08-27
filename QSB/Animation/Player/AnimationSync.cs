@@ -12,6 +12,7 @@ using UnityEngine;
 
 namespace QSB.Animation.Player;
 
+[UsedInUnityProject]
 public class AnimationSync : PlayerSyncObject
 {
 	private RuntimeAnimatorController _suitedAnimController;

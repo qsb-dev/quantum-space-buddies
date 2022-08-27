@@ -12,6 +12,7 @@ using Gizmos = Popcron.Gizmos;
 
 namespace QSB.Player.TransformSync;
 
+[UsedInUnityProject]
 public class PlayerTransformSync : SectoredTransformSync
 {
 	protected override bool IsPlayerObject => true;

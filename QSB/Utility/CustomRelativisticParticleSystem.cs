@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace QSB.Utility;
 
+[UsedInUnityProject]
 internal class CustomRelativisticParticleSystem : MonoBehaviour
 {
 	private ParticleSystem _particleSystem;

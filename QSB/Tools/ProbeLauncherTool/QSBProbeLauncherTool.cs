@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool;
 
+[UsedInUnityProject]
 public class QSBProbeLauncherTool : QSBTool
 {
 	public GameObject PreLaunchProbeProxy;

@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Player;
 
+[UsedInUnityProject]
 public class PlayerMapMarker : MonoBehaviour
 {
 	private PlayerInfo _player;

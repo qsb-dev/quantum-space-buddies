@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.TimeSync;
 
+[UsedInUnityProject]
 public class StopMeditation : MonoBehaviour
 {
 	public void Init()

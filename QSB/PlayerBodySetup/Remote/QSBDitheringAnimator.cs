@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using QSB.Utility;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace QSB.PlayerBodySetup.Remote;
 
+[UsedInUnityProject]
 public class QSBDitheringAnimator : MonoBehaviour
 {
 	public bool FullyVisible => !enabled && OWMath.ApproxEquals(_visibleFraction, 1);

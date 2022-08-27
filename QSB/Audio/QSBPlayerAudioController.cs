@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Audio;
 
+[UsedInUnityProject]
 public class QSBPlayerAudioController : MonoBehaviour
 {
 	public OWAudioSource _oneShotExternalSource;
