@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.Messaging;
 using QSB.Patches;
+using QSB.Player;
 using QSB.StationaryProbeLauncherSync.Messages;
 using QSB.StationaryProbeLauncherSync.WorldObjects;
 using QSB.WorldSync;
@@ -14,9 +15,6 @@ public class StationaryProbeLauncherPatches : QSBPatch
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(StationaryProbeLauncher), nameof(StationaryProbeLauncher.FinishExitSequence))]
-	public static void StationaryProbeLauncher_FinishExitSequence(StationaryProbeLauncher __instance)
-	{
-		var qsbStationaryProbe = __instance.GetWorldObject<QSBStationaryProbeLauncher>();
-		qsbStationaryProbe.SendMessage(new StationaryProbeLauncherMessage(false));
-	}
+	public static void StationaryProbeLauncher_FinishExitSequence(StationaryProbeLauncher __instance) =>
+		__instance.GetWorldObject<QSBStationaryProbeLauncher>().OnLocalUseStateChanged(false);
 }

@@ -13,6 +13,8 @@ namespace QSB.StationaryProbeLauncherSync.WorldObjects;
 
 public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<StationaryProbeLauncherVariableSync>
 {
+	private uint _currentUser = uint.MaxValue;
+
 	public StationaryProbeLauncherVariableSync NetworkBehaviour { get; private set; }
 	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (StationaryProbeLauncherVariableSync)networkBehaviour;
 
@@ -21,8 +23,8 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 
 	public override async UniTask Init(CancellationToken ct)
 	{
-		// This is implemented by inheriting LinkedWorldObject normally, however I want to inherit from QSBProbeLauncher
-		// Else we'd have to redo the sync for the effects
+		// This is implemented by inheriting LinkedWorldObject normally,
+		// However I want to inherit from QSBProbeLauncher or else we'd have to redo the sync for the VFX/SFX
 		if (QSBCore.IsHost)
 		{
 			this.SpawnLinked(QSBNetworkManager.singleton.StationaryProbeLauncherPrefab, false);
@@ -52,39 +54,43 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 		_stationaryProbeLauncher._interactVolume.OnPressInteract -= OnPressInteract;
 	}
 
-	private void OnPressInteract()
-	{
-		// Whoever is using it needs authority to be able to rotate it
-		// If this is a client they'll get authority from the host when the message is received otherwise give now
-		if (QSBCore.IsHost)
-		{
-			NetworkBehaviour.netIdentity.SetAuthority(QSBPlayerManager.LocalPlayerId);
-		}
-
-		_isInUse = true;
-		this.SendMessage(new StationaryProbeLauncherMessage(_isInUse));
-	}
+	private void OnPressInteract() => OnLocalUseStateChanged(true);
 
 	public override void SendInitialState(uint to)
 	{
 		base.SendInitialState(to);
 
-		// even tho from is always host here, it's okay because it won't set authority
-		// (since OnRemoteUseStateChanged is only called from OnReceiveRemote)
-		this.SendMessage(new StationaryProbeLauncherMessage(_isInUse) { To = to });
+		this.SendMessage(new StationaryProbeLauncherMessage(_isInUse, _currentUser) { To = to });
 	}
 
 	public void OnRemoteUseStateChanged(bool isInUse, uint user)
 	{
+		_isInUse = isInUse;
+
+		_currentUser = isInUse ? user : uint.MaxValue;
+
 		// Whoever is using it needs authority to be able to rotate it
 		if (QSBCore.IsHost)
 		{
-			NetworkBehaviour.netIdentity.SetAuthority(isInUse ? user : uint.MaxValue);
+			NetworkBehaviour.netIdentity.SetAuthority(_currentUser);
 		}
 
+		UpdateUse();
+	}
+
+	public void OnLocalUseStateChanged(bool isInUse)
+	{
 		_isInUse = isInUse;
 
-		UpdateUse();
+		_currentUser = isInUse ? QSBPlayerManager.LocalPlayerId : uint.MaxValue;
+
+		// Whoever is using it needs authority to be able to rotate it
+		if (QSBCore.IsHost)
+		{
+			NetworkBehaviour.netIdentity.SetAuthority(_currentUser);
+		}
+
+		this.SendMessage(new StationaryProbeLauncherMessage(isInUse, _currentUser));
 	}
 
 	private void UpdateUse()
