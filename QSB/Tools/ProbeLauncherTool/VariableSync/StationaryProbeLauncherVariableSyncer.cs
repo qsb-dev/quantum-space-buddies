@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool.VariableSync;
 
-public class StationaryProbeLauncherVariableSync : BaseVariableSyncer<(float, float, float)>, ILinkedNetworkBehaviour
+public class StationaryProbeLauncherVariableSyncer : BaseVariableSyncer<(float, float, float)>, ILinkedNetworkBehaviour
 {
 	protected override bool HasChanged()
 	{
