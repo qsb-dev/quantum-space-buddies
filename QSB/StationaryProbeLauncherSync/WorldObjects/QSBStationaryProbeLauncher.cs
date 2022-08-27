@@ -74,7 +74,8 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 	{
 		base.SendInitialState(to);
 
-		// BUG: will make host be the user and have authority instead of the actual user. can probably copy paste from UseSlideProjectorMessage
+		// even tho from is always host here, it's okay because it won't set authority
+		// (since OnRemoteUseStateChanged is only called from OnReceiveRemote)
 		this.SendMessage(new StationaryProbeLauncherMessage(_isInUse) { To = to });
 	}
 
@@ -94,7 +95,7 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 	private void UpdateUse()
 	{
 		// Stuff can be null when its sending the initial state info
-		// BUG: uhhh how? this shouldnt be possible since initial state happens AFTER AllObjectsReady
+		// QSB BUG (not xen fault): uhhh how? this shouldnt be possible since initial state happens AFTER AllObjectsReady
 		if (!_isInit)
 		{
 			return;
