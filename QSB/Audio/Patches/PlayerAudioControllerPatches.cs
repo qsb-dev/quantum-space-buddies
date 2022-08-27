@@ -15,14 +15,6 @@ internal class PlayerAudioControllerPatches : QSBPatch
 		new PlayerAudioControllerOneShotMessage(audioType, QSBPlayerManager.LocalPlayerId).Send();
 
 	[HarmonyPostfix]
-	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.PlayMarshmallowCatchFire))]
-	public static void PlayerAudioController_PlayMarshmallowCatchFire() => PlayOneShot(AudioType.ToolMarshmallowIgnite);
-
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.PlayMarshmallowBlowOut))]
-	public static void PlayerAudioController_PlayMarshmallowBlowOut() => PlayOneShot(AudioType.ToolMarshmallowBlowOut);
-
-	[HarmonyPostfix]
 	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.PlayMarshmallowEat))]
 	public static void PlayerAudioController_PlayMarshmallowEat() => PlayOneShot(AudioType.ToolMarshmallowEat);
 
@@ -31,6 +23,14 @@ internal class PlayerAudioControllerPatches : QSBPatch
 	public static void PlayerAudioController_PlayMarshmallowEatBurnt() => PlayOneShot(AudioType.ToolMarshmallowEatBurnt);
 
 	[HarmonyPostfix]
-	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.PlayMarshmallowReplace))]
-	public static void PlayerAudioController_PlayMarshmallowReplace() => PlayOneShot(AudioType.ToolMarshmallowReplace);
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.PlayPatchPuncture))]
+	public static void PlayerAudioController_PlayPatchPuncture() => PlayOneShot(AudioType.PlayerSuitPatchPuncture);
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.PlayMedkit))]
+	public static void PlayerAudioController_PlayMedkit() => PlayOneShot(AudioType.ShipCabinUseMedkit);
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.PlayRefuel))]
+	public static void PlayerAudioController_PlayRefuel() => PlayOneShot(AudioType.ShipCabinUseRefueller);
 }
