@@ -14,7 +14,7 @@ public class StationaryProbeLauncherPatches : QSBPatch
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(StationaryProbeLauncher), nameof(StationaryProbeLauncher.FinishExitSequence))]
-	public static void StationaryProbeLauncher_FinishExitSequence(Elevator __instance)
+	public static void StationaryProbeLauncher_FinishExitSequence(StationaryProbeLauncher __instance)
 	{
 		if (Remote)
 		{
