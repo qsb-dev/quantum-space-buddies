@@ -8,7 +8,8 @@ namespace QSB.Audio.Patches;
 
 internal class PlayerImpactAudioPatches : QSBPatch
 {
-	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+	// Since we patch Start we do it when the mod starts, else it won't run
+	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(PlayerImpactAudio), nameof(PlayerImpactAudio.Start))]
