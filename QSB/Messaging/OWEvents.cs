@@ -33,4 +33,5 @@ public static class OWEvents
 	public const string ExitDreamWorld = nameof(ExitDreamWorld);
 	public const string EnterRemoteFlightConsole = nameof(EnterRemoteFlightConsole);
 	public const string ExitRemoteFlightConsole = nameof(ExitRemoteFlightConsole);
+	public const string ProbeSnapshotRemoved = "Probe Snapshot Removed"; // pain
 }

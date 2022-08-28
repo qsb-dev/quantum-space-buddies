@@ -215,6 +215,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 				}
 				
 				AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+				DebugLog.DebugWrite($"- _visibleInProbeSnapshot is now {AttachedObject._visibleInProbeSnapshot}");
 				return;
 			}
 			else
@@ -258,6 +259,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 
 				_visibleToProbes.Add(player);
 				AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+				DebugLog.DebugWrite($"- _visibleInProbeSnapshot is now {AttachedObject._visibleInProbeSnapshot}");
 				return;
 			}
 		}
@@ -269,6 +271,20 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		}
 		
 		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+		DebugLog.DebugWrite($"- _visibleInProbeSnapshot is now {AttachedObject._visibleInProbeSnapshot}");
+	}
+
+	public void OnRemoveProbeSnapshot(PlayerInfo player)
+	{
+		DebugLog.DebugWrite($"{AttachedObject.name} OnRemoveProbeSnapshot playerId:{player.PlayerId}");
+
+		if (_visibleToProbes.Contains(player))
+		{
+			_visibleToProbes.Remove(player);
+		}
+
+		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+		DebugLog.DebugWrite($"- _visibleInProbeSnapshot is now {AttachedObject._visibleInProbeSnapshot}");
 	}
 
 	public override void DisplayLines()

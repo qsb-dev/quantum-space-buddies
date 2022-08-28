@@ -14,4 +14,5 @@ public interface IQSBQuantumObject : IWorldObject
 	void SetIsQuantum(bool isQuantum);
 	VisibilityObject GetVisibilityObject();
 	void OnTakeProbeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId);
+	void OnRemoveProbeSnapshot(PlayerInfo player);
 }
