@@ -15,6 +15,7 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 	public ThrusterModel ThrusterModel { get; private set; }
 	private ThrusterAudio _thrusterAudio;
 	public List<ThrusterFlameController> ThrusterFlameControllers = new();
+	public ThrusterWashController ThrusterWashController { get; private set; }
 
 	public void Init(GameObject modelShip)
 	{
@@ -26,6 +27,8 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 		{
 			ThrusterFlameControllers.Add(item);
 		}
+
+		ThrusterWashController = modelShip.GetComponentInChildren<ThrusterWashController>();
 	}
 
 	public void Update()
@@ -46,6 +49,8 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 				}
 
 				_thrusterAudio.OnStopTranslationalThrust();
+
+				ThrusterWashController.OnStopTranslationalThrust();
 			}
 			else
 			{
@@ -55,6 +60,8 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 				}
 
 				_thrusterAudio.OnStartTranslationalThrust();
+
+				ThrusterWashController.OnStartTranslationalThrust();
 			}
 		}
 	}
