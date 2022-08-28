@@ -19,6 +19,9 @@ internal class ModelShipManager : WorldObjectManager
 		{
 			Instantiate(QSBNetworkManager.singleton.ModelShipPrefab).SpawnWithServerAuthority();
 		}
+
+		// Is 0 by default -> 2D
+		QSBWorldSync.GetUnityObject<RemoteFlightConsole>()._consoleAudio.spatialBlend = 1;
 	}
 
 	public override void UnbuildWorldObjects()
