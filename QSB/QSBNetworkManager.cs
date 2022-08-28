@@ -13,6 +13,7 @@ using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
+using QSB.ModelShip;
 using QSB.ModelShip.TransformSync;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
@@ -149,6 +150,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		spawnPrefabs.Add(ShipLegPrefab);
 
 		ModelShipPrefab = MakeNewNetworkObject(14, "NetworkModelShip", typeof(ModelShipTransformSync));
+		var modelShipVector3Syncer = ModelShipPrefab.AddComponent<Vector3VariableSyncer>();
+		var modelShipThrusterVariableSyncer = ModelShipPrefab.AddComponent<ModelShipThrusterVariableSyncer>();
+		modelShipThrusterVariableSyncer.AccelerationSyncer = modelShipVector3Syncer;
 		spawnPrefabs.Add(ModelShipPrefab);
 
 		StationaryProbeLauncherPrefab = MakeNewNetworkObject(15, "NetworkStationaryProbeLauncher", typeof(StationaryProbeLauncherVariableSyncer));

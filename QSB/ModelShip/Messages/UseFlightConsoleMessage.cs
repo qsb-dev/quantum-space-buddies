@@ -28,6 +28,10 @@ internal class UseFlightConsoleMessage : QSBMessage<bool>
 
 	public override void OnReceiveLocal()
 	{
+		ModelShipManager.Instance.CurrentFlyer = Data
+			? From
+			: uint.MaxValue;
+
 		if (QSBCore.IsHost)
 		{
 			ModelShipTransformSync.LocalInstance.netIdentity.SetAuthority(Data
@@ -38,6 +42,10 @@ internal class UseFlightConsoleMessage : QSBMessage<bool>
 
 	public override void OnReceiveRemote()
 	{
+		ModelShipManager.Instance.CurrentFlyer = Data
+			? From
+			: uint.MaxValue;
+
 		var console = QSBWorldSync.GetUnityObject<RemoteFlightConsole>();
 
 		if (Data)
