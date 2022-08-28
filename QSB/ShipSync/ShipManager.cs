@@ -136,6 +136,9 @@ internal class ShipManager : WorldObjectManager
 
 		QSBWorldSync.Init<QSBShipDetachableModule, ShipDetachableModule>();
 		QSBWorldSync.Init<QSBShipDetachableLeg, ShipDetachableLeg>();
+
+		// Make sure ignition source is 3D
+		QSBWorldSync.GetUnityObject<ShipThrusterAudio>()._ignitionSource.spatialBlend = 1f;
 	}
 
 	public override void UnbuildWorldObjects()
