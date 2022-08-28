@@ -22,6 +22,7 @@ internal class ShipManager : WorldObjectManager
 
 	public static ShipManager Instance;
 
+	public ShipThrusterAudio ShipThrusterAudio;
 	public InteractZone HatchInteractZone;
 	public HatchController HatchController;
 	public ShipTractorBeamSwitch ShipTractorBeam;
@@ -92,6 +93,7 @@ internal class ShipManager : WorldObjectManager
 			return;
 		}
 
+		ShipThrusterAudio = QSBWorldSync.GetUnityObject<ShipThrusterAudio>();
 		HatchInteractZone = HatchController.GetComponent<InteractZone>();
 		ShipTractorBeam = QSBWorldSync.GetUnityObject<ShipTractorBeamSwitch>();
 		CockpitController = QSBWorldSync.GetUnityObject<ShipCockpitController>();
