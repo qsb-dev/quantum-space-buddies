@@ -33,6 +33,8 @@ internal class UseFlightConsoleMessage : QSBMessage<bool>
 	{
 		var console = QSBWorldSync.GetUnityObject<RemoteFlightConsole>();
 
+		SetCurrentFlyer(From, Data);
+
 		if (Data)
 		{
 			console._modelShipBody.Unsuspend();
@@ -55,8 +57,6 @@ internal class UseFlightConsoleMessage : QSBMessage<bool>
 
 		QSBWorldSync.GetUnityObject<ModelShipController>()._detector.SetActive(Data);
 		QSBWorldSync.GetUnityObjects<ModelShipLandingSpot>().ForEach(x => x._owCollider.SetActivation(Data));
-
-		SetCurrentFlyer(From, Data);
 	}
 
 	private void SetCurrentFlyer(uint flyer, bool isFlying)
