@@ -1,4 +1,5 @@
-﻿using QSB.Player;
+﻿using QSB.Audio;
+using QSB.Player;
 using UnityEngine;
 
 namespace QSB.Animation.Player.Thrusters;
@@ -12,6 +13,11 @@ internal static class ThrusterManager
 		InitWashController(newVfx.transform.Find("ThrusterWash").gameObject, player);
 		InitFlameControllers(newVfx, player);
 		InitParticleControllers(newVfx, player);
+	}
+
+	public static void CreateRemotePlayerSFX(PlayerInfo player)
+	{
+		player.Body.GetComponentInChildren<QSBJetpackThrusterAudio>(true)?.Init(player);
 	}
 
 	private static void InitFlameControllers(GameObject root, PlayerInfo player)
