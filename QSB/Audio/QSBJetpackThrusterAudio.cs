@@ -17,10 +17,31 @@ internal class QSBJetpackThrusterAudio : QSBThrusterAudio
 	// Taken from Player_Body settings
 	private const float maxTranslationalThrust = 6f;
 
+	private bool _underwater;
+	private RemotePlayerFluidDetector _fluidDetector;
+
 	public void Init(PlayerInfo player)
 	{
 		_attachedPlayer = player;
 		enabled = true;
+
+		_fluidDetector = player.FluidDetector;
+		_fluidDetector.OnEnterFluidType += OnEnterExitFluidType;
+		_fluidDetector.OnExitFluidType += OnEnterExitFluidType;
+	}
+
+	private void OnDestroy()
+	{
+		if (_fluidDetector != null)
+		{
+			_fluidDetector.OnEnterFluidType -= OnEnterExitFluidType;
+			_fluidDetector.OnExitFluidType -= OnEnterExitFluidType;
+		}
+	}
+
+	private void OnEnterExitFluidType(FluidVolume.Type type)
+	{
+		_underwater = _fluidDetector.InFluidType(FluidVolume.Type.WATER);
 	}
 
 	private void Update()
@@ -37,13 +58,12 @@ internal class QSBJetpackThrusterAudio : QSBThrusterAudio
 		// TODO: Sync
 		var usingBooster = false;
 		var usingOxygen = false;
-		var underwater = false;
 
 		float targetVolume = usingBooster ? 0f : thrustFraction;
 		float targetPan = -acc.x / maxTranslationalThrust * 0.4f;
-		UpdateTranslationalSource(_translationalSource, targetVolume, targetPan, !underwater && !usingOxygen);
-		UpdateTranslationalSource(_underwaterSource, targetVolume, targetPan, underwater);
-		UpdateTranslationalSource(_oxygenSource, targetVolume, targetPan, !underwater && usingOxygen);
+		UpdateTranslationalSource(_translationalSource, targetVolume, targetPan, !_underwater && !usingOxygen);
+		UpdateTranslationalSource(_underwaterSource, targetVolume, targetPan, _underwater);
+		UpdateTranslationalSource(_oxygenSource, targetVolume, targetPan, !_underwater && usingOxygen);
 
 		if (!_wasBoosting && usingBooster)
 		{
