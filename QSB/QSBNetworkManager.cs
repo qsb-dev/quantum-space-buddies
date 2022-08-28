@@ -354,6 +354,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			}
 
 			// stop dragging for the orbs this player was dragging
+			// why tf is this here instead of QSBOrb.OnPlayerLeave?
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
 				if (qsbOrb.NetworkBehaviour == null)
