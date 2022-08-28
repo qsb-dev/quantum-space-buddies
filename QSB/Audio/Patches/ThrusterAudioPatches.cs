@@ -35,6 +35,7 @@ internal class ThrusterAudioPatches : QSBPatch
 				{
 					new ShipThrusterAudioOneShotMessage(tracker.LastPlayed, tracker.Pitch, tracker.Volume).Send();
 				}
+				// TODO: Apply to player jetpack thruster?
 			}
 		}
 	}

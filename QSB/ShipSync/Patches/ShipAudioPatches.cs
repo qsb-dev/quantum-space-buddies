@@ -16,6 +16,7 @@ internal class ShipAudioPatches : QSBPatch
 	{
 		if (!QSBPlayerManager.LocalPlayer.FlyingShip)
 		{
+			// Just copy pasted the original method with this one line changed
 			Vector3 localAcceleration = ShipTransformSync.LocalInstance.ThrusterVariableSyncer.AccelerationSyncer.Value;
 			localAcceleration.y *= 0.5f;
 			localAcceleration.z *= 0.5f;

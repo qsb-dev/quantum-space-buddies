@@ -12,7 +12,7 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 {
 	public Vector3VariableSyncer AccelerationSyncer;
 
-	private ThrusterModel _thrusterModel;
+	public ThrusterModel ThrusterModel { get; private set; }
 	private ThrusterAudio _thrusterAudio;
 	public List<ThrusterFlameController> ThrusterFlameControllers = new();
 
@@ -20,7 +20,7 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 	{
 		DebugLog.ToConsole("init model ship");
 
-		_thrusterModel = modelShip.GetComponent<ThrusterModel>();
+		ThrusterModel = modelShip.GetComponent<ThrusterModel>();
 		_thrusterAudio = modelShip.GetComponentInChildren<ThrusterAudio>();
 
 		ThrusterFlameControllers.Clear();
@@ -74,10 +74,10 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 	private void GetFromShip()
 	{
 		DebugLog.ToConsole("Getting from ship");
-		if (_thrusterModel)
+		if (ThrusterModel)
 		{
 			DebugLog.ToConsole("Update local acc");
-			AccelerationSyncer.Value = _thrusterModel.GetLocalAcceleration();
+			AccelerationSyncer.Value = ThrusterModel.GetLocalAcceleration();
 		}
 	}
 }
