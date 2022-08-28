@@ -1,6 +1,7 @@
 ﻿using QSB.AuthoritySync;
 using QSB.Messaging;
 using QSB.ModelShip.TransformSync;
+using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
@@ -26,19 +27,13 @@ internal class UseFlightConsoleMessage : QSBMessage<bool>
 
 	private UseFlightConsoleMessage(bool active) : base(active) { }
 
-	public override void OnReceiveLocal()
-	{
-		if (QSBCore.IsHost)
-		{
-			ModelShipTransformSync.LocalInstance.netIdentity.SetAuthority(Data
-				? From
-				: QSBPlayerManager.LocalPlayerId);
-		}
-	}
+	public override void OnReceiveLocal() => SetCurrentFlyer(From, Data);
 
 	public override void OnReceiveRemote()
 	{
 		var console = QSBWorldSync.GetUnityObject<RemoteFlightConsole>();
+
+		SetCurrentFlyer(From, Data);
 
 		if (Data)
 		{
@@ -62,12 +57,24 @@ internal class UseFlightConsoleMessage : QSBMessage<bool>
 
 		QSBWorldSync.GetUnityObject<ModelShipController>()._detector.SetActive(Data);
 		QSBWorldSync.GetUnityObjects<ModelShipLandingSpot>().ForEach(x => x._owCollider.SetActivation(Data));
+	}
+
+	private void SetCurrentFlyer(uint flyer, bool isFlying)
+	{
+		ModelShipManager.Instance.CurrentFlyer = isFlying
+			? flyer
+			: uint.MaxValue;
 
 		if (QSBCore.IsHost)
 		{
-			ModelShipTransformSync.LocalInstance.netIdentity.SetAuthority(Data
-				? From
-				: QSBPlayerManager.LocalPlayerId);
+			ModelShipTransformSync.LocalInstance.netIdentity.SetAuthority(isFlying
+				? flyer
+				: QSBPlayerManager.LocalPlayerId); // Host gets authority when its not in use
 		}
+
+		// Client messes up its position when they start flying it
+		// We can just recall it immediately so its in the right place.
+		var console = QSBWorldSync.GetUnityObject<RemoteFlightConsole>();
+		QSBPatch.RemoteCall(() => console.RespawnModelShip(false));
 	}
 }

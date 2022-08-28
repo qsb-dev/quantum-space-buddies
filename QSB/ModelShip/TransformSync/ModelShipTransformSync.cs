@@ -1,4 +1,5 @@
-﻿using QSB.Syncs.Sectored.Rigidbodies;
+﻿using QSB.ShipSync;
+using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
 
@@ -7,6 +8,8 @@ namespace QSB.ModelShip.TransformSync;
 internal class ModelShipTransformSync : SectoredRigidbodySync
 {
 	public static ModelShipTransformSync LocalInstance { get; private set; }
+
+	public ModelShipThrusterVariableSyncer ThrusterVariableSyncer { get; private set; }
 
 	public override void OnStartClient()
 	{
@@ -29,6 +32,14 @@ internal class ModelShipTransformSync : SectoredRigidbodySync
 		var modelShip = QSBWorldSync.GetUnityObject<RemoteFlightConsole>()._modelShipBody;
 		SectorDetector.Init(modelShip.transform.Find("Detector").GetComponent<SectorDetector>());
 		return modelShip;
+	}
+
+	protected override void Init()
+	{
+		base.Init();
+
+		ThrusterVariableSyncer = this.GetRequiredComponent<ModelShipThrusterVariableSyncer>();
+		ThrusterVariableSyncer.Init(AttachedRigidbody.gameObject);
 	}
 
 	/// <summary>
