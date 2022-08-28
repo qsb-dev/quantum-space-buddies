@@ -16,6 +16,9 @@ using UnityEngine;
 
 namespace QSB.TimeSync;
 
+/// <summary>
+/// BUG: this runs on remote players = BAD! can we move this off of network player?
+/// </summary>
 [UsedInUnityProject]
 public class WakeUpSync : NetworkBehaviour
 {
