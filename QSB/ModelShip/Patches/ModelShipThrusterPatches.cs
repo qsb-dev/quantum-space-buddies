@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.ModelShip.TransformSync;
 using QSB.Patches;
 using QSB.Player;
 using System.Linq;
@@ -14,26 +15,18 @@ internal class ModelShipThrusterPatches : QSBPatch
 	[HarmonyPatch(typeof(ThrusterFlameController), nameof(ThrusterFlameController.GetThrustFraction))]
 	public static bool GetThrustFraction(ThrusterFlameController __instance, ref float __result)
 	{
-		if (!ModelShipThrusterVariableSyncer.LocalInstance.ThrusterFlameControllers.Contains(__instance))
-		{
-			return true;
-		}
+		var modelShipThrusters = ModelShipTransformSync.LocalInstance?.ThrusterVariableSyncer;
 
-		if (!__instance._thrusterModel.IsThrusterBankEnabled(OWUtilities.GetShipThrusterBank(__instance._thruster)))
-		{
-			__result = 0f;
-			return false;
-		}
+		if (modelShipThrusters == null) return true;
 
-		if (QSBPlayerManager.LocalPlayer.FlyingModelShip)
+		if (modelShipThrusters.ThrusterFlameControllers.Contains(__instance) && !QSBPlayerManager.LocalPlayer.FlyingModelShip)
 		{
-			__result = Vector3.Dot(__instance._thrusterModel.GetLocalAcceleration(), __instance._thrusterFilter);
+			if(__instance._thrusterModel.IsThrusterBankEnabled(OWUtilities.GetShipThrusterBank(__instance._thruster)))
+			{
+				__result = Vector3.Dot(modelShipThrusters.AccelerationSyncer.Value, __instance._thrusterFilter);
+				return false;
+			}
 		}
-		else
-		{
-			__result = Vector3.Dot(ModelShipThrusterVariableSyncer.LocalInstance.AccelerationSyncer.Value, __instance._thrusterFilter);
-		}
-
-		return false;
+		return true;
 	}
 }

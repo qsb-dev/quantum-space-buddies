@@ -2,12 +2,6 @@
 using QSB.Audio.Messages;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Player;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QSB.Audio.Patches;
 
@@ -38,7 +32,9 @@ internal class ThrusterAudioPatches : QSBPatch
 			if (tracker.LastPlayed != AudioType.None)
 			{
 				if (__instance is ShipThrusterAudio)
+				{
 					new ShipThrusterAudioOneShotMessage(tracker.LastPlayed, tracker.Pitch, tracker.Volume).Send();
+				}
 			}
 		}
 	}
