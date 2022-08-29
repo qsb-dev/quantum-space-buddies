@@ -18,7 +18,7 @@ internal class ModelShipThrusterAudioPatches : QSBPatch
 	[HarmonyPatch(typeof(ThrusterModel), nameof(ThrusterModel.GetThrustFraction))]
 	public static bool ThrusterModel_GetThrustFraction(ThrusterModel __instance, ref float __result)
 	{
-		if (__instance == ModelShipTransformSync.LocalInstance.ThrusterVariableSyncer.ThrusterModel && !QSBPlayerManager.LocalPlayer.FlyingModelShip)
+		if (__instance == ModelShipTransformSync.LocalInstance?.ThrusterVariableSyncer?.ThrusterModel && !QSBPlayerManager.LocalPlayer.FlyingModelShip)
 		{
 			__result = ModelShipTransformSync.LocalInstance.ThrusterVariableSyncer.AccelerationSyncer.Value.magnitude / __instance._maxTranslationalThrust;
 			return false;

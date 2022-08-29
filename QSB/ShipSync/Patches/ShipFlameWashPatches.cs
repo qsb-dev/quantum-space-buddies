@@ -44,7 +44,7 @@ internal class ShipFlameWashPatches : QSBPatch
 	public static bool Update(ThrusterWashController __instance)
 	{
 		var isShip = ShipThrusterManager.ShipWashController == __instance;
-		var isModelShip = ModelShipTransformSync.LocalInstance.ThrusterVariableSyncer.ThrusterWashController == __instance;
+		var isModelShip = ModelShipThrusterManager.ThrusterWashController == __instance;
 
 		if (!isShip && !isModelShip)
 		{

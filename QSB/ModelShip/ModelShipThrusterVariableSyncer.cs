@@ -14,21 +14,14 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 
 	public ThrusterModel ThrusterModel { get; private set; }
 	private ThrusterAudio _thrusterAudio;
-	public List<ThrusterFlameController> ThrusterFlameControllers = new();
-	public ThrusterWashController ThrusterWashController { get; private set; }
+
 
 	public void Init(GameObject modelShip)
 	{
 		ThrusterModel = modelShip.GetComponent<ThrusterModel>();
 		_thrusterAudio = modelShip.GetComponentInChildren<ThrusterAudio>();
 
-		ThrusterFlameControllers.Clear();
-		foreach (var item in modelShip.GetComponentsInChildren<ThrusterFlameController>())
-		{
-			ThrusterFlameControllers.Add(item);
-		}
-
-		ThrusterWashController = modelShip.GetComponentInChildren<ThrusterWashController>();
+		ModelShipThrusterManager.CreateModelShipVFX(modelShip);
 	}
 
 	public void Update()
@@ -43,25 +36,25 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 		{
 			if (AccelerationSyncer.Value == Vector3.zero)
 			{
-				foreach (var item in ThrusterFlameControllers)
+				foreach (var item in ModelShipThrusterManager.ThrusterFlameControllers)
 				{
 					item.OnStopTranslationalThrust();
 				}
 
 				_thrusterAudio.OnStopTranslationalThrust();
 
-				ThrusterWashController.OnStopTranslationalThrust();
+				ModelShipThrusterManager.ThrusterWashController.OnStopTranslationalThrust();
 			}
 			else
 			{
-				foreach (var item in ThrusterFlameControllers)
+				foreach (var item in ModelShipThrusterManager.ThrusterFlameControllers)
 				{
 					item.OnStartTranslationalThrust();
 				}
 
 				_thrusterAudio.OnStartTranslationalThrust();
 
-				ThrusterWashController.OnStartTranslationalThrust();
+				ModelShipThrusterManager.ThrusterWashController.OnStartTranslationalThrust();
 			}
 		}
 	}
