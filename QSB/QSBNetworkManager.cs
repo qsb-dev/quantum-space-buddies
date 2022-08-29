@@ -78,6 +78,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		if (QSBCore.DebugSettings.UseKcpTransport)
 		{
 			transport = gameObject.AddComponent<kcp2k.KcpTransport>();
+			(transport as kcp2k.KcpTransport).Timeout = int.MaxValue;
 		}
 		else
 		{
