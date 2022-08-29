@@ -126,6 +126,8 @@ internal class DreamLanternPatches : QSBPatch
 	}
 
 
+	// BUG: this breaks focus petals and concealer covers, since those act on the world model
+	/*
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.UpdateVisuals))]
 	public static bool UpdateVisuals(DreamLanternController __instance)
@@ -219,4 +221,5 @@ internal class DreamLanternPatches : QSBPatch
 		__instance.ClearDirtyFlags();
 		return false;
 	}
+	*/
 }
