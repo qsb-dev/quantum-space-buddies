@@ -78,7 +78,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		if (QSBCore.DebugSettings.UseKcpTransport)
 		{
 			var kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
-			kcpTransport.Timeout = int.MaxValue;
+			kcpTransport.Timeout = int.MaxValue; // effectively disables kcp ping = nh lagging wont kick you
 			transport = kcpTransport;
 		}
 		else
