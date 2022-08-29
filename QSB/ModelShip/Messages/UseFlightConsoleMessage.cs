@@ -1,7 +1,6 @@
 ﻿using QSB.AuthoritySync;
 using QSB.Messaging;
 using QSB.ModelShip.TransformSync;
-using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
@@ -75,6 +74,6 @@ internal class UseFlightConsoleMessage : QSBMessage<bool>
 		// Client messes up its position when they start flying it
 		// We can just recall it immediately so its in the right place.
 		var console = QSBWorldSync.GetUnityObject<RemoteFlightConsole>();
-		QSBPatch.RemoteCall(() => console.RespawnModelShip(false));
+		console.RespawnModelShip(false);
 	}
 }

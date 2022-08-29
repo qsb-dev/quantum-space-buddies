@@ -2,7 +2,6 @@
 using QSB.ItemSync.Messages;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Messaging;
-using QSB.Patches;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
@@ -71,7 +70,7 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 
 		if (_lastSocket != null)
 		{
-			QSBPatch.RemoteCall(() => _lastSocket.PlaceIntoSocket(this));
+			_lastSocket.PlaceIntoSocket(this);
 		}
 		else
 		{
@@ -116,10 +115,10 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 	public ItemType GetItemType() => AttachedObject.GetItemType();
 
 	public void PickUpItem(Transform holdTransform) =>
-		QSBPatch.RemoteCall(() => AttachedObject.PickUpItem(holdTransform));
+		AttachedObject.PickUpItem(holdTransform);
 
 	public void DropItem(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget) =>
-		QSBPatch.RemoteCall(() => AttachedObject.DropItem(worldPosition, worldNormal, parent, sector, customDropTarget));
+		AttachedObject.DropItem(worldPosition, worldNormal, parent, sector, customDropTarget);
 
 	public void OnCompleteUnsocket() => AttachedObject.OnCompleteUnsocket();
 }
