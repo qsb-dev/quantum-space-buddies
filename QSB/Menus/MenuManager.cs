@@ -15,7 +15,7 @@ using UnityEngine.UI;
 
 namespace QSB.Menus;
 
-public class MenuManager : MonoBehaviour, IAddComponentOnStart
+internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static MenuManager Instance;
 
