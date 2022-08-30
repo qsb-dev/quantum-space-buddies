@@ -18,6 +18,7 @@ public class MeteorManager : WorldObjectManager
 		await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
 
 		// NH can make multiple so fuck it just choose one
+		// TODO: do GameObject.Find here instead 
 		WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
 		QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
 		QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();

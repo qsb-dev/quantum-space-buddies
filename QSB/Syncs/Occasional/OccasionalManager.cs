@@ -17,7 +17,7 @@ internal class OccasionalManager : WorldObjectManager
 	{
 		var gdBody = Locator._giantsDeep.GetOWRigidbody();
 		var cannon = Locator._orbitalProbeCannon.GetRequiredComponent<OrbitalProbeLaunchController>();
-		// NH sometimes makes the body (BUT NOT THE CANNON) null SOMEHOW!!!!!!
+		// NH sometimes makes the body (but not the cannon) null
 		if (cannon.GetAttachedOWRigidbody())
 		{
 			SpawnOccasional(cannon.GetAttachedOWRigidbody(), gdBody);
