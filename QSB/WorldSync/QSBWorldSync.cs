@@ -186,8 +186,9 @@ public static class QSBWorldSync
 		{
 			if (QSBCore.IsInMultiplayer && loadScene.IsUniverseScene())
 			{
-				// wait a gorbillion frames for new horizons lool
-				Delay.RunFramesLater(1000, () => BuildWorldObjects(loadScene).Forget());
+				// So objects have time to be deleted, made, whatever
+				// i.e. wait until Start has been called
+				Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
 			}
 		};
 
