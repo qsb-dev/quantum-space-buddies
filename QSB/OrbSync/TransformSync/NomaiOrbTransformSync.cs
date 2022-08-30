@@ -1,6 +1,7 @@
 ﻿using QSB.AuthoritySync;
 using QSB.OrbSync.WorldObjects;
 using QSB.Syncs.Unsectored.Transforms;
+using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using UnityEngine;
@@ -47,6 +48,7 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 	protected override void Init()
 	{
 		base.Init();
+		DebugLog.DebugWrite($"{this} - attached = {AttachedTransform}\nbody = {AttachedTransform?.GetAttachedOWRigidbody()}\nparent = {AttachedTransform?.GetAttachedOWRigidbody()?.GetOrigParent()}");
 		var body = AttachedTransform.GetAttachedOWRigidbody();
 		SetReferenceTransform(body.GetOrigParent());
 
