@@ -1,7 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
+using OWML.Common;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -44,6 +46,8 @@ internal class OccasionalManager : WorldObjectManager
 	public static void SpawnOccasional(OWRigidbody body, OWRigidbody refBody)
 	{
 		Bodies.Add((body, refBody));
+		if (!body) DebugLog.DebugWrite($"BODY IS NULL {Environment.StackTrace}", MessageType.Error);
+		if (!refBody) DebugLog.DebugWrite($"BODY IS NULL {Environment.StackTrace}", MessageType.Error);
 
 		if (QSBCore.IsHost)
 		{
