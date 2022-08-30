@@ -49,8 +49,8 @@ public static class QSBWorldSync
 			await UniTask.WaitUntil(() => PlayerTransformSync.LocalInstance, cancellationToken: _cts.Token);
 		}
 
-		// let nh do things first :)
-		// makin it nice and long to be safe
+		// let NH do things first :)
+		// makin it nice and long to be safe. dw things still work no matter the delay
 		await UniTask.DelayFrame(100, cancellationToken: _cts.Token);
 
 		GameInit();
