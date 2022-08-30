@@ -54,7 +54,8 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 			_lastSector = sector.GetWorldObject<QSBSector>();
 		}
 
-		var socket = _lastParent.GetComponent<OWItemSocket>();
+		// NH can make item not have parent
+		var socket = _lastParent?.GetComponent<OWItemSocket>();
 		if (socket != null)
 		{
 			_lastSocket = socket.GetWorldObject<QSBItemSocket>();
