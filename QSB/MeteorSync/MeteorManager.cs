@@ -17,7 +17,8 @@ public class MeteorManager : WorldObjectManager
 		// wait for all late initializers (which includes meteor launchers) to finish
 		await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
 
-		WhiteHoleVolume = QSBWorldSync.GetUnityObject<WhiteHoleVolume>();
+		// NH can make multiple so fuck it just choose one
+		WhiteHoleVolume = QSBWorldSync.GetUnityObjects<WhiteHoleVolume>().First();
 		QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
 		QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
 		QSBWorldSync.Init<QSBMeteor, MeteorController>();
