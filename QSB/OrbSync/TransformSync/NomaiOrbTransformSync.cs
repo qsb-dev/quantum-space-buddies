@@ -1,7 +1,6 @@
 ﻿using QSB.AuthoritySync;
 using QSB.OrbSync.WorldObjects;
 using QSB.Syncs.Unsectored.Transforms;
-using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using UnityEngine;
