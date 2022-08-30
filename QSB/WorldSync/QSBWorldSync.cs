@@ -50,7 +50,7 @@ public static class QSBWorldSync
 		}
 
 		// let NH do things first :)
-		// makin it nice and long to be safe. dw things still work no matter the delay
+		// yes it has to be this long for it to always work. dw things still work no matter the delay
 		await UniTask.DelayFrame(100, cancellationToken: _cts.Token);
 
 		GameInit();
