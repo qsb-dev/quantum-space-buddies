@@ -48,7 +48,6 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 	protected override void Init()
 	{
 		base.Init();
-		DebugLog.DebugWrite($"{this} - attached = {AttachedTransform}\nbody = {AttachedTransform?.GetAttachedOWRigidbody()}\nparent = {AttachedTransform?.GetAttachedOWRigidbody()?.GetOrigParent()}");
 		var body = AttachedTransform.GetAttachedOWRigidbody();
 		SetReferenceTransform(body.GetOrigParent());
 
