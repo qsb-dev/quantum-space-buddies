@@ -51,7 +51,7 @@ public static class QSBWorldSync
 
 		// let NH do things first :)
 		// i think NH only takes like 3 frames to do stuff so this should be okay
-		await UniTask.DelayFrame(1000, cancellationToken: _cts.Token);
+		await UniTask.DelayFrame(10, cancellationToken: _cts.Token);
 
 		GameInit();
 
