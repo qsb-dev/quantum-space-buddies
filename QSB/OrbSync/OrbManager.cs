@@ -12,7 +12,7 @@ public class OrbManager : WorldObjectManager
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) =>
-		// NH sometimes makes the body (but not the orb) null
+		// NH sometimes makes the body (but not the orb) null. what
 		QSBWorldSync.Init<QSBOrb, NomaiInterfaceOrb>(QSBWorldSync.GetUnityObjects<NomaiInterfaceOrb>()
 			.Where(x => x.GetAttachedOWRigidbody())
 			.SortDeterministic());
