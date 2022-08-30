@@ -50,8 +50,8 @@ public static class QSBWorldSync
 		}
 
 		// let NH do things first :)
-		// yes it has to be this long for it to always work. dw things still work no matter the delay
-		await UniTask.DelayFrame(100, cancellationToken: _cts.Token);
+		// i think NH only takes like 3 frames to do stuff so this should be okay
+		await UniTask.DelayFrame(10, cancellationToken: _cts.Token);
 
 		GameInit();
 

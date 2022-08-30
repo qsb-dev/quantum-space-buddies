@@ -19,6 +19,8 @@ internal class OccasionalManager : WorldObjectManager
 	{
 		var gdBody = Locator._giantsDeep.GetOWRigidbody();
 		var cannon = Locator._orbitalProbeCannon.GetRequiredComponent<OrbitalProbeLaunchController>();
+		if (!cannon) DebugLog.DebugWrite(" CANNON IS NULL!", MessageType.Error);
+		if (!cannon.GetAttachedOWRigidbody()) DebugLog.DebugWrite(" CANNON BODY IS NULL!", MessageType.Error);
 		SpawnOccasional(cannon.GetAttachedOWRigidbody(), gdBody);
 
 		foreach (var proxy in cannon._realDebrisSectorProxies)
