@@ -49,6 +49,10 @@ public static class QSBWorldSync
 			await UniTask.WaitUntil(() => PlayerTransformSync.LocalInstance, cancellationToken: _cts.Token);
 		}
 
+		// let nh do things first :)
+		// makin it nice and long to be safe
+		await UniTask.DelayFrame(100, cancellationToken: _cts.Token);
+
 		GameInit();
 
 		foreach (var manager in Managers)
