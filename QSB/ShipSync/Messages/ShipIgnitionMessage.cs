@@ -1,5 +1,6 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using static QSB.ShipSync.Messages.ShipIgnitionMessage;
 
 namespace QSB.ShipSync.Messages;
@@ -24,7 +25,7 @@ internal class ShipIgnitionMessage : QSBMessage<ShipIgnitionType>
 
     private static void Handler(ShipIgnitionType type)
     {
-        if (QSBPlayerManager.LocalPlayer.FlyingShip)
+        if (PlayerTransformSync.LocalInstance && QSBPlayerManager.LocalPlayer.FlyingShip)
         {
             new ShipIgnitionMessage(type).Send();
         }
