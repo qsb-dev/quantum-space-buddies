@@ -15,7 +15,7 @@ public partial class PlayerInfo
 				return null;
 			}
 
-			return CameraBody?.transform.Find("ProbeLauncher").GetComponent<PlayerProbeLauncher>();
+			return (PlayerProbeLauncher)Locator.GetToolModeSwapper().GetProbeLauncher();
 		}
 	}
 
@@ -43,7 +43,7 @@ public partial class PlayerInfo
 				return null;
 			}
 
-			return CameraBody?.transform.Find("Signalscope").GetComponent<Signalscope>();
+			return Locator.GetToolModeSwapper().GetSignalScope();
 		}
 	}
 
@@ -57,7 +57,7 @@ public partial class PlayerInfo
 				return null;
 			}
 
-			return CameraBody?.transform.Find("NomaiTranslatorProp").GetComponent<NomaiTranslator>();
+			return Locator.GetToolModeSwapper().GetTranslator();
 		}
 	}
 }
