@@ -50,8 +50,11 @@ public static class QSBWorldSync
 		}
 
 		// let NH do things first :)
-		// yes it has to be this long for it to always work. dw things still work no matter the delay
-		await UniTask.DelayFrame(20, cancellationToken: _cts.Token);
+		// yes it has to be this long for things to be the most stable with addons
+		if (QSBCore.Helper.Interaction.ModExists("xen.NewHorizons"))
+		{
+			await UniTask.DelayFrame(100, cancellationToken: _cts.Token);
+		}
 
 		GameInit();
 
