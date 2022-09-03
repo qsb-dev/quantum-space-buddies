@@ -1,6 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.EchoesOfTheEye.RaftSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 using System.Threading;
 
 namespace QSB.EchoesOfTheEye.RaftSync;
@@ -12,7 +14,10 @@ public class RaftManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		QSBWorldSync.Init<QSBRaft, RaftController>();
+		// NH sometimes makes the body (but not the raft) null. what
+		QSBWorldSync.Init<QSBRaft, RaftController>(QSBWorldSync.GetUnityObjects<RaftController>()
+			.Where(x => x.GetAttachedOWRigidbody())
+			.SortDeterministic());
 		QSBWorldSync.Init<QSBRaftDock, RaftDock>();
 	}
 }
