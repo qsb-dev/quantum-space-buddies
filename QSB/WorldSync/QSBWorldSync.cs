@@ -53,7 +53,7 @@ public static class QSBWorldSync
 		// yes it has to be this long for things to be the most stable with addons
 		if (QSBCore.Helper.Interaction.ModExists("xen.NewHorizons"))
 		{
-			await UniTask.DelayFrame(100, cancellationToken: _cts.Token);
+			await UniTask.DelayFrame(1000, cancellationToken: _cts.Token);
 		}
 
 		GameInit();
