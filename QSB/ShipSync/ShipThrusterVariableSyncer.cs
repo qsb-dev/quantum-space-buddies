@@ -1,7 +1,7 @@
 ﻿using Mirror;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility.VariableSync;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ShipSync;
@@ -21,7 +21,7 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 
 	public void Update()
 	{
-		if (QSBPlayerManager.LocalPlayer.FlyingShip)
+		if (PlayerTransformSync.LocalInstance && QSBPlayerManager.LocalPlayer.FlyingShip)
 		{
 			GetFromShip();
 			return;

@@ -1,9 +1,6 @@
-﻿using Mirror;
-using QSB.Player;
-using QSB.Utility;
+﻿using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility.VariableSync;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.ModelShip;
@@ -26,7 +23,7 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 
 	public void Update()
 	{
-		if (QSBPlayerManager.LocalPlayer.FlyingModelShip)
+		if (PlayerTransformSync.LocalInstance && QSBPlayerManager.LocalPlayer.FlyingModelShip)
 		{
 			GetFromShip();
 			return;
