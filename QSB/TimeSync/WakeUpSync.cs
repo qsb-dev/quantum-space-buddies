@@ -5,7 +5,6 @@ using QSB.ClientServerStateSync.Messages;
 using QSB.DeathSync;
 using QSB.Inputs;
 using QSB.Messaging;
-using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
@@ -153,7 +152,7 @@ public class WakeUpSync : NetworkBehaviour
 		// prevents accidental supernova at start of loop
 		if (_serverLoopCount == PlayerData.LoadLoopCount())
 		{
-			QSBPatch.RemoteCall(() => TimeLoop.SetSecondsRemaining(secondsRemaining));
+			TimeLoop.SetSecondsRemaining(secondsRemaining);
 		}
 	}
 

@@ -93,6 +93,7 @@ public class AnimationSync : PlayerSyncObject
 		SetSuitState(QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse);
 		InitAccelerationSync();
 		ThrusterManager.CreateRemotePlayerVFX(Player);
+		ThrusterManager.CreateRemotePlayerSFX(Player);
 
 		Delay.RunWhen(() => Player.CameraBody != null,
 			() => body.GetComponent<PlayerHeadRotationSync>().Init(Player.CameraBody.transform));

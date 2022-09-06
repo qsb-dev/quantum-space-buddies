@@ -4,9 +4,6 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 
-/// <summary>
-/// TODO: lanterns held by ghosts should only be controlled by the host (to prevent it from visually freaking out)
-/// </summary>
 public class QSBDreamLantern : WorldObject<DreamLanternController>
 {
 	public override void SendInitialState(uint to)
@@ -16,4 +13,6 @@ public class QSBDreamLantern : WorldObject<DreamLanternController>
 		this.SendMessage(new SetFocusMessage(AttachedObject._focus) { To = to });
 		this.SendMessage(new SetRangeMessage(AttachedObject._minRange, AttachedObject._maxRange) { To = to });
 	}
+
+	public bool IsGhostLantern => AttachedObject.name == "GhostLantern"; // it's as shrimple as that
 }

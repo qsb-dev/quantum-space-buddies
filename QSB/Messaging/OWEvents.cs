@@ -34,4 +34,7 @@ public static class OWEvents
 	public const string EnterRemoteFlightConsole = nameof(EnterRemoteFlightConsole);
 	public const string ExitRemoteFlightConsole = nameof(ExitRemoteFlightConsole);
 	public const string ProbeSnapshotRemoved = "Probe Snapshot Removed"; // pain
+	public const string StartShipIgnition = nameof(StartShipIgnition);
+	public const string CompleteShipIgnition = nameof(CompleteShipIgnition);
+	public const string CancelShipIgnition = nameof(CancelShipIgnition);
 }

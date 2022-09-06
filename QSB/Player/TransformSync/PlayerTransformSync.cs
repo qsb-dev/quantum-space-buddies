@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Messaging;
+using QSB.Patches;
 using QSB.Player.Messages;
 using QSB.PlayerBodySetup.Local;
 using QSB.PlayerBodySetup.Remote;
@@ -48,7 +49,9 @@ public class PlayerTransformSync : SectoredTransformSync
 		JoinLeaveSingularity.Create(Player, false);
 
 		// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
+		QSBPatch.Remote = true;
 		QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
+		QSBPatch.Remote = false;
 		base.OnStopClient();
 		Player.HudMarker?.Remove();
 		QSBPlayerManager.PlayerList.Remove(Player);

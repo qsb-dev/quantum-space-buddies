@@ -31,7 +31,13 @@ internal class DreamLanternPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamLantern>().SendMessage(new SetLitMessage(lit));
+		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLantern>();
+		// ghost lanterns should only be controlled by the host
+		if (qsbDreamLantern.IsGhostLantern && !QSBCore.IsHost)
+		{
+			return;
+		}
+		qsbDreamLantern.SendMessage(new SetLitMessage(lit));
 	}
 
 	[HarmonyPrefix]
@@ -53,7 +59,13 @@ internal class DreamLanternPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamLantern>().SendMessage(new SetConcealedMessage(concealed));
+		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLantern>();
+		// ghost lanterns should only be controlled by the host
+		if (qsbDreamLantern.IsGhostLantern && !QSBCore.IsHost)
+		{
+			return;
+		}
+		qsbDreamLantern.SendMessage(new SetConcealedMessage(concealed));
 	}
 
 	[HarmonyPrefix]
@@ -76,7 +88,13 @@ internal class DreamLanternPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamLantern>().SendMessage(new SetFocusMessage(focus));
+		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLantern>();
+		// ghost lanterns should only be controlled by the host
+		if (qsbDreamLantern.IsGhostLantern && !QSBCore.IsHost)
+		{
+			return;
+		}
+		qsbDreamLantern.SendMessage(new SetFocusMessage(focus));
 	}
 
 	[HarmonyPrefix]
@@ -98,10 +116,18 @@ internal class DreamLanternPatches : QSBPatch
 			return;
 		}
 
-		__instance.GetWorldObject<QSBDreamLantern>().SendMessage(new SetRangeMessage(minRange, maxRange));
+		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLantern>();
+		// ghost lanterns should only be controlled by the host
+		if (qsbDreamLantern.IsGhostLantern && !QSBCore.IsHost)
+		{
+			return;
+		}
+		qsbDreamLantern.SendMessage(new SetRangeMessage(minRange, maxRange));
 	}
 
 
+	// BUG: this breaks focus petals and concealer covers, since those act on the world model
+	/*
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.UpdateVisuals))]
 	public static bool UpdateVisuals(DreamLanternController __instance)
@@ -195,4 +221,5 @@ internal class DreamLanternPatches : QSBPatch
 		__instance.ClearDirtyFlags();
 		return false;
 	}
+	*/
 }

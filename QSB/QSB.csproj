@@ -3,7 +3,7 @@
     <AssemblyTitle>Quantum Space Buddies</AssemblyTitle>
     <Product>Quantum Space Buddies</Product>
     <Description>Multiplayer mod for Outer Wilds</Description>
-    <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\QSB</OutputPath>
+    <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\Raicuparta.QuantumSpaceBuddies</OutputPath>
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
 

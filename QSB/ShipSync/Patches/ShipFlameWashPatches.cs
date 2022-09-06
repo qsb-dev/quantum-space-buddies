@@ -1,4 +1,6 @@
 ﻿using HarmonyLib;
+using QSB.ModelShip;
+using QSB.ModelShip.TransformSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.ShipSync.TransformSync;
@@ -41,16 +43,34 @@ internal class ShipFlameWashPatches : QSBPatch
 	[HarmonyPatch(typeof(ThrusterWashController), nameof(ThrusterWashController.Update))]
 	public static bool Update(ThrusterWashController __instance)
 	{
-		if (ShipThrusterManager.ShipWashController != __instance)
+		var isShip = ShipThrusterManager.ShipWashController == __instance;
+		var isModelShip = ModelShipThrusterManager.ThrusterWashController == __instance;
+
+		if (!isShip && !isModelShip)
 		{
 			return true;
 		}
 
+		bool isLocal;
+		Vector3 remoteAcceleration;
+		if (isShip)
+		{
+			isLocal = QSBPlayerManager.LocalPlayer.FlyingShip;
+			remoteAcceleration = ShipTransformSync.LocalInstance.ThrusterVariableSyncer.AccelerationSyncer.Value;
+		}
+		else
+		{
+			isLocal = QSBPlayerManager.LocalPlayer.FlyingModelShip;
+			remoteAcceleration = ModelShipTransformSync.LocalInstance.ThrusterVariableSyncer.AccelerationSyncer.Value;
+		}
+
+		var localAcceleration = isLocal
+			? __instance._thrusterModel.GetLocalAcceleration()
+			: remoteAcceleration;
+
+		// The rest of this is just copy pasted from the original method
 		var hitInfo = default(RaycastHit);
 		var aboveGround = false;
-		var localAcceleration = QSBPlayerManager.LocalPlayer.FlyingShip
-			? __instance._thrusterModel.GetLocalAcceleration()
-			: ShipTransformSync.LocalInstance.ThrusterVariableSyncer.AccelerationSyncer.Value;
 		var emissionScale = __instance._emissionThrusterScale.Evaluate(localAcceleration.y);
 		if (emissionScale > 0f)
 		{
