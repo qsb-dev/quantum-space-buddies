@@ -126,6 +126,32 @@ internal class QuantumManager : WorldObjectManager
 		return QSBPlayerManager.PlayerList.Where(x => x.EntangledObject == worldObj);
 	}
 
+	public static void OnTakeProbeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId)
+	{
+		DebugLog.DebugWrite($"{player} took a probe snapshot with cameraid {cameraId}");
+
+		foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
+		{
+			if (quantumObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId)
+			{
+				quantumObject.OnTakeProbeSnapshot(player, cameraId);
+			}
+		}
+	}
+
+	public static void OnRemoveProbeSnapshot(PlayerInfo player)
+	{
+		DebugLog.DebugWrite($"{player} removed their snapshot.");
+
+		foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
+		{
+			if (quantumObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId)
+			{
+				quantumObject.OnRemoveProbeSnapshot(player);
+			}
+		}
+	}
+
 	#region debug shapes
 
 	private static GameObject _debugSphere, _debugCube, _debugCapsule;

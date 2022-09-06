@@ -1,4 +1,5 @@
-﻿using QSB.WorldSync;
+﻿using QSB.Player;
+using QSB.WorldSync;
 using System.Collections.Generic;
 
 namespace QSB.QuantumSync.WorldObjects;
@@ -12,4 +13,6 @@ public interface IQSBQuantumObject : IWorldObject
 
 	void SetIsQuantum(bool isQuantum);
 	VisibilityObject GetVisibilityObject();
+	void OnTakeProbeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId);
+	void OnRemoveProbeSnapshot(PlayerInfo player);
 }
