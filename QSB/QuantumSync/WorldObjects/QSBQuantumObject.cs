@@ -179,10 +179,8 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 
 	public void OnTakeProbeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId)
 	{
-		DebugLog.DebugWrite($"{AttachedObject.name} OnTakeProbeSnapshot playerId:{player.PlayerId} cameraId:{cameraId}");
 		if (player.IsLocalPlayer)
 		{
-			DebugLog.DebugWrite($"- is local player");
 			var probe = Locator.GetProbe();
 			ProbeCamera probeCamera = default;
 			switch (cameraId)
@@ -202,30 +200,22 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			}
 
 			var distance = Vector3.Distance(AttachedObject.transform.position, probeCamera.transform.position);
-			DebugLog.DebugWrite($"- distance is {distance}");
 			if (distance < AttachedObject._maxSnapshotLockRange
 				&& AttachedObject.IsIlluminated()
 				&& !probeCamera.HasInterference()
 				&& AttachedObject.CheckVisibilityFromProbe(probeCamera.GetOWCamera()))
 			{
-				DebugLog.DebugWrite($"- Visible in probe snapshot for local player!");
 				if (!_visibleToProbes.Contains(player))
 				{
 					_visibleToProbes.Add(player);
 				}
 				
 				AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
-				DebugLog.DebugWrite($"- _visibleInProbeSnapshot is now {AttachedObject._visibleInProbeSnapshot}");
 				return;
-			}
-			else
-			{
-				DebugLog.DebugWrite($"- not visible :(");
 			}
 		}
 		else
 		{
-			DebugLog.DebugWrite($"- not local player");
 			var probe = player.Probe;
 			QSBProbeCamera probeCamera = default;
 			switch (cameraId)
@@ -251,7 +241,6 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 				&& !probeCamera.HasInterference()
 				&& AttachedObject.CheckVisibilityFromProbe(probeCamera.GetOWCamera()))
 			{
-				DebugLog.DebugWrite($"Visible in probe snapshot for {player.PlayerId}!");
 				if (!_visibleToProbes.Contains(player))
 				{
 					_visibleToProbes.Add(player);
@@ -259,32 +248,26 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 
 				_visibleToProbes.Add(player);
 				AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
-				DebugLog.DebugWrite($"- _visibleInProbeSnapshot is now {AttachedObject._visibleInProbeSnapshot}");
 				return;
 			}
 		}
 
 		if (_visibleToProbes.Contains(player))
 		{
-			DebugLog.DebugWrite($"NOT visible in probe snapshot for {player.PlayerId}!");
 			_visibleToProbes.Remove(player);
 		}
 		
 		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
-		DebugLog.DebugWrite($"- _visibleInProbeSnapshot is now {AttachedObject._visibleInProbeSnapshot}");
 	}
 
 	public void OnRemoveProbeSnapshot(PlayerInfo player)
 	{
-		DebugLog.DebugWrite($"{AttachedObject.name} OnRemoveProbeSnapshot playerId:{player.PlayerId}");
-
 		if (_visibleToProbes.Contains(player))
 		{
 			_visibleToProbes.Remove(player);
 		}
 
 		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
-		DebugLog.DebugWrite($"- _visibleInProbeSnapshot is now {AttachedObject._visibleInProbeSnapshot}");
 	}
 
 	public override void DisplayLines()

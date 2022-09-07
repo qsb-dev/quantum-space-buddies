@@ -128,8 +128,6 @@ internal class QuantumManager : WorldObjectManager
 
 	public static void OnTakeProbeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId)
 	{
-		DebugLog.DebugWrite($"{player} took a probe snapshot with cameraid {cameraId}");
-
 		foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 		{
 			if (quantumObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId)
@@ -141,8 +139,6 @@ internal class QuantumManager : WorldObjectManager
 
 	public static void OnRemoveProbeSnapshot(PlayerInfo player)
 	{
-		DebugLog.DebugWrite($"{player} removed their snapshot.");
-
 		foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 		{
 			if (quantumObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId)
