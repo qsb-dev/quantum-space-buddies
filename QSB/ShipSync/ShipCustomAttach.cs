@@ -43,6 +43,11 @@ public class ShipCustomAttach : MonoBehaviour
 	{
 		_attachPrompt.SetVisibility(false);
 		_detachPrompt.SetVisibility(false);
+		// dont show prompt if paused or something
+		if (!OWInput.IsInputMode(InputMode.Character))
+		{
+			return;
+		}
 
 		var attachedToUs = _playerAttachPoint.enabled;
 		_detachPrompt.SetVisibility(attachedToUs);
