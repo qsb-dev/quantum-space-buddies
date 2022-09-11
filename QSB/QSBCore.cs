@@ -247,7 +247,7 @@ public class QSBCore : ModBehaviour
 
 	private void Update()
 	{
-		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
+		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.NumpadEnter].wasPressedThisFrame)
 		{
 			DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
