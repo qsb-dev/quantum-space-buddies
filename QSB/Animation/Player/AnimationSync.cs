@@ -26,6 +26,15 @@ public class AnimationSync : PlayerSyncObject
 	public Animator InvisibleAnimator { get; private set; }
 	public NetworkAnimator NetworkAnimator { get; private set; }
 
+	public const string HOLD_LANTERN_TRIGGER = "HoldLantern";
+	public const string HOLD_SHARED_STONE_TRIGGER = "HoldSharedStone";
+	public const string HOLD_SCROLL_TRIGGER = "HoldScroll";
+	public const string HOLD_WARP_CORE_TRIGGER = "HoldWarpCore";
+	public const string HOLD_VESSEL_CORE_TRIGGER = "HoldAdvWarpCore";
+	public const string HOLD_CONVERSATION_STONE_TRIGGER = "HoldItem";
+	public const string DROP_HELD_ITEM = "DropHeldItem";
+	public const string TAUNT_THUMBS_UP = "ThumbsUp";
+
 	protected void Awake()
 	{
 		InvisibleAnimator = gameObject.GetRequiredComponent<Animator>();

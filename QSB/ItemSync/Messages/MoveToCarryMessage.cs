@@ -1,4 +1,5 @@
-﻿using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.Animation.Player;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
@@ -39,27 +40,27 @@ internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem, uint>
 		switch (itemType)
 		{
 			case ItemType.Scroll:
-				player.AnimationSync.VisibleAnimator.SetTrigger("HoldScroll");
+				player.AnimationSync.VisibleAnimator.SetTrigger(AnimationSync.HOLD_SCROLL_TRIGGER);
 				break;
 			case ItemType.WarpCore:
 				if (((QSBWarpCoreItem)WorldObject).IsVesselCoreType())
 				{
-					player.AnimationSync.VisibleAnimator.SetTrigger("HoldAdvWarpCore");
+					player.AnimationSync.VisibleAnimator.SetTrigger(AnimationSync.HOLD_VESSEL_CORE_TRIGGER);
 				}
 				else
 				{
-					player.AnimationSync.VisibleAnimator.SetTrigger("HoldWarpCore");
+					player.AnimationSync.VisibleAnimator.SetTrigger(AnimationSync.HOLD_WARP_CORE_TRIGGER);
 				}
 
 				break;
 			case ItemType.SharedStone:
-				player.AnimationSync.VisibleAnimator.SetTrigger("HoldSharedStone");
+				player.AnimationSync.VisibleAnimator.SetTrigger(AnimationSync.HOLD_SHARED_STONE_TRIGGER);
 				break;
 			case ItemType.ConversationStone:
-				player.AnimationSync.VisibleAnimator.SetTrigger("HoldItem");
+				player.AnimationSync.VisibleAnimator.SetTrigger(AnimationSync.HOLD_CONVERSATION_STONE_TRIGGER);
 				break;
 			case ItemType.Lantern:
-				player.AnimationSync.VisibleAnimator.SetTrigger("HoldLantern");
+				player.AnimationSync.VisibleAnimator.SetTrigger(AnimationSync.HOLD_LANTERN_TRIGGER);
 				break;
 			case ItemType.SlideReel:
 			case ItemType.DreamLantern:
