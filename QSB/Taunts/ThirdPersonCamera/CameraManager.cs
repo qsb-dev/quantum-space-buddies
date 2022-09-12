@@ -23,26 +23,33 @@ internal class CameraManager : MonoBehaviour, IAddComponentOnStart
 
 	public void Start()
 	{
-		QSBSceneManager.OnUniverseSceneLoaded += OnSceneLoaded;
+		QSBSceneManager.OnUniverseSceneLoaded += (OWScene oldScene, OWScene newScene) => Delay.RunWhen(() => Locator.GetPlayerTransform() !=null,  OnSceneLoaded);
+		Instance = this;
 	}
 
 	public void OnDestroy()
 	{
-		QSBSceneManager.OnUniverseSceneLoaded -= OnSceneLoaded;
+		QSBSceneManager.OnUniverseSceneLoaded -= (OWScene oldScene, OWScene newScene) => Delay.RunWhen(() => Locator.GetPlayerTransform() != null, OnSceneLoaded);
+		Instance = null;
+		IsSetUp = false;
 	}
 
-	private void OnSceneLoaded(OWScene oldScene, OWScene newScene)
+	private void OnSceneLoaded()
 	{
+		DebugLog.DebugWrite($"create camera base");
 		_cameraBase = new GameObject();
 		_cameraBase.SetActive(false);
 		_cameraBase.transform.parent = Locator.GetPlayerTransform();
 		_cameraBase.transform.localPosition = Vector3.zero;
 		_cameraBase.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
+		DebugLog.DebugWrite($"create camera obj");
 		_cameraObj = new GameObject();
 		_cameraObj.transform.parent = _cameraBase.transform;
 		_cameraObj.transform.localPosition = new Vector3(0, 0, -5f);
 		_cameraObj.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+		DebugLog.DebugWrite($"create camera");
 		_camera = _cameraObj.AddComponent<Camera>();
 		_camera.cullingMask = (Locator.GetPlayerCamera().mainCamera.cullingMask & ~(1 << 27)) | (1 << 22);
 		_camera.clearFlags = CameraClearFlags.Color;
@@ -57,12 +64,15 @@ internal class CameraManager : MonoBehaviour, IAddComponentOnStart
 
 		_cameraBase.AddComponent<CameraController>().CameraObject = _cameraObj;
 
+		DebugLog.DebugWrite($"flashback");
 		var screenGrab = _cameraObj.AddComponent<FlashbackScreenGrabImageEffect>();
-		screenGrab._downsampleShader = Locator.GetPlayerCamera().gameObject.GetComponent<FlashbackScreenGrabImageEffect>()._downsampleShader;
+		screenGrab._downsampleShader = Locator.GetPlayerCamera().GetComponent<FlashbackScreenGrabImageEffect>()._downsampleShader;
 
+		DebugLog.DebugWrite($"fog");
 		var fogImage = _cameraObj.AddComponent<PlanetaryFogImageEffect>();
-		fogImage.fogShader = Locator.GetPlayerCamera().gameObject.GetComponent<PlanetaryFogImageEffect>().fogShader;
+		fogImage.fogShader = Locator.GetPlayerCamera().GetComponent<PlanetaryFogImageEffect>().fogShader;
 
+		DebugLog.DebugWrite($"post-processing");
 		var postProcessing = _cameraObj.AddComponent<PostProcessingBehaviour>();
 		postProcessing.profile = Locator.GetPlayerCamera().GetComponent<PostProcessingBehaviour>().profile;
 

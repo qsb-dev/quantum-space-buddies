@@ -33,7 +33,6 @@ public class AnimationSync : PlayerSyncObject
 	public const string HOLD_VESSEL_CORE_TRIGGER = "HoldAdvWarpCore";
 	public const string HOLD_CONVERSATION_STONE_TRIGGER = "HoldItem";
 	public const string DROP_HELD_ITEM = "DropHeldItem";
-	public const string TAUNT_THUMBS_UP = "ThumbsUp";
 
 	protected void Awake()
 	{

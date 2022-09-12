@@ -1,6 +1,7 @@
 ﻿using QSB.Utility;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace QSB.Inputs;
 
@@ -11,9 +12,14 @@ public class QSBInputManager : MonoBehaviour, IAddComponentOnStart
 
 	public void Update()
 	{
-		if (Input.GetKey(KeyCode.T))
+		if (!QSBCore.IsInMultiplayer || !QSBSceneManager.IsInUniverse)
 		{
-			if (Input.GetKeyDown(KeyCode.Alpha1))
+			return;
+		}
+
+		if (Keyboard.current[Key.T].isPressed)
+		{
+			if (Keyboard.current[Key.Digit1].wasPressedThisFrame)
 			{
 				ThumbsUpTaunt?.Invoke();
 			}
