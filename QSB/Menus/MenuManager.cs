@@ -486,6 +486,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		langController.AddTextElement(DisconnectPopup._labelText, false);
 		langController.AddTextElement(DisconnectPopup._confirmButton._buttonText, false);
 		langController.AddTextElement(DisconnectPopup._cancelButton._buttonText, false);
+		langController.AddTextElement(OneButtonInfoPopup._labelText, false);
+		langController.AddTextElement(OneButtonInfoPopup._confirmButton._buttonText, false);
+		langController.AddTextElement(TwoButtonInfoPopup._labelText, false);
+		langController.AddTextElement(TwoButtonInfoPopup._confirmButton._buttonText, false);
+		langController.AddTextElement(TwoButtonInfoPopup._cancelButton._buttonText, false);
 	}
 
 	private void MakeTitleMenus()
