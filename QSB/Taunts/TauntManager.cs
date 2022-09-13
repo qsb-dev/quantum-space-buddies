@@ -1,4 +1,5 @@
 ﻿using QSB.Inputs;
+using QSB.Player;
 using QSB.Taunts.ThirdPersonCamera;
 using QSB.Utility;
 using UnityEngine;
@@ -26,6 +27,8 @@ internal class TauntManager : MonoBehaviour, IAddComponentOnStart
 		{
 			CameraManager.Instance.SwitchTo3rdPerson();
 		}
+
+		QSBPlayerManager.LocalPlayer.AnimationSync.VisibleAnimator.SetTrigger(taunt.TriggerName);
 	}
 
 	private void StopTaunt()

@@ -93,6 +93,13 @@ public class AnimationSync : PlayerSyncObject
 	{
 		InitCommon(body);
 		InitAccelerationSync();
+
+		var animController = body.GetComponent<PlayerAnimController>();
+		animController._baseAnimController = _suitedAnimController;
+		animController._unsuitedAnimOverride = _unsuitedAnimController;
+		body.GetComponent<Animator>().runtimeAnimatorController = animController._suitedGroup.activeSelf
+			? _suitedAnimController
+			: _unsuitedAnimController;
 	}
 
 	public void InitRemote(Transform body)
