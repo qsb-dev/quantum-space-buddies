@@ -8,6 +8,7 @@ namespace QSB.Inputs;
 public class QSBInputManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static event Action ThumbsUpTaunt;
+	public static event Action DefaultDanceTaunt;
 	public static event Action ExitTaunt;
 
 	public void Update()
@@ -22,6 +23,11 @@ public class QSBInputManager : MonoBehaviour, IAddComponentOnStart
 			if (Keyboard.current[Key.Digit1].wasPressedThisFrame)
 			{
 				ThumbsUpTaunt?.Invoke();
+			}
+
+			if (Keyboard.current[Key.Digit2].wasPressedThisFrame)
+			{
+				DefaultDanceTaunt?.Invoke();
 			}
 		}
 
