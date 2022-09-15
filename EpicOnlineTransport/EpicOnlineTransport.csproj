@@ -4,6 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="../Mirror/*.dll" />
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.201" IncludeAssets="compile" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" IncludeAssets="compile" />
   </ItemGroup>
 </Project>

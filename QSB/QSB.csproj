@@ -50,7 +50,6 @@
       <_Files Include="$(OutputPath)\*.pdb" />
 
       <_Files Include="$(GameDllsDir)\EOS-SDK.dll" />
-      <_Files Include="$(GameDllsDir)\UniSense.dll" />
       <_Files Include="$(GameDllsDir)\Autofac.dll" />
       <_Files Include="$(GameDllsDir)\Newtonsoft.Json.dll" />
       <_Files Include="$(GameDllsDir)\0Harmony.dll" />
@@ -90,7 +89,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.201" IncludeAssets="compile" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
