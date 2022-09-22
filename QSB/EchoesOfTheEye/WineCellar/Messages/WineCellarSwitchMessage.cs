@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using QSB.EchoesOfTheEye.WineCellar.WorldObjects;
+using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.WineCellar.Messages;
 

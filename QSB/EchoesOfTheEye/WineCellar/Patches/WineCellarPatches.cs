@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.EchoesOfTheEye.WineCellar.Messages;
+using QSB.EchoesOfTheEye.WineCellar.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
@@ -16,7 +17,7 @@ internal class WineCellarPatches : QSBPatch
 	{
 		if (Remote)
 		{
-			return; 
+			return;
 		}
 
 		var worldObject = __instance.GetWorldObject<QSBWineCellarSwitch>();

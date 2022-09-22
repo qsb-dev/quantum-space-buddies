@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.EchoesOfTheEye.WineCellar.WorldObjects;
 using QSB.WorldSync;
 using System.Threading;
 
@@ -9,6 +10,6 @@ internal class WineCellarManager : WorldObjectManager
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;
 
-	public async override UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 		=> QSBWorldSync.Init<QSBWineCellarSwitch, WineCellarSwitch>();
 }
