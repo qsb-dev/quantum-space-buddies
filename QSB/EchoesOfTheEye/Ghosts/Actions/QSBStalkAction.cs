@@ -37,8 +37,7 @@ public class QSBStalkAction : QSBGhostAction
 	{
 		var flag = _data.interestedPlayer.player.AssignedSimulationLantern.AttachedObject.GetLanternController().IsConcealed();
 		_wasPlayerLanternConcealed = flag;
-		_isFocusingLight = flag;
-		_shouldFocusLightOnPlayer = flag;
+		_isFocusingLight = _shouldFocusLightOnPlayer = flag || !_data.interestedPlayer.sensor.isPlayerHoldingLantern;
 		_changeFocusTime = 0f;
 		_controller.ChangeLanternFocus(_isFocusingLight ? 1f : 0f, 2f);
 		_controller.SetLanternConcealed(!_isFocusingLight, true);
@@ -80,15 +79,16 @@ public class QSBStalkAction : QSBGhostAction
 			&& _data.interestedPlayer.wasPlayerLocationKnown;
 
 		_wasPlayerLanternConcealed = isPlayerLanternConcealed;
-		if (sawPlayerLanternConceal && !_shouldFocusLightOnPlayer)
+		var flag3 = (!_data.interestedPlayer.sensor.isPlayerHoldingLantern && _data.interestedPlayer.wasPlayerLocationKnown) || _data.interestedPlayer.sensor.isPlayerDroppedLanternVisible;
+		if ((sawPlayerLanternConceal || flag3) && !_shouldFocusLightOnPlayer)
 		{
 			_shouldFocusLightOnPlayer = true;
-			_changeFocusTime = Time.time + 1f;
+			_changeFocusTime = Time.time + 0.5f;
 		}
 		else if (_data.interestedPlayer.sensor.isPlayerHeldLanternVisible && _shouldFocusLightOnPlayer)
 		{
 			_shouldFocusLightOnPlayer = false;
-			_changeFocusTime = Time.time + 1f;
+			_changeFocusTime = Time.time + 0.5f;
 		}
 
 		if (_isFocusingLight != _shouldFocusLightOnPlayer && Time.time > _changeFocusTime)

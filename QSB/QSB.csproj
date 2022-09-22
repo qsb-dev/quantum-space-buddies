@@ -50,7 +50,6 @@
       <_Files Include="$(OutputPath)\*.pdb" />
 
       <_Files Include="$(GameDllsDir)\EOS-SDK.dll" />
-      <_Files Include="$(GameDllsDir)\UniSense.dll" />
       <_Files Include="$(GameDllsDir)\Autofac.dll" />
       <_Files Include="$(GameDllsDir)\Newtonsoft.Json.dll" />
       <_Files Include="$(GameDllsDir)\0Harmony.dll" />
@@ -77,9 +76,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Remove="Assets\*.pdn" />
-	  <None Include="Translations\*">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+    <None Include="Translations\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="AssetBundles\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -90,13 +89,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.201" IncludeAssets="compile" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.7.0" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
     <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
-    <PackageReference Include="HarmonyX" Version="2.10.0" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.6.0" IncludeAssets="compile" />
   </ItemGroup>
 </Project>

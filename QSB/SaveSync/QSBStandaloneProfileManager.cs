@@ -278,7 +278,7 @@ internal class QSBStandaloneProfileManager : IProfileManager
 				Debug.LogError("Could not find graphics settings for " + profile.profileName);
 			}
 
-			if (inputJSON == "")
+			if (string.IsNullOrEmpty(inputJSON))
 			{
 				profile.brokenRebindingData = File.Exists(inputsPath);
 				inputJSON = ((InputManager)OWInput.SharedInputManager).commandManager.DefaultInputActions.ToJson();

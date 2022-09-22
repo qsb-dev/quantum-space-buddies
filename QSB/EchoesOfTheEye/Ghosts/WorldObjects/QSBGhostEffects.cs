@@ -79,20 +79,30 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 
 		var relativeVelocity = AttachedObject._controller.GetRelativeVelocity();
 		var num = (AttachedObject._movementStyle == GhostEffects.MovementStyle.Chase) ? 8f : 2f;
-		var targetValue = new Vector2(relativeVelocity.x / num, relativeVelocity.z / num);
+		float num2 = new Vector2(relativeVelocity.y, relativeVelocity.z).magnitude * Mathf.Sign(relativeVelocity.z);
+		Vector2 targetValue = new Vector2(relativeVelocity.x / num, num2 / num);
 		AttachedObject._smoothedMoveSpeed = AttachedObject._moveSpeedSpring.Update(AttachedObject._smoothedMoveSpeed, targetValue, Time.deltaTime);
 		AttachedObject._animator.SetFloat(GhostEffects.AnimatorKeys.Float_MoveDirectionX, AttachedObject._smoothedMoveSpeed.x);
 		AttachedObject._animator.SetFloat(GhostEffects.AnimatorKeys.Float_MoveDirectionY, AttachedObject._smoothedMoveSpeed.y);
+
+		float num3 = Vector3.SignedAngle(new Vector3(relativeVelocity.x, 0f, relativeVelocity.z), relativeVelocity, Vector3.left);
+		float targetValue2 = Mathf.Clamp(num3 / 30f, -1f, 1f);
+		if (num3 > 15f && AttachedObject._controller.IsApproachingEndOfIncline())
+		{
+			targetValue2 = 0f;
+		}
+		AttachedObject._smoothedMoveSlope = AttachedObject._moveSlopeSpring.Update(AttachedObject._smoothedMoveSlope, targetValue2, Time.deltaTime);
+		AttachedObject._animator.SetFloat(GhostEffects.AnimatorKeys.Float_MoveSlope, AttachedObject._smoothedMoveSlope);
 
 		AttachedObject._smoothedTurnSpeed = AttachedObject._turnSpeedSpring.Update(AttachedObject._smoothedTurnSpeed, AttachedObject._controller.GetAngularVelocity() / 90f, Time.deltaTime);
 		AttachedObject._animator.SetFloat(GhostEffects.AnimatorKeys.Float_TurnSpeed, AttachedObject._smoothedTurnSpeed);
 
 		var target = _data.isIlluminated ? 1f : 0f;
-		var num2 = _data.isIlluminated ? 8f : 0.8f;
-		AttachedObject._eyeGlow = Mathf.MoveTowards(AttachedObject._eyeGlow, target, Time.deltaTime * num2);
+		var num4 = _data.isIlluminated ? 8f : 0.8f;
+		AttachedObject._eyeGlow = Mathf.MoveTowards(AttachedObject._eyeGlow, target, Time.deltaTime * num4);
 		var closestPlayer = QSBPlayerManager.GetClosestPlayerToWorldPoint(AttachedObject.transform.position, true);
-		var num3 = (closestPlayer?.AssignedSimulationLantern?.AttachedObject?.GetLanternController()?.GetLight()?.GetFlickerScale() - 1f + 0.07f) / 0.14f ?? 0;
-		num3 = Mathf.Lerp(0.7f, 1f, num3);
+		var num5 = (closestPlayer?.AssignedSimulationLantern?.AttachedObject?.GetLanternController()?.GetLight()?.GetFlickerScale() - 1f + 0.07f) / 0.14f ?? 0;
+		num5 = Mathf.Lerp(0.7f, 1f, num5);
 		AttachedObject.SetEyeGlow(AttachedObject._eyeGlow * num3);
 
 		if (AttachedObject._playingDeathSequence)
