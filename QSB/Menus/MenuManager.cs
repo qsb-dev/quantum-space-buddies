@@ -365,8 +365,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		ConnectPopup.OnActivateMenu += () =>
 		{
 			_connectPopupOpenTime = Time.time;
-			// ClearInputTextField is called AFTER OnActivateMenu
-			Delay.RunNextFrame(() => ConnectPopup._inputField.SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
+			if (QSBCore.Helper.Interaction.ModExists("Raicuparta.NomaiVR"))
+			{
+				// ClearInputTextField is called AFTER OnActivateMenu
+				Delay.RunNextFrame(() => ConnectPopup._inputField.SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
+			}
 		};
 
 		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
