@@ -23,9 +23,6 @@ public class DebugSettings
 	[JsonProperty("autoStart")]
 	public bool AutoStart;
 
-	[JsonProperty("skipTitleScreen")]
-	public bool SkipTitleScreen;
-
 	[JsonProperty("kickEveryone")]
 	public bool KickEveryone;
 
