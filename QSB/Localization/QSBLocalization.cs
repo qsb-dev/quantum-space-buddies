@@ -48,8 +48,6 @@ public static class QSBLocalization
 		Current = _translations[0];
 
 		TextTranslation.Get().OnLanguageChanged += OnLanguageChanged;
-		// gotta call this manually because InitializeLanguage happens before we listen to OnLanguageChanged
-		OnLanguageChanged();
 	}
 
 	private static void FixMissingEntries(Translation translation)
