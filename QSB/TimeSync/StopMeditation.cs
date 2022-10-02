@@ -12,11 +12,19 @@ public class StopMeditation : MonoBehaviour
 
 		if (menuManager == null)
 		{
+			Delay.RunWhen(() => Locator.GetSceneMenuManager() != null, Init);
 			return;
 		}
 
-		if (menuManager._pauseMenu == null || menuManager.pauseMenu._skipToNextLoopButton == null)
+		if (menuManager._pauseMenu == null)
 		{
+			Delay.RunWhen(() => Locator.GetSceneMenuManager().pauseMenu != null, Init);
+			return;
+		}
+
+		if (menuManager.pauseMenu._skipToNextLoopButton == null)
+		{
+			Delay.RunWhen(() => Locator.GetSceneMenuManager().pauseMenu._skipToNextLoopButton != null, Init);
 			return;
 		}
 
