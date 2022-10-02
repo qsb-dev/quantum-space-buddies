@@ -147,6 +147,7 @@ public class QSBCore : ModBehaviour
 		if (DebugSettings.AutoStart)
 		{
 			DebugSettings.UseKcpTransport = true;
+			DebugSettings.SkipTitleScreen = true;
 			DebugSettings.DebugMode = true;
 		}
 

@@ -138,6 +138,7 @@ The template for this file is this :
   "hookDebugLogs": false,
   "avoidTimeSync": false,
   "autoStart": false,
+  "skipTitleScreen": false,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
@@ -154,6 +155,7 @@ The template for this file is this :
 - hookDebugLogs - Print Unity logs and warnings.
 - avoidTimeSync - Disables the syncing of time.
 - autoStart - Host/connect automatically for faster testing.
+- skipTitleScreen - Auto-skips the splash screen.
 - debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
 - drawGui - Draws a GUI at the top of the screen that gives information on many things.
 - drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.

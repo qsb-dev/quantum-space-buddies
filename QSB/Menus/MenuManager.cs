@@ -512,6 +512,25 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 		SetButtonActive(NewGameButton, true);
 
+		if (QSBCore.DebugSettings.SkipTitleScreen)
+		{
+			Application.runInBackground = true;
+			var titleScreenManager = FindObjectOfType<TitleScreenManager>();
+			var titleScreenAnimation = titleScreenManager._cameraController;
+			const float small = 1 / 1000f;
+			titleScreenAnimation._gamepadSplash = false;
+			titleScreenAnimation._introPan = false;
+			titleScreenAnimation._fadeDuration = small;
+			titleScreenAnimation.Start();
+			var titleAnimationController = titleScreenManager._gfxController;
+			titleAnimationController._logoFadeDelay = small;
+			titleAnimationController._logoFadeDuration = small;
+			titleAnimationController._echoesFadeDelay = small;
+			titleAnimationController._optionsFadeDelay = small;
+			titleAnimationController._optionsFadeDuration = small;
+			titleAnimationController._optionsFadeSpacing = small;
+		}
+
 		var mainMenuFontController = GameObject.Find("MainMenu").GetComponent<FontAndLanguageController>();
 		mainMenuFontController.AddTextElement(HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
 		mainMenuFontController.AddTextElement(ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
