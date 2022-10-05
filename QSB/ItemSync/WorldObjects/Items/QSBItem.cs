@@ -114,10 +114,10 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 
 	public ItemType GetItemType() => AttachedObject.GetItemType();
 
-	public void PickUpItem(Transform holdTransform) =>
+	public virtual void PickUpItem(Transform holdTransform) =>
 		AttachedObject.PickUpItem(holdTransform);
 
-	public void DropItem(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget) =>
+	public virtual void DropItem(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget) =>
 		AttachedObject.DropItem(worldPosition, worldNormal, parent, sector, customDropTarget);
 
 	public void OnCompleteUnsocket() => AttachedObject.OnCompleteUnsocket();
