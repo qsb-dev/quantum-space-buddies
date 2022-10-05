@@ -11,5 +11,5 @@ public class DreamLanternManager : WorldObjectManager
 	public override bool DlcOnly => true;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) =>
-		QSBWorldSync.Init<QSBDreamLantern, DreamLanternController>();
+		QSBWorldSync.Init<QSBDreamLanternController, DreamLanternController>();
 }

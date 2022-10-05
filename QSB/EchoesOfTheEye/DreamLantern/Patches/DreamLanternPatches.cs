@@ -31,7 +31,7 @@ internal class DreamLanternPatches : QSBPatch
 			return;
 		}
 
-		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLantern>();
+		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLanternController>();
 		// ghost lanterns should only be controlled by the host
 		if (qsbDreamLantern.IsGhostLantern && !QSBCore.IsHost)
 		{
@@ -59,7 +59,7 @@ internal class DreamLanternPatches : QSBPatch
 			return;
 		}
 
-		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLantern>();
+		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLanternController>();
 		// ghost lanterns should only be controlled by the host
 		if (qsbDreamLantern.IsGhostLantern && !QSBCore.IsHost)
 		{
@@ -88,7 +88,7 @@ internal class DreamLanternPatches : QSBPatch
 			return;
 		}
 
-		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLantern>();
+		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLanternController>();
 		// ghost lanterns should only be controlled by the host
 		if (qsbDreamLantern.IsGhostLantern && !QSBCore.IsHost)
 		{
@@ -116,7 +116,7 @@ internal class DreamLanternPatches : QSBPatch
 			return;
 		}
 
-		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLantern>();
+		var qsbDreamLantern = __instance.GetWorldObject<QSBDreamLanternController>();
 		// ghost lanterns should only be controlled by the host
 		if (qsbDreamLantern.IsGhostLantern && !QSBCore.IsHost)
 		{
