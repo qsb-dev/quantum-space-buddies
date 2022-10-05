@@ -38,6 +38,8 @@ public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 			// The view model looks much smaller than the dropped item
 			AttachedObject.gameObject.transform.localScale = Vector3.one * 2f;
 		}
+
+		AttachedObject.EnableInteraction(true);
 	}
 
 	public override void DropItem(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget)
