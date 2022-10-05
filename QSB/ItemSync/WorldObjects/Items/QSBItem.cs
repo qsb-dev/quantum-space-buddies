@@ -97,7 +97,7 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 				((IQSBItem)this).SendMessage(new MoveToCarryMessage(ItemState.HoldingPlayer.PlayerId));
 				break;
 			case ItemStateType.Socketed:
-				new SocketItemMessage(SocketMessageType.Socket, ItemState.Socket, AttachedObject).Send();
+				((IQSBItem)this).SendMessage(new SocketItemMessage(SocketMessageType.Socket, ItemState.Socket));
 				break;
 			case ItemStateType.OnGround:
 				((IQSBItem)this).SendMessage(

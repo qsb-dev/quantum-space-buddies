@@ -7,12 +7,11 @@ using QSB.WorldSync;
 
 namespace QSB.ItemSync.Messages;
 
-internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int SocketId, int ItemId)>
+internal class SocketItemMessage : QSBWorldObjectMessage<IQSBItem, (SocketMessageType Type, int SocketId)>
 {
-	public SocketItemMessage(SocketMessageType type, OWItemSocket socket, OWItem item) : base((
+	public SocketItemMessage(SocketMessageType type, OWItemSocket socket) : base((
 		type,
-		socket ? socket.GetWorldObject<QSBItemSocket>().ObjectId : -1,
-		item ? item.GetWorldObject<IQSBItem>().ObjectId : -1
+		socket ? socket.GetWorldObject<QSBItemSocket>().ObjectId : -1
 	)) { }
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
@@ -24,12 +23,11 @@ internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int Socke
 			case SocketMessageType.Socket:
 				{
 					var qsbItemSocket = Data.SocketId.GetWorldObject<QSBItemSocket>();
-					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
 
-					qsbItemSocket.PlaceIntoSocket(qsbItem);
-					qsbItem.ItemState.HasBeenInteractedWith = true;
-					qsbItem.ItemState.State = ItemStateType.Socketed;
-					qsbItem.ItemState.Socket = qsbItemSocket.AttachedObject;
+					qsbItemSocket.PlaceIntoSocket(WorldObject);
+					WorldObject.ItemState.HasBeenInteractedWith = true;
+					WorldObject.ItemState.State = ItemStateType.Socketed;
+					WorldObject.ItemState.Socket = qsbItemSocket.AttachedObject;
 
 					var player = QSBPlayerManager.GetPlayer(From);
 					player.HeldItem = null;
@@ -39,7 +37,6 @@ internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int Socke
 			case SocketMessageType.StartUnsocket:
 				{
 					var qsbItemSocket = Data.SocketId.GetWorldObject<QSBItemSocket>();
-					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
 
 					if (!qsbItemSocket.IsSocketOccupied())
 					{
@@ -47,19 +44,17 @@ internal class SocketItemMessage : QSBMessage<(SocketMessageType Type, int Socke
 						return;
 					}
 
-					qsbItem.StoreLocation();
+					WorldObject.StoreLocation();
 
 					var player = QSBPlayerManager.GetPlayer(From);
-					player.HeldItem = qsbItem;
+					player.HeldItem = WorldObject;
 
 					qsbItemSocket.RemoveFromSocket();
 					return;
 				}
 			case SocketMessageType.CompleteUnsocket:
 				{
-					var qsbItem = Data.ItemId.GetWorldObject<IQSBItem>();
-
-					qsbItem.OnCompleteUnsocket();
+					WorldObject.OnCompleteUnsocket();
 					return;
 				}
 		}
