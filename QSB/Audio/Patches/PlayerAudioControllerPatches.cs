@@ -33,4 +33,20 @@ internal class PlayerAudioControllerPatches : QSBPatch
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.PlayRefuel))]
 	public static void PlayerAudioController_PlayRefuel() => PlayOneShot(AudioType.ShipCabinUseRefueller);
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.OnArtifactFocus))]
+	public static void PlayerAudioController_OnArtifactFocus() => PlayOneShot(AudioType.Artifact_Focus);
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.OnArtifactUnfocus))]
+	public static void PlayerAudioController_OnArtifactUnfocus() => PlayOneShot(AudioType.Artifact_Unfocus);
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.OnArtifactConceal))]
+	public static void PlayerAudioController_OnArtifactConceal() => PlayOneShot(AudioType.Artifact_Conceal);
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.OnArtifactUnconceal))]
+	public static void PlayerAudioController_OnArtifactUnconceal() => PlayOneShot(AudioType.Artifact_Unconceal);
 }
