@@ -11,6 +11,6 @@ internal class SetLitMessage : QSBWorldObjectMessage<QSBDreamLanternController, 
 	public override void OnReceiveRemote()
 	{
 		WorldObject.AttachedObject.SetLit(Data);
-		WorldObject.DreamLanternItem._oneShotSource.PlayOneShot(Data ? AudioType.Artifact_Light : AudioType.Artifact_Extinguish, 1f);
+		WorldObject.DreamLanternItem?._oneShotSource?.PlayOneShot(Data ? AudioType.Artifact_Light : AudioType.Artifact_Extinguish, 1f);
 	}
 }
