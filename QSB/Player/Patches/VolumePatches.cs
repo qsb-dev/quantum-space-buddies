@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Player.Patches;
@@ -45,10 +46,13 @@ internal class VolumePatches : QSBPatch
 	[HarmonyPatch(typeof(ElectricityVolume), nameof(ElectricityVolume.OnEffectVolumeEnter))]
 	[HarmonyPatch(typeof(DreamWarpVolume), nameof(DreamWarpVolume.OnEnterTriggerVolume))]
 	[HarmonyPatch(typeof(NomaiWarpPlatform), nameof(NomaiWarpPlatform.OnEntry))]
-	public static bool PreventRemotePlayerEnter(GameObject hitObj) =>
+	public static bool PreventRemotePlayerEnter(object __instance, GameObject hitObj)
+	{
+		DebugLog.DebugWrite($"{__instance} funny prevent enter {hitObj}");
 		// this is a dogshit fix to a bug where this would ApplyShock to remote players,
 		// which would actually apply the shock affects to the entire planet / sector
 		//
 		// TODO: also do this with remote probes
-		hitObj.name != "REMOTE_PlayerDetector";
+		return hitObj.name != "REMOTE_PlayerDetector";
+	}
 }
