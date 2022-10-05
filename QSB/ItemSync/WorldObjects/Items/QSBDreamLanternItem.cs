@@ -56,5 +56,10 @@ public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 
 			AttachedObject.gameObject.transform.localScale = Vector3.one;
 		}
+
+		// If in the DreamWorld, don't let other people pick up your lantern
+		// Since this method is only called on the remote, this only makes other players unable to pick it up
+		// If the lantern is lit, the user is in the DreamWorld
+		AttachedObject.EnableInteraction(!AttachedObject.GetLanternController().IsLit());
 	}
 }

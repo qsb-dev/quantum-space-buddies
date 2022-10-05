@@ -1,6 +1,5 @@
 ﻿using QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 using QSB.Messaging;
-using System.Collections.Generic;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.Messages;
 
@@ -12,5 +11,11 @@ internal class SetLitMessage : QSBWorldObjectMessage<QSBDreamLanternController, 
 	{
 		WorldObject.AttachedObject.SetLit(Data);
 		WorldObject.DreamLanternItem?._oneShotSource?.PlayOneShot(Data ? AudioType.Artifact_Light : AudioType.Artifact_Extinguish, 1f);
+
+		// If a lantern is already lit you shouldn't be able to pick it up
+		if (Data)
+		{
+			WorldObject.DreamLanternItem.EnableInteraction(false);
+		}
 	}
 }
