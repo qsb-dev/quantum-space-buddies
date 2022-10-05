@@ -94,10 +94,10 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 		switch (ItemState.State)
 		{
 			case ItemStateType.Held:
-				((IQSBItem)this).SendMessage(new MoveToCarryMessage(ItemState.HoldingPlayer.PlayerId));
+				((IQSBItem)this).SendMessage(new MoveToCarryMessage(ItemState.HoldingPlayer.PlayerId) { To = to });
 				break;
 			case ItemStateType.Socketed:
-				((IQSBItem)this).SendMessage(new SocketItemMessage(SocketMessageType.Socket, ItemState.Socket));
+				((IQSBItem)this).SendMessage(new SocketItemMessage(SocketMessageType.Socket, ItemState.Socket) { To = to });
 				break;
 			case ItemStateType.OnGround:
 				((IQSBItem)this).SendMessage(
@@ -107,7 +107,7 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 						ItemState.Parent,
 						ItemState.Sector,
 						ItemState.CustomDropTarget,
-						ItemState.Rigidbody));
+						ItemState.Rigidbody) { To = to });
 				break;
 		}
 	}
