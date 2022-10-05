@@ -167,7 +167,8 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 				{
 					var dreamLanternItem = QSBWorldSync.GetWorldObjects<QSBDreamLanternItem>().First(x =>
 						x.AttachedObject._lanternType == DreamLanternType.Functioning &&
-						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x)
+						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x) &&
+						(!x.AttachedObject.GetLanternController()?.IsLit() ?? false)
 					).AttachedObject;
 					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
 				}
