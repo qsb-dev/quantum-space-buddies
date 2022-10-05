@@ -44,8 +44,11 @@ internal class VolumePatches : QSBPatch
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ElectricityVolume), nameof(ElectricityVolume.OnEffectVolumeEnter))]
 	[HarmonyPatch(typeof(DreamWarpVolume), nameof(DreamWarpVolume.OnEnterTriggerVolume))]
+	[HarmonyPatch(typeof(NomaiWarpPlatform), nameof(NomaiWarpPlatform.OnEntry))]
 	public static bool PreventRemotePlayerEnter(GameObject hitObj) =>
 		// this is a dogshit fix to a bug where this would ApplyShock to remote players,
 		// which would actually apply the shock affects to the entire planet / sector
+		//
+		// TODO: also do this with remote probes
 		hitObj.name != "REMOTE_PlayerDetector";
 }
