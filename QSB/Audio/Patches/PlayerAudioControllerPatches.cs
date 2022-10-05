@@ -3,6 +3,7 @@ using QSB.Audio.Messages;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using UnityEngine;
 
 namespace QSB.Audio.Patches;
 
@@ -49,4 +50,15 @@ internal class PlayerAudioControllerPatches : QSBPatch
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.OnArtifactUnconceal))]
 	public static void PlayerAudioController_OnArtifactUnconceal() => PlayOneShot(AudioType.Artifact_Unconceal);
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.UpdateHazardDamage))]
+	public static void PlayerAudioController_UpdateHazardDamage(PlayerAudioController __instance, float damage, HazardDetector hazardDetector)
+	{
+		var hazardType = damage > 0f ? hazardDetector.GetLatestHazardType() : HazardVolume.HazardType.NONE;
+		if (hazardType != __instance._hazardTypePlaying)
+		{
+			new PlayerAudioControllerUpdateHazardDamageMessage((QSBPlayerManager.LocalPlayerId, hazardDetector.GetLatestHazardType())).Send();
+		}
+	}
 }
