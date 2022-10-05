@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items;
 
-public class QSBDreamLanternItem : QSBItem<DreamLanternItem> 
+public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 {
 	private Material[] _materials;
 
@@ -27,7 +27,7 @@ public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 		// Fixes #502: Artifact is visible through the walls
 		if (AttachedObject._lanternType != DreamLanternType.Nonfunctioning)
 		{
-			foreach (Material m in _materials)
+			foreach (var m in _materials)
 			{
 				if (m.renderQueue >= 2000)
 				{
@@ -46,7 +46,7 @@ public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 
 		if (AttachedObject._lanternType != DreamLanternType.Nonfunctioning)
 		{
-			foreach (Material m in _materials)
+			foreach (var m in _materials)
 			{
 				if (m.renderQueue < 2000)
 				{
