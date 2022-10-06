@@ -39,6 +39,11 @@
   "TimeSyncWaitForAllToReady": "Esperando para o começo do loop...",
   "TimeSyncWaitForAllToDie": "Esperando para o fim do loop...",
   "GalaxyMapEveryoneNotPresent": "Ainda não é a hora. Todos deveriam estar aqui para presenciar isso.",
+  "YouAreDead": "Você está morto.",
+  "WaitingForRespawn": "Esperando alguém te respawnar",
+  "WaitingForAllToDie": "Esperando {0} dos jogadore(s) morrerem...",
+  "AttachToShip": "Prender-se a nave",
+  "DetachFromShip": "Soltar-se da nave",
   "DeathMessages": {
     "Default": [
       "{0} morreu",

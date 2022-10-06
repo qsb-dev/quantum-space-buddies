@@ -81,12 +81,15 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 						ghostBrain.AttachedObject.transform.eulerAngles = Vector3.up * __instance._ghostSpawns[Random.Range(0, __instance._ghostSpawns.Length)].spawnTransform.eulerAngles.y;
 						ghostBrain.TabulaRasa();
 						partyPathAction.ResetPath();
-						if (__instance._numEnabledGhostProxies < __instance._ghostFinalDestinations.Length && __instance._ghostFinalDestinations[__instance._numEnabledGhostProxies].proxyGhost != null)
+						if (!__instance._disableGhostProxies && __instance._numEnabledGhostProxies < __instance._ghostFinalDestinations.Length)
 						{
-							__instance._ghostFinalDestinations[__instance._numEnabledGhostProxies].proxyGhost.gameObject.SetActive(true);
+							if (__instance._ghostFinalDestinations[__instance._numEnabledGhostProxies].proxyGhost != null)
+							{
+								__instance._ghostFinalDestinations[__instance._numEnabledGhostProxies].proxyGhost.Reveal();
+							}
+							__instance._numEnabledGhostProxies++;
 						}
 
-						__instance._numEnabledGhostProxies++;
 						__instance._waitingGhosts.Add(ghostBrain.AttachedObject);
 					}
 				}

@@ -3,6 +3,7 @@ using OWML.Common;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.QuantumSync.Messages;
+using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 	protected virtual bool HostControls => false;
 	public uint ControllingPlayer { get; set; }
 	public bool IsEnabled { get; private set; }
+
+	private List<PlayerInfo> _visibleToProbes = new();
 
 	public override void OnRemoval()
 	{
@@ -173,6 +176,99 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			// send event to other players that we're releasing authority
 			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
 		});
+
+	public void OnTakeProbeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId)
+	{
+		if (player.IsLocalPlayer)
+		{
+			var probe = Locator.GetProbe();
+			ProbeCamera probeCamera = default;
+			switch (cameraId)
+			{
+				case ProbeCamera.ID.Forward:
+					probeCamera = probe.GetForwardCamera();
+					break;
+				case ProbeCamera.ID.Reverse:
+					probeCamera = probe.GetReverseCamera();
+					break;
+				case ProbeCamera.ID.Rotating:
+					probeCamera = probe.GetRotatingCamera();
+					break;
+				case ProbeCamera.ID.PreLaunch:
+					probeCamera = player.LocalProbeLauncher._preLaunchCamera;
+					break;
+			}
+
+			var distance = Vector3.Distance(AttachedObject.transform.position, probeCamera.transform.position);
+			if (distance < AttachedObject._maxSnapshotLockRange
+				&& AttachedObject.IsIlluminated()
+				&& !probeCamera.HasInterference()
+				&& AttachedObject.CheckVisibilityFromProbe(probeCamera.GetOWCamera()))
+			{
+				if (!_visibleToProbes.Contains(player))
+				{
+					_visibleToProbes.Add(player);
+				}
+				
+				AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+				return;
+			}
+		}
+		else
+		{
+			var probe = player.Probe;
+			QSBProbeCamera probeCamera = default;
+			switch (cameraId)
+			{
+				case ProbeCamera.ID.Forward:
+					probeCamera = probe.GetForwardCamera();
+					break;
+				case ProbeCamera.ID.Reverse:
+					probeCamera = probe.GetReverseCamera();
+					break;
+				case ProbeCamera.ID.Rotating:
+					probeCamera = probe.GetRotatingCamera();
+					break;
+				case ProbeCamera.ID.PreLaunch:
+					//TODO : uhhhh yeah do this lol
+					probeCamera = null;
+					break;
+			}
+
+			var distance = Vector3.Distance(AttachedObject.transform.position, probeCamera.transform.position);
+			if (distance < AttachedObject._maxSnapshotLockRange
+				&& AttachedObject.IsIlluminated()
+				&& !probeCamera.HasInterference()
+				&& AttachedObject.CheckVisibilityFromProbe(probeCamera.GetOWCamera()))
+			{
+				if (!_visibleToProbes.Contains(player))
+				{
+					_visibleToProbes.Add(player);
+				}
+
+				_visibleToProbes.Add(player);
+				AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+				return;
+			}
+		}
+
+		if (_visibleToProbes.Contains(player))
+		{
+			_visibleToProbes.Remove(player);
+		}
+		
+		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+	}
+
+	public void OnRemoveProbeSnapshot(PlayerInfo player)
+	{
+		if (_visibleToProbes.Contains(player))
+		{
+			_visibleToProbes.Remove(player);
+		}
+
+		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+	}
 
 	public override void DisplayLines()
 	{

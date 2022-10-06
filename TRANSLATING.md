@@ -9,10 +9,10 @@ QSB can only be translated to the languages Outer Wilds supports - so if you don
 - French
 - Russian
 - Portuguese (Brazil)
+- German
 
 ### Un-translated languages :
 - Spanish (Latin American)
-- German
 - Italian
 - Polish
 - Japanese

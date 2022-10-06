@@ -19,9 +19,14 @@ public class ShipCustomAttach : MonoBehaviour
 
 	private PlayerAttachPoint _playerAttachPoint;
 
+	/// <summary>
+	/// uses a static field instead of a persistent condition cuz those are synced
+	/// </summary>
+	private static bool _tutorialPrompt = true;
+
 	private void Awake()
 	{
-		Locator.GetPromptManager().AddScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
+		Locator.GetPromptManager().AddScreenPrompt(_attachPrompt, _tutorialPrompt ? PromptPosition.Center : PromptPosition.UpperRight);
 		Locator.GetPromptManager().AddScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
 
 		_playerAttachPoint = gameObject.AddComponent<PlayerAttachPoint>();
@@ -34,8 +39,8 @@ public class ShipCustomAttach : MonoBehaviour
 	{
 		if (Locator.GetPromptManager())
 		{
-			Locator.GetPromptManager().RemoveScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
-			Locator.GetPromptManager().RemoveScreenPrompt(_detachPrompt, PromptPosition.UpperRight);
+			Locator.GetPromptManager().RemoveScreenPrompt(_attachPrompt);
+			Locator.GetPromptManager().RemoveScreenPrompt(_detachPrompt);
 		}
 	}
 
@@ -43,6 +48,11 @@ public class ShipCustomAttach : MonoBehaviour
 	{
 		_attachPrompt.SetVisibility(false);
 		_detachPrompt.SetVisibility(false);
+		// dont show prompt if paused or something
+		if (!OWInput.IsInputMode(InputMode.Character))
+		{
+			return;
+		}
 
 		var attachedToUs = _playerAttachPoint.enabled;
 		_detachPrompt.SetVisibility(attachedToUs);
@@ -78,6 +88,13 @@ public class ShipCustomAttach : MonoBehaviour
 			transform.position = Locator.GetPlayerTransform().position;
 			_playerAttachPoint.AttachPlayer();
 			ShipManager.Instance.CockpitController._shipAudioController.PlayBuckle();
+
+			if (_tutorialPrompt)
+			{
+				_tutorialPrompt = false;
+				Locator.GetPromptManager().RemoveScreenPrompt(_attachPrompt);
+				Locator.GetPromptManager().AddScreenPrompt(_attachPrompt, PromptPosition.UpperRight);
+			}
 		}
 	}
 }

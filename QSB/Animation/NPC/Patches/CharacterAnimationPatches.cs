@@ -36,7 +36,7 @@ public class CharacterAnimationPatches : QSBPatch
 			return true;
 		}
 
-		var qsbObj = __instance.playerTrackingZone.GetWorldObject<QSBCharacterTrigger>(); // OPTIMIZE : maybe cache this somewhere... or assess how slow this is
+		var qsbObj = __instance.playerTrackingZone.GetWorldObject<QSBCharacterTrigger>();
 
 		PlayerInfo playerToUse = null;
 		if (__instance._inConversation)

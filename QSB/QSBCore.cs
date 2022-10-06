@@ -245,10 +245,9 @@ public class QSBCore : ModBehaviour
 		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
 	}
 
-#if DEBUG
 	private void Update()
 	{
-		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
+		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.NumpadEnter].wasPressedThisFrame)
 		{
 			DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
@@ -260,7 +259,6 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
 	}
-#endif
 }
 
 /*

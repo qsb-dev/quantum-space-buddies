@@ -184,6 +184,7 @@ The template for this file is this :
 - [Tlya](https://github.com/Tllya) - Russian translation.
 - [Xen](https://github.com/xen-42) - French translation.
 - [ShoosGun](https://github.com/ShoosGun) - Portuguese translation.
+- [DertolleDude](https://github.com/DertolleDude) - German translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.

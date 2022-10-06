@@ -56,7 +56,11 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 			return -100f;
 		}
 
-		if (_running || (_data.interestedPlayer.sensor.isPlayerHeldLanternVisible && (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.interestedPlayer.playerLocation.distance < 20f)) || _data.interestedPlayer.sensor.isIlluminatedByPlayer)
+		if (_running
+			|| (_data.interestedPlayer.sensor.isPlayerHeldLanternVisible
+				&& (_data.threatAwareness > GhostData.ThreatAwareness.EverythingIsNormal || _data.interestedPlayer.playerLocation.distance < 20f)
+				&& _controller.AttachedObject.GetNodeMap().CheckLocalPointInBounds(_data.interestedPlayer.playerLocation.localPosition))
+			|| _data.interestedPlayer.sensor.isIlluminatedByPlayer)
 		{
 			return 80f;
 		}

@@ -26,7 +26,7 @@ internal static class ProbeCreator
 	{
 		var REMOTE_Probe_Body = Object.Instantiate(GetPrefab());
 
-		var qsbProbe = REMOTE_Probe_Body.GetComponent<QSBProbe>();
+		var qsbProbe = REMOTE_Probe_Body.GetComponent<QSBSurveyorProbe>();
 		player.Probe = qsbProbe;
 		qsbProbe.SetOwner(player);
 

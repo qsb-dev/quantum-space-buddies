@@ -365,8 +365,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		ConnectPopup.OnActivateMenu += () =>
 		{
 			_connectPopupOpenTime = Time.time;
-			// ClearInputTextField is called AFTER OnActivateMenu
-			Delay.RunNextFrame(() => ConnectPopup._inputField.SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
+			if (QSBCore.Helper.Interaction.ModExists("Raicuparta.NomaiVR"))
+			{
+				// ClearInputTextField is called AFTER OnActivateMenu
+				Delay.RunNextFrame(() => ConnectPopup._inputField.SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
+			}
 		};
 
 		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
@@ -486,6 +489,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		langController.AddTextElement(DisconnectPopup._labelText, false);
 		langController.AddTextElement(DisconnectPopup._confirmButton._buttonText, false);
 		langController.AddTextElement(DisconnectPopup._cancelButton._buttonText, false);
+		langController.AddTextElement(OneButtonInfoPopup._labelText, false);
+		langController.AddTextElement(OneButtonInfoPopup._confirmButton._buttonText, false);
+		langController.AddTextElement(TwoButtonInfoPopup._labelText, false);
+		langController.AddTextElement(TwoButtonInfoPopup._confirmButton._buttonText, false);
+		langController.AddTextElement(TwoButtonInfoPopup._cancelButton._buttonText, false);
 	}
 
 	private void MakeTitleMenus()

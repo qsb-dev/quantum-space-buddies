@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.Messages;
 
-internal class SetFocusMessage : QSBWorldObjectMessage<QSBDreamLantern, float>
+internal class SetFocusMessage : QSBWorldObjectMessage<QSBDreamLanternController, float>
 {
 	public SetFocusMessage(float focus) : base(focus) { }
 

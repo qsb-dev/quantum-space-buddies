@@ -2,6 +2,7 @@
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.QuantumSync.WorldObjects;
 using QSB.RespawnSync;
 using QSB.ShipSync;
 using QSB.Utility.Messages;
@@ -15,7 +16,7 @@ namespace QSB.Utility;
 
 public class DebugActions : MonoBehaviour, IAddComponentOnStart
 {
-	public static Type WorldObjectSelection;
+	public static Type WorldObjectSelection = typeof(QSBSocketedQuantumObject);
 
 	private static void GoToVessel()
 	{
@@ -166,7 +167,8 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 				{
 					var dreamLanternItem = QSBWorldSync.GetWorldObjects<QSBDreamLanternItem>().First(x =>
 						x.AttachedObject._lanternType == DreamLanternType.Functioning &&
-						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x)
+						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x) &&
+						!x.AttachedObject.GetLanternController().IsLit()
 					).AttachedObject;
 					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
 				}
