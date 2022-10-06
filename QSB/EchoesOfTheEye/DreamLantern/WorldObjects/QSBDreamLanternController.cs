@@ -12,8 +12,6 @@ public class QSBDreamLanternController : WorldObject<DreamLanternController>
 
 	public override async UniTask Init(CancellationToken ct)
 	{
-		await base.Init(ct);
-
 		// Ghosts don't have the item and instead the effects are controlled by GhostEffects
 		if (!IsGhostLantern)
 		{
