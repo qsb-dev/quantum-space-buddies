@@ -7,7 +7,7 @@ namespace QSB.DeathSync.Patches;
 [HarmonyPatch]
 internal class MapPatches : QSBPatch
 {
-	public override QSBPatchTypes Type => QSBPatchTypes.RespawnTime;
+	public override QSBPatchTypes Type => QSBPatchTypes.SpectateTime;
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(MapController), nameof(MapController.EnterMapView))]

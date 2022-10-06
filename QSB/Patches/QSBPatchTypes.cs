@@ -5,6 +5,6 @@ public enum QSBPatchTypes
 	OnClientConnect,
 	OnNonServerClientConnect,
 	OnServerClientConnect,
-	RespawnTime,
+	SpectateTime,
 	OnModStart
 }

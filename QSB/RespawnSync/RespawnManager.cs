@@ -67,7 +67,7 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		QSBPatchManager.DoUnpatchType(QSBPatchTypes.RespawnTime);
+		QSBPatchManager.DoUnpatchType(QSBPatchTypes.SpectateTime);
 		QSBPlayerManager.ShowAllPlayers();
 		QSBPlayerManager.LocalPlayer.UpdateStatesFromObjects();
 		QSBPlayerManager.PlayerList.ForEach(x => x.IsDead = false);
@@ -119,14 +119,14 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 
 	public void TriggerRespawnMap()
 	{
-		QSBPatchManager.DoPatchType(QSBPatchTypes.RespawnTime);
+		QSBPatchManager.DoPatchType(QSBPatchTypes.SpectateTime);
 		Delay.RunNextFrame(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
 	}
 
 	public void Respawn()
 	{
 		var mapController = FindObjectOfType<MapController>();
-		QSBPatchManager.DoUnpatchType(QSBPatchTypes.RespawnTime);
+		QSBPatchManager.DoUnpatchType(QSBPatchTypes.SpectateTime);
 
 		var playerSpawner = FindObjectOfType<PlayerSpawner>();
 		playerSpawner.DebugWarp(playerSpawner.GetSpawnPoint(SpawnLocation.Ship));
