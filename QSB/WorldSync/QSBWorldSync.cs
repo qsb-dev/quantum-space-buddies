@@ -49,14 +49,6 @@ public static class QSBWorldSync
 			await UniTask.WaitUntil(() => PlayerTransformSync.LocalInstance, cancellationToken: _cts.Token);
 		}
 
-		// let NH do things first :)
-		// yes it has to be this long for things to be the most stable with addons
-		if (QSBCore.Helper.Interaction.ModExists("xen.NewHorizons"))
-		{
-			// TODO: convince NH to use a boolean for Star System Loaded event instead of having to track it manually myself
-			await UniTask.DelayFrame(1000, cancellationToken: _cts.Token);
-		}
-
 		GameInit();
 
 		foreach (var manager in Managers)
@@ -196,7 +188,8 @@ public static class QSBWorldSync
 			{
 				// So objects have time to be deleted, made, whatever
 				// i.e. wait until Start has been called
-				Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
+				// TODO: see if this number of frames actually works. TWEAK!
+				Delay.RunFramesLater(10, () => BuildWorldObjects(loadScene).Forget());
 			}
 		};
 

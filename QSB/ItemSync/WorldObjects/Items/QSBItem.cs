@@ -55,7 +55,8 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 		}
 
 		// NH can make item not have parent. what
-		var socket = _lastParent?.GetComponent<OWItemSocket>();
+		// BUG: this happens because qsb finds nh prefabs. we need to make it not do this
+		var socket = _lastParent.GetComponent<OWItemSocket>();
 		if (socket != null)
 		{
 			_lastSocket = socket.GetWorldObject<QSBItemSocket>();
