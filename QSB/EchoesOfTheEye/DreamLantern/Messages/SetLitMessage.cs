@@ -15,7 +15,7 @@ internal class SetLitMessage : QSBWorldObjectMessage<QSBDreamLanternController, 
 		// If a lantern is already lit you shouldn't be able to pick it up
 		if (Data)
 		{
-			WorldObject.DreamLanternItem.EnableInteraction(false);
+			WorldObject.DreamLanternItem?.EnableInteraction(false);
 		}
 	}
 }
