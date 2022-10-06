@@ -62,17 +62,21 @@ public class DreamRaftPatches : QSBPatch
 	/// and we don't want it to extinguish with other players on it.
 	/// </summary>
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.ExtinguishImmediately))]
-	private static bool ExtinguishImmediately(DreamRaftProjector __instance)
+	[HarmonyPatch(typeof(DreamWorldController), nameof(DreamWorldController.ExtinguishDreamRaft))]
+	private static bool ExtinguishDreamRaft(DreamWorldController __instance)
 	{
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return true;
 		}
 
-		// still release authority over the raft tho
-		__instance._dreamRaftProjection.GetComponent<DreamRaftController>().GetWorldObject<QSBDreamRaft>()
-			.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+		if (__instance._lastUsedRaftProjector)
+		{
+			// still release authority over the raft tho
+			__instance._lastUsedRaftProjector
+				._dreamRaftProjection.GetComponent<DreamRaftController>().GetWorldObject<QSBDreamRaft>()
+				.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+		}
 
 		return false;
 	}
