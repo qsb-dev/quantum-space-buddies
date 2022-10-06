@@ -57,9 +57,9 @@ public class RespawnOnDeath : MonoBehaviour
 		_deadTextStyle.fontSize = 20;
 	}
 
-	public void ResetPlayer()
+	public void KillPlayer()
 	{
-		DebugLog.DebugWrite($"RESET PLAYER");
+		DebugLog.DebugWrite($"KILL PLAYER");
 		if (_playerSpawnPoint == null)
 		{
 			DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
