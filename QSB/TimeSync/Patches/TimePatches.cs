@@ -36,11 +36,6 @@ internal class TimePatches : QSBPatch
 			is OWTime.PauseType.Initializing
 			or OWTime.PauseType.Streaming
 			or OWTime.PauseType.Loading;
-
-	[HarmonyPrefix]
-	[HarmonyPatch(typeof(SubmitActionSkipToNextLoop), nameof(SubmitActionSkipToNextLoop.AdvanceToNewTimeLoop))]
-	public static bool StopMeditation()
-		=> false;
 }
 
 internal class ClientTimePatches : QSBPatch
