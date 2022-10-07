@@ -11,6 +11,7 @@ using System.Threading;
 namespace QSB.Tools.ProbeLauncherTool.WorldObjects;
 
 // TODO John - i think this can be simplified, i might be able to remove the variable syncer
+// TODO: on player leave? idk if this will be needed if i ever simplify this
 public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<StationaryProbeLauncherVariableSyncer>
 {
 	private uint _currentUser = uint.MaxValue;
