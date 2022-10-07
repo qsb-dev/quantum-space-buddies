@@ -4,6 +4,7 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.RespawnSync.Messages;
+using QSB.Spectate;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,24 +118,12 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 		_qsbRecoveryPoint.SetActive(true);
 	}
 
-	public void TriggerRespawnMap()
-	{
-		QSBPatchManager.DoPatchType(QSBPatchTypes.SpectateTime);
-		Delay.RunNextFrame(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
-	}
-
 	public void Respawn()
 	{
-		var mapController = FindObjectOfType<MapController>();
-		QSBPatchManager.DoUnpatchType(QSBPatchTypes.SpectateTime);
+		SpectateManager.Instance.ExitSpectate();
 
 		var playerSpawner = FindObjectOfType<PlayerSpawner>();
 		playerSpawner.DebugWarp(playerSpawner.GetSpawnPoint(SpawnLocation.Ship));
-
-		mapController.ExitMapView();
-
-		var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
-		cameraEffectController.OpenEyes(1f);
 	}
 
 	public void OnPlayerDeath(PlayerInfo player)
