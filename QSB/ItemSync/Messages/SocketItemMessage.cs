@@ -14,8 +14,6 @@ internal class SocketItemMessage : QSBWorldObjectMessage<IQSBItem, (SocketMessag
 		socket ? socket.GetWorldObject<QSBItemSocket>().ObjectId : -1
 	)) { }
 
-	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
-
 	public override void OnReceiveRemote()
 	{
 		switch (Data.Type)
