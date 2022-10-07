@@ -147,21 +147,6 @@ public class ConversationPatches : QSBPatch
 		new PersistentConditionMessage(condition, state).Send();
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(GameSave), nameof(GameSave.GetPersistentCondition))]
-	public static bool GetPersistentCondition(string condition, ref bool __result)
-	{
-		// stinky fix to meditation button appearing
-
-		if (condition == "KNOWS_MEDITATION")
-		{
-			__result = false;
-			return false;
-		}
-
-		return true;
-	}
-
-	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DialogueConditionManager), nameof(DialogueConditionManager.AddCondition))]
 	public static void AddCondition(string conditionName, bool conditionState) =>
 		new DialogueConditionMessage(conditionName, conditionState).Send();

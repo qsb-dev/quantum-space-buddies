@@ -120,7 +120,6 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		new RequestStateResyncMessage().Send();
 		CurrentState = State.Loaded;
-		gameObject.GetRequiredComponent<StopMeditation>().Init();
 		if (isServer)
 		{
 			SendServerTime();
