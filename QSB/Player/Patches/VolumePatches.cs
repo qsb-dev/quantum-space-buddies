@@ -53,6 +53,6 @@ internal class VolumePatches : QSBPatch
 		// which would actually apply the shock affects to the entire planet / sector
 		//
 		// TODO: also do this with remote probes
-		return hitObj.name != "REMOTE_PlayerDetector";
+		return hitObj.name is not ("REMOTE_PlayerDetector" or "REMOTE_CameraDetector");
 	}
 }
