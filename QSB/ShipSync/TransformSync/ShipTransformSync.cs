@@ -13,13 +13,7 @@ public class ShipTransformSync : SectoredRigidbodySync
 	private float _lastSetPositionTime;
 	private const float ForcePositionAfterTime = 1;
 
-	/// <summary>
-	/// normally prints error when attached object is null.
-	/// this overrides it so that doesn't happen, since the ship can be destroyed.
-	/// </summary>
-	protected override bool CheckValid()
-		=> AttachedTransform
-			&& base.CheckValid();
+	protected override bool AllowDestroyedAttachedObject => true;
 
 	protected override bool CheckReady() =>
 		base.CheckReady() &&

@@ -17,13 +17,7 @@ internal class ModelShipTransformSync : SectoredRigidbodySync
 		LocalInstance = this;
 	}
 
-	/// <summary>
-	/// normally prints error when attached object is null.
-	/// this overrides it so that doesn't happen, since the model ship can be destroyed.
-	/// </summary>
-	protected override bool CheckValid()
-		=> AttachedTransform
-			&& base.CheckValid();
+	protected override bool AllowDestroyedAttachedObject => true;
 
 	protected override bool UseInterpolation => true;
 
