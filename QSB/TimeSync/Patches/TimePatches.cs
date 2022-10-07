@@ -36,6 +36,11 @@ internal class TimePatches : QSBPatch
 			is OWTime.PauseType.Initializing
 			or OWTime.PauseType.Streaming
 			or OWTime.PauseType.Loading;
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(SubmitActionSkipToNextLoop), nameof(SubmitActionSkipToNextLoop.AdvanceToNewTimeLoop))]
+	public static void PreventMeditationSoftlock()
+		=> OWInput.ChangeInputMode(InputMode.Character);
 }
 
 internal class ClientTimePatches : QSBPatch
