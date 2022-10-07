@@ -35,7 +35,7 @@ internal class ItemToolPatches : QSBPatch
 		var qsbItem = item.GetWorldObject<IQSBItem>();
 		qsbItem.ItemState.State = ItemStateType.Socketed;
 		qsbItem.ItemState.Socket = socket;
-		new SocketItemMessage(SocketMessageType.Socket, socket, item).Send();
+		qsbItem.SendMessage(new SocketItemMessage(SocketMessageType.Socket, socket));
 	}
 
 	[HarmonyPrefix]
@@ -46,7 +46,7 @@ internal class ItemToolPatches : QSBPatch
 		var qsbItem = item.GetWorldObject<IQSBItem>();
 		qsbItem.ItemState.HasBeenInteractedWith = true;
 		QSBPlayerManager.LocalPlayer.HeldItem = qsbItem;
-		new SocketItemMessage(SocketMessageType.StartUnsocket, socket, item).Send();
+		qsbItem.SendMessage(new SocketItemMessage(SocketMessageType.StartUnsocket, socket));
 	}
 
 	[HarmonyPrefix]
@@ -54,7 +54,8 @@ internal class ItemToolPatches : QSBPatch
 	public static void CompleteUnsocketItem(ItemTool __instance)
 	{
 		var item = __instance._heldItem;
-		new SocketItemMessage(SocketMessageType.CompleteUnsocket, null, item).Send();
+		var qsbItem = item.GetWorldObject<IQSBItem>();
+		qsbItem.SendMessage(new SocketItemMessage(SocketMessageType.CompleteUnsocket, null));
 	}
 
 	[HarmonyPrefix]

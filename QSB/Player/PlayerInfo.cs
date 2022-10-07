@@ -3,6 +3,7 @@ using QSB.Animation.Player;
 using QSB.Audio;
 using QSB.ClientServerStateSync;
 using QSB.Messaging;
+using QSB.ModelShip;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.QuantumSync.WorldObjects;
@@ -31,9 +32,10 @@ public partial class PlayerInfo
 	public bool IsInEyeShuttle { get; set; }
 	public IQSBQuantumObject EntangledObject { get; set; }
 	public QSBPlayerAudioController AudioController { get; set; }
-	public bool IsLocalPlayer => TransformSync.isLocalPlayer;
+	public bool IsLocalPlayer => TransformSync.isLocalPlayer; // if TransformSync is ever null, i give permission for nebula to make fun of me about it for the rest of time - johncorby
 	public ThrusterLightTracker ThrusterLightTracker;
 	public bool FlyingShip => ShipManager.Instance.CurrentFlyer == PlayerId;
+	public bool FlyingModelShip => ModelShipManager.Instance.CurrentFlyer == PlayerId;
 
 	public PlayerInfo(PlayerTransformSync transformSync)
 	{

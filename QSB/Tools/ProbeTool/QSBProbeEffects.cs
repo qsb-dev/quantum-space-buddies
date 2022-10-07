@@ -5,17 +5,18 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool;
 
+[UsedInUnityProject]
 internal class QSBProbeEffects : MonoBehaviour
 {
 	public OWAudioSource _flightLoopAudio;
 	public OWAudioSource _anchorAudio;
 	public ParticleSystem _anchorParticles;
 
-	private QSBProbe _probe;
+	private QSBSurveyorProbe _probe;
 
 	private void Awake()
 	{
-		_probe = QSBWorldSync.GetUnityObjects<QSBProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
+		_probe = QSBWorldSync.GetUnityObjects<QSBSurveyorProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
 		if (_probe == null)
 		{
 			DebugLog.ToConsole($"Error - Couldn't find QSBProbe!", OWML.Common.MessageType.Error);
@@ -25,6 +26,7 @@ internal class QSBProbeEffects : MonoBehaviour
 		_probe.OnAnchorProbe += OnAnchor;
 		_probe.OnUnanchorProbe += OnUnanchor;
 		_probe.OnStartRetrieveProbe += OnStartRetrieve;
+		_probe.OnTakeSnapshot += OnTakeSnapshot;
 	}
 
 	private void OnDestroy()
@@ -33,6 +35,7 @@ internal class QSBProbeEffects : MonoBehaviour
 		_probe.OnAnchorProbe -= OnAnchor;
 		_probe.OnUnanchorProbe -= OnUnanchor;
 		_probe.OnStartRetrieveProbe -= OnStartRetrieve;
+		_probe.OnTakeSnapshot -= OnTakeSnapshot;
 	}
 
 	private void OnLaunch() => _flightLoopAudio.FadeIn(0.1f, true, true);
@@ -57,5 +60,11 @@ internal class QSBProbeEffects : MonoBehaviour
 		=> _flightLoopAudio.FadeIn(0.5f);
 
 	private void OnStartRetrieve(float retrieveLength)
-		=> _flightLoopAudio.FadeOut(retrieveLength);
+	{
+		_flightLoopAudio.FadeOut(retrieveLength);
+		_anchorAudio.PlayOneShot(AudioType.ToolProbeRetrieve);
+	}
+
+	private void OnTakeSnapshot()
+		=> _anchorAudio.PlayOneShot(AudioType.ToolProbeTakePhoto);
 }

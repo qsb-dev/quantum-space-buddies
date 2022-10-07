@@ -3,9 +3,9 @@ using QSB.Tools.ProbeLauncherTool.WorldObjects;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages;
 
-internal class LaunchProbeMessage : QSBWorldObjectMessage<QSBProbeLauncher, bool>
+internal class LaunchProbeMessage : QSBWorldObjectMessage<QSBProbeLauncher, (bool playEffects, uint probeOwnerID)>
 {
-	public LaunchProbeMessage(bool playEffects) : base(playEffects) { }
+	public LaunchProbeMessage(bool playEffects, uint probeOwnerID) : base((playEffects, probeOwnerID)) { }
 
-	public override void OnReceiveRemote() => WorldObject.LaunchProbe(Data);
+	public override void OnReceiveRemote() => WorldObject.LaunchProbe(Data.playEffects, Data.probeOwnerID);
 }

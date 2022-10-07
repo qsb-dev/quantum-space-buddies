@@ -13,6 +13,7 @@ using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
 using QSB.Messaging;
+using QSB.ModelShip;
 using QSB.ModelShip.TransformSync;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
@@ -26,6 +27,7 @@ using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.Syncs.Occasional;
 using QSB.TimeSync;
+using QSB.Tools.ProbeLauncherTool.VariableSync;
 using QSB.Tools.ProbeTool.TransformSync;
 using QSB.Utility;
 using QSB.Utility.VariableSync;
@@ -56,6 +58,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public GameObject ShipModulePrefab { get; private set; }
 	public GameObject ShipLegPrefab { get; private set; }
 	public GameObject ModelShipPrefab { get; private set; }
+	public GameObject StationaryProbeLauncherPrefab { get; private set; }
 	private string PlayerName { get; set; }
 
 	private GameObject _probePrefab;
@@ -74,7 +77,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		if (QSBCore.DebugSettings.UseKcpTransport)
 		{
-			transport = gameObject.AddComponent<kcp2k.KcpTransport>();
+			var kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
+			kcpTransport.Timeout = int.MaxValue; // effectively disables kcp ping and timeout (good for testing)
+			transport = kcpTransport;
 		}
 		else
 		{
@@ -147,7 +152,13 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		spawnPrefabs.Add(ShipLegPrefab);
 
 		ModelShipPrefab = MakeNewNetworkObject(14, "NetworkModelShip", typeof(ModelShipTransformSync));
+		var modelShipVector3Syncer = ModelShipPrefab.AddComponent<Vector3VariableSyncer>();
+		var modelShipThrusterVariableSyncer = ModelShipPrefab.AddComponent<ModelShipThrusterVariableSyncer>();
+		modelShipThrusterVariableSyncer.AccelerationSyncer = modelShipVector3Syncer;
 		spawnPrefabs.Add(ModelShipPrefab);
+
+		StationaryProbeLauncherPrefab = MakeNewNetworkObject(15, "NetworkStationaryProbeLauncher", typeof(StationaryProbeLauncherVariableSyncer));
+		spawnPrefabs.Add(StationaryProbeLauncherPrefab);
 
 		ConfigureNetworkManager();
 	}
@@ -347,8 +358,18 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
 				}
 			}
+			// revert authority from model ship
+			if (ModelShipTransformSync.LocalInstance != null)
+			{
+				var identity = ModelShipTransformSync.LocalInstance.netIdentity;
+				if (identity != null && identity.connectionToClient == conn)
+				{
+					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+				}
+			}
 
 			// stop dragging for the orbs this player was dragging
+			// i THINK this is here because orb authority is in network behavior, which may not work properly in OnPlayerLeave
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
 				if (qsbOrb.NetworkBehaviour == null)

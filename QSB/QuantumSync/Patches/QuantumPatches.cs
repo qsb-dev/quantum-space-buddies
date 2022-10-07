@@ -478,4 +478,17 @@ public class QuantumPatches : QSBPatch
 		return false;
 	}
 
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(QuantumObject), nameof(QuantumObject.OnProbeSnapshot))]
+	public static bool OnProbeSnapshot()
+	{
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(QuantumObject), nameof(QuantumObject.OnProbeSnapshotRemoved))]
+	public static bool OnProbeSnapshotRemoved()
+	{
+		return false;
+	}
 }

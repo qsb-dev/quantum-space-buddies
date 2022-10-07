@@ -2,6 +2,7 @@
 using OWML.Common;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Messages;
+using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
@@ -86,7 +87,9 @@ public static class QSBMessageManager
 
 			if (msg.From != QSBPlayerManager.LocalPlayerId)
 			{
+				QSBPatch.Remote = true;
 				msg.OnReceiveRemote();
+				QSBPatch.Remote = false;
 			}
 			else
 			{

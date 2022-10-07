@@ -43,7 +43,7 @@ public class QSBElevator : WorldObject<Elevator>
 			}
 		}
 
-		QSBPatch.RemoteCall(AttachedObject.StartLift);
+		AttachedObject.StartLift();
 	}
 
 	private void SetDirection(bool isGoingUp)

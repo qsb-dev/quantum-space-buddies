@@ -138,6 +138,23 @@ internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 		QSBPlayerManager.OnRemovePlayer -= OnRemovePlayer;
 	}
 
+	private void LateUpdate()
+	{
+		// can't put this stuff in Update/UpdateHologramTransforms as
+		// manual bone rotations need to happen after the animator has changed them
+		if ((_platformActive && _anyoneStillOnPlatform) || _cameraState == CameraState.Disconnecting_FadeIn)
+		{
+			foreach (var item in _playerToHologram)
+			{
+				var hologram = item.Value.transform;
+				var anim = hologram.GetChild(0).gameObject.GetComponent<Animator>();
+				var cameraRotation = item.Key.CameraBody.transform.localRotation.eulerAngles;
+				var rotation = Quaternion.Euler(-cameraRotation.y, -cameraRotation.z, cameraRotation.x); // wtf why
+				anim.GetBoneTransform(HumanBodyBones.Head).localRotation = rotation;
+			}
+		}
+	}
+
 	private void Update()
 	{
 		if (_platformActive)
@@ -718,10 +735,6 @@ internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 
 		hologramCopy.GetChild(0).Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
 		hologramCopy.GetChild(0).Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
-
-		// BUG : Look at this again... probably need to sync head rotation to something else
-		//var ikSync = hologramCopy.GetChild(0).gameObject.AddComponent<PlayerHeadRotationSync>();
-		//ikSync.Init(player.CameraBody.transform);
 
 		if (player.AnimationSync.VisibleAnimator == null)
 		{

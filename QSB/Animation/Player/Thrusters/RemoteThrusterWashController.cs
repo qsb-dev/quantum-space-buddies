@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace QSB.Animation.Player.Thrusters;
 
+[UsedInUnityProject]
 internal class RemoteThrusterWashController : MonoBehaviour
 {
 	[SerializeField]

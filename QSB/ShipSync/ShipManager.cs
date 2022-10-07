@@ -22,6 +22,7 @@ internal class ShipManager : WorldObjectManager
 
 	public static ShipManager Instance;
 
+	public ShipThrusterAudio ShipThrusterAudio;
 	public InteractZone HatchInteractZone;
 	public HatchController HatchController;
 	public ShipTractorBeamSwitch ShipTractorBeam;
@@ -92,6 +93,7 @@ internal class ShipManager : WorldObjectManager
 			return;
 		}
 
+		ShipThrusterAudio = QSBWorldSync.GetUnityObject<ShipThrusterAudio>();
 		HatchInteractZone = HatchController.GetComponent<InteractZone>();
 		ShipTractorBeam = QSBWorldSync.GetUnityObject<ShipTractorBeamSwitch>();
 		CockpitController = QSBWorldSync.GetUnityObject<ShipCockpitController>();
@@ -136,6 +138,10 @@ internal class ShipManager : WorldObjectManager
 
 		QSBWorldSync.Init<QSBShipDetachableModule, ShipDetachableModule>();
 		QSBWorldSync.Init<QSBShipDetachableLeg, ShipDetachableLeg>();
+
+		// Make sure all relevant audio sources are 3D
+		QSBWorldSync.GetUnityObject<ShipThrusterAudio>()._ignitionSource.spatialBlend = 1f;
+		QSBWorldSync.GetUnityObject<ShipThrusterAudio>()._rotationalSource.spatialBlend = 1f;
 	}
 
 	public override void UnbuildWorldObjects()

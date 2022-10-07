@@ -12,7 +12,7 @@ internal class PlayerIlluminatingLanternsMessage : QSBMessage<(uint playerId, in
 	public PlayerIlluminatingLanternsMessage(uint playerId, IEnumerable<DreamLanternController> lanterns) :
 		base((
 			playerId,
-			lanterns.Select(x => x.GetWorldObject<QSBDreamLantern>().ObjectId).ToArray()
+			lanterns.Select(x => x.GetWorldObject<QSBDreamLanternController>().ObjectId).ToArray()
 		)) { }
 
 	public override void OnReceiveRemote()
@@ -21,6 +21,6 @@ internal class PlayerIlluminatingLanternsMessage : QSBMessage<(uint playerId, in
 
 		lightSensor._illuminatingDreamLanternList.Clear();
 		lightSensor._illuminatingDreamLanternList.AddRange(
-			Data.lanterns.Select(x => x.GetWorldObject<QSBDreamLantern>().AttachedObject));
+			Data.lanterns.Select(x => x.GetWorldObject<QSBDreamLanternController>().AttachedObject));
 	}
 }

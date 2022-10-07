@@ -40,8 +40,7 @@ Spoilers within!
 
 #### Hosting a server
 
-- Enter a game. This can be a new expedition or an existing save file.
-- On the pause screen, click the option `OPEN TO MULTIPLAYER`.
+- On the title screen, click the option `OPEN TO MULTIPLAYER`.
 - Share your Product User ID with the people who want to connect.
 - Enjoy!
 
@@ -139,7 +138,6 @@ The template for this file is this :
   "hookDebugLogs": false,
   "avoidTimeSync": false,
   "autoStart": false,
-  "skipTitleScreen": false,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
@@ -156,7 +154,6 @@ The template for this file is this :
 - hookDebugLogs - Print Unity logs and warnings.
 - avoidTimeSync - Disables the syncing of time.
 - autoStart - Host/connect automatically for faster testing.
-- skipTitleScreen - Auto-skips the splash screen.
 - debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
 - drawGui - Draws a GUI at the top of the screen that gives information on many things.
 - drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
@@ -185,6 +182,7 @@ The template for this file is this :
 - [Tlya](https://github.com/Tllya) - Russian translation.
 - [Xen](https://github.com/xen-42) - French translation.
 - [ShoosGun](https://github.com/ShoosGun) - Portuguese translation.
+- [DertolleDude](https://github.com/DertolleDude) - German translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.

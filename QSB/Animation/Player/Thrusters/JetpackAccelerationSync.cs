@@ -1,8 +1,10 @@
 ﻿using Mirror;
+using QSB.Utility;
 using QSB.Utility.VariableSync;
 
 namespace QSB.Animation.Player.Thrusters;
 
+[UsedInUnityProject]
 public class JetpackAccelerationSync : NetworkBehaviour
 {
 	public Vector3VariableSyncer AccelerationVariableSyncer;

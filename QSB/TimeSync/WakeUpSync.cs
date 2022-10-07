@@ -5,7 +5,6 @@ using QSB.ClientServerStateSync.Messages;
 using QSB.DeathSync;
 using QSB.Inputs;
 using QSB.Messaging;
-using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
@@ -16,6 +15,10 @@ using UnityEngine;
 
 namespace QSB.TimeSync;
 
+/// <summary>
+/// BUG: this runs on remote players = BAD! can we move this off of network player?
+/// </summary>
+[UsedInUnityProject]
 public class WakeUpSync : NetworkBehaviour
 {
 	public static WakeUpSync LocalInstance { get; private set; }
@@ -117,7 +120,6 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		new RequestStateResyncMessage().Send();
 		CurrentState = State.Loaded;
-		gameObject.GetRequiredComponent<StopMeditation>().Init();
 		if (isServer)
 		{
 			SendServerTime();
@@ -146,7 +148,11 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		_serverTime = time;
 		_serverLoopCount = count;
-		QSBPatch.RemoteCall(() => TimeLoop.SetSecondsRemaining(secondsRemaining));
+		// prevents accidental supernova at start of loop
+		if (_serverLoopCount == PlayerData.LoadLoopCount())
+		{
+			TimeLoop.SetSecondsRemaining(secondsRemaining);
+		}
 	}
 
 	private void WakeUpOrSleep()

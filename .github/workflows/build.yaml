@@ -13,5 +13,5 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: QSB
+        name: Raicuparta.QuantumSpaceBuddies
         path: .\QSB\Bin\Debug

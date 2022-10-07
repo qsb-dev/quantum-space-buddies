@@ -1,13 +1,21 @@
 ﻿using QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 using QSB.Messaging;
-using QSB.Patches;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.Messages;
 
-internal class SetLitMessage : QSBWorldObjectMessage<QSBDreamLantern, bool>
+internal class SetLitMessage : QSBWorldObjectMessage<QSBDreamLanternController, bool>
 {
 	public SetLitMessage(bool lit) : base(lit) { }
 
 	public override void OnReceiveRemote()
-		=> QSBPatch.RemoteCall(() => WorldObject.AttachedObject.SetLit(Data));
+	{
+		WorldObject.AttachedObject.SetLit(Data);
+		WorldObject.DreamLanternItem?._oneShotSource?.PlayOneShot(Data ? AudioType.Artifact_Light : AudioType.Artifact_Extinguish);
+
+		// If a lantern is already lit you shouldn't be able to pick it up
+		if (Data)
+		{
+			WorldObject.DreamLanternItem?.EnableInteraction(false);
+		}
+	}
 }

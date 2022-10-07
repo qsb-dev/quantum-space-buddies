@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using QSB.Utility;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace QSB.Tools.TranslatorTool;
 
+[UsedInUnityProject]
 internal class QSBNomaiTranslatorProp : MonoBehaviour
 {
 	private static MaterialPropertyBlock s_matPropBlock;

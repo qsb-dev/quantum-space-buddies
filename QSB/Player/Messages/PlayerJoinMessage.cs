@@ -71,6 +71,13 @@ public class PlayerJoinMessage : QSBMessage
 	{
 		if (QSBCore.IsHost)
 		{
+			if (QSBCore.DebugSettings.KickEveryone)
+			{
+				DebugLog.ToConsole($"Kicking {PlayerName} because of DebugSettings.KickEveryone", MessageType.Error);
+				new PlayerKickMessage(From, "This server has DebugSettings.KickEveryone enabled.").Send();
+				return;
+			}
+
 			if (QSBVersion != QSBCore.QSBVersion)
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with wrong QSB version. (Client:{QSBVersion}, Server:{QSBCore.QSBVersion})", MessageType.Error);
@@ -92,7 +99,7 @@ public class PlayerJoinMessage : QSBMessage
 				return;
 			}
 
-			if (QSBPlayerManager.PlayerList.Any(x => x.EyeState >= EyeState.Observatory))
+			if (QSBPlayerManager.PlayerList.Any(x => x.EyeState > EyeState.Observatory))
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting too late into eye scene.", MessageType.Error);
 				new PlayerKickMessage(From, QSBLocalization.Current.GameProgressLimit).Send();

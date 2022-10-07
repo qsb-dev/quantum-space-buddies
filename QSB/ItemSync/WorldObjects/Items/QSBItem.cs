@@ -2,7 +2,6 @@
 using QSB.ItemSync.Messages;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Messaging;
-using QSB.Patches;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
 using QSB.WorldSync;
@@ -71,7 +70,7 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 
 		if (_lastSocket != null)
 		{
-			QSBPatch.RemoteCall(() => _lastSocket.PlaceIntoSocket(this));
+			_lastSocket.PlaceIntoSocket(this);
 		}
 		else
 		{
@@ -95,10 +94,10 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 		switch (ItemState.State)
 		{
 			case ItemStateType.Held:
-				((IQSBItem)this).SendMessage(new MoveToCarryMessage(ItemState.HoldingPlayer.PlayerId));
+				((IQSBItem)this).SendMessage(new MoveToCarryMessage(ItemState.HoldingPlayer.PlayerId) { To = to });
 				break;
 			case ItemStateType.Socketed:
-				new SocketItemMessage(SocketMessageType.Socket, ItemState.Socket, AttachedObject).Send();
+				((IQSBItem)this).SendMessage(new SocketItemMessage(SocketMessageType.Socket, ItemState.Socket) { To = to });
 				break;
 			case ItemStateType.OnGround:
 				((IQSBItem)this).SendMessage(
@@ -108,18 +107,18 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 						ItemState.Parent,
 						ItemState.Sector,
 						ItemState.CustomDropTarget,
-						ItemState.Rigidbody));
+						ItemState.Rigidbody) { To = to });
 				break;
 		}
 	}
 
 	public ItemType GetItemType() => AttachedObject.GetItemType();
 
-	public void PickUpItem(Transform holdTransform) =>
-		QSBPatch.RemoteCall(() => AttachedObject.PickUpItem(holdTransform));
+	public virtual void PickUpItem(Transform holdTransform) =>
+		AttachedObject.PickUpItem(holdTransform);
 
-	public void DropItem(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget) =>
-		QSBPatch.RemoteCall(() => AttachedObject.DropItem(worldPosition, worldNormal, parent, sector, customDropTarget));
+	public virtual void DropItem(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget) =>
+		AttachedObject.DropItem(worldPosition, worldNormal, parent, sector, customDropTarget);
 
 	public void OnCompleteUnsocket() => AttachedObject.OnCompleteUnsocket();
 }
