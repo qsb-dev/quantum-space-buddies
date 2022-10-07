@@ -32,13 +32,16 @@ public class QSBEclipseCodeController : WorldObject<EclipseCodeController4>
 		}
 	}
 
-	private void OnPlayerLeave(PlayerInfo obj)
+	private void OnPlayerLeave(PlayerInfo player)
 	{
 		if (!QSBCore.IsHost)
 		{
 			return;
 		}
-		this.SendMessage(new UseControllerMessage(false));
+		if (PlayerInControl == player)
+		{
+			this.SendMessage(new UseControllerMessage(false));
+		}
 	}
 
 	public void SetUser(uint user)

@@ -17,13 +17,16 @@ public class QSBSlideProjector : WorldObject<SlideProjector>
 	public override void OnRemoval() =>
 		QSBPlayerManager.OnRemovePlayer -= OnPlayerLeave;
 
-	private void OnPlayerLeave(PlayerInfo obj)
+	private void OnPlayerLeave(PlayerInfo player)
 	{
 		if (!QSBCore.IsHost)
 		{
 			return;
 		}
-		this.SendMessage(new UseSlideProjectorMessage(false));
+		if (_user == player.PlayerId)
+		{
+			this.SendMessage(new UseSlideProjectorMessage(false));
+		}
 	}
 
 	public override void SendInitialState(uint to) =>
