@@ -69,7 +69,7 @@ public class QSBCore : ModBehaviour
 	{
 		// incompatible mods
 		"Raicuparta.NomaiVR",
-		"xen.NewHorizons",
+		// "xen.NewHorizons",
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
