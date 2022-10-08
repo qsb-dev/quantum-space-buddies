@@ -83,7 +83,7 @@ public static class QSBWorldSync
 		AllObjectsAdded = true;
 		DebugLog.DebugWrite("World Objects added.", MessageType.Success);
 
-		WorldObjectsHash = WorldObjects.Select(x => x.AttachedObject.GetType().Name).GetSequenceHash();
+		WorldObjectsHash = WorldObjects.Select(x => x.GetType().Name).GetSequenceHash();
 		DebugLog.DebugWrite($"WorldObject hash is {WorldObjectsHash}");
 
 		if (!QSBCore.IsHost)
