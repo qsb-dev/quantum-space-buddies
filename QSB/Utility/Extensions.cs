@@ -214,5 +214,18 @@ public static class Extensions
 		}
 	}
 
+	// Adapted from https://stackoverflow.com/a/30758270
+	public static int GetSequenceHash(this IEnumerable<string> list)
+	{
+		const int seed = 487;
+		const int modifier = 31;
+
+		unchecked
+		{
+			return list.Aggregate(seed, (current, item) =>
+				(current * modifier) + item.GetStableHashCode());
+		}
+	}
+
 	#endregion
 }
