@@ -369,7 +369,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			}
 
 			// stop dragging for the orbs this player was dragging
-			// why tf is this here instead of QSBOrb.OnPlayerLeave?
+			// i THINK this is here because orb authority is in network behavior, which may not work properly in OnPlayerLeave
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
 				if (qsbOrb.NetworkBehaviour == null)
