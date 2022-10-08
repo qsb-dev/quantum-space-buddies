@@ -88,7 +88,7 @@ public static class QSBWorldSync
 
 		if (!QSBCore.IsHost)
 		{
-			new HashMessage(WorldObjectsHash).Send();
+			new WorldObjectsHashMessage(WorldObjectsHash).Send();
 			new RequestLinksMessage().Send();
 		}
 

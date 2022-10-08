@@ -5,9 +5,9 @@ using QSB.Utility;
 
 namespace QSB.WorldSync;
 
-internal class HashMessage : QSBMessage<int>
+internal class WorldObjectsHashMessage : QSBMessage<int>
 {
-	public HashMessage(int hash) : base(hash) => To = 0;
+	public WorldObjectsHashMessage(int hash) : base(hash) => To = 0;
 
 	public override void OnReceiveRemote()
 	{
