@@ -6,6 +6,4 @@ namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 public class QSBRaftDock : WorldObject<RaftDock>, IQSBDropTarget
 {
 	IItemDropTarget IQSBDropTarget.AttachedObject => AttachedObject;
-
-	public void OnPressInteract() => AttachedObject.OnPressInteract();
 }
