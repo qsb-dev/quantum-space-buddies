@@ -8,7 +8,7 @@ namespace QSB.WorldSync;
 /// <summary>
 /// sends QSBWorldSync.WorldObjectsHash to the server for sanity checking
 /// </summary>
-internal class WorldObjectsHashMessage : QSBMessage<int>
+internal class WorldObjectsHashMessage : QSBMessage<string>
 {
 	public WorldObjectsHashMessage() : base(QSBWorldSync.WorldObjectsHash) => To = 0;
 

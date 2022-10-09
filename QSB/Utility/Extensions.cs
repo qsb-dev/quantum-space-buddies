@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -214,17 +215,22 @@ public static class Extensions
 		}
 	}
 
-	// Adapted from https://stackoverflow.com/a/30758270
-	public static int GetSequenceHash(this IEnumerable<string> list)
+	// https://stackoverflow.com/a/24031467
+	public static string GetMD5Hash(this IEnumerable<string> list)
 	{
-		const int seed = 487;
-		const int modifier = 31;
+		using var md5 = System.Security.Cryptography.MD5.Create();
 
-		unchecked
+		var longString = string.Concat(list);
+		var bytes = Encoding.ASCII.GetBytes(longString);
+		var hashBytes = md5.ComputeHash(bytes);
+
+		var sb = new StringBuilder();
+		for (var i = 0; i < hashBytes.Length; i++)
 		{
-			return list.Aggregate(seed, (current, item) =>
-				(current * modifier) + item.GetStableHashCode());
+			sb.Append(hashBytes[i].ToString("X2"));
 		}
+
+		return sb.ToString();
 	}
 
 	#endregion

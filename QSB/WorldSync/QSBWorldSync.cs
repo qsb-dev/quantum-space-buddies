@@ -20,7 +20,7 @@ namespace QSB.WorldSync;
 public static class QSBWorldSync
 {
 	public static WorldObjectManager[] Managers;
-	public static int WorldObjectsHash { get; private set; }
+	public static string WorldObjectsHash { get; private set; }
 
 	/// <summary>
 	/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
@@ -83,7 +83,7 @@ public static class QSBWorldSync
 		AllObjectsAdded = true;
 		DebugLog.DebugWrite("World Objects added.", MessageType.Success);
 
-		WorldObjectsHash = WorldObjects.Select(x => x.GetType().Name).GetSequenceHash();
+		WorldObjectsHash = WorldObjects.Select(x => x.GetType().Name).GetMD5Hash();
 		DebugLog.DebugWrite($"WorldObject hash is {WorldObjectsHash}");
 
 		if (!QSBCore.IsHost)
