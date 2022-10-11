@@ -1,9 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
+using QSB.ItemSync.WorldObjects.Items;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace QSB.ItemSync.WorldObjects.Items;
+namespace QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 
 public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 {
