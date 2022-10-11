@@ -5,7 +5,6 @@ using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Utility;
 using QSB.WorldSync;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -21,14 +20,13 @@ internal class ItemManager : WorldObjectManager
 		DebugLog.DebugWrite("Building OWItems...", MessageType.Info);
 
 		// Items
-		QSBWorldSync.Init<QSBDreamLanternItem, DreamLanternItem>();
 		QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
 		QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
 		QSBWorldSync.Init<QSBSharedStone, SharedStone>();
 		QSBWorldSync.Init<QSBSimpleLanternItem, SimpleLanternItem>();
 		QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
-		QSBWorldSync.Init<QSBVisionTorchItem, VisionTorchItem>();
 		QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
+		// dream lantern and vision torch are set up in their own managers
 
 		// Sockets
 		QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
