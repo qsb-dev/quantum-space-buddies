@@ -42,4 +42,22 @@ public class VisionTorchPatches : QSBPatch
 
 		return false;
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(MindProjectorTrigger), nameof(MindProjectorTrigger.OnTriggerVolumeEntry))]
+	private static bool OnTriggerVolumeEntry(MindProjectorTrigger __instance)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		var visionTorchItem = __instance.GetComponentInParent<VisionTorchItem>();
+		if (visionTorchItem && visionTorchItem.GetWorldObject<QSBVisionTorchItem>().IsProjectingRemotely)
+		{
+			return false;
+		}
+
+		return true;
+	}
 }
