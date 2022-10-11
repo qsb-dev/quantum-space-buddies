@@ -6,8 +6,6 @@ namespace QSB.EchoesOfTheEye.VisionTorch.WorldObjects;
 
 public class QSBVisionTorchItem : QSBItem<VisionTorchItem>
 {
-	public bool IsProjectingRemotely;
-
 	public override void SendInitialState(uint to)
 	{
 		this.SendMessage(new VisionTorchProjectMessage(AttachedObject._isProjecting) { To = to });
