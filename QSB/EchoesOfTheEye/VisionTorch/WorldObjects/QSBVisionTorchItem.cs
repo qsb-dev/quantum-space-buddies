@@ -1,8 +1,13 @@
-﻿using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.EchoesOfTheEye.VisionTorch.Messages;
+using QSB.ItemSync.WorldObjects.Items;
+using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.VisionTorch.WorldObjects;
 
-/// <summary>
-/// TODO: SYNC THIS SHIT LMAOOOOOO
-/// </summary>
-internal class QSBVisionTorchItem : QSBItem<VisionTorchItem> { }
+public class QSBVisionTorchItem : QSBItem<VisionTorchItem>
+{
+	public override void SendInitialState(uint to)
+	{
+		this.SendMessage(new VisionTorchProjectMessage(AttachedObject._isProjecting) { To = to });
+	}
+}
