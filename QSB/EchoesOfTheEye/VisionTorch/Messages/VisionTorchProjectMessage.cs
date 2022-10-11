@@ -10,7 +10,8 @@ public class VisionTorchProjectMessage : QSBWorldObjectMessage<QSBVisionTorchIte
 	public override void OnReceiveRemote()
 	{
 		WorldObject.AttachedObject._isProjecting = Data;
-		WorldObject.IsProjectingRemotely = Data;
 		WorldObject.AttachedObject._mindProjectorTrigger.SetProjectorActive(Data);
+		// prevent the torch from actually doing things remotely
+		WorldObject.AttachedObject.mindProjectorTrigger._triggerVolume.SetTriggerActivation(false);
 	}
 }
