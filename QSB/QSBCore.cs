@@ -149,6 +149,8 @@ public class QSBCore : ModBehaviour
 			DebugSettings.UseKcpTransport = true;
 			DebugSettings.DebugMode = true;
 		}
+		// TODO: TEMPORARY - REMOVE LATER
+		DebugSettings.AvoidTimeSync = true;
 
 		RegisterAddons();
 
