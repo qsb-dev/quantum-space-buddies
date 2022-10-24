@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.ConversationSync;
 
+[UsedInUnityProject]
 public class CameraFacingBillboard : MonoBehaviour
 {
 	private OWCamera _activeCam;
