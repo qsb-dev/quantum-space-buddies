@@ -141,10 +141,15 @@ public class DeathPatches : QSBPatch
 				Achievements.Earn(Achievements.Type.EARLY_ADOPTER);
 			}
 
-			if (PlayerState.InDreamWorld() && deathType != DeathType.Dream && deathType != DeathType.DreamExplosion && deathType != DeathType.Supernova && deathType != DeathType.TimeLoop && deathType != DeathType.Meditation)
+			if (PlayerState.InDreamWorld())
 			{
+				// exit dream world either way to prevent goof with respawn
+				// TODO: test
 				Locator.GetDreamWorldController().ExitDreamWorld(deathType);
-				return;
+				if (deathType != DeathType.Dream && deathType != DeathType.DreamExplosion && deathType != DeathType.Supernova && deathType != DeathType.TimeLoop && deathType != DeathType.Meditation)
+				{
+					return;
+				}
 			}
 
 			if (!@this._isDying)
