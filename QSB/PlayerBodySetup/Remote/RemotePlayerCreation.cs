@@ -78,7 +78,6 @@ public static class RemotePlayerCreation
 		REMOTE_PlayerCamera.GetComponent<PostProcessingBehaviour>().profile = Locator.GetPlayerCamera().postProcessing.profile;
 		REMOTE_PlayerCamera.GetComponent<PlanetaryFogImageEffect>().fogShader = Locator.GetPlayerCamera().planetaryFog.fogShader;
 		REMOTE_PlayerCamera.GetComponent<FlashbackScreenGrabImageEffect>()._downsampleShader = Locator.GetPlayerCamera().GetComponent<FlashbackScreenGrabImageEffect>()._downsampleShader;
-		REMOTE_PlayerCamera.AddComponent<AudioListener>();
 
 		player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
 
