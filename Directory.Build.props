@@ -16,7 +16,6 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Default Locations" Condition="!Exists('$(DevEnvLoc)')">
-    <GameDir>C:\Program Files\Epic Games\OuterWilds</GameDir>
     <OwmlDir>$(AppData)\OuterWildsModManager\OWML</OwmlDir>
     <UnityAssetsDir>$(SolutionDir)\qsb-unityproject\Assets</UnityAssetsDir>
   </PropertyGroup>
