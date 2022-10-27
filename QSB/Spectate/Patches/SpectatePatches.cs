@@ -19,10 +19,6 @@ internal class SpectatePatches : QSBPatch
 	{
 		var playerInSoftRadius =
 			(SpectateManager.Instance.SpectateTarget.Body.transform.position - __instance._sector.transform.position).sqrMagnitude < __instance._softLoadRadius * __instance._softLoadRadius;
-		var probeInSoftRadius = 
-			__instance._probe != null
-			&& __instance._probe.IsLaunched()
-			&& (__instance._probe.transform.position - __instance._sector.transform.position).sqrMagnitude < __instance._softLoadRadius * __instance._softLoadRadius;
 
 		if (PlayerState.OnQuantumMoon() && Locator.GetQuantumMoon().IsPlayerInsideShrine() && __instance._sector.GetName() != Sector.Name.QuantumMoon)
 		{
@@ -38,11 +34,7 @@ internal class SpectatePatches : QSBPatch
 			__instance._streamingGroup.ReleaseRequiredAssets();
 		}
 
-		if (!__instance._probeInSoftLoadRadius && false)
-		{
-			__instance._streamingGroup.RequestRequiredAssets(0);
-		}
-		else if (__instance._probeInSoftLoadRadius && true)
+		if (__instance._probeInSoftLoadRadius)
 		{
 			__instance._streamingGroup.ReleaseRequiredAssets();
 		}

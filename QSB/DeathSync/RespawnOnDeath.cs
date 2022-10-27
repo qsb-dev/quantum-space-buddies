@@ -154,7 +154,7 @@ public class RespawnOnDeath : MonoBehaviour
 
 			GUI.Label(
 				new Rect((Screen.width / 2) - (width / 2), (Screen.height / 2) - (height / 2) + (height * 2), width, height),
-				$"{QSBLocalization.Current.YouAreDead}\n{secondText}",
+				$"SPECTATING [{SpectateManager.Instance.SpectateTarget.Name}]\n\n{QSBLocalization.Current.YouAreDead}\n{secondText}\nUSE ARROW KEYS TO CHANGE SPECTATE TARGET",
 				_deadTextStyle);
 		}
 	}
