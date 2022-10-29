@@ -307,7 +307,8 @@ public static class QSBWorldSync
 		=> GetUnityObjects<TUnityObject>().Single();
 
 	/// <summary>
-	/// not deterministic across platforms
+	/// not deterministic across platforms.
+	/// excludes prefabs and DontDestroyOnLoad objects.
 	/// </summary>
 	public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()
 		where TUnityObject : MonoBehaviour
