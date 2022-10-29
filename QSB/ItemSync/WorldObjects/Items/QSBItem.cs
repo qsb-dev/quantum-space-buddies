@@ -54,7 +54,7 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 			_lastSector = sector.GetWorldObject<QSBSector>();
 		}
 
-		// NH can make item not have parent. what
+		// BUG: even when not including DontDestroyOnLoad things, NH still can make parent null sometimes. what
 		var socket = _lastParent?.GetComponent<OWItemSocket>();
 		if (socket != null)
 		{
