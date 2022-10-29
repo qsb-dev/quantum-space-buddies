@@ -312,7 +312,7 @@ public static class QSBWorldSync
 	public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()
 		where TUnityObject : MonoBehaviour
 		=> Resources.FindObjectsOfTypeAll<TUnityObject>()
-			.Where(x => x.gameObject.scene.name != null);
+			.Where(x => x.gameObject.scene.name is not (null or "DontDestroyOnLoad"));
 
 	public static void Init<TWorldObject, TUnityObject>()
 		where TWorldObject : WorldObject<TUnityObject>, new()
