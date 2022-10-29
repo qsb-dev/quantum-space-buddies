@@ -307,13 +307,12 @@ public static class QSBWorldSync
 		=> GetUnityObjects<TUnityObject>().Single();
 
 	/// <summary>
-	/// not deterministic across platforms.
-	/// excludes prefabs and DontDestroyOnLoad objects.
+	/// not deterministic across platforms
 	/// </summary>
 	public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()
 		where TUnityObject : MonoBehaviour
 		=> Resources.FindObjectsOfTypeAll<TUnityObject>()
-			.Where(x => x.gameObject.scene.name is not (null or "DontDestroyOnLoad"));
+			.Where(x => x.gameObject.scene.name != null);
 
 	public static void Init<TWorldObject, TUnityObject>()
 		where TWorldObject : WorldObject<TUnityObject>, new()
