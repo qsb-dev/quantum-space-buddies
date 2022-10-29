@@ -7,7 +7,13 @@ namespace QSB.ShipSync.TransformSync;
 
 internal class ShipModuleTransformSync : SectoredRigidbodySync, ILinkedNetworkBehaviour
 {
-	protected override bool AllowDestroyedAttachedObject => true;
+	/// <summary>
+	/// normally prints error when attached object is null.
+	/// this overrides it so that doesn't happen, since the module can be destroyed.
+	/// </summary>
+	protected override bool CheckValid()
+		=> AttachedTransform
+			&& base.CheckValid();
 
 	protected override bool CheckReady()
 		=> base.CheckReady()

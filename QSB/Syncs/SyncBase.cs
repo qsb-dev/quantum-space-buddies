@@ -78,7 +78,7 @@ public abstract class SyncBase : QSBNetworkTransform
 			return false;
 		}
 
-		if (!AllowDestroyedAttachedObject && !AttachedTransform)
+		if (!AttachedTransform)
 		{
 			DebugLog.ToConsole($"Error - AttachedObject {this} is null!", MessageType.Error);
 			return false;
@@ -99,7 +99,6 @@ public abstract class SyncBase : QSBNetworkTransform
 	}
 
 	protected abstract bool UseInterpolation { get; }
-	protected virtual bool AllowDestroyedAttachedObject => false;
 	protected virtual bool AllowInactiveAttachedObject => false;
 	protected abstract bool AllowNullReferenceTransform { get; }
 	protected virtual bool IsPlayerObject => false;

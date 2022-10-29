@@ -10,7 +10,11 @@ namespace QSB.Tools.ProbeTool.TransformSync;
 
 public class PlayerProbeSync : SectoredTransformSync
 {
-	protected override bool AllowDestroyedAttachedObject => true;
+	/// <summary>
+	/// normally prints error when attached object is null.
+	/// this overrides it so that doesn't happen, since the probe can be destroyed.
+	/// </summary>
+	protected override bool CheckValid() => AttachedTransform && base.CheckValid();
 
 	protected override float DistanceChangeThreshold => 10f;
 	protected override bool UseInterpolation => true;
