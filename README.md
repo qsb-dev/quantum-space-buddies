@@ -99,7 +99,6 @@ See [TRANSLATING.md](TRANSLATING.md)
 - Clone QSB's source
 - Open the file `DevEnv.targets` in your favorite text editor
 - (optional if copying built dlls manually) Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
-- (optional if no unity project) Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
 - (optional if no unity project) Edit the entry `<UnityAssetsDir>` to point to the Assets folder of the QSB unity project
 - Open the project solution file `QSB.sln` in Visual Studio 2022
 
