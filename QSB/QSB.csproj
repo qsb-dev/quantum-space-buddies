@@ -21,7 +21,6 @@
 
   <PropertyGroup>
     <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)')">
     <ItemGroup>
