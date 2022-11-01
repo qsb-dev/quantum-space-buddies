@@ -22,6 +22,11 @@
   <PropertyGroup>
     <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
     <LangVersion>latest</LangVersion>
+    <Company>Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes</Company>
+    <Copyright>Copyright © Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes 2020-2022</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/misternebula/quantum-space-buddies</RepositoryUrl>
+    <PackageProjectUrl>https://outerwildsmods.com/mods/quantumspacebuddies/</PackageProjectUrl>
   </PropertyGroup>
   <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)')">
     <ItemGroup>
@@ -33,6 +38,10 @@
   </Target>
 
   <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="default-config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
