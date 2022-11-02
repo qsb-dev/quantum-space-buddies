@@ -5,6 +5,7 @@ using QSB.ConversationSync.Messages;
 using QSB.LogSync;
 using QSB.LogSync.Messages;
 using QSB.Messaging;
+using QSB.ModInteractions;
 using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
@@ -193,8 +194,16 @@ public static class QSBWorldSync
 			{
 				// So objects have time to be deleted, made, whatever
 				// i.e. wait until Start has been called
-				// TODO: see if this number of frames actually works. TWEAK!
-				Delay.RunFramesLater(10, () => BuildWorldObjects(loadScene).Forget());
+
+				// If NH is installed, wait for it to finish generating the solar system
+				if (ModInteractionManager.IsNHInstalled)
+				{
+					Delay.RunWhen(() => ModInteractionManager.IsNHReady, () => BuildWorldObjects(loadScene).Forget());
+				}
+				else
+				{
+					Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
+				}
 			}
 		};
 

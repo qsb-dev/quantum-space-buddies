@@ -4,6 +4,7 @@ using OWML.Common;
 using OWML.ModHelper;
 using QSB.Localization;
 using QSB.Menus;
+using QSB.ModInteractions;
 using QSB.Patches;
 using QSB.QuantumSync;
 using QSB.SaveSync;
@@ -149,8 +150,6 @@ public class QSBCore : ModBehaviour
 			DebugSettings.UseKcpTransport = true;
 			DebugSettings.DebugMode = true;
 		}
-		// TODO: TEMPORARY - REMOVE LATER
-		DebugSettings.AvoidTimeSync = true;
 
 		RegisterAddons();
 
@@ -183,6 +182,8 @@ public class QSBCore : ModBehaviour
 		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
+
+		ModInteractionManager.Init();
 	}
 
 	private static void OnPatchType(QSBPatchTypes type)
