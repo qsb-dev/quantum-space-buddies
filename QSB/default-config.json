@@ -2,6 +2,7 @@
 	"enabled": true,
 	"settings": {
 		"defaultServerIP": "localhost",
-		"incompatibleModsAllowed": false
+		"incompatibleModsAllowed": false,
+		"showPlayerNames": true
 	}
 }
