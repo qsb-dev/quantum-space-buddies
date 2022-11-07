@@ -58,7 +58,6 @@ public class QSBCore : ModBehaviour
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static bool IncompatibleModsAllowed { get; private set; }
-	public static bool ShowPlayerNames { get; private set; }
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
@@ -245,14 +244,21 @@ public class QSBCore : ModBehaviour
 	{
 		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
-		var _showPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
-
-		if (_showPlayerNames != ShowPlayerNames)
+		if (!IsInMultiplayer || IsHost)
 		{
-			new ServerSettingsMessage().Send();
-		}
+			var _showPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
 
-		ShowPlayerNames = _showPlayerNames;
+			if (_showPlayerNames != ServerSettingsManager.ShowPlayerNames)
+			{
+				new ServerSettingsMessage().Send();
+			}
+
+			ServerSettingsManager.ShowPlayerNames = _showPlayerNames;
+		}
+		else
+		{
+			config.SetSettingsValue("showPlayerNames", ServerSettingsManager.ShowPlayerNames);
+		}
 	}
 
 	private void Update()

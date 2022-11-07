@@ -7,10 +7,15 @@ internal class ServerSettingsMessage : QSBMessage
 {
 	private bool _showPlayerNames;
 
+	public ServerSettingsMessage()
+	{
+		_showPlayerNames = ServerSettingsManager.ShowPlayerNames;
+	}
+
 	public override void Serialize(NetworkWriter writer)
 	{
 		base.Serialize(writer);
-		writer.Write(QSBCore.ShowPlayerNames);
+		writer.Write(_showPlayerNames);
 	}
 
 	public override void Deserialize(NetworkReader reader)
