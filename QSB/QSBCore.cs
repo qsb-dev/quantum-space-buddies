@@ -244,15 +244,17 @@ public class QSBCore : ModBehaviour
 	{
 		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
-		if (!IsInMultiplayer || IsHost)
+		if (!IsInMultiplayer)
+		{
+			ServerSettingsManager.ShowPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
+		}
+		else if (IsHost)
 		{
 			var _showPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
-
 			if (_showPlayerNames != ServerSettingsManager.ShowPlayerNames)
 			{
 				new ServerSettingsMessage().Send();
 			}
-
 			ServerSettingsManager.ShowPlayerNames = _showPlayerNames;
 		}
 		else
