@@ -27,5 +27,6 @@ internal class ServerSettingsMessage : QSBMessage
 	public override void OnReceiveRemote()
 	{
 		ServerSettingsManager.ShowPlayerNames = _showPlayerNames;
+		QSBCore.Helper.Config.SetSettingsValue("showPlayerNames", _showPlayerNames);
 	}
 }
