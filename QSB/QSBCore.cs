@@ -58,7 +58,7 @@ public class QSBCore : ModBehaviour
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static bool IncompatibleModsAllowed { get; private set; }
-	public static bool ShowPlayerNames { get; private set; }
+	public static bool ShowPlayerNames { get; private set; } = true;
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
