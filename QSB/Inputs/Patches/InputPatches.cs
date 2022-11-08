@@ -12,6 +12,11 @@ internal class InputPatches : QSBPatch
 	[HarmonyPatch(typeof(AbstractCommands), nameof(AbstractCommands.Update))]
 	public static bool AbstractCommands_Update(AbstractCommands __instance)
 	{
+		if (QSBInputManager.Instance.InputsEnabled)
+		{
+			return true;
+		}
+
 		__instance.Consumed = false;
 		__instance.WasActiveLastFrame = __instance.IsActiveThisFrame;
 		__instance.IsActiveThisFrame = false;
