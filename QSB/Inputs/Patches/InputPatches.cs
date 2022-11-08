@@ -9,7 +9,18 @@ internal class InputPatches : QSBPatch
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(OWInput), nameof(OWInput.Update))]
-	public static bool OWInput_Update()
-		=> QSBInputManager.Instance.InputsEnabled;
+	[HarmonyPatch(typeof(AbstractCommands), nameof(AbstractCommands.Update))]
+	public static bool AbstractCommands_Update(AbstractCommands __instance)
+	{
+		__instance.Consumed = false;
+		__instance.WasActiveLastFrame = __instance.IsActiveThisFrame;
+		__instance.IsActiveThisFrame = false;
+
+		if (__instance.WasActiveLastFrame)
+		{
+			__instance.InputStartedTime = float.MaxValue;
+		}
+
+		return false;
+	}
 }
