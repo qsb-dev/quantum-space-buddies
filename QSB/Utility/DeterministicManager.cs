@@ -31,7 +31,7 @@ public static class DeterministicManager
 			}
 		};
 
-	public static void OnWorldObjectsReady()
+	public static void OnWorldObjectsAdded()
 	{
 		if (QSBCore.DebugSettings.DumpWorldObjects)
 		{
@@ -267,7 +267,7 @@ public static class DeterministicManager
 	}
 
 	/// <summary>
-	/// only call this before world objects ready
+	/// only call this before world objects added
 	/// </summary>
 	public static string DeterministicPath(this Component component)
 	{
@@ -298,7 +298,7 @@ public static class DeterministicManager
 	}
 
 	/// <summary>
-	/// only call this before world objects ready
+	/// only call this before world objects added
 	/// </summary>
 	public static IEnumerable<T> SortDeterministic<T>(this IEnumerable<T> components) where T : Component
 		=> components.OrderBy(DeterministicPath);
