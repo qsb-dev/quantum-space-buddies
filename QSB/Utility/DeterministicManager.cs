@@ -35,7 +35,7 @@ public static class DeterministicManager
 	{
 		if (QSBCore.DebugSettings.DumpWorldObjects)
 		{
-			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "world objects.csv")))
+			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, $"[{DebugLog.ProcessInstanceId}] world objects.csv")))
 			{
 				file.WriteLine("world object,deterministic path");
 				foreach (var worldObject in QSBWorldSync.GetWorldObjects())
@@ -51,7 +51,7 @@ public static class DeterministicManager
 				}
 			}
 
-			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "cache.csv")))
+			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, $"[{DebugLog.ProcessInstanceId}] cache.csv")))
 			{
 				file.WriteLine("name,instance id,sibling index,parent,parent instance id");
 				foreach (var (transform, (siblingIndex, parent)) in _cache)
