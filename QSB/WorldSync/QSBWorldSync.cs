@@ -190,25 +190,19 @@ public static class QSBWorldSync
 			RemoveWorldObjects();
 		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
 		{
-			var allDestroyOnDlc = GetUnityObjects<DestroyOnDLC>();
-			var allHaveChecked = allDestroyOnDlc.All(x => x._hasChecked == true);
-
 			if (QSBCore.IsInMultiplayer && loadScene.IsUniverseScene())
 			{
-				// wait for DLC (or non-DLC) objects to be checked for destruction
-				// then wait another frame so they can actually be destroyed
-				// this also means that we wait for Awake() and Start() to run
+				// So objects have time to be deleted, made, whatever
+				// i.e. wait until Start has been called
 
+				// If NH is installed, wait for it to finish generating the solar system
 				if (ModInteractionManager.IsNHInstalled)
 				{
-					// If NH is installed, wait for it to finish generating the solar system
-					Delay.RunWhen(() => ModInteractionManager.IsNHReady && allHaveChecked, 
-						() => Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget()));
+					Delay.RunWhen(() => ModInteractionManager.IsNHReady, () => BuildWorldObjects(loadScene).Forget());
 				}
 				else
 				{
-					Delay.RunWhen(() => allHaveChecked,
-						() => Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget()));
+					Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
 				}
 			}
 		};
