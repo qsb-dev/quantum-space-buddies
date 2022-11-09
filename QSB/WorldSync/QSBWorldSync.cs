@@ -198,7 +198,8 @@ public static class QSBWorldSync
 				// If NH is installed, wait for it to finish generating the solar system
 				if (ModInteractionManager.IsNHInstalled)
 				{
-					Delay.RunWhen(() => ModInteractionManager.IsNHReady, () => BuildWorldObjects(loadScene).Forget());
+					Delay.RunWhen(() => ModInteractionManager.IsNHReady, 
+						() => Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget()));
 				}
 				else
 				{
