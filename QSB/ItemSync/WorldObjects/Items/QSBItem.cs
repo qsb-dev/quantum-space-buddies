@@ -1,9 +1,11 @@
 ﻿using Cysharp.Threading.Tasks;
+using OWML.Common;
 using QSB.ItemSync.Messages;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.SectorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;
@@ -54,8 +56,13 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 			_lastSector = sector.GetWorldObject<QSBSector>();
 		}
 
-		// BUG: even when not including DontDestroyOnLoad things, NH still can make parent null sometimes. what
-		var socket = _lastParent?.GetComponent<OWItemSocket>();
+		// TODO test and then remove
+		if (!_lastParent)
+		{
+			DebugLog.DebugWrite($"{this} - parent for item {AttachedObject} at {AttachedObject.DeterministicPath()} is null! wtf!", MessageType.Error);
+			return;
+		}
+		var socket = _lastParent.GetComponent<OWItemSocket>();
 		if (socket != null)
 		{
 			_lastSocket = socket.GetWorldObject<QSBItemSocket>();
