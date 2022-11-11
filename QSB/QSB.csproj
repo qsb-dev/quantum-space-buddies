@@ -21,6 +21,7 @@
 
   <PropertyGroup>
     <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
   <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)')">
     <ItemGroup>
