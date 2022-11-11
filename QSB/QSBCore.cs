@@ -65,6 +65,9 @@ public class QSBCore : ModBehaviour
 	public static DebugSettings DebugSettings { get; private set; } = new();
 	public static Storage Storage { get; private set; } = new();
 
+	public const string NEW_HORIZONS = "xen.NewHorizons";
+	public const string NEW_HORIZONS_COMPAT = "xen.NHQSBCompat";
+
 	public static readonly string[] IncompatibleMods =
 	{
 		// incompatible mods
@@ -122,6 +125,8 @@ public class QSBCore : ModBehaviour
 	{
 		Helper = ModHelper;
 		DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
+
+		CheckCompatibilityMods();
 
 		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
 		Storage = Helper.Storage.Load<Storage>("storage.json") ?? new Storage();
@@ -256,6 +261,26 @@ public class QSBCore : ModBehaviour
 			DebugCameraSettings.UpdateFromDebugSetting();
 
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
+		}
+	}
+
+	private void CheckCompatibilityMods()
+	{
+		var mainMod = "";
+		var compatMod = "";
+		var missingCompat = false;
+
+		if (Helper.Interaction.ModExists(NEW_HORIZONS) && !Helper.Interaction.ModExists(NEW_HORIZONS_COMPAT))
+		{
+			mainMod = NEW_HORIZONS;
+			compatMod = NEW_HORIZONS_COMPAT;
+			missingCompat = true;
+		}
+
+		if (missingCompat)
+		{
+			DebugLog.ToConsole($"FATAL - You have mod \"{mainMod}\" installed, which is not compatible with QSB without the compatibility mod \"{compatMod}\". " +
+				$"Either disable the mod, or install/enable the compatibility mod.", MessageType.Fatal);
 		}
 	}
 }
