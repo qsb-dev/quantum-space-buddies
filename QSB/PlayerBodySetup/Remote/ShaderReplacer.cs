@@ -27,7 +27,13 @@ public static class ShaderReplacer
 					continue;
 				}
 
+				// preserve override tag and render queue (for Standard shader)
+				// keywords and properties are already preserved
+				var renderType = material.GetTag("RenderType", false);
+				var renderQueue = material.renderQueue;
 				material.shader = replacementShader;
+				material.SetOverrideTag("RenderType", renderType);
+				material.renderQueue = renderQueue;
 			}
 		}
 	}
