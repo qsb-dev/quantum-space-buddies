@@ -56,12 +56,6 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 			_lastSector = sector.GetWorldObject<QSBSector>();
 		}
 
-		// TODO test and then remove
-		if (!_lastParent)
-		{
-			DebugLog.DebugWrite($"{this} - parent for item {AttachedObject} at {AttachedObject.DeterministicPath()} is null! wtf!", MessageType.Error);
-			return;
-		}
 		var socket = _lastParent.GetComponent<OWItemSocket>();
 		if (socket != null)
 		{
