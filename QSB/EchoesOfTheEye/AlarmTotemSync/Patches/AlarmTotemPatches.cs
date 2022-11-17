@@ -3,7 +3,6 @@ using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.Player;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -22,22 +21,33 @@ public class AlarmTotemPatches : QSBPatch
 			__result = false;
 			return false;
 		}
-		foreach (var player in QSBPlayerManager.PlayerList)
+		var position = Locator.GetPlayerCamera().transform.position;
+		if (__instance.CheckPointInVisionCone(position) && !__instance.CheckLineOccluded(__instance._sightOrigin.position, position))
 		{
-			var lanternController = player.AssignedSimulationLantern?.AttachedObject?._lanternController;
-			if (!lanternController)
+			if (Locator.GetPlayerLightSensor().IsIlluminated())
 			{
-				continue;
+				__result = true;
+				return false;
 			}
-			var playerLightSensor = player.LightSensor;
-			if ((lanternController.IsHeldByPlayer() && !lanternController.IsConcealed()) || playerLightSensor.IsIlluminated())
+			var lanternController = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController();
+			if (lanternController.IsHeldByPlayer())
 			{
-				var position = player.Camera.transform.position;
-				if (__instance.CheckPointInVisionCone(position) && !__instance.CheckLineOccluded(__instance._sightOrigin.position, position))
+				if (lanternController.IsConcealed())
 				{
-					__result = true;
+					if (!__instance._hasConcealedFromAlarm)
+					{
+						__instance._secondsConcealed += Time.deltaTime;
+						if (__instance._secondsConcealed > 1f)
+						{
+							__instance._hasConcealedFromAlarm = true;
+							GlobalMessenger.FireEvent("ConcealFromAlarmTotem");
+						}
+					}
+					__result = false;
 					return false;
 				}
+				__result = true;
+				return false;
 			}
 		}
 		__result = false;
