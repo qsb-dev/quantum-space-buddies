@@ -1,9 +1,11 @@
 ﻿using HarmonyLib;
+using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -12,6 +14,60 @@ namespace QSB.EchoesOfTheEye.AlarmTotemSync.Patches;
 public class AlarmTotemPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.OnSectorOccupantAdded))]
+	private static bool OnSectorOccupantAdded(AlarmTotem __instance, SectorDetector sectorDetector)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
+
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player)
+		{
+			__instance.enabled = true;
+			qsbAlarmTotem.RequestOwnership();
+		}
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.OnSectorOccupantRemoved))]
+	private static bool OnSectorOccupantRemoved(AlarmTotem __instance, SectorDetector sectorDetector)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
+
+		if (sectorDetector.GetOccupantType() == DynamicOccupant.Player)
+		{
+			__instance.enabled = false;
+			qsbAlarmTotem.ReleaseOwnership();
+			Delay.RunFramesLater(10, () =>
+			{
+				// no one else took ownership, so we can safely turn stuff off
+				// ie turn off when no one else is there
+				if (qsbAlarmTotem.Owner == 0)
+				{
+					__instance._pulseLightController.SetIntensity(0f);
+					__instance._simTotemMaterials[0] = __instance._origSimEyeMaterial;
+					__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
+					__instance._simVisionConeRenderer.SetColor(__instance._simVisionConeRenderer.GetOriginalColor());
+					if (__instance._isPlayerVisible)
+					{
+						__instance._isPlayerVisible = false;
+						__instance._secondsConcealed = 0f;
+						Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
+					}
+				}
+			});
+		}
+		return false;
+	}
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmTotem), nameof(AlarmTotem.CheckPlayerVisible))]
