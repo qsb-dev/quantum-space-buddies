@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.PlayerBodySetup.Remote;
 
+[UsedInUnityProject]
 public class DreamWorldSpawnAnimator : MonoBehaviour
 {
 	[SerializeField]

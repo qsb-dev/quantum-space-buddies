@@ -42,7 +42,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const int _titleButtonIndex = 2;
 	private float _connectPopupOpenTime;
 
-	private const string UpdateChangelog = "QSB Version 0.21.1\r\nFixed gamepass not working, and fixed a small bug with light sensors.";
+	private const string UpdateChangelog = "QSB Version 0.22.0\r\nFixed lots of bugs, and added lots of SFX and VFX stuff.";
 
 	private Action<bool> PopupClose;
 
@@ -361,7 +361,16 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			ConnectPopup.EnableMenu(false);
 			Connect();
 		};
-		ConnectPopup.OnActivateMenu += () => _connectPopupOpenTime = Time.time;
+
+		ConnectPopup.OnActivateMenu += () =>
+		{
+			_connectPopupOpenTime = Time.time;
+			if (QSBCore.Helper.Interaction.ModExists("Raicuparta.NomaiVR"))
+			{
+				// ClearInputTextField is called AFTER OnActivateMenu
+				Delay.RunNextFrame(() => ConnectPopup._inputField.SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
+			}
+		};
 
 		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
 		OneButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
@@ -480,6 +489,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		langController.AddTextElement(DisconnectPopup._labelText, false);
 		langController.AddTextElement(DisconnectPopup._confirmButton._buttonText, false);
 		langController.AddTextElement(DisconnectPopup._cancelButton._buttonText, false);
+		langController.AddTextElement(OneButtonInfoPopup._labelText, false);
+		langController.AddTextElement(OneButtonInfoPopup._confirmButton._buttonText, false);
+		langController.AddTextElement(TwoButtonInfoPopup._labelText, false);
+		langController.AddTextElement(TwoButtonInfoPopup._confirmButton._buttonText, false);
+		langController.AddTextElement(TwoButtonInfoPopup._cancelButton._buttonText, false);
 	}
 
 	private void MakeTitleMenus()
@@ -497,25 +511,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(ConnectButton, true);
 		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 		SetButtonActive(NewGameButton, true);
-
-		if (QSBCore.DebugSettings.SkipTitleScreen)
-		{
-			Application.runInBackground = true;
-			var titleScreenManager = FindObjectOfType<TitleScreenManager>();
-			var titleScreenAnimation = titleScreenManager._cameraController;
-			const float small = 1 / 1000f;
-			titleScreenAnimation._gamepadSplash = false;
-			titleScreenAnimation._introPan = false;
-			titleScreenAnimation._fadeDuration = small;
-			titleScreenAnimation.Start();
-			var titleAnimationController = titleScreenManager._gfxController;
-			titleAnimationController._logoFadeDelay = small;
-			titleAnimationController._logoFadeDuration = small;
-			titleAnimationController._echoesFadeDelay = small;
-			titleAnimationController._optionsFadeDelay = small;
-			titleAnimationController._optionsFadeDuration = small;
-			titleAnimationController._optionsFadeSpacing = small;
-		}
 
 		var mainMenuFontController = GameObject.Find("MainMenu").GetComponent<FontAndLanguageController>();
 		mainMenuFontController.AddTextElement(HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
@@ -566,8 +561,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void PreHost()
 	{
-		bool doesSingleplayerSaveExist = false;
-		bool doesMultiplayerSaveExist = false;
+		var doesSingleplayerSaveExist = false;
+		var doesMultiplayerSaveExist = false;
 		if (!QSBCore.IsStandalone)
 		{
 			var manager = QSBMSStoreProfileManager.SharedInstance;
@@ -681,7 +676,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			PlayerData.Init(manager.currentProfileMultiplayerGameSave, manager.currentProfileGameSettings, manager.currentProfileGraphicsSettings, manager.currentProfileInputJSON);
 		}
 
-		var address = ConnectPopup.GetInputText();
+		var address = ConnectPopup.GetInputText().Trim();
 		if (address == string.Empty)
 		{
 			address = QSBCore.DefaultServerIP;
@@ -695,7 +690,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		Locator.GetMenuInputModule().DisableInputs();
 
 		QSBNetworkManager.singleton.networkAddress = address;
-		// hack to get disconnect call if start client fails immediately
+		// hack to get disconnect call if start client fails immediately (happens on kcp transport when failing to resolve host name)
 		typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection))!.SetValue(null, new NetworkConnectionToServer());
 		QSBNetworkManager.singleton.StartClient();
 	}

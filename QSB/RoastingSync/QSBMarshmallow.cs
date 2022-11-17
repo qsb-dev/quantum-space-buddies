@@ -1,9 +1,11 @@
 ﻿using QSB.Player;
+using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.RoastingSync;
 
+[UsedInUnityProject]
 public class QSBMarshmallow : MonoBehaviour
 {
 	public const float RAW_TOASTED_FRACTION = 0.2f;
@@ -51,6 +53,8 @@ public class QSBMarshmallow : MonoBehaviour
 		_mallowRenderer.enabled = true;
 		_mallowState = Marshmallow.MallowState.Default;
 		enabled = true;
+
+		_attachedPlayer.AudioController.PlayOneShot(AudioType.ToolMarshmallowReplace);
 	}
 
 	public void Disable()
@@ -66,6 +70,8 @@ public class QSBMarshmallow : MonoBehaviour
 		{
 			_fireRenderer.enabled = false;
 			_mallowState = Marshmallow.MallowState.Default;
+
+			_attachedPlayer.AudioController.PlayOneShot(AudioType.ToolMarshmallowBlowOut);
 		}
 	}
 
@@ -140,6 +146,8 @@ public class QSBMarshmallow : MonoBehaviour
 			_toastedFraction = 1f;
 			_initBurnTime = Time.time;
 			_mallowState = Marshmallow.MallowState.Burning;
+
+			_attachedPlayer.AudioController.PlayOneShot(AudioType.ToolMarshmallowIgnite);
 		}
 	}
 

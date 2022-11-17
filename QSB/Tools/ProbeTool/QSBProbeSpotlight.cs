@@ -5,19 +5,20 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool;
 
+[UsedInUnityProject]
 internal class QSBProbeSpotlight : MonoBehaviour
 {
 	public ProbeCamera.ID _id;
 	public float _fadeInLength = 1f;
 	public float _intensity;
 
-	private QSBProbe _probe;
+	private QSBSurveyorProbe _probe;
 	private OWLight2 _light;
 	private float _timer;
 
 	private void Awake()
 	{
-		_probe = QSBWorldSync.GetUnityObjects<QSBProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
+		_probe = QSBWorldSync.GetUnityObjects<QSBSurveyorProbe>().First(x => gameObject.transform.IsChildOf(x.transform));
 		if (_probe == null)
 		{
 			DebugLog.ToConsole($"Error - Couldn't find QSBProbe!", OWML.Common.MessageType.Error);

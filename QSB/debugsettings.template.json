@@ -5,7 +5,7 @@
   "hookDebugLogs": false,
   "avoidTimeSync": false,
   "autoStart": false,
-  "skipTitleScreen": false,
+  "kickEveryone": false,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,

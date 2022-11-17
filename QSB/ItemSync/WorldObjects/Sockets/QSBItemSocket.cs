@@ -1,21 +1,25 @@
 ﻿using QSB.ItemSync.WorldObjects.Items;
-using QSB.Patches;
 using QSB.WorldSync;
 
 namespace QSB.ItemSync.WorldObjects.Sockets;
 
 internal class QSBItemSocket : WorldObject<OWItemSocket>
 {
-	public override void SendInitialState(uint to)
-	{
-		// todo SendInitialState
-	}
-
 	public bool IsSocketOccupied() => AttachedObject.IsSocketOccupied();
 
 	public void PlaceIntoSocket(IQSBItem item)
-		=> QSBPatch.RemoteCall(() => AttachedObject.PlaceIntoSocket((OWItem)item.AttachedObject));
+	{
+		AttachedObject.PlaceIntoSocket((OWItem)item.AttachedObject);
+
+		// Don't let other users unsocket a DreamLantern in the dreamworld that doesn't belong to them
+		// DreamLanternSockets only exist in the DreamWorld
+		AttachedObject.EnableInteraction(AttachedObject is not DreamLanternSocket);
+	}
 
 	public void RemoveFromSocket()
-		=> QSBPatch.RemoteCall(AttachedObject.RemoveFromSocket);
+	{
+		AttachedObject.RemoveFromSocket();
+
+		AttachedObject.EnableInteraction(true);
+	}
 }

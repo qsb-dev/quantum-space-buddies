@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace QSB.Syncs;
 
+[UsedInUnityProject]
 public class QSBNetworkTransformChild : QSBNetworkBehaviour
 {
 	public Transform Target;

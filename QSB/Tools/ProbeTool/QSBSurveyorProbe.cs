@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool;
 
-public class QSBProbe : MonoBehaviour, ILightSource
+[UsedInUnityProject]
+public class QSBSurveyorProbe : MonoBehaviour, ILightSource
 {
 	public delegate void SurveyorProbeEvent();
 	public delegate void RetrieveEvent(float retrieveLength);
@@ -17,11 +18,15 @@ public class QSBProbe : MonoBehaviour, ILightSource
 	public event SurveyorProbeEvent OnUnanchorProbe;
 	public event SurveyorProbeEvent OnRetrieveProbe;
 	public event SurveyorProbeEvent OnProbeDestroyed;
+	public event SurveyorProbeEvent OnTakeSnapshot;
 	public event RetrieveEvent OnStartRetrieveProbe;
 
 	private GameObject _detectorObj;
 	private RulesetDetector _rulesetDetector;
 	private SingularityWarpEffect _warpEffect;
+	private QSBProbeCamera _forwardCam;
+	private QSBProbeCamera _reverseCam;
+	private QSBProbeCamera _rotatingCam;
 	private bool _isRetrieving;
 	private PlayerInfo _owner;
 	private bool _anchored;
@@ -30,6 +35,21 @@ public class QSBProbe : MonoBehaviour, ILightSource
 	public RulesetDetector GetRulesetDetector()
 		=> _rulesetDetector;
 
+	public QSBProbeCamera GetForwardCamera()
+	{
+		return _forwardCam;
+	}
+
+	public QSBProbeCamera GetReverseCamera()
+	{
+		return _reverseCam;
+	}
+
+	public QSBProbeCamera GetRotatingCamera()
+	{
+		return _rotatingCam;
+	}
+
 	private void Awake()
 	{
 		_detectorObj = GetComponentInChildren<RulesetDetector>().gameObject;
@@ -37,6 +57,23 @@ public class QSBProbe : MonoBehaviour, ILightSource
 		_warpEffect = GetComponentInChildren<SingularityWarpEffect>();
 		_warpEffect.OnWarpComplete += OnWarpComplete;
 		_isRetrieving = false;
+
+		var probeCameras = GetComponentsInChildren<QSBProbeCamera>();
+		for (var i = 0; i < probeCameras.Length; i++)
+		{
+			if (probeCameras[i].GetID() == ProbeCamera.ID.Forward)
+			{
+				_forwardCam = probeCameras[i];
+			}
+			else if (probeCameras[i].GetID() == ProbeCamera.ID.Reverse)
+			{
+				_reverseCam = probeCameras[i];
+			}
+			else if (probeCameras[i].GetID() == ProbeCamera.ID.Rotating)
+			{
+				_rotatingCam = probeCameras[i];
+			}
+		}
 	}
 
 	private void Start()
@@ -127,6 +164,9 @@ public class QSBProbe : MonoBehaviour, ILightSource
 			case ProbeEvent.Unanchor:
 				_anchored = false;
 				_owner.ProbeActive = true; // just in case it was missed
+				_forwardCam.SetSandLevelController(null);
+				_reverseCam.SetSandLevelController(null);
+				_rotatingCam.SetSandLevelController(null);
 				OnUnanchorProbe();
 				break;
 			case ProbeEvent.Retrieve:
@@ -165,6 +205,9 @@ public class QSBProbe : MonoBehaviour, ILightSource
 		_lightSourceVol.SetVolumeActivation(false);
 		gameObject.SetActive(false);
 		_isRetrieving = false;
+		_forwardCam.SetSandLevelController(null);
+		_reverseCam.SetSandLevelController(null);
+		_rotatingCam.SetSandLevelController(null);
 	}
 
 	public void OnStartRetrieve(float duration)
@@ -204,4 +247,6 @@ public class QSBProbe : MonoBehaviour, ILightSource
 	public LightSourceType GetLightSourceType() => LightSourceType.PROBE;
 	public OWLight2[] GetLights() => _illuminationCheckLights;
 	public Vector3 GetLightSourcePosition() => _lightSourceVol.transform.position;
+
+	public void TakeSnapshot() => OnTakeSnapshot?.Invoke();
 }

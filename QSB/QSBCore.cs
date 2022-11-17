@@ -5,7 +5,6 @@ using OWML.ModHelper;
 using QSB.Localization;
 using QSB.Menus;
 using QSB.Patches;
-using QSB.Player;
 using QSB.QuantumSync;
 using QSB.SaveSync;
 using QSB.Utility;
@@ -68,18 +67,13 @@ public class QSBCore : ModBehaviour
 
 	public static readonly string[] IncompatibleMods =
 	{
-		// cheats mods
-		"Glitch.AltDebugMenu",
-		"PacificEngine.CheatsMod",
 		// incompatible mods
 		"Raicuparta.NomaiVR",
 		"xen.NewHorizons",
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
-		"Leadpogrommer.PeacefulGhosts",
 		"PacificEngine.OW_Randomizer",
-		"xen.DayDream"
 	};
 
 	private static void DetermineGameVendor()
@@ -153,7 +147,6 @@ public class QSBCore : ModBehaviour
 		if (DebugSettings.AutoStart)
 		{
 			DebugSettings.UseKcpTransport = true;
-			DebugSettings.SkipTitleScreen = true;
 			DebugSettings.DebugMode = true;
 		}
 
@@ -188,8 +181,6 @@ public class QSBCore : ModBehaviour
 		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
-
-		StartCoroutine(QSBPlayerManager.ValidatePlayers());
 	}
 
 	private static void OnPatchType(QSBPatchTypes type)
@@ -253,10 +244,9 @@ public class QSBCore : ModBehaviour
 		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
 	}
 
-#if DEBUG
 	private void Update()
 	{
-		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.D].wasPressedThisFrame)
+		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.NumpadEnter].wasPressedThisFrame)
 		{
 			DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
@@ -268,7 +258,6 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
 	}
-#endif
 }
 
 /*

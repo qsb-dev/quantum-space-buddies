@@ -10,7 +10,8 @@ namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
 
 public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour
 {
-	protected override bool UseInterpolation => false;
+	private bool IsRidingRaft => Locator.GetPlayerController() && Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody;
+	protected override bool UseInterpolation => !IsRidingRaft;
 
 	private float _lastSetPositionTime;
 	private const float ForcePositionAfterTime = 1;
@@ -67,6 +68,10 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 
 	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
 	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+	
+	
+	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} + AUTH");
+	public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - AUTH");
 
 	/// <summary>
 	/// replacement for base method
@@ -74,11 +79,10 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 	/// </summary>
 	protected override void ApplyToAttached()
 	{
-		var targetPos = ReferenceTransform.FromRelPos(transform.position);
-		var targetRot = ReferenceTransform.FromRelRot(transform.rotation);
+		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
+		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 
-		var onRaft = Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody;
-		if (onRaft)
+		if (IsRidingRaft)
 		{
 			if (Time.unscaledTime >= _lastSetPositionTime + ForcePositionAfterTime)
 			{

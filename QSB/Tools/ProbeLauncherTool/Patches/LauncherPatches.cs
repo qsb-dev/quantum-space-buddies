@@ -89,4 +89,57 @@ internal class LauncherPatches : QSBPatch
 		__instance._owAudioSource.GetAudioSource().spatialBlend = 1f;
 		return true;
 	}
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(ProbeLauncherEffects), nameof(ProbeLauncherEffects.PlayChangeModeClip))]
+	public static void ProbeLauncherEffects_PlayChangeModeClip(ProbeLauncherEffects __instance)
+	{
+		if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher._effects)
+		{
+			__instance.gameObject
+				.GetComponent<ProbeLauncher>()
+				?.GetWorldObject<QSBProbeLauncher>()
+				?.SendMessage(new ChangeModeMessage());
+		}
+		else
+		{
+			new PlayerLauncherChangeModeMessage().Send();
+		}
+	}
+
+	/*[HarmonyPostfix]
+	[HarmonyPatch(typeof(ProbeLauncherEffects), nameof(ProbeLauncherEffects.PlaySnapshotClip))]
+	public static void ProbeLauncherEffects_PlaySnapshotClip(ProbeLauncherEffects __instance)
+	{
+		if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher._effects)
+		{
+			__instance.gameObject
+				.GetComponent<ProbeLauncher>()
+				?.GetWorldObject<QSBProbeLauncher>()
+				?.SendMessage(new TakeSnapshotMessage());
+		}
+		else
+		{
+			new PlayerLauncherTakeSnapshotMessage().Send();
+		}
+	}*/
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(ProbeLauncher), nameof(ProbeLauncher.TakeSnapshotWithCamera))]
+	public static void TakeSnapshotWithCamera(ProbeLauncher __instance, ProbeCamera camera)
+	{
+		DebugLog.DebugWrite($"TakeSnapshotWithCamera - cameraid:{camera.GetID()}");
+		if (__instance != QSBPlayerManager.LocalPlayer.LocalProbeLauncher)
+		{
+			DebugLog.DebugWrite($"- not local launcher");
+			__instance
+				?.GetWorldObject<QSBProbeLauncher>()
+				?.SendMessage(new TakeSnapshotMessage(camera.GetID()));
+		}
+		else
+		{
+			DebugLog.DebugWrite($"- local launcher");
+			new PlayerLauncherTakeSnapshotMessage(camera.GetID()).Send();
+		}
+	}
 }

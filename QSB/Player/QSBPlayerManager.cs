@@ -5,7 +5,6 @@ using QSB.Tools.FlashlightTool;
 using QSB.Tools.ProbeTool;
 using QSB.Utility;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,7 +21,7 @@ public static class QSBPlayerManager
 			if (localInstance == null)
 			{
 				DebugLog.ToConsole("Error - Trying to get LocalPlayer when the local PlayerTransformSync instance is null." +
-				                   $"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
+					$"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
 				return null;
 			}
 
@@ -66,8 +65,8 @@ public static class QSBPlayerManager
 	{
 		var cameraList = PlayerList.Where(x => x.Camera != null && x.PlayerId != LocalPlayerId).ToList();
 		if (includeLocalCamera
-		    && LocalPlayer != default
-		    && LocalPlayer.Camera != null)
+			&& LocalPlayer != default
+			&& LocalPlayer.Camera != null)
 		{
 			cameraList.Add(LocalPlayer);
 		}
@@ -75,11 +74,11 @@ public static class QSBPlayerManager
 		{
 			if (LocalPlayer == default)
 			{
-				DebugLog.ToConsole($"Error - LocalPlayer is null.", MessageType.Error);
+				DebugLog.ToConsole("Error - LocalPlayer is null.", MessageType.Error);
 				return cameraList;
 			}
 
-			DebugLog.ToConsole($"Error - LocalPlayer.Camera is null.", MessageType.Error);
+			DebugLog.ToConsole("Error - LocalPlayer.Camera is null.", MessageType.Error);
 			LocalPlayer.Camera = Locator.GetPlayerCamera();
 		}
 
@@ -89,7 +88,7 @@ public static class QSBPlayerManager
 	public static (Flashlight LocalFlashlight, IEnumerable<QSBFlashlight> RemoteFlashlights) GetPlayerFlashlights()
 		=> (Locator.GetFlashlight(), PlayerList.Where(x => x.FlashLight != null).Select(x => x.FlashLight));
 
-	public static (SurveyorProbe LocalProbe, IEnumerable<QSBProbe> RemoteProbes) GetPlayerProbes()
+	public static (SurveyorProbe LocalProbe, IEnumerable<QSBSurveyorProbe> RemoteProbes) GetPlayerProbes()
 		=> (Locator.GetProbe(), PlayerList.Where(x => x.Probe != null).Select(x => x.Probe));
 
 	public static IEnumerable<ThrusterLightTracker> GetThrusterLightTrackers()
@@ -109,7 +108,7 @@ public static class QSBPlayerManager
 	{
 		if (playerList == null)
 		{
-			DebugLog.ToConsole($"Error - Cannot get closest player from null player list.", MessageType.Error);
+			DebugLog.ToConsole("Error - Cannot get closest player from null player list.", MessageType.Error);
 			return null;
 		}
 
@@ -117,7 +116,7 @@ public static class QSBPlayerManager
 
 		if (playerList.Count == 0)
 		{
-			DebugLog.ToConsole($"Error - Cannot get closest player from empty (ready) player list.", MessageType.Error);
+			DebugLog.ToConsole("Error - Cannot get closest player from empty (ready) player list.", MessageType.Error);
 			return null;
 		}
 
@@ -126,67 +125,4 @@ public static class QSBPlayerManager
 
 	public static IEnumerable<(PlayerInfo Player, IQSBItem HeldItem)> GetPlayerCarryItems()
 		=> PlayerList.Select(x => (x, x.HeldItem));
-
-	private static Dictionary<int, PlayerInfo> _connectionIdToPlayer = new();
-
-	public static IEnumerator ValidatePlayers()
-	{
-		while (true)
-		{
-			if (QSBCore.IsInMultiplayer && QSBCore.IsHost)
-			{
-				_connectionIdToPlayer.Clear();
-
-				var playersToRemove = new List<PlayerInfo>();
-
-				foreach (var player in PlayerList)
-				{
-					var transformSync = player.TransformSync;
-
-					if (transformSync == null)
-					{
-						DebugLog.ToConsole($"Error - {player.PlayerId}'s TransformSync is null.", MessageType.Error);
-						playersToRemove.Add(player);
-						continue;
-					}
-
-					var networkIdentity = transformSync.netIdentity;
-
-					if (networkIdentity == null)
-					{
-						DebugLog.ToConsole($"Error - {player.PlayerId}'s TransformSync's NetworkIdentity is null.", MessageType.Error);
-						playersToRemove.Add(player);
-						continue;
-					}
-
-					var connectionToClient = networkIdentity.connectionToClient;
-
-					if (_connectionIdToPlayer.ContainsKey(connectionToClient.connectionId))
-					{
-						// oh god oh fuck
-						DebugLog.ToConsole($"Error - {player.PlayerId}'s connectionToClient.connectionId is already being used?!?", MessageType.Error);
-						playersToRemove.Add(player);
-						continue;
-					}
-
-					_connectionIdToPlayer.Add(connectionToClient.connectionId, player);
-				}
-
-				if (playersToRemove.Count != 0)
-				{
-					DebugLog.DebugWrite($"Removing {playersToRemove.Count} invalid players.", MessageType.Success);
-
-					foreach (var player in playersToRemove)
-					{
-						OnRemovePlayer?.Invoke(player);
-						player.HudMarker?.Remove();
-						PlayerList.Remove(player);
-						DebugLog.DebugWrite($"Remove Invalid Player : {player}", MessageType.Info);
-					}
-				}
-			}
-
-			yield return new WaitForSecondsRealtime(5);
-		}
-	}
 }

@@ -1,5 +1,4 @@
 ﻿namespace QSB.Utility.VariableSync;
 
-public class BoolVariableSyncer : BaseVariableSyncer<bool>
-{
-}
+[UsedInUnityProject]
+public class BoolVariableSyncer : BaseVariableSyncer<bool> { }

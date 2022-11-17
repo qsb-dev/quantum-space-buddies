@@ -1,7 +1,10 @@
 ﻿using OWML.Common;
+using QSB.EchoesOfTheEye.DreamLantern;
+using QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.QuantumSync.WorldObjects;
 using QSB.RespawnSync;
 using QSB.ShipSync;
 using QSB.Utility.Messages;
@@ -15,7 +18,7 @@ namespace QSB.Utility;
 
 public class DebugActions : MonoBehaviour, IAddComponentOnStart
 {
-	public static Type WorldObjectSelection;
+	public static Type WorldObjectSelection = typeof(QSBSocketedQuantumObject);
 
 	private static void GoToVessel()
 	{
@@ -166,7 +169,8 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 				{
 					var dreamLanternItem = QSBWorldSync.GetWorldObjects<QSBDreamLanternItem>().First(x =>
 						x.AttachedObject._lanternType == DreamLanternType.Functioning &&
-						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x)
+						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x) &&
+						!x.AttachedObject.GetLanternController().IsLit()
 					).AttachedObject;
 					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
 				}
@@ -223,7 +227,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 			var player = new PlayerInfo(QSBPlayerManager.LocalPlayer.TransformSync);
 			QSBPlayerManager.PlayerList.SafeAdd(player);
 			QSBPlayerManager.OnAddPlayer?.Invoke(player);
-			DebugLog.DebugWrite($"Create Player : {player}", MessageType.Info);
+			DebugLog.DebugWrite($"CREATING FAKE PLAYER : {player}", MessageType.Info);
 
 			JoinLeaveSingularity.Create(player, true);
 		}

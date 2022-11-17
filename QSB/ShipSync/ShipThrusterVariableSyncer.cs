@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.Utility.VariableSync;
 using UnityEngine;
 
@@ -10,15 +11,17 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 	public Vector3VariableSyncer AccelerationSyncer;
 
 	private ShipThrusterModel _thrusterModel;
+	private ShipThrusterAudio _thrusterAudio;
 
 	public void Init()
 	{
 		_thrusterModel = Locator.GetShipBody().GetComponent<ShipThrusterModel>();
+		_thrusterAudio = Locator.GetShipBody().GetComponentInChildren<ShipThrusterAudio>();
 	}
 
 	public void Update()
 	{
-		if (QSBPlayerManager.LocalPlayer.FlyingShip)
+		if (PlayerTransformSync.LocalInstance && QSBPlayerManager.LocalPlayer.FlyingShip)
 		{
 			GetFromShip();
 			return;
@@ -33,6 +36,8 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 					item.OnStopTranslationalThrust();
 				}
 
+				_thrusterAudio.OnStopTranslationalThrust();
+
 				ShipThrusterManager.ShipWashController.OnStopTranslationalThrust();
 			}
 			else
@@ -41,6 +46,8 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 				{
 					item.OnStartTranslationalThrust();
 				}
+
+				_thrusterAudio.OnStartTranslationalThrust();
 
 				ShipThrusterManager.ShipWashController.OnStartTranslationalThrust();
 			}

@@ -3,21 +3,10 @@
     <AssemblyTitle>Quantum Space Buddies</AssemblyTitle>
     <Product>Quantum Space Buddies</Product>
     <Description>Multiplayer mod for Outer Wilds</Description>
-    <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\QSB</OutputPath>
+    <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\Raicuparta.QuantumSpaceBuddies</OutputPath>
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
 
-  <Target Name="clean before building" BeforeTargets="PreBuildEvent">
-    <ItemGroup>
-      <_Files Remove="@(_Files)" />
-      <_Files Include="$(OutputPath)\*.dll" />
-      <_Files Include="$(OutputPath)\*.exe" />
-      <_Files Include="$(OutputPath)\*.pdb" />
-
-      <_Files Include="$(OutputPath)\AssetBundles\*" />
-    </ItemGroup>
-    <Delete Files="@(_Files)" />
-  </Target>
   <Target Name="clean after building" AfterTargets="PostBuildEvent">
     <ItemGroup>
       <_Files Remove="@(_Files)" />
@@ -31,34 +20,13 @@
   </Target>
 
   <PropertyGroup>
-    <GameDllsDir Condition="Exists('$(GameDir)')">$(GameDir)\OuterWilds_Data\Managed</GameDllsDir>
     <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
   </PropertyGroup>
-  <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)') and Exists('$(GameDllsDir)')">
-    <ItemGroup>
-      <_Files Remove="@(_Files)" />
-      <_Files Include="$(UnityDllsDir)\*.dll" />
-      <_Files Include="$(UnityDllsDir)\*.exe" />
-      <_Files Include="$(UnityDllsDir)\*.pdb" />
-    </ItemGroup>
-    <Delete Files="@(_Files)" />
-
+  <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)')">
     <ItemGroup>
       <_Files Remove="@(_Files)" />
       <_Files Include="$(OutputPath)\*.dll" />
       <_Files Include="$(OutputPath)\*.exe" />
-      <_Files Include="$(OutputPath)\*.pdb" />
-
-      <_Files Include="$(GameDllsDir)\EOS-SDK.dll" />
-      <_Files Include="$(GameDllsDir)\UniSense.dll" />
-      <_Files Include="$(GameDllsDir)\Autofac.dll" />
-      <_Files Include="$(GameDllsDir)\Newtonsoft.Json.dll" />
-      <_Files Include="$(GameDllsDir)\0Harmony.dll" />
-      <_Files Include="$(GameDllsDir)\MonoMod*.dll" />
-      <_Files Include="$(GameDllsDir)\Mono.Cecil.dll" />
-      <_Files Include="$(GameDllsDir)\OWML*.dll" />
-      <_Files Include="$(GameDllsDir)\NAudio-Unity.dll" />
-      <_Files Include="$(GameDllsDir)\com.rlabrecque.steamworks.net.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(_Files)" DestinationFolder="$(UnityDllsDir)" />
   </Target>
@@ -77,9 +45,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Remove="Assets\*.pdn" />
-	  <None Include="Translations\*">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+    <None Include="Translations\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="AssetBundles\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -90,13 +58,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.201" IncludeAssets="compile" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.7.0" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
     <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
-    <PackageReference Include="HarmonyX" Version="2.10.0" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.6.0" IncludeAssets="compile" />
   </ItemGroup>
 </Project>

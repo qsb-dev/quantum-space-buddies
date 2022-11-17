@@ -25,8 +25,8 @@ internal class TimePatches : QSBPatch
 	public static void PlayerCameraEffectController_WakeUp(PlayerCameraEffectController __instance)
 	{
 		// prevent funny thing when you pause while waking up
-		QSBInputManager.Instance.SetInputsEnabled(false);
-		Delay.RunWhen(() => !__instance._isOpeningEyes, () => QSBInputManager.Instance.SetInputsEnabled(true));
+		Locator.GetPauseCommandListener().AddPauseCommandLock();
+		Delay.RunWhen(() => !__instance._isOpeningEyes, () => Locator.GetPauseCommandListener().RemovePauseCommandLock());
 	}
 
 	[HarmonyPrefix]
@@ -37,10 +37,10 @@ internal class TimePatches : QSBPatch
 			or OWTime.PauseType.Streaming
 			or OWTime.PauseType.Loading;
 
-	[HarmonyPrefix]
+	[HarmonyPostfix]
 	[HarmonyPatch(typeof(SubmitActionSkipToNextLoop), nameof(SubmitActionSkipToNextLoop.AdvanceToNewTimeLoop))]
-	public static bool StopMeditation()
-		=> false;
+	public static void PreventMeditationSoftlock()
+		=> OWInput.ChangeInputMode(InputMode.Character);
 }
 
 internal class ClientTimePatches : QSBPatch

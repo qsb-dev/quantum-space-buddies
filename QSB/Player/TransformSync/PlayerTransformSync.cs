@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Messaging;
+using QSB.Patches;
 using QSB.Player.Messages;
 using QSB.PlayerBodySetup.Local;
 using QSB.PlayerBodySetup.Remote;
@@ -12,6 +13,7 @@ using Gizmos = Popcron.Gizmos;
 
 namespace QSB.Player.TransformSync;
 
+[UsedInUnityProject]
 public class PlayerTransformSync : SectoredTransformSync
 {
 	protected override bool IsPlayerObject => true;
@@ -29,25 +31,8 @@ public class PlayerTransformSync : SectoredTransformSync
 	private Transform _visibleStickTip;
 	private Transform _networkStickTip => _networkStickPivot.GetChild(0);
 
-	private bool _hasRanOnStartClient;
-
 	public override void OnStartClient()
 	{
-		if (_hasRanOnStartClient)
-		{
-			DebugLog.ToConsole($"ERROR - OnStartClient is being called AGAIN for {Player.PlayerId}'s PlayerTransformSync!", MessageType.Error);
-			return;
-		}
-
-		_hasRanOnStartClient = true;
-		if (QSBPlayerManager.PlayerList.Any(x => x.TransformSync == this))
-		{
-			// this really shouldnt happen...
-			DebugLog.ToConsole($"Error - A PlayerInfo already exists with TransformSync {name}", MessageType.Error);
-			Destroy(gameObject); // probably bad
-			return;
-		}
-
 		var player = new PlayerInfo(this);
 		QSBPlayerManager.PlayerList.SafeAdd(player);
 		base.OnStartClient();
@@ -57,26 +42,16 @@ public class PlayerTransformSync : SectoredTransformSync
 		JoinLeaveSingularity.Create(Player, true);
 	}
 
-	public override void OnStartLocalPlayer()
-	{
-		if (LocalInstance != null)
-		{
-			DebugLog.ToConsole($"ERROR - LocalInstance is already non-null in OnStartLocalPlayer!", MessageType.Error);
-			Destroy(gameObject); // probably bad
-			return;
-		}
-
-		LocalInstance = this;
-	}
-
-	public override void OnStopLocalPlayer() => LocalInstance = null;
+	public override void OnStartLocalPlayer() => LocalInstance = this;
 
 	public override void OnStopClient()
 	{
 		JoinLeaveSingularity.Create(Player, false);
 
 		// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
+		QSBPatch.Remote = true;
 		QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
+		QSBPatch.Remote = false;
 		base.OnStopClient();
 		Player.HudMarker?.Remove();
 		QSBPlayerManager.PlayerList.Remove(Player);

@@ -60,19 +60,26 @@ public class DreamRaftPatches : QSBPatch
 	/// this is to suspend the raft so it doesn't fall endlessly.
 	/// however, it's okay if it does that,
 	/// and we don't want it to extinguish with other players on it.
+	///
+	/// BUG: this breaks when going thru the volume as a non auth player sometimes. oh well.
+	/// TODO: use in-raft-volume trigger volume instead. just copy from the ringworld rafts. use this for fake sectors as well
 	/// </summary>
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamRaftProjector), nameof(DreamRaftProjector.ExtinguishImmediately))]
-	private static bool ExtinguishImmediately(DreamRaftProjector __instance)
+	[HarmonyPatch(typeof(DreamWorldController), nameof(DreamWorldController.ExtinguishDreamRaft))]
+	private static bool ExtinguishDreamRaft(DreamWorldController __instance)
 	{
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return true;
 		}
 
-		// still release authority over the raft tho
-		__instance._dreamRaftProjection.GetComponent<DreamRaftController>().GetWorldObject<QSBDreamRaft>()
-			.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+		if (__instance._lastUsedRaftProjector)
+		{
+			// still release authority over the raft tho
+			__instance._lastUsedRaftProjector
+				._dreamRaftProjection.GetComponent<DreamRaftController>().GetWorldObject<QSBDreamRaft>()
+				.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+		}
 
 		return false;
 	}

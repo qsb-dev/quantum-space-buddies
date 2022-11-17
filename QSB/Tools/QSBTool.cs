@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace QSB.Tools;
 
+[UsedInUnityProject]
 public class QSBTool : PlayerTool
 {
 	public PlayerInfo Player { get; set; }

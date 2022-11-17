@@ -4,6 +4,9 @@ using QSB.WorldSync;
 
 namespace QSB.ConversationSync.WorldObjects;
 
+/// <summary>
+/// BUG: do conversation leave on player leave so other people can actually talk lol
+/// </summary>
 public class QSBCharacterDialogueTree : WorldObject<CharacterDialogueTree>
 {
 	public override void SendInitialState(uint to)

@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Player;
 
+[UsedInUnityProject]
 public class RemotePlayerVelocity : MonoBehaviour
 {
 	private Vector3 _prevRelPosition;

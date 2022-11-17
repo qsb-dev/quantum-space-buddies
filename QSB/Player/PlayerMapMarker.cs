@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.Player;
 
+[UsedInUnityProject]
 public class PlayerMapMarker : MonoBehaviour
 {
 	private PlayerInfo _player;
@@ -58,7 +60,12 @@ public class PlayerMapMarker : MonoBehaviour
 		var playerScreenPos = Locator.GetActiveCamera().WorldToScreenPoint(transform.position);
 		var isInfrontOfCamera = playerScreenPos.z > 0f;
 
-		return _player.IsReady && !_player.IsDead && !_player.InDreamWorld && _player.Visible && isInfrontOfCamera;
+		return isInfrontOfCamera &&
+			_player.IsReady &&
+			!_player.IsDead &&
+			_player.Visible &&
+			_player.InDreamWorld == QSBPlayerManager.LocalPlayer.InDreamWorld &&
+			_player.IsInMoon == QSBPlayerManager.LocalPlayer.IsInMoon;
 	}
 
 	public void LateUpdate()

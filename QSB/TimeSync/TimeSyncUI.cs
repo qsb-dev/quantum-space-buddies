@@ -36,6 +36,9 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 		_canvas = obj._canvas;
 		_text = obj._text;
 		_canvas.enabled = false;
+
+		var langController = QSBWorldSync.GetUnityObject<PauseMenuManager>().transform.GetChild(0).GetComponent<FontAndLanguageController>();
+		langController.AddTextElement(_text);
 	}
 
 	public void OnDestroy()

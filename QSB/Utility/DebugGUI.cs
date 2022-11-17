@@ -238,7 +238,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 			#endregion
 
-			if (QSBWorldSync.AllObjectsReady)
+			if (QSBWorldSync.AllObjectsReady && QSBCore.DLCInstalled)
 			{
 				var ghost = QSBWorldSync.GetWorldObjects<QSBGhostBrain>().First(x => x.AttachedObject._name == "Kamaji");
 				WriteLine(4, ghost.AttachedObject._name);

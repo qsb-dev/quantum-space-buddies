@@ -1,5 +1,4 @@
 ﻿using QSB.Messaging;
-using QSB.Patches;
 
 namespace QSB.Utility.Messages;
 
@@ -12,6 +11,6 @@ public class DebugTriggerSupernovaMessage : QSBMessage
 		PlayerData.SaveLoopCount(2);
 		TimeLoop.SetTimeLoopEnabled(true);
 		TimeLoop._isTimeFlowing = true;
-		QSBPatch.RemoteCall(() => TimeLoop.SetSecondsRemaining(0));
+		TimeLoop.SetSecondsRemaining(0);
 	}
 }

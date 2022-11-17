@@ -59,17 +59,9 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 	{
 		base.Uninit();
 
-		// this is null sometimes on here, but not on other similar transforms syncs (like anglers)
-		// idk why, but whatever
-		if (AttachedTransform)
-		{
-			var body = AttachedTransform.GetAttachedOWRigidbody();
-			if (body)
-			{
-				body.OnUnsuspendOWRigidbody -= OnUnsuspend;
-				body.OnSuspendOWRigidbody -= OnSuspend;
-			}
-		}
+		var body = AttachedTransform.GetAttachedOWRigidbody();
+		body.OnUnsuspendOWRigidbody -= OnUnsuspend;
+		body.OnSuspendOWRigidbody -= OnSuspend;
 	}
 
 	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);

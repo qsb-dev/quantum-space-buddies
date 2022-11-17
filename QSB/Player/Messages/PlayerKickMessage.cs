@@ -28,19 +28,6 @@ internal class PlayerKickMessage : QSBMessage<string>
 		PlayerId = reader.Read<uint>();
 	}
 
-	public override void OnReceiveLocal()
-	{
-		if (!QSBCore.IsHost)
-		{
-			return;
-		}
-
-		Delay.RunFramesLater(10, KickPlayer);
-	}
-
-	private void KickPlayer()
-		=> PlayerId.GetNetworkConnection().Disconnect();
-
 	public override void OnReceiveRemote()
 	{
 		if (PlayerId != QSBPlayerManager.LocalPlayerId)
@@ -57,5 +44,7 @@ internal class PlayerKickMessage : QSBMessage<string>
 
 		DebugLog.ToAll(string.Format(QSBLocalization.Current.KickedFromServer, Data));
 		MenuManager.Instance.OnKicked(Data);
+
+		NetworkClient.Disconnect();
 	}
 }
