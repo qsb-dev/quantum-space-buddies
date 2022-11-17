@@ -3,6 +3,7 @@ using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
+using QSB.Player;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -21,33 +22,40 @@ public class AlarmTotemPatches : QSBPatch
 			__result = false;
 			return false;
 		}
-		var position = Locator.GetPlayerCamera().transform.position;
-		if (__instance.CheckPointInVisionCone(position) && !__instance.CheckLineOccluded(__instance._sightOrigin.position, position))
+		foreach (var player in QSBPlayerManager.PlayerList)
 		{
-			if (Locator.GetPlayerLightSensor().IsIlluminated())
+			var position = player.Camera.transform.position;
+			if (__instance.CheckPointInVisionCone(position) && !__instance.CheckLineOccluded(__instance._sightOrigin.position, position))
 			{
-				__result = true;
-				return false;
-			}
-			var lanternController = Locator.GetDreamWorldController().GetPlayerLantern().GetLanternController();
-			if (lanternController.IsHeldByPlayer())
-			{
-				if (lanternController.IsConcealed())
+				if (player.LightSensor.IsIlluminated())
 				{
-					if (!__instance._hasConcealedFromAlarm)
-					{
-						__instance._secondsConcealed += Time.deltaTime;
-						if (__instance._secondsConcealed > 1f)
-						{
-							__instance._hasConcealedFromAlarm = true;
-							GlobalMessenger.FireEvent("ConcealFromAlarmTotem");
-						}
-					}
-					__result = false;
+					__result = true;
 					return false;
 				}
-				__result = true;
-				return false;
+				if (player.AssignedSimulationLantern == null)
+				{
+					continue;
+				}
+				var lanternController = player.AssignedSimulationLantern.AttachedObject.GetLanternController();
+				if (lanternController.IsHeldByPlayer())
+				{
+					if (lanternController.IsConcealed())
+					{
+						if (!__instance._hasConcealedFromAlarm)
+						{
+							__instance._secondsConcealed += Time.deltaTime;
+							if (__instance._secondsConcealed > 1f)
+							{
+								__instance._hasConcealedFromAlarm = true;
+								GlobalMessenger.FireEvent("ConcealFromAlarmTotem");
+							}
+						}
+						__result = false;
+						return false;
+					}
+					__result = true;
+					return false;
+				}
 			}
 		}
 		__result = false;
