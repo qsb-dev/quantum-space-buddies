@@ -42,8 +42,6 @@ public class DreamWorldFakePlayer : MonoBehaviour
 
 		#region fake player
 
-		_player.Body.SetActive(false);
-
 		var fakePlayer = _player.Body.transform.Find("REMOTE_Traveller_HEA_Player_v2").gameObject.InstantiateInactive();
 		fakePlayer.transform.SetParent(transform, false);
 
