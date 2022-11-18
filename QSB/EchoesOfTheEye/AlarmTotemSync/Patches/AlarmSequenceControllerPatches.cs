@@ -50,6 +50,25 @@ public class AlarmSequenceControllerPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
+	[HarmonyPatch(nameof(AlarmSequenceController.Update))]
+	private static bool Update(AlarmSequenceController __instance)
+	{
+		__instance.UpdateWakeFraction();
+		if (__instance._playing)
+		{
+			__instance.UpdateChimes();
+		}
+		__instance.UpdatePulse();
+		if (!__instance._playing && __instance._alarmCounter == 0 && __instance._pulse <= 0.01f)
+		{
+			__instance._pulse = 0f;
+			__instance._targetPulse = 0f;
+			__instance.enabled = false;
+		}
+		return false;
+	}
+
+	[HarmonyPrefix]
 	[HarmonyPatch(nameof(AlarmSequenceController.PlaySingleChime))]
 	private static bool PlaySingleChime(AlarmSequenceController __instance)
 	{
