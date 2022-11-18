@@ -60,8 +60,5 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 				ghost.GetEffects().OnSectorOccupantsUpdated();
 			}
 		}
-
-		// TODO: this has to happen el earlier
-		DreamWorldFakePlayer.Create(player);
 	}
 }

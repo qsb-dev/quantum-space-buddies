@@ -1,4 +1,7 @@
-﻿using QSB.Animation.Player;
+﻿using HarmonyLib;
+using QSB.Animation.Player;
+using QSB.Messaging;
+using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;
 using System.Collections.Generic;
@@ -81,5 +84,31 @@ public class DreamWorldFakePlayer : MonoBehaviour
 			return;
 		}
 		Destroy(gameObject);
+	}
+}
+
+public class DreamWorldFakePlayerPatch : QSBPatch
+{
+	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
+
+	/// <summary>
+	/// do this early to create the fake player BEFORE teleporting
+	/// </summary>
+	[HarmonyPatch(typeof(DreamWorldController), nameof(DreamWorldController.EnterDreamWorld))]
+	[HarmonyPrefix]
+	private static void EnterDreamWorld()
+	{
+		if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() == ItemType.DreamLantern)
+		{
+			new DreamWorldFakePlayerMessage().Send();
+		}
+	}
+}
+
+public class DreamWorldFakePlayerMessage : QSBMessage
+{
+	public override void OnReceiveRemote()
+	{
+		DreamWorldFakePlayer.Create(QSBPlayerManager.GetPlayer(From));
 	}
 }
