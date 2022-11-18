@@ -144,7 +144,6 @@ public class DeathPatches : QSBPatch
 			if (PlayerState.InDreamWorld())
 			{
 				// exit dream world either way to prevent goof with respawn
-				// TODO: test
 				Locator.GetDreamWorldController().ExitDreamWorld(deathType);
 				if (deathType != DeathType.Dream && deathType != DeathType.DreamExplosion && deathType != DeathType.Supernova && deathType != DeathType.TimeLoop && deathType != DeathType.Meditation)
 				{
