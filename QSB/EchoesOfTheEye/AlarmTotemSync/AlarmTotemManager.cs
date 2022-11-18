@@ -15,8 +15,10 @@ public class AlarmTotemManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		AlarmBells = QSBWorldSync.GetUnityObjects<AlarmBell>().ToArray();
 		QSBWorldSync.Init<QSBAlarmTotem, AlarmTotem>();
-		QSBWorldSync.Init<QSBAlarmBell, AlarmBell>();
+		AlarmBells = QSBWorldSync.GetUnityObjects<AlarmBell>()
+			.Where(x => x._oneShotSource && x._animation && x._bellTrigger && x._lightController)
+			.ToArray();
+		QSBWorldSync.Init<QSBAlarmBell, AlarmBell>(AlarmBells);
 	}
 }

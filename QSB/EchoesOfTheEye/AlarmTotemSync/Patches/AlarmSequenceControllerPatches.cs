@@ -56,11 +56,14 @@ public class AlarmSequenceControllerPatches : QSBPatch
 		foreach (var alarmBell in AlarmTotemManager.AlarmBells)
 		{
 			alarmBell.PlaySingleChime(__instance._chimeIndex);
-			if (!__instance._animationStarted && !__instance._dreamWorldController.IsInDream())
+		}
+		if (!__instance._animationStarted && !__instance._dreamWorldController.IsInDream())
+		{
+			foreach (var alarmBell in AlarmTotemManager.AlarmBells)
 			{
 				alarmBell.PlayAnimation();
-				__instance._animationStarted = true;
 			}
+			__instance._animationStarted = true;
 		}
 		if (__instance._dreamWorldController.IsInDream() && !__instance._dreamWorldController.IsExitingDream())
 		{
