@@ -17,31 +17,4 @@ public class QSBAlarmTotem : AuthWorldObject<AlarmTotem>
 
 		this.SendMessage(new SetVisibleMessage(AttachedObject._isPlayerVisible) { To = to });
 	}
-
-	/// <summary>
-	/// i love copy pasting
-	/// </summary>
-	public void SetVisible(bool visible)
-	{
-		var isPlayerVisible = AttachedObject._isPlayerVisible;
-		AttachedObject._isPlayerVisible = visible;
-		if (!isPlayerVisible && AttachedObject._isPlayerVisible)
-		{
-			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
-			AttachedObject._secondsConcealed = 0f;
-			AttachedObject._simTotemMaterials[0] = AttachedObject._simAlarmMaterial;
-			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
-			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simAlarmColor);
-			GlobalMessenger.FireEvent("AlarmTotemTriggered");
-		}
-		else if (isPlayerVisible && !AttachedObject._isPlayerVisible)
-		{
-			Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
-			AttachedObject._secondsConcealed = 0f;
-			AttachedObject._simTotemMaterials[0] = AttachedObject._origSimEyeMaterial;
-			AttachedObject._simTotemRenderer.sharedMaterials = AttachedObject._simTotemMaterials;
-			AttachedObject._simVisionConeRenderer.SetColor(AttachedObject._simVisionConeRenderer.GetOriginalColor());
-			AttachedObject._pulseLightController.FadeTo(0f, 0.5f);
-		}
-	}
 }
