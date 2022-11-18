@@ -77,6 +77,12 @@ public class AlarmTotemPatches : QSBPatch
 		{
 			return true;
 		}
+		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
+
+		if (qsbAlarmTotem.Owner != QSBPlayerManager.LocalPlayerId)
+		{
+			return false;
+		}
 
 		var isPlayerVisible = __instance._isPlayerVisible;
 		__instance._isPlayerVisible = __instance.CheckPlayerVisible();
@@ -88,7 +94,7 @@ public class AlarmTotemPatches : QSBPatch
 			__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
 			__instance._simVisionConeRenderer.SetColor(__instance._simAlarmColor);
 			GlobalMessenger.FireEvent("AlarmTotemTriggered");
-			__instance.GetWorldObject<QSBAlarmTotem>().SendMessage(new SetVisibleMessage(true));
+			qsbAlarmTotem.SendMessage(new SetVisibleMessage(true));
 		}
 		else if (isPlayerVisible && !__instance._isPlayerVisible)
 		{
@@ -98,7 +104,7 @@ public class AlarmTotemPatches : QSBPatch
 			__instance._simTotemRenderer.sharedMaterials = __instance._simTotemMaterials;
 			__instance._simVisionConeRenderer.SetColor(__instance._simVisionConeRenderer.GetOriginalColor());
 			__instance._pulseLightController.FadeTo(0f, 0.5f);
-			__instance.GetWorldObject<QSBAlarmTotem>().SendMessage(new SetVisibleMessage(false));
+			qsbAlarmTotem.SendMessage(new SetVisibleMessage(false));
 		}
 		return false;
 	}
