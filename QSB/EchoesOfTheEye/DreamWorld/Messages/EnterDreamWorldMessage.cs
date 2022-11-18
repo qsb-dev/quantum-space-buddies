@@ -61,6 +61,7 @@ internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternIte
 			}
 		}
 
+		// TODO: this has to happen el earlier
 		DreamWorldFakePlayer.Create(player);
 	}
 }
