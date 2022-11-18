@@ -36,6 +36,10 @@ public class DreamWorldFakePlayer : MonoBehaviour
 		_instances.SafeAdd(this);
 		QSBPlayerManager.OnRemovePlayer += OnRemovePlayer;
 
+		transform.parent = _player.TransformSync.ReferenceTransform;
+		transform.localPosition = _player.TransformSync.transform.position;
+		transform.localRotation = _player.TransformSync.transform.rotation;
+
 		#region fake player
 
 		_player.Body.SetActive(false);
