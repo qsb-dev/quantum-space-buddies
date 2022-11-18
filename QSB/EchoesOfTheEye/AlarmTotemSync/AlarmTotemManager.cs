@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
 using System.Threading;
@@ -16,9 +17,7 @@ public class AlarmTotemManager : WorldObjectManager
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
 		QSBWorldSync.Init<QSBAlarmTotem, AlarmTotem>();
-		AlarmBells = QSBWorldSync.GetUnityObjects<AlarmBell>()
-			.Where(x => x._oneShotSource && x._animation && x._bellTrigger && x._lightController)
-			.ToArray();
-		QSBWorldSync.Init<QSBAlarmBell, AlarmBell>(AlarmBells);
+		QSBWorldSync.Init<QSBAlarmBell, AlarmBell>();
+		AlarmBells = QSBWorldSync.GetUnityObjects<AlarmBell>().Where(x => x._lightController).SortDeterministic().ToArray();
 	}
 }
