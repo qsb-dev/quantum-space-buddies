@@ -21,8 +21,10 @@ public class QSBAlarmTotem : AuthWorldObject<AlarmTotem>
 	/// <summary>
 	/// i love copy pasting
 	/// </summary>
-	public void SetVisible(bool isPlayerVisible)
+	public void SetVisible(bool visible)
 	{
+		var isPlayerVisible = AttachedObject._isPlayerVisible;
+		AttachedObject._isPlayerVisible = visible;
 		if (!isPlayerVisible && AttachedObject._isPlayerVisible)
 		{
 			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
