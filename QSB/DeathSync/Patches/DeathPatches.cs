@@ -3,7 +3,6 @@ using QSB.DeathSync.Messages;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -24,86 +23,23 @@ public class DeathPatches : QSBPatch
 	/// don't insta-die from impact in ship
 	/// </summary>
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.FixedUpdate))]
-	public static bool HighSpeedImpactSensor_FixedUpdate(HighSpeedImpactSensor __instance)
+	[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.HandlePlayerInsideShip))]
+	public static bool HighSpeedImpactSensor_HandlePlayerInsideShip(HighSpeedImpactSensor __instance)
 	{
-		if (__instance._isPlayer && (PlayerState.IsAttached() || PlayerState.IsInsideShuttle() || PlayerState.UsingNomaiRemoteCamera()))
+		var shipCenter = Locator.GetShipTransform().position + Locator.GetShipTransform().up * 2f;
+		var distanceFromShip = Vector3.Distance(__instance._body.GetPosition(), shipCenter);
+		if (distanceFromShip > 8f)
 		{
-			return false;
+			__instance._body.SetPosition(shipCenter);
 		}
 
-		if (__instance._dieNextUpdate && !__instance._dead)
+		if (!__instance._dead)
 		{
-			__instance._dead = true;
-			__instance._dieNextUpdate = false;
-			if (__instance.gameObject.CompareTag("Player"))
+			var a = __instance._body.GetVelocity() - Locator.GetShipBody().GetPointVelocity(__instance._body.GetPosition());
+			if (a.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
 			{
-				Locator.GetDeathManager().SetImpactDeathSpeed(__instance._impactSpeed);
-				Locator.GetDeathManager().KillPlayer(DeathType.Impact);
-			}
-			else if (__instance.gameObject.CompareTag("Ship"))
-			{
-				__instance.GetComponent<ShipDamageController>().Explode();
-			}
-		}
-
-		if (__instance._isPlayer && PlayerState.IsInsideShip())
-		{
-			var shipCenter = Locator.GetShipTransform().position + Locator.GetShipTransform().up * 2f;
-			var distanceFromShip = Vector3.Distance(__instance._body.GetPosition(), shipCenter);
-			if (distanceFromShip > 8f)
-			{
-				__instance._body.SetPosition(shipCenter);
-			}
-
-			if (!__instance._dead)
-			{
-				var a = __instance._body.GetVelocity() - Locator.GetShipBody().GetPointVelocity(__instance._body.GetPosition());
-				if (a.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
-				{
-					__instance._impactSpeed = a.magnitude;
-					__instance._body.AddVelocityChange(-a);
-				}
-			}
-
-			return false;
-		}
-
-		var passiveReferenceFrame = __instance._sectorDetector.GetPassiveReferenceFrame();
-		if (!__instance._dead && passiveReferenceFrame != null)
-		{
-			var relativeVelocity = __instance._body.GetVelocity() - passiveReferenceFrame.GetOWRigidBody().GetPointVelocity(__instance._body.GetPosition());
-			if (relativeVelocity.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
-			{
-				var hitCount = Physics.RaycastNonAlloc(__instance.transform.TransformPoint(__instance._localOffset), relativeVelocity, __instance._raycastHits, relativeVelocity.magnitude * Time.deltaTime + __instance._radius, OWLayerMask.physicalMask, QueryTriggerInteraction.Ignore);
-				for (var i = 0; i < hitCount; i++)
-				{
-					if (__instance._raycastHits[i].rigidbody.mass > 10f && !__instance._raycastHits[i].rigidbody.Equals(__instance._body.GetRigidbody()))
-					{
-						var owRigidbody = __instance._raycastHits[i].rigidbody.GetComponent<OWRigidbody>();
-						if (owRigidbody == null)
-						{
-							DebugLog.ToConsole("Rigidbody does not have attached OWRigidbody!!!", OWML.Common.MessageType.Error);
-							Debug.Break();
-						}
-						else
-						{
-							relativeVelocity = __instance._body.GetVelocity() - owRigidbody.GetPointVelocity(__instance._body.GetPosition());
-							var a2 = Vector3.Project(relativeVelocity, __instance._raycastHits[i].normal);
-							if (a2.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
-							{
-								__instance._body.AddVelocityChange(-a2);
-								__instance._impactSpeed = a2.magnitude;
-								if (!PlayerState.IsInsideTheEye())
-								{
-									__instance._dieNextUpdate = true;
-								}
-
-								break;
-							}
-						}
-					}
-				}
+				__instance._impactSpeed = a.magnitude;
+				__instance._body.AddVelocityChange(-a);
 			}
 		}
 
