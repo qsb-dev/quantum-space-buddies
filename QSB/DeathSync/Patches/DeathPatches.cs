@@ -13,11 +13,20 @@ public class DeathPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	/// <summary>
+	/// don't take damage from impact in ship
+	/// </summary>
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(PlayerResources), nameof(PlayerResources.OnImpact))]
-	public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact) =>
-		// don't take damage from impact in ship
-		!PlayerState.IsInsideShip();
+	public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact)
+	{
+		if (QSBCore.ShipDamage)
+		{
+			return true;
+		}
+
+		return !PlayerState.IsInsideShip();
+	}
 
 	/// <summary>
 	/// don't insta-die from impact in ship
@@ -26,6 +35,11 @@ public class DeathPatches : QSBPatch
 	[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.HandlePlayerInsideShip))]
 	public static bool HighSpeedImpactSensor_HandlePlayerInsideShip(HighSpeedImpactSensor __instance)
 	{
+		if (QSBCore.ShipDamage)
+		{
+			return true;
+		}
+
 		var shipCenter = Locator.GetShipTransform().position + Locator.GetShipTransform().up * 2f;
 		var distanceFromShip = Vector3.Distance(__instance._body.GetPosition(), shipCenter);
 		if (distanceFromShip > 8f)
