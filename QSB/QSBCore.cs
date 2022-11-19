@@ -241,9 +241,9 @@ public class QSBCore : ModBehaviour
 
 	public override void Configure(IModConfig config)
 	{
-		DefaultServerIP = config.GetSettingsValue<string>("Default Server IP");
-		IncompatibleModsAllowed = config.GetSettingsValue<bool>("Incompatible Mods Allowed");
-		ShipDamage = config.GetSettingsValue<bool>("Ship Damage");
+		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
+		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
+		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
 	}
 
 	private void Update()

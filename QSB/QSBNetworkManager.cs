@@ -270,7 +270,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	{
 		QSBCore.DefaultServerIP = networkAddress;
 		var config = QSBCore.Helper.Config;
-		config.SetSettingsValue("Default Server IP", networkAddress);
+		config.SetSettingsValue("defaultServerIP", networkAddress);
 		QSBCore.Helper.Storage.Save(config, Constants.ModConfigFileName);
 	}
 
