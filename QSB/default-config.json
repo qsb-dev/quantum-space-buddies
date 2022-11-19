@@ -1,8 +1,20 @@
 {
 	"enabled": true,
 	"settings": {
-		"defaultServerIP": "localhost",
-		"incompatibleModsAllowed": false,
-		"shipDamage": true
+		"Default Server IP": {
+			"type": "text",
+			"value": "localhost",
+			"tooltip": "The last entered IP/ID. Used if you leave the connect prompt blank."
+		},
+		"Incompatible Mods Allowed": {
+			"type": "toggle",
+			"value": false,
+			"tooltip": "Kicks players if they have certain mods."
+		},
+		"Ship Damage": {
+			"type": "toggle",
+			"value": true,
+			"tooltip": "Take impact damage when inside the ship."
+		}
 	}
 }
