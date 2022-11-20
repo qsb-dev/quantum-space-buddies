@@ -7,12 +7,15 @@
 
   <PropertyGroup Label="Common Properties">
     <TargetFramework>net48</TargetFramework>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <Company>Henry Pointer, Aleksander Waage, Ricardo Lopes</Company>
-    <Copyright>Copyright © Henry Pointer, Aleksander Waage, Ricardo Lopes 2020-2021</Copyright>
+    <Company>Henry Pointer, Will Corby, Aleksander Waage, Ricardo Lopes</Company>
+    <Copyright>Copyright © Henry Pointer, Will Corby, Aleksander Waage, Ricardo Lopes 2020-2022</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/misternebula/quantum-space-buddies</RepositoryUrl>
+    <PackageProjectUrl>https://outerwildsmods.com/mods/quantumspacebuddies/</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Label="Default Locations" Condition="!Exists('$(DevEnvLoc)')">

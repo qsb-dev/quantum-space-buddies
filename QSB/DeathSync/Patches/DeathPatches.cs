@@ -177,7 +177,7 @@ public class DeathPatches : QSBPatch
 				return true;
 			}
 
-			RespawnOnDeath.Instance.ResetPlayer();
+			RespawnOnDeath.Instance.KillPlayer();
 
 			QSBPlayerManager.LocalPlayer.IsDead = true;
 			new PlayerDeathMessage(deathType).Send();

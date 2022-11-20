@@ -4,6 +4,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.RespawnSync;
 using QSB.ShipSync;
+using QSB.Spectate;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -57,16 +58,16 @@ public class RespawnOnDeath : MonoBehaviour
 		_deadTextStyle.fontSize = 20;
 	}
 
-	public void ResetPlayer()
+	public void KillPlayer()
 	{
-		DebugLog.DebugWrite($"RESET PLAYER");
+		DebugLog.DebugWrite($"KILL PLAYER");
 		if (_playerSpawnPoint == null)
 		{
 			DebugLog.ToConsole("Warning - _playerSpawnPoint is null!", MessageType.Warning);
 			Init();
 		}
 
-		RespawnManager.Instance.TriggerRespawnMap();
+		SpectateManager.Instance.TriggerSpectate();
 
 		var inSpace = PlayerTransformSync.LocalInstance.SectorDetector.SectorList.Count == 0;
 
@@ -153,7 +154,7 @@ public class RespawnOnDeath : MonoBehaviour
 
 			GUI.Label(
 				new Rect((Screen.width / 2) - (width / 2), (Screen.height / 2) - (height / 2) + (height * 2), width, height),
-				$"{QSBLocalization.Current.YouAreDead}\n{secondText}",
+				$"SPECTATING [{SpectateManager.Instance.SpectateTarget.Name}]\n\n{QSBLocalization.Current.YouAreDead}\n{secondText}\nUSE ARROW KEYS TO CHANGE SPECTATE TARGET",
 				_deadTextStyle);
 		}
 	}
