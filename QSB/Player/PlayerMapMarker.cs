@@ -31,6 +31,7 @@ public class PlayerMapMarker : MonoBehaviour
 	public void Init(PlayerInfo player)
 	{
 		_player = player;
+		_player.MapMarker = this;
 		_hasBeenSetUpForInit = true;
 	}
 
@@ -81,5 +82,10 @@ public class PlayerMapMarker : MonoBehaviour
 		{
 			_canvasMarker.SetVisibility(shouldBeVisible);
 		}
+	}
+	
+	public void Remove()
+	{
+		// TODO
 	}
 }
