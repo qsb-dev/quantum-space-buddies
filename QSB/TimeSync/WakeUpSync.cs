@@ -47,7 +47,6 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		OWTime.SetTimeScale(1f);
 		OWTime.SetMaxDeltaTime(0.06666667f);
-		OWTime.SetFixedTimestep(ClientTimePatches.OverrideFixedTimestep);
 		Locator.GetActiveCamera().enabled = true;
 		CurrentState = State.NotLoaded;
 		CurrentReason = null;
@@ -215,7 +214,6 @@ public class WakeUpSync : NetworkBehaviour
 		CurrentState = State.FastForwarding;
 		CurrentReason = reason;
 		OWTime.SetMaxDeltaTime(0.033333335f);
-		OWTime.SetFixedTimestep(0.033333335f);
 		TimeSyncUI.TargetTime = _serverTime;
 		TimeSyncUI.Start(TimeSyncType.FastForwarding, reason);
 	}
@@ -246,7 +244,6 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		OWTime.SetTimeScale(1f);
 		OWTime.SetMaxDeltaTime(0.06666667f);
-		OWTime.SetFixedTimestep(ClientTimePatches.OverrideFixedTimestep);
 		Locator.GetActiveCamera().enabled = true;
 		CurrentState = State.Loaded;
 		CurrentReason = null;
