@@ -8,6 +8,7 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
+using QSB.TimeSync.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -46,7 +47,7 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		OWTime.SetTimeScale(1f);
 		OWTime.SetMaxDeltaTime(0.06666667f);
-		OWTime.SetFixedTimestep(0.01666667f);
+		OWTime.SetFixedTimestep(ClientTimePatches.OverrideFixedTimestep);
 		Locator.GetActiveCamera().enabled = true;
 		CurrentState = State.NotLoaded;
 		CurrentReason = null;
@@ -245,7 +246,7 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		OWTime.SetTimeScale(1f);
 		OWTime.SetMaxDeltaTime(0.06666667f);
-		OWTime.SetFixedTimestep(0.01666667f);
+		OWTime.SetFixedTimestep(ClientTimePatches.OverrideFixedTimestep);
 		Locator.GetActiveCamera().enabled = true;
 		CurrentState = State.Loaded;
 		CurrentReason = null;

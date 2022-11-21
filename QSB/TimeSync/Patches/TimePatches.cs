@@ -4,6 +4,7 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.TimeSync.Messages;
 using QSB.Utility;
+using UnityEngine;
 
 namespace QSB.TimeSync.Patches;
 
@@ -47,6 +48,8 @@ internal class ClientTimePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 
+	public static float OverrideFixedTimestep { get; private set; }
+
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(TimeLoop), nameof(TimeLoop.SetSecondsRemaining))]
 	private static void SetSecondsRemaining(float secondsRemaining)
@@ -56,5 +59,23 @@ internal class ClientTimePatches : QSBPatch
 			return;
 		}
 		new SetSecondsRemainingMessage(secondsRemaining).Send();
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(OWTime), nameof(OWTime.InitializeTimeSettings))]
+	public static bool InitializeTimeSettings()
+	{
+		if (SecretSettings.TryGetInt("PhysicsRate", out var num))
+		{
+			num = Mathf.Max(num, 1);
+			OWTime.s_fixedTimestep = 1f / (float)num;
+			OverrideFixedTimestep = OWTime.s_fixedTimestep;
+		}
+
+		Time.fixedDeltaTime = OWTime.s_fixedTimestep;
+		Time.maximumDeltaTime = OWTime.s_maxDeltaTime;
+		Time.maximumParticleDeltaTime = OWTime.s_maxDeltaTime;
+
+		return false;
 	}
 }
