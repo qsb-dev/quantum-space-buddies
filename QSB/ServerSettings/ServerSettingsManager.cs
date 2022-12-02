@@ -5,5 +5,6 @@ namespace QSB.ServerSettings;
 
 internal class ServerSettingsManager : MonoBehaviour, IAddComponentOnStart
 {
-	public static bool ShowPlayerNames;
+	public static bool ServerShowPlayerNames;
+	public static bool ShowPlayerNames => (ServerShowPlayerNames || QSBCore.IsHost) && QSBCore.ShowPlayerNames;
 }

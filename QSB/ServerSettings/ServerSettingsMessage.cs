@@ -8,9 +8,7 @@ internal class ServerSettingsMessage : QSBMessage
 	private bool _showPlayerNames;
 
 	public ServerSettingsMessage()
-	{
-		_showPlayerNames = ServerSettingsManager.ShowPlayerNames;
-	}
+		=> _showPlayerNames = QSBCore.ShowPlayerNames;
 
 	public override void Serialize(NetworkWriter writer)
 	{
@@ -25,8 +23,5 @@ internal class ServerSettingsMessage : QSBMessage
 	}
 
 	public override void OnReceiveRemote()
-	{
-		ServerSettingsManager.ShowPlayerNames = _showPlayerNames;
-		QSBCore.Helper.Config.SetSettingsValue("showPlayerNames", _showPlayerNames);
-	}
+		=> ServerSettingsManager.ServerShowPlayerNames = _showPlayerNames;
 }
