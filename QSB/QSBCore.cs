@@ -4,9 +4,11 @@ using OWML.Common;
 using OWML.ModHelper;
 using QSB.Localization;
 using QSB.Menus;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.QuantumSync;
 using QSB.SaveSync;
+using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -243,6 +245,23 @@ public class QSBCore : ModBehaviour
 	{
 		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
+		if (!IsInMultiplayer)
+		{
+			ServerSettingsManager.ShowPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
+		}
+		else if (IsHost)
+		{
+			var _showPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
+			if (_showPlayerNames != ServerSettingsManager.ShowPlayerNames)
+			{
+				new ServerSettingsMessage().Send();
+			}
+			ServerSettingsManager.ShowPlayerNames = _showPlayerNames;
+		}
+		else
+		{
+			config.SetSettingsValue("showPlayerNames", ServerSettingsManager.ShowPlayerNames);
+		}
 		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
 	}
 
