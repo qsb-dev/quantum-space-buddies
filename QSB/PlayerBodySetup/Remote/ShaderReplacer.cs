@@ -37,6 +37,10 @@ public static class ShaderReplacer
 					material.SetOverrideTag("RenderType", renderType);
 					material.renderQueue = renderQueue;
 				}
+				else
+				{
+					material.shader = replacementShader;
+				}
 			}
 		}
 	}
