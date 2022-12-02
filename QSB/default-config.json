@@ -1,8 +1,29 @@
 {
 	"enabled": true,
 	"settings": {
-		"defaultServerIP": "localhost",
-		"incompatibleModsAllowed": false,
-		"showPlayerNames": true
+		"defaultServerIP": {
+			"title": "Last Entered IP/ID",
+			"type": "text",
+			"value": "localhost",
+			"tooltip": "Used if you leave the connect prompt blank."
+		},
+		"incompatibleModsAllowed": {
+			"title": "Incompatible Mods Allowed",
+			"type": "toggle",
+			"value": false,
+			"tooltip": "Kicks players if they have certain mods."
+		},
+		"showPlayerNames": {
+			"title": "Show Player Names",
+			"type": "toggle",
+			"value": true,
+			"tooltip": "Shows player names in the HUD and the map view."
+		},
+		"shipDamage": {
+			"title": "Ship Damage",
+			"type": "toggle",
+			"value": true,
+			"tooltip": "Take impact damage when inside the ship."
+		}
 	}
 }

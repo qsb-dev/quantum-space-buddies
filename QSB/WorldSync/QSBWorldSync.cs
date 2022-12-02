@@ -83,6 +83,8 @@ public static class QSBWorldSync
 		AllObjectsAdded = true;
 		DebugLog.DebugWrite("World Objects added.", MessageType.Success);
 
+		DeterministicManager.OnWorldObjectsAdded();
+
 		WorldObjectsHash = WorldObjects.Select(x => x.GetType().Name).GetMD5Hash();
 		DebugLog.DebugWrite($"WorldObject hash is {WorldObjectsHash}");
 
@@ -100,8 +102,6 @@ public static class QSBWorldSync
 
 		AllObjectsReady = true;
 		DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
-
-		DeterministicManager.OnWorldObjectsReady();
 
 		if (!QSBCore.IsHost)
 		{

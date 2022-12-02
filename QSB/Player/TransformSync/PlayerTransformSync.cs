@@ -54,6 +54,7 @@ public class PlayerTransformSync : SectoredTransformSync
 		QSBPatch.Remote = false;
 		base.OnStopClient();
 		Player.HudMarker?.Remove();
+		Player.MapMarker?.Remove();
 		QSBPlayerManager.PlayerList.Remove(Player);
 		DebugLog.DebugWrite($"Remove Player : {Player}", MessageType.Info);
 	}
