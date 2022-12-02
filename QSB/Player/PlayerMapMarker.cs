@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.ServerSettings;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Player;
@@ -54,6 +55,11 @@ public class PlayerMapMarker : MonoBehaviour
 	private bool ShouldBeVisible()
 	{
 		if (_player == null)
+		{
+			return false;
+		}
+
+		if (!ServerSettingsManager.ShowPlayerNames)
 		{
 			return false;
 		}

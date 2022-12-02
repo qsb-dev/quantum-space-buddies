@@ -13,6 +13,12 @@
 			"value": false,
 			"tooltip": "Kicks players if they have certain mods."
 		},
+		"showPlayerNames": {
+			"title": "Show Player Names",
+			"type": "toggle",
+			"value": true,
+			"tooltip": "Shows player names in the HUD and the map view."
+		},
 		"shipDamage": {
 			"title": "Ship Damage",
 			"type": "toggle",

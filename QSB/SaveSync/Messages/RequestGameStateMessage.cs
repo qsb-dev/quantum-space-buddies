@@ -1,6 +1,7 @@
 ﻿using QSB.ConversationSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.ServerSettings;
 using QSB.Utility;
 
 namespace QSB.SaveSync.Messages;
@@ -21,6 +22,7 @@ internal class RequestGameStateMessage : QSBMessage
 		}
 
 		new GameStateMessage(From).Send();
+		new ServerSettingsMessage().Send();
 
 		var gameSave = PlayerData._currentGameSave;
 
