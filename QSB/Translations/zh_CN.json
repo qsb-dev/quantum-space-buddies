@@ -1,0 +1,126 @@
+{
+  "Language": "CHINESE_SIMPLE",
+  "MainMenuHost": "开启多人游戏",
+  "MainMenuConnect": "连接至多人游戏",
+  "PauseMenuDisconnect": "断开连接",
+  "PauseMenuStopHosting": "关闭服务器",
+  "PublicIPAddress": "公共IP地址\n\n（您的多人存档数据将被覆盖）",
+  "ProductUserID": "用户ID\n\n（您的多人存档数据将被覆盖）",
+  "Connect": "连接",
+  "Cancel": "取消",
+  "HostExistingOrNewOrCopy": "您想使用一个现有的多人探险存档，或是开启一个新的存档，还是把现有的单人探险存档复制到多人探险存档？",
+  "HostNewOrCopy": "您想开启一个新的存档，还是把现有的单人探险存档复制到多人探险存档？",
+  "HostExistingOrNew": "您想使用一个现有的多人探险存档，还是开启一个新的存档？",
+  "ExistingSave": "现有存档",
+  "NewSave": "新建存档",
+  "CopySave": "复制存档",
+  "DisconnectAreYouSure": "您确定要断开连接吗？\n将会退出至主菜单。",
+  "Yes": "是",
+  "No": "否",
+  "StopHostingAreYouSure": "您确定要停止服务器吗？\n将会与所有人断开连接并且使他们退出至主菜单。",
+  "CopyProductUserIDToClipboard": "开启服务器\n其他玩家需要使用您的用户ID连接至服务器，用户ID是：\n{0}\n您想要复制到剪切板吗？",
+  "Connecting": "连接中……",
+  "OK": "好的",
+  "ServerRefusedConnection": "服务器拒绝了您的连接\n{0}",
+  "ClientDisconnectWithError": "客户端发生错误导致连接断开\n{0}",
+  "QSBVersionMismatch": "QSB版本号不匹配。（客户端：{0}，服务端：{1}）",
+  "OWVersionMismatch": "《星际拓荒》版本号不匹配。（客户端：{0}，服务端：{1}）",
+  "DLCMismatch": "DLC安装情况不匹配。（客户端：{0}，服务端：{1}）",
+  "GameProgressLimit": "游戏中时间太久了。",
+  "AddonMismatch": "插件不匹配（客户端：{0}插件，服务端：{1}插件）",
+  "IncompatibleMod": "使用了不兼容/不允许的模组，检测到的第一个模组是{0}",
+  "PlayerJoinedTheGame": "{0}加入了游戏！",
+  "PlayerWasKicked": "{0}被踢出了游戏。",
+  "KickedFromServer": "被踢出了游戏，理由是：{0}",
+  "RespawnPlayer": "复活玩家",
+  "TimeSyncTooFarBehind": "{0}\n快进以匹配服务器时间……",
+  "TimeSyncWaitingForStartOfServer": "等待服务器开始……",
+  "TimeSyncTooFarAhead": "{0}\n暂停等待以匹配服务器时间……",
+  "TimeSyncWaitForAllToReady": "等待开始轮回……",
+  "TimeSyncWaitForAllToDie": "等待轮回结束……",
+  "GalaxyMapEveryoneNotPresent": "现在还不是时候。需要所有人见证这个时刻。",
+  "YouAreDead": "你死了。",
+  "WaitingForRespawn": "等待某人将你复活……",
+  "WaitingForAllToDie": "等待{0}死亡……",
+  "AttachToShip": "固定在飞船上",
+  "DetachFromShip": "取消固定",
+  "DeathMessages": {
+    "Default": [
+      "{0}死了",
+      "{0}被杀了"
+    ],
+    "Impact": [
+      "{0}忘记使用推进器了",
+      "{0}拥抱了地面",
+      "{0}狠狠的撞上了地面",
+      "{0}爆炸了",
+      "{0}因为撞击而死",
+      "{0}撞击地面过猛"
+    ],
+    "Asphyxiation": [
+      "{0}忘记了需要呼吸",
+      "{0}窒息了",
+      "{0}窒息而死",
+      "{0}忘记了怎么呼吸",
+      "{0}忘记检查氧气了",
+      "{0}把空气用完了",
+      "{0}把氧气用完了",
+      "{0}不再需要呼吸了"
+    ],
+    "Energy": [
+      "{0}被烹饪了"
+    ],
+    "Supernova": [
+      "{0}没有时间了",
+      "{0}被烧掉了",
+      "{0}被超新星烤熟了",
+      "{0}升华了",
+      "{0}遗忘了时间"
+    ],
+    "Digestion": [
+      "{0}被吃掉了",
+      "{0}发现了一条鱼",
+      "{0}遇到了邪恶生物",
+      "{0}惹错了鱼",
+      "{0}被消化了",
+      "{0}因为消化系统而死"
+    ],
+    "Crushed": [
+      "{0}被压死了",
+      "{0}被压扁了",
+      "{0}埋葬了自己",
+      "{0}没能及时逃离",
+      "{0}想在沙子中游泳",
+      "{0}小看了沙子的力量",
+      "{0}卡在沙子下面了"
+    ],
+    "Lava": [
+      "{0}在岩浆中死去",
+      "{0}融化了",
+      "{0}尝试在岩浆中游泳",
+      "{0}掉进了岩浆",
+      "{0}因为岩浆而死",
+      "{0}在岩浆中游泳",
+      "{0}被岩浆烧毁"
+    ],
+    "BlackHole": [
+      "{0}尝试追寻自己的记忆"
+    ],
+    "DreamExplosion": [
+      "{0}爆炸了",
+      "{0}是第一个吃螃蟹的人",
+      "{0}被炸死了",
+      "{0}被炸了",
+      "{0}因为爆炸而死",
+      "{0}使用了错误的文物"
+    ],
+    "CrushedByElevator": [
+      "{0}被粉碎了",
+      "{0}被挤扁了",
+      "{0}被电梯撞击",
+      "{0}站在了电梯下",
+      "{0}变成了一个平板人",
+      "{0}被电梯挤扁了"
+    ]
+  }
+}

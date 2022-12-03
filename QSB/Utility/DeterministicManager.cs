@@ -31,11 +31,11 @@ public static class DeterministicManager
 			}
 		};
 
-	public static void OnWorldObjectsReady()
+	public static void OnWorldObjectsAdded()
 	{
 		if (QSBCore.DebugSettings.DumpWorldObjects)
 		{
-			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "world objects.csv")))
+			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, $"[{DebugLog.ProcessInstanceId}] world objects.csv")))
 			{
 				file.WriteLine("world object,deterministic path");
 				foreach (var worldObject in QSBWorldSync.GetWorldObjects())
@@ -51,7 +51,7 @@ public static class DeterministicManager
 				}
 			}
 
-			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, "cache.csv")))
+			using (var file = File.CreateText(Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, $"[{DebugLog.ProcessInstanceId}] cache.csv")))
 			{
 				file.WriteLine("name,instance id,sibling index,parent,parent instance id");
 				foreach (var (transform, (siblingIndex, parent)) in _cache)
@@ -267,7 +267,7 @@ public static class DeterministicManager
 	}
 
 	/// <summary>
-	/// only call this before world objects ready
+	/// only call this before world objects added
 	/// </summary>
 	public static string DeterministicPath(this Component component)
 	{
@@ -298,7 +298,7 @@ public static class DeterministicManager
 	}
 
 	/// <summary>
-	/// only call this before world objects ready
+	/// only call this before world objects added
 	/// </summary>
 	public static IEnumerable<T> SortDeterministic<T>(this IEnumerable<T> components) where T : Component
 		=> components.OrderBy(DeterministicPath);

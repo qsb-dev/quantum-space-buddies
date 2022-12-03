@@ -1,8 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
+using System.Linq;
 using System.Threading;
-using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync;
 
@@ -11,18 +12,12 @@ public class AlarmTotemManager : WorldObjectManager
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;
 
-	private QSBAlarmSequenceController _qsbAlarmSequenceController;
+	public static AlarmBell[] AlarmBells;
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		// QSBWorldSync.Init<QSBAlarmTotem, AlarmTotem>();
+		QSBWorldSync.Init<QSBAlarmTotem, AlarmTotem>();
 		QSBWorldSync.Init<QSBAlarmBell, AlarmBell>();
-
-		_qsbAlarmSequenceController = new GameObject(nameof(QSBAlarmSequenceController))
-			.AddComponent<QSBAlarmSequenceController>();
-		DontDestroyOnLoad(_qsbAlarmSequenceController.gameObject);
+		AlarmBells = QSBWorldSync.GetUnityObjects<AlarmBell>().Where(x => x._lightController).SortDeterministic().ToArray();
 	}
-
-	public override void UnbuildWorldObjects() =>
-		Destroy(_qsbAlarmSequenceController.gameObject);
 }

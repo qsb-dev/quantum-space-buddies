@@ -99,7 +99,6 @@ See [TRANSLATING.md](TRANSLATING.md)
 - Clone QSB's source
 - Open the file `DevEnv.targets` in your favorite text editor
 - (optional if copying built dlls manually) Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
-- (optional if no unity project) Edit the entry `<GameDir>` to point to the directory where Outer Wilds is installed
 - (optional if no unity project) Edit the entry `<UnityAssetsDir>` to point to the Assets folder of the QSB unity project
 - Open the project solution file `QSB.sln` in Visual Studio 2022
 
@@ -171,7 +170,7 @@ The template for this file is this :
 
 ### Authors
 
-- [\_nebula](https://github.com/misternebula) - Developer of v0.3 onwards
+- [\_nebula](https://github.com/misternebula) - Developer of v0.3.0 onwards
 - [JohnCorby](https://github.com/JohnCorby) - Co-developer of v0.13.0 onwards.
 - [AmazingAlek](https://github.com/amazingalek) - Developer of v0.1.0 - v0.7.1.
 - [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1.0 - v0.2.0.
@@ -180,9 +179,10 @@ The template for this file is this :
 
 - [Chris Yeninas](https://github.com/PhantomGamers) - Help with project files and GitHub workflows.
 - [Tlya](https://github.com/Tllya) - Russian translation.
-- [Xen](https://github.com/xen-42) - French translation.
+- [Xen](https://github.com/xen-42) - French translation, and help with particle effects and sounds.
 - [ShoosGun](https://github.com/ShoosGun) - Portuguese translation.
 - [DertolleDude](https://github.com/DertolleDude) - German translation.
+- [SakuradaYuki](https://github.com/SakuradaYuki) - Chinese translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.

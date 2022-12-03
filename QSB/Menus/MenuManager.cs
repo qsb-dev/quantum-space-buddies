@@ -42,7 +42,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const int _titleButtonIndex = 2;
 	private float _connectPopupOpenTime;
 
-	private const string UpdateChangelog = "QSB Version 0.22.0\r\nFixed lots of bugs, and added lots of SFX and VFX stuff.";
+	private const string UpdateChangelog = "QSB Version 0.23.0\r\nA lot of small improvements and bug fixes.";
 
 	private Action<bool> PopupClose;
 

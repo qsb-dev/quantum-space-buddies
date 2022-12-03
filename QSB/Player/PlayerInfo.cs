@@ -22,6 +22,7 @@ public partial class PlayerInfo
 	public uint PlayerId { get; }
 	public string Name { get; set; }
 	public PlayerHUDMarker HudMarker { get; set; }
+	public PlayerMapMarker MapMarker { get; set; }
 	public PlayerTransformSync TransformSync { get; }
 	public ClientState State { get; set; }
 	public EyeState EyeState { get; set; }

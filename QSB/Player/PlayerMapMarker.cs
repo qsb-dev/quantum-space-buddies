@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.ServerSettings;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Player;
@@ -31,6 +32,7 @@ public class PlayerMapMarker : MonoBehaviour
 	public void Init(PlayerInfo player)
 	{
 		_player = player;
+		_player.MapMarker = this;
 		_hasBeenSetUpForInit = true;
 	}
 
@@ -57,10 +59,20 @@ public class PlayerMapMarker : MonoBehaviour
 			return false;
 		}
 
+		if (!ServerSettingsManager.ShowPlayerNames)
+		{
+			return false;
+		}
+
 		var playerScreenPos = Locator.GetActiveCamera().WorldToScreenPoint(transform.position);
 		var isInfrontOfCamera = playerScreenPos.z > 0f;
 
-		return _player.IsReady && !_player.IsDead && (!_player.InDreamWorld || QSBPlayerManager.LocalPlayer.InDreamWorld) && _player.Visible && isInfrontOfCamera;
+		return isInfrontOfCamera &&
+			_player.IsReady &&
+			!_player.IsDead &&
+			_player.Visible &&
+			_player.InDreamWorld == QSBPlayerManager.LocalPlayer.InDreamWorld &&
+			_player.IsInMoon == QSBPlayerManager.LocalPlayer.IsInMoon;
 	}
 
 	public void LateUpdate()
@@ -76,5 +88,10 @@ public class PlayerMapMarker : MonoBehaviour
 		{
 			_canvasMarker.SetVisibility(shouldBeVisible);
 		}
+	}
+	
+	public void Remove()
+	{
+		// TODO
 	}
 }

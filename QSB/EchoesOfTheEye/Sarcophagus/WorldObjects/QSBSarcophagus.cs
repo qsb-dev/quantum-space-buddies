@@ -8,7 +8,7 @@ public class QSBSarcophagus : WorldObject<SarcophagusController>
 {
 	public override void SendInitialState(uint to)
 	{
-		if (AttachedObject._isOpen)
+		if (AttachedObject._isOpen || AttachedObject._isSlightlyOpen)
 		{
 			this.SendMessage(new OpenMessage());
 		}

@@ -1,4 +1,5 @@
-﻿using QSB.Utility;
+﻿using QSB.ServerSettings;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Player;
@@ -34,7 +35,16 @@ public class PlayerHUDMarker : HUDDistanceMarker
 			return false;
 		}
 
-		return _player.IsReady && !_player.IsDead && (!_player.InDreamWorld || QSBPlayerManager.LocalPlayer.InDreamWorld) && _player.Visible;
+		if (!ServerSettingsManager.ShowPlayerNames)
+		{
+			return false;
+		}
+
+		return _player.IsReady &&
+			!_player.IsDead &&
+			_player.Visible &&
+			_player.InDreamWorld == QSBPlayerManager.LocalPlayer.InDreamWorld &&
+			_player.IsInMoon == QSBPlayerManager.LocalPlayer.IsInMoon;
 	}
 
 	private void Update()

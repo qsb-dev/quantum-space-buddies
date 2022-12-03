@@ -1,5 +1,5 @@
-﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
-using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
+using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;

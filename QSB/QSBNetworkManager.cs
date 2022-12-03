@@ -315,7 +315,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		Destroy(GetComponent<RespawnOnDeath>());
 		Destroy(GetComponent<ServerStateManager>());
 		Destroy(GetComponent<ClientStateManager>());
-		QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
+		QSBPlayerManager.PlayerList.ForEach(player =>
+		{
+			player.HudMarker?.Remove();
+			player.MapMarker?.Remove();
+		});
 
 		QSBWorldSync.RemoveWorldObjects();
 
@@ -397,7 +401,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		DebugLog.DebugWrite("OnStopServer", MessageType.Info);
 		Destroy(GetComponent<RespawnOnDeath>());
 		DebugLog.ToConsole("Server stopped!", MessageType.Info);
-		QSBPlayerManager.PlayerList.ForEach(player => player.HudMarker?.Remove());
+		QSBPlayerManager.PlayerList.ForEach(player =>
+		{
+			player.HudMarker?.Remove();
+			player.MapMarker?.Remove();
+		});
 
 		base.OnStopServer();
 	}
