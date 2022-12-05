@@ -74,6 +74,9 @@ internal class UseFlightConsoleMessage : QSBMessage<bool>
 		// Client messes up its position when they start flying it
 		// We can just recall it immediately so its in the right place.
 		var console = QSBWorldSync.GetUnityObject<RemoteFlightConsole>();
-		console.RespawnModelShip(false);
+		if (console._modelShipBody) // for when model ship is destroyed
+		{
+			console.RespawnModelShip(false);
+		}
 	}
 }

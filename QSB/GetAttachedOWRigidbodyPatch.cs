@@ -4,9 +4,6 @@ using UnityEngine;
 
 namespace QSB;
 
-/// <summary>
-/// TODO: TEST THIS. see if things horribly break. this could be huge.
-/// </summary>
 [HarmonyPatch(typeof(OWExtensions))]
 public class GetAttachedOWRigidbodyPatch : QSBPatch
 {
