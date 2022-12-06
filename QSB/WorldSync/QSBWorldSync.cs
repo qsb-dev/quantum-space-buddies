@@ -92,7 +92,6 @@ public static class QSBWorldSync
 			var worldObjects = item.Value;
 			var hash = worldObjects.Select(x => x.GetType().Name).GetMD5Hash();
 			ManagerHashes[item.Key] = hash;
-			DebugLog.DebugWrite($"hash for {item.Key} is {hash}");
 		}
 
 		if (!QSBCore.IsHost)
@@ -445,7 +444,6 @@ public static class QSBWorldSync
 		if (!ManagerToBuiltObjects.ContainsKey(className))
 		{
 			ManagerToBuiltObjects.Add(className, new List<IWorldObject> { worldObject });
-			DebugLog.DebugWrite($"Adding {className} to dictionary.");
 		}
 		else
 		{

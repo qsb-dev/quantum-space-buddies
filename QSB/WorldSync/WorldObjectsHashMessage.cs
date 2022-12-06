@@ -22,9 +22,5 @@ internal class WorldObjectsHashMessage : QSBMessage<(string managerName, string 
 			DebugLog.ToConsole($"Kicking {From} because their WorldObjects hash for {Data.managerName} is wrong. (server:{serverHash}, client:{Data.hash})", MessageType.Error);
 			new PlayerKickMessage(From, $"WorldObject hash error for {Data.managerName}. (Server:{serverHash}, Client:{Data.hash})").Send();
 		}
-		else
-		{
-			DebugLog.DebugWrite($"{From} - {Data.managerName} verified!", MessageType.Success);
-		}
 	}
 }
