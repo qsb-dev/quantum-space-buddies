@@ -3,6 +3,7 @@ using QSB.DeathSync.Messages;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
+using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -60,10 +61,85 @@ public class DeathPatches : QSBPatch
 		return false;
 	}
 
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.OnRingWorldCloakEnter))]
+	public static void CloakEnter()
+	{
+		DebugLog.DebugWrite($"CLOAK ENTER");
+	}
+
+	[HarmonyPostfix]
+	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.OnRingWorldCloakExit))]
+	public static void CloakExit()
+	{
+		DebugLog.DebugWrite($"CLOAK EXIT");
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DreamWorldController), nameof(DreamWorldController.ExitDreamWorld), typeof(DreamWakeType))]
+	private static void ExitDreamWorld(DreamWorldController __instance, DreamWakeType wakeType = DreamWakeType.Default)
+	{
+		var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
+		if (/*deadPlayersCount != QSBPlayerManager.PlayerList.Count - 1 &&*/ PlayerState.IsResurrected())
+		{
+			__instance._wakeType = wakeType;
+			__instance.CheckDreamZone2Completion();
+			__instance.CheckSleepWakeDieAchievement(wakeType);
+
+			__instance._activeGhostGrabController?.ReleasePlayer();
+			__instance._activeZoomPoint?.CancelZoom();
+
+			if (__instance._outsideLanternBounds)
+			{
+				__instance.EnterLanternBounds();
+			}
+
+			__instance._simulationCamera.OnExitDreamWorld();
+			SunLightController.UnregisterSunOverrider(__instance);
+			if (__instance._proxyShadowLight != null)
+			{
+				__instance._proxyShadowLight.enabled = true;
+			}
+			__instance._insideDream = false;
+			__instance._waitingToLightLantern = false;
+			__instance._playerLantern.OnExitDreamWorld();
+
+			// drop player lantern at campfire
+
+			Locator.GetPlayerSectorDetector().RemoveFromAllSectors();
+
+			__instance._playerLantern.OnExitDreamWorld();
+			__instance._dreamArrivalPoint.OnExitDreamWorld();
+			__instance._dreamCampfire.OnDreamCampfireExtinguished -= __instance.OnDreamCampfireExtinguished;
+			__instance._dreamCampfire = null;
+
+			__instance.ExtinguishDreamRaft();
+			Locator.GetAudioMixer().UnmixDreamWorld();
+			Locator.GetAudioMixer().UnmixSleepAtCampfire(1f);
+
+			if (__instance._playerCamAmbientLightRenderer != null)
+			{
+				__instance._playerCamAmbientLightRenderer.enabled = false;
+			}
+
+			__instance._playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Sun");
+			__instance._playerCamera.farClipPlane = __instance._prevPlayerCameraFarPlaneDist;
+			__instance._prevPlayerCameraFarPlaneDist = 0f;
+			__instance._playerCamera.mainCamera.backgroundColor = Color.black;
+			__instance._playerCamera.planetaryFog.enabled = true;
+			__instance._playerCamera.postProcessingSettings.screenSpaceReflectionAvailable = false;
+			__instance._playerCamera.postProcessingSettings.ambientOcclusionAvailable = true;
+
+			GlobalMessenger.FireEvent("ExitDreamWorld");
+		}
+	}
+
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 	private static bool DeathManager_KillPlayer(DeathManager __instance, DeathType deathType)
 	{
+		DebugLog.DebugWrite($"Kill Player");
+
 		// funny moment for eye
 		if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
 		{
@@ -91,7 +167,12 @@ public class DeathPatches : QSBPatch
 				Achievements.Earn(Achievements.Type.EARLY_ADOPTER);
 			}
 
-			if (PlayerState.InDreamWorld() && deathType != DeathType.Dream && deathType != DeathType.DreamExplosion && deathType != DeathType.Supernova && deathType != DeathType.TimeLoop && deathType != DeathType.Meditation)
+			if (PlayerState.InDreamWorld()
+				&& deathType != DeathType.Dream
+				&& deathType != DeathType.DreamExplosion
+				&& deathType != DeathType.Supernova
+				&& deathType != DeathType.TimeLoop
+				&& deathType != DeathType.Meditation)
 			{
 				Locator.GetDreamWorldController().ExitDreamWorld(deathType);
 				return;
@@ -99,12 +180,12 @@ public class DeathPatches : QSBPatch
 
 			if (!@this._isDying)
 			{
-				if (@this._invincible && deathType != DeathType.Supernova && deathType != DeathType.BigBang && deathType != DeathType.Meditation && deathType != DeathType.TimeLoop && deathType != DeathType.BlackHole)
-				{
-					return;
-				}
-
-				if (!Custom(@this, deathType))
+				if (@this._invincible
+					&& deathType != DeathType.Supernova
+					&& deathType != DeathType.BigBang
+					&& deathType != DeathType.Meditation
+					&& deathType != DeathType.TimeLoop
+					&& deathType != DeathType.BlackHole)
 				{
 					return;
 				}
@@ -126,7 +207,7 @@ public class DeathPatches : QSBPatch
 					if (TimeLoop.GetLoopCount() > 1)
 					{
 						Achievements.SetHeroStat(Achievements.HeroStat.TIMELOOP_COUNT, (uint)(TimeLoop.GetLoopCount() - 1));
-						if (deathType == DeathType.TimeLoop || deathType == DeathType.BigBang || deathType == DeathType.Supernova)
+						if (deathType is DeathType.TimeLoop or DeathType.BigBang or DeathType.Supernova)
 						{
 							PlayerData.CompletedFullTimeLoop();
 						}
@@ -147,26 +228,19 @@ public class DeathPatches : QSBPatch
 				GlobalMessenger<DeathType>.FireEvent("PlayerDeath", deathType);
 			}
 		}
+	}
 
-		static bool Custom(DeathManager @this, DeathType deathType)
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.FinishDeathSequence))]
+	public static bool FinishDeathSequence(DeathManager __instance)
+	{
+		if (!__instance._isDead)
 		{
-			if (RespawnOnDeath.Instance == null)
+			if (__instance.CheckShouldWakeInDreamWorld())
 			{
-				return true;
-			}
-
-			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
-			{
-				return true;
-			}
-
-			if (@this.CheckShouldWakeInDreamWorld())
-			{
-				return true;
-			}
-
-			if (QSBPlayerManager.LocalPlayer.IsDead)
-			{
+				__instance.enabled = true;
+				__instance._resurrectAfterDelay = true;
+				__instance._resurrectTime = Time.time + 2f;
 				return false;
 			}
 
@@ -174,21 +248,71 @@ public class DeathPatches : QSBPatch
 			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
 			{
 				new EndLoopMessage().Send();
-				return true;
+				QSBPlayerManager.LocalPlayer.IsDead = true;
+				DebugLog.DebugWrite($"- All players are dead.");
+				return false;
 			}
 
-			RespawnOnDeath.Instance.ResetPlayer();
-
-			QSBPlayerManager.LocalPlayer.IsDead = true;
-			new PlayerDeathMessage(deathType).Send();
-
-			if (PlayerAttachWatcher.Current)
+			if (!RespawnOnDeath.Instance.AllowedDeathTypes.Contains(__instance._deathType))
 			{
-				PlayerAttachWatcher.Current.DetachPlayer();
+				RespawnOnDeath.Instance.ResetPlayer();
+				QSBPlayerManager.LocalPlayer.IsDead = true;
+				new PlayerDeathMessage(__instance._deathType).Send();
+				if (PlayerAttachWatcher.Current)
+				{
+					PlayerAttachWatcher.Current.DetachPlayer();
+				}
+
+				return false;
 			}
 
-			return false;
+			__instance._isDead = true;
+			GlobalMessenger.FireEvent("DeathSequenceComplete");
+			if (PlayerData.GetPersistentCondition("DESTROYED_TIMELINE_LAST_SAVE"))
+			{
+				PlayerData.SetPersistentCondition("DESTROYED_TIMELINE_LAST_SAVE", false);
+			}
+
+			if (__instance._deathType == DeathType.BigBang)
+			{
+				if (TimeLoopCoreController.ParadoxExists())
+				{
+					PlayerData.RevertParadoxLoopCountStates();
+				}
+
+				LoadManager.LoadScene(OWScene.Credits_Final, LoadManager.FadeType.ToWhite, 1f, true);
+				return false;
+			}
+
+			if (TimeLoopCoreController.ParadoxExists())
+			{
+				Locator.GetTimelineObliterationController().BeginTimelineObliteration(TimelineObliterationController.ObliterationType.PARADOX_DEATH, null);
+				return false;
+			}
+
+			if (TimeLoop.IsTimeFlowing() && TimeLoop.IsTimeLoopEnabled())
+			{
+				if (__instance._finishedDLC)
+				{
+					GlobalMessenger.FireEvent("TriggerEndOfDLC");
+					return false;
+				}
+				GlobalMessenger.FireEvent("TriggerFlashback");
+				return false;
+			}
+			else
+			{
+				if (__instance._deathType == DeathType.Meditation && PlayerState.OnQuantumMoon() && Locator.GetQuantumMoon().GetStateIndex() == 5)
+				{
+					__instance._timeloopEscapeType = TimeloopEscapeType.Quantum;
+					__instance.FinishEscapeTimeLoopSequence();
+					return false;
+				}
+				GlobalMessenger.FireEvent("TriggerDeathOutsideTimeLoop");
+			}
 		}
+
+		return false;
 	}
 
 	[HarmonyPrefix]

@@ -81,6 +81,69 @@ public class RespawnOnDeath : MonoBehaviour
 			DeathClosestAstroObject = closest.transform;
 		}
 
+		var sectorList = PlayerTransformSync.LocalInstance.SectorDetector.SectorList;
+		if (sectorList.All(x => x.Type != Sector.Name.TimberHearth))
+		{
+			// stops sectors from breaking when you die on TH??
+			Locator.GetPlayerSectorDetector().RemoveFromAllSectors();
+			Locator.GetPlayerCameraDetector().GetComponent<AudioDetector>().DeactivateAllVolumes(0f);
+		}
+
+		var cloak = Locator.GetCloakFieldController();
+		cloak._playerInsideCloak = false;
+		cloak._playerCloakFactor = 0f;
+		cloak._worldFadeFactor = 0f;
+		cloak._interiorRevealFactor = 0f;
+		cloak._rendererFade = 1;
+		cloak.OnPlayerExit.Invoke();
+		GlobalMessenger.FireEvent("ExitCloak");
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<ScreenPromptList>())
+		{
+			item.OnPlayerResurrection();
+		}
+
+		PlayerState._isDead = false;
+		Locator.GetPlayerController().OnPlayerResurrection();
+		QSBWorldSync.GetUnityObject<PlayerBreathingAudio>().enabled = true;
+		Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().OnPlayerResurrection();
+		Locator.GetPlayerAudioController().OnPlayerResurrection();
+		Locator.GetDeathManager()._isDying = false;
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<ThrustAndAttitudeIndicator>())
+		{
+			item.enabled = true;
+		}
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<HUDCanvas>())
+		{
+			item.enabled = true;
+		}
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<ReferenceFrameGUI>())
+		{
+			item.enabled = true;
+			item._activeCam = Locator.GetMapController()._mapCamera;
+			item._isMapView = true;
+		}
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<AutopilotGUI>())
+		{
+			item.enabled = true;
+		}
+
+		var visorEffect = QSBWorldSync.GetUnityObject<VisorEffectController>();
+		visorEffect._cracked = false;
+		visorEffect._crackStartTime = 0f;
+		visorEffect._crackEffectRenderer.enabled = false;
+		visorEffect._crackEffectRenderer.material.SetFloat(visorEffect._propID_Cutoff, 1f);
+
+		var mixer = Locator.GetAudioMixer();
+		mixer._deathMixed = false;
+		mixer._nonEndTimesVolume.FadeTo(1, 0.5f);
+		mixer._endTimesVolume.FadeTo(1, 0.5f);
+		mixer.MixMap();
+
 		var deathPosition = Locator.GetPlayerTransform().position;
 		_deathPositionRelative = DeathClosestAstroObject.InverseTransformPoint(deathPosition);
 		DeathPlayerUpVector = Locator.GetPlayerTransform().up;
