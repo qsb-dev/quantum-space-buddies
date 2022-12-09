@@ -61,26 +61,12 @@ public class DeathPatches : QSBPatch
 		return false;
 	}
 
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.OnRingWorldCloakEnter))]
-	public static void CloakEnter()
-	{
-		DebugLog.DebugWrite($"CLOAK ENTER");
-	}
-
-	[HarmonyPostfix]
-	[HarmonyPatch(typeof(PlayerAudioController), nameof(PlayerAudioController.OnRingWorldCloakExit))]
-	public static void CloakExit()
-	{
-		DebugLog.DebugWrite($"CLOAK EXIT");
-	}
-
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamWorldController), nameof(DreamWorldController.ExitDreamWorld), typeof(DreamWakeType))]
 	private static void ExitDreamWorld(DreamWorldController __instance, DreamWakeType wakeType = DreamWakeType.Default)
 	{
 		var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
-		if (/*deadPlayersCount != QSBPlayerManager.PlayerList.Count - 1 &&*/ PlayerState.IsResurrected())
+		if (deadPlayersCount != QSBPlayerManager.PlayerList.Count - 1 && PlayerState.IsResurrected())
 		{
 			__instance._wakeType = wakeType;
 			__instance.CheckDreamZone2Completion();
@@ -104,7 +90,7 @@ public class DeathPatches : QSBPatch
 			__instance._waitingToLightLantern = false;
 			__instance._playerLantern.OnExitDreamWorld();
 
-			// drop player lantern at campfire
+			// TODO : drop player lantern at campfire
 
 			Locator.GetPlayerSectorDetector().RemoveFromAllSectors();
 
@@ -138,8 +124,6 @@ public class DeathPatches : QSBPatch
 	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
 	private static bool DeathManager_KillPlayer(DeathManager __instance, DeathType deathType)
 	{
-		DebugLog.DebugWrite($"Kill Player");
-
 		// funny moment for eye
 		if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
 		{
