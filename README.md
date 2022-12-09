@@ -183,6 +183,7 @@ The template for this file is this :
 - [ShoosGun](https://github.com/ShoosGun) - Portuguese translation.
 - [DertolleDude](https://github.com/DertolleDude) - German translation.
 - [SakuradaYuki](https://github.com/SakuradaYuki) - Chinese translation.
+- [poleshe](https://github.com/poleshe) - Spanish translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.
