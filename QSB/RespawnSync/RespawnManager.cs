@@ -155,7 +155,7 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 
 		var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
 
-		if (deadPlayersCount == QSBPlayerManager.PlayerList.Count)
+		if (deadPlayersCount == QSBPlayerManager.PlayerList.Count && !QSBCore.DebugSettings.DisableLoopDeath)
 		{
 			new EndLoopMessage().Send();
 			return;

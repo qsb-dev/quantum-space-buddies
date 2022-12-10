@@ -66,7 +66,7 @@ public class DeathPatches : QSBPatch
 	private static void ExitDreamWorld(DreamWorldController __instance, DreamWakeType wakeType = DreamWakeType.Default)
 	{
 		var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
-		if (deadPlayersCount != QSBPlayerManager.PlayerList.Count - 1 && PlayerState.IsResurrected())
+		if ((deadPlayersCount != QSBPlayerManager.PlayerList.Count - 1 || QSBCore.DebugSettings.DisableLoopDeath) && PlayerState.IsResurrected())
 		{
 			__instance._wakeType = wakeType;
 			__instance.CheckDreamZone2Completion();
@@ -135,15 +135,12 @@ public class DeathPatches : QSBPatch
 			}
 
 			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
-			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
+			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1 && !QSBCore.DebugSettings.DisableLoopDeath)
 			{
 				new EndLoopMessage().Send();
-				QSBPlayerManager.LocalPlayer.IsDead = true;
 				DebugLog.DebugWrite($"- All players are dead.");
-				return false;
 			}
-
-			if (!RespawnOnDeath.Instance.AllowedDeathTypes.Contains(__instance._deathType))
+			else if (!RespawnOnDeath.Instance.AllowedDeathTypes.Contains(__instance._deathType))
 			{
 				RespawnOnDeath.Instance.ResetPlayer();
 				QSBPlayerManager.LocalPlayer.IsDead = true;
