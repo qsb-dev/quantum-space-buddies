@@ -8,23 +8,19 @@ namespace QSB.WorldSync;
 /// <summary>
 /// sends QSBWorldSync.WorldObjectsHash to the server for sanity checking
 /// </summary>
-internal class WorldObjectsHashMessage : QSBMessage<string>
+internal class WorldObjectsHashMessage : QSBMessage<(string managerName, string hash)>
 {
-	public WorldObjectsHashMessage() : base(QSBWorldSync.WorldObjectsHash) => To = 0;
+	public WorldObjectsHashMessage(string managerName, string hash) : base((managerName, hash)) => To = 0;
 
 	public override void OnReceiveRemote()
 	{
-		var serverHash = QSBWorldSync.WorldObjectsHash;
+		var serverHash = QSBWorldSync.ManagerHashes[Data.managerName];
 
-		if (serverHash != Data)
+		if (serverHash != Data.hash)
 		{
 			// oh fuck oh no oh god
-			DebugLog.ToConsole($"Kicking {From} because their WorldObjects hash is wrong. (server:{serverHash}, client:{Data})", MessageType.Error);
-			new PlayerKickMessage(From, $"WorldObject hash error. (Server:{serverHash}, Client:{Data})").Send();
-		}
-		else
-		{
-			DebugLog.DebugWrite($"WorldObject hash from {From} verified!", MessageType.Success);
+			DebugLog.ToConsole($"Kicking {From} because their WorldObjects hash for {Data.managerName} is wrong. (server:{serverHash}, client:{Data.hash})", MessageType.Error);
+			new PlayerKickMessage(From, $"WorldObject hash error for {Data.managerName}. (Server:{serverHash}, Client:{Data.hash})").Send();
 		}
 	}
 }

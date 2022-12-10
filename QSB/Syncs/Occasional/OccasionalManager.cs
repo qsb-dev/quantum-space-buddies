@@ -7,6 +7,7 @@ using System.Threading;
 
 namespace QSB.Syncs.Occasional;
 
+// BUG: somehow, not including DontDestroyOnLoad things makes this fuck up with NH
 internal class OccasionalManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
@@ -21,6 +22,11 @@ internal class OccasionalManager : WorldObjectManager
 
 		foreach (var proxy in cannon._realDebrisSectorProxies)
 		{
+			// NH can remove these
+			if (!proxy)
+			{
+				continue;
+			}
 			SpawnOccasional(proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 		}
 
