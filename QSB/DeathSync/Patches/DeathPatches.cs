@@ -6,6 +6,7 @@ using QSB.Player;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QSB.DeathSync.Patches;
 
@@ -62,62 +63,88 @@ public class DeathPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
+	public static bool KillPlayer(DeathManager __instance, DeathType deathType)
+	{
+		if (deathType == DeathType.Meditation && __instance.CheckShouldWakeInDreamWorld())
+		{
+			return true;
+		}
+
+		if (PlayerState.InDreamWorld() && (deathType == DeathType.Meditation ||	deathType == DeathType.DreamExplosion))
+		{
+			// BUG : this makes things look broken for a second after meditating in
+			// the dreamworld, because we remove the player from all sectors
+			CustomExitDreamWorld(DreamWakeType.Default);
+		}
+
+		return true;
+	}
+
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamWorldController), nameof(DreamWorldController.ExitDreamWorld), typeof(DreamWakeType))]
 	private static void ExitDreamWorld(DreamWorldController __instance, DreamWakeType wakeType = DreamWakeType.Default)
 	{
 		var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
 		if ((deadPlayersCount != QSBPlayerManager.PlayerList.Count - 1 || QSBCore.DebugSettings.DisableLoopDeath) && PlayerState.IsResurrected())
 		{
-			__instance._wakeType = wakeType;
-			__instance.CheckDreamZone2Completion();
-			__instance.CheckSleepWakeDieAchievement(wakeType);
-
-			__instance._activeGhostGrabController?.ReleasePlayer();
-			__instance._activeZoomPoint?.CancelZoom();
-
-			if (__instance._outsideLanternBounds)
-			{
-				__instance.EnterLanternBounds();
-			}
-
-			__instance._simulationCamera.OnExitDreamWorld();
-			SunLightController.UnregisterSunOverrider(__instance);
-			if (__instance._proxyShadowLight != null)
-			{
-				__instance._proxyShadowLight.enabled = true;
-			}
-			__instance._insideDream = false;
-			__instance._waitingToLightLantern = false;
-			__instance._playerLantern.OnExitDreamWorld();
-
-			// TODO : drop player lantern at campfire
-
-			Locator.GetPlayerSectorDetector().RemoveFromAllSectors();
-
-			__instance._playerLantern.OnExitDreamWorld();
-			__instance._dreamArrivalPoint.OnExitDreamWorld();
-			__instance._dreamCampfire.OnDreamCampfireExtinguished -= __instance.OnDreamCampfireExtinguished;
-			__instance._dreamCampfire = null;
-
-			__instance.ExtinguishDreamRaft();
-			Locator.GetAudioMixer().UnmixDreamWorld();
-			Locator.GetAudioMixer().UnmixSleepAtCampfire(1f);
-
-			if (__instance._playerCamAmbientLightRenderer != null)
-			{
-				__instance._playerCamAmbientLightRenderer.enabled = false;
-			}
-
-			__instance._playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Sun");
-			__instance._playerCamera.farClipPlane = __instance._prevPlayerCameraFarPlaneDist;
-			__instance._prevPlayerCameraFarPlaneDist = 0f;
-			__instance._playerCamera.mainCamera.backgroundColor = Color.black;
-			__instance._playerCamera.planetaryFog.enabled = true;
-			__instance._playerCamera.postProcessingSettings.screenSpaceReflectionAvailable = false;
-			__instance._playerCamera.postProcessingSettings.ambientOcclusionAvailable = true;
-
-			GlobalMessenger.FireEvent("ExitDreamWorld");
+			CustomExitDreamWorld(wakeType);
 		}
+	}
+
+	private static void CustomExitDreamWorld(DreamWakeType wakeType)
+	{
+		var __instance = Locator.GetDreamWorldController();
+
+		__instance._wakeType = wakeType;
+		__instance.CheckDreamZone2Completion();
+		__instance.CheckSleepWakeDieAchievement(wakeType);
+
+		__instance._activeGhostGrabController?.ReleasePlayer();
+		__instance._activeZoomPoint?.CancelZoom();
+
+		if (__instance._outsideLanternBounds)
+		{
+			__instance.EnterLanternBounds();
+		}
+
+		__instance._simulationCamera.OnExitDreamWorld();
+		SunLightController.UnregisterSunOverrider(__instance);
+		if (__instance._proxyShadowLight != null)
+		{
+			__instance._proxyShadowLight.enabled = true;
+		}
+		__instance._insideDream = false;
+		__instance._waitingToLightLantern = false;
+		__instance._playerLantern.OnExitDreamWorld();
+
+		// TODO : drop player lantern at campfire
+
+		Locator.GetPlayerSectorDetector().RemoveFromAllSectors();
+
+		__instance._playerLantern.OnExitDreamWorld();
+		__instance._dreamArrivalPoint.OnExitDreamWorld();
+		__instance._dreamCampfire.OnDreamCampfireExtinguished -= __instance.OnDreamCampfireExtinguished;
+		__instance._dreamCampfire = null;
+
+		__instance.ExtinguishDreamRaft();
+		Locator.GetAudioMixer().UnmixDreamWorld();
+		Locator.GetAudioMixer().UnmixSleepAtCampfire(1f);
+
+		if (__instance._playerCamAmbientLightRenderer != null)
+		{
+			__instance._playerCamAmbientLightRenderer.enabled = false;
+		}
+
+		__instance._playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Sun");
+		__instance._playerCamera.farClipPlane = __instance._prevPlayerCameraFarPlaneDist;
+		__instance._prevPlayerCameraFarPlaneDist = 0f;
+		__instance._playerCamera.mainCamera.backgroundColor = Color.black;
+		__instance._playerCamera.planetaryFog.enabled = true;
+		__instance._playerCamera.postProcessingSettings.screenSpaceReflectionAvailable = false;
+		__instance._playerCamera.postProcessingSettings.ambientOcclusionAvailable = true;
+
+		GlobalMessenger.FireEvent("ExitDreamWorld");
 	}
 
 	[HarmonyPrefix]
@@ -197,6 +224,43 @@ public class DeathPatches : QSBPatch
 				}
 				GlobalMessenger.FireEvent("TriggerDeathOutsideTimeLoop");
 			}
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.Update))]
+	public static bool PauseMenuManager_Update(PauseMenuManager __instance)
+	{
+		// disable meditate button when in respawn map
+
+		if (__instance._waitingToApplySkipLoopStyle)
+		{
+			var disableMeditate = PlayerState.IsSleepingAtCampfire() || PlayerState.IsGrabbedByGhost() || QSBPlayerManager.LocalPlayer.IsDead;
+			__instance._skipToNextLoopButton.GetComponent<UIStyleApplier>().ChangeState(disableMeditate ? UIElementState.DISABLED : UIElementState.NORMAL, false);
+			__instance._waitingToApplySkipLoopStyle = false;
+		}
+
+		if (OWInput.IsNewlyPressed(InputLibrary.pause, InputMode.All) && __instance._isOpen && MenuStackManager.SharedInstance.GetMenuCount() == 1)
+		{
+			__instance._pauseMenu.EnableMenu(false);
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.OnActivateMenu))]
+	public static bool PauseMenuManager_OnActivateMenu(PauseMenuManager __instance)
+	{
+		if (__instance._skipToNextLoopButton.activeSelf)
+		{
+			bool flag = !PlayerState.IsSleepingAtCampfire() && !PlayerState.IsGrabbedByGhost() && !QSBPlayerManager.LocalPlayer.IsDead;
+			__instance._endCurrentLoopAction.enabled = flag;
+			__instance._skipToNextLoopButton.GetComponent<Selectable>().interactable = flag;
+			__instance._skipToNextLoopButton.GetComponent<UIStyleApplier>().SetAutoInputStateChangesEnabled(flag);
+			__instance._waitingToApplySkipLoopStyle = true;
 		}
 
 		return false;
