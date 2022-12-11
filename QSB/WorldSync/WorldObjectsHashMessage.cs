@@ -14,13 +14,16 @@ internal class WorldObjectsHashMessage : QSBMessage<(string managerName, string 
 
 	public override void OnReceiveRemote()
 	{
-		var serverHash = QSBWorldSync.ManagerHashes[Data.managerName];
-
-		if (serverHash != Data.hash)
+		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
 		{
-			// oh fuck oh no oh god
-			DebugLog.ToConsole($"Kicking {From} because their WorldObjects hash for {Data.managerName} is wrong. (server:{serverHash}, client:{Data.hash})", MessageType.Error);
-			new PlayerKickMessage(From, $"WorldObject hash error for {Data.managerName}. (Server:{serverHash}, Client:{Data.hash})").Send();
-		}
+			var serverHash = QSBWorldSync.ManagerHashes[Data.managerName];
+
+			if (serverHash != Data.hash)
+			{
+				// oh fuck oh no oh god
+				DebugLog.ToConsole($"Kicking {From} because their WorldObjects hash for {Data.managerName} is wrong. (server:{serverHash}, client:{Data.hash})", MessageType.Error);
+				new PlayerKickMessage(From, $"WorldObject hash error for {Data.managerName}. (Server:{serverHash}, Client:{Data.hash})").Send();
+			}
+		});
 	}
 }
