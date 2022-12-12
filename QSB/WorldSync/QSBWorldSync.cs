@@ -330,7 +330,7 @@ public static class QSBWorldSync
 			.Where(x => x.gameObject.scene.name is not (null or "DontDestroyOnLoad"));
 
 	// https://stackoverflow.com/a/48570616
-	public static string NameOfCallingClass()
+	private static string NameOfCallingClass()
 	{
 		string fullName;
 		Type declaringType;
