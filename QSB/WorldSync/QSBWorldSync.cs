@@ -21,8 +21,9 @@ namespace QSB.WorldSync;
 public static class QSBWorldSync
 {
 	public static WorldObjectManager[] Managers;
-	public static Dictionary<string, string> ManagerHashes { get; private set; } = new();
-	public static Dictionary<string, List<IWorldObject>> ManagerToBuiltObjects { get; private set; } = new();
+
+	private static readonly Dictionary<string, List<IWorldObject>> _managerToBuiltObjects = new();
+	public static readonly Dictionary<string, string> ManagerHashes = new();
 
 	/// <summary>
 	/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
@@ -87,7 +88,7 @@ public static class QSBWorldSync
 
 		DeterministicManager.OnWorldObjectsAdded();
 
-		foreach (var item in ManagerToBuiltObjects)
+		foreach (var item in _managerToBuiltObjects)
 		{
 			var worldObjects = item.Value;
 			var hash = worldObjects.Select(x => x.GetType().Name).GetMD5Hash();
@@ -145,8 +146,8 @@ public static class QSBWorldSync
 		AllObjectsAdded = false;
 		AllObjectsReady = false;
 
-		ManagerToBuiltObjects = new();
-		ManagerHashes = new();
+		_managerToBuiltObjects.Clear();
+		ManagerHashes.Clear();
 
 		GameReset();
 
@@ -440,14 +441,13 @@ public static class QSBWorldSync
 		}
 
 		var className = NameOfCallingClass();
-
-		if (!ManagerToBuiltObjects.ContainsKey(className))
+		if (!_managerToBuiltObjects.ContainsKey(className))
 		{
-			ManagerToBuiltObjects.Add(className, new List<IWorldObject> { worldObject });
+			_managerToBuiltObjects.Add(className, new List<IWorldObject> { worldObject });
 		}
 		else
 		{
-			ManagerToBuiltObjects[className].Add(worldObject);
+			_managerToBuiltObjects[className].Add(worldObject);
 		}
 
 		WorldObjects.Add(worldObject);
