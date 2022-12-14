@@ -17,8 +17,25 @@ public static class QSBPatchManager
 
 	public static Dictionary<QSBPatchTypes, Harmony> TypeToInstance = new();
 
+	private static bool _inited;
+
 	public static void Init()
 	{
+		if (_inited)
+		{
+			var count = _patchList.Count;
+			foreach (var type in typeof(QSBPatch).GetDerivedTypes())
+			{
+				if (!_patchList.Any(x => x.GetType() == type))
+				{
+					_patchList.Add((QSBPatch)Activator.CreateInstance(type));
+				}
+			}
+
+			DebugLog.DebugWrite($"Registered {_patchList.Count - count} addon patches.", MessageType.Success);
+			return;
+		}
+
 		foreach (var type in typeof(QSBPatch).GetDerivedTypes())
 		{
 			_patchList.Add((QSBPatch)Activator.CreateInstance(type));
@@ -29,6 +46,7 @@ public static class QSBPatchManager
 			TypeToInstance.Add(type, new Harmony(type.ToString()));
 		}
 
+		_inited = true;
 		DebugLog.DebugWrite("Patch Manager ready.", MessageType.Success);
 	}
 

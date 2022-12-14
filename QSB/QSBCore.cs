@@ -163,6 +163,9 @@ public class QSBCore : ModBehaviour
 
 		InitAssemblies();
 
+		// init again to get addon patches
+		QSBPatchManager.Init();
+
 		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
 		DebugLog.DebugWrite("loading qsb_network_big bundle", MessageType.Info);
@@ -215,6 +218,7 @@ public class QSBCore : ModBehaviour
 		var addons = GetDependants();
 		foreach (var addon in addons)
 		{
+			DebugLog.DebugWrite($"Registering addon {addon.ModHelper.Manifest.UniqueName}");
 			Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
 		}
 	}
