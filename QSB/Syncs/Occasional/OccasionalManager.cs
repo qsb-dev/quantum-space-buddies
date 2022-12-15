@@ -8,7 +8,6 @@ using System.Threading;
 
 namespace QSB.Syncs.Occasional;
 
-// BUG: somehow, not including DontDestroyOnLoad things makes this fuck up with NH
 internal class OccasionalManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
