@@ -17,6 +17,9 @@ internal class CameraController : MonoBehaviour
 	// Maximum distance for camera clipping
 	private const float RAY_LENGTH = 5f;
 
+	// How fast the camera should slide away from the player
+	private const float SLIDE_SPEED = 2f;
+
 	public void FixedUpdate()
 	{
 		if (CameraManager.Instance.Mode != CameraMode.ThirdPerson)
@@ -50,7 +53,7 @@ internal class CameraController : MonoBehaviour
 		var currentDistance = Vector3.Distance(origin, CameraObject.transform.position);
 		var movement = targetDistance < currentDistance
 			? localTargetPoint
-			: Vector3.MoveTowards(CameraObject.transform.localPosition, localTargetPoint, Time.fixedDeltaTime * 2f);
+			: Vector3.MoveTowards(CameraObject.transform.localPosition, localTargetPoint, Time.fixedDeltaTime * SLIDE_SPEED);
 		CameraObject.transform.localPosition = movement;
 	}
 
