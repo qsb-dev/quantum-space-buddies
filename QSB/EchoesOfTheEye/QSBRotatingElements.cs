@@ -37,10 +37,13 @@ internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 	{
 		base.OnRemoval();
 
-		foreach (var lightSensor in _qsbLightSensors)
+		if (_qsbLightSensors != null)
 		{
-			lightSensor.OnDetectLocalLight -= OnDetectLocalLight;
-			lightSensor.OnDetectLocalDarkness -= OnDetectLocalDarkness;
+			foreach (var lightSensor in _qsbLightSensors)
+			{
+				lightSensor.OnDetectLocalLight -= OnDetectLocalLight;
+				lightSensor.OnDetectLocalDarkness -= OnDetectLocalDarkness;
+			}
 		}
 	}
 

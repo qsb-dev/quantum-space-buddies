@@ -1,6 +1,7 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Player;
+using QSB.Player.TransformSync;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
@@ -135,6 +136,13 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			}
 
 			WriteLine(1, $"Selected WorldObject : {(DebugActions.WorldObjectSelection == null ? "All" : DebugActions.WorldObjectSelection.Name)}");
+			WriteLine(1, $"Invincible : {Locator.GetDeathManager()._invincible}");
+			WriteLine(1, $"Tool Mode : {Locator.GetToolModeSwapper().GetToolMode()}");
+			WriteLine(1, $"Input Mode Stack :");
+			foreach (var item in OWInput.GetInputModeStack())
+			{
+				WriteLine(1, $" - {item}");
+			}
 		}
 
 		#endregion
@@ -172,6 +180,12 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 				WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", referenceSector == null ? Color.red : Color.white);
 				WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
+
+				WriteLine(2, $"Sectors :");
+				foreach (var sector in PlayerTransformSync.LocalInstance.SectorDetector.SectorList)
+				{
+					WriteLine(2, $"- {sector.Name}");
+				}
 			}
 		}
 

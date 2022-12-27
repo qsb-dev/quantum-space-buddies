@@ -149,6 +149,12 @@ internal class ItemRemotePatches : QSBPatch
 			return true;
 		}
 
+		if (__instance._isProjecting)
+		{
+			__instance._mindProjectorTrigger.SetProjectorActive(false);
+			__instance._isProjecting = false;
+		}
+
 		// if (Locator.GetDreamWorldController().IsInDream())
 		// {
 		base_DropItem(__instance, position, normal, parent, sector, customDropTarget);
@@ -211,6 +217,12 @@ internal class ItemRemotePatches : QSBPatch
 		if (!Remote)
 		{
 			return true;
+		}
+
+		if (__instance._isProjecting)
+		{
+			__instance._mindProjectorTrigger.SetProjectorActive(false);
+			__instance._isProjecting = false;
 		}
 
 		base_SocketItem(__instance, socketTransform, sector);

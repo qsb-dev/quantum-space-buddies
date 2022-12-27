@@ -39,6 +39,11 @@
   "TimeSyncWaitForAllToReady": "Ожидаю начало цикла...",
   "TimeSyncWaitForAllToDie": "Ожидаю конец цикла...",
   "GalaxyMapEveryoneNotPresent": "Ещё не время. Все должны быть здесь, что-бы начать.",
+  "YouAreDead": "Вы погибли.",
+  "WaitingForRespawn": "Ожидаю, пока кто-нибудь возрадит вас...",
+  "WaitingForAllToDie": "Ждём пока {0} игрок(а)(ов) умрут...",
+  "AttachToShip": "Зацепиться на корабль",
+  "DetachFromShip": "Отцепиться от корабля",
   "DeathMessages": {
     "Default": [
       "{0} умер",

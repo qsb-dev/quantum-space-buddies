@@ -1,4 +1,6 @@
 ﻿using OWML.Common;
+using QSB.EchoesOfTheEye.DreamLantern;
+using QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
@@ -167,7 +169,8 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 				{
 					var dreamLanternItem = QSBWorldSync.GetWorldObjects<QSBDreamLanternItem>().First(x =>
 						x.AttachedObject._lanternType == DreamLanternType.Functioning &&
-						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x)
+						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x) &&
+						!x.AttachedObject.GetLanternController().IsLit()
 					).AttachedObject;
 					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
 				}

@@ -50,5 +50,8 @@ internal class ExitDreamWorldMessage : QSBMessage
 				ghost.GetEffects().OnSectorOccupantsUpdated();
 			}
 		}
+
+		Locator.GetAlarmSequenceController().OnExitDreamWorld();
+		DreamWorldFakePlayer.Destroy(player);
 	}
 }

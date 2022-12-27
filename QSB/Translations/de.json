@@ -1,0 +1,126 @@
+{
+  "Language": "GERMAN",
+  "MainMenuHost": "MEHRSPIELER HOSTEN",
+  "MainMenuConnect": "VERBINDEN ZUM MEHRSPIELER",
+  "PauseMenuDisconnect": "VERBINDUNG TRENNEN",
+  "PauseMenuStopHosting": "HOSTEN BEENDEN",
+  "PublicIPAddress": "Öffentliche IP Addresse\n\n(DEIN MEHRSPIELER SPIELSTAND WIRD ÜBERSCHRIEBEN)",
+  "ProductUserID": "Produktnutzer ID\n\n(DEIN MEHRSPIELER SPIELSTAND WIRD ÜBERSCHRIEBEN)",
+  "Connect": "VERBINDEN",
+  "Cancel": "ABBRECHEN",
+  "HostExistingOrNewOrCopy": "Willst du eine bestehende Mehrspieler Expedition, eine neue Expedition oder eine Kopie einer bestehenden Einzelspieler Expedition hosten?",
+  "HostNewOrCopy": "Willst du eine neue Expedition oder eine Kopie einer bestehenden Einzelspieler Expedition hosten?",
+  "HostExistingOrNew": "Willst du eine bestehende Mehrspieler Expedition oder eine neue Expedition hosten?",
+  "ExistingSave": "BESTEHENDER SPIELSTAND",
+  "NewSave": "NEUER SPIELSTAND",
+  "CopySave": "SPIELSTAND KOPIEREN",
+  "DisconnectAreYouSure": "Bist du sicher, dass du die Verbindung trennen willst?\nDies wird dich zurück in das Hauptmenü bringen.",
+  "Yes": "JA",
+  "No": "NEIN",
+  "StopHostingAreYouSure": "Bist du sicher, dass du aufhören willst zu hosten?\nDies wird die Verbindung alle anderen Spieler trennen und sie zurück in das Hauptmenü bringen.",
+  "CopyProductUserIDToClipboard": "Server wird gehostet.\nAndere Spieler werden sich mit Hilfe deiner Produktnutzer ID verbinden. Sie lautet :\n{0}\nWillst du das in die Zwischenablage kopieren?",
+  "Connecting": "VERBINDEN...",
+  "OK": "BESTÄTIGEN",
+  "ServerRefusedConnection": "Der Server hat die Verbindung abgelehnt.\n{0}",
+  "ClientDisconnectWithError": "Der Client wurde mit einem Fehler getrennt!\n{0}",
+  "QSBVersionMismatch": "QSB-Version stimmt nicht überein. (Client:{0}, Server:{1})",
+  "OWVersionMismatch": "Outer Wilds-Version stimmt nicht überein. (Client:{0}, Server:{1})",
+  "DLCMismatch": "DLC Installationsstatus stimmt nicht überein. (Client:{0}, Server:{1})",
+  "GameProgressLimit": "Spiel ist zu weit fortgeschritten.",
+  "AddonMismatch": "Addons stimmen nicht überein. (Client:{0} addons, Server:{1} addons)",
+  "IncompatibleMod": "Es wird eine inkompatible/unerlaubte Modifikation genutzt. Die erste gefundene Modifikation war {0}",
+  "PlayerJoinedTheGame": "{0} trat bei!",
+  "PlayerWasKicked": "{0} wurde gekickt.",
+  "KickedFromServer": "Vom Server gekickt. Grund : {0}",
+  "RespawnPlayer": "Spieler respawnen",
+  "TimeSyncTooFarBehind": "{0}\nVorspulen zur Anpassung an die Serverzeit...",
+  "TimeSyncWaitingForStartOfServer": "Es wird auf den Start des Servers gewartet...",
+  "TimeSyncTooFarAhead": "{0}\nPausieren zur Anpassung an die Serverzeit...",
+  "TimeSyncWaitForAllToReady": "Es wird auf den Beginn der Schleife gewartet...",
+  "TimeSyncWaitForAllToDie": "Es wird auf das Ende der Schleife gewartet...",
+  "GalaxyMapEveryoneNotPresent": "Es ist noch nicht soweit. Alle sollten hier sein um das zu erleben.",
+  "YouAreDead": "Du bist tot.",
+  "WaitingForRespawn": "Es wird auf jemanden gewartet, der dich respawnt...",
+  "WaitingForAllToDie": "Es wird darauf gewartet, dass {0} Spieler sterben...",
+  "AttachToShip": "Am Schiff befestigen",
+  "DetachFromShip": "Vom Schiff lösen",
+  "DeathMessages": {
+    "Default": [
+      "{0} starb",
+      "{0} wurde getötet"
+    ],
+    "Impact": [
+      "{0} vergaß Bremsraketen zu benutzen",
+      "{0} ist zu hart auf den Boden geknallt",
+      "{0} schlug zu hart auf den Boden auf",
+      "{0} wurde geplättet",
+      "{0} starb durch einen Aufprall",
+      "{0} ist zu hart auf den Boden aufgeschlagen"
+    ],
+    "Asphyxiation": [
+      "{0} vergaß zu atmen",
+      "{0} erstickte",
+      "{0} starb an Erstickung",
+      "{0} vergaß wie man atmet",
+      "{0} vergaß den Sauerstoff zu prüfen",
+      "{0} ging die Luft aus",
+      "{0} ging der Sauerstoff aus",
+      "{0} brauchte sowieso keine Luft"
+    ],
+    "Energy": [
+      "{0} wurde gekocht"
+    ],
+    "Supernova": [
+      "{0} ging die Zeit aus",
+      "{0} burnt up",
+      "{0} wurde gekocht",
+      "{0} wurde verdampft",
+      "{0} verlor die Zeit aus den Augen"
+    ],
+    "Digestion": [
+      "{0} wurde gegessen",
+      "{0} fand einen Fisch",
+      "{0} traf eine Böse Kreatur",
+      "{0} ärgerte den falschen Fisch",
+      "{0} wurde verdaut",
+      "{0} ist an Verdauung gestorben"
+    ],
+    "Crushed": [
+      "{0} wurde zerquetscht",
+      "{0} wurde gequetscht",
+      "{0} wurde begraben",
+      "{0} ist nicht rechtzeitig entkommen",
+      "{0} ging im Sand schwimmen",
+      "{0} unterschätzte Sand",
+      "{0} wurde unter Sand gefangen"
+    ],
+    "Lava": [
+      "{0} starb in Lava",
+      "{0} wurde geschmolzen",
+      "{0} versuchte in Lava zu schwimmen",
+      "{0} fiel in Lava",
+      "{0} ist an Lava gestorben",
+      "{0} schwamm in Lava",
+      "{0} wurde in Lava verbrannt"
+    ],
+    "BlackHole": [
+      "{0} jagte die Erinnerungen"
+    ],
+    "DreamExplosion": [
+      "{0} explodierte",
+      "{0} war ein Betatester",
+      "{0} ging in die Luft",
+      "{0} wurde frittiert",
+      "{0} starb wegen einer Explosion",
+      "{0} benutzte das falsche Artefakt"
+    ],
+    "CrushedByElevator": [
+      "{0} wurde zerquetscht",
+      "{0} wurde gequetscht",
+      "{0} wurde von einem Aufzug zerquetscht",
+      "{0} stand unter einem Aufzug",
+      "{0} wurde ein Flach-Kamina",
+      "{0} wurde von einem Aufzug gequetscht"
+    ]
+  }
+}

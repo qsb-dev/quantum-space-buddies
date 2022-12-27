@@ -1,11 +1,24 @@
-﻿using QSB.EchoesOfTheEye.DreamLantern.Messages;
+﻿using Cysharp.Threading.Tasks;
+using QSB.EchoesOfTheEye.DreamLantern.Messages;
 using QSB.Messaging;
 using QSB.WorldSync;
+using System.Threading;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 
-public class QSBDreamLantern : WorldObject<DreamLanternController>
+public class QSBDreamLanternController : WorldObject<DreamLanternController>
 {
+	public DreamLanternItem DreamLanternItem { get; private set; }
+
+	public override async UniTask Init(CancellationToken ct)
+	{
+		// Ghosts don't have the item and instead the effects are controlled by GhostEffects
+		if (!IsGhostLantern)
+		{
+			DreamLanternItem = AttachedObject.GetComponent<DreamLanternItem>();
+		}
+	}
+
 	public override void SendInitialState(uint to)
 	{
 		this.SendMessage(new SetLitMessage(AttachedObject._lit) { To = to });

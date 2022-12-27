@@ -91,11 +91,15 @@ public class QSBSectorManager : WorldObjectManager
 
 		// time loop spinning ring
 		{
+			// NH can remove this
 			var TimeLoopRing_Body = GameObject.Find("TimeLoopRing_Body");
-			var Sector_TimeLoopInterior = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
-			// use the same trigger as the parent sector
-			FakeSector.Create(TimeLoopRing_Body, Sector_TimeLoopInterior,
-				x => x._triggerRoot = Sector_TimeLoopInterior._triggerRoot);
+			if (TimeLoopRing_Body)
+			{
+				var Sector_TimeLoopInterior = GameObject.Find("Sector_TimeLoopInterior").GetComponent<Sector>();
+				// use the same trigger as the parent sector
+				FakeSector.Create(TimeLoopRing_Body, Sector_TimeLoopInterior,
+					x => x._triggerRoot = Sector_TimeLoopInterior._triggerRoot);
+			}
 		}
 
 		// TH elevators

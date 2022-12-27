@@ -6,6 +6,7 @@ using QSB.Player;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QSB.DeathSync.Patches;
 
@@ -14,96 +15,47 @@ public class DeathPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	/// <summary>
+	/// don't take damage from impact in ship
+	/// </summary>
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(PlayerResources), nameof(PlayerResources.OnImpact))]
-	public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact) =>
-		// don't take damage from impact in ship
-		!PlayerState.IsInsideShip();
+	public static bool PlayerResources_OnImpact(PlayerResources __instance, ImpactData impact)
+	{
+		if (QSBCore.ShipDamage)
+		{
+			return true;
+		}
+
+		return !PlayerState.IsInsideShip();
+	}
 
 	/// <summary>
 	/// don't insta-die from impact in ship
 	/// </summary>
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.FixedUpdate))]
-	public static bool HighSpeedImpactSensor_FixedUpdate(HighSpeedImpactSensor __instance)
+	[HarmonyPatch(typeof(HighSpeedImpactSensor), nameof(HighSpeedImpactSensor.HandlePlayerInsideShip))]
+	public static bool HighSpeedImpactSensor_HandlePlayerInsideShip(HighSpeedImpactSensor __instance)
 	{
-		if (__instance._isPlayer && (PlayerState.IsAttached() || PlayerState.IsInsideShuttle() || PlayerState.UsingNomaiRemoteCamera()))
+		if (QSBCore.ShipDamage)
 		{
-			return false;
+			return true;
 		}
 
-		if (__instance._dieNextUpdate && !__instance._dead)
+		var shipCenter = Locator.GetShipTransform().position + Locator.GetShipTransform().up * 2f;
+		var distanceFromShip = Vector3.Distance(__instance._body.GetPosition(), shipCenter);
+		if (distanceFromShip > 8f)
 		{
-			__instance._dead = true;
-			__instance._dieNextUpdate = false;
-			if (__instance.gameObject.CompareTag("Player"))
-			{
-				Locator.GetDeathManager().SetImpactDeathSpeed(__instance._impactSpeed);
-				Locator.GetDeathManager().KillPlayer(DeathType.Impact);
-			}
-			else if (__instance.gameObject.CompareTag("Ship"))
-			{
-				__instance.GetComponent<ShipDamageController>().Explode();
-			}
+			__instance._body.SetPosition(shipCenter);
 		}
 
-		if (__instance._isPlayer && PlayerState.IsInsideShip())
+		if (!__instance._dead)
 		{
-			var shipCenter = Locator.GetShipTransform().position + Locator.GetShipTransform().up * 2f;
-			var distanceFromShip = Vector3.Distance(__instance._body.GetPosition(), shipCenter);
-			if (distanceFromShip > 8f)
+			var a = __instance._body.GetVelocity() - Locator.GetShipBody().GetPointVelocity(__instance._body.GetPosition());
+			if (a.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
 			{
-				__instance._body.SetPosition(shipCenter);
-			}
-
-			if (!__instance._dead)
-			{
-				var a = __instance._body.GetVelocity() - Locator.GetShipBody().GetPointVelocity(__instance._body.GetPosition());
-				if (a.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
-				{
-					__instance._impactSpeed = a.magnitude;
-					__instance._body.AddVelocityChange(-a);
-				}
-			}
-
-			return false;
-		}
-
-		var passiveReferenceFrame = __instance._sectorDetector.GetPassiveReferenceFrame();
-		if (!__instance._dead && passiveReferenceFrame != null)
-		{
-			var relativeVelocity = __instance._body.GetVelocity() - passiveReferenceFrame.GetOWRigidBody().GetPointVelocity(__instance._body.GetPosition());
-			if (relativeVelocity.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
-			{
-				var hitCount = Physics.RaycastNonAlloc(__instance.transform.TransformPoint(__instance._localOffset), relativeVelocity, __instance._raycastHits, relativeVelocity.magnitude * Time.deltaTime + __instance._radius, OWLayerMask.physicalMask, QueryTriggerInteraction.Ignore);
-				for (var i = 0; i < hitCount; i++)
-				{
-					if (__instance._raycastHits[i].rigidbody.mass > 10f && !__instance._raycastHits[i].rigidbody.Equals(__instance._body.GetRigidbody()))
-					{
-						var owRigidbody = __instance._raycastHits[i].rigidbody.GetComponent<OWRigidbody>();
-						if (owRigidbody == null)
-						{
-							DebugLog.ToConsole("Rigidbody does not have attached OWRigidbody!!!", OWML.Common.MessageType.Error);
-							Debug.Break();
-						}
-						else
-						{
-							relativeVelocity = __instance._body.GetVelocity() - owRigidbody.GetPointVelocity(__instance._body.GetPosition());
-							var a2 = Vector3.Project(relativeVelocity, __instance._raycastHits[i].normal);
-							if (a2.sqrMagnitude > __instance._sqrCheckSpeedThreshold)
-							{
-								__instance._body.AddVelocityChange(-a2);
-								__instance._impactSpeed = a2.magnitude;
-								if (!PlayerState.IsInsideTheEye())
-								{
-									__instance._dieNextUpdate = true;
-								}
-
-								break;
-							}
-						}
-					}
-				}
+				__instance._impactSpeed = a.magnitude;
+				__instance._body.AddVelocityChange(-a);
 			}
 		}
 
@@ -111,134 +63,122 @@ public class DeathPatches : QSBPatch
 	}
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.KillPlayer))]
-	private static bool DeathManager_KillPlayer(DeathManager __instance, DeathType deathType)
+	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.FinishDeathSequence))]
+	public static bool FinishDeathSequence(DeathManager __instance)
 	{
-		// funny moment for eye
-		if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
+		if (!__instance._isDead)
 		{
-			return true;
-		}
-
-		Original(__instance, deathType);
-		return false;
-
-		static void Original(DeathManager @this, DeathType deathType)
-		{
-			@this._fakeMeditationDeath = false;
-			if (deathType == DeathType.Meditation && @this.CheckShouldWakeInDreamWorld())
+			if (__instance.CheckShouldWakeInDreamWorld())
 			{
-				@this._fakeMeditationDeath = true;
-				OWInput.ChangeInputMode(InputMode.None);
-				ReticleController.Hide();
-				Locator.GetPromptManager().SetPromptsVisible(false);
-				GlobalMessenger.FireEvent("FakePlayerMeditationDeath");
-				return;
-			}
-
-			if (deathType == DeathType.DreamExplosion)
-			{
-				Achievements.Earn(Achievements.Type.EARLY_ADOPTER);
-			}
-
-			if (PlayerState.InDreamWorld() && deathType != DeathType.Dream && deathType != DeathType.DreamExplosion && deathType != DeathType.Supernova && deathType != DeathType.TimeLoop && deathType != DeathType.Meditation)
-			{
-				Locator.GetDreamWorldController().ExitDreamWorld(deathType);
-				return;
-			}
-
-			if (!@this._isDying)
-			{
-				if (@this._invincible && deathType != DeathType.Supernova && deathType != DeathType.BigBang && deathType != DeathType.Meditation && deathType != DeathType.TimeLoop && deathType != DeathType.BlackHole)
-				{
-					return;
-				}
-
-				if (!Custom(@this, deathType))
-				{
-					return;
-				}
-
-				if (!TimeLoopCoreController.ParadoxExists())
-				{
-					var component = Locator.GetPlayerBody().GetComponent<PlayerResources>();
-					if ((deathType == DeathType.TimeLoop || deathType == DeathType.Supernova) && component.GetTotalDamageThisLoop() > 1000f)
-					{
-						Achievements.Earn(Achievements.Type.DIEHARD);
-						PlayerData.SetPersistentCondition("THERE_IS_BUT_VOID", true);
-					}
-
-					if (((TimeLoop.GetLoopCount() != 1 && TimeLoop.GetSecondsElapsed() < 60f) || (TimeLoop.GetLoopCount() == 1 && Time.timeSinceLevelLoad < 60f && !TimeLoop.IsTimeFlowing())) && deathType != DeathType.Meditation && LoadManager.GetCurrentScene() == OWScene.SolarSystem)
-					{
-						Achievements.Earn(Achievements.Type.GONE_IN_60_SECONDS);
-					}
-
-					if (TimeLoop.GetLoopCount() > 1)
-					{
-						Achievements.SetHeroStat(Achievements.HeroStat.TIMELOOP_COUNT, (uint)(TimeLoop.GetLoopCount() - 1));
-						if (deathType == DeathType.TimeLoop || deathType == DeathType.BigBang || deathType == DeathType.Supernova)
-						{
-							PlayerData.CompletedFullTimeLoop();
-						}
-					}
-
-					if (deathType == DeathType.Supernova && !PlayerData.GetPersistentCondition("KILLED_BY_SUPERNOVA_AND_KNOWS_IT") && PlayerData.GetFullTimeLoopsCompleted() > 2U && PlayerData.GetPersistentCondition("HAS_SEEN_SUN_EXPLODE"))
-					{
-						PlayerData.SetPersistentCondition("KILLED_BY_SUPERNOVA_AND_KNOWS_IT", true);
-						MonoBehaviour.print("KILLED_BY_SUPERNOVA_AND_KNOWS_IT");
-					}
-				}
-
-				@this._isDying = true;
-				@this._deathType = deathType;
-				MonoBehaviour.print("Player was killed by " + deathType);
-				Locator.GetPauseCommandListener().AddPauseCommandLock();
-				PlayerData.SetLastDeathType(deathType);
-				GlobalMessenger<DeathType>.FireEvent("PlayerDeath", deathType);
-			}
-		}
-
-		static bool Custom(DeathManager @this, DeathType deathType)
-		{
-			if (RespawnOnDeath.Instance == null)
-			{
-				return true;
-			}
-
-			if (RespawnOnDeath.Instance.AllowedDeathTypes.Contains(deathType))
-			{
-				return true;
-			}
-
-			if (@this.CheckShouldWakeInDreamWorld())
-			{
-				return true;
-			}
-
-			if (QSBPlayerManager.LocalPlayer.IsDead)
-			{
+				__instance.enabled = true;
+				__instance._resurrectAfterDelay = true;
+				__instance._resurrectTime = Time.time + 2f;
 				return false;
 			}
 
 			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
-			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
+			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1 && !QSBCore.DebugSettings.DisableLoopDeath)
 			{
 				new EndLoopMessage().Send();
-				return true;
+				DebugLog.DebugWrite($"- All players are dead.");
 			}
-
-			RespawnOnDeath.Instance.ResetPlayer();
-
-			QSBPlayerManager.LocalPlayer.IsDead = true;
-			new PlayerDeathMessage(deathType).Send();
-
-			if (PlayerAttachWatcher.Current)
+			else if (!RespawnOnDeath.Instance.AllowedDeathTypes.Contains(__instance._deathType))
 			{
-				PlayerAttachWatcher.Current.DetachPlayer();
+				RespawnOnDeath.Instance.ResetPlayer();
+				QSBPlayerManager.LocalPlayer.IsDead = true;
+				new PlayerDeathMessage(__instance._deathType).Send();
+				if (PlayerAttachWatcher.Current)
+				{
+					PlayerAttachWatcher.Current.DetachPlayer();
+				}
+
+				return false;
 			}
 
-			return false;
+			__instance._isDead = true;
+			GlobalMessenger.FireEvent("DeathSequenceComplete");
+			if (PlayerData.GetPersistentCondition("DESTROYED_TIMELINE_LAST_SAVE"))
+			{
+				PlayerData.SetPersistentCondition("DESTROYED_TIMELINE_LAST_SAVE", false);
+			}
+
+			if (__instance._deathType == DeathType.BigBang)
+			{
+				if (TimeLoopCoreController.ParadoxExists())
+				{
+					PlayerData.RevertParadoxLoopCountStates();
+				}
+
+				LoadManager.LoadScene(OWScene.Credits_Final, LoadManager.FadeType.ToWhite, 1f, true);
+				return false;
+			}
+
+			if (TimeLoopCoreController.ParadoxExists())
+			{
+				Locator.GetTimelineObliterationController().BeginTimelineObliteration(TimelineObliterationController.ObliterationType.PARADOX_DEATH, null);
+				return false;
+			}
+
+			if (TimeLoop.IsTimeFlowing() && TimeLoop.IsTimeLoopEnabled())
+			{
+				if (__instance._finishedDLC)
+				{
+					GlobalMessenger.FireEvent("TriggerEndOfDLC");
+					return false;
+				}
+				GlobalMessenger.FireEvent("TriggerFlashback");
+				return false;
+			}
+			else
+			{
+				if (__instance._deathType == DeathType.Meditation && PlayerState.OnQuantumMoon() && Locator.GetQuantumMoon().GetStateIndex() == 5)
+				{
+					__instance._timeloopEscapeType = TimeloopEscapeType.Quantum;
+					__instance.FinishEscapeTimeLoopSequence();
+					return false;
+				}
+				GlobalMessenger.FireEvent("TriggerDeathOutsideTimeLoop");
+			}
 		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.Update))]
+	public static bool PauseMenuManager_Update(PauseMenuManager __instance)
+	{
+		// disable meditate button when in respawn map
+
+		if (__instance._waitingToApplySkipLoopStyle)
+		{
+			var disableMeditate = PlayerState.IsSleepingAtCampfire() || PlayerState.IsGrabbedByGhost() || QSBPlayerManager.LocalPlayer.IsDead;
+			__instance._skipToNextLoopButton.GetComponent<UIStyleApplier>().ChangeState(disableMeditate ? UIElementState.DISABLED : UIElementState.NORMAL, false);
+			__instance._waitingToApplySkipLoopStyle = false;
+		}
+
+		if (OWInput.IsNewlyPressed(InputLibrary.pause, InputMode.All) && __instance._isOpen && MenuStackManager.SharedInstance.GetMenuCount() == 1)
+		{
+			__instance._pauseMenu.EnableMenu(false);
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.OnActivateMenu))]
+	public static bool PauseMenuManager_OnActivateMenu(PauseMenuManager __instance)
+	{
+		if (__instance._skipToNextLoopButton.activeSelf)
+		{
+			bool flag = !PlayerState.IsSleepingAtCampfire() && !PlayerState.IsGrabbedByGhost() && !QSBPlayerManager.LocalPlayer.IsDead;
+			__instance._endCurrentLoopAction.enabled = flag;
+			__instance._skipToNextLoopButton.GetComponent<Selectable>().interactable = flag;
+			__instance._skipToNextLoopButton.GetComponent<UIStyleApplier>().SetAutoInputStateChangesEnabled(flag);
+			__instance._waitingToApplySkipLoopStyle = true;
+		}
+
+		return false;
 	}
 
 	[HarmonyPrefix]

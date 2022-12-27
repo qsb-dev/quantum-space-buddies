@@ -10,6 +10,9 @@ public class DreamLanternManager : WorldObjectManager
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;
 
-	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct) =>
-		QSBWorldSync.Init<QSBDreamLantern, DreamLanternController>();
+	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
+	{
+		QSBWorldSync.Init<QSBDreamLanternController, DreamLanternController>();
+		QSBWorldSync.Init<QSBDreamLanternItem, DreamLanternItem>();
+	}
 }

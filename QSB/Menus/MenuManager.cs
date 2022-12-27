@@ -42,8 +42,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const int _titleButtonIndex = 2;
 	private float _connectPopupOpenTime;
 
-	private const string UpdateChangelog = "QSB Version 0.21.1\r\nFixed gamepass not working, and fixed a small bug with light sensors.";
-
 	private Action<bool> PopupClose;
 
 	private bool _intentionalDisconnect;
@@ -71,7 +69,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			// recently updated!
 			QSBCore.Storage.LastUsedVersion = QSBCore.QSBVersion;
 			QSBCore.Helper.Storage.Save(QSBCore.Storage, "storage.json");
-			QSBCore.MenuApi.RegisterStartupPopup(UpdateChangelog);
 		}
 
 		QSBLocalization.LanguageChanged += OnLanguageChanged;
@@ -365,8 +362,11 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		ConnectPopup.OnActivateMenu += () =>
 		{
 			_connectPopupOpenTime = Time.time;
-			// ClearInputTextField is called AFTER OnActivateMenu
-			Delay.RunNextFrame(() => ConnectPopup._inputField.SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
+			if (QSBCore.Helper.Interaction.ModExists("Raicuparta.NomaiVR"))
+			{
+				// ClearInputTextField is called AFTER OnActivateMenu
+				Delay.RunNextFrame(() => ConnectPopup._inputField.SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
+			}
 		};
 
 		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
@@ -508,25 +508,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(ConnectButton, true);
 		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 		SetButtonActive(NewGameButton, true);
-
-		if (QSBCore.DebugSettings.SkipTitleScreen)
-		{
-			Application.runInBackground = true;
-			var titleScreenManager = FindObjectOfType<TitleScreenManager>();
-			var titleScreenAnimation = titleScreenManager._cameraController;
-			const float small = 1 / 1000f;
-			titleScreenAnimation._gamepadSplash = false;
-			titleScreenAnimation._introPan = false;
-			titleScreenAnimation._fadeDuration = small;
-			titleScreenAnimation.Start();
-			var titleAnimationController = titleScreenManager._gfxController;
-			titleAnimationController._logoFadeDelay = small;
-			titleAnimationController._logoFadeDuration = small;
-			titleAnimationController._echoesFadeDelay = small;
-			titleAnimationController._optionsFadeDelay = small;
-			titleAnimationController._optionsFadeDuration = small;
-			titleAnimationController._optionsFadeSpacing = small;
-		}
 
 		var mainMenuFontController = GameObject.Find("MainMenu").GetComponent<FontAndLanguageController>();
 		mainMenuFontController.AddTextElement(HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());

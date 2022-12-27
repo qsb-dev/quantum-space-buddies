@@ -4,9 +4,11 @@ using OWML.Common;
 using OWML.ModHelper;
 using QSB.Localization;
 using QSB.Menus;
+using QSB.Messaging;
 using QSB.Patches;
 using QSB.QuantumSync;
 using QSB.SaveSync;
+using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -56,6 +58,8 @@ public class QSBCore : ModBehaviour
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static bool IncompatibleModsAllowed { get; private set; }
+	public static bool ShowPlayerNames { get; private set; }
+	public static bool ShipDamage { get; private set; }
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
@@ -65,11 +69,14 @@ public class QSBCore : ModBehaviour
 	public static DebugSettings DebugSettings { get; private set; } = new();
 	public static Storage Storage { get; private set; } = new();
 
+	public const string NEW_HORIZONS = "xen.NewHorizons";
+	public const string NEW_HORIZONS_COMPAT = "xen.NHQSBCompat";
+
 	public static readonly string[] IncompatibleMods =
 	{
 		// incompatible mods
 		"Raicuparta.NomaiVR",
-		"xen.NewHorizons",
+		// "xen.NewHorizons",
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
@@ -123,6 +130,8 @@ public class QSBCore : ModBehaviour
 		Helper = ModHelper;
 		DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
+		CheckCompatibilityMods();
+
 		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
 		Storage = Helper.Storage.Load<Storage>("storage.json") ?? new Storage();
 
@@ -147,13 +156,15 @@ public class QSBCore : ModBehaviour
 		if (DebugSettings.AutoStart)
 		{
 			DebugSettings.UseKcpTransport = true;
-			DebugSettings.SkipTitleScreen = true;
 			DebugSettings.DebugMode = true;
 		}
 
 		RegisterAddons();
 
 		InitAssemblies();
+
+		// init again to get addon patches
+		QSBPatchManager.Init();
 
 		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
@@ -207,6 +218,7 @@ public class QSBCore : ModBehaviour
 		var addons = GetDependants();
 		foreach (var addon in addons)
 		{
+			DebugLog.DebugWrite($"Registering addon {addon.ModHelper.Manifest.UniqueName}");
 			Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
 		}
 	}
@@ -243,6 +255,14 @@ public class QSBCore : ModBehaviour
 	{
 		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
+		ShowPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
+		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
+
+		if (IsHost)
+		{
+			ServerSettingsManager.ServerShowPlayerNames = ShowPlayerNames;
+			new ServerSettingsMessage().Send();
+		}
 	}
 
 	private void Update()
@@ -257,6 +277,26 @@ public class QSBCore : ModBehaviour
 			DebugCameraSettings.UpdateFromDebugSetting();
 
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
+		}
+	}
+
+	private void CheckCompatibilityMods()
+	{
+		var mainMod = "";
+		var compatMod = "";
+		var missingCompat = false;
+
+		if (Helper.Interaction.ModExists(NEW_HORIZONS) && !Helper.Interaction.ModExists(NEW_HORIZONS_COMPAT))
+		{
+			mainMod = NEW_HORIZONS;
+			compatMod = NEW_HORIZONS_COMPAT;
+			missingCompat = true;
+		}
+
+		if (missingCompat)
+		{
+			DebugLog.ToConsole($"FATAL - You have mod \"{mainMod}\" installed, which is not compatible with QSB without the compatibility mod \"{compatMod}\". " +
+				$"Either disable the mod, or install/enable the compatibility mod.", MessageType.Fatal);
 		}
 	}
 }

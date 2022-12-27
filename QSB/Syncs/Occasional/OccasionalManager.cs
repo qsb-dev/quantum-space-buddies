@@ -3,6 +3,7 @@ using Mirror;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace QSB.Syncs.Occasional;
@@ -21,6 +22,11 @@ internal class OccasionalManager : WorldObjectManager
 
 		foreach (var proxy in cannon._realDebrisSectorProxies)
 		{
+			// NH can remove these
+			if (!proxy)
+			{
+				continue;
+			}
 			SpawnOccasional(proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 		}
 
@@ -50,7 +56,7 @@ internal class OccasionalManager : WorldObjectManager
 	{
 		if (QSBCore.IsHost)
 		{
-			foreach (var transformSync in QSBWorldSync.GetUnityObjects<OccasionalTransformSync>())
+			foreach (var transformSync in OccasionalTransformSync.Instances.ToList())
 			{
 				NetworkServer.Destroy(transformSync.gameObject);
 			}

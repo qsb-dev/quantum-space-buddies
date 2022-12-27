@@ -47,6 +47,7 @@ public class AnimationSync : PlayerSyncObject
 	/// <summary>
 	/// This wipes the NetworkAnimator's fields, so it assumes the parameters have changed.
 	/// Basically just forces it to set all its dirty flags.
+	/// BUG: this doesnt work for other players because its only called by the host.
 	/// </summary>
 	private void SendInitialState(uint to) => NetworkAnimator.Invoke("Awake");
 

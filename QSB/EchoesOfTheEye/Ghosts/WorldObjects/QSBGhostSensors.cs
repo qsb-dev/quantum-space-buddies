@@ -46,8 +46,10 @@ public class QSBGhostSensors : WorldObject<GhostSensors>, IGhostObject
 	}
 
 	public bool CanGrabPlayer(GhostPlayer player)
-		=> !PlayerState.IsAttached()
+		=> !PlayerState.IsAttached() // TODO : check for each player
 			&& player.playerLocation.distanceXZ < 2f + AttachedObject._grabDistanceBuff
+			&& player.playerLocation.toPosition.y > -2f
+			&& player.playerLocation.toPosition.y < 3f
 			&& player.playerLocation.degreesToPositionXZ < 20f + AttachedObject._grabAngleBuff
 			&& AttachedObject._animator.GetFloat("GrabWindow") > 0.5f;
 

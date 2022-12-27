@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace QSB.Utility;
 
+[UsedInUnityProject]
 public class ZOverride : MonoBehaviour
 {
 	private const string shaderTestMode = "unity_GUIZTestMode";
