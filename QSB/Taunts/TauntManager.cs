@@ -13,6 +13,7 @@ internal class TauntManager : MonoBehaviour, IAddComponentOnStart
 	private DefaultDanceTaunt _defaultDanceTaunt = new();
 
 	public static ITaunt CurrentTaunt;
+	public static float TauntStartTime;
 
 	private bool _setUpStateEvents;
 
@@ -46,6 +47,7 @@ internal class TauntManager : MonoBehaviour, IAddComponentOnStart
 		DebugLog.DebugWrite($"Start taunt {taunt.GetType().Name}");
 
 		CurrentTaunt = taunt;
+		TauntStartTime = Time.time;
 		if (taunt.CameraMode == CameraMode.ThirdPerson)
 		{
 			CameraManager.Instance.SwitchTo3rdPerson();
@@ -68,8 +70,14 @@ internal class TauntManager : MonoBehaviour, IAddComponentOnStart
 
 	public static void StopTaunt()
 	{
+		if (CurrentTaunt == null || TauntStartTime + CurrentTaunt.EnableCancelTime < Time.time)
+		{
+			return;
+		}
+
 		DebugLog.DebugWrite($"StopTaunt");
 		CurrentTaunt = null;
+		TauntStartTime = -1;
 		CameraManager.Instance.SwitchTo1stPerson();
 	}
 }
