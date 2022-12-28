@@ -6,6 +6,8 @@ public interface ITaunt
 {
 	bool Loops { get; }
 
+	TauntBodyGroup BodyGroup { get; }
+
 	/// <summary>
 	/// The trigger to activate the taunt.
 	/// </summary>
