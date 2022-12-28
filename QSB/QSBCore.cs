@@ -67,7 +67,6 @@ public class QSBCore : ModBehaviour
 		: QSBMSStoreProfileManager.SharedInstance;
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
-	public static Storage Storage { get; private set; } = new();
 
 	public const string NEW_HORIZONS = "xen.NewHorizons";
 	public const string NEW_HORIZONS_COMPAT = "xen.NHQSBCompat";
@@ -133,7 +132,6 @@ public class QSBCore : ModBehaviour
 		CheckCompatibilityMods();
 
 		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
-		Storage = Helper.Storage.Load<Storage>("storage.json") ?? new Storage();
 
 		if (DebugSettings.HookDebugLogs)
 		{

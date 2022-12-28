@@ -64,13 +64,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		QSBNetworkManager.singleton.OnClientConnected += OnConnected;
 		QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
 
-		if (QSBCore.Storage.LastUsedVersion != QSBCore.QSBVersion)
-		{
-			// recently updated!
-			QSBCore.Storage.LastUsedVersion = QSBCore.QSBVersion;
-			QSBCore.Helper.Storage.Save(QSBCore.Storage, "storage.json");
-		}
-
 		QSBLocalization.LanguageChanged += OnLanguageChanged;
 
 		if (QSBCore.DebugSettings.AutoStart)
