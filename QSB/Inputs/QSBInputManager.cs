@@ -9,6 +9,8 @@ public class QSBInputManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static event Action ThumbsUpTaunt;
 	public static event Action DefaultDanceTaunt;
+	public static event Action BanjoTaunt;
+
 	public static event Action ExitTaunt;
 
 	public void Update()
@@ -28,6 +30,11 @@ public class QSBInputManager : MonoBehaviour, IAddComponentOnStart
 			if (Keyboard.current[Key.Digit2].wasPressedThisFrame)
 			{
 				DefaultDanceTaunt?.Invoke();
+			}
+
+			if (Keyboard.current[Key.Digit3].wasPressedThisFrame)
+			{
+				BanjoTaunt?.Invoke();
 			}
 		}
 
