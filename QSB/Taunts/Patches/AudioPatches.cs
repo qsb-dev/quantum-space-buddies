@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
 using QSB.TimeSync;
-using QSB.Utility;
-using UnityEngine;
 
 namespace QSB.Taunts.Patches;
 internal class AudioPatches : QSBPatch
@@ -43,24 +41,11 @@ internal class AudioPatches : QSBPatch
 	[HarmonyPatch(typeof(TravelerAudioManager), nameof(TravelerAudioManager.Update))]
 	public static bool Update(TravelerAudioManager __instance)
 	{
-		if (!__instance._playAfterDelay || !(Time.time >= __instance._playAudioTime))
-		{
-			return false;
-		}
-
-		DebugLog.DebugWrite($"PLAY AFTER DELAY");
-
 		foreach (var signal in __instance._signals)
 		{
-			//var timeToSet = WakeUpSync.LocalInstance.TimeSinceServerStart;
-			//timeToSet %= signal.GetOWAudioSource().clip.length;
-
-			signal.GetOWAudioSource().FadeIn(0.5f);
-			//signal.GetOWAudioSource().time = timeToSet;
+			signal.GetOWAudioSource()._fadeOutCompleteAction = OWAudioSource.FadeOutCompleteAction.CONTINUE;
 		}
 
-		__instance._playAfterDelay = false;
-
-		return false;
+		return true;
 	}
 }

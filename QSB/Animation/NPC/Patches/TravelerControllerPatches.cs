@@ -189,7 +189,7 @@ internal static class TravelerAudioManagerExtensions
 				if (!signal.IsOnlyAudibleToScope() || signal.GetOWAudioSource().isPlaying)
 				{
 					signal.GetOWAudioSource().FadeIn(0.5f);
-					signal.GetOWAudioSource().timeSamples = 0;
+					signal.GetOWAudioSource().time = WakeUpSync.LocalInstance.TimeSinceServerStart % signal.GetOWAudioSource().clip.length;
 				}
 			}
 		});
