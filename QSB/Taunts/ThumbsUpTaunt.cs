@@ -10,6 +10,7 @@ internal class ThumbsUpTaunt : ITaunt
 	public string TriggerName => "ThumbsUp";
 	public CameraMode CameraMode => CameraMode.FirstPerson;
 	public float EnableCancelTime => -1;
+	public bool CustomAnimationHandle => false;
 
 	public void StartTaunt() { }
 	public void StopTaunt() { }

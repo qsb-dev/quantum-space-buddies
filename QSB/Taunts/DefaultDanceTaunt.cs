@@ -10,6 +10,7 @@ internal class DefaultDanceTaunt : ITaunt
 	public string TriggerName => "DefaultDance";
 	public CameraMode CameraMode => CameraMode.ThirdPerson;
 	public float EnableCancelTime => -1;
+	public bool CustomAnimationHandle => false;
 
 	public void StartTaunt() { }
 	public void StopTaunt() { }

@@ -26,6 +26,8 @@ public interface ITaunt
 	/// </summary>
 	float EnableCancelTime { get; }
 
+	bool CustomAnimationHandle { get; }
+
 	public void StartTaunt();
 	public void StopTaunt();
 }

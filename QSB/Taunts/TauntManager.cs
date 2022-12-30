@@ -57,7 +57,11 @@ internal class TauntManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		var animator = QSBPlayerManager.LocalPlayer.AnimationSync.VisibleAnimator;
-		animator.SetTrigger(taunt.TriggerName);
+
+		if (!taunt.CustomAnimationHandle)
+		{
+			animator.SetTrigger(taunt.TriggerName);
+		}
 
 		CurrentTaunt.StartTaunt();
 

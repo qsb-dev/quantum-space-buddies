@@ -15,11 +15,18 @@ internal class BanjoTaunt : ITaunt
 	public string TriggerName => "PlayBanjo";
 	public CameraMode CameraMode => CameraMode.ThirdPerson;
 	public float EnableCancelTime => 3;
+	public bool CustomAnimationHandle => true;
 
 	private OWAudioSource _customSignal;
 
 	public void StartTaunt()
 	{
+		var animator = QSBPlayerManager.LocalPlayer.AnimationSync.VisibleAnimator;
+
+		var clip = animator.runtimeAnimatorController.animationClips.First(x => x.name == "Riebeck_Playing");
+		var normTime = (WakeUpSync.LocalInstance.TimeSinceServerStart % clip.length) / clip.length;
+		animator.Play("Base Layer.Play Banjo", -1, normTime);
+
 		var audioManager = Locator.GetTravelerAudioManager();
 
 		audioManager.SyncTravelers();
@@ -40,13 +47,6 @@ internal class BanjoTaunt : ITaunt
 		_customSignal.Play();
 		
 		var time = WakeUpSync.LocalInstance.TimeSinceServerStart % _customSignal.clip.length;
-
-		if (time == 0)
-		{
-			time = WakeUpSync.LocalInstance.TimeSinceServerStart;
-		}
-
-		DebugLog.DebugWrite($"TimeSinceServerStart:{WakeUpSync.LocalInstance.TimeSinceServerStart} time:{time}");
 
 		Delay.RunNextFrame(() =>
 		{
