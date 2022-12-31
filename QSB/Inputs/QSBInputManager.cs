@@ -1,53 +1,49 @@
 ﻿using QSB.Utility;
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace QSB.Inputs;
 
 public class QSBInputManager : MonoBehaviour, IAddComponentOnStart
 {
-	// TODO : finish instruments - disabled for 0.7.0 release
-	/*
-	public static event Action ChertTaunt;
-	public static event Action EskerTaunt;
-	public static event Action RiebeckTaunt;
-	public static event Action GabbroTaunt;
-	public static event Action FeldsparTaunt;
+	public static event Action ThumbsUpTaunt;
+	public static event Action DefaultDanceTaunt;
+	public static event Action BanjoTaunt;
+
 	public static event Action ExitTaunt;
 
 	public void Update()
 	{
-		if (Input.GetKey(KeyCode.T))
+		if (!QSBCore.IsInMultiplayer || !QSBSceneManager.IsInUniverse)
 		{
-			// Listed order is from sun to dark bramble
-			if (Input.GetKeyDown(KeyCode.Alpha1))
+			return;
+		}
+
+		if (Keyboard.current[Key.T].isPressed)
+		{
+			if (Keyboard.current[Key.Digit1].wasPressedThisFrame)
 			{
-				ChertTaunt?.Invoke();
+				ThumbsUpTaunt?.Invoke();
 			}
-			else if (Input.GetKeyDown(KeyCode.Alpha2))
+
+			if (Keyboard.current[Key.Digit2].wasPressedThisFrame)
 			{
-				EskerTaunt?.Invoke();
+				DefaultDanceTaunt?.Invoke();
 			}
-			else if (Input.GetKeyDown(KeyCode.Alpha5))
+
+			if (Keyboard.current[Key.Digit3].wasPressedThisFrame)
 			{
-				RiebeckTaunt?.Invoke();
-			}
-			else if (Input.GetKeyDown(KeyCode.Alpha4))
-			{
-				GabbroTaunt?.Invoke();
-			}
-			else if (Input.GetKeyDown(KeyCode.Alpha3))
-			{
-				FeldsparTaunt?.Invoke();
+				BanjoTaunt?.Invoke();
 			}
 		}
 
-		if (OWInput.GetValue(InputLibrary.moveXZ, InputMode.None) != Vector2.zero
-			|| OWInput.GetValue(InputLibrary.jump, InputMode.None) != 0f)
+		if (OWInput.GetAxisValue(InputLibrary.moveXZ, InputMode.None) != Vector2.zero
+			|| OWInput.IsPressed(InputLibrary.jump, InputMode.None))
 		{
 			ExitTaunt?.Invoke();
 		}
 	}
-	*/
 
 	public static QSBInputManager Instance { get; private set; }
 

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
+using QSB.TimeSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -161,9 +162,12 @@ internal static class TravelerAudioManagerExtensions
 			return;
 		}
 
-		var signal = manager._signals.First(x => x.GetName() == signalName);
+		var signals = manager._signals.Where(x => x.GetName() == signalName);
 
-		signal.GetOWAudioSource().FadeOut(0.5f);
+		foreach (var signal in signals)
+		{
+			signal.GetOWAudioSource().FadeOut(0.5f);
+		}
 	}
 
 	internal static void PlayTravelerAudio(this TravelerAudioManager manager, TravelerController traveler, float audioDelay)
@@ -174,16 +178,19 @@ internal static class TravelerAudioManagerExtensions
 			return;
 		}
 
-		var signal = manager._signals.First(x => x.GetName() == signalName);
+		var signals = manager._signals.Where(x => x.GetName() == signalName);
 
 		manager._playAfterDelay = false;
 		manager._playAudioTime = Time.time + audioDelay;
 		Delay.RunWhen(() => Time.time >= manager._playAudioTime, () =>
 		{
-			if (!signal.IsOnlyAudibleToScope() || signal.GetOWAudioSource().isPlaying)
+			foreach (var signal in signals)
 			{
-				signal.GetOWAudioSource().FadeIn(0.5f);
-				signal.GetOWAudioSource().timeSamples = 0;
+				if (!signal.IsOnlyAudibleToScope() || signal.GetOWAudioSource().isPlaying)
+				{
+					signal.GetOWAudioSource().FadeIn(0.5f);
+					signal.GetOWAudioSource().time = WakeUpSync.LocalInstance.TimeSinceServerStart % signal.GetOWAudioSource().clip.length;
+				}
 			}
 		});
 	}

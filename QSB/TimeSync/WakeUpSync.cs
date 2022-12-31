@@ -43,6 +43,8 @@ public class WakeUpSync : NetworkBehaviour
 
 	public override void OnStartLocalPlayer() => LocalInstance = this;
 
+	public float TimeSinceServerStart => _serverTime;
+
 	public void OnDisconnect()
 	{
 		OWTime.SetTimeScale(1f);
