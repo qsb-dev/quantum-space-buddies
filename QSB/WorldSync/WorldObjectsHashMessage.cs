@@ -14,7 +14,7 @@ internal class WorldObjectsHashMessage : QSBMessage<(string managerName, string 
 
 	public override void OnReceiveRemote()
 	{
-		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, () =>
+		Delay.RunWhen(() => QSBWorldSync.AllObjectsAdded, () =>
 		{
 			var serverHash = QSBWorldSync.ManagerHashes[Data.managerName];
 
