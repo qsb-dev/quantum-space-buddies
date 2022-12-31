@@ -11,7 +11,6 @@ namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
 public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour
 {
 	private bool ShouldMovePlayer =>
-		Locator.GetPlayerController() &&
 		(
 			Locator.GetPlayerController().GetGroundBody() == null ||
 			Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody

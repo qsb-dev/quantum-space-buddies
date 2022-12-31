@@ -119,7 +119,6 @@ public class ShipTransformSync : SectoredRigidbodySync
 
 
 	private bool ShouldMovePlayer =>
-		Locator.GetPlayerController() &&
 		(
 			Locator.GetPlayerController().GetGroundBody() == null ||
 			Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody
