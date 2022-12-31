@@ -59,20 +59,27 @@ public class ShipTransformSync : SectoredRigidbodySync
 		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
 		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 
-		if (IsInsideShip)
+		if (ShouldMovePlayer)
 		{
 			if (Time.unscaledTime >= _lastSetPositionTime + ForcePositionAfterTime)
 			{
 				_lastSetPositionTime = Time.unscaledTime;
 
-				AttachedRigidbody.SetPosition(targetPos);
-				AttachedRigidbody.SetRotation(targetRot);
+				var playerBody = Locator.GetPlayerBody();
+				var relPos = AttachedTransform.ToRelPos(playerBody.GetPosition());
+				var relRot = AttachedTransform.ToRelRot(playerBody.GetRotation());
+
+				SetPosition(AttachedRigidbody, targetPos);
+				SetRotation(AttachedRigidbody, targetRot);
+
+				playerBody.SetPosition(AttachedTransform.FromRelPos(relPos));
+				playerBody.SetRotation(AttachedTransform.FromRelRot(relRot));
 			}
 		}
 		else
 		{
-			AttachedRigidbody.SetPosition(targetPos);
-			AttachedRigidbody.SetRotation(targetRot);
+			SetPosition(AttachedRigidbody, targetPos);
+			SetRotation(AttachedRigidbody, targetRot);
 		}
 
 		var targetVelocity = ReferenceRigidbody.FromRelVel(Velocity, targetPos);
@@ -82,22 +89,35 @@ public class ShipTransformSync : SectoredRigidbodySync
 		AttachedRigidbody.SetAngularVelocity(targetAngularVelocity);
 	}
 
-	/// use OWRigidbody version instead of ShipBody override
-	private static void SetVelocity(OWRigidbody rigidbody, Vector3 newVelocity)
+	#region copied from OWRigidbody
+
+	private static void SetPosition(OWRigidbody @this, Vector3 worldPosition)
 	{
-		if (rigidbody.RunningKinematicSimulation())
+		@this._transform.position = worldPosition;
+	}
+
+	private static void SetRotation(OWRigidbody @this, Quaternion rotation)
+	{
+		@this._transform.rotation = rotation;
+	}
+
+	private static void SetVelocity(OWRigidbody @this, Vector3 newVelocity)
+	{
+		if (@this.RunningKinematicSimulation())
 		{
-			rigidbody._kinematicRigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			@this._kinematicRigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
 		}
 		else
 		{
-			rigidbody._rigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
+			@this._rigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
 		}
-
-		rigidbody._lastVelocity = rigidbody._currentVelocity;
-		rigidbody._currentVelocity = newVelocity;
+		@this._lastVelocity = @this._currentVelocity;
+		@this._currentVelocity = newVelocity;
 	}
 
-	private static bool IsInsideShip => PlayerState.IsInsideShip();
-	protected override bool UseInterpolation => !IsInsideShip;
+	#endregion
+
+
+	private bool ShouldMovePlayer => Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 50;
+	protected override bool UseInterpolation => !ShouldMovePlayer;
 }
