@@ -10,7 +10,13 @@ namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
 
 public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour
 {
-	private bool ShouldMovePlayer => Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 10;
+	private bool ShouldMovePlayer =>
+		Locator.GetPlayerController() &&
+		(
+			Locator.GetPlayerController().GetGroundBody() == null ||
+			Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody
+		) &&
+		Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 10;
 	protected override bool UseInterpolation => !ShouldMovePlayer;
 
 	private float _lastSetPositionTime;
