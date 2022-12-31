@@ -26,6 +26,9 @@ public class DebugSettings
 	[JsonProperty("kickEveryone")]
 	public bool KickEveryone;
 
+	[JsonProperty("disableLoopDeath")]
+	public bool DisableLoopDeath;
+
 	[JsonProperty("debugMode")]
 	public bool DebugMode;
 

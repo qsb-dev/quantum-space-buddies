@@ -15,7 +15,8 @@ public class RespawnOnDeath : MonoBehaviour
 {
 	public static RespawnOnDeath Instance;
 
-	public readonly DeathType[] AllowedDeathTypes = {
+	public readonly DeathType[] AllowedDeathTypes =
+	{
 		DeathType.BigBang,
 		DeathType.Supernova,
 		DeathType.TimeLoop
@@ -85,6 +86,127 @@ public class RespawnOnDeath : MonoBehaviour
 		_deathPositionRelative = DeathClosestAstroObject.InverseTransformPoint(deathPosition);
 		DeathPlayerUpVector = Locator.GetPlayerTransform().up;
 		DeathPlayerForwardVector = Locator.GetPlayerTransform().forward;
+
+		// do some exit dream world stuff since real deaths dont do that
+		if (PlayerState.InDreamWorld())
+		{
+			var __instance = Locator.GetDreamWorldController();
+
+			var wakeType = DreamWakeType.Default; // TODO maybe get actual death type? idk
+			__instance._wakeType = wakeType;
+			__instance.CheckDreamZone2Completion();
+			__instance.CheckSleepWakeDieAchievement(wakeType);
+
+			__instance._activeGhostGrabController?.ReleasePlayer();
+			__instance._activeZoomPoint?.CancelZoom();
+
+			if (__instance._outsideLanternBounds)
+			{
+				__instance.EnterLanternBounds();
+			}
+
+			__instance._simulationCamera.OnExitDreamWorld();
+			SunLightController.UnregisterSunOverrider(__instance);
+			if (__instance._proxyShadowLight != null)
+			{
+				__instance._proxyShadowLight.enabled = true;
+			}
+			__instance._insideDream = false;
+			__instance._waitingToLightLantern = false;
+			__instance._playerLantern.OnExitDreamWorld();
+
+			// TODO : drop player lantern at campfire
+
+			Locator.GetPlayerSectorDetector().RemoveFromAllSectors();
+
+			__instance._playerLantern.OnExitDreamWorld();
+			__instance._dreamArrivalPoint.OnExitDreamWorld();
+			__instance._dreamCampfire.OnDreamCampfireExtinguished -= __instance.OnDreamCampfireExtinguished;
+			__instance._dreamCampfire = null;
+
+			__instance.ExtinguishDreamRaft();
+			Locator.GetAudioMixer().UnmixDreamWorld();
+			Locator.GetAudioMixer().UnmixSleepAtCampfire(1f);
+
+			if (__instance._playerCamAmbientLightRenderer != null)
+			{
+				__instance._playerCamAmbientLightRenderer.enabled = false;
+			}
+
+			__instance._playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Sun");
+			__instance._playerCamera.farClipPlane = __instance._prevPlayerCameraFarPlaneDist;
+			__instance._prevPlayerCameraFarPlaneDist = 0f;
+			__instance._playerCamera.mainCamera.backgroundColor = Color.black;
+			__instance._playerCamera.planetaryFog.enabled = true;
+			__instance._playerCamera.postProcessingSettings.screenSpaceReflectionAvailable = false;
+			__instance._playerCamera.postProcessingSettings.ambientOcclusionAvailable = true;
+
+			GlobalMessenger.FireEvent("ExitDreamWorld");
+		}
+
+		var sectorList = PlayerTransformSync.LocalInstance.SectorDetector.SectorList;
+		if (sectorList.All(x => x.Type != Sector.Name.TimberHearth))
+		{
+			// stops sectors from breaking when you die on TH??
+			Locator.GetPlayerSectorDetector().RemoveFromAllSectors();
+			Locator.GetPlayerCameraDetector().GetComponent<AudioDetector>().DeactivateAllVolumes(0f);
+		}
+
+		// undo stuff that PlayerDeath event does
+		var cloak = Locator.GetCloakFieldController();
+		cloak._playerInsideCloak = false;
+		cloak._playerCloakFactor = 0f;
+		cloak._worldFadeFactor = 0f;
+		cloak._interiorRevealFactor = 0f;
+		cloak._rendererFade = 1;
+		cloak.OnPlayerExit.Invoke();
+		GlobalMessenger.FireEvent("ExitCloak");
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<ScreenPromptList>())
+		{
+			item.OnPlayerResurrection();
+		}
+
+		PlayerState._isDead = false;
+		Locator.GetPlayerController().OnPlayerResurrection();
+		QSBWorldSync.GetUnityObject<PlayerBreathingAudio>().enabled = true;
+		Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>().OnPlayerResurrection();
+		Locator.GetPlayerAudioController().OnPlayerResurrection();
+		Locator.GetDeathManager()._isDying = false;
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<ThrustAndAttitudeIndicator>())
+		{
+			item.enabled = true;
+		}
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<HUDCanvas>())
+		{
+			item.enabled = true;
+		}
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<ReferenceFrameGUI>())
+		{
+			item.enabled = true;
+			item._activeCam = Locator.GetMapController()._mapCamera;
+			item._isMapView = true;
+		}
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<AutopilotGUI>())
+		{
+			item.enabled = true;
+		}
+
+		var visorEffect = QSBWorldSync.GetUnityObject<VisorEffectController>();
+		visorEffect._cracked = false;
+		visorEffect._crackStartTime = 0f;
+		visorEffect._crackEffectRenderer.enabled = false;
+		visorEffect._crackEffectRenderer.material.SetFloat(visorEffect._propID_Cutoff, 1f);
+
+		var mixer = Locator.GetAudioMixer();
+		mixer._deathMixed = false;
+		mixer._nonEndTimesVolume.FadeTo(1, 0.5f);
+		mixer._endTimesVolume.FadeTo(1, 0.5f);
+		mixer.MixMap();
 
 		var playerBody = Locator.GetPlayerBody();
 		playerBody.WarpToPositionRotation(_playerSpawnPoint.transform.position, _playerSpawnPoint.transform.rotation);

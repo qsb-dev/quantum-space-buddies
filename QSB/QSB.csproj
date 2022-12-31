@@ -38,9 +38,6 @@
     <None Include="manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="storage.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Assets\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -59,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.8.0" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.9.0" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />

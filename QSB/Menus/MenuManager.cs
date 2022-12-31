@@ -42,8 +42,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private const int _titleButtonIndex = 2;
 	private float _connectPopupOpenTime;
 
-	private const string UpdateChangelog = "QSB Version 0.23.0\r\nA lot of small improvements and bug fixes.";
-
 	private Action<bool> PopupClose;
 
 	private bool _intentionalDisconnect;
@@ -65,14 +63,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		QSBNetworkManager.singleton.OnClientConnected += OnConnected;
 		QSBNetworkManager.singleton.OnClientDisconnected += OnDisconnected;
-
-		if (QSBCore.Storage.LastUsedVersion != QSBCore.QSBVersion)
-		{
-			// recently updated!
-			QSBCore.Storage.LastUsedVersion = QSBCore.QSBVersion;
-			QSBCore.Helper.Storage.Save(QSBCore.Storage, "storage.json");
-			QSBCore.MenuApi.RegisterStartupPopup(UpdateChangelog);
-		}
 
 		QSBLocalization.LanguageChanged += OnLanguageChanged;
 

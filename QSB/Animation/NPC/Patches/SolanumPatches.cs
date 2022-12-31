@@ -17,6 +17,11 @@ public class SolanumPatches : QSBPatch
 	[HarmonyPatch(typeof(SolanumAnimController), nameof(SolanumAnimController.LateUpdate))]
 	public static bool SolanumLateUpdateReplacement(SolanumAnimController __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		if (__instance._animatorStateEvents == null)
 		{
 			__instance._animatorStateEvents = __instance._animator.GetBehaviour<AnimatorStateEvents>();
@@ -43,6 +48,10 @@ public class SolanumPatches : QSBPatch
 	[HarmonyPatch(typeof(NomaiConversationManager), nameof(NomaiConversationManager.Update))]
 	public static bool ReplacementUpdate(NomaiConversationManager __instance)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
 		var qsbObj = __instance._solanumAnimController.GetWorldObject<QSBSolanumAnimController>();
 		__instance._playerInWatchVolume = qsbObj.Trigger.Occupants.Any();
 

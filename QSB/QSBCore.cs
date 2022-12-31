@@ -67,13 +67,15 @@ public class QSBCore : ModBehaviour
 		: QSBMSStoreProfileManager.SharedInstance;
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
-	public static Storage Storage { get; private set; } = new();
+
+	public const string NEW_HORIZONS = "xen.NewHorizons";
+	public const string NEW_HORIZONS_COMPAT = "xen.NHQSBCompat";
 
 	public static readonly string[] IncompatibleMods =
 	{
 		// incompatible mods
 		"Raicuparta.NomaiVR",
-		"xen.NewHorizons",
+		// "xen.NewHorizons",
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
@@ -127,8 +129,9 @@ public class QSBCore : ModBehaviour
 		Helper = ModHelper;
 		DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
+		CheckCompatibilityMods();
+
 		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
-		Storage = Helper.Storage.Load<Storage>("storage.json") ?? new Storage();
 
 		if (DebugSettings.HookDebugLogs)
 		{
@@ -157,6 +160,9 @@ public class QSBCore : ModBehaviour
 		RegisterAddons();
 
 		InitAssemblies();
+
+		// init again to get addon patches
+		QSBPatchManager.Init();
 
 		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
@@ -210,6 +216,7 @@ public class QSBCore : ModBehaviour
 		var addons = GetDependants();
 		foreach (var addon in addons)
 		{
+			DebugLog.DebugWrite($"Registering addon {addon.ModHelper.Manifest.UniqueName}");
 			Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
 		}
 	}
@@ -268,6 +275,26 @@ public class QSBCore : ModBehaviour
 			DebugCameraSettings.UpdateFromDebugSetting();
 
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
+		}
+	}
+
+	private void CheckCompatibilityMods()
+	{
+		var mainMod = "";
+		var compatMod = "";
+		var missingCompat = false;
+
+		if (Helper.Interaction.ModExists(NEW_HORIZONS) && !Helper.Interaction.ModExists(NEW_HORIZONS_COMPAT))
+		{
+			mainMod = NEW_HORIZONS;
+			compatMod = NEW_HORIZONS_COMPAT;
+			missingCompat = true;
+		}
+
+		if (missingCompat)
+		{
+			DebugLog.ToConsole($"FATAL - You have mod \"{mainMod}\" installed, which is not compatible with QSB without the compatibility mod \"{compatMod}\". " +
+				$"Either disable the mod, or install/enable the compatibility mod.", MessageType.Fatal);
 		}
 	}
 }

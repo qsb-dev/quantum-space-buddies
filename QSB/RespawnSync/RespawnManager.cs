@@ -119,6 +119,7 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 
 	public void TriggerRespawnMap()
 	{
+		Locator.GetPauseCommandListener().RemovePauseCommandLock();
 		QSBPatchManager.DoPatchType(QSBPatchTypes.RespawnTime);
 		Delay.RunNextFrame(() => GlobalMessenger.FireEvent("TriggerObservatoryMap"));
 	}
@@ -135,6 +136,8 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 
 		var cameraEffectController = Locator.GetPlayerCamera().GetComponent<PlayerCameraEffectController>();
 		cameraEffectController.OpenEyes(1f);
+
+		OWInput.ChangeInputMode(InputMode.Character);
 	}
 
 	public void OnPlayerDeath(PlayerInfo player)
@@ -152,7 +155,7 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 
 		var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
 
-		if (deadPlayersCount == QSBPlayerManager.PlayerList.Count)
+		if (deadPlayersCount == QSBPlayerManager.PlayerList.Count && !QSBCore.DebugSettings.DisableLoopDeath)
 		{
 			new EndLoopMessage().Send();
 			return;

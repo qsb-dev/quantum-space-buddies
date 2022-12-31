@@ -13,19 +13,19 @@ public class OccasionalTransformSync : UnsectoredRigidbodySync
 {
 	protected override bool UseInterpolation => false;
 
-	protected override OWRigidbody InitAttachedRigidbody() => OccasionalManager.Bodies[_instances.IndexOf(this)].Body;
+	protected override OWRigidbody InitAttachedRigidbody() => OccasionalManager.Bodies[Instances.IndexOf(this)].Body;
 
-	private static readonly List<OccasionalTransformSync> _instances = new();
+	public static readonly List<OccasionalTransformSync> Instances = new();
 
 	public override void OnStartClient()
 	{
-		_instances.Add(this);
+		Instances.Add(this);
 		base.OnStartClient();
 	}
 
 	public override void OnStopClient()
 	{
-		_instances.Remove(this);
+		Instances.Remove(this);
 		base.OnStopClient();
 	}
 
@@ -38,7 +38,7 @@ public class OccasionalTransformSync : UnsectoredRigidbodySync
 	protected override void Init()
 	{
 		base.Init();
-		SetReferenceTransform(OccasionalManager.Bodies[_instances.IndexOf(this)].RefBody.transform);
+		SetReferenceTransform(OccasionalManager.Bodies[Instances.IndexOf(this)].RefBody.transform);
 
 		_sectors = SectorManager.s_sectors
 			.Where(x => x._attachedOWRigidbody == AttachedRigidbody).ToArray();

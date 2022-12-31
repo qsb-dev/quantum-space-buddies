@@ -137,6 +137,8 @@ The template for this file is this :
   "hookDebugLogs": false,
   "avoidTimeSync": false,
   "autoStart": false,
+  "kickEveryone": false,
+  "disableLoopDeath": false,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
@@ -153,6 +155,8 @@ The template for this file is this :
 - hookDebugLogs - Print Unity logs and warnings.
 - avoidTimeSync - Disables the syncing of time.
 - autoStart - Host/connect automatically for faster testing.
+- kickEveryone - Kick anyone who joins a game.
+- disableLoopDeath - Make it so the loop doesn't end when everyone is dead.
 - debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
 - drawGui - Draws a GUI at the top of the screen that gives information on many things.
 - drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
@@ -183,6 +187,7 @@ The template for this file is this :
 - [ShoosGun](https://github.com/ShoosGun) - Portuguese translation.
 - [DertolleDude](https://github.com/DertolleDude) - German translation.
 - [SakuradaYuki](https://github.com/SakuradaYuki) - Chinese translation.
+- [poleshe](https://github.com/poleshe) - Spanish translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.

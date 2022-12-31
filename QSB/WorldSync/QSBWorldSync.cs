@@ -11,6 +11,7 @@ using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -20,7 +21,9 @@ namespace QSB.WorldSync;
 public static class QSBWorldSync
 {
 	public static WorldObjectManager[] Managers;
-	public static string WorldObjectsHash { get; private set; }
+
+	private static readonly Dictionary<string, List<IWorldObject>> _managerToBuiltObjects = new();
+	public static readonly Dictionary<string, string> ManagerHashes = new();
 
 	/// <summary>
 	/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
@@ -85,12 +88,20 @@ public static class QSBWorldSync
 
 		DeterministicManager.OnWorldObjectsAdded();
 
-		WorldObjectsHash = WorldObjects.Select(x => x.GetType().Name).GetMD5Hash();
-		DebugLog.DebugWrite($"WorldObject hash is {WorldObjectsHash}");
+		foreach (var item in _managerToBuiltObjects)
+		{
+			var worldObjects = item.Value;
+			var hash = worldObjects.Select(x => x.GetType().Name).GetMD5Hash();
+			ManagerHashes[item.Key] = hash;
+		}
 
 		if (!QSBCore.IsHost)
 		{
-			new WorldObjectsHashMessage().Send();
+			foreach (var item in ManagerHashes)
+			{
+				new WorldObjectsHashMessage(item.Key, item.Value).Send();
+			}
+
 			new RequestLinksMessage().Send();
 		}
 
@@ -134,6 +145,9 @@ public static class QSBWorldSync
 		_objectsIniting.Clear();
 		AllObjectsAdded = false;
 		AllObjectsReady = false;
+
+		_managerToBuiltObjects.Clear();
+		ManagerHashes.Clear();
 
 		GameReset();
 
@@ -193,7 +207,8 @@ public static class QSBWorldSync
 			{
 				// So objects have time to be deleted, made, whatever
 				// i.e. wait until Start has been called
-				Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
+				// TODO: see if this number of frames actually works. TWEAK!
+				Delay.RunFramesLater(10, () => BuildWorldObjects(loadScene).Forget());
 			}
 		};
 
@@ -306,12 +321,55 @@ public static class QSBWorldSync
 		=> GetUnityObjects<TUnityObject>().Single();
 
 	/// <summary>
-	/// not deterministic across platforms
+	/// not deterministic across platforms.
+	/// excludes prefabs and DontDestroyOnLoad objects.
 	/// </summary>
 	public static IEnumerable<TUnityObject> GetUnityObjects<TUnityObject>()
 		where TUnityObject : MonoBehaviour
 		=> Resources.FindObjectsOfTypeAll<TUnityObject>()
-			.Where(x => x.gameObject.scene.name != null);
+			.Where(x => x.gameObject.scene.name is not (null or "DontDestroyOnLoad"));
+
+	// https://stackoverflow.com/a/48570616
+	private static string NameOfCallingClass()
+	{
+		string fullName;
+		Type declaringType;
+		var skipFrames = 2;
+		do
+		{
+			var method = new StackFrame(skipFrames, false).GetMethod();
+			declaringType = method.DeclaringType;
+			if (declaringType == null)
+			{
+				return method.Name;
+			}
+
+			skipFrames++;
+			fullName = CleanupFullName(declaringType.FullName);
+		}
+		while (declaringType.Module.Name.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase) || declaringType == typeof(QSBWorldSync));
+
+		return fullName;
+	}
+
+	private static string CleanupFullName(string fullName)
+	{
+		var ret = fullName;
+
+		var indexOfPlus = fullName.LastIndexOf('+');
+		if (indexOfPlus != -1)
+		{
+			ret = fullName.Remove(indexOfPlus);
+		}
+
+		var indexOfDot = ret.LastIndexOf('.');
+		if (indexOfDot != -1)
+		{
+			ret = ret.Substring(indexOfDot + 1);
+		}
+
+		return ret;
+	}
 
 	public static void Init<TWorldObject, TUnityObject>()
 		where TWorldObject : WorldObject<TUnityObject>, new()
@@ -380,6 +438,16 @@ public static class QSBWorldSync
 		{
 			DebugLog.ToConsole($"Error - UnityObjectsToWorldObjects already contains \"{unityObject.name}\"! TWorldObject:{typeof(TWorldObject).Name}, TUnityObject:{unityObject.GetType().Name}, Stacktrace:\r\n{Environment.StackTrace}", MessageType.Error);
 			return;
+		}
+
+		var className = NameOfCallingClass();
+		if (!_managerToBuiltObjects.ContainsKey(className))
+		{
+			_managerToBuiltObjects.Add(className, new List<IWorldObject> { worldObject });
+		}
+		else
+		{
+			_managerToBuiltObjects[className].Add(worldObject);
 		}
 
 		WorldObjects.Add(worldObject);
