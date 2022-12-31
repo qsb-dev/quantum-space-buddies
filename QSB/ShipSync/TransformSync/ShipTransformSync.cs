@@ -118,6 +118,6 @@ public class ShipTransformSync : SectoredRigidbodySync
 	#endregion
 
 
-	private bool ShouldMovePlayer => Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 50;
+	private bool ShouldMovePlayer => Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 100;
 	protected override bool UseInterpolation => !ShouldMovePlayer;
 }
