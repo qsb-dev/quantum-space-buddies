@@ -124,7 +124,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 
 	public QSBGhostAction GetAction(GhostAction.Name actionName)
 	{
-		for (int i = 0; i < _actionLibrary.Count; i++)
+		for (var i = 0; i < _actionLibrary.Count; i++)
 		{
 			if (_actionLibrary[i].GetName() == actionName)
 			{

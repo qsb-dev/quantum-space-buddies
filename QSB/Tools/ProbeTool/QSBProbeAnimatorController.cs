@@ -84,7 +84,7 @@ internal class QSBProbeAnimatorController : MonoBehaviour
 		}
 		else
 		{
-			float t = Mathf.Sqrt(Mathf.SmoothStep(0f, 1f, this._rotationT));
+			var t = Mathf.Sqrt(Mathf.SmoothStep(0f, 1f, this._rotationT));
 			this._currentCenterBoneRotation = Quaternion.Lerp(this._startCenterBoneRotation, this._targetCenterBoneRotation, t);
 		}
 		this._centerBone.localRotation = this._currentCenterBoneRotation;

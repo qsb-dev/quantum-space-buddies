@@ -113,9 +113,9 @@ internal class ProfileMenuManagerPatches : QSBPatch
 		}
 		else
 		{
-			for (int i = 0; i < __instance._listProfileElements.Count; i++)
+			for (var i = 0; i < __instance._listProfileElements.Count; i++)
 			{
-				TwoButtonActionElement requiredComponent = __instance._listProfileElements[i].GetRequiredComponent<TwoButtonActionElement>();
+				var requiredComponent = __instance._listProfileElements[i].GetRequiredComponent<TwoButtonActionElement>();
 				__instance.ClearProfileElementListeners(requiredComponent);
 				Object.Destroy(__instance._listProfileElements[i]);
 			}
@@ -135,26 +135,26 @@ internal class ProfileMenuManagerPatches : QSBPatch
 		var profileName = QSBStandaloneProfileManager.SharedInstance.currentProfile.profileName;
 		var num = 0;
 		Selectable selectable = null;
-		for (int j = 0; j < array.Length; j++)
+		for (var j = 0; j < array.Length; j++)
 		{
 			if (!(array[j].profileName == profileName))
 			{
-				GameObject gameObject = Object.Instantiate<GameObject>(__instance._profileItemTemplate);
+				var gameObject = Object.Instantiate<GameObject>(__instance._profileItemTemplate);
 				gameObject.gameObject.SetActive(true);
 				gameObject.transform.SetParent(__instance._profileListRoot.transform);
 				gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-				Text[] componentsInChildren = gameObject.gameObject.GetComponentsInChildren<Text>();
-				for (int k = 0; k < componentsInChildren.Length; k++)
+				var componentsInChildren = gameObject.gameObject.GetComponentsInChildren<Text>();
+				for (var k = 0; k < componentsInChildren.Length; k++)
 				{
 					__instance._fontController.AddTextElement(componentsInChildren[k], true, true, false);
 				}
 
 				num++;
-				TwoButtonActionElement requiredComponent2 = gameObject.GetRequiredComponent<TwoButtonActionElement>();
-				Selectable requiredComponent3 = requiredComponent2.GetRequiredComponent<Selectable>();
+				var requiredComponent2 = gameObject.GetRequiredComponent<TwoButtonActionElement>();
+				var requiredComponent3 = requiredComponent2.GetRequiredComponent<Selectable>();
 				__instance.SetUpProfileElementListeners(requiredComponent2);
 				requiredComponent2.SetLabelText(array[j].profileName);
-				Text component = requiredComponent2.GetButtonOne().GetComponent<Text>();
+				var component = requiredComponent2.GetButtonOne().GetComponent<Text>();
 				if (component != null)
 				{
 					__instance._fontController.AddTextElement(component, true, true, false);
@@ -168,17 +168,17 @@ internal class ProfileMenuManagerPatches : QSBPatch
 
 				if (num == 1)
 				{
-					Navigation navigation = __instance._createProfileButton.navigation;
+					var navigation = __instance._createProfileButton.navigation;
 					navigation.selectOnDown = gameObject.GetRequiredComponent<Selectable>();
 					__instance._createProfileButton.navigation = navigation;
-					Navigation navigation2 = requiredComponent3.navigation;
+					var navigation2 = requiredComponent3.navigation;
 					navigation2.selectOnUp = __instance._createProfileButton;
 					requiredComponent3.navigation = navigation2;
 				}
 				else
 				{
-					Navigation navigation3 = requiredComponent3.navigation;
-					Navigation navigation4 = selectable.navigation;
+					var navigation3 = requiredComponent3.navigation;
+					var navigation4 = selectable.navigation;
 					navigation3.selectOnUp = selectable;
 					navigation3.selectOnDown = null;
 					navigation4.selectOnDown = requiredComponent3;
@@ -188,7 +188,7 @@ internal class ProfileMenuManagerPatches : QSBPatch
 
 				__instance._listProfileElements.Add(gameObject);
 				selectable = requiredComponent3;
-				ProfileMenuManager.ProfileElementLookup profileElementLookup = new ProfileMenuManager.ProfileElementLookup();
+				var profileElementLookup = new ProfileMenuManager.ProfileElementLookup();
 				profileElementLookup.profileName = array[j].profileName;
 				profileElementLookup.lastModifiedTime = array[j].lastModifiedTime;
 				profileElementLookup.confirmSwitchAction = requiredComponent2.GetSubmitActionOne() as SubmitActionConfirm;

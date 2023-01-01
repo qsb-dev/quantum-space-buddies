@@ -96,7 +96,7 @@ public class CustomSlide
 
 	public static CustomSlide CreateSlide(Texture2D texture)
 	{
-		CustomSlide slide = new CustomSlide
+		var slide = new CustomSlide
 		{
 			_image = texture
 		};

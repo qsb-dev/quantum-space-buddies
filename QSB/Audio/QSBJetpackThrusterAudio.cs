@@ -59,8 +59,8 @@ internal class QSBJetpackThrusterAudio : QSBThrusterAudio
 		var usingBooster = false;
 		var usingOxygen = false;
 
-		float targetVolume = usingBooster ? 0f : thrustFraction;
-		float targetPan = -acc.x / maxTranslationalThrust * 0.4f;
+		var targetVolume = usingBooster ? 0f : thrustFraction;
+		var targetPan = -acc.x / maxTranslationalThrust * 0.4f;
 		UpdateTranslationalSource(_translationalSource, targetVolume, targetPan, !_underwater && !usingOxygen);
 		UpdateTranslationalSource(_underwaterSource, targetVolume, targetPan, _underwater);
 		UpdateTranslationalSource(_oxygenSource, targetVolume, targetPan, !_underwater && usingOxygen);

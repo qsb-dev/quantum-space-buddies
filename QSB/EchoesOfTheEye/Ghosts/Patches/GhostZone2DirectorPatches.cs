@@ -61,7 +61,7 @@ internal class GhostZone2DirectorPatches : QSBPatch
 		__instance._undergroundVolume.OnEntry -= __instance.OnEnterUnderground;
 		__instance._undergroundVolume.OnExit -= __instance.OnExitUnderground;
 		__instance._finalTotem.OnRinging -= __instance.OnAlarmRinging;
-		for (int i = 0; i < __instance._cityGhosts.Length; i++)
+		for (var i = 0; i < __instance._cityGhosts.Length; i++)
 		{
 			__instance._cityGhosts[i].GetWorldObject<QSBGhostBrain>().OnIdentifyIntruder -= GhostManager.CustomOnCityGhostsIdentifiedIntruder;
 		}

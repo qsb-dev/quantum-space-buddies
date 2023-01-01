@@ -85,7 +85,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 	{
 		if (!this._lookingAtPlayer)
 		{
-			bool isIlluminatedByPlayer = this._data.IsIlluminatedByAnyPlayer;
+			var isIlluminatedByPlayer = this._data.IsIlluminatedByAnyPlayer;
 			if ((this._waitingToLookAtPlayer && Time.time > this._lookAtPlayerTime) || isIlluminatedByPlayer)
 			{
 				this._controller.FacePlayer(_data.interestedPlayer.player, isIlluminatedByPlayer ? TurnSpeed.SLOW : this._lookSpeed);

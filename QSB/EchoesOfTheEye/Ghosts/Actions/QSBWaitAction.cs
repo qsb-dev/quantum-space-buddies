@@ -43,7 +43,7 @@ public class QSBWaitAction : QSBGhostAction
 		_controller.FacePlayer(_data.interestedPlayer.player, TurnSpeed.MEDIUM);
 		if (_data.interestedPlayer.playerLocation.distanceXZ < 3f)
 		{
-			Vector3 toPositionXZ = _data.interestedPlayer.playerLocation.toPositionXZ;
+			var toPositionXZ = _data.interestedPlayer.playerLocation.toPositionXZ;
 			_controller.MoveToLocalPosition(_controller.AttachedObject.GetLocalFeetPosition() - toPositionXZ * 3f, MoveType.SEARCH);
 			return;
 		}

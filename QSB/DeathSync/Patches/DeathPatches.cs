@@ -171,7 +171,7 @@ public class DeathPatches : QSBPatch
 	{
 		if (__instance._skipToNextLoopButton.activeSelf)
 		{
-			bool flag = !PlayerState.IsSleepingAtCampfire() && !PlayerState.IsGrabbedByGhost() && !QSBPlayerManager.LocalPlayer.IsDead;
+			var flag = !PlayerState.IsSleepingAtCampfire() && !PlayerState.IsGrabbedByGhost() && !QSBPlayerManager.LocalPlayer.IsDead;
 			__instance._endCurrentLoopAction.enabled = flag;
 			__instance._skipToNextLoopButton.GetComponent<Selectable>().interactable = flag;
 			__instance._skipToNextLoopButton.GetComponent<UIStyleApplier>().SetAutoInputStateChangesEnabled(flag);

@@ -11,7 +11,7 @@ namespace QSB.EchoesOfTheEye.Prisoner;
 public class CustomSlideCollectionContainer : MonoBehaviour
 {
 	[SerializeField]
-	public CustomSlideCollection _slideCollection = new CustomSlideCollection(0);
+	public CustomSlideCollection _slideCollection = new(0);
 
 	private bool _changeSlidesAllowed;
 	private int _currentSlideIndex;
@@ -55,7 +55,7 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 				return;
 			}
 
-			bool forward = this._currentSlideIndex < value;
+			var forward = this._currentSlideIndex < value;
 			this._currentSlideIndex = value;
 			if (this._currentSlideIndex > this._slideCollection.slides.Length - 1)
 			{
@@ -71,8 +71,8 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 		}
 	}
 
-	public OWEvent onSlideTextureUpdated = new OWEvent(1);
-	public OWEvent onEndOfSlides = new OWEvent(1);
+	public OWEvent onSlideTextureUpdated = new(1);
+	public OWEvent onEndOfSlides = new(1);
 
 	public void Initialize()
 	{
@@ -116,7 +116,7 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 			return false;
 		}
 
-		int slideIndex = this.slideIndex;
+		var slideIndex = this.slideIndex;
 		this.slideIndex = slideIndex + 1;
 		if (this.slideIndex == 0)
 		{
@@ -131,7 +131,7 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 		{
 			return false;
 		}
-		int slideIndex = this.slideIndex;
+		var slideIndex = this.slideIndex;
 		this.slideIndex = slideIndex - 1;
 		return true;
 	}

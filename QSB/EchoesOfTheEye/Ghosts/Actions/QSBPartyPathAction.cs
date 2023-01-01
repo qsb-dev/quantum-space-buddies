@@ -124,7 +124,7 @@ public class QSBPartyPathAction : QSBGhostAction
 		{
 			return;
 		}
-		GhostNode[] pathNodes = this._controller.AttachedObject.GetNodeMap().GetPathNodes();
+		var pathNodes = this._controller.AttachedObject.GetNodeMap().GetPathNodes();
 		if (this._pathIndex + 1 > pathNodes.Length || pathNodes[this._pathIndex].pathData.isEndOfPath)
 		{
 			this._reachedEndOfPath = true;

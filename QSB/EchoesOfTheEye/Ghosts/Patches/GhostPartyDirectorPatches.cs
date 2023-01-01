@@ -71,9 +71,9 @@ internal class GhostPartyDirectorPatches : QSBPatch
 			__instance._ambushTriggerTime = Time.time + (__instance._ambushTriggeredThisLoop ? __instance._secondaryAmbushDelay : __instance._initialAmbushDelay);
 			// BUG: breaks on client cuz cast
 			((QSBPartyHouseAction)__instance._fireplaceGhost.GetWorldObject<QSBGhostBrain>().GetAction(GhostAction.Name.PartyHouse)).LookAtPlayer(0f, TurnSpeed.MEDIUM);
-			for (int i = 0; i < __instance._ambushGhosts.Length; i++)
+			for (var i = 0; i < __instance._ambushGhosts.Length; i++)
 			{
-				float delay = (float)i;
+				var delay = (float)i;
 				// BUG: breaks on client cuz cast
 				((QSBPartyHouseAction)__instance._ambushGhosts[i].GetWorldObject<QSBGhostBrain>().GetAction(GhostAction.Name.PartyHouse)).LookAtPlayer(delay, TurnSpeed.SLOWEST);
 			}
@@ -101,7 +101,7 @@ internal class GhostPartyDirectorPatches : QSBPatch
 			__instance._partyMusicController.FadeIn(3f);
 			__instance._ghostsWaitingToAmbush.Clear();
 			__instance._ghostsWaitingToAmbush.AddRange(__instance._ambushGhosts);
-			for (int i = 0; i < __instance._directedGhosts.Length; i++)
+			for (var i = 0; i < __instance._directedGhosts.Length; i++)
 			{
 				// BUG: breaks on client cuz cast
 				((QSBPartyHouseAction)__instance._directedGhosts[i].GetWorldObject<QSBGhostBrain>().GetAction(GhostAction.Name.PartyHouse)).ResetAllowChasePlayer();

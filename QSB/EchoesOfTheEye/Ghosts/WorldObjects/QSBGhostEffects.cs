@@ -79,14 +79,14 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 
 		var relativeVelocity = AttachedObject._controller.GetRelativeVelocity();
 		var num = (AttachedObject._movementStyle == GhostEffects.MovementStyle.Chase) ? 8f : 2f;
-		float num2 = new Vector2(relativeVelocity.y, relativeVelocity.z).magnitude * Mathf.Sign(relativeVelocity.z);
-		Vector2 targetValue = new Vector2(relativeVelocity.x / num, num2 / num);
+		var num2 = new Vector2(relativeVelocity.y, relativeVelocity.z).magnitude * Mathf.Sign(relativeVelocity.z);
+		var targetValue = new Vector2(relativeVelocity.x / num, num2 / num);
 		AttachedObject._smoothedMoveSpeed = AttachedObject._moveSpeedSpring.Update(AttachedObject._smoothedMoveSpeed, targetValue, Time.deltaTime);
 		AttachedObject._animator.SetFloat(GhostEffects.AnimatorKeys.Float_MoveDirectionX, AttachedObject._smoothedMoveSpeed.x);
 		AttachedObject._animator.SetFloat(GhostEffects.AnimatorKeys.Float_MoveDirectionY, AttachedObject._smoothedMoveSpeed.y);
 
-		float num3 = Vector3.SignedAngle(new Vector3(relativeVelocity.x, 0f, relativeVelocity.z), relativeVelocity, Vector3.left);
-		float targetValue2 = Mathf.Clamp(num3 / 30f, -1f, 1f);
+		var num3 = Vector3.SignedAngle(new Vector3(relativeVelocity.x, 0f, relativeVelocity.z), relativeVelocity, Vector3.left);
+		var targetValue2 = Mathf.Clamp(num3 / 30f, -1f, 1f);
 		if (num3 > 15f && AttachedObject._controller.IsApproachingEndOfIncline())
 		{
 			targetValue2 = 0f;

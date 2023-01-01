@@ -17,7 +17,7 @@ public class QSBHuntAction : QSBGhostAction
 	private float _huntStartTime;
 	private bool _huntFailed;
 	private float _huntFailTime;
-	private List<int> _spotlightIndexList = new List<int>(16);
+	private List<int> _spotlightIndexList = new(16);
 	private int _spotlightIndex = -1;
 
 	public override void Initialize(QSBGhostBrain brain)
