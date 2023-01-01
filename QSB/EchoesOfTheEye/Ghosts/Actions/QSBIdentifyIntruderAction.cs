@@ -1,12 +1,7 @@
-﻿using System;
-using GhostEnums;
+﻿using GhostEnums;
 using QSB;
 using QSB.EchoesOfTheEye.Ghosts;
-using QSB.EchoesOfTheEye.Ghosts.Messages;
-using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
-using QSB.Messaging;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 public class QSBIdentifyIntruderAction : QSBGhostAction

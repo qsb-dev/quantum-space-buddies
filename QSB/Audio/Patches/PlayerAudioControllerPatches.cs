@@ -3,7 +3,6 @@ using QSB.Audio.Messages;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
-using UnityEngine;
 
 namespace QSB.Audio.Patches;
 

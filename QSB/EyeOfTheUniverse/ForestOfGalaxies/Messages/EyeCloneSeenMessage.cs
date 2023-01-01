@@ -1,6 +1,5 @@
 ﻿using QSB.Messaging;
 using QSB.WorldSync;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages;

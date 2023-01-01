@@ -1,10 +1,8 @@
 ﻿using HarmonyLib;
-using QSB.Inputs;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.TimeSync.Messages;
 using QSB.Utility;
-using UnityEngine;
 
 namespace QSB.TimeSync.Patches;
 

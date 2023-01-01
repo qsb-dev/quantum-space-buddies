@@ -4,10 +4,7 @@ using QSB.Messaging;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 

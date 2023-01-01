@@ -1,7 +1,5 @@
 ﻿using OWML.Common;
-using QSB.EchoesOfTheEye.DreamLantern;
 using QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
-using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.QuantumSync.WorldObjects;

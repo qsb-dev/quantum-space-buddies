@@ -8,7 +8,6 @@ using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.TimeSync.Messages;
-using QSB.TimeSync.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;

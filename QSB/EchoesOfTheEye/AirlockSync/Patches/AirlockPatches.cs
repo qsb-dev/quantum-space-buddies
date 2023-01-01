@@ -4,7 +4,6 @@ using QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.WorldSync;
-using System.Linq;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.Patches;
 

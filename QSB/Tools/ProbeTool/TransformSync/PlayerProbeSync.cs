@@ -1,9 +1,7 @@
 ﻿using OWML.Common;
 using QSB.Syncs.Sectored.Transforms;
 using QSB.Tools.ProbeLauncherTool;
-using QSB.Tools.ProbeLauncherTool.WorldObjects;
 using QSB.Utility;
-using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.Tools.ProbeTool.TransformSync;

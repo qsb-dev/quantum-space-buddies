@@ -2,11 +2,6 @@
 using QSB.ModelShip.TransformSync;
 using QSB.Patches;
 using QSB.Player;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QSB.ModelShip.Patches;
 

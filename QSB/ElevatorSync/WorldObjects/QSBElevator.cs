@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.ElevatorSync.Messages;
 using QSB.Messaging;
-using QSB.Patches;
 using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;

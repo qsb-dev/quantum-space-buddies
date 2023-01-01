@@ -2,7 +2,6 @@
 using QSB.ModelShip.TransformSync;
 using QSB.Patches;
 using QSB.Player;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.ModelShip.Patches;

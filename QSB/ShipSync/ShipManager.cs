@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
 using OWML.Common;
-using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.ShipSync.Messages;
@@ -10,7 +9,6 @@ using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using UnityEngine;
 

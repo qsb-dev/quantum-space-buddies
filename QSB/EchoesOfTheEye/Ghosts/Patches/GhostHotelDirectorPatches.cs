@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Patches;
-using QSB.Utility;
 using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Patches;

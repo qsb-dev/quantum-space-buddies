@@ -1,5 +1,4 @@
-﻿using QSB.ShipSync;
-using QSB.Syncs.Sectored.Rigidbodies;
+﻿using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using QSB.WorldSync;
 
