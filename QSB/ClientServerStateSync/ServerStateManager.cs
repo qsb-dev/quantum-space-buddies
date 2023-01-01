@@ -142,9 +142,9 @@ internal class ServerStateManager : MonoBehaviour
 		if (_currentState == ServerState.WaitingForAllPlayersToReady)
 		{
 			if (QSBPlayerManager.PlayerList.All(x
-				    => x.State is ClientState.WaitingForOthersToBeReady
-					    or ClientState.AliveInSolarSystem
-					    or ClientState.AliveInEye))
+					=> x.State is ClientState.WaitingForOthersToBeReady
+						or ClientState.AliveInSolarSystem
+						or ClientState.AliveInEye))
 			{
 				DebugLog.DebugWrite($"All ready!!");
 				new StartLoopMessage().Send();

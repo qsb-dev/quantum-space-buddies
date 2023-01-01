@@ -3,8 +3,8 @@
 namespace QSB;
 
 [Flags]
-public enum GameVendor 
-{ 
+public enum GameVendor
+{
 	None = 0,
 	Epic = 1,
 	Steam = 2,

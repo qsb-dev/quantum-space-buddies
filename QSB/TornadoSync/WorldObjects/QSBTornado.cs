@@ -12,7 +12,7 @@ public class QSBTornado : WorldObject<TornadoController>
 	public bool FormState
 	{
 		get => AttachedObject._tornadoRoot.activeSelf // forming or formed or collapsing
-		       && !AttachedObject._tornadoCollapsing; // and not collapsing
+			   && !AttachedObject._tornadoCollapsing; // and not collapsing
 		set
 		{
 			if (FormState == value)

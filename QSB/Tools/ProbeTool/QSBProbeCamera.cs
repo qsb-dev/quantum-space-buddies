@@ -43,7 +43,7 @@ public class QSBProbeCamera : MonoBehaviour
 	public static OWCamera GetLastSnapshotCamera() =>
 		_lastSnapshotCamera;
 
-	public OWCamera GetOWCamera() 
+	public OWCamera GetOWCamera()
 		=> _camera;
 
 	public ProbeCamera.ID GetID()
@@ -56,7 +56,7 @@ public class QSBProbeCamera : MonoBehaviour
 		_id != ProbeCamera.ID.PreLaunch
 		//&& ((this._quantumMoon != null && this._quantumMoon.IsPlayerInside() != this._quantumMoon.IsProbeInside())
 		|| (_sandLevelController != null && _sandLevelController.IsPointBuried(transform.position));
-		//|| (Locator.GetCloakFieldController() != null && Locator.GetCloakFieldController().isPlayerInsideCloak != Locator.GetCloakFieldController().isProbeInsideCloak));
+	//|| (Locator.GetCloakFieldController() != null && Locator.GetCloakFieldController().isPlayerInsideCloak != Locator.GetCloakFieldController().isProbeInsideCloak));
 
 	public RenderTexture TakeSnapshot()
 	{

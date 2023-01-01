@@ -47,9 +47,9 @@ public class QuantumVisibilityPatches : QSBPatch
 	public static bool RendererVisibilityTracker_IsVisibleUsingCameraFrustum(RendererVisibilityTracker __instance, out bool __result)
 	{
 		__result = QSBPlayerManager.GetPlayersWithCameras()
-			           .Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), __instance._renderer.bounds))
-		           && (!__instance._checkFrustumOcclusion || QSBPlayerManager.GetPlayersWithCameras()
-			           .Any(x => !__instance.IsOccludedFromPosition(x.Camera.transform.position)));
+					   .Any(x => GeometryUtility.TestPlanesAABB(x.Camera.GetFrustumPlanes(), __instance._renderer.bounds))
+				   && (!__instance._checkFrustumOcclusion || QSBPlayerManager.GetPlayersWithCameras()
+					   .Any(x => !__instance.IsOccludedFromPosition(x.Camera.transform.position)));
 		return false;
 	}
 

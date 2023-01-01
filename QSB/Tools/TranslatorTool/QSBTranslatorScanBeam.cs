@@ -20,7 +20,7 @@ internal class QSBTranslatorScanBeam : MonoBehaviour
 	public readonly Color _baseProjectorColor = new(0.3545942f, 2.206932f, 4.594794f, 1f);
 	public readonly Color _baseLightColor = new(0.1301365f, 0.2158605f, 0.6239606f, 1f);
 
-	private  Quaternion _baseRotation;
+	private Quaternion _baseRotation;
 	private bool _tooCloseToTarget;
 	private NomaiTextLine _nomaiTextLine;
 	private NomaiComputerRing _nomaiComputerRing;

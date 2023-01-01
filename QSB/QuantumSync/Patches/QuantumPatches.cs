@@ -204,9 +204,7 @@ public class QuantumPatches : QSBPatch
 		for (var i = 0; i < __instance._indexList.Count; ++i)
 		{
 			var random = Random.Range(i, __instance._indexList.Count);
-			var temp = __instance._indexList[i];
-			__instance._indexList[i] = __instance._indexList[random];
-			__instance._indexList[random] = temp;
+			(__instance._indexList[random], __instance._indexList[i]) = (__instance._indexList[i], __instance._indexList[random]);
 		}
 
 		for (var j = 0; j < __instance._shuffledObjects.Length; j++)
@@ -344,8 +342,8 @@ public class QuantumPatches : QSBPatch
 		}
 
 		if (QSBPlayerManager.LocalPlayer != null
-		    && QSBPlayerManager.LocalPlayer.IsInShrine
-		    && PlayerState.IsFlashlightOn())
+			&& QSBPlayerManager.LocalPlayer.IsInShrine
+			&& PlayerState.IsFlashlightOn())
 		{
 			__result = false;
 			return false;
@@ -353,8 +351,8 @@ public class QuantumPatches : QSBPatch
 
 		// BUG : make this *really* check for all players - check other probes and other jetpacks!
 		__result = __instance._gate.GetOpenFraction() == 0f
-		           && !__instance._isProbeInside
-		           && Locator.GetThrusterLightTracker().GetLightRange() <= 0f;
+				   && !__instance._isProbeInside
+				   && Locator.GetThrusterLightTracker().GetLightRange() <= 0f;
 		return false;
 	}
 
@@ -460,7 +458,7 @@ public class QuantumPatches : QSBPatch
 			for (var i = 0; i < __instance._pointingSkeletons.Length; i++)
 			{
 				if (__instance._pointingSkeletons[i].gameObject.activeInHierarchy &&
-				    (!__instance._pointingSkeletons[i].IsVisible() || !__instance._pointingSkeletons[i].IsIlluminated()))
+					(!__instance._pointingSkeletons[i].IsVisible() || !__instance._pointingSkeletons[i].IsIlluminated()))
 				{
 					__instance._pointingSkeletons[i].gameObject.SetActive(false);
 

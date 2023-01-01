@@ -12,7 +12,8 @@ internal class SocketItemMessage : QSBWorldObjectMessage<IQSBItem, (SocketMessag
 	public SocketItemMessage(SocketMessageType type, OWItemSocket socket) : base((
 		type,
 		socket ? socket.GetWorldObject<QSBItemSocket>().ObjectId : -1
-	)) { }
+	))
+	{ }
 
 	public override void OnReceiveRemote()
 	{

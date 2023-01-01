@@ -9,7 +9,8 @@ public class MeteorLaunchMessage : QSBWorldObjectMessage<QSBMeteorLauncher, (int
 	public MeteorLaunchMessage(MeteorController meteor, float launchSpeed) : base((
 		meteor.GetWorldObject<QSBMeteor>().ObjectId,
 		launchSpeed
-	)) { }
+	))
+	{ }
 
 	public override void OnReceiveRemote() => WorldObject.LaunchMeteor(
 		Data.MeteorId.GetWorldObject<QSBMeteor>().AttachedObject,

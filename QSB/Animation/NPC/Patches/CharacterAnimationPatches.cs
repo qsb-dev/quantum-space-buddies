@@ -67,8 +67,8 @@ public class CharacterAnimationPatches : QSBPatch
 		if (__instance.lookOnlyWhenTalking)
 		{
 			if (!__instance._inConversation
-			    || qsbObj.Occupants.Count == 0
-			    || !qsbObj.Occupants.Contains(playerToUse))
+				|| qsbObj.Occupants.Count == 0
+				|| !qsbObj.Occupants.Contains(playerToUse))
 			{
 				targetWeight *= 0;
 			}
@@ -76,7 +76,7 @@ public class CharacterAnimationPatches : QSBPatch
 		else
 		{
 			if (qsbObj.Occupants.Count == 0
-			    || !qsbObj.Occupants.Contains(playerToUse))
+				|| !qsbObj.Occupants.Contains(playerToUse))
 			{
 				targetWeight *= 0;
 			}

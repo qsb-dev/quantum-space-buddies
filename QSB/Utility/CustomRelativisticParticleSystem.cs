@@ -77,8 +77,8 @@ internal class CustomRelativisticParticleSystem : MonoBehaviour
 		_simulationSpace.rotation = _rotation;
 
 		if (!_velocityOverLifetimeModule.enabled
-		    && (!_limitVelocityOverLifetimeModule.enabled || !_limitVelocityOverLifetimeModule.separateAxes)
-		    && !_forceOverLifetimeModule.enabled)
+			&& (!_limitVelocityOverLifetimeModule.enabled || !_limitVelocityOverLifetimeModule.separateAxes)
+			&& !_forceOverLifetimeModule.enabled)
 		{
 			return;
 		}

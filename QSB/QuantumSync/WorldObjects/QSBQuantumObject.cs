@@ -209,7 +209,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 				{
 					_visibleToProbes.Add(player);
 				}
-				
+
 				AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
 				return;
 			}
@@ -256,7 +256,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		{
 			_visibleToProbes.Remove(player);
 		}
-		
+
 		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
 	}
 

@@ -106,7 +106,8 @@ internal class ItemRemotePatches : QSBPatch
 		Vector3 normal,
 		Transform parent,
 		Sector sector,
-		IItemDropTarget customDropTarget) { }
+		IItemDropTarget customDropTarget)
+	{ }
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.DropItem))]

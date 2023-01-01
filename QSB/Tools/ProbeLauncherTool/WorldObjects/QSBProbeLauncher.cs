@@ -62,7 +62,8 @@ public class QSBProbeLauncher : WorldObject<ProbeLauncher>
 		_probeOwnerID = probeOwnerID;
 		LaunchedProbe = QSBPlayerManager.GetPlayer(_probeOwnerID)?.Probe;
 
-		if (LaunchedProbe == null) Debug.LogError($"Could not find probe owner with ID {_probeOwnerID}");
+		if (LaunchedProbe == null)
+			Debug.LogError($"Could not find probe owner with ID {_probeOwnerID}");
 
 		if (!AttachedObject._preLaunchProbeProxy.activeSelf)
 		{
@@ -90,7 +91,8 @@ public class QSBProbeLauncher : WorldObject<ProbeLauncher>
 		AttachedObject._effects._owAudioSource.PlayOneShot(AudioType.ToolProbeTakePhoto, 1f);
 
 		// If their probe is launched also play a snapshot from it
-		if (LaunchedProbe && LaunchedProbe.IsLaunched()) LaunchedProbe.TakeSnapshot();
+		if (LaunchedProbe && LaunchedProbe.IsLaunched())
+			LaunchedProbe.TakeSnapshot();
 
 		QuantumManager.OnTakeProbeSnapshot(player, cameraId);
 	}

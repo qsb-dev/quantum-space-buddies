@@ -83,13 +83,13 @@ public class PlayerMapMarker : MonoBehaviour
 		}
 
 		var shouldBeVisible = ShouldBeVisible();
-		
+
 		if (_canvasMarker.IsVisible() != shouldBeVisible)
 		{
 			_canvasMarker.SetVisibility(shouldBeVisible);
 		}
 	}
-	
+
 	public void Remove()
 	{
 		// TODO

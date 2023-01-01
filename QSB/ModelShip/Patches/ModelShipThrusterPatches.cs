@@ -16,11 +16,12 @@ internal class ModelShipThrusterPatches : QSBPatch
 	{
 		var modelShipThrusters = ModelShipTransformSync.LocalInstance?.ThrusterVariableSyncer;
 
-		if (ModelShipThrusterManager.ThrusterFlameControllers == null) return true;
+		if (ModelShipThrusterManager.ThrusterFlameControllers == null)
+			return true;
 
 		if (ModelShipThrusterManager.ThrusterFlameControllers.Contains(__instance) && !QSBPlayerManager.LocalPlayer.FlyingModelShip)
 		{
-			if(__instance._thrusterModel.IsThrusterBankEnabled(OWUtilities.GetShipThrusterBank(__instance._thruster)))
+			if (__instance._thrusterModel.IsThrusterBankEnabled(OWUtilities.GetShipThrusterBank(__instance._thruster)))
 			{
 				__result = Vector3.Dot(modelShipThrusters.AccelerationSyncer.Value, __instance._thrusterFilter);
 				return false;

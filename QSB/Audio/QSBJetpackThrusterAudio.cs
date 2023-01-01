@@ -46,7 +46,7 @@ internal class QSBJetpackThrusterAudio : QSBThrusterAudio
 
 	private void Update()
 	{
-		if(_attachedPlayer == null)
+		if (_attachedPlayer == null)
 		{
 			enabled = false;
 			return;

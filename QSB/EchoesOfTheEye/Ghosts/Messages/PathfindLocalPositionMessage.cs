@@ -9,7 +9,8 @@ internal class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostCont
 	(Vector3 localPosition, float speed, float acceleration)>
 {
 	public PathfindLocalPositionMessage(Vector3 localPosition, float speed, float acceleration) :
-		base((localPosition, speed, acceleration)) { }
+		base((localPosition, speed, acceleration))
+	{ }
 
 	public override void OnReceiveRemote()
 	{

@@ -29,7 +29,7 @@ public class PlayerHUDMarker : HUDDistanceMarker
 	}
 
 	private bool ShouldBeVisible()
-	{ 
+	{
 		if (_player == null)
 		{
 			return false;

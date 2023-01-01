@@ -86,7 +86,7 @@ public class QSBTool : PlayerTool
 
 		if (_ditheringAnimator != null)
 		{
-			
+
 			_ditheringAnimator.SetVisible(true, .2f);
 		}
 	}

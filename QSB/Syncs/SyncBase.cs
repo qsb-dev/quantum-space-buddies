@@ -26,8 +26,8 @@ public abstract class SyncBase : QSBNetworkTransform
 			if (_player == null)
 			{
 				DebugLog.ToConsole($"Error - trying to get SyncBase.Player for {netId} before Start has been called! "
-				                   + "this really should not be happening!\n"
-				                   + Environment.StackTrace,
+								   + "this really should not be happening!\n"
+								   + Environment.StackTrace,
 					MessageType.Error);
 			}
 
@@ -109,7 +109,7 @@ public abstract class SyncBase : QSBNetworkTransform
 	public string Name => AttachedTransform ? AttachedTransform.name : "<NullObject!>";
 
 	public override string ToString() => (IsPlayerObject ? $"{Player.PlayerId}." : string.Empty)
-	                                     + $"{netId}:{GetType().Name} ({Name})";
+										 + $"{netId}:{GetType().Name} ({Name})";
 
 	protected virtual float DistanceChangeThreshold => 5f;
 	private float _prevDistance;
@@ -271,7 +271,7 @@ public abstract class SyncBase : QSBNetworkTransform
 		var distance = Vector3.Distance(SmoothPosition, transform.position);
 		var angle = Quaternion.Angle(SmoothRotation, transform.rotation);
 		if (Mathf.Abs(distance - _prevDistance) > DistanceChangeThreshold ||
-		    distance < .001f && angle < .001f)
+			distance < .001f && angle < .001f)
 		{
 			SmoothPosition = transform.position;
 			SmoothRotation = transform.rotation;
@@ -310,8 +310,8 @@ public abstract class SyncBase : QSBNetworkTransform
 	protected virtual void OnRenderObject()
 	{
 		if (!QSBCore.DebugSettings.DrawLines
-		    || !IsValid
-		    || !ReferenceTransform)
+			|| !IsValid
+			|| !ReferenceTransform)
 		{
 			return;
 		}
@@ -335,9 +335,9 @@ public abstract class SyncBase : QSBNetworkTransform
 	private void OnGUI()
 	{
 		if (!QSBCore.DebugSettings.DrawLabels
-		    || Event.current.type != EventType.Repaint
-		    || !IsValid
-		    || !ReferenceTransform)
+			|| Event.current.type != EventType.Repaint
+			|| !IsValid
+			|| !ReferenceTransform)
 		{
 			return;
 		}

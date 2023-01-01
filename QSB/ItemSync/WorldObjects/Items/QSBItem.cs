@@ -107,7 +107,8 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 						ItemState.Parent,
 						ItemState.Sector,
 						ItemState.CustomDropTarget,
-						ItemState.Rigidbody) { To = to });
+						ItemState.Rigidbody)
+					{ To = to });
 				break;
 		}
 	}

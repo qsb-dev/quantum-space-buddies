@@ -69,9 +69,9 @@ public static class QSBMessageManager
 			var player = QSBPlayerManager.GetPlayer(msg.From);
 
 			if (!player.IsReady
-			    && player.PlayerId != QSBPlayerManager.LocalPlayerId
-			    && player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-			    && msg is not (PlayerInformationMessage or PlayerReadyMessage or RequestStateResyncMessage or ServerStateMessage))
+				&& player.PlayerId != QSBPlayerManager.LocalPlayerId
+				&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
+				&& msg is not (PlayerInformationMessage or PlayerReadyMessage or RequestStateResyncMessage or ServerStateMessage))
 			{
 				//DebugLog.ToConsole($"Warning - Got message {msg} from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
 				new RequestStateResyncMessage().Send();

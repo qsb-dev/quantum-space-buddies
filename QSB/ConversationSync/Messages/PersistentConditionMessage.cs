@@ -25,10 +25,10 @@ internal class PersistentConditionMessage : QSBMessage<(string Condition, bool S
 		}
 
 		if (Data.Condition
-		    is not "LAUNCH_CODES_GIVEN"
-		    and not "PLAYER_ENTERED_TIMELOOPCORE"
-		    and not "PROBE_ENTERED_TIMELOOPCORE"
-		    and not "PLAYER_ENTERED_TIMELOOPCORE_MULTIPLE")
+			is not "LAUNCH_CODES_GIVEN"
+			and not "PLAYER_ENTERED_TIMELOOPCORE"
+			and not "PROBE_ENTERED_TIMELOOPCORE"
+			and not "PLAYER_ENTERED_TIMELOOPCORE_MULTIPLE")
 		{
 			PlayerData.SaveCurrentGame();
 		}

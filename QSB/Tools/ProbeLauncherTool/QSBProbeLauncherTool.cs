@@ -56,6 +56,7 @@ public class QSBProbeLauncherTool : QSBTool
 		Effects._owAudioSource.PlayOneShot(AudioType.ToolProbeTakePhoto, 1f);
 
 		// Also make the probe itself play the sound effect
-		if (Player.Probe.IsLaunched()) Player.Probe.TakeSnapshot();
+		if (Player.Probe.IsLaunched())
+			Player.Probe.TakeSnapshot();
 	}
 }

@@ -57,7 +57,7 @@ public class QSBPlayerAudioController : MonoBehaviour
 		}
 	}
 
-	public void PlayFootstep(AudioType audioType, float pitch) => 
+	public void PlayFootstep(AudioType audioType, float pitch) =>
 		PlayOneShot(audioType, pitch, 0.7f);
 
 	public void OnJump(float pitch) =>

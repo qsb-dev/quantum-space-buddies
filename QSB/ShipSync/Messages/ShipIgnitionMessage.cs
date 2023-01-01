@@ -7,32 +7,32 @@ namespace QSB.ShipSync.Messages;
 
 internal class ShipIgnitionMessage : QSBMessage<ShipIgnitionType>
 {
-    public enum ShipIgnitionType
-    {
-        START_IGNITION,
-        COMPLETE_IGNITION,
-        CANCEL_IGNITION
-    }
+	public enum ShipIgnitionType
+	{
+		START_IGNITION,
+		COMPLETE_IGNITION,
+		CANCEL_IGNITION
+	}
 
-    static ShipIgnitionMessage()
-    {
-        GlobalMessenger.AddListener(OWEvents.StartShipIgnition, () => Handler(ShipIgnitionType.START_IGNITION));
-        GlobalMessenger.AddListener(OWEvents.CompleteShipIgnition, () => Handler(ShipIgnitionType.COMPLETE_IGNITION));
-        GlobalMessenger.AddListener(OWEvents.CancelShipIgnition, () => Handler(ShipIgnitionType.CANCEL_IGNITION));
-    }
+	static ShipIgnitionMessage()
+	{
+		GlobalMessenger.AddListener(OWEvents.StartShipIgnition, () => Handler(ShipIgnitionType.START_IGNITION));
+		GlobalMessenger.AddListener(OWEvents.CompleteShipIgnition, () => Handler(ShipIgnitionType.COMPLETE_IGNITION));
+		GlobalMessenger.AddListener(OWEvents.CancelShipIgnition, () => Handler(ShipIgnitionType.CANCEL_IGNITION));
+	}
 
-    public ShipIgnitionMessage(ShipIgnitionType data) : base(data) { }
+	public ShipIgnitionMessage(ShipIgnitionType data) : base(data) { }
 
-    private static void Handler(ShipIgnitionType type)
-    {
-        if (PlayerTransformSync.LocalInstance && QSBPlayerManager.LocalPlayer.FlyingShip)
-        {
-            new ShipIgnitionMessage(type).Send();
-        }
-    }
+	private static void Handler(ShipIgnitionType type)
+	{
+		if (PlayerTransformSync.LocalInstance && QSBPlayerManager.LocalPlayer.FlyingShip)
+		{
+			new ShipIgnitionMessage(type).Send();
+		}
+	}
 
-    public override void OnReceiveRemote()
-    {
+	public override void OnReceiveRemote()
+	{
 		switch (Data)
 		{
 			case ShipIgnitionType.START_IGNITION:

@@ -32,13 +32,13 @@ internal class ForestPatches : QSBPatch
 		}
 
 		if ((Locator.GetProbe() != null && Locator.GetProbe().IsAnchored())
-		    || QSBPlayerManager.PlayerList.Where(x => !x.IsLocalPlayer).Any(x => x.Probe != null && x.Probe.IsAnchored()))
+			|| QSBPlayerManager.PlayerList.Where(x => !x.IsLocalPlayer).Any(x => x.Probe != null && x.Probe.IsAnchored()))
 		{
 			foreach (var player in QSBPlayerManager.PlayerList)
 			{
 				if (player.IsLocalPlayer
-				    && Locator.GetProbe() != null
-				    && Locator.GetProbe().IsAnchored())
+					&& Locator.GetProbe() != null
+					&& Locator.GetProbe().IsAnchored())
 				{
 					var vector = Locator.GetProbe().transform.position - worldPosition;
 					vector.y = 0f;
