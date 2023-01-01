@@ -31,6 +31,7 @@ public abstract class AuthWorldObject<T> : WorldObject<T>, IAuthWorldObject
 		{
 			return;
 		}
+
 		if (Owner == player.PlayerId)
 		{
 			((IAuthWorldObject)this).SendMessage(new AuthWorldObjectMessage(CanOwn ? QSBPlayerManager.LocalPlayerId : 0));

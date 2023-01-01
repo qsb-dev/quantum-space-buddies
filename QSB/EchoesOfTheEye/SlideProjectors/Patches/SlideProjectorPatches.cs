@@ -20,6 +20,7 @@ internal class SlideProjectorPatches : QSBPatch
 		{
 			return;
 		}
+
 		__instance.GetWorldObject<QSBSlideProjector>().SendMessage(new UseSlideProjectorMessage(true));
 	}
 
@@ -31,6 +32,7 @@ internal class SlideProjectorPatches : QSBPatch
 		{
 			return;
 		}
+
 		__instance.GetWorldObject<QSBSlideProjector>().SendMessage(new UseSlideProjectorMessage(false));
 	}
 
@@ -42,10 +44,12 @@ internal class SlideProjectorPatches : QSBPatch
 		{
 			return;
 		}
+
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
+
 		__instance.GetWorldObject<QSBSlideProjector>().SendMessage(new NextSlideMessage());
 	}
 
@@ -57,10 +61,12 @@ internal class SlideProjectorPatches : QSBPatch
 		{
 			return;
 		}
+
 		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
+
 		__instance.GetWorldObject<QSBSlideProjector>().SendMessage(new PreviousSlideMessage());
 	}
 }

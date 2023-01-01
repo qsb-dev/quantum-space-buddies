@@ -37,6 +37,7 @@ internal class GhostControllerPatches : QSBPatch
 			return true;
 
 		}
+
 		__instance.GetWorldObject<QSBGhostController>().SetLanternConcealed(concealed, playAudio);
 		return false;
 	}

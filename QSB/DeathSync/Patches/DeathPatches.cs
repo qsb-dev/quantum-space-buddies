@@ -126,6 +126,7 @@ public class DeathPatches : QSBPatch
 					GlobalMessenger.FireEvent("TriggerEndOfDLC");
 					return false;
 				}
+
 				GlobalMessenger.FireEvent("TriggerFlashback");
 				return false;
 			}
@@ -137,6 +138,7 @@ public class DeathPatches : QSBPatch
 					__instance.FinishEscapeTimeLoopSequence();
 					return false;
 				}
+
 				GlobalMessenger.FireEvent("TriggerDeathOutsideTimeLoop");
 			}
 		}

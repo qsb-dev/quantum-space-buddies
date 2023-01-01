@@ -47,6 +47,7 @@ public class QSBElevatorWalkAction : QSBGhostAction
 			this._controller.PathfindToNode(this._elevatorNode, MoveType.PATROL);
 			return;
 		}
+
 		Debug.LogError("MissingElevatorNode");
 	}
 

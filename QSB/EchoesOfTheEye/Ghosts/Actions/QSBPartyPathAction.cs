@@ -32,6 +32,7 @@ public class QSBPartyPathAction : QSBGhostAction
 		{
 			return -100f;
 		}
+
 		return 10f;
 	}
 
@@ -75,10 +76,12 @@ public class QSBPartyPathAction : QSBGhostAction
 			{
 				this._controller.PathfindToNode(this._controller.AttachedObject.GetNodeMap().GetPathNodes()[this.currentPathIndex], MoveType.PATROL);
 			}
+
 			this._controller.SetLanternConcealed(this.isMovingToFinalPosition, true);
 			this._controller.ChangeLanternFocus(0f, 2f);
 			return;
 		}
+
 		this._controller.SetLanternConcealed(true, false);
 	}
 
@@ -98,12 +101,14 @@ public class QSBPartyPathAction : QSBGhostAction
 		{
 			return;
 		}
+
 		var pathNodes = this._controller.AttachedObject.GetNodeMap().GetPathNodes();
 		if (this.currentPathIndex + 1 > pathNodes.Length || pathNodes[this.currentPathIndex].pathData.isEndOfPath)
 		{
 			this.hasReachedEndOfPath = true;
 			return;
 		}
+
 		this.currentPathIndex++;
 		this._controller.PathfindToNode(pathNodes[this.currentPathIndex], MoveType.PATROL);
 	}

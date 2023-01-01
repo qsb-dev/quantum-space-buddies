@@ -18,6 +18,7 @@ internal class QSBAirlockInterface : QSBRotatingElements<AirlockInterface, Airlo
 		{
 			baseString += $"{Environment.NewLine}localRotation:{element.localRotation}";
 		}
+
 		return baseString;
 	}
 }

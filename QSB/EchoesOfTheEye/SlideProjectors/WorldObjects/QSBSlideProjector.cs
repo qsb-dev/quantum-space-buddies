@@ -23,6 +23,7 @@ public class QSBSlideProjector : WorldObject<SlideProjector>
 		{
 			return;
 		}
+
 		if (_user == player.PlayerId)
 		{
 			this.SendMessage(new UseSlideProjectorMessage(false));

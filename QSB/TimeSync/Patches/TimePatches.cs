@@ -54,6 +54,7 @@ internal class ClientTimePatches : QSBPatch
 		{
 			return;
 		}
+
 		new SetSecondsRemainingMessage(secondsRemaining).Send();
 	}
 }

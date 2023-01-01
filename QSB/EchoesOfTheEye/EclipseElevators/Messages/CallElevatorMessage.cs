@@ -18,6 +18,7 @@ internal class CallElevatorMessage : QSBWorldObjectMessage<QSBElevatorDestinatio
 				WorldObject.AttachedObject._gearInterface.PlayFailure(true, 1f);
 			}
 		}
+
 		WorldObject.AttachedObject.OnElevatorCalled.Invoke(WorldObject.AttachedObject._floorIndex);
 		WorldObject.AttachedObject._interactReceiver.ResetInteraction();
 	}

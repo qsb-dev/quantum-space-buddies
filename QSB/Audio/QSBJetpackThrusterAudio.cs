@@ -84,6 +84,7 @@ internal class QSBJetpackThrusterAudio : QSBThrusterAudio
 			targetVolume = 0f;
 			targetPan = 0f;
 		}
+
 		if (!source.isPlaying && targetVolume > 0f)
 		{
 			source.SetLocalVolume(0f);
@@ -93,6 +94,7 @@ internal class QSBJetpackThrusterAudio : QSBThrusterAudio
 		{
 			source.Stop();
 		}
+
 		source.SetLocalVolume(Mathf.MoveTowards(source.GetLocalVolume(), targetVolume, 5f * Time.deltaTime));
 		source.panStereo = Mathf.MoveTowards(source.panStereo, targetPan, 5f * Time.deltaTime);
 	}

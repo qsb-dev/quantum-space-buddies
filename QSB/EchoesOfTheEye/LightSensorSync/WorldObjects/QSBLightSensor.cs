@@ -26,7 +26,6 @@ internal class QSBLightSensor : AuthWorldObject<SingleLightSensor>
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;
 
-
 	public override bool CanOwn => AttachedObject.enabled;
 
 	public override void SendInitialState(uint to)

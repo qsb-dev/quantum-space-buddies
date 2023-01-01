@@ -85,6 +85,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		{
 			targetValue2 = 0f;
 		}
+
 		AttachedObject._smoothedMoveSlope = AttachedObject._moveSlopeSpring.Update(AttachedObject._smoothedMoveSlope, targetValue2, Time.deltaTime);
 		AttachedObject._animator.SetFloat(GhostEffects.AnimatorKeys.Float_MoveSlope, AttachedObject._smoothedMoveSlope);
 

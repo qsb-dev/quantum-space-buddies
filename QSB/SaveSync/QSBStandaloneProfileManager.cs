@@ -77,7 +77,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 		|| _pendingGfxSettingsSave != null
 		|| _pendingInputJSONSave != "";
 
-
 	public int profileCharacterLimit => _profileNameCharLimit;
 
 	public delegate void NoProfilesExistEvent();
@@ -1134,7 +1133,6 @@ internal class QSBStandaloneProfileManager : IProfileManager
 			get => _gameSave;
 			set => _gameSave = value;
 		}
-
 
 		[JsonIgnore]
 		public GameSave multiplayerGameSave

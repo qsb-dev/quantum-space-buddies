@@ -83,6 +83,7 @@ public class DreamWorldFakePlayer : MonoBehaviour
 		{
 			return;
 		}
+
 		Destroy(gameObject);
 	}
 }

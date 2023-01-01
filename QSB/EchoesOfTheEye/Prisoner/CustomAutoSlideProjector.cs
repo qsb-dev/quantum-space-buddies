@@ -34,6 +34,7 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 		{
 			DebugLog.DebugWrite($"COLLECTION ITEM NULL IN AWAKE", OWML.Common.MessageType.Error);
 		}
+
 		base.enabled = false;
 	}
 
@@ -56,11 +57,13 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 		{
 			return;
 		}
+
 		this._light.SetActivation(true);
 		if (reset)
 		{
 			this._slideCollectionItem.ResetSlideIndex();
 		}
+
 		this.UpdateSlideTexture();
 		this._lastSlidePlayTime = Time.time;
 		this._isPlaying = true;
@@ -73,6 +76,7 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 		{
 			return;
 		}
+
 		this._isPlaying = false;
 		base.enabled = false;
 		this._slideCollectionItem.enabled = false;
@@ -93,8 +97,10 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 			{
 				this._slideCollectionItem.enabled = false;
 			}
+
 			this._slideCollectionItem.onSlideTextureUpdated -= this.OnSlideTextureUpdated;
 		}
+
 		this._slideCollectionItem = collection;
 		this._slideCollectionItem.onSlideTextureUpdated += this.OnSlideTextureUpdated;
 		this._slideCollectionItem.Initialize();
@@ -115,8 +121,10 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 					this._isPausingEnd = false;
 					this.FirstSlide();
 				}
+
 				return;
 			}
+
 			if (Time.time >= this.GetCurrentSlidePlayDuration() + this._lastSlidePlayTime)
 			{
 				if (!this._slideCollectionItem.isEndOfSlide)
@@ -124,12 +132,14 @@ internal class CustomAutoSlideProjector : MonoBehaviour
 					this.NextSlide();
 					return;
 				}
+
 				if (this._endPauseDuration > 0f)
 				{
 					this._isPausingEnd = true;
 					this._startPausingEndTime = Time.time;
 					return;
 				}
+
 				this.FirstSlide();
 			}
 		}

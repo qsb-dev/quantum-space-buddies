@@ -37,6 +37,7 @@ internal class DreamLanternPatches : QSBPatch
 		{
 			return;
 		}
+
 		qsbDreamLantern.SendMessage(new SetLitMessage(lit));
 	}
 
@@ -65,6 +66,7 @@ internal class DreamLanternPatches : QSBPatch
 		{
 			return;
 		}
+
 		qsbDreamLantern.SendMessage(new SetConcealedMessage(concealed));
 	}
 
@@ -94,6 +96,7 @@ internal class DreamLanternPatches : QSBPatch
 		{
 			return;
 		}
+
 		qsbDreamLantern.SendMessage(new SetFocusMessage(focus));
 	}
 
@@ -122,6 +125,7 @@ internal class DreamLanternPatches : QSBPatch
 		{
 			return;
 		}
+
 		qsbDreamLantern.SendMessage(new SetRangeMessage(minRange, maxRange));
 	}
 }

@@ -118,6 +118,7 @@ internal class QSBNomaiTranslatorProp : MonoBehaviour
 			this._dynamicFontInUse = TextTranslation.GetFont(true);
 			this._fontSpacingInUse = TextTranslation.GetDefaultFontSpacing();
 		}
+
 		this._textField.font = this._fontInUse;
 		this._textField.lineSpacing = this._fontSpacingInUse;
 	}

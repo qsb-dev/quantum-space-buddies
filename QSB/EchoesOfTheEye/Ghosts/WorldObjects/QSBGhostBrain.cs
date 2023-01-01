@@ -110,6 +110,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			return GhostAction.Name.None;
 		}
+
 		return _currentAction.GetName();
 	}
 
@@ -127,6 +128,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 				return _actionLibrary[i];
 			}
 		}
+
 		return null;
 	}
 
@@ -510,6 +512,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 		{
 			_data.previousAction = GhostAction.Name.None;
 		}
+
 		_currentAction = action;
 		_data.currentAction = (action != null) ? action.GetName() : GhostAction.Name.None;
 		if (_currentAction != null)
@@ -517,6 +520,7 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 			_currentAction.EnterAction();
 			_data.OnEnterAction(_currentAction.GetName());
 		}
+
 		ClearPendingAction();
 	}
 

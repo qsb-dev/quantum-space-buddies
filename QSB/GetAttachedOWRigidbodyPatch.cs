@@ -19,6 +19,7 @@ public class GetAttachedOWRigidbodyPatch : QSBPatch
 		{
 			transform = obj.transform.parent;
 		}
+
 		while (owrigidbody == null)
 		{
 			owrigidbody = transform.GetComponent<OWRigidbody>();
@@ -32,8 +33,10 @@ public class GetAttachedOWRigidbodyPatch : QSBPatch
 			{
 				break;
 			}
+
 			transform = transform.parent;
 		}
+
 		__result = owrigidbody;
 		return false;
 	}

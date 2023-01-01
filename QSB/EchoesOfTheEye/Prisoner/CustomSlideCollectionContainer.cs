@@ -20,6 +20,7 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 			{
 				return 0;
 			}
+
 			return this._slideCollection.slides.Length;
 		}
 	}
@@ -75,6 +76,7 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 		{
 			return;
 		}
+
 		this._changeSlidesAllowed = true;
 		this._initialized = true;
 	}
@@ -85,6 +87,7 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 		{
 			return null;
 		}
+
 		return this._slideCollection.slides[this._currentSlideIndex];
 	}
 
@@ -95,6 +98,7 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 			DebugLog.DebugWrite($"NO SLIDES!", OWML.Common.MessageType.Error);
 			return null;
 		}
+
 		return this.GetCurrentSlide().GetTexture();
 	}
 
@@ -117,6 +121,7 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 		{
 			this.onEndOfSlides.Invoke();
 		}
+
 		return true;
 	}
 
@@ -126,6 +131,7 @@ public class CustomSlideCollectionContainer : MonoBehaviour
 		{
 			return false;
 		}
+
 		var slideIndex = this.slideIndex;
 		this.slideIndex = slideIndex - 1;
 		return true;

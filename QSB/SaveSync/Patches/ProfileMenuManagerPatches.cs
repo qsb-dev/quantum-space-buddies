@@ -119,6 +119,7 @@ internal class ProfileMenuManagerPatches : QSBPatch
 				__instance.ClearProfileElementListeners(requiredComponent);
 				Object.Destroy(__instance._listProfileElements[i]);
 			}
+
 			__instance._listProfileElements.Clear();
 		}
 

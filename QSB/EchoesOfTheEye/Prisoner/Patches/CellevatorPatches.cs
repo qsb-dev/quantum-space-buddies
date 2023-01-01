@@ -20,6 +20,7 @@ public class CellevatorPatches : QSBPatch
 		{
 			return;
 		}
+
 		__instance.GetWorldObject<QSBPrisonCellElevator>()
 			.SendMessage(new CellevatorCallMessage(1));
 	}
@@ -32,6 +33,7 @@ public class CellevatorPatches : QSBPatch
 		{
 			return;
 		}
+
 		__instance.GetWorldObject<QSBPrisonCellElevator>()
 			.SendMessage(new CellevatorCallMessage(0));
 	}

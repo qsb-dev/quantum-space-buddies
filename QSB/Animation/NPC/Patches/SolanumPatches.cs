@@ -52,6 +52,7 @@ public class SolanumPatches : QSBPatch
 		{
 			return true;
 		}
+
 		var qsbObj = __instance._solanumAnimController.GetWorldObject<QSBSolanumAnimController>();
 		__instance._playerInWatchVolume = qsbObj.Trigger.Occupants.Any();
 

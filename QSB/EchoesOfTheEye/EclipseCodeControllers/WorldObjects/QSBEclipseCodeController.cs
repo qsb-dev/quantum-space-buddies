@@ -38,6 +38,7 @@ public class QSBEclipseCodeController : WorldObject<EclipseCodeController4>
 		{
 			return;
 		}
+
 		if (PlayerInControl == player)
 		{
 			this.SendMessage(new UseControllerMessage(false));

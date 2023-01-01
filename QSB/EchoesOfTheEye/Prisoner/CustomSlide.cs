@@ -24,6 +24,7 @@ public class CustomSlide
 			{
 				return;
 			}
+
 			this._textureOverride = value;
 			this.InvokeTextureUpdate();
 		}

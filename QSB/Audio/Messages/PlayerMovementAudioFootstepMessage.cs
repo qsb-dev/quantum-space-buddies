@@ -4,7 +4,6 @@ using QSB.WorldSync;
 
 namespace QSB.Audio.Messages;
 
-
 public class PlayerMovementAudioFootstepMessage : QSBMessage<(AudioType audioType, float pitch, uint userID)>
 {
 	public PlayerMovementAudioFootstepMessage(AudioType audioType, float pitch, uint userID) : base((audioType, pitch, userID)) { }

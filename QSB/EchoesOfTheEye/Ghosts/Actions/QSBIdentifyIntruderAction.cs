@@ -69,6 +69,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 		{
 			return 0.1f;
 		}
+
 		return 0.5f;
 	}
 
@@ -294,6 +295,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 				}
 			}
 		}
+
 		return num;
 	}
 }

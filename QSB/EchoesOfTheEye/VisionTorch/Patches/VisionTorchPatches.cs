@@ -27,6 +27,7 @@ public class VisionTorchPatches : QSBPatch
 			__instance.enabled = false;
 			return false;
 		}
+
 		__instance._wasProjecting = __instance._isProjecting;
 		__instance._isProjecting = OWInput.IsPressed(InputLibrary.toolActionPrimary, InputMode.Character);
 		if (__instance._isProjecting && !__instance._wasProjecting)

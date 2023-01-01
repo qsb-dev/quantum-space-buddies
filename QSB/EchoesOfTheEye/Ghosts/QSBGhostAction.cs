@@ -171,6 +171,7 @@ public abstract class QSBGhostAction
 		{
 			return -1f;
 		}
+
 		return Time.time - this._enterTime;
 	}
 }

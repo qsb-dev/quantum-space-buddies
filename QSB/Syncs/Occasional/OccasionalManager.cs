@@ -27,6 +27,7 @@ internal class OccasionalManager : WorldObjectManager
 			{
 				continue;
 			}
+
 			SpawnOccasional(proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 		}
 

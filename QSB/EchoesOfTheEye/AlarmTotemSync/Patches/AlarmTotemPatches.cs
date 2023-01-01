@@ -30,6 +30,7 @@ public class AlarmTotemPatches : QSBPatch
 			var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
 			qsbAlarmTotem.RequestOwnership();
 		}
+
 		return false;
 	}
 
@@ -66,6 +67,7 @@ public class AlarmTotemPatches : QSBPatch
 				}
 			});
 		}
+
 		return false;
 	}
 
@@ -77,6 +79,7 @@ public class AlarmTotemPatches : QSBPatch
 		{
 			return true;
 		}
+
 		var qsbAlarmTotem = __instance.GetWorldObject<QSBAlarmTotem>();
 
 		if (qsbAlarmTotem.Owner != QSBPlayerManager.LocalPlayerId)
@@ -106,6 +109,7 @@ public class AlarmTotemPatches : QSBPatch
 			__instance._pulseLightController.FadeTo(0f, 0.5f);
 			qsbAlarmTotem.SendMessage(new SetVisibleMessage(false));
 		}
+
 		return false;
 	}
 
@@ -118,6 +122,7 @@ public class AlarmTotemPatches : QSBPatch
 			__result = false;
 			return false;
 		}
+
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
 			var position = player.Camera.transform.position;
@@ -128,10 +133,12 @@ public class AlarmTotemPatches : QSBPatch
 					__result = true;
 					return false;
 				}
+
 				if (player.AssignedSimulationLantern == null)
 				{
 					continue;
 				}
+
 				var lanternController = player.AssignedSimulationLantern.AttachedObject.GetLanternController();
 				if (lanternController.IsHeldByPlayer())
 				{
@@ -146,18 +153,20 @@ public class AlarmTotemPatches : QSBPatch
 								GlobalMessenger.FireEvent("ConcealFromAlarmTotem");
 							}
 						}
+
 						__result = false;
 						return false;
 					}
+
 					__result = true;
 					return false;
 				}
 			}
 		}
+
 		__result = false;
 		return false;
 	}
-
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(AlarmBell), nameof(AlarmBell.OnEntry))]

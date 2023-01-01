@@ -12,7 +12,6 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 	public ThrusterModel ThrusterModel { get; private set; }
 	private ThrusterAudio _thrusterAudio;
 
-
 	public void Init(GameObject modelShip)
 	{
 		ThrusterModel = modelShip.GetComponent<ThrusterModel>();

@@ -4,7 +4,6 @@ using QSB.WorldSync;
 
 namespace QSB.Audio.Messages;
 
-
 public class PlayerMovementAudioJumpMessage : QSBMessage<(float pitch, uint userID)>
 {
 	public PlayerMovementAudioJumpMessage(float pitch, uint userID) : base((pitch, userID)) { }

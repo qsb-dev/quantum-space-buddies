@@ -30,6 +30,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 		{
 			return 99f;
 		}
+
 		return 94f;
 	}
 
@@ -92,6 +93,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 				this._lookingAtPlayer = true;
 			}
 		}
+
 		return true;
 	}
 
@@ -108,6 +110,7 @@ public class QSBPartyHouseAction : QSBGhostAction
 			{
 				this._controller.PathfindToLocalPosition(this._data.interestedPlayer.playerLocation.localPosition, MoveType.SEARCH);
 			}
+
 			this._controller.FaceLocalPosition(this._data.interestedPlayer.playerLocation.localPosition, TurnSpeed.MEDIUM);
 		}
 	}

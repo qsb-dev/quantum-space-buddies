@@ -27,6 +27,7 @@ internal class ModelShipThrusterPatches : QSBPatch
 				return false;
 			}
 		}
+
 		return true;
 	}
 }

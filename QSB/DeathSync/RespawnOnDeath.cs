@@ -150,6 +150,7 @@ public class RespawnOnDeath : MonoBehaviour
 		{
 			__instance._proxyShadowLight.enabled = true;
 		}
+
 		__instance._insideDream = false;
 		__instance._waitingToLightLantern = false;
 		__instance._playerLantern.OnExitDreamWorld();

@@ -18,6 +18,7 @@ public class AlarmSequenceControllerPatches : QSBPatch
 		{
 			__instance.PlayChimes();
 		}
+
 		__instance.enabled = true;
 		return false;
 	}
@@ -32,6 +33,7 @@ public class AlarmSequenceControllerPatches : QSBPatch
 			__instance._alarmCounter = 0;
 			Debug.LogError("Something went wrong, alarm counter should never drop below zero!");
 		}
+
 		return false;
 	}
 
@@ -46,6 +48,7 @@ public class AlarmSequenceControllerPatches : QSBPatch
 		{
 			alarmBell.StopAnimation();
 		}
+
 		return false;
 	}
 
@@ -58,6 +61,7 @@ public class AlarmSequenceControllerPatches : QSBPatch
 		{
 			__instance.UpdateChimes();
 		}
+
 		__instance.UpdatePulse();
 		if (!__instance._playing && __instance._alarmCounter == 0 && __instance._pulse <= 0.01f)
 		{
@@ -65,6 +69,7 @@ public class AlarmSequenceControllerPatches : QSBPatch
 			__instance._targetPulse = 0f;
 			__instance.enabled = false;
 		}
+
 		return false;
 	}
 
@@ -76,18 +81,22 @@ public class AlarmSequenceControllerPatches : QSBPatch
 		{
 			alarmBell.PlaySingleChime(__instance._chimeIndex);
 		}
+
 		if (!__instance._animationStarted && !__instance._dreamWorldController.IsInDream())
 		{
 			foreach (var alarmBell in AlarmTotemManager.AlarmBells)
 			{
 				alarmBell.PlayAnimation();
 			}
+
 			__instance._animationStarted = true;
 		}
+
 		if (__instance._dreamWorldController.IsInDream() && !__instance._dreamWorldController.IsExitingDream())
 		{
 			Locator.GetDreamWorldAudioController().PlaySingleAlarmChime(__instance._chimeIndex, __instance._volumeCurve.Evaluate(__instance._wakeFraction));
 		}
+
 		return false;
 	}
 }

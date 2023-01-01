@@ -9,8 +9,8 @@ namespace QSB.EchoesOfTheEye.LightSensorSync.Messages;
 
 internal class PlayerIlluminatingLanternsMessage : QSBMessage<(uint playerId, int[] lanterns)>
 {
-	public PlayerIlluminatingLanternsMessage(uint playerId, IEnumerable<DreamLanternController> lanterns) :
-		base((
+	public PlayerIlluminatingLanternsMessage(uint playerId, IEnumerable<DreamLanternController> lanterns)
+		: base((
 			playerId,
 			lanterns.Select(x => x.GetWorldObject<QSBDreamLanternController>().ObjectId).ToArray()
 		))

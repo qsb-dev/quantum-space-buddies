@@ -111,12 +111,12 @@ public class ShipTransformSync : SectoredRigidbodySync
 		{
 			@this._rigidbody.velocity = newVelocity + Locator.GetCenterOfTheUniverse().GetStaticFrameVelocity_Internal();
 		}
+
 		@this._lastVelocity = @this._currentVelocity;
 		@this._currentVelocity = newVelocity;
 	}
 
 	#endregion
-
 
 	private bool ShouldMovePlayer =>
 		(

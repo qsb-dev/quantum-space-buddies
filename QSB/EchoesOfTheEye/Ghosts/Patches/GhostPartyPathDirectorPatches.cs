@@ -87,6 +87,7 @@ internal class GhostPartyPathDirectorPatches : QSBPatch
 							{
 								__instance._ghostFinalDestinations[__instance._numEnabledGhostProxies].proxyGhost.Reveal();
 							}
+
 							__instance._numEnabledGhostProxies++;
 						}
 

@@ -14,6 +14,7 @@ public static class IAuthWorldObject_Extensions
 		{
 			return;
 		}
+
 		@this.SendMessage(new AuthWorldObjectMessage(QSBPlayerManager.LocalPlayerId));
 	}
 
@@ -27,6 +28,7 @@ public static class IAuthWorldObject_Extensions
 		{
 			return;
 		}
+
 		@this.SendMessage(new AuthWorldObjectMessage(0));
 	}
 }
