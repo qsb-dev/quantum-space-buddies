@@ -41,7 +41,7 @@ namespace QSB;
 
 public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 {
-	public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
+	public static new QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
 	public event Action OnClientConnected;
 	public event Action<string> OnClientDisconnected;

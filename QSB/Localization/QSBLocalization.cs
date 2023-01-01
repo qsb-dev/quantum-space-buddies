@@ -10,7 +10,7 @@ namespace QSB.Localization;
 
 public static class QSBLocalization
 {
-	private readonly static List<Translation> _translations = new();
+	private static readonly List<Translation> _translations = new();
 	public static Translation Current;
 
 	public static Action LanguageChanged;

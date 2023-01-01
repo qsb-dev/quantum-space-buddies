@@ -4,45 +4,20 @@ using UnityEngine;
 
 public class QSBPartyPathAction : QSBGhostAction
 {
-	private int _pathIndex;
-
 	private bool _allowFollowPath;
-
-	private bool _reachedEndOfPath;
-
-	private bool _isMovingToFinalPosition;
-
 	private Vector3 _finalPosition;
 
-	public int currentPathIndex
-	{
-		get
-		{
-			return this._pathIndex;
-		}
-	}
+	public int currentPathIndex { get; private set; }
 
-	public bool hasReachedEndOfPath
-	{
-		get
-		{
-			return this._reachedEndOfPath;
-		}
-	}
+	public bool hasReachedEndOfPath { get; private set; }
 
-	public bool isMovingToFinalPosition
-	{
-		get
-		{
-			return this._isMovingToFinalPosition;
-		}
-	}
+	public bool isMovingToFinalPosition { get; private set; }
 
 	public bool allowHearGhostCall
 	{
 		get
 		{
-			return this._allowFollowPath && !this._isMovingToFinalPosition;
+			return this._allowFollowPath && !this.isMovingToFinalPosition;
 		}
 	}
 
@@ -62,10 +37,10 @@ public class QSBPartyPathAction : QSBGhostAction
 
 	public void ResetPath()
 	{
-		this._pathIndex = 0;
+		this.currentPathIndex = 0;
 		this._allowFollowPath = false;
-		this._reachedEndOfPath = false;
-		this._isMovingToFinalPosition = false;
+		this.hasReachedEndOfPath = false;
+		this.isMovingToFinalPosition = false;
 		this._controller.StopMoving();
 		this._controller.SetLanternConcealed(true, false);
 	}
@@ -73,13 +48,13 @@ public class QSBPartyPathAction : QSBGhostAction
 	public void StartFollowPath()
 	{
 		this._allowFollowPath = true;
-		this._controller.PathfindToNode(this._controller.AttachedObject.GetNodeMap().GetPathNodes()[this._pathIndex], MoveType.PATROL);
+		this._controller.PathfindToNode(this._controller.AttachedObject.GetNodeMap().GetPathNodes()[this.currentPathIndex], MoveType.PATROL);
 		this._controller.SetLanternConcealed(false, false);
 	}
 
 	public void MoveToFinalPosition(Vector3 worldPosition)
 	{
-		this._isMovingToFinalPosition = true;
+		this.isMovingToFinalPosition = true;
 		this._finalPosition = this._controller.AttachedObject.WorldToLocalPosition(worldPosition);
 		this._controller.PathfindToLocalPosition(this._finalPosition, MoveType.PATROL);
 		this._controller.SetLanternConcealed(true, true);
@@ -92,15 +67,15 @@ public class QSBPartyPathAction : QSBGhostAction
 		this._effects.SetMovementStyle(GhostEffects.MovementStyle.Normal);
 		if (this._allowFollowPath)
 		{
-			if (this._isMovingToFinalPosition)
+			if (this.isMovingToFinalPosition)
 			{
 				this._controller.PathfindToLocalPosition(this._finalPosition, MoveType.PATROL);
 			}
 			else
 			{
-				this._controller.PathfindToNode(this._controller.AttachedObject.GetNodeMap().GetPathNodes()[this._pathIndex], MoveType.PATROL);
+				this._controller.PathfindToNode(this._controller.AttachedObject.GetNodeMap().GetPathNodes()[this.currentPathIndex], MoveType.PATROL);
 			}
-			this._controller.SetLanternConcealed(this._isMovingToFinalPosition, true);
+			this._controller.SetLanternConcealed(this.isMovingToFinalPosition, true);
 			this._controller.ChangeLanternFocus(0f, 2f);
 			return;
 		}
@@ -109,7 +84,7 @@ public class QSBPartyPathAction : QSBGhostAction
 
 	protected override void OnExitAction()
 	{
-		this._reachedEndOfPath = false;
+		this.hasReachedEndOfPath = false;
 	}
 
 	public override bool Update_Action()
@@ -119,17 +94,17 @@ public class QSBPartyPathAction : QSBGhostAction
 
 	public override void OnArriveAtPosition()
 	{
-		if (this._isMovingToFinalPosition)
+		if (this.isMovingToFinalPosition)
 		{
 			return;
 		}
 		var pathNodes = this._controller.AttachedObject.GetNodeMap().GetPathNodes();
-		if (this._pathIndex + 1 > pathNodes.Length || pathNodes[this._pathIndex].pathData.isEndOfPath)
+		if (this.currentPathIndex + 1 > pathNodes.Length || pathNodes[this.currentPathIndex].pathData.isEndOfPath)
 		{
-			this._reachedEndOfPath = true;
+			this.hasReachedEndOfPath = true;
 			return;
 		}
-		this._pathIndex++;
-		this._controller.PathfindToNode(pathNodes[this._pathIndex], MoveType.PATROL);
+		this.currentPathIndex++;
+		this._controller.PathfindToNode(pathNodes[this.currentPathIndex], MoveType.PATROL);
 	}
 }

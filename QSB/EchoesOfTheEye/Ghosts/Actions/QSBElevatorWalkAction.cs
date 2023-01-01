@@ -5,21 +5,13 @@ namespace QSB.EchoesOfTheEye.Ghosts.Actions;
 
 public class QSBElevatorWalkAction : QSBGhostAction
 {
-	private bool _reachedEndOfPath;
-
 	private bool _calledToElevator;
 
 	private bool _hasUsedElevator;
 
 	private GhostNode _elevatorNode;
 
-	public bool reachedEndOfPath
-	{
-		get
-		{
-			return this._reachedEndOfPath;
-		}
-	}
+	public bool reachedEndOfPath { get; private set; }
 
 	public override GhostAction.Name GetName()
 	{
@@ -81,6 +73,6 @@ public class QSBElevatorWalkAction : QSBGhostAction
 
 	public override void OnArriveAtPosition()
 	{
-		this._reachedEndOfPath = true;
+		this.reachedEndOfPath = true;
 	}
 }
