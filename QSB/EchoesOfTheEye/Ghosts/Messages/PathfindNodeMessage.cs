@@ -13,10 +13,11 @@ internal class PathfindNodeMessage : QSBWorldObjectMessage<QSBGhostController, (
 
 	private static (int mapId, int nodeIndex, float speed, float acceleration) Process(GhostNode node, float speed, float acceleration)
 	{
-		(int mapId, int nodeId, float speed, float acceleration) ret = new();
-
-		ret.speed = speed;
-		ret.acceleration = acceleration;
+		(int mapId, int nodeId, float speed, float acceleration) ret = new()
+		{
+			speed = speed,
+			acceleration = acceleration
+		};
 
 		var nodeMaps = QSBWorldSync.GetWorldObjects<QSBGhostNodeMap>();
 		var owner = nodeMaps.First(x => x.AttachedObject._nodes.Contains(node));

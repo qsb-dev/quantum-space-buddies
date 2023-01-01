@@ -17,13 +17,14 @@ internal class FaceNodeListMessage : QSBWorldObjectMessage<QSBGhostController, (
 
 	private static (int mapId, int[] nodeIndexes, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern) Process(GhostNode[] nodeList, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern)
 	{
-		(int mapId, int[] nodeIndexes, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern) ret = new();
+		(int mapId, int[] nodeIndexes, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern) ret = new()
+		{
+			numNodes = numNodes,
+			turnSpeed = turnSpeed,
+			nodeDelay = nodeDelay,
+			autoFocusLantern = autoFocusLantern
+		};
 
-		ret.numNodes = numNodes;
-		ret.turnSpeed = turnSpeed;
-		ret.nodeDelay = nodeDelay;
-		ret.autoFocusLantern = autoFocusLantern;
-		
 		if (numNodes == 0)
 		{
 			ret.mapId = -1;

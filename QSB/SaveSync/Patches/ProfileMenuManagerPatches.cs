@@ -188,11 +188,13 @@ internal class ProfileMenuManagerPatches : QSBPatch
 
 				__instance._listProfileElements.Add(gameObject);
 				selectable = requiredComponent3;
-				var profileElementLookup = new ProfileMenuManager.ProfileElementLookup();
-				profileElementLookup.profileName = array[j].profileName;
-				profileElementLookup.lastModifiedTime = array[j].lastModifiedTime;
-				profileElementLookup.confirmSwitchAction = requiredComponent2.GetSubmitActionOne() as SubmitActionConfirm;
-				profileElementLookup.confirmDeleteAction = requiredComponent2.GetSubmitActionTwo() as SubmitActionConfirm;
+				var profileElementLookup = new ProfileMenuManager.ProfileElementLookup
+				{
+					profileName = array[j].profileName,
+					lastModifiedTime = array[j].lastModifiedTime,
+					confirmSwitchAction = requiredComponent2.GetSubmitActionOne() as SubmitActionConfirm,
+					confirmDeleteAction = requiredComponent2.GetSubmitActionTwo() as SubmitActionConfirm
+				};
 				__instance._listProfileUIElementLookup.Add(profileElementLookup);
 			}
 		}

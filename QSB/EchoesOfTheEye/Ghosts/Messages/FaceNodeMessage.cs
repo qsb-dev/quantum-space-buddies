@@ -14,11 +14,12 @@ internal class FaceNodeMessage : QSBWorldObjectMessage<QSBGhostController, (int 
 
 	private static (int mapId, int nodeIndex, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern) Process(GhostNode node, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern)
 	{
-		(int mapId, int nodeIndex, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern) ret = new();
-
-		ret.turnSpeed = turnSpeed;
-		ret.nodeDelay = nodeDelay;
-		ret.autoFocusLantern = autoFocusLantern;
+		(int mapId, int nodeIndex, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern) ret = new()
+		{
+			turnSpeed = turnSpeed,
+			nodeDelay = nodeDelay,
+			autoFocusLantern = autoFocusLantern
+		};
 
 		var nodeMaps = QSBWorldSync.GetWorldObjects<QSBGhostNodeMap>();
 		var owner = nodeMaps.First(x => x.AttachedObject._nodes.Contains(node));

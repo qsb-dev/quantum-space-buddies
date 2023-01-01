@@ -51,9 +51,11 @@ public class RespawnOnDeath : MonoBehaviour
 		_suitPickupVolumes = FindObjectsOfType<SuitPickupVolume>();
 		_fluidDetector = Locator.GetPlayerCamera().GetComponentInChildren<FluidDetector>();
 		_playerSpawnPoint = GetSpawnPoint();
-		_deadTextStyle = new();
-		_deadTextStyle.font = (Font)Resources.Load(@"fonts\english - latin\SpaceMono-Regular_Dynamic");
-		_deadTextStyle.alignment = TextAnchor.MiddleCenter;
+		_deadTextStyle = new()
+		{
+			font = (Font)Resources.Load(@"fonts\english - latin\SpaceMono-Regular_Dynamic"),
+			alignment = TextAnchor.MiddleCenter
+		};
 		_deadTextStyle.normal.textColor = Color.white;
 		_deadTextStyle.fontSize = 20;
 	}
