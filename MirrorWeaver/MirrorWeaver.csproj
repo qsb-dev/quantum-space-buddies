@@ -13,9 +13,6 @@
     <Reference Include="../Mirror/*.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="License.md" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="License.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
