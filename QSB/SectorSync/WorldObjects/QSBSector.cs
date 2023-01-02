@@ -62,7 +62,9 @@ public class QSBSector : WorldObject<Sector>
 			else if (QSBSceneManager.CurrentScene == OWScene.EyeOfTheUniverse)
 			{
 				if (!_cachedShuttleController)
+				{
 					_cachedShuttleController = QSBWorldSync.GetUnityObject<EyeShuttleController>();
+				}
 
 				if (!_cachedShuttleController._isPlayerInside)
 				{

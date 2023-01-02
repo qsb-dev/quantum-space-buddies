@@ -211,7 +211,7 @@ The template for this file is this :
 
 ## License and legal stuff
 
-Copyright (C) 2020 - 2022 : 
+Copyright (C) 2020 - 2023 : 
 - Henry Pointer (_nebula or misternebula)
 - Will Corby (JohnCorby)
 - Aleksander Waage (AmazingAlek)

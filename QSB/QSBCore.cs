@@ -20,7 +20,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /*
-	Copyright (C) 2020 - 2022
+	Copyright (C) 2020 - 2023
 			Henry Pointer (_nebula / misternebula),
 			Will Corby (JohnCorby),
 			Aleksander Waage (AmazingAlek),

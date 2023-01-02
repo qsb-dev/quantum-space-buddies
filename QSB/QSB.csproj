@@ -21,6 +21,11 @@
 
   <PropertyGroup>
     <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Title>Quantum Space Buddies</Title>
+    <Authors>Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes</Authors>
+    <Copyright>Copyright © Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes 2020-2023</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)')">
     <ItemGroup>
@@ -32,6 +37,14 @@
   </Target>
 
   <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="default-config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
