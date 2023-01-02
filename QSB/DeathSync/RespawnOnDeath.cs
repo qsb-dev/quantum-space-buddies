@@ -233,6 +233,11 @@ public class RespawnOnDeath : MonoBehaviour
 
 	private void ResetCloak()
 	{
+		if (EntitlementsManager.IsDlcOwned() != EntitlementsManager.AsyncOwnershipStatus.Owned)
+		{
+			return;
+		}
+
 		var cloak = Locator.GetCloakFieldController();
 		cloak._playerInsideCloak = false;
 		cloak._playerCloakFactor = 0f;
