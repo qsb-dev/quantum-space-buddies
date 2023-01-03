@@ -64,7 +64,7 @@ public class DeathPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.FinishDeathSequence))]
-	public static bool FinishDeathSequence(DeathManager __instance)
+	public static bool DeathManager_FinishDeathSequence(DeathManager __instance)
 	{
 		if (!__instance._isDead)
 		{
@@ -200,6 +200,12 @@ public class DeathPatches : QSBPatch
 			}
 
 			Locator.GetDeathManager().KillPlayer(__instance._deathType);
+			// detach the player before vanishing the ship so we dont delete the player too
+			if (PlayerAttachWatcher.Current)
+			{
+				PlayerAttachWatcher.Current.DetachPlayer();
+			}
+			// original method returns here. we dont cuz we want to ship the get destroyed even if the player is inside it
 		}
 
 		__instance.Vanish(shipBody, entryLocation);
