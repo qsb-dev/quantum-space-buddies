@@ -200,16 +200,47 @@ public class DeathPatches : QSBPatch
 			}
 
 			Locator.GetDeathManager().KillPlayer(__instance._deathType);
-			// detach the player before vanishing the ship so we dont delete the player too
+			// detach the player before vanishing so we dont deactivate the player too
 			if (PlayerAttachWatcher.Current)
 			{
 				PlayerAttachWatcher.Current.DetachPlayer();
 			}
-			// original method returns here. we dont cuz we want to ship the get destroyed even if the player is inside it
+			// original method returns here. we dont cuz we want to ship to get deactivated even if the player is inside it
 		}
 
 		__instance.Vanish(shipBody, entryLocation);
 		GlobalMessenger.FireEvent("ShipDestroyed");
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishShipCockpit))]
+	public static bool DestructionVolume_VanishShipCockpit(DestructionVolume __instance, OWRigidbody shipCockpitBody, RelativeLocationData entryLocation)
+	{
+		if (PlayerState.AtFlightConsole())
+		{
+			Locator.GetDeathManager().KillPlayer(__instance._deathType);
+			// detach the player before vanishing so we dont deactivate the player too
+			if (PlayerAttachWatcher.Current)
+			{
+				PlayerAttachWatcher.Current.DetachPlayer();
+			}
+			// original method returns here. we dont cuz we want to ship cockpit to get deactivated even if the player is inside it
+		}
+		__instance.Vanish(shipCockpitBody, entryLocation);
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishNomaiShuttle))]
+	public static bool DestructionVolume_VanishNomaiShuttle(DestructionVolume __instance, OWRigidbody shuttleBody, RelativeLocationData entryLocation)
+	{
+		if (shuttleBody.GetComponentInChildren<NomaiShuttleController>().IsPlayerInside())
+		{
+			Locator.GetDeathManager().KillPlayer(__instance._deathType);
+			// original method returns here. we dont cuz we want to nomai shuttle to get deactivated even if the player is inside it
+		}
+		__instance.Vanish(shuttleBody, entryLocation);
 		return false;
 	}
 }
