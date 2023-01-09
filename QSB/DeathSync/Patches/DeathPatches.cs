@@ -64,7 +64,7 @@ public class DeathPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.FinishDeathSequence))]
-	public static bool FinishDeathSequence(DeathManager __instance)
+	public static bool DeathManager_FinishDeathSequence(DeathManager __instance)
 	{
 		if (!__instance._isDead)
 		{
@@ -200,10 +200,47 @@ public class DeathPatches : QSBPatch
 			}
 
 			Locator.GetDeathManager().KillPlayer(__instance._deathType);
+			// detach the player before vanishing so we dont deactivate the player too
+			if (PlayerAttachWatcher.Current)
+			{
+				PlayerAttachWatcher.Current.DetachPlayer();
+			}
+			// original method returns here. we dont cuz we want to ship to get deactivated even if the player is inside it
 		}
 
 		__instance.Vanish(shipBody, entryLocation);
 		GlobalMessenger.FireEvent("ShipDestroyed");
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishShipCockpit))]
+	public static bool DestructionVolume_VanishShipCockpit(DestructionVolume __instance, OWRigidbody shipCockpitBody, RelativeLocationData entryLocation)
+	{
+		if (PlayerState.AtFlightConsole())
+		{
+			Locator.GetDeathManager().KillPlayer(__instance._deathType);
+			// detach the player before vanishing so we dont deactivate the player too
+			if (PlayerAttachWatcher.Current)
+			{
+				PlayerAttachWatcher.Current.DetachPlayer();
+			}
+			// original method returns here. we dont cuz we want to ship cockpit to get deactivated even if the player is inside it
+		}
+		__instance.Vanish(shipCockpitBody, entryLocation);
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DestructionVolume), nameof(DestructionVolume.VanishNomaiShuttle))]
+	public static bool DestructionVolume_VanishNomaiShuttle(DestructionVolume __instance, OWRigidbody shuttleBody, RelativeLocationData entryLocation)
+	{
+		if (shuttleBody.GetComponentInChildren<NomaiShuttleController>().IsPlayerInside())
+		{
+			Locator.GetDeathManager().KillPlayer(__instance._deathType);
+			// original method returns here. we dont cuz we want to nomai shuttle to get deactivated even if the player is inside it
+		}
+		__instance.Vanish(shuttleBody, entryLocation);
 		return false;
 	}
 }

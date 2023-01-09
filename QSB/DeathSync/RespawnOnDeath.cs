@@ -233,7 +233,7 @@ public class RespawnOnDeath : MonoBehaviour
 
 	private void ResetCloak()
 	{
-		if (EntitlementsManager.IsDlcOwned() != EntitlementsManager.AsyncOwnershipStatus.Owned)
+		if (QSBCore.DLCInstalled)
 		{
 			return;
 		}
