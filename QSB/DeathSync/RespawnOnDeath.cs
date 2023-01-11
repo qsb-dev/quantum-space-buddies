@@ -233,7 +233,7 @@ public class RespawnOnDeath : MonoBehaviour
 
 	private void ResetCloak()
 	{
-		if (QSBCore.DLCInstalled)
+		if (!QSBCore.DLCInstalled)
 		{
 			return;
 		}
