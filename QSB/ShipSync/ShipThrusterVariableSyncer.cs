@@ -21,6 +21,17 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 
 	public void Update()
 	{
+		// bug : this doesn't account for autopilot
+		if (ShipManager.Instance.CurrentFlyer == uint.MaxValue)
+		{
+			if (_thrusterModel)
+			{
+				AccelerationSyncer.Value = Vector3.zero;
+			}
+
+			return;
+		}
+
 		if (PlayerTransformSync.LocalInstance && QSBPlayerManager.LocalPlayer.FlyingShip)
 		{
 			GetFromShip();
