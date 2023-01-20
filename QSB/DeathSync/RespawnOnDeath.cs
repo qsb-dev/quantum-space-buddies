@@ -239,12 +239,16 @@ public class RespawnOnDeath : MonoBehaviour
 		}
 
 		var cloak = Locator.GetCloakFieldController();
-		cloak._playerInsideCloak = false;
-		cloak._playerCloakFactor = 0f;
-		cloak._worldFadeFactor = 0f;
-		cloak._interiorRevealFactor = 0f;
-		cloak._rendererFade = 1;
-		cloak.OnPlayerExit.Invoke();
+		// visible stranger and maybe NH disables cloak
+		if (cloak)
+		{
+			cloak._playerInsideCloak = false;
+			cloak._playerCloakFactor = 0f;
+			cloak._worldFadeFactor = 0f;
+			cloak._interiorRevealFactor = 0f;
+			cloak._rendererFade = 1;
+			cloak.OnPlayerExit.Invoke();
+		}
 		GlobalMessenger.FireEvent("ExitCloak");
 	}
 
