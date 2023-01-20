@@ -66,6 +66,12 @@ public class DeathPatches : QSBPatch
 	[HarmonyPatch(typeof(DeathManager), nameof(DeathManager.FinishDeathSequence))]
 	public static bool DeathManager_FinishDeathSequence(DeathManager __instance)
 	{
+		// funny moment for eye
+		if (QSBSceneManager.CurrentScene != OWScene.SolarSystem)
+		{
+			return true;
+		}
+
 		if (!__instance._isDead)
 		{
 			if (__instance.CheckShouldWakeInDreamWorld())
