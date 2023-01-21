@@ -200,7 +200,6 @@ internal class GhostZone2DirectorPatches : QSBPatch
 			DebugLog.DebugWrite($"- fade light down");
 			QSBGhostZone2Director.ElevatorsStatus[j].elevatorPair.elevator.topLight.FadeTo(0f, 0.2f);
 			DebugLog.DebugWrite($"- get action");
-			// BUG: breaks on client cuz cast
 			QSBGhostZone2Director.ElevatorsStatus[j].elevatorAction = (QSBElevatorWalkAction)__instance._elevators[j].ghost.GetWorldObject<QSBGhostBrain>().GetAction(GhostAction.Name.ElevatorWalk);
 			DebugLog.DebugWrite($"- CallToUseElevator on action");
 			QSBGhostZone2Director.ElevatorsStatus[j].elevatorAction.CallToUseElevator();
