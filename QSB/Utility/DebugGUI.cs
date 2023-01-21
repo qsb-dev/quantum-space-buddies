@@ -2,6 +2,7 @@
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
 using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
@@ -296,7 +297,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			}
 		}
 
-		/*
 		#region Column4 - Quantum Object Possesion
 
 		foreach (var player in QSBPlayerManager.PlayerList)
@@ -335,7 +335,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		}
 
 		#endregion
-		*/
 	}
 
 	private static void DrawWorldObjectLabels()

@@ -38,11 +38,11 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			return;
 		}
 
-		foreach (var shape in GetAttachedShapes())
+		/*foreach (var shape in GetAttachedShapes())
 		{
 			shape.OnShapeActivated -= OnEnable;
 			shape.OnShapeDeactivated -= OnDisable;
-		}
+		}*/
 	}
 
 	public override async UniTask Init(CancellationToken ct)
@@ -64,11 +64,13 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			return;
 		}
 
-		foreach (var shape in attachedShapes)
+		/*foreach (var shape in attachedShapes)
 		{
 			shape.OnShapeActivated += OnEnable;
 			shape.OnShapeDeactivated += OnDisable;
-		}
+		}*/
+
+		AttachedObject._sector.OnSectorOccupantsUpdated += OnSectorOccupantsUpdated;
 
 		if (attachedShapes.All(x => x.enabled && x.gameObject.activeInHierarchy && x.active))
 		{
@@ -78,6 +80,21 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		{
 			ControllingPlayer = 0u;
 			IsEnabled = false;
+		}
+	}
+
+	private void OnSectorOccupantsUpdated()
+	{
+		var playerInSector = AttachedObject._sector.ContainsAnyOccupants(DynamicOccupant.Player);
+		DebugLog.DebugWrite($"{ObjectId} {AttachedObject.name} SectorOccupantsUpdated : playerInSector:{playerInSector}");
+
+		if (!IsEnabled && playerInSector && ControllingPlayer == 0)
+		{
+			RequestAuthority();
+		}
+		else if (IsEnabled && !playerInSector && ControllingPlayer == QSBPlayerManager.LocalPlayerId)
+		{
+			ReleaseAuthority();
 		}
 	}
 
@@ -124,22 +141,11 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 
 	public VisibilityObject GetVisibilityObject() => AttachedObject;
 
-	private void OnEnable(Shape s)
+	private void RequestAuthority()
 	{
-		if (IsEnabled)
-		{
-			return;
-		}
-
 		IsEnabled = true;
 		if (!QSBWorldSync.AllObjectsReady && !QSBCore.IsHost)
 		{
-			return;
-		}
-
-		if (ControllingPlayer != 0)
-		{
-			// controlled by another player, dont care that we activate it
 			return;
 		}
 
@@ -147,35 +153,17 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId));
 	}
 
-	private void OnDisable(Shape s) =>
-		// we wait a frame here in case the shapes get disabled as we switch from 1 visibility tracker to another
-		Delay.RunNextFrame(() =>
+	private void ReleaseAuthority()
+	{
+		IsEnabled = false;
+		if (!QSBWorldSync.AllObjectsReady && !QSBCore.IsHost)
 		{
-			if (!IsEnabled)
-			{
-				return;
-			}
+			return;
+		}
 
-			if (GetAttachedShapes().Any(x => x.isActiveAndEnabled))
-			{
-				return;
-			}
-
-			IsEnabled = false;
-			if (!QSBWorldSync.AllObjectsReady && !QSBCore.IsHost)
-			{
-				return;
-			}
-
-			if (ControllingPlayer != QSBPlayerManager.LocalPlayerId)
-			{
-				// not being controlled by us, don't care if we leave area
-				return;
-			}
-
-			// send event to other players that we're releasing authority
-			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
-		});
+		// send event to other players that we're releasing authority
+		((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
+	}
 
 	public void OnTakeProbeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId)
 	{
