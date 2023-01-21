@@ -177,9 +177,6 @@ internal class ShipManager : WorldObjectManager
 		UpdateElectricalComponent();
 	}
 
-	public bool IsPlayerInShip(PlayerInfo player)
-		=> _playersInShip.Contains(player);
-
 	private void UpdateElectricalComponent()
 	{
 		var electricalSystem = ShipElectricalComponent._electricalSystem;
