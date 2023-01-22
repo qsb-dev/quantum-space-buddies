@@ -21,7 +21,7 @@ public class TeleportingPlanetsPatch : QSBPatch
 	{
 		if (__instance.TryGetComponent<AstroObject>(out var astroObject) && astroObject._name != AstroObject.Name.ProbeCannon)
 		{
-			DebugLog.ToAll($"AHHHHHHHHH!!!!!!!!!\n{Environment.StackTrace}", MessageType.Error);
+			DebugLog.ToAll($"AHHHHHHHHH!!!!!!!!!\n{__instance.name}\n{Environment.StackTrace}", MessageType.Error);
 		}
 	}
 }
