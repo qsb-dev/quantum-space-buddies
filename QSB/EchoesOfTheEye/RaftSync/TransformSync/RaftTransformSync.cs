@@ -102,6 +102,11 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 
 				playerBody.SetPosition(AttachedTransform.FromRelPos(relPos));
 				playerBody.SetRotation(AttachedTransform.FromRelRot(relRot));
+
+				if (!Physics.autoSyncTransforms)
+				{
+					Physics.SyncTransforms();
+				}
 			}
 		}
 		else

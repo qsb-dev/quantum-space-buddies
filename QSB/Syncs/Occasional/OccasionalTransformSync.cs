@@ -75,6 +75,11 @@ public class OccasionalTransformSync : UnsectoredRigidbodySync
 		AttachedRigidbody.SetAngularVelocity(ReferenceRigidbody.FromRelAngVel(AngularVelocity));
 
 		Move();
+
+		if (!Physics.autoSyncTransforms)
+		{
+			Physics.SyncTransforms();
+		}
 	}
 
 	private readonly List<MoveData> _toMove = new();
