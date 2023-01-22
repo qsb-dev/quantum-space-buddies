@@ -3,6 +3,7 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync.Messages;
+using QSB.QuantumSync.Patches.Common;
 using System.Linq;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ public class ServerQuantumMoonPatches : QSBPatch
 		}
 
 		// If any of the players outside the shrine can see the moon
-		if (playersNotInQuantumShrine.Any(playersWhoCanSeeQuantumMoon.Contains))
+		if (playersNotInQuantumShrine.Any(x => playersWhoCanSeeQuantumMoon.Contains(x) && !QuantumMoonPatches.GetTransformInFog(Locator.GetQuantumMoon(), x.CameraBody.transform)))
 		{
 			__result = false;
 			return false;
