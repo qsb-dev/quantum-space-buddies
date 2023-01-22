@@ -6,7 +6,7 @@ using System.Linq;
 namespace QSB.QuantumSync.Patches.Common.Visibility;
 
 [HarmonyPatch(typeof(VisibilityObject))]
-internal class VisibilityObjectPatches : QSBPatch
+internal class VisibilityVisibilityObjectPatches : QSBPatch
 {
     public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
