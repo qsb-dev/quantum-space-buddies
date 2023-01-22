@@ -95,7 +95,7 @@ internal class QuantumMoonPatches : QSBPatch
 		return false;
 	}
 
-	private static bool GetShipInFog(QuantumMoon moon)
+	public static bool GetShipInFog(QuantumMoon moon)
 	{
 		if (ShipManager.Instance.IsShipWrecked)
 		{
@@ -108,7 +108,7 @@ internal class QuantumMoonPatches : QSBPatch
 		return distanceFromFog < 10f;
 	}
 
-	private static bool GetTransformInFog(QuantumMoon moon, Transform transform)
+	public static bool GetTransformInFog(QuantumMoon moon, Transform transform)
 	{
 		var distance = Vector3.Distance(moon.transform.position, transform.position);
 		var fogOffset = (moon._stateIndex == 5) ? moon._eyeStateFogOffset : 0f;
