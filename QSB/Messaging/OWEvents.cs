@@ -37,4 +37,6 @@ public static class OWEvents
 	public const string StartShipIgnition = nameof(StartShipIgnition);
 	public const string CompleteShipIgnition = nameof(CompleteShipIgnition);
 	public const string CancelShipIgnition = nameof(CancelShipIgnition);
+	public const string EnterCloak = nameof(EnterCloak);
+	public const string ExitCloak = nameof(ExitCloak);
 }
