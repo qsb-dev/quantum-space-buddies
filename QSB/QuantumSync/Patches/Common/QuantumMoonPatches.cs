@@ -102,7 +102,10 @@ internal class QuantumMoonPatches : QSBPatch
 			return false;
 		}	
 
-		return GetTransformInFog(moon, Locator.GetShipTransform());
+		var distance = Vector3.Distance(moon.transform.position, Locator.GetShipTransform().position);
+		var fogOffset = (moon._stateIndex == 5) ? moon._eyeStateFogOffset : 0f;
+		var distanceFromFog = distance - (moon._fogRadius + fogOffset);
+		return distanceFromFog < 10f;
 	}
 
 	private static bool GetTransformInFog(QuantumMoon moon, Transform transform)
