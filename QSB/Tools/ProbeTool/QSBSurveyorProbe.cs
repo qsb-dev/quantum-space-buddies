@@ -116,6 +116,8 @@ public class QSBSurveyorProbe : MonoBehaviour, ILightSource
 		_owner = player;
 	}
 
+	public PlayerInfo GetOwner() => _owner;
+
 	private void OnWarpComplete() => Deactivate();
 
 	public bool IsRetrieving()
