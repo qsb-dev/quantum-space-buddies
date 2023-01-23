@@ -21,6 +21,9 @@ public class QSBSurveyorProbe : MonoBehaviour, ILightSource
 	public event SurveyorProbeEvent OnTakeSnapshot;
 	public event RetrieveEvent OnStartRetrieveProbe;
 
+	public bool InsideQuantumMoon;
+	public bool InsideCloak;
+
 	private GameObject _detectorObj;
 	private RulesetDetector _rulesetDetector;
 	private SingularityWarpEffect _warpEffect;
