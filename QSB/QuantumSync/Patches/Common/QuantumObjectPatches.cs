@@ -45,4 +45,12 @@ public class QuantumObjectPatches : QSBPatch
 	{
 		return false;
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(nameof(QuantumObject.IsLockedByProbeSnapshot))]
+	public static bool IsLockedByProbeSnapshot(QuantumObject __instance, ref bool __result)
+	{
+		__result = __instance._visibleInProbeSnapshot;
+		return false;
+	}
 }
