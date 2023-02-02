@@ -330,6 +330,8 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			label += $"{tracker.name}:\r\n  IsVisible:{tracker.IsVisible()}\r\n  VisibleUsingCamera:{tracker.IsVisibleUsingCameraFrustum()}\r\n";
 		}
 
+		label += $"VisibleInProbeSnapshot:{AttachedObject._visibleInProbeSnapshot}\r\n";
+
 		return label;
 	}
 }
