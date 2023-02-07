@@ -11,7 +11,6 @@ public class QSBProbeCamera : MonoBehaviour
 
 	private OWCamera _camera;
 	private RenderTexture _snapshotTexture;
-	private NoiseImageEffect _noiseEffect;
 	private static OWCamera _lastSnapshotCamera;
 	private Quaternion _origLocalRotation;
 	private Quaternion _origParentLocalRotation;
@@ -23,10 +22,10 @@ public class QSBProbeCamera : MonoBehaviour
 
 	private void Awake()
 	{
+		_origLocalRotation = transform.localRotation;
+		_origParentLocalRotation = transform.parent.localRotation;
 		_camera = this.GetRequiredComponent<OWCamera>();
 		_camera.enabled = false;
-		_noiseEffect = GetComponent<NoiseImageEffect>();
-		//this._snapshotTexture = ProbeCamera.GetSharedSnapshotTexture();
 	}
 
 	private void OnDestroy()
@@ -58,11 +57,6 @@ public class QSBProbeCamera : MonoBehaviour
 	public RenderTexture TakeSnapshot()
 	{
 		_lastSnapshotCamera = _camera;
-		if (_noiseEffect != null)
-		{
-			_noiseEffect.enabled = HasInterference();
-		}
-
 		_camera.targetTexture = _snapshotTexture;
 		_camera.Render();
 		return _snapshotTexture;
