@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using QSB.Player;
+using UnityEngine;
 
 namespace QSB.Tools.ProbeTool;
 
@@ -10,22 +11,21 @@ public class QSBProbeCamera : MonoBehaviour
 
 	private OWCamera _camera;
 	private RenderTexture _snapshotTexture;
-	private NoiseImageEffect _noiseEffect;
 	private static OWCamera _lastSnapshotCamera;
 	private Quaternion _origLocalRotation;
 	private Quaternion _origParentLocalRotation;
 	private Vector2 _cameraRotation = Vector2.zero;
-	private QuantumMoon _quantumMoon;
 	private SandLevelController _sandLevelController;
+	private PlayerInfo owner;
 
 	public event ProbeCamera.RotateCameraEvent OnRotateCamera;
 
 	private void Awake()
 	{
+		_origLocalRotation = transform.localRotation;
+		_origParentLocalRotation = transform.parent.localRotation;
 		_camera = this.GetRequiredComponent<OWCamera>();
 		_camera.enabled = false;
-		_noiseEffect = GetComponent<NoiseImageEffect>();
-		//this._snapshotTexture = ProbeCamera.GetSharedSnapshotTexture();
 	}
 
 	private void OnDestroy()
@@ -33,11 +33,8 @@ public class QSBProbeCamera : MonoBehaviour
 
 	private void Start()
 	{
-		var astroObject = Locator.GetAstroObject(AstroObject.Name.QuantumMoon);
-		if (astroObject != null)
-		{
-			_quantumMoon = astroObject.GetComponent<QuantumMoon>();
-		}
+		var probe = GetComponentInParent<QSBSurveyorProbe>();
+		owner = probe.GetOwner();
 	}
 
 	public static OWCamera GetLastSnapshotCamera() =>
@@ -53,19 +50,13 @@ public class QSBProbeCamera : MonoBehaviour
 		=> _sandLevelController = sandLevelController;
 
 	public bool HasInterference() =>
-		_id != ProbeCamera.ID.PreLaunch
-		//&& ((this._quantumMoon != null && this._quantumMoon.IsPlayerInside() != this._quantumMoon.IsProbeInside())
-		|| (_sandLevelController != null && _sandLevelController.IsPointBuried(transform.position));
-		//|| (Locator.GetCloakFieldController() != null && Locator.GetCloakFieldController().isPlayerInsideCloak != Locator.GetCloakFieldController().isProbeInsideCloak));
+		(_id != ProbeCamera.ID.PreLaunch && owner.IsInMoon != owner.Probe.InsideQuantumMoon)
+		|| (_sandLevelController != null && _sandLevelController.IsPointBuried(transform.position))
+		|| (Locator.GetCloakFieldController() != null && owner.IsInCloak != owner.Probe.InsideCloak);
 
 	public RenderTexture TakeSnapshot()
 	{
 		_lastSnapshotCamera = _camera;
-		if (_noiseEffect != null)
-		{
-			_noiseEffect.enabled = HasInterference();
-		}
-
 		_camera.targetTexture = _snapshotTexture;
 		_camera.Render();
 		return _snapshotTexture;

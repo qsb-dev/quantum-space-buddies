@@ -342,6 +342,9 @@ public abstract class SyncBase : QSBNetworkTransform
 			return;
 		}
 
-		DebugGUI.DrawLabel(AttachedTransform, ToString());
+		if (DebugActions.WorldObjectSelection == null)
+		{
+			DebugGUI.DrawLabel(AttachedTransform, ToString());
+		}
 	}
 }

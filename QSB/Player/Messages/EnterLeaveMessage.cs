@@ -20,6 +20,8 @@ internal class EnterLeaveMessage : QSBMessage<EnterLeaveType>
 		GlobalMessenger.AddListener(OWEvents.PlayerExitQuantumMoon, () => Handler(EnterLeaveType.ExitMoon));
 		GlobalMessenger.AddListener(OWEvents.EnterShip, () => Handler(EnterLeaveType.EnterShip));
 		GlobalMessenger.AddListener(OWEvents.ExitShip, () => Handler(EnterLeaveType.ExitShip));
+		GlobalMessenger.AddListener(OWEvents.EnterCloak, () => Handler(EnterLeaveType.EnterCloak));
+		GlobalMessenger.AddListener(OWEvents.ExitCloak, () => Handler(EnterLeaveType.ExitCloak));
 	}
 
 	private static void Handler(EnterLeaveType type, int objectId = -1)
@@ -61,6 +63,12 @@ internal class EnterLeaveMessage : QSBMessage<EnterLeaveType>
 				break;
 			case EnterLeaveType.ExitMoon:
 				player.IsInMoon = false;
+				break;
+			case EnterLeaveType.EnterCloak:
+				player.IsInCloak = true;
+				break;
+			case EnterLeaveType.ExitCloak:
+				player.IsInCloak = false;
 				break;
 			case EnterLeaveType.EnterPlatform:
 				CustomNomaiRemoteCameraPlatform.CustomPlatformList[ObjectId]

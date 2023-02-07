@@ -8,4 +8,6 @@ public enum EnterLeaveType
 	ExitPlatform,
 	EnterShip,
 	ExitShip,
+	EnterCloak,
+	ExitCloak
 }
