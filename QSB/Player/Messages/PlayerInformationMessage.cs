@@ -17,6 +17,8 @@ public class PlayerInformationMessage : QSBMessage
 	private bool TranslatorEquipped;
 	private bool ProbeActive;
 	private ClientState ClientState;
+	private float FieldOfView;
+	private bool IsInShip;
 
 	public PlayerInformationMessage()
 	{
@@ -30,6 +32,8 @@ public class PlayerInformationMessage : QSBMessage
 		TranslatorEquipped = player.TranslatorEquipped;
 		ProbeActive = player.ProbeActive;
 		ClientState = player.State;
+		FieldOfView = PlayerData.GetGraphicSettings().fieldOfView;
+		IsInShip = player.IsInShip;
 	}
 
 	public override void Serialize(NetworkWriter writer)
@@ -44,6 +48,8 @@ public class PlayerInformationMessage : QSBMessage
 		writer.Write(TranslatorEquipped);
 		writer.Write(ProbeActive);
 		writer.Write(ClientState);
+		writer.Write(FieldOfView);
+		writer.Write(IsInShip);
 	}
 
 	public override void Deserialize(NetworkReader reader)
@@ -58,6 +64,8 @@ public class PlayerInformationMessage : QSBMessage
 		TranslatorEquipped = reader.Read<bool>();
 		ProbeActive = reader.Read<bool>();
 		ClientState = reader.Read<ClientState>();
+		FieldOfView = reader.ReadFloat();
+		IsInShip = reader.ReadBool();
 	}
 
 	public override void OnReceiveRemote()
@@ -74,10 +82,15 @@ public class PlayerInformationMessage : QSBMessage
 			player.SignalscopeEquipped = SignalscopeEquipped;
 			player.TranslatorEquipped = TranslatorEquipped;
 			player.ProbeActive = ProbeActive;
+			player.IsInShip = IsInShip;
 			if (QSBPlayerManager.LocalPlayer.IsReady && player.IsReady)
 			{
 				player.UpdateObjectsFromStates();
 			}
+
+			Delay.RunWhen(
+				() => player.Camera != null,
+				() => player.Camera.fieldOfView = FieldOfView);
 
 			player.State = ClientState;
 		}

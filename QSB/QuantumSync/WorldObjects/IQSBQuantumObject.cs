@@ -6,6 +6,7 @@ namespace QSB.QuantumSync.WorldObjects;
 
 public interface IQSBQuantumObject : IWorldObject
 {
+	bool HostControls { get; }
 	uint ControllingPlayer { get; set; }
 	bool IsEnabled { get; }
 

@@ -74,6 +74,11 @@ public class ShipTransformSync : SectoredRigidbodySync
 
 				playerBody.SetPosition(AttachedTransform.FromRelPos(relPos));
 				playerBody.SetRotation(AttachedTransform.FromRelRot(relRot));
+
+				if (!Physics.autoSyncTransforms)
+				{
+					Physics.SyncTransforms();
+				}
 			}
 		}
 		else

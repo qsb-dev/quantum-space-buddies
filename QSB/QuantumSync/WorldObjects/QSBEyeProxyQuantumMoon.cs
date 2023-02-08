@@ -2,7 +2,7 @@
 
 internal class QSBEyeProxyQuantumMoon : QSBQuantumObject<EyeProxyQuantumMoon>
 {
-	protected override bool HostControls => true;
+	public override bool HostControls => true;
 
 	public override void SendInitialState(uint to)
 	{

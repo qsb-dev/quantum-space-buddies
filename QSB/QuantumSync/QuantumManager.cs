@@ -130,7 +130,7 @@ internal class QuantumManager : WorldObjectManager
 	{
 		foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 		{
-			if (quantumObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId)
+			if (quantumObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId || quantumObject.HostControls)
 			{
 				quantumObject.OnTakeProbeSnapshot(player, cameraId);
 			}
@@ -141,7 +141,7 @@ internal class QuantumManager : WorldObjectManager
 	{
 		foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
 		{
-			if (quantumObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId)
+			if (quantumObject.ControllingPlayer == QSBPlayerManager.LocalPlayerId || quantumObject.HostControls)
 			{
 				quantumObject.OnRemoveProbeSnapshot(player);
 			}

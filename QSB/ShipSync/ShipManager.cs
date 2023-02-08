@@ -165,18 +165,17 @@ internal class ShipManager : WorldObjectManager
 
 	public void AddPlayerToShip(PlayerInfo player)
 	{
+		player.IsInShip = true;
 		_playersInShip.Add(player);
 		UpdateElectricalComponent();
 	}
 
 	public void RemovePlayerFromShip(PlayerInfo player)
 	{
+		player.IsInShip = false;
 		_playersInShip.Remove(player);
 		UpdateElectricalComponent();
 	}
-
-	public bool IsPlayerInShip(PlayerInfo player)
-		=> _playersInShip.Contains(player);
 
 	private void UpdateElectricalComponent()
 	{

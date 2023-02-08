@@ -136,8 +136,17 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			}
 
 			WriteLine(1, $"Selected WorldObject : {(DebugActions.WorldObjectSelection == null ? "All" : DebugActions.WorldObjectSelection.Name)}");
-			WriteLine(1, $"Invincible : {Locator.GetDeathManager()._invincible}");
-			WriteLine(1, $"Tool Mode : {Locator.GetToolModeSwapper().GetToolMode()}");
+
+			if (Locator.GetDeathManager() != null)
+			{
+				WriteLine(1, $"Invincible : {Locator.GetDeathManager()._invincible}");
+			}
+
+			if (Locator.GetToolModeSwapper() != null)
+			{
+				WriteLine(1, $"Tool Mode : {Locator.GetToolModeSwapper().GetToolMode()}");
+			}
+			
 			WriteLine(1, $"Input Mode Stack :");
 			foreach (var item in OWInput.GetInputModeStack())
 			{
@@ -158,7 +167,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			WriteLine(2, $"Dead : {player.IsDead}");
 			WriteLine(2, $"Ready : {player.IsReady}");
 			WriteLine(2, $"Suited Up : {player.SuitedUp}");
-			WriteLine(2, $"In Suited Up State : {player.AnimationSync.InSuitedUpState}");
+			WriteLine(2, $"In Suited Up State : {player.AnimationSync?.InSuitedUpState}");
 			WriteLine(2, $"InDreamWorld : {player.InDreamWorld}");
 
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
