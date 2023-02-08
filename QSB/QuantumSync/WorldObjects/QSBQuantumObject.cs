@@ -21,10 +21,6 @@ namespace QSB.QuantumSync.WorldObjects;
 internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 	where T : QuantumObject
 {
-	/// <summary>
-	/// whether the controlling player is always the host <br/>
-	/// also means this object is considered always enabled
-	/// </summary>
 	public virtual bool HostControls => false;
 	public uint ControllingPlayer { get; set; }
 	public bool IsEnabled { get; private set; }
