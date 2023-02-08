@@ -30,13 +30,15 @@ internal class QuantumMoonPatches : QSBPatch
 			{
 				var playersWhoCanSeeMoon = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, true).PlayersWhoCanSee;
 				var shipInFog = GetShipInFog(__instance);
+				var anyoneInMoon = QSBPlayerManager.PlayerList.Any(x => x.IsInMoon && !x.IsLocalPlayer);
 
-				DebugLog.DebugWrite($"Inside Fog - shipInFog:{shipInFog} playersWhoCanSeeMoon.Count:{playersWhoCanSeeMoon.Count}, lockedByProbeSnapshot:{__instance.IsLockedByProbeSnapshot()}");
-
-				if (playersWhoCanSeeMoon.Any(x => !(shipInFog && x.IsInShip) && !GetTransformInFog(__instance, x.CameraBody.transform)) || __instance.IsLockedByProbeSnapshot())
+				// this probably breaks in really obscure cases, but it should be good enough...
+				if (playersWhoCanSeeMoon.Any(x => !(shipInFog && x.IsInShip) && !GetTransformInFog(__instance, x.CameraBody.transform)) || __instance.IsLockedByProbeSnapshot() || anyoneInMoon)
 				{
 					/* Either :
 					 * - The moon is locked with a snapshot
+					 * OR
+					 * - Someone else is in the moon
 					 * OR
 					 * - If the ship is in the fog :
 					 *    - there are people outside the ship who can see the moon, and who are not in the fog
