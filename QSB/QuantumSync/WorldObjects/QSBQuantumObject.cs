@@ -25,7 +25,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 	/// whether the controlling player is always the host <br/>
 	/// also means this object is considered always enabled
 	/// </summary>
-	protected virtual bool HostControls => false;
+	public virtual bool HostControls => false;
 	public uint ControllingPlayer { get; set; }
 	public bool IsEnabled { get; private set; }
 
