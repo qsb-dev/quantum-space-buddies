@@ -1,5 +1,6 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.HUD;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.ShipSync;
@@ -149,6 +150,12 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			
 			WriteLine(1, $"Input Mode Stack :");
 			foreach (var item in OWInput.GetInputModeStack())
+			{
+				WriteLine(1, $" - {item}");
+			}
+
+			WriteLine(1, $"HUD Icon Stack :");
+			foreach (var item in MultiplayerHUDManager.HUDIconStack)
 			{
 				WriteLine(1, $" - {item}");
 			}

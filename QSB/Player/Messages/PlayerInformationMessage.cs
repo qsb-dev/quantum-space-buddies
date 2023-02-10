@@ -93,6 +93,11 @@ public class PlayerInformationMessage : QSBMessage
 				() => player.Camera.fieldOfView = FieldOfView);
 
 			player.State = ClientState;
+
+			if (player.HUDBox != null)
+			{
+				player.HUDBox.PlayerName.text = PlayerName.ToUpper();
+			}
 		}
 		else
 		{

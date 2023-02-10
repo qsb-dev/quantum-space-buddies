@@ -2,6 +2,7 @@
 using QSB.Animation.Player;
 using QSB.Audio;
 using QSB.ClientServerStateSync;
+using QSB.HUD;
 using QSB.Messaging;
 using QSB.ModelShip;
 using QSB.Player.Messages;
@@ -23,6 +24,7 @@ public partial class PlayerInfo
 	public string Name { get; set; }
 	public PlayerHUDMarker HudMarker { get; set; }
 	public PlayerMapMarker MapMarker { get; set; }
+	public PlayerBox HUDBox { get; set; }
 	public PlayerTransformSync TransformSync { get; }
 	public ClientState State { get; set; }
 	public EyeState EyeState { get; set; }
@@ -157,6 +159,20 @@ public partial class PlayerInfo
 		{
 			FlashLight.UpdateState(FlashlightActive);
 		}
+	}
+
+	public void Die()
+	{
+		IsDead = true;
+		SetVisible(false, 1);
+		HUDBox.OnDeath();
+	}
+
+	public void Revive()
+	{
+		IsDead = false;
+		SetVisible(true, 1);
+		HUDBox.OnRespawn();
 	}
 
 	public override string ToString() => $"{PlayerId}:{GetType().Name} ({Name})";
