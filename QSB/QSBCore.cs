@@ -50,6 +50,7 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle NetworkAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
+	public static AssetBundle HUDAssetBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer;
 	public static string QSBVersion => Helper.Manifest.Version;
@@ -174,6 +175,7 @@ public class QSBCore : ModBehaviour
 		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_network");
 		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_conversation");
 		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_debug");
+		HUDAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_hud");
 
 		if (NetworkAssetBundle == null || ConversationAssetBundle == null || DebugAssetBundle == null)
 		{
