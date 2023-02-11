@@ -72,7 +72,6 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 		Canvas.willRenderCanvases += OnWillRenderCanvases;
 
 		// silly hack that shouldnt be in the ui component but oh well
-		// TODO may have to wait a frame cuz Locator?
 		Locator.GetPlayerTransform().GetComponent<PlayerResources>()._invincible = true;
 		Locator.GetDeathManager()._invincible = true;
 		var shipTransform = Locator.GetShipTransform();
@@ -90,7 +89,6 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 		Canvas.willRenderCanvases -= OnWillRenderCanvases;
 
 		// silly hack that shouldnt be in the ui component but oh well
-		// TODO may have to wait a frame cuz Locator?
 		Locator.GetPlayerTransform().GetComponent<PlayerResources>()._invincible = false;
 		Locator.GetDeathManager()._invincible = false;
 		var shipTransform = Locator.GetShipTransform();
