@@ -15,7 +15,8 @@ public class PlayerBox : MonoBehaviour
 
 	private PlayerInfo _player;
 	private bool _planetIconOverride;
-	private HUDIcon _planetIcon;
+
+	public HUDIcon PlanetIcon { get; private set; }
 
 	public void AssignPlayer(PlayerInfo player)
 	{
@@ -51,16 +52,16 @@ public class PlayerBox : MonoBehaviour
 	public void OnExitShip()
 	{
 		_planetIconOverride = false;
-		InfoImage.sprite = SpriteFromEnum(_planetIcon);
+		InfoImage.sprite = SpriteFromEnum(PlanetIcon);
 	}
 
 	public void UpdateIcon(HUDIcon icon)
 	{
-		_planetIcon = icon;
+		PlanetIcon = icon;
 
 		if (!_planetIconOverride)
 		{
-			InfoImage.sprite = SpriteFromEnum(_planetIcon);
+			InfoImage.sprite = SpriteFromEnum(PlanetIcon);
 		}
 	}
 
