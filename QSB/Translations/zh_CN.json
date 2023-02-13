@@ -41,7 +41,7 @@
   "GalaxyMapEveryoneNotPresent": "现在还不是时候。需要所有人见证这个时刻。",
   "YouAreDead": "你死了。",
   "WaitingForRespawn": "等待某人将你复活……",
-  "WaitingForAllToDie": "等待{0}死亡……",
+  "WaitingForAllToDie": "等待剩余{0}人死亡……",
   "AttachToShip": "固定在飞船上",
   "DetachFromShip": "取消固定",
   "DeathMessages": {
