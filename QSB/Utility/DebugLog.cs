@@ -61,6 +61,6 @@ public static class DebugLog
 		new StackTrace(2) // skip this function and calling function
 			.GetFrames()!
 			.Select(x => x.GetMethod().DeclaringType!)
-			.First(x => x != typeof(DebugLog) && !x.IsDefined(typeof(CompilerGeneratedAttribute)))
+			.First(x => x != typeof(DebugLog) && !x.IsDefined(typeof(CompilerGeneratedAttribute), true))
 			.Name;
 }
