@@ -1,4 +1,5 @@
 ﻿using QSB.Player;
+using QSB.Player.Messages;
 using QSB.Utility;
 using System;
 using System.Linq;
@@ -29,6 +30,8 @@ public class PlayerBox : MonoBehaviour
 		}
 		
 		InfoImage.sprite = MultiplayerHUDManager.UnknownSprite;
+
+		new RequestStateResyncMessage().Send();
 	}
 
 	public void OnDeath()
