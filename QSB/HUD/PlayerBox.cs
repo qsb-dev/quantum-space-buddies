@@ -16,6 +16,7 @@ public class PlayerBox : MonoBehaviour
 
 	private PlayerInfo _player;
 	private bool _planetIconOverride;
+	private bool _inUnknown;
 
 	public HUDIcon PlanetIcon { get; private set; }
 
@@ -48,12 +49,36 @@ public class PlayerBox : MonoBehaviour
 
 	public void OnEnterShip()
 	{
+		if (_inUnknown)
+		{
+			return;
+		}
+
 		InfoImage.sprite = MultiplayerHUDManager.ShipSprite;
 		_planetIconOverride = true;
 	}
 
 	public void OnExitShip()
 	{
+		if (_inUnknown)
+		{
+			return;
+		}
+
+		_planetIconOverride = false;
+		InfoImage.sprite = SpriteFromEnum(PlanetIcon);
+	}
+
+	public void OnEnterUnknown()
+	{
+		_inUnknown = true;
+		_planetIconOverride = true;
+		InfoImage.sprite = MultiplayerHUDManager.UnknownSprite;
+	}
+
+	public void OnExitUnknown()
+	{
+		_inUnknown = false;
 		_planetIconOverride = false;
 		InfoImage.sprite = SpriteFromEnum(PlanetIcon);
 	}
