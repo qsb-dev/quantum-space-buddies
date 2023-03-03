@@ -1,6 +1,7 @@
 ﻿using QSB.HUD.Messages;
 using QSB.Messaging;
 using QSB.Player;
+using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -51,6 +52,11 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		Interloper = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_interloper.png");
 		WhiteHole = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_whitehole.png");
 		SpaceSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_space.png");
+	}
+
+	private void Update()
+	{
+		_playerList.gameObject.SetActive(ServerSettingsManager.ShowExtraHUD);
 	}
 
 	private void OnWakeUp()
