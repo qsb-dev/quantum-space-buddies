@@ -114,7 +114,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 	private void OnRemovePlayer(PlayerInfo player)
 	{
-
+		Destroy(player.HUDBox.gameObject);
 	}
 
 	private PlanetTrigger CreateTrigger(string parentPath, HUDIcon icon)
