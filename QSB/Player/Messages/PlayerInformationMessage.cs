@@ -36,7 +36,7 @@ public class PlayerInformationMessage : QSBMessage
 		ClientState = player.State;
 		FieldOfView = PlayerData.GetGraphicSettings().fieldOfView;
 		IsInShip = player.IsInShip;
-		HUDIcon = player.HUDBox.PlanetIcon;
+		HUDIcon = player.HUDBox == null ? HUDIcon.UNKNOWN : player.HUDBox.PlanetIcon;
 	}
 
 	public override void Serialize(NetworkWriter writer)
@@ -99,11 +99,11 @@ public class PlayerInformationMessage : QSBMessage
 
 			player.State = ClientState;
 
-			if (player.HUDBox != null)
+			Delay.RunWhen(() => player.HUDBox != null, () =>
 			{
 				player.HUDBox.PlayerName.text = PlayerName.ToUpper();
 				player.HUDBox.UpdateIcon(HUDIcon);
-			}
+			});
 		}
 		else
 		{
