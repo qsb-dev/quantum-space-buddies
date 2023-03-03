@@ -43,8 +43,21 @@ public static class QSBLocalization
 			return;
 		}
 
+		// just use the system language until the profile is loaded and does SetLanguage
 		// hack to stop things from breaking
-		Current = _translations[0];
+		{
+			var language = TextTranslation.Get().GetSystemLanguage();
+			DebugLog.DebugWrite($"Language changed to {language}");
+			var newTranslation = _translations.FirstOrDefault(x => x.Language == language);
+
+			if (newTranslation == default)
+			{
+				DebugLog.ToConsole($"Error - Could not find translation for language {language}! Defaulting to English.");
+				newTranslation = _translations.First(x => x.Language == TextTranslation.Language.ENGLISH);
+			}
+
+			Current = newTranslation;
+		}
 
 		TextTranslation.Get().OnLanguageChanged += OnLanguageChanged;
 	}
