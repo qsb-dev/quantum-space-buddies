@@ -3,7 +3,6 @@ using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
 using QSB.ShipSync;
-using QSB.Utility;
 using System.Linq;
 using UnityEngine;
 
@@ -19,7 +18,7 @@ internal class QuantumMoonPatches : QSBPatch
 	public static bool CheckPlayerFogProximity(QuantumMoon __instance)
 	{
 		var playerDistance = Vector3.Distance(__instance.transform.position, Locator.GetPlayerCamera().transform.position);
-		var fogOffset = (__instance._stateIndex == 5) ? __instance._eyeStateFogOffset : 0f;
+		var fogOffset = __instance._stateIndex == 5 ? __instance._eyeStateFogOffset : 0f;
 		var distanceFromFog = playerDistance - (__instance._fogRadius + fogOffset);
 		var fogAlpha = 0f;
 
@@ -74,10 +73,12 @@ internal class QuantumMoonPatches : QSBPatch
 				}
 				else
 				{
+					var shouldStayAtEye = __instance._hasSunCollapsed || __instance.IsLockedByProbeSnapshot();
 					var vector = Locator.GetPlayerTransform().position - __instance.transform.position;
-					Locator.GetPlayerBody().SetVelocity(__instance._moonBody.GetPointVelocity(Locator.GetPlayerTransform().position) - (vector.normalized * 5f));
-					var d = 80f;
-					Locator.GetPlayerBody().SetPosition(__instance.transform.position + (__instance._vortexReturnPivot.up * d));
+					Locator.GetPlayerBody().SetVelocity(__instance._moonBody.GetPointVelocity(Locator.GetPlayerTransform().position) - vector.normalized * 5f);
+					var offset = shouldStayAtEye ? 80f : __instance._fogRadius - 1f;
+					Locator.GetPlayerBody().SetPosition(__instance.transform.position + __instance._vortexReturnPivot.up * offset);
+					Locator.GetPlayerBody().SetRotation(__instance._vortexReturnPivot.rotation);
 					if (!Physics.autoSyncTransforms)
 					{
 						Physics.SyncTransforms();
@@ -86,8 +87,15 @@ internal class QuantumMoonPatches : QSBPatch
 					var component = Locator.GetPlayerCamera().GetComponent<PlayerCameraController>();
 					component.SetDegreesY(component.GetMinDegreesY());
 					__instance._vortexAudio.SetLocalVolume(0f);
-					__instance._collapseToIndex = 1;
-					__instance.Collapse(true);
+					if (!shouldStayAtEye)
+					{
+						__instance._collapseToIndex = 1;
+						__instance.Collapse(true);
+					}
+					else
+					{
+						__instance._vortexAudio.FadeIn(1f);
+					}
 				}
 			}
 		}
@@ -102,10 +110,10 @@ internal class QuantumMoonPatches : QSBPatch
 		if (ShipManager.Instance.IsShipWrecked)
 		{
 			return false;
-		}	
+		}
 
 		var distance = Vector3.Distance(moon.transform.position, Locator.GetShipTransform().position);
-		var fogOffset = (moon._stateIndex == 5) ? moon._eyeStateFogOffset : 0f;
+		var fogOffset = moon._stateIndex == 5 ? moon._eyeStateFogOffset : 0f;
 		var distanceFromFog = distance - (moon._fogRadius + fogOffset);
 		return distanceFromFog < 10f; // to account for ship size
 	}
@@ -113,7 +121,7 @@ internal class QuantumMoonPatches : QSBPatch
 	public static bool GetTransformInFog(QuantumMoon moon, Transform transform)
 	{
 		var distance = Vector3.Distance(moon.transform.position, transform.position);
-		var fogOffset = (moon._stateIndex == 5) ? moon._eyeStateFogOffset : 0f;
+		var fogOffset = moon._stateIndex == 5 ? moon._eyeStateFogOffset : 0f;
 		var distanceFromFog = distance - (moon._fogRadius + fogOffset);
 		return distanceFromFog < 0f;
 	}

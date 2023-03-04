@@ -50,6 +50,7 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle NetworkAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
+	public static AssetBundle HUDAssetBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer;
 	public static string QSBVersion => Helper.Manifest.Version;
@@ -60,6 +61,7 @@ public class QSBCore : ModBehaviour
 	public static bool IncompatibleModsAllowed { get; private set; }
 	public static bool ShowPlayerNames { get; private set; }
 	public static bool ShipDamage { get; private set; }
+	public static bool ShowExtraHUDElements { get ; private set; }
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
@@ -174,6 +176,7 @@ public class QSBCore : ModBehaviour
 		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_network");
 		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_conversation");
 		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_debug");
+		HUDAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_hud");
 
 		if (NetworkAssetBundle == null || ConversationAssetBundle == null || DebugAssetBundle == null)
 		{
@@ -255,6 +258,7 @@ public class QSBCore : ModBehaviour
 		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
 		ShowPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
 		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
+		ShowExtraHUDElements = config.GetSettingsValue<bool>("showExtraHud");
 
 		if (IsHost)
 		{

@@ -87,7 +87,7 @@ internal class CampfirePatches : QSBPatch
 			}
 		}
 
-		if (__instance._isPlayerSleeping)
+		if (__instance._isPlayerSleeping && Time.timeSinceLevelLoad > __instance._fastForwardStartTime)
 		{
 			__instance._wakePrompt.SetVisibility(OWInput.IsInputMode(InputMode.None) && Time.timeSinceLevelLoad - __instance._fastForwardStartTime > __instance.GetWakePromptDelay());
 			if (__instance.ShouldWakeUp())

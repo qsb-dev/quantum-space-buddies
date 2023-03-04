@@ -24,6 +24,12 @@
 			"type": "toggle",
 			"value": true,
 			"tooltip": "Take impact damage when inside the ship."
+		},
+		"showExtraHud": {
+			"title": "Show Extra HUD Elements",
+			"type": "toggle",
+			"value": true,
+			"tooltip" : "Show extra HUD elements, like player status and minimap icons."
 		}
 	}
 }

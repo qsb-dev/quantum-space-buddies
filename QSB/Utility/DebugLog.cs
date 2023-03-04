@@ -16,19 +16,20 @@ public static class DebugLog
 
 	public static void ToConsole(string message, MessageType type = MessageType.Message)
 	{
-		if (QSBCore.Helper == null)
-		{
-			// yes i know this is only meant for OWML, but it's useful as a backup
-			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType());
-			return;
-		}
-
 		if (QSBCore.DebugSettings.InstanceIdInLogs)
 		{
 			message = $"[{ProcessInstanceId}] " + message;
 		}
 
-		QSBCore.Helper.Console.WriteLine(message, type, GetCallingType());
+		if (QSBCore.Helper == null)
+		{
+			// yes i know this is only meant for OWML, but it's useful as a backup
+			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType());
+		}
+		else
+		{
+			QSBCore.Helper.Console.WriteLine(message, type, GetCallingType());
+		}
 	}
 
 	public static void ToHud(string message)
@@ -50,13 +51,6 @@ public static class DebugLog
 
 	public static void DebugWrite(string message, MessageType type = MessageType.Message)
 	{
-		if (QSBCore.Helper == null)
-		{
-			// yes i know this is only meant for OWML, but it's useful as a backup
-			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType());
-			return;
-		}
-
 		if (QSBCore.DebugSettings.DebugMode)
 		{
 			ToConsole(message, type);
@@ -67,6 +61,6 @@ public static class DebugLog
 		new StackTrace(2) // skip this function and calling function
 			.GetFrames()!
 			.Select(x => x.GetMethod().DeclaringType!)
-			.First(x => x != typeof(DebugLog) && !x.IsDefined(typeof(CompilerGeneratedAttribute)))
+			.First(x => x != typeof(DebugLog) && !x.IsDefined(typeof(CompilerGeneratedAttribute), true))
 			.Name;
 }

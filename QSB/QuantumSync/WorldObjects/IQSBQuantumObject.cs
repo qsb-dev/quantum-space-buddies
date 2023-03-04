@@ -6,6 +6,10 @@ namespace QSB.QuantumSync.WorldObjects;
 
 public interface IQSBQuantumObject : IWorldObject
 {
+	/// <summary>
+	/// whether the controlling player is always the host <br/>
+	/// also means this object is considered always enabled
+	/// </summary>
 	bool HostControls { get; }
 	uint ControllingPlayer { get; set; }
 	bool IsEnabled { get; }

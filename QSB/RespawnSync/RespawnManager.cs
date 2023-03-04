@@ -142,7 +142,7 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 
 	public void OnPlayerDeath(PlayerInfo player)
 	{
-		player.IsDead = true;
+		player.Die();
 
 		if (_playersPendingRespawn.Contains(player))
 		{
@@ -160,13 +160,11 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 			new EndLoopMessage().Send();
 			return;
 		}
-
-		player.SetVisible(false, 1);
 	}
 
 	public void OnPlayerRespawn(PlayerInfo player)
 	{
-		player.IsDead = false;
+		player.Revive();
 
 		if (!_playersPendingRespawn.Contains(player))
 		{
@@ -176,8 +174,6 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 		{
 			_playersPendingRespawn.Remove(player);
 		}
-
-		player.SetVisible(true, 1);
 	}
 
 	public void RespawnSomePlayer()

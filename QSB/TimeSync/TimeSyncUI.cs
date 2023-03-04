@@ -70,6 +70,15 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 		enabled = true;
 		_canvas.enabled = true;
 		Canvas.willRenderCanvases += OnWillRenderCanvases;
+
+		// silly hack that shouldnt be in the ui component but oh well
+		Locator.GetPlayerTransform().GetComponent<PlayerResources>()._invincible = true;
+		Locator.GetDeathManager()._invincible = true;
+		var shipTransform = Locator.GetShipTransform();
+		if (shipTransform)
+		{
+			shipTransform.GetComponentInChildren<ShipDamageController>()._invincible = true;
+		}
 	}
 
 	private void EndTimeSync()
@@ -78,6 +87,15 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 		enabled = false;
 		_canvas.enabled = false;
 		Canvas.willRenderCanvases -= OnWillRenderCanvases;
+
+		// silly hack that shouldnt be in the ui component but oh well
+		Locator.GetPlayerTransform().GetComponent<PlayerResources>()._invincible = false;
+		Locator.GetDeathManager()._invincible = false;
+		var shipTransform = Locator.GetShipTransform();
+		if (shipTransform)
+		{
+			shipTransform.GetComponentInChildren<ShipDamageController>()._invincible = false;
+		}
 	}
 
 	private void OnWillRenderCanvases()
