@@ -15,6 +15,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	public static MultiplayerHUDManager Instance;
 
 	private Transform _playerList;
+	private Material _markerMaterial;
 
 	public static Sprite UnknownSprite;
 	public static Sprite DeadSprite;
@@ -108,6 +109,10 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		HUDIconStack.Push(HUDIcon.TIMBER_HEARTH);
 
 		new PlanetMessage(HUDIcon.TIMBER_HEARTH).Send();
+
+		var playerMinimap = QSBWorldSync.GetUnityObjects<Minimap>().First(x => x.name == "Minimap_Root");
+		_markerMaterial = Instantiate(playerMinimap._probeMarkerTransform.GetComponent<MeshRenderer>().material);
+		_markerMaterial.color = Color.gray;
 	}
 
 	public void UpdateMinimapMarkers(Minimap minimap)
@@ -142,8 +147,16 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 				continue;
 			}
 
-			player.MinimapPlayerMarker.localPosition = GetLocalMapPosition(player, minimap);
-			player.MinimapPlayerMarker.LookAt(minimap._globeMeshTransform, minimap._globeMeshTransform.up);
+			if (ServerSettingsManager.ShowExtraHUD)
+			{
+				player.MinimapPlayerMarker.localPosition = GetLocalMapPosition(player, minimap);
+				player.MinimapPlayerMarker.LookAt(minimap._globeMeshTransform, minimap._globeMeshTransform.up);
+			}
+			else
+			{
+				player.MinimapPlayerMarker.localPosition = Vector3.zero;
+				player.MinimapPlayerMarker.localRotation = Quaternion.identity;
+			}	
 		}
 	}
 
@@ -154,6 +167,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		player.MinimapPlayerMarker.localScale = new Vector3(0.05f, 0.05f, 0.05f);
 		player.MinimapPlayerMarker.localPosition = Vector3.zero;
 		player.MinimapPlayerMarker.localRotation = Quaternion.identity;
+		player.MinimapPlayerMarker.GetComponent<MeshRenderer>().material = _markerMaterial;
 	}
 
 	private void AddBox(PlayerInfo player)
