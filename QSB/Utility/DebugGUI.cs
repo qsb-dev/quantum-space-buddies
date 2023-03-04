@@ -179,10 +179,10 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
 			{
-				WriteLine(2, $"Illuminated : {player.LightSensor.IsIlluminated()}");
+				WriteLine(2, $"Illuminated : {player.LightSensor?.IsIlluminated()}");
 				var singleLightSensor = (SingleLightSensor)player.LightSensor;
 				// will be null for remote player light sensors
-				if (singleLightSensor._lightSources != null)
+				if (singleLightSensor?._lightSources != null)
 				{
 					foreach (var item in singleLightSensor._lightSources)
 					{
