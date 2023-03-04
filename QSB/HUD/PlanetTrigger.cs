@@ -17,7 +17,6 @@ public class PlanetTrigger : SectoredMonoBehaviour
 
 		MultiplayerHUDManager.HUDIconStack.Push(Icon);
 		var top = MultiplayerHUDManager.HUDIconStack.Peek();
-		DebugLog.DebugWrite($"Pushed {Icon}. Top is now {top}");
 		new PlanetMessage(top).Send();
 	}
 
@@ -30,7 +29,6 @@ public class PlanetTrigger : SectoredMonoBehaviour
 
 		MultiplayerHUDManager.HUDIconStack.Remove(Icon);
 		var top = MultiplayerHUDManager.HUDIconStack.Peek();
-		DebugLog.DebugWrite($"Removed {Icon}. Top is now {top}");
 		new PlanetMessage(top).Send();
 	}
 }

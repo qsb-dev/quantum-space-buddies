@@ -19,8 +19,6 @@ internal class PlanetMessage : QSBMessage<HUDIcon>
 			return;
 		}
 
-		DebugLog.DebugWrite($"{From} now on {Data}");
-
 		from.HUDBox?.UpdateIcon(Data);
 	}
 }
