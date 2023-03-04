@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 namespace QSB.HUD;
 
+[UsedInUnityProject]
 public class PlayerBox : MonoBehaviour
 {
 	public Text PlayerName;

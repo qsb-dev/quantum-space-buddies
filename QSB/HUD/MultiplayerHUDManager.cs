@@ -119,10 +119,6 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		HUDIconStack.Push(HUDIcon.TIMBER_HEARTH);
 
 		new PlanetMessage(HUDIcon.TIMBER_HEARTH).Send();
-
-		var playerMinimap = QSBWorldSync.GetUnityObjects<Minimap>().First(x => x.name == "Minimap_Root");
-		_markerMaterial = Instantiate(playerMinimap._probeMarkerTransform.GetComponent<MeshRenderer>().material);
-		_markerMaterial.color = Color.gray;
 	}
 
 	public void UpdateMinimapMarkers(Minimap minimap)
@@ -177,6 +173,14 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		player.MinimapPlayerMarker.localScale = new Vector3(0.05f, 0.05f, 0.05f);
 		player.MinimapPlayerMarker.localPosition = Vector3.zero;
 		player.MinimapPlayerMarker.localRotation = Quaternion.identity;
+
+		if (_markerMaterial == null)
+		{
+			var playerMinimap = QSBWorldSync.GetUnityObjects<Minimap>().First(x => x.name == "Minimap_Root");
+			_markerMaterial = Instantiate(playerMinimap._probeMarkerTransform.GetComponent<MeshRenderer>().material);
+			_markerMaterial.color = new Color32(218, 115, 255, 255);
+		}
+
 		player.MinimapPlayerMarker.GetComponent<MeshRenderer>().material = _markerMaterial;
 	}
 
