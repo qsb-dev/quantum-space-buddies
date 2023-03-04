@@ -41,6 +41,7 @@ public partial class PlayerInfo
 	public ThrusterLightTracker ThrusterLightTracker;
 	public bool FlyingShip => ShipManager.Instance.CurrentFlyer == PlayerId;
 	public bool FlyingModelShip => ModelShipManager.Instance.CurrentFlyer == PlayerId;
+	public RemotePlayerRulesetDetector RulesetDetector { get; set; }
 
 	public PlayerInfo(PlayerTransformSync transformSync)
 	{
