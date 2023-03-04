@@ -76,10 +76,20 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		var hudCanvas = hudCamera.transform.parent.Find("UICanvas");
 
 		var multiplayerGroup = Instantiate(QSBCore.HUDAssetBundle.LoadAsset<GameObject>("assets/Prefabs/multiplayergroup.prefab"));
-		multiplayerGroup.transform.parent = hudCanvas;
-		multiplayerGroup.transform.localPosition = new Vector3(457.4747f, -34.9757f, 41.7683f);
-		multiplayerGroup.transform.localRotation = Quaternion.Euler(355.0921f, 17.1967f, 359.7854f);
-		multiplayerGroup.transform.localScale = Vector3.one;
+
+		Delay.RunNextFrame(() =>
+		{
+			// no idea why this has to be next frame, but it does
+			multiplayerGroup.transform.parent = hudCanvas;
+			multiplayerGroup.transform.localPosition = Vector3.zero;
+			var rect = multiplayerGroup.GetComponent<RectTransform>();
+			rect.anchorMin = new Vector2(1, 0.5f);
+			rect.anchorMax = new Vector2(1, 0.5f);
+			rect.sizeDelta = new Vector2(100, 100);
+			rect.anchoredPosition3D = new Vector3(-267, 0, 0);
+			rect.localRotation = Quaternion.Euler(0, 55, 0);
+			rect.localScale = Vector3.one;
+		});
 
 		_playerList = multiplayerGroup.transform.Find("PlayerList");
 
