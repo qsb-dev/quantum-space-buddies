@@ -53,6 +53,7 @@ public static class RemotePlayerCreation
 		player.Body = REMOTE_Player_Body;
 		player.ThrusterLightTracker = player.Body.GetComponentInChildren<ThrusterLightTracker>();
 		player.FluidDetector = REMOTE_PlayerDetector.GetComponent<RemotePlayerFluidDetector>();
+		player.RulesetDetector = REMOTE_PlayerDetector.GetComponent<RemotePlayerRulesetDetector>();
 
 		player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
 

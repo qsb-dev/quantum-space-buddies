@@ -31,6 +31,9 @@ public static class Extensions
 		return copy;
 	}
 
+	public static GameObject FindChild(this GameObject g, string childPath) =>
+			g.transform.Find(childPath)?.gameObject;
+
 	#endregion
 
 	#region MIRROR

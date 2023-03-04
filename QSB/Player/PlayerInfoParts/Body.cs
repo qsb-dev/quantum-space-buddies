@@ -8,15 +8,7 @@ public partial class PlayerInfo
 {
 	public OWCamera Camera
 	{
-		get
-		{
-			if (_camera == null && IsReady)
-			{
-				DebugLog.ToConsole($"Warning - {PlayerId}.Camera is null!", MessageType.Warning);
-			}
-
-			return _camera;
-		}
+		get => _camera;
 		set
 		{
 			if (value == null)

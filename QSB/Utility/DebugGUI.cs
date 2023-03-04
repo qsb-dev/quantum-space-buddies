@@ -1,5 +1,6 @@
 ﻿using QSB.ClientServerStateSync;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.HUD;
 using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.ShipSync;
@@ -152,6 +153,12 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			{
 				WriteLine(1, $" - {item}");
 			}
+
+			WriteLine(1, $"HUD Icon Stack :");
+			foreach (var item in MultiplayerHUDManager.HUDIconStack)
+			{
+				WriteLine(1, $" - {item}");
+			}
 		}
 
 		#endregion
@@ -172,10 +179,10 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
 			{
-				WriteLine(2, $"Illuminated : {player.LightSensor.IsIlluminated()}");
+				WriteLine(2, $"Illuminated : {player.LightSensor?.IsIlluminated()}");
 				var singleLightSensor = (SingleLightSensor)player.LightSensor;
 				// will be null for remote player light sensors
-				if (singleLightSensor._lightSources != null)
+				if (singleLightSensor?._lightSources != null)
 				{
 					foreach (var item in singleLightSensor._lightSources)
 					{

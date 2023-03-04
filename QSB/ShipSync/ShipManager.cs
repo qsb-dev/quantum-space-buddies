@@ -166,6 +166,7 @@ internal class ShipManager : WorldObjectManager
 	public void AddPlayerToShip(PlayerInfo player)
 	{
 		player.IsInShip = true;
+		player.HUDBox.OnEnterShip();
 		_playersInShip.Add(player);
 		UpdateElectricalComponent();
 	}
@@ -173,6 +174,7 @@ internal class ShipManager : WorldObjectManager
 	public void RemovePlayerFromShip(PlayerInfo player)
 	{
 		player.IsInShip = false;
+		player.HUDBox.OnExitShip();
 		_playersInShip.Remove(player);
 		UpdateElectricalComponent();
 	}

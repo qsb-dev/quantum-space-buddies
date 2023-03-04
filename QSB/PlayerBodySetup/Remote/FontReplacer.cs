@@ -13,6 +13,12 @@ public static class FontReplacer
 
 		foreach (var monoBehaviour in prefab.GetComponentsInChildren<MonoBehaviour>(true))
 		{
+			if (monoBehaviour == null)
+			{
+				DebugLog.ToConsole($"Null monobehaviour found on {prefab.name}!", OWML.Common.MessageType.Warning);
+				continue;
+			}
+
 			var publicFields = monoBehaviour
 				.GetType()
 				.GetFields(BindingFlags.Public | BindingFlags.Instance);

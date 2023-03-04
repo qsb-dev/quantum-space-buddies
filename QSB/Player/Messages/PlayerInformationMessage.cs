@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.ClientServerStateSync;
+using QSB.HUD;
 using QSB.Messaging;
 using QSB.Utility;
 
@@ -19,6 +20,7 @@ public class PlayerInformationMessage : QSBMessage
 	private ClientState ClientState;
 	private float FieldOfView;
 	private bool IsInShip;
+	private HUDIcon HUDIcon;
 
 	public PlayerInformationMessage()
 	{
@@ -34,6 +36,7 @@ public class PlayerInformationMessage : QSBMessage
 		ClientState = player.State;
 		FieldOfView = PlayerData.GetGraphicSettings().fieldOfView;
 		IsInShip = player.IsInShip;
+		HUDIcon = player.HUDBox == null ? HUDIcon.UNKNOWN : player.HUDBox.PlanetIcon;
 	}
 
 	public override void Serialize(NetworkWriter writer)
@@ -50,6 +53,7 @@ public class PlayerInformationMessage : QSBMessage
 		writer.Write(ClientState);
 		writer.Write(FieldOfView);
 		writer.Write(IsInShip);
+		writer.Write(HUDIcon);
 	}
 
 	public override void Deserialize(NetworkReader reader)
@@ -66,6 +70,7 @@ public class PlayerInformationMessage : QSBMessage
 		ClientState = reader.Read<ClientState>();
 		FieldOfView = reader.ReadFloat();
 		IsInShip = reader.ReadBool();
+		HUDIcon = reader.Read<HUDIcon>();
 	}
 
 	public override void OnReceiveRemote()
@@ -93,6 +98,12 @@ public class PlayerInformationMessage : QSBMessage
 				() => player.Camera.fieldOfView = FieldOfView);
 
 			player.State = ClientState;
+
+			Delay.RunWhen(() => player.HUDBox != null, () =>
+			{
+				player.HUDBox.PlayerName.text = PlayerName.ToUpper();
+				player.HUDBox.UpdateIcon(HUDIcon);
+			});
 		}
 		else
 		{
