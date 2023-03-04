@@ -112,6 +112,8 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 	public void UpdateMinimapMarkers(Minimap minimap)
 	{
+		var localRuleset = Locator.GetPlayerRulesetDetector().GetPlanetoidRuleset();
+
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
 			if (player.IsDead || player.IsLocalPlayer || !player.IsReady)
@@ -119,21 +121,37 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 				continue;
 			}
 
-			if (player.RulesetDetector.GetPlanetoidRuleset() == null)
+			if (player.RulesetDetector == null)
 			{
-				// it's broken or we in space bois
+				if (player.Body != null)
+				{
+					DebugLog.ToConsole($"Error - {player.PlayerId}'s RulesetDetector is null.", OWML.Common.MessageType.Error);
+				}
+
+				continue;
+			}
+
+			if (player.RulesetDetector.GetPlanetoidRuleset() == null
+				|| player.RulesetDetector.GetPlanetoidRuleset() != localRuleset)
+			{
+				continue;
+			}
+
+			if (player.MinimapPlayerMarker == null)
+			{
 				continue;
 			}
 
 			player.MinimapPlayerMarker.localPosition = GetLocalMapPosition(player, minimap);
-			player.MinimapPlayerMarker.localRotation = GetLocalMapRotation(player, minimap);
+			player.MinimapPlayerMarker.LookAt(minimap._globeMeshTransform, minimap._globeMeshTransform.up);
 		}
 	}
 
 	private void AddMinimapMarker(PlayerInfo player, Minimap minimap)
 	{
-		DebugLog.DebugWrite($"Adding Minimap Marker for {player} on minimap {minimap.name}");
-		player.MinimapPlayerMarker = Instantiate(minimap._playerMarkerTransform);
+		player.MinimapPlayerMarker = Instantiate(minimap._probeMarkerTransform);
+		player.MinimapPlayerMarker.parent = minimap._probeMarkerTransform.parent;
+		player.MinimapPlayerMarker.localScale = new Vector3(0.05f, 0.05f, 0.05f);
 		player.MinimapPlayerMarker.localPosition = Vector3.zero;
 		player.MinimapPlayerMarker.localRotation = Quaternion.identity;
 	}
@@ -152,16 +170,9 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 	private Vector3 GetLocalMapPosition(PlayerInfo player, Minimap minimap)
 	{
-		return Vector3.Scale(player.RulesetDetector.GetPlanetoidRuleset().transform.InverseTransformPoint(player.Body.transform.position).normalized * 0.51f, minimap._globeMeshTransform.localScale);
-	}
-
-	private Quaternion GetLocalMapRotation(PlayerInfo player, Minimap minimap)
-	{
-		var planetoidTransform = player.RulesetDetector.GetPlanetoidRuleset().transform;
-		var quaternion = Quaternion.Inverse(planetoidTransform.rotation);
-		var vector = quaternion * player.Body.transform.rotation * Vector3.forward;
-		var vector2 = quaternion * (player.Body.transform.position - transform.position);
-		return Quaternion.LookRotation(Vector3.ProjectOnPlane(vector, vector2), vector2);
+		return Vector3.Scale(
+			player.RulesetDetector.GetPlanetoidRuleset().transform.InverseTransformPoint(player.Body.transform.position).normalized * 0.51f,
+			minimap._globeMeshTransform.localScale);
 	}
 
 	private void OnAddPlayer(PlayerInfo player)
