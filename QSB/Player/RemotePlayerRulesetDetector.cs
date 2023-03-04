@@ -26,7 +26,6 @@ public class RemotePlayerRulesetDetector : Detector
 		base.AddVolume(volume);
 		if (volume.GetType() == typeof(PlanetoidRuleset))
 		{
-			DebugLog.DebugWrite($"ADD TO {volume.name}");
 			_planetoidRulesets.Add((PlanetoidRuleset)volume);
 			UpdateClosestPlanetoidRuleset();
 		}
@@ -42,7 +41,6 @@ public class RemotePlayerRulesetDetector : Detector
 		base.RemoveVolume(volume);
 		if (volume.GetType() == typeof(PlanetoidRuleset))
 		{
-			DebugLog.DebugWrite($"REMOVE FROM {volume.name}");
 			_planetoidRulesets.Remove((PlanetoidRuleset)volume);
 			UpdateClosestPlanetoidRuleset();
 		}
@@ -60,7 +58,6 @@ public class RemotePlayerRulesetDetector : Detector
 
 	private void UpdateClosestPlanetoidRuleset()
 	{
-		DebugLog.DebugWrite($"UpdateClosetPlanetoidRuleset - count:{_planetoidRulesets.Count}");
 		_closestPlanetoidRuleset = null;
 		var num = float.PositiveInfinity;
 		for (var i = 0; i < _planetoidRulesets.Count; i++)
