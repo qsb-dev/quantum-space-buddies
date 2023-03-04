@@ -12,6 +12,8 @@ namespace QSB.HUD;
 
 internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 {
+	public static MultiplayerHUDManager Instance;
+
 	private Transform _playerList;
 
 	public static Sprite UnknownSprite;
@@ -33,6 +35,8 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 	private void Start()
 	{
+		Instance = this;
+
 		GlobalMessenger.AddListener(OWEvents.WakeUp, OnWakeUp);
 
 		QSBPlayerManager.OnAddPlayer += OnAddPlayer;
@@ -56,6 +60,11 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 	private void Update()
 	{
+		if (!QSBWorldSync.AllObjectsReady || _playerList == null)
+		{
+			return;
+		}
+
 		_playerList.gameObject.SetActive(ServerSettingsManager.ShowExtraHUD);
 	}
 
@@ -76,6 +85,11 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
 			AddBox(player);
+
+			foreach (var item in QSBWorldSync.GetUnityObjects<Minimap>())
+			{
+				AddMinimapMarker(player, item);
+			}
 		}
 
 		CreateTrigger("TowerTwin_Body/Sector_TowerTwin", HUDIcon.TOWER_TWIN);
@@ -96,6 +110,34 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		new PlanetMessage(HUDIcon.TIMBER_HEARTH).Send();
 	}
 
+	public void UpdateMinimapMarkers(Minimap minimap)
+	{
+		foreach (var player in QSBPlayerManager.PlayerList)
+		{
+			if (player.IsDead || player.IsLocalPlayer || !player.IsReady)
+			{
+				continue;
+			}
+
+			if (player.RulesetDetector.GetPlanetoidRuleset() == null)
+			{
+				// it's broken or we in space bois
+				continue;
+			}
+
+			player.MinimapPlayerMarker.localPosition = GetLocalMapPosition(player, minimap);
+			player.MinimapPlayerMarker.localRotation = GetLocalMapRotation(player, minimap);
+		}
+	}
+
+	private void AddMinimapMarker(PlayerInfo player, Minimap minimap)
+	{
+		DebugLog.DebugWrite($"Adding Minimap Marker for {player} on minimap {minimap.name}");
+		player.MinimapPlayerMarker = Instantiate(minimap._playerMarkerTransform);
+		player.MinimapPlayerMarker.localPosition = Vector3.zero;
+		player.MinimapPlayerMarker.localRotation = Quaternion.identity;
+	}
+
 	private void AddBox(PlayerInfo player)
 	{
 		var box = Instantiate(QSBCore.HUDAssetBundle.LoadAsset<GameObject>("assets/Prefabs/playerbox.prefab"));
@@ -108,6 +150,20 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		boxScript.AssignPlayer(player);
 	}
 
+	private Vector3 GetLocalMapPosition(PlayerInfo player, Minimap minimap)
+	{
+		return Vector3.Scale(player.RulesetDetector.GetPlanetoidRuleset().transform.InverseTransformPoint(player.Body.transform.position).normalized * 0.51f, minimap._globeMeshTransform.localScale);
+	}
+
+	private Quaternion GetLocalMapRotation(PlayerInfo player, Minimap minimap)
+	{
+		var planetoidTransform = player.RulesetDetector.GetPlanetoidRuleset().transform;
+		var quaternion = Quaternion.Inverse(planetoidTransform.rotation);
+		var vector = quaternion * player.Body.transform.rotation * Vector3.forward;
+		var vector2 = quaternion * (player.Body.transform.position - transform.position);
+		return Quaternion.LookRotation(Vector3.ProjectOnPlane(vector, vector2), vector2);
+	}
+
 	private void OnAddPlayer(PlayerInfo player)
 	{
 		if (!QSBWorldSync.AllObjectsReady)
@@ -116,6 +172,11 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		AddBox(player);
+
+		foreach (var item in QSBWorldSync.GetUnityObjects<Minimap>())
+		{
+			AddMinimapMarker(player, item);
+		}
 	}
 
 	private void OnRemovePlayer(PlayerInfo player)

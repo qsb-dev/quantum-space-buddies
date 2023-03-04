@@ -12,6 +12,7 @@ using QSB.ShipSync;
 using QSB.Tools;
 using QSB.Utility;
 using System.Linq;
+using UnityEngine;
 
 namespace QSB.Player;
 
@@ -25,6 +26,7 @@ public partial class PlayerInfo
 	public PlayerHUDMarker HudMarker { get; set; }
 	public PlayerMapMarker MapMarker { get; set; }
 	public PlayerBox HUDBox { get; set; }
+	public Transform MinimapPlayerMarker { get; set; }
 	public PlayerTransformSync TransformSync { get; }
 	public ClientState State { get; set; }
 	public EyeState EyeState { get; set; }
