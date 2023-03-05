@@ -1,6 +1,7 @@
 ﻿using Epic.OnlineServices.Logging;
 using EpicTransport;
 using Mirror;
+using Mirror.FizzySteam;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -83,7 +84,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		}
 		else
 		{
-			// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
+			/*// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
 			var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
 			eosApiKey.epicProductName = "QSB";
 			eosApiKey.epicProductVersion = "1.0";
@@ -99,7 +100,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 			var eosTransport = gameObject.AddComponent<EosTransport>();
 			eosTransport.SetTransportError = error => _lastTransportError = error;
-			transport = eosTransport;
+			transport = eosTransport;*/
+
+			var fizzy = gameObject.AddComponent<FizzyFacepunch>();
+			fizzy.SteamAppID = "480";
+			transport = fizzy;
 		}
 
 		gameObject.SetActive(true);
