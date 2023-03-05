@@ -36,7 +36,7 @@ public class PlayerTransformSync : SectoredTransformSync
 		var player = new PlayerInfo(this);
 		QSBPlayerManager.PlayerList.SafeAdd(player);
 		base.OnStartClient();
-		QSBPlayerManager.OnAddPlayer?.Invoke(Player);
+		QSBPlayerManager.OnAddPlayer?.SafeInvoke(Player);
 		DebugLog.DebugWrite($"Create Player : {Player}", MessageType.Info);
 
 		JoinLeaveSingularity.Create(Player, true);
@@ -50,7 +50,7 @@ public class PlayerTransformSync : SectoredTransformSync
 
 		// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
 		QSBPatch.Remote = true;
-		QSBPlayerManager.OnRemovePlayer?.Invoke(Player);
+		QSBPlayerManager.OnRemovePlayer?.SafeInvoke(Player);
 		QSBPatch.Remote = false;
 		base.OnStopClient();
 		Player.HudMarker?.Remove();

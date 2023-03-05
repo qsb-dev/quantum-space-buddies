@@ -226,7 +226,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		{
 			var player = new PlayerInfo(QSBPlayerManager.LocalPlayer.TransformSync);
 			QSBPlayerManager.PlayerList.SafeAdd(player);
-			QSBPlayerManager.OnAddPlayer?.Invoke(player);
+			QSBPlayerManager.OnAddPlayer?.SafeInvoke(player);
 			DebugLog.DebugWrite($"CREATING FAKE PLAYER : {player}", MessageType.Info);
 
 			JoinLeaveSingularity.Create(player, true);
