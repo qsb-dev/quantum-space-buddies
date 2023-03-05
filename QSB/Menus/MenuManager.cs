@@ -1,5 +1,5 @@
-﻿using EpicTransport;
-using Mirror;
+﻿using Mirror;
+using Mirror.FizzySteam;
 using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
@@ -626,7 +626,8 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (!QSBCore.DebugSettings.UseKcpTransport)
 		{
-			var productUserId = EOSSDKComponent.LocalUserProductIdString;
+			//var productUserId = EOSSDKComponent.LocalUserProductIdString;
+			var productUserId = ((FizzyFacepunch)Transport.activeTransport).GetSteamID();
 
 			PopupClose += confirm =>
 			{

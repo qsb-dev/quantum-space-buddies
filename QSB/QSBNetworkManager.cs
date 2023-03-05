@@ -1,6 +1,4 @@
-﻿using Epic.OnlineServices.Logging;
-using EpicTransport;
-using Mirror;
+﻿using Mirror;
 using Mirror.FizzySteam;
 using OWML.Common;
 using OWML.Utils;
@@ -199,7 +197,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 			if (!QSBCore.DebugSettings.UseKcpTransport)
 			{
-				EOSSDKComponent.DisplayName = PlayerName;
+				//EOSSDKComponent.DisplayName = PlayerName;
 			}
 		});
 
