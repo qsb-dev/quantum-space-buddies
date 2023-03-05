@@ -4,6 +4,8 @@
 	{
 		bool Connected { get; }
 		bool Error { get; }
+
+
 		void ReceiveData();
 		void Disconnect();
 		void FlushData();

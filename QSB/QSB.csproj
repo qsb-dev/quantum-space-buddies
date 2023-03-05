@@ -72,7 +72,7 @@
     <PackageReference Include="OWML" Version="2.9.0" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
-    <ProjectReference Include="..\FizzyFacepunch\FizzyFacepunch.csproj" />
+    <ProjectReference Include="..\FizzyFacepunch\FizzySteamworks.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>

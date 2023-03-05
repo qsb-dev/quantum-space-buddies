@@ -1,14 +1,13 @@
-﻿using Steamworks;
+﻿#if !DISABLESTEAMWORKS
+using Steamworks;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Telepathy;
 using UnityEngine;
 
 namespace Mirror.FizzySteam
 {
-	[HelpURL("https://github.com/Chykary/FizzyFacepunch")]
-	public class FizzyFacepunch : Transport
+	[HelpURL("https://github.com/Chykary/FizzySteamworks")]
+	public class FizzySteamworks : Transport
 	{
 		private const string STEAM_SCHEME = "steam";
 
@@ -16,58 +15,25 @@ namespace Mirror.FizzySteam
 		private static IServer server;
 
 		[SerializeField]
-		public P2PSend[] Channels = new P2PSend[2] { P2PSend.Reliable, P2PSend.UnreliableNoDelay };
+		public EP2PSend[] Channels = new EP2PSend[2] { EP2PSend.k_EP2PSendReliable, EP2PSend.k_EP2PSendUnreliableNoDelay };
 
 		[Tooltip("Timeout for connecting in seconds.")]
 		public int Timeout = 25;
-		[Tooltip("The Steam ID for your application.")]
-		public string SteamAppID = "480";
 		[Tooltip("Allow or disallow P2P connections to fall back to being relayed through the Steam servers if a direct connection or NAT-traversal cannot be established.")]
 		public bool AllowSteamRelay = true;
 
 		[Tooltip("Use SteamSockets instead of the (deprecated) SteamNetworking. This will always use Relay.")]
 		public bool UseNextGenSteamNetworking = true;
 
-		[Tooltip("Check this if you want the transport to initialise Facepunch.")]
-		public bool InitFacepunch = true;
-
-		[Header("Info")]
-		[Tooltip("This will display your Steam User ID when you start or connect to a server.")]
-		public ulong SteamUserID;
-
-		private void Awake()
+		private void OnEnable()
 		{
-			const string fileName = "steam_appid.txt";
-			if (File.Exists(fileName))
-			{
-				string content = File.ReadAllText(fileName);
-				if (content != SteamAppID)
-				{
-					File.WriteAllText(fileName, SteamAppID.ToString());
-					Debug.Log($"Updating {fileName}. Previous: {content}, new SteamAppID {SteamAppID}");
-				}
-			}
-			else
-			{
-				File.WriteAllText(fileName, SteamAppID.ToString());
-				Debug.Log($"New {fileName} written with SteamAppID {SteamAppID}");
-			}
-
 			Debug.Assert(Channels != null && Channels.Length > 0, "No channel configured for FizzySteamworks.");
-
-			if (InitFacepunch)
-			{
-				SteamClient.Init(uint.Parse(SteamAppID), true);
-			}
-
-			Invoke(nameof(FetchSteamID), 1f);
+			Invoke(nameof(InitRelayNetworkAccess), 1f);
 		}
-
-		public string GetSteamID() => SteamClient.SteamId.ToString();
 
 		public override void ClientEarlyUpdate()
 		{
-			if (enabled && client != null && !client.Error)
+			if (enabled)
 			{
 				client?.ReceiveData();
 			}
@@ -83,7 +49,7 @@ namespace Mirror.FizzySteam
 
 		public override void ClientLateUpdate()
 		{
-			if (enabled && client != null && !client.Error)
+			if (enabled)
 			{
 				client?.FlushData();
 			}
@@ -100,38 +66,45 @@ namespace Mirror.FizzySteam
 		public override bool ClientConnected() => ClientActive() && client.Connected;
 		public override void ClientConnect(string address)
 		{
-			if (!SteamClient.IsValid)
+			try
 			{
-				Debug.LogError("SteamWorks not initialized. Client could not be started.");
-				OnClientDisconnected.Invoke();
-				return;
-			}
+#if UNITY_SERVER
+                SteamGameServerNetworkingUtils.InitRelayNetworkAccess();
+#else
+				SteamNetworkingUtils.InitRelayNetworkAccess();
+#endif
 
-			FetchSteamID();
+				InitRelayNetworkAccess();
 
-			if (ServerActive())
-			{
-				Debug.LogError("Transport already running as server!");
-				return;
-			}
-
-			if (!ClientActive() || client.Error)
-			{
-				if (UseNextGenSteamNetworking)
+				if (ServerActive())
 				{
-					Debug.Log($"Starting client [SteamSockets], target address {address}.");
-					client = NextClient.CreateClient(this, address);
+					Debug.LogError("Transport already running as server!");
+					return;
+				}
+
+				if (!ClientActive() || client.Error)
+				{
+					if (UseNextGenSteamNetworking)
+					{
+						Debug.Log($"Starting client [SteamSockets], target address {address}.");
+						client = NextClient.CreateClient(this, address);
+					}
+					else
+					{
+						Debug.Log($"Starting client [DEPRECATED SteamNetworking], target address {address}. Relay enabled: {AllowSteamRelay}");
+						SteamNetworking.AllowP2PPacketRelay(AllowSteamRelay);
+						client = LegacyClient.CreateClient(this, address);
+					}
 				}
 				else
 				{
-					Debug.Log($"Starting client [DEPRECATED SteamNetworking], target address {address}. Relay enabled: {AllowSteamRelay}");
-					SteamNetworking.AllowP2PPacketRelay(AllowSteamRelay);
-					client = LegacyClient.CreateClient(this, address);
+					Debug.LogError("Client already running!");
 				}
 			}
-			else
+			catch (Exception ex)
 			{
-				Debug.LogError("Client already running!");
+				Debug.LogError("Exception: " + ex.Message + ". Client could not be started.");
+				OnClientDisconnected.Invoke();
 			}
 		}
 
@@ -163,37 +136,51 @@ namespace Mirror.FizzySteam
 		public override bool ServerActive() => server != null;
 		public override void ServerStart()
 		{
-			if (!SteamClient.IsValid)
+			try
 			{
-				Debug.LogError("SteamWorks not initialized. Server could not be started.");
-				return;
-			}
+#if UNITY_SERVER
+                SteamGameServerNetworkingUtils.InitRelayNetworkAccess();
+#else
+				SteamNetworkingUtils.InitRelayNetworkAccess();
+#endif
 
-			FetchSteamID();
 
-			if (ClientActive())
-			{
-				Debug.LogError("Transport already running as client!");
-				return;
-			}
+				InitRelayNetworkAccess();
 
-			if (!ServerActive())
-			{
-				if (UseNextGenSteamNetworking)
+				if (ClientActive())
 				{
-					Debug.Log($"Starting server [SteamSockets].");
-					server = NextServer.CreateServer(this, NetworkManager.singleton.maxConnections);
+					Debug.LogError("Transport already running as client!");
+					return;
+				}
+
+				if (!ServerActive())
+				{
+					if (UseNextGenSteamNetworking)
+					{
+						Debug.Log($"Starting server [SteamSockets].");
+						server = NextServer.CreateServer(this, NetworkManager.singleton.maxConnections);
+					}
+					else
+					{
+						Debug.Log($"Starting server [DEPRECATED SteamNetworking]. Relay enabled: {AllowSteamRelay}");
+#if UNITY_SERVER
+                        SteamGameServerNetworking.AllowP2PPacketRelay(AllowSteamRelay);
+#else
+
+						SteamNetworking.AllowP2PPacketRelay(AllowSteamRelay);
+#endif
+						server = LegacyServer.CreateServer(this, NetworkManager.singleton.maxConnections);
+					}
 				}
 				else
 				{
-					Debug.Log($"Starting server [DEPRECATED SteamNetworking]. Relay enabled: {AllowSteamRelay}");
-					SteamNetworking.AllowP2PPacketRelay(AllowSteamRelay);
-					server = LegacyServer.CreateServer(this, NetworkManager.singleton.maxConnections);
+					Debug.LogError("Server already started!");
 				}
 			}
-			else
+			catch (Exception ex)
 			{
-				Debug.LogError("Server already started!");
+				Debug.LogException(ex);
+				return;
 			}
 		}
 
@@ -202,7 +189,11 @@ namespace Mirror.FizzySteam
 			var steamBuilder = new UriBuilder
 			{
 				Scheme = STEAM_SCHEME,
-				Host = SteamClient.SteamId.Value.ToString()
+#if UNITY_SERVER
+                Host = SteamGameServer.GetSteamID().m_SteamID.ToString()
+#else
+				Host = SteamUser.GetSteamID().m_SteamID.ToString()
+#endif
 			};
 
 			return steamBuilder.Uri;
@@ -252,22 +243,29 @@ namespace Mirror.FizzySteam
 
 		public override int GetMaxPacketSize(int channelId)
 		{
-			if (channelId >= Channels.Length)
+			if (UseNextGenSteamNetworking)
 			{
-				Debug.LogError("Channel Id exceeded configured channels! Please configure more channels.");
-				return 1200;
+				return Constants.k_cbMaxSteamNetworkingSocketsMessageSizeSend;
 			}
-
-			switch (Channels[channelId])
+			else
 			{
-				case P2PSend.Unreliable:
-				case P2PSend.UnreliableNoDelay:
+				if (channelId >= Channels.Length)
+				{
+					Debug.LogError("Channel Id exceeded configured channels! Please configure more channels.");
 					return 1200;
-				case P2PSend.Reliable:
-				case P2PSend.ReliableWithBuffering:
-					return 1048576;
-				default:
-					throw new NotSupportedException();
+				}
+
+				switch (Channels[channelId])
+				{
+					case EP2PSend.k_EP2PSendUnreliable:
+					case EP2PSend.k_EP2PSendUnreliableNoDelay:
+						return 1200;
+					case EP2PSend.k_EP2PSendReliable:
+					case EP2PSend.k_EP2PSendReliableWithBuffering:
+						return 1048576;
+					default:
+						throw new NotSupportedException();
+				}
 			}
 		}
 
@@ -275,7 +273,12 @@ namespace Mirror.FizzySteam
 		{
 			try
 			{
-				return SteamClient.IsValid;
+#if UNITY_SERVER
+                SteamGameServerNetworkingUtils.InitRelayNetworkAccess();
+#else
+				SteamNetworkingUtils.InitRelayNetworkAccess();
+#endif
+				return true;
 			}
 			catch
 			{
@@ -283,17 +286,20 @@ namespace Mirror.FizzySteam
 			}
 		}
 
-		private void FetchSteamID()
+		private void InitRelayNetworkAccess()
 		{
-			if (SteamClient.IsValid)
+			try
 			{
 				if (UseNextGenSteamNetworking)
 				{
+#if UNITY_SERVER
+                    SteamGameServerNetworkingUtils.InitRelayNetworkAccess();
+#else
 					SteamNetworkingUtils.InitRelayNetworkAccess();
+#endif
 				}
-
-				SteamUserID = SteamClient.SteamId;
 			}
+			catch { }
 		}
 
 		private void OnDestroy()
@@ -302,3 +308,4 @@ namespace Mirror.FizzySteam
 		}
 	}
 }
+#endif // !DISABLESTEAMWORKS
