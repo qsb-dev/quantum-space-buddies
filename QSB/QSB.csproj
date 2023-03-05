@@ -16,7 +16,7 @@
   </Target>
 
   <Target Name="weave qsb" AfterTargets="PostBuildEvent">
-    <Exec Command="MirrorWeaver &quot;$(TargetPath)&quot;" WorkingDirectory="..\MirrorWeaver\bin\$(Configuration)\" />
+    <Exec Command=".\MirrorWeaver &quot;$(TargetPath)&quot;" WorkingDirectory="..\MirrorWeaver\bin\$(Configuration)\" />
   </Target>
 
   <PropertyGroup>
