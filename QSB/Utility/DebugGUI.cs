@@ -159,6 +159,12 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			{
 				WriteLine(1, $" - {item}");
 			}
+	
+			WriteLine(1, $"Sectors :");
+			foreach (var sector in PlayerTransformSync.LocalInstance.SectorDetector.SectorList)
+			{
+				WriteLine(1, $"- {sector.Name}");
+			}
 		}
 
 		#endregion
@@ -196,12 +202,6 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 				WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", referenceSector == null ? Color.red : Color.white);
 				WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
-
-				WriteLine(2, $"Sectors :");
-				foreach (var sector in PlayerTransformSync.LocalInstance.SectorDetector.SectorList)
-				{
-					WriteLine(2, $"- {sector.Name}");
-				}
 			}
 		}
 
