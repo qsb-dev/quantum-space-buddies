@@ -114,6 +114,8 @@ public class QSBCore : ModBehaviour
 		DebugLog.DebugWrite($"Determined game vendor as {GameVendor}", MessageType.Info);
 	}
 
+	private bool _steamworksInitialized;
+
 	public void Awake()
 	{
 		//EpicRerouter.ModSide.Interop.Go();
@@ -148,6 +150,8 @@ public class QSBCore : ModBehaviour
 			{
 				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.", MessageType.Fatal);
 			}
+
+			_steamworksInitialized = true;
 		}
 		else
 		{
@@ -171,6 +175,14 @@ public class QSBCore : ModBehaviour
 
 			//temp.InitializeOnAwake();
 			typeof(SteamManager).GetMethod("InitializeOnAwake", BindingFlags.Public | BindingFlags.Instance).Invoke(steamManagerInstance, null);
+		}
+	}
+
+	public void OnDestroy()
+	{
+		if (_steamworksInitialized)
+		{
+			SteamAPI.Shutdown();
 		}
 	}
 
@@ -327,6 +339,11 @@ public class QSBCore : ModBehaviour
 			DebugCameraSettings.UpdateFromDebugSetting();
 
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
+		}
+
+		if (_steamworksInitialized)
+		{
+			SteamAPI.RunCallbacks();
 		}
 	}
 
