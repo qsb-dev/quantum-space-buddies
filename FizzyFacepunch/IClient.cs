@@ -1,14 +1,14 @@
-﻿namespace Mirror.FizzySteam
+namespace Mirror.FizzySteam
 {
-	public interface IClient
-	{
-		bool Connected { get; }
-		bool Error { get; }
+    public interface IClient
+    {
+        bool Connected { get; }
+        bool Error { get; }
 
 
-		void ReceiveData();
-		void Disconnect();
-		void FlushData();
-		void Send(byte[] data, int channelId);
-	}
+        void ReceiveData();
+        void Disconnect();
+        void FlushData();
+        void Send(byte[] data, int channelId);
+    }
 }
