@@ -141,6 +141,7 @@ namespace Mirror.Weaver
             {
                 throw new GenerateWriterException($"Cannot generate writer for {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
             }
+            // CHANGED
             /*
             if (variableDefinition.HasGenericParameters)
             {
@@ -221,6 +222,7 @@ namespace Mirror.Weaver
             if (!variable.Resolve().IsValueType)
                 WriteNullCheck(worker, ref WeavingFailed);
 
+            // CHANGED
             if (!this.WriteAllFieldsGeneric(variable, worker, ref WeavingFailed))
                 return null;
 
