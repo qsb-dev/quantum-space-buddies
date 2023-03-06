@@ -148,6 +148,7 @@ namespace Mirror.Weaver
             }),
             ref WeavingFailed);
 
+            // CHANGED
             /*
             // [InitializeOnLoadMethod]
             // 'UnityEditor' is not available in builds.

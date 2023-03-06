@@ -206,6 +206,7 @@ namespace Mirror.Weaver
                 ModuleDefinition moduleDefinition = CurrentAssembly.MainModule;
                 Console.WriteLine($"Script Module: {moduleDefinition.Name}");
 
+                // CHANGED
                 QSBReaderWriterProcessor.Process(moduleDefinition, writers, readers, ref WeavingFailed);
 
                 modified |= WeaveModule(moduleDefinition);

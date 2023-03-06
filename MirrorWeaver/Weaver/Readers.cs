@@ -140,6 +140,7 @@ namespace Mirror.Weaver
                 WeavingFailed = true;
                 return null;
             }
+            // CHANGED
             /*
             if (variableDefinition.HasGenericParameters)
             {
@@ -272,6 +273,7 @@ namespace Mirror.Weaver
                 GenerateNullCheck(worker, ref WeavingFailed);
 
             CreateNew(variable, worker, td, ref WeavingFailed);
+            // CHANGED
             this.ReadAllFieldsGeneric(variable, worker, ref WeavingFailed);
 
             worker.Emit(OpCodes.Ldloc_0);
