@@ -412,4 +412,14 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		base.OnStopServer();
 	}
+
+	public override void OnServerError(NetworkConnectionToClient conn, TransportError error, string reason)
+	{
+		DebugLog.DebugWrite($"OnServerError({conn}, {error}, {reason})", MessageType.Error);
+	}
+
+	public override void OnClientError(TransportError error, string reason)
+	{
+		DebugLog.DebugWrite($"OnClientError({error}, {reason})", MessageType.Error);
+	}
 }
