@@ -11,4 +11,12 @@
   <ItemGroup>
     <Folder Include="lib\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="lib\com.rlabrecque.steamworks.net.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="lib\Steamworks.NET.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
