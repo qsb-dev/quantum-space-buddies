@@ -1,38 +1,48 @@
-﻿using Mirror;
+﻿#if !DISABLESTEAMWORKS
 using Steamworks;
-using Steamworks.Data;
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public abstract class NextCommon
+namespace Mirror.FizzySteam
 {
-	protected const int MAX_MESSAGES = 256;
-
-	protected Result SendSocket(Connection conn, byte[] data, int channelId)
+	public abstract class NextCommon
 	{
-		Array.Resize(ref data, data.Length + 1);
-		data[data.Length - 1] = (byte)channelId;
+		protected const int MAX_MESSAGES = 256;
 
-		GCHandle pinnedArray = GCHandle.Alloc(data, GCHandleType.Pinned);
-		IntPtr pData = pinnedArray.AddrOfPinnedObject();
-		SendType sendFlag = channelId == Channels.Unreliable ? SendType.Unreliable : SendType.Reliable;
-		Result res = conn.SendMessage(pData, data.Length, sendFlag);
-		if (res != Result.OK)
+		protected EResult SendSocket(HSteamNetConnection conn, byte[] data, int channelId)
 		{
-			Debug.LogWarning($"Send issue: {res}");
+			Array.Resize(ref data, data.Length + 1);
+			data[data.Length - 1] = (byte)channelId;
+
+			GCHandle pinnedArray = GCHandle.Alloc(data, GCHandleType.Pinned);
+			IntPtr pData = pinnedArray.AddrOfPinnedObject();
+			int sendFlag = channelId == Channels.Unreliable ? Constants.k_nSteamNetworkingSend_Unreliable : Constants.k_nSteamNetworkingSend_Reliable;
+#if UNITY_SERVER
+            EResult res = SteamGameServerNetworkingSockets.SendMessageToConnection(conn, pData, (uint)data.Length, sendFlag, out long _);
+#else
+			EResult res = SteamNetworkingSockets.SendMessageToConnection(conn, pData, (uint)data.Length, sendFlag, out long _);
+#endif
+			if (res != EResult.k_EResultOK)
+			{
+				Debug.LogWarning($"Send issue: {res}");
+			}
+
+			pinnedArray.Free();
+			return res;
 		}
 
-		pinnedArray.Free();
-		return res;
-	}
+		protected (byte[], int) ProcessMessage(IntPtr ptrs)
+		{
+			SteamNetworkingMessage_t data = Marshal.PtrToStructure<SteamNetworkingMessage_t>(ptrs);
+			byte[] managedArray = new byte[data.m_cbSize];
+			Marshal.Copy(data.m_pData, managedArray, 0, data.m_cbSize);
+			SteamNetworkingMessage_t.Release(ptrs);
 
-	protected (byte[], int) ProcessMessage(IntPtr ptrs, int size)
-	{
-		byte[] managedArray = new byte[size];
-		Marshal.Copy(ptrs, managedArray, 0, size);
-		int channel = managedArray[managedArray.Length - 1];
-		Array.Resize(ref managedArray, managedArray.Length - 1);
-		return (managedArray, channel);
+			int channel = managedArray[managedArray.Length - 1];
+			Array.Resize(ref managedArray, managedArray.Length - 1);
+			return (managedArray, channel);
+		}
 	}
 }
+#endif // !DISABLESTEAMWORKS

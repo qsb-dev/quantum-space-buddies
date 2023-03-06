@@ -100,7 +100,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			eosTransport.SetTransportError = error => _lastTransportError = error;
 			transport = eosTransport;*/
 
-			var fizzy = gameObject.AddComponent<FizzyFacepunch>();
+			var fizzy = gameObject.AddComponent<FizzySteamworks>();
 			fizzy.SteamAppID = "480";
 			transport = fizzy;
 		}

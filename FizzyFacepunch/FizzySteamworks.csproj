@@ -1,9 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Facepunch.Steamworks" Version="2.3.3" />
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="../Mirror/*.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Steamworks.NET">
+      <HintPath>..\..\..\..\Downloads\Steamworks.NET-Standalone_20.1.0\Windows-x64\Steamworks.NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

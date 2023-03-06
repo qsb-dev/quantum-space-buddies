@@ -1,4 +1,5 @@
-﻿using Steamworks;
+﻿#if !DISABLESTEAMWORKS
+using Steamworks;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,8 +9,8 @@ namespace Mirror.FizzySteam
 {
 	public class LegacyClient : LegacyCommon, IClient
 	{
-		public bool Error { get; private set; }
 		public bool Connected { get; private set; }
+		public bool Error { get; private set; }
 
 		private event Action<byte[], int> OnReceivedData;
 		private event Action OnConnected;
@@ -17,16 +18,16 @@ namespace Mirror.FizzySteam
 
 		private TimeSpan ConnectionTimeout;
 
-		private SteamId hostSteamID = 0;
+		private CSteamID hostSteamID = CSteamID.Nil;
 		private TaskCompletionSource<Task> connectedComplete;
 		private CancellationTokenSource cancelToken;
 
-		private LegacyClient(FizzyFacepunch transport) : base(transport)
+		private LegacyClient(FizzySteamworks transport) : base(transport)
 		{
 			ConnectionTimeout = TimeSpan.FromSeconds(Math.Max(1, transport.Timeout));
 		}
 
-		public static LegacyClient CreateClient(FizzyFacepunch transport, string host)
+		public static LegacyClient CreateClient(FizzySteamworks transport, string host)
 		{
 			LegacyClient c = new LegacyClient(transport);
 
@@ -34,14 +35,20 @@ namespace Mirror.FizzySteam
 			c.OnDisconnected += () => transport.OnClientDisconnected.Invoke();
 			c.OnReceivedData += (data, channel) => transport.OnClientDataReceived.Invoke(new ArraySegment<byte>(data), channel);
 
-			if (SteamClient.IsValid)
+
+			try
 			{
+#if UNITY_SERVER
+                InteropHelp.TestIfAvailableGameServer();
+#else
+				InteropHelp.TestIfAvailableClient();
+#endif
 				c.Connect(host);
 			}
-			else
+			catch
 			{
 				Debug.LogError("SteamWorks not initialized.");
-				c.OnConnectionFailed(new SteamId());
+				c.OnConnectionFailed(CSteamID.Nil);
 			}
 
 			return c;
@@ -50,13 +57,16 @@ namespace Mirror.FizzySteam
 		private async void Connect(string host)
 		{
 			cancelToken = new CancellationTokenSource();
+
 			try
 			{
-				hostSteamID = ulong.Parse(host);
+				hostSteamID = new CSteamID(UInt64.Parse(host));
 				connectedComplete = new TaskCompletionSource<Task>();
 
 				OnConnected += SetConnectedComplete;
+
 				SendInternal(hostSteamID, InternalMessages.CONNECT);
+
 				Task connectedCompleteTask = connectedComplete.Task;
 				Task timeOutTask = Task.Delay(ConnectionTimeout, cancelToken.Token);
 
@@ -71,7 +81,6 @@ namespace Mirror.FizzySteam
 						Debug.LogError($"Connection to {host} timed out.");
 					}
 					OnConnected -= SetConnectedComplete;
-					Debug.LogError("Connection timed out.");
 					OnConnectionFailed(hostSteamID);
 				}
 
@@ -81,24 +90,26 @@ namespace Mirror.FizzySteam
 			{
 				Debug.LogError($"Connection string was not in the right format. Did you enter a SteamId?");
 				Error = true;
+				OnConnectionFailed(hostSteamID);
 			}
 			catch (Exception ex)
 			{
 				Debug.LogError(ex.Message);
 				Error = true;
+				OnConnectionFailed(hostSteamID);
 			}
 			finally
 			{
 				if (Error)
 				{
-					OnConnectionFailed(new SteamId());
+					OnConnectionFailed(CSteamID.Nil);
 				}
 			}
 		}
 
 		public void Disconnect()
 		{
-			Debug.LogError("Sending Disconnect message");
+			Debug.Log("Sending Disconnect message");
 			SendInternal(hostSteamID, InternalMessages.DISCONNECT);
 			Dispose();
 			cancelToken?.Cancel();
@@ -108,7 +119,7 @@ namespace Mirror.FizzySteam
 
 		private void SetConnectedComplete() => connectedComplete.SetResult(connectedComplete.Task);
 
-		protected override void OnReceiveData(byte[] data, SteamId clientSteamID, int channel)
+		protected override void OnReceiveData(byte[] data, CSteamID clientSteamID, int channel)
 		{
 			if (clientSteamID != hostSteamID)
 			{
@@ -119,11 +130,11 @@ namespace Mirror.FizzySteam
 			OnReceivedData.Invoke(data, channel);
 		}
 
-		protected override void OnNewConnection(SteamId id)
+		protected override void OnNewConnection(P2PSessionRequest_t result)
 		{
-			if (hostSteamID == id)
+			if (hostSteamID == result.m_steamIDRemote)
 			{
-				SteamNetworking.AcceptP2PSessionWithUser(id);
+				SteamNetworking.AcceptP2PSessionWithUser(result.m_steamIDRemote);
 			}
 			else
 			{
@@ -131,7 +142,7 @@ namespace Mirror.FizzySteam
 			}
 		}
 
-		protected override void OnReceiveInternalData(InternalMessages type, SteamId clientSteamID)
+		protected override void OnReceiveInternalData(InternalMessages type, CSteamID clientSteamID)
 		{
 			switch (type)
 			{
@@ -139,26 +150,28 @@ namespace Mirror.FizzySteam
 					if (!Connected)
 					{
 						Connected = true;
-						Debug.LogError("Connection established.");
 						OnConnected.Invoke();
+						Debug.Log("Connection established.");
 					}
 					break;
 				case InternalMessages.DISCONNECT:
 					if (Connected)
 					{
 						Connected = false;
-						Debug.LogError("Disconnected.");
+						Debug.Log("Disconnected.");
 						OnDisconnected.Invoke();
 					}
 					break;
 				default:
-					Debug.LogError("Received unknown message type");
+					Debug.Log("Received unknown message type");
 					break;
 			}
 		}
 
 		public void Send(byte[] data, int channelId) => Send(hostSteamID, data, channelId);
-		protected override void OnConnectionFailed(SteamId remoteId) => OnDisconnected.Invoke();
+
+		protected override void OnConnectionFailed(CSteamID remoteId) => OnDisconnected.Invoke();
 		public void FlushData() { }
 	}
 }
+#endif // !DISABLESTEAMWORKS

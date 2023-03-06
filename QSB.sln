@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MirrorWeaver", "MirrorWeaver\MirrorWeaver.csproj", "{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FizzyFacepunch", "FizzyFacepunch\FizzyFacepunch.csproj", "{DEDCF0CF-737D-4318-80D3-C69028168F4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FizzySteamworks", "FizzyFacepunch\FizzySteamworks.csproj", "{DEDCF0CF-737D-4318-80D3-C69028168F4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

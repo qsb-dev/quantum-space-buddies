@@ -627,7 +627,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		if (!QSBCore.DebugSettings.UseKcpTransport)
 		{
 			//var productUserId = EOSSDKComponent.LocalUserProductIdString;
-			var productUserId = ((FizzyFacepunch)Transport.activeTransport).GetSteamID();
+			var productUserId = ((FizzySteamworks)Transport.activeTransport).GetSteamID();
 
 			PopupClose += confirm =>
 			{

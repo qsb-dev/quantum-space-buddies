@@ -17,12 +17,22 @@ namespace Mirror.FizzySteam
 
 		public void Add(T1 key, T2 value)
 		{
+			if (t1ToT2Dict.ContainsKey(key))
+			{
+				Remove(key);
+			}
+
 			t1ToT2Dict[key] = value;
 			t2ToT1Dict[value] = key;
 		}
 
 		public void Add(T2 key, T1 value)
 		{
+			if (t2ToT1Dict.ContainsKey(key))
+			{
+				Remove(key);
+			}
+
 			t2ToT1Dict[key] = value;
 			t1ToT2Dict[value] = key;
 		}
@@ -63,8 +73,7 @@ namespace Mirror.FizzySteam
 			get => t2ToT1Dict[key];
 			set
 			{
-				t2ToT1Dict[key] = value;
-				t1ToT2Dict[value] = key;
+				Add(key, value);
 			}
 		}
 
@@ -73,8 +82,7 @@ namespace Mirror.FizzySteam
 			get => t1ToT2Dict[key];
 			set
 			{
-				t1ToT2Dict[key] = value;
-				t2ToT1Dict[value] = key;
+				Add(key, value);
 			}
 		}
 	}
