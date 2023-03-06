@@ -59,7 +59,7 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 				return;
 			}
 
-			using var writer = NetworkWriterPool.GetWriter();
+			using var writer = NetworkWriterPool.Get();
 			Serialize(writer);
 			UpdatePrevData();
 
@@ -127,7 +127,7 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 			Array.Copy(data.Array!, data.Offset, _lastKnownData, 0, data.Count);
 		}
 
-		using var reader = NetworkReaderPool.GetReader(data);
+		using var reader = NetworkReaderPool.Get(data);
 		Deserialize(reader);
 	}
 }
