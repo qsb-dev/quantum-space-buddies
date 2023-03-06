@@ -66,7 +66,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private string _lastTransportError;
 	private static readonly string[] _kcpErrorLogs =
 	{
-		"KCP: received disconnect message",
+		"KcpPeer: received disconnect message",
 		"Failed to resolve host: .*"
 	};
 
