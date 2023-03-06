@@ -51,7 +51,7 @@ public static class DebugLog
 
 	public static void DebugWrite(string message, MessageType type = MessageType.Message)
 	{
-		if (QSBCore.DebugSettings.DebugMode)
+		if (QSBCore.DebugSettings.DebugMode || QSBCore.Helper == null)
 		{
 			ToConsole(message, type);
 		}

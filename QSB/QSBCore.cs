@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Networking.Types;
 
 /*
 	Copyright (C) 2020 - 2023
@@ -140,10 +141,29 @@ public class QSBCore : ModBehaviour
 				DebugLog.ToConsole("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.", MessageType.Error);
 			}
 
+			System.Environment.SetEnvironmentVariable("SteamAppId", "480");
+			System.Environment.SetEnvironmentVariable("SteamGameId", "480");
+
 			if (!SteamAPI.Init())
 			{
 				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.", MessageType.Fatal);
 			}
+		}
+		else
+		{
+			DebugLog.DebugWrite($"Overriding AppID...");
+			SteamManager.s_EverInitialized = false;
+			SteamManager.s_instance.m_bInitialized = false;
+			var temp = SteamManager.s_instance;
+			SteamManager.s_instance = null;
+			SteamAPI.Shutdown();
+
+			System.Environment.SetEnvironmentVariable("SteamAppId", "480");
+			System.Environment.SetEnvironmentVariable("SteamGameId", "480");
+
+			temp.InitializeOnAwake();
+
+
 		}
 	}
 

@@ -23,7 +23,7 @@ internal class PatchSteamFiles
 
 		// create steam_appid.txt
 		var appidFile = Path.Combine(gamePath, "steam_appid.txt");
-		File.WriteAllText(appidFile, "480");
+		//File.WriteAllText(appidFile, "480");
 	}
 
 	private static string GetExecutableName(string gamePath)

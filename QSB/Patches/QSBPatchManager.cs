@@ -59,7 +59,7 @@ public static class QSBPatchManager
 		}
 
 		OnPatchType?.SafeInvoke(type);
-		//DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+		DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 		foreach (var patch in _patchList.Where(x => x.Type == type && x.PatchVendor.HasFlag(QSBCore.GameVendor)))
 		{
 			//DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
