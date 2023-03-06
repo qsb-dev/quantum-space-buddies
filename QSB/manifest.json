@@ -1,5 +1,6 @@
 {
 	"filename": "QSB.dll",
+	"patcher": "QSBPrepatch.dll",
 	"author": "Nebula, John, Alek, & Rai",
 	"name": "Quantum Space Buddies",
 	"warning": {
