@@ -152,15 +152,18 @@ public class QSBCore : ModBehaviour
 		else
 		{
 			DebugLog.DebugWrite($"Overriding AppID...");
+
 			//SteamManager.s_EverInitialized = false;
 			typeof(SteamManager).GetField("s_EverInitialized", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, false);
+
 			//SteamManager.s_instance.m_bInitialized = false;
 			var steamManagerInstance = typeof(SteamManager).GetField("s_instance", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
 			typeof(SteamManager).GetField("m_bInitialized", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(steamManagerInstance, false);
+
 			//var temp = SteamManager.s_instance;
-			//var temp = steamManagerInstance;
 			//SteamManager.s_instance = null;
 			typeof(SteamManager).GetField("s_instance", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, null);
+
 			SteamAPI.Shutdown();
 
 			System.Environment.SetEnvironmentVariable("SteamAppId", "480");
