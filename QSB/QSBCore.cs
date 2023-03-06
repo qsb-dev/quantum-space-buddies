@@ -11,6 +11,7 @@ using QSB.SaveSync;
 using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -124,6 +125,26 @@ public class QSBCore : ModBehaviour
 
 		QSBPatchManager.Init();
 		QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
+
+		if (GameVendor != GameVendor.Steam)
+		{
+			DebugLog.DebugWrite($"not steam, initializing steamworks");
+
+			if (!Packsize.Test())
+			{
+				DebugLog.ToConsole("[Steamworks.NET] Packsize Test returned false, the wrong version of Steamworks.NET is being run in this platform.", MessageType.Error);
+			}
+
+			if (!DllCheck.Test())
+			{
+				DebugLog.ToConsole("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.", MessageType.Error);
+			}
+
+			if (!SteamAPI.Init())
+			{
+				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.", MessageType.Fatal);
+			}
+		}
 	}
 
 	public void Start()

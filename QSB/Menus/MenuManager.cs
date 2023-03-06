@@ -7,6 +7,7 @@ using QSB.SaveSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
+using Steamworks;
 using System;
 using System.Linq;
 using System.Text;
@@ -626,22 +627,20 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (!QSBCore.DebugSettings.UseKcpTransport)
 		{
-			//var productUserId = EOSSDKComponent.LocalUserProductIdString;
-			// var productUserId = ((FizzySteamworks)Transport.active).GetSteamID();
-			var productUserId = "gorp";
+			var steamUserId = SteamUser.GetSteamID().ToString();
 
 			PopupClose += confirm =>
 			{
 				if (confirm)
 				{
-					GUIUtility.systemCopyBuffer = productUserId;
+					GUIUtility.systemCopyBuffer = steamUserId;
 				}
 
 				LoadGame(PlayerData.GetWarpedToTheEye());
 				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, productUserId)
+			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, steamUserId)
 				, QSBLocalization.Current.Yes
 				, QSBLocalization.Current.No);
 		}
