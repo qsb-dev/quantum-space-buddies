@@ -12,6 +12,7 @@ internal class PatchSteamFiles
 		var dataPath = GetDataPath(gamePath);
 		var managedPath = Path.Combine(dataPath, @"Managed");
 
+		// copy lib files
 		var libDir = new DirectoryInfo(Path.Combine(basePath, "lib"));
 		var files = libDir.GetFiles();
 		foreach (var file in files)
@@ -19,6 +20,10 @@ internal class PatchSteamFiles
 			var tempPath = Path.Combine(managedPath, file.Name);
 			file.CopyTo(tempPath, true);
 		}
+
+		// create steam_appid.txt
+		var appidFile = Path.Combine(gamePath, "steam_appid.txt");
+		File.WriteAllText(appidFile, "480");
 	}
 
 	private static string GetExecutableName(string gamePath)
