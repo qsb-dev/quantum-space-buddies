@@ -104,7 +104,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			// fizzy.SteamAppID = "480";
 			transport = fizzy;
 
-            FizzyLogger.LogEvent += (string msg, FizzyMessageType sev) => DebugLog.DebugWrite(msg, (MessageType)sev, "FizzyFacepunch");
+            FizzyLogger.LogEvent += (string msg, FizzyMessageType sev) => DebugLog.DebugWrite(msg, (MessageType)sev, "FIZZYSTEAMWORKS");
 		}
 
 		gameObject.SetActive(true);
