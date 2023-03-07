@@ -75,7 +75,7 @@ namespace Mirror.FizzySteam
             {
                 if (connToMirrorID.Count >= maxConnections)
                 {
-                    Debug.Log($"Incoming connection {clientSteamID} would exceed max connection count. Rejecting.");
+                    FizzyLogger.Log($"Incoming connection {clientSteamID} would exceed max connection count. Rejecting.", FizzyMessageType.Warning);
 #if UNITY_SERVER
                     SteamGameServerNetworkingSockets.CloseConnection(param.m_hConn, 0, "Max Connection Count", false);
 #else
@@ -92,11 +92,11 @@ namespace Mirror.FizzySteam
                 if ((res = SteamNetworkingSockets.AcceptConnection(param.m_hConn)) == EResult.k_EResultOK)
 #endif
                 {
-                    Debug.Log($"Accepting connection {clientSteamID}");
+                    FizzyLogger.Log($"Accepting connection {clientSteamID}", FizzyMessageType.Info);
                 }
                 else
                 {
-                    Debug.Log($"Connection {clientSteamID} could not be accepted: {res.ToString()}");
+                    FizzyLogger.Log($"Connection {clientSteamID} could not be accepted: {res.ToString()}", FizzyMessageType.Error);
                 }
             }
             else if (param.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected)
@@ -105,7 +105,7 @@ namespace Mirror.FizzySteam
                 connToMirrorID.Add(param.m_hConn, connectionId);
                 steamIDToMirrorID.Add(param.m_info.m_identityRemote.GetSteamID(), connectionId);
                 OnConnected.Invoke(connectionId);
-                Debug.Log($"Client with SteamID {clientSteamID} connected. Assigning connection id {connectionId}");
+                FizzyLogger.Log($"Client with SteamID {clientSteamID} connected. Assigning connection id {connectionId}", FizzyMessageType.Success);
             }
             else if (param.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer || param.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally)
             {
@@ -116,7 +116,7 @@ namespace Mirror.FizzySteam
             }
             else
             {
-                Debug.Log($"Connection {clientSteamID} state changed: {param.m_info.m_eState.ToString()}");
+                FizzyLogger.Log($"Connection {clientSteamID} state changed: {param.m_info.m_eState.ToString()}", FizzyMessageType.Message);
             }
         }
 

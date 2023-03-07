@@ -6,6 +6,21 @@ using UnityEngine;
 
 namespace Mirror.FizzySteam
 {
+    public enum FizzyMessageType
+    {
+		Message = 0,
+		Error = 1,
+		Warning = 2,
+		Info = 3,
+		Success = 4
+	}
+
+    public static class FizzyLogger
+    {
+		public static event Action<string, FizzyMessageType> LogEvent;
+		public static void Log(string message, FizzyMessageType severity) => LogEvent?.Invoke(message, severity);
+	}
+
     [HelpURL("https://github.com/Chykary/FizzySteamworks")]
     public class FizzySteamworks : Transport
     {
@@ -78,7 +93,7 @@ namespace Mirror.FizzySteam
 
                 if (ServerActive())
                 {
-                    Debug.LogError("Transport already running as server!");
+                    FizzyLogger.Log("Transport already running as server!", FizzyMessageType.Error);
                     return;
                 }
 
@@ -86,24 +101,24 @@ namespace Mirror.FizzySteam
                 {
                     if (UseNextGenSteamNetworking)
                     {
-                        Debug.Log($"Starting client [SteamSockets], target address {address}.");
+                        FizzyLogger.Log($"Starting client [SteamSockets], target address {address}.", FizzyMessageType.Info);
                         client = NextClient.CreateClient(this, address);
                     }
                     else
                     {
-                        Debug.Log($"Starting client [DEPRECATED SteamNetworking], target address {address}. Relay enabled: {AllowSteamRelay}");
+                        FizzyLogger.Log($"Starting client [DEPRECATED SteamNetworking], target address {address}. Relay enabled: {AllowSteamRelay}", FizzyMessageType.Info);
                         SteamNetworking.AllowP2PPacketRelay(AllowSteamRelay);
                         client = LegacyClient.CreateClient(this, address);
                     }
                 }
                 else
                 {
-                    Debug.LogError("Client already running!");
+                    FizzyLogger.Log("Client already running!", FizzyMessageType.Error);
                 }
             }
             catch (Exception ex)
             {
-                Debug.LogError("Exception: " + ex.Message + ". Client could not be started.");
+                FizzyLogger.Log("Exception: " + ex.Message + ". Client could not be started.", FizzyMessageType.Error);
                 OnClientDisconnected.Invoke();
             }
         }
@@ -130,10 +145,12 @@ namespace Mirror.FizzySteam
                 Shutdown();
             }
         }
+
         public bool ClientActive() => client != null;
 
 
         public override bool ServerActive() => server != null;
+
         public override void ServerStart()
         {
             try
@@ -149,7 +166,7 @@ namespace Mirror.FizzySteam
 
                 if (ClientActive())
                 {
-                    Debug.LogError("Transport already running as client!");
+                    FizzyLogger.Log("Transport already running as client!", FizzyMessageType.Error);
                     return;
                 }
 
@@ -157,24 +174,24 @@ namespace Mirror.FizzySteam
                 {
                     if (UseNextGenSteamNetworking)
                     {
-                        Debug.Log($"Starting server [SteamSockets].");
+                        FizzyLogger.Log($"Starting server [SteamSockets].", FizzyMessageType.Info);
                         server = NextServer.CreateServer(this, NetworkManager.singleton.maxConnections);
                     }
                     else
                     {
-                        Debug.Log($"Starting server [DEPRECATED SteamNetworking]. Relay enabled: {AllowSteamRelay}");
+						FizzyLogger.Log($"Starting server [DEPRECATED SteamNetworking]. Relay enabled: {AllowSteamRelay}", FizzyMessageType.Info);
 #if UNITY_SERVER
                         SteamGameServerNetworking.AllowP2PPacketRelay(AllowSteamRelay);
 #else
 
-                        SteamNetworking.AllowP2PPacketRelay(AllowSteamRelay);
+						SteamNetworking.AllowP2PPacketRelay(AllowSteamRelay);
 #endif
                         server = LegacyServer.CreateServer(this, NetworkManager.singleton.maxConnections);
                     }
                 }
                 else
                 {
-                    Debug.LogError("Server already started!");
+                    FizzyLogger.Log($"Server already started!", FizzyMessageType.Error);
                 }
             }
             catch (Exception ex)
@@ -230,15 +247,15 @@ namespace Mirror.FizzySteam
             {
                 server.Shutdown();
                 server = null;
-                Debug.Log("Transport shut down - was server.");
+                FizzyLogger.Log("Transport shut down - was server.", FizzyMessageType.Info);
             }
 
             if (client != null)
             {
                 client.Disconnect();
                 client = null;
-                Debug.Log("Transport shut down - was client.");
-            }
+				FizzyLogger.Log("Transport shut down - was client.", FizzyMessageType.Info);
+			}
         }
 
         public override int GetMaxPacketSize(int channelId)

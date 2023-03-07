@@ -14,14 +14,39 @@ public static class DebugLog
 	public static readonly int ProcessInstanceId = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName)
 		.IndexOf(x => x.Id == Process.GetCurrentProcess().Id);
 
-	public static void ToConsole(string message, MessageType type = MessageType.Message)
+	private static void WriteWithCustomModName(string message, MessageType type = MessageType.Message, string modName = "QSB")
+	{
+		// this is real dumb but it makes the logs look a whole lot nicer...
+
+		var output = QSBCore.Helper == null ? ModConsole.OwmlConsole as ModSocketOutput : QSBCore.Helper.Console as ModSocketOutput;
+
+		if (type != MessageType.Debug || (QSBCore.Helper?.OwmlConfig.DebugMode == true))
+		{
+			var socket = (IModSocket)typeof(ModSocketOutput).GetField("_socket", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(output);
+
+			socket.WriteToSocket(new ModSocketMessage
+			{
+				SenderName = modName,
+				SenderType = GetCallingType(),
+				Type = type,
+				Message = message
+			});
+		}
+
+		if (type == MessageType.Fatal)
+		{
+			typeof(ModSocketOutput).GetMethod("KillProcess", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(output, null);
+		}
+	}
+
+	public static void ToConsole(string message, MessageType type = MessageType.Message, string modName = "QSB")
 	{
 		if (QSBCore.DebugSettings.InstanceIdInLogs)
 		{
 			message = $"[{ProcessInstanceId}] " + message;
 		}
 
-		if (QSBCore.Helper == null)
+		/*if (QSBCore.Helper == null)
 		{
 			// yes i know this is only meant for OWML, but it's useful as a backup
 			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType());
@@ -29,7 +54,9 @@ public static class DebugLog
 		else
 		{
 			QSBCore.Helper.Console.WriteLine(message, type, GetCallingType());
-		}
+		}*/
+
+		WriteWithCustomModName(message, type, modName);
 	}
 
 	public static void ToHud(string message)
@@ -49,11 +76,11 @@ public static class DebugLog
 		ToHud(message);
 	}
 
-	public static void DebugWrite(string message, MessageType type = MessageType.Message)
+	public static void DebugWrite(string message, MessageType type = MessageType.Message, string modName = "QSB")
 	{
 		if (QSBCore.DebugSettings.DebugMode || QSBCore.Helper == null)
 		{
-			ToConsole(message, type);
+			ToConsole(message, type, modName);
 		}
 	}
 

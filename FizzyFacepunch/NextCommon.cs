@@ -25,7 +25,7 @@ namespace Mirror.FizzySteam
 #endif
             if (res != EResult.k_EResultOK)
             {
-                Debug.LogWarning($"Send issue: {res}");
+                FizzyLogger.Log($"Send issue: {res}", FizzyMessageType.Warning);
             }
 
             pinnedArray.Free();
