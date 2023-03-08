@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
 using OWML.Common;
+using QSB.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,10 +41,10 @@ public static class Extensions
 
 	public static uint GetPlayerId(this NetworkConnectionToClient conn)
 	{
-		if (!conn.identity)
+		if (conn.identity == null)
 		{
 			// wtf
-			DebugLog.ToConsole($"Error - GetPlayerId on {conn} has no identity\n{Environment.StackTrace}", MessageType.Error);
+			DebugLog.ToConsole($"Error - GetPlayerId on {conn} has no identity.", MessageType.Error);
 			return uint.MaxValue;
 		}
 
