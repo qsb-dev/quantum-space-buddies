@@ -1,3 +1,5 @@
+using QSB.HUD;
+using QSB.Player;
 using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using UnityEngine;
@@ -124,10 +126,7 @@ public class ShipTransformSync : SectoredRigidbodySync
 
 
 	private bool ShouldMovePlayer =>
-		(
-			Locator.GetPlayerController().GetGroundBody() == null ||
-			Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody
-		) &&
-		Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 100;
+		QSBPlayerManager.LocalPlayer.HUDBox.PlanetIcon == HUDIcon.SPACE // huge hack, idc
+		&& Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 100;
 	protected override bool UseInterpolation => !ShouldMovePlayer;
 }
