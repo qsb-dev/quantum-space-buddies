@@ -52,7 +52,15 @@ public static class QSBMessageManager
 		}
 		else
 		{
-			msg.To.GetNetworkConnection().Send<Wrapper>(msg);
+			var connection = msg.To.GetNetworkConnection();
+
+			if (connection == default)
+			{
+				DebugLog.ToConsole($"Warning - Tried to handle message from disconnected(?) player.", MessageType.Warning);
+				return;
+			}
+
+			connection.Send<Wrapper>(msg);
 		}
 	}
 
