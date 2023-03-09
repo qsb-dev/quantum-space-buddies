@@ -33,5 +33,5 @@ public class ServerTimeMessage : QSBMessage
 	}
 
 	public override void OnReceiveRemote()
-		=> WakeUpSync.LocalInstance.OnClientReceiveMessage(ServerTime, LoopCount, SecondsRemaining);
+		=> WakeUpSync.LocalInstance?.OnClientReceiveMessage(ServerTime, LoopCount, SecondsRemaining);
 }

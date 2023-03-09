@@ -54,8 +54,6 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 	public void Start()
 	{
-		LocalInstance = this;
-
 		if (QSBSceneManager.IsInUniverse)
 		{
 			Init();
@@ -99,10 +97,12 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 				_hasWokenUp = true;
 			}
 
+			LocalInstance = this;
 			Init();
 		}
 		else
 		{
+			LocalInstance = null;
 			CurrentState = State.NotLoaded;
 		}
 	}
@@ -263,7 +263,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 		{
 			UpdateServer();
 		}
-		else if (!QSBCore.DebugSettings.AvoidTimeSync)
+		else if (NetworkClient.active && QSBSceneManager.IsInUniverse && !QSBCore.DebugSettings.AvoidTimeSync)
 		{
 			UpdateClient();
 		}
