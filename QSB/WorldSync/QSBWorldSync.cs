@@ -23,7 +23,7 @@ public static class QSBWorldSync
 	public static WorldObjectManager[] Managers;
 
 	private static readonly Dictionary<string, List<IWorldObject>> _managerToBuiltObjects = new();
-	public static readonly Dictionary<string, string> ManagerHashes = new();
+	public static readonly Dictionary<string, (string hash, int count)> ManagerHashes = new();
 
 	/// <summary>
 	/// Set when all WorldObjectManagers have called Init() on all their objects (AKA all the objects are created)
@@ -91,15 +91,16 @@ public static class QSBWorldSync
 		foreach (var item in _managerToBuiltObjects)
 		{
 			var worldObjects = item.Value;
-			var hash = worldObjects.Select(x => x.GetType().Name).GetMD5Hash();
-			ManagerHashes[item.Key] = hash;
+			var objects = worldObjects.Select(x => x.GetType().Name);
+			var hash = objects.GetMD5Hash();
+			ManagerHashes[item.Key] = (hash, objects.Count());
 		}
 
 		if (!QSBCore.IsHost)
 		{
 			foreach (var item in ManagerHashes)
 			{
-				new WorldObjectsHashMessage(item.Key, item.Value).Send();
+				new WorldObjectsHashMessage(item.Key, item.Value.hash, item.Value.count).Send();
 			}
 
 			new RequestLinksMessage().Send();

@@ -14,9 +14,9 @@ using UnityEngine;
 namespace QSB.QuantumSync.WorldObjects;
 
 /// <summary>
-/// TODO: just use OnSectorOccupantsUpdated instead of this shape bullshit
-///
 /// TODO: make it part of the ad-hoc owner interface
+///
+/// TODO: make it so only players in the sector (which sector?) are checked for visibility 
 /// </summary>
 internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 	where T : QuantumObject

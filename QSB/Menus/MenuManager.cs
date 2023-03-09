@@ -438,8 +438,12 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
+		var titleAnimationController = QSBWorldSync.GetUnityObject<TitleScreenManager>()._gfxController;
+
+		var activeAlpha = titleAnimationController.IsTitleAnimationComplete() ? 1 : 0;
+
 		button.SetActive(active);
-		button.GetComponent<CanvasGroup>().alpha = active ? 1 : 0;
+		button.GetComponent<CanvasGroup>().alpha = active ? activeAlpha : 0;
 	}
 
 	private void InitPauseMenus()

@@ -16,11 +16,7 @@ using UnityEngine;
 
 namespace QSB.TimeSync;
 
-/// <summary>
-/// BUG: this runs on remote players = BAD! can we move this off of network player?
-/// </summary>
-[UsedInUnityProject]
-public class WakeUpSync : NetworkBehaviour
+public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 {
 	public static WakeUpSync LocalInstance { get; private set; }
 
@@ -41,8 +37,6 @@ public class WakeUpSync : NetworkBehaviour
 	private int _serverLoopCount;
 	private bool _hasWokenUp;
 
-	public override void OnStartLocalPlayer() => LocalInstance = this;
-
 	public void OnDisconnect()
 	{
 		OWTime.SetTimeScale(1f);
@@ -60,11 +54,6 @@ public class WakeUpSync : NetworkBehaviour
 
 	public void Start()
 	{
-		if (!isLocalPlayer)
-		{
-			return;
-		}
-
 		if (QSBSceneManager.IsInUniverse)
 		{
 			Init();
@@ -108,10 +97,12 @@ public class WakeUpSync : NetworkBehaviour
 				_hasWokenUp = true;
 			}
 
+			LocalInstance = this;
 			Init();
 		}
 		else
 		{
+			LocalInstance = null;
 			CurrentState = State.NotLoaded;
 		}
 	}
@@ -120,7 +111,7 @@ public class WakeUpSync : NetworkBehaviour
 	{
 		new RequestStateResyncMessage().Send();
 		CurrentState = State.Loaded;
-		if (isServer)
+		if (QSBCore.IsHost)
 		{
 			SendServerTime();
 		}
@@ -162,7 +153,7 @@ public class WakeUpSync : NetworkBehaviour
 			return;
 		}
 
-		if (PlayerData.LoadLoopCount() != _serverLoopCount && !isServer)
+		if (PlayerData.LoadLoopCount() != _serverLoopCount && !QSBCore.IsHost)
 		{
 			DebugLog.ToConsole($"Warning - ServerLoopCount is not the same as local loop count! local:{PlayerData.LoadLoopCount()} server:{_serverLoopCount}");
 			return;
@@ -268,11 +259,11 @@ public class WakeUpSync : NetworkBehaviour
 
 	public void Update()
 	{
-		if (isServer)
+		if (QSBCore.IsHost)
 		{
 			UpdateServer();
 		}
-		else if (isLocalPlayer && !QSBCore.DebugSettings.AvoidTimeSync)
+		else if (NetworkClient.active && QSBSceneManager.IsInUniverse && !QSBCore.DebugSettings.AvoidTimeSync)
 		{
 			UpdateClient();
 		}
