@@ -126,7 +126,7 @@ public class ShipTransformSync : SectoredRigidbodySync
 
 
 	private bool ShouldMovePlayer =>
-		PlayerState.InZeroG()
+		(PlayerState.IsInsideShip() || PlayerState.InZeroG())
 		&& Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 100;
 	protected override bool UseInterpolation => !ShouldMovePlayer;
 }
