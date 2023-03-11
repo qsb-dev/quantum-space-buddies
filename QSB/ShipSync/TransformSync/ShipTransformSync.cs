@@ -1,5 +1,3 @@
-using QSB.HUD;
-using QSB.Player;
 using QSB.Syncs.Sectored.Rigidbodies;
 using QSB.Utility;
 using UnityEngine;
@@ -67,19 +65,28 @@ public class ShipTransformSync : SectoredRigidbodySync
 			{
 				_lastSetPositionTime = Time.unscaledTime;
 
-				var playerBody = Locator.GetPlayerBody();
-				var relPos = AttachedTransform.ToRelPos(playerBody.GetPosition());
-				var relRot = AttachedTransform.ToRelRot(playerBody.GetRotation());
-
-				SetPosition(AttachedRigidbody, targetPos);
-				SetRotation(AttachedRigidbody, targetRot);
-
-				playerBody.SetPosition(AttachedTransform.FromRelPos(relPos));
-				playerBody.SetRotation(AttachedTransform.FromRelRot(relRot));
-
-				if (!Physics.autoSyncTransforms)
+				if (!PlayerState.IsAttached())
 				{
-					Physics.SyncTransforms();
+					var playerBody = Locator.GetPlayerBody();
+					var relPos = AttachedTransform.ToRelPos(playerBody.GetPosition());
+					var relRot = AttachedTransform.ToRelRot(playerBody.GetRotation());
+
+					SetPosition(AttachedRigidbody, targetPos);
+					SetRotation(AttachedRigidbody, targetRot);
+
+					playerBody.SetPosition(AttachedTransform.FromRelPos(relPos));
+					playerBody.SetRotation(AttachedTransform.FromRelRot(relRot));
+
+					if (!Physics.autoSyncTransforms)
+					{
+						Physics.SyncTransforms();
+					}
+				}
+				else
+				{
+					SetPosition(AttachedRigidbody, targetPos);
+					SetRotation(AttachedRigidbody, targetRot);
+					GlobalMessenger.FireEvent("PlayerRepositioned");
 				}
 			}
 		}
@@ -126,7 +133,7 @@ public class ShipTransformSync : SectoredRigidbodySync
 
 
 	private bool ShouldMovePlayer =>
-		(PlayerState.IsInsideShip() || PlayerState.InZeroG())
-		&& Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 100;
+		PlayerState.IsInsideShip() ||
+		(PlayerState.InZeroG() && Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 100);
 	protected override bool UseInterpolation => !ShouldMovePlayer;
 }
