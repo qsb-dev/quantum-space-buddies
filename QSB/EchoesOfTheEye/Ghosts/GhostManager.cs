@@ -52,6 +52,10 @@ internal class GhostManager : WorldObjectManager
 			_zone2Director._cityGhosts[i].OnIdentifyIntruder -= _zone2Director.OnCityGhostsIdentifiedIntruder;
 			_zone2Director._cityGhosts[i].GetWorldObject<QSBGhostBrain>().OnIdentifyIntruder += CustomOnCityGhostsIdentifiedIntruder;
 		}
+
+		var allCollisionGroups = Resources.FindObjectsOfTypeAll<SectorCollisionGroup>();
+		var city = allCollisionGroups.First(x => x.name == "City");
+		city.SetSector(_zone2Director._sector);
 	}
 
 	public static void CustomOnHotelDepthsGhostsIdentifiedIntruder(GhostBrain ghostBrain, QSBGhostData ghostData)
