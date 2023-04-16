@@ -206,7 +206,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 					_visibleToProbes.Add(player);
 				}
 				
-				AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+				AttachedObject._visibleInProbeSnapshot = true;
 				return;
 			}
 		}
@@ -242,8 +242,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 					_visibleToProbes.Add(player);
 				}
 
-				_visibleToProbes.Add(player);
-				AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+				AttachedObject._visibleInProbeSnapshot = true;
 				return;
 			}
 		}
@@ -265,6 +264,8 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 
 		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
 	}
+
+	public List<PlayerInfo> GetVisibleToProbePlayers() => _visibleToProbes;
 
 	public override void DisplayLines()
 	{
