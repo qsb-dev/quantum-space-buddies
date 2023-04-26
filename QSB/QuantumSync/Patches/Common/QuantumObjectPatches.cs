@@ -50,6 +50,11 @@ public class QuantumObjectPatches : QSBPatch
 	[HarmonyPatch(nameof(QuantumObject.IsLockedByProbeSnapshot))]
 	public static bool IsLockedByProbeSnapshot(QuantumObject __instance, ref bool __result)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
 		var worldObject = __instance.GetWorldObject<IQSBQuantumObject>();
 		var visibleToProbePlayers = worldObject.GetVisibleToProbePlayers();
 		__result = visibleToProbePlayers.Any(x => x.ProbeLauncherEquipped != default);
