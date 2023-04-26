@@ -35,7 +35,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 	private float _sendTimer;
 	private float _serverTime;
 	private int _serverLoopCount;
-	private bool _hasWokenUp;
+	public bool HasWokenUp;
 
 	public void OnDisconnect()
 	{
@@ -75,10 +75,11 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 		DebugLog.DebugWrite($"OnWakeUp", MessageType.Info);
 		if (QSBCore.IsHost)
 		{
+			new ServerStateMessage(ServerState.InSolarSystem).Send();
 			RespawnOnDeath.Instance.Init();
 		}
 
-		_hasWokenUp = true;
+		HasWokenUp = true;
 	}
 
 	public void OnDestroy()
@@ -89,12 +90,12 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 	{
-		_hasWokenUp = false;
+		HasWokenUp = false;
 		if (isInUniverse)
 		{
 			if (newScene == OWScene.EyeOfTheUniverse)
 			{
-				_hasWokenUp = true;
+				HasWokenUp = true;
 			}
 
 			LocalInstance = this;
@@ -124,7 +125,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 			else
 			{
 				// dont bother sleeping, just wake up
-				if (!_hasWokenUp)
+				if (!HasWokenUp)
 				{
 					Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
 				}
@@ -178,7 +179,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 		else
 		{
 			// should only happen from Init so we gotta wait
-			if (!_hasWokenUp)
+			if (!HasWokenUp)
 			{
 				Delay.RunWhen(() => QSBWorldSync.AllObjectsReady, WakeUp);
 			}
@@ -248,7 +249,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 		QSBInputManager.Instance.SetInputsEnabled(true);
 
-		if (!_hasWokenUp)
+		if (!HasWokenUp)
 		{
 			WakeUp();
 		}
