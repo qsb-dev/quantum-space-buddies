@@ -22,6 +22,7 @@ public class ShipThrusterVariableSyncer : NetworkBehaviour
 	public void Update()
 	{
 		// bug : this doesn't account for autopilot
+		// fixes #590
 		if (ShipManager.Instance.CurrentFlyer == uint.MaxValue)
 		{
 			if (_thrusterModel)

@@ -23,6 +23,17 @@ public class ModelShipThrusterVariableSyncer : MonoBehaviour
 
 	public void Update()
 	{
+		// fixes #590
+		if (ModelShipManager.Instance.CurrentFlyer == uint.MaxValue)
+		{
+			if (ThrusterModel)
+			{
+				AccelerationSyncer.Value = Vector3.zero;
+			}
+
+			return;
+		}
+
 		if (PlayerTransformSync.LocalInstance && QSBPlayerManager.LocalPlayer.FlyingModelShip)
 		{
 			GetFromShip();
