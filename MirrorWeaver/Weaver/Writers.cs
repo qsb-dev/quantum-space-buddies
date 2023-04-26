@@ -116,7 +116,9 @@ namespace Mirror.Weaver
                 return GenerateCollectionWriter(variableReference, elementType, nameof(NetworkWriterExtensions.WriteList), ref WeavingFailed);
             }
 
-            if (variableReference.IsDerivedFrom<NetworkBehaviour>())
+            // handle both NetworkBehaviour and inheritors.
+            // fixes: https://github.com/MirrorNetworking/Mirror/issues/2939
+            if (variableReference.IsDerivedFrom<NetworkBehaviour>() || variableReference.Is<NetworkBehaviour>())
             {
                 return GetNetworkBehaviourWriter(variableReference);
             }
@@ -139,6 +141,7 @@ namespace Mirror.Weaver
             {
                 throw new GenerateWriterException($"Cannot generate writer for {variableReference.Name}. Use a supported type or provide a custom writer", variableReference);
             }
+            // CHANGED
             /*
             if (variableDefinition.HasGenericParameters)
             {
@@ -219,6 +222,7 @@ namespace Mirror.Weaver
             if (!variable.Resolve().IsValueType)
                 WriteNullCheck(worker, ref WeavingFailed);
 
+            // CHANGED
             if (!this.WriteAllFieldsGeneric(variable, worker, ref WeavingFailed))
                 return null;
 

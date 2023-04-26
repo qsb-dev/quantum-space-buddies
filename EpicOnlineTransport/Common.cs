@@ -1,334 +1,288 @@
-﻿using Epic.OnlineServices;
+﻿
+using Epic.OnlineServices;
 using Epic.OnlineServices.P2P;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace EpicTransport;
+namespace EpicTransport {
+    public abstract class Common {
 
-public abstract class Common
-{
-	private PacketReliability[] channels;
-	private int internal_ch => channels.Length;
+        private PacketReliability[] channels;
+        private int internal_ch => channels.Length;
 
-	protected enum InternalMessages : byte
-	{
-		CONNECT,
-		ACCEPT_CONNECT,
-		DISCONNECT
-	}
+        protected enum InternalMessages : byte {
+            CONNECT,
+            ACCEPT_CONNECT,
+            DISCONNECT
+        }
 
-	protected struct PacketKey
-	{
-		public ProductUserId productUserId;
-		public byte channel;
-	}
+        protected struct PacketKey {
+            public ProductUserId productUserId;
+            public byte channel;
+        }
 
-	private OnIncomingConnectionRequestCallback OnIncomingConnectionRequest;
-	private ulong incomingNotificationId = 0;
-	private OnRemoteConnectionClosedCallback OnRemoteConnectionClosed;
-	private ulong outgoingNotificationId = 0;
+        private OnIncomingConnectionRequestCallback OnIncomingConnectionRequest;
+        ulong incomingNotificationId = 0;
+        private OnRemoteConnectionClosedCallback OnRemoteConnectionClosed;
+        ulong outgoingNotificationId = 0;
 
-	protected readonly EosTransport transport;
+        protected readonly EosTransport transport;
 
-	protected List<string> deadSockets;
-	public bool ignoreAllMessages = false;
+        protected List<string> deadSockets;
+        public bool ignoreAllMessages = false;
 
-	// Mapping from PacketKey to a List of Packet Lists
-	protected Dictionary<PacketKey, List<List<Packet>>> incomingPackets = new();
+        // Mapping from PacketKey to a List of Packet Lists
+        protected Dictionary<PacketKey, List<List<Packet>>> incomingPackets = new Dictionary<PacketKey, List<List<Packet>>>();
 
-	protected Common(EosTransport transport)
-	{
-		channels = transport.Channels;
+        protected Common(EosTransport transport) {
+            channels = transport.Channels;
 
-		deadSockets = new List<string>();
+            deadSockets = new List<string>();
 
-		var addNotifyPeerConnectionRequestOptions = new AddNotifyPeerConnectionRequestOptions();
-		addNotifyPeerConnectionRequestOptions.LocalUserId = EOSSDKComponent.LocalUserProductId;
-		addNotifyPeerConnectionRequestOptions.SocketId = null;
+            AddNotifyPeerConnectionRequestOptions addNotifyPeerConnectionRequestOptions = new AddNotifyPeerConnectionRequestOptions();
+            addNotifyPeerConnectionRequestOptions.LocalUserId = EOSSDKComponent.LocalUserProductId;
+            addNotifyPeerConnectionRequestOptions.SocketId = null;
 
-		OnIncomingConnectionRequest += OnNewConnection;
-		OnRemoteConnectionClosed += OnConnectFail;
+            OnIncomingConnectionRequest += OnNewConnection;
+            OnRemoteConnectionClosed += OnConnectFail;
 
-		incomingNotificationId = EOSSDKComponent.GetP2PInterface().AddNotifyPeerConnectionRequest(addNotifyPeerConnectionRequestOptions,
-			null, OnIncomingConnectionRequest);
+            incomingNotificationId = EOSSDKComponent.GetP2PInterface().AddNotifyPeerConnectionRequest(addNotifyPeerConnectionRequestOptions,
+                null, OnIncomingConnectionRequest);
 
-		var addNotifyPeerConnectionClosedOptions = new AddNotifyPeerConnectionClosedOptions();
-		addNotifyPeerConnectionClosedOptions.LocalUserId = EOSSDKComponent.LocalUserProductId;
-		addNotifyPeerConnectionClosedOptions.SocketId = null;
+            AddNotifyPeerConnectionClosedOptions addNotifyPeerConnectionClosedOptions = new AddNotifyPeerConnectionClosedOptions();
+            addNotifyPeerConnectionClosedOptions.LocalUserId = EOSSDKComponent.LocalUserProductId;
+            addNotifyPeerConnectionClosedOptions.SocketId = null;
 
-		outgoingNotificationId = EOSSDKComponent.GetP2PInterface().AddNotifyPeerConnectionClosed(addNotifyPeerConnectionClosedOptions,
-			null, OnRemoteConnectionClosed);
+            outgoingNotificationId = EOSSDKComponent.GetP2PInterface().AddNotifyPeerConnectionClosed(addNotifyPeerConnectionClosedOptions,
+                null, OnRemoteConnectionClosed);
 
-		if (outgoingNotificationId == 0 || incomingNotificationId == 0)
-		{
-			Debug.LogError("Couldn't bind notifications with P2P interface");
-		}
+            if (outgoingNotificationId == 0 || incomingNotificationId == 0) {
+                Debug.LogError("Couldn't bind notifications with P2P interface");
+            }
 
-		incomingPackets = new Dictionary<PacketKey, List<List<Packet>>>();
+            incomingPackets = new Dictionary<PacketKey, List<List<Packet>>>();
 
-		this.transport = transport;
-	}
+            this.transport = transport;
 
-	protected void Dispose()
-	{
-		EOSSDKComponent.GetP2PInterface().RemoveNotifyPeerConnectionRequest(incomingNotificationId);
-		EOSSDKComponent.GetP2PInterface().RemoveNotifyPeerConnectionClosed(outgoingNotificationId);
+        }
 
-		transport.ResetIgnoreMessagesAtStartUpTimer();
-	}
+        protected void Dispose() {
+            EOSSDKComponent.GetP2PInterface().RemoveNotifyPeerConnectionRequest(incomingNotificationId);
+            EOSSDKComponent.GetP2PInterface().RemoveNotifyPeerConnectionClosed(outgoingNotificationId);
 
-	protected abstract void OnNewConnection(OnIncomingConnectionRequestInfo result);
+            transport.ResetIgnoreMessagesAtStartUpTimer();
+        }
 
-	private void OnConnectFail(OnRemoteConnectionClosedInfo result)
-	{
-		if (ignoreAllMessages)
-		{
-			return;
-		}
+        protected abstract void OnNewConnection(OnIncomingConnectionRequestInfo result);
 
-		OnConnectionFailed(result.RemoteUserId);
+        private void OnConnectFail(OnRemoteConnectionClosedInfo result) {
+            if (ignoreAllMessages) {
+                return;
+            }
 
-		switch (result.Reason)
-		{
-			case ConnectionClosedReason.ClosedByLocalUser:
-				throw new Exception("Connection cLosed: The Connection was gracecfully closed by the local user.");
-			case ConnectionClosedReason.ClosedByPeer:
-				throw new Exception("Connection closed: The connection was gracefully closed by remote user.");
-			case ConnectionClosedReason.ConnectionClosed:
-				throw new Exception("Connection closed: The connection was unexpectedly closed.");
-			case ConnectionClosedReason.ConnectionFailed:
-				throw new Exception("Connection failed: Failled to establish connection.");
-			case ConnectionClosedReason.InvalidData:
-				throw new Exception("Connection failed: The remote user sent us invalid data..");
-			case ConnectionClosedReason.InvalidMessage:
-				throw new Exception("Connection failed: The remote user sent us an invalid message.");
-			case ConnectionClosedReason.NegotiationFailed:
-				throw new Exception("Connection failed: Negotiation failed.");
-			case ConnectionClosedReason.TimedOut:
-				throw new Exception("Connection failed: Timeout.");
-			case ConnectionClosedReason.TooManyConnections:
-				throw new Exception("Connection failed: Too many connections.");
-			case ConnectionClosedReason.UnexpectedError:
-				throw new Exception("Unexpected Error, connection will be closed");
-			case ConnectionClosedReason.Unknown:
-			default:
-				throw new Exception("Unknown Error, connection has been closed.");
-		}
-	}
+            OnConnectionFailed(result.RemoteUserId);
 
-	protected void SendInternal(ProductUserId target, SocketId socketId, InternalMessages type)
-	{
-		EOSSDKComponent.GetP2PInterface().SendPacket(new SendPacketOptions()
-		{
-			AllowDelayedDelivery = true,
-			Channel = (byte)internal_ch,
-			Data = new byte[] { (byte)type },
-			LocalUserId = EOSSDKComponent.LocalUserProductId,
-			Reliability = PacketReliability.ReliableOrdered,
-			RemoteUserId = target,
-			SocketId = socketId
-		});
-	}
+            switch (result.Reason) {
+                case ConnectionClosedReason.ClosedByLocalUser:
+                    throw new Exception("Connection cLosed: The Connection was gracecfully closed by the local user.");
+                case ConnectionClosedReason.ClosedByPeer:
+                    throw new Exception("Connection closed: The connection was gracefully closed by remote user.");
+                case ConnectionClosedReason.ConnectionClosed:
+                    throw new Exception("Connection closed: The connection was unexpectedly closed.");
+                case ConnectionClosedReason.ConnectionFailed:
+                    throw new Exception("Connection failed: Failled to establish connection.");
+                case ConnectionClosedReason.InvalidData:
+                    throw new Exception("Connection failed: The remote user sent us invalid data..");
+                case ConnectionClosedReason.InvalidMessage:
+                    throw new Exception("Connection failed: The remote user sent us an invalid message.");
+                case ConnectionClosedReason.NegotiationFailed:
+                    throw new Exception("Connection failed: Negotiation failed.");
+                case ConnectionClosedReason.TimedOut:
+                    throw new Exception("Connection failed: Timeout.");
+                case ConnectionClosedReason.TooManyConnections:
+                    throw new Exception("Connection failed: Too many connections.");
+                case ConnectionClosedReason.UnexpectedError:
+                    throw new Exception("Unexpected Error, connection will be closed");
+                case ConnectionClosedReason.Unknown:
+                default:
+                    throw new Exception("Unknown Error, connection has been closed.");
+            }
+        }
 
-	protected void Send(ProductUserId host, SocketId socketId, byte[] msgBuffer, byte channel)
-	{
-		var result = EOSSDKComponent.GetP2PInterface().SendPacket(new SendPacketOptions()
-		{
-			AllowDelayedDelivery = true,
-			Channel = channel,
-			Data = msgBuffer,
-			LocalUserId = EOSSDKComponent.LocalUserProductId,
-			Reliability = channels[channel],
-			RemoteUserId = host,
-			SocketId = socketId
-		});
+        protected void SendInternal(ProductUserId target, SocketId socketId, InternalMessages type) {
+            EOSSDKComponent.GetP2PInterface().SendPacket(new SendPacketOptions() {
+                AllowDelayedDelivery = true,
+                Channel = (byte) internal_ch,
+                Data = new byte[] { (byte) type },
+                LocalUserId = EOSSDKComponent.LocalUserProductId,
+                Reliability = PacketReliability.ReliableOrdered,
+                RemoteUserId = target,
+                SocketId = socketId
+            });
+        }
 
-		if (result != Result.Success)
-		{
-			Debug.LogError("Send failed " + result);
-		}
-	}
 
-	private bool Receive(out ProductUserId clientProductUserId, out SocketId socketId, out byte[] receiveBuffer, byte channel)
-	{
-		var result = EOSSDKComponent.GetP2PInterface().ReceivePacket(new ReceivePacketOptions()
-		{
-			LocalUserId = EOSSDKComponent.LocalUserProductId,
-			MaxDataSizeBytes = P2PInterface.MaxPacketSize,
-			RequestedChannel = channel
-		}, out clientProductUserId, out socketId, out channel, out receiveBuffer);
+        protected void Send(ProductUserId host, SocketId socketId, byte[] msgBuffer, byte channel) {
+            Result result = EOSSDKComponent.GetP2PInterface().SendPacket(new SendPacketOptions() {
+                AllowDelayedDelivery = true,
+                Channel = channel,
+                Data = msgBuffer,
+                LocalUserId = EOSSDKComponent.LocalUserProductId,
+                Reliability = channels[channel],
+                RemoteUserId = host,
+                SocketId = socketId
+            });
 
-		if (result == Result.Success)
-		{
-			return true;
-		}
+            if(result != Result.Success) {
+                Debug.LogError("Send failed " + result);
+            }
+        }
 
-		receiveBuffer = null;
-		clientProductUserId = null;
-		return false;
-	}
+        private bool Receive(out ProductUserId clientProductUserId, out SocketId socketId, out byte[] receiveBuffer, byte channel) {
+            Result result = EOSSDKComponent.GetP2PInterface().ReceivePacket(new ReceivePacketOptions() {
+                LocalUserId = EOSSDKComponent.LocalUserProductId,
+                MaxDataSizeBytes = P2PInterface.MaxPacketSize,
+                RequestedChannel = channel
+            }, out clientProductUserId, out socketId, out channel, out receiveBuffer);
 
-	protected virtual void CloseP2PSessionWithUser(ProductUserId clientUserID, SocketId socketId)
-	{
-		if (socketId == null)
-		{
-			Debug.LogWarning("Socket ID == null | " + ignoreAllMessages);
-			return;
-		}
+            if (result == Result.Success) {
+                return true;
+            }
 
-		if (deadSockets == null)
-		{
-			Debug.LogWarning("DeadSockets == null");
-			return;
-		}
+            receiveBuffer = null;
+            clientProductUserId = null;
+            return false;
+        }
 
-		if (deadSockets.Contains(socketId.SocketName))
-		{
-			return;
-		}
-		else
-		{
-			deadSockets.Add(socketId.SocketName);
-		}
-	}
+        protected virtual void CloseP2PSessionWithUser(ProductUserId clientUserID, SocketId socketId) {
+            if (socketId == null) {
+                Debug.LogWarning("Socket ID == null | " + ignoreAllMessages);
+                return;
+            }
 
-	protected void WaitForClose(ProductUserId clientUserID, SocketId socketId) => transport.StartCoroutine(DelayedClose(clientUserID, socketId));
+            if (deadSockets == null) {
+                Debug.LogWarning("DeadSockets == null");
+                return;
+            }
 
-	private IEnumerator DelayedClose(ProductUserId clientUserID, SocketId socketId)
-	{
-		yield return null;
-		CloseP2PSessionWithUser(clientUserID, socketId);
-	}
+            if (deadSockets.Contains(socketId.SocketName)) {
+                return;
+            } else {
+                deadSockets.Add(socketId.SocketName);
+            }
+        }
 
-	public void ReceiveData()
-	{
-		try
-		{
-			// Internal Channel, no fragmentation here
-			var socketId = new SocketId();
-			while (transport.enabled && Receive(out var clientUserID, out socketId, out var internalMessage, (byte)internal_ch))
-			{
-				if (internalMessage.Length == 1)
-				{
-					OnReceiveInternalData((InternalMessages)internalMessage[0], clientUserID, socketId);
-					return; // Wait one frame
-				}
-				else
-				{
-					Debug.Log("Incorrect package length on internal channel.");
-				}
-			}
 
-			// Insert new packet at the correct location in the incoming queue
-			for (var chNum = 0; chNum < channels.Length; chNum++)
-			{
-				while (transport.enabled && Receive(out var clientUserID, out socketId, out var receiveBuffer, (byte)chNum))
-				{
-					var incomingPacketKey = new PacketKey();
-					incomingPacketKey.productUserId = clientUserID;
-					incomingPacketKey.channel = (byte)chNum;
+        protected void WaitForClose(ProductUserId clientUserID, SocketId socketId) => transport.StartCoroutine(DelayedClose(clientUserID, socketId));
+        private IEnumerator DelayedClose(ProductUserId clientUserID, SocketId socketId) {
+            yield return null;
+            CloseP2PSessionWithUser(clientUserID, socketId);
+        }
 
-					var packet = new Packet();
-					packet.FromBytes(receiveBuffer);
+        public void ReceiveData() {
+            try {
+                // Internal Channel, no fragmentation here
+                SocketId socketId = new SocketId();
+                while (transport.enabled && Receive(out ProductUserId clientUserID, out socketId, out byte[] internalMessage, (byte) internal_ch)) {
+                    if (internalMessage.Length == 1) {
+                        OnReceiveInternalData((InternalMessages) internalMessage[0], clientUserID, socketId);
+                        return; // Wait one frame
+                    } else {
+                        Debug.Log("Incorrect package length on internal channel.");
+                    }
+                }
 
-					if (!incomingPackets.ContainsKey(incomingPacketKey))
-					{
-						incomingPackets.Add(incomingPacketKey, new List<List<Packet>>());
-					}
+                // Insert new packet at the correct location in the incoming queue
+                for (int chNum = 0; chNum < channels.Length; chNum++) {
+                    while (transport.enabled && Receive(out ProductUserId clientUserID, out socketId, out byte[] receiveBuffer, (byte) chNum)) {
+                        PacketKey incomingPacketKey = new PacketKey();
+                        incomingPacketKey.productUserId = clientUserID;
+                        incomingPacketKey.channel = (byte)chNum;
 
-					var packetListIndex = incomingPackets[incomingPacketKey].Count;
-					for (var i = 0; i < incomingPackets[incomingPacketKey].Count; i++)
-					{
-						if (incomingPackets[incomingPacketKey][i][0].id == packet.id)
-						{
-							packetListIndex = i;
-							break;
-						}
-					}
+                        Packet packet = new Packet();
+                        packet.FromBytes(receiveBuffer);
 
-					if (packetListIndex == incomingPackets[incomingPacketKey].Count)
-					{
-						incomingPackets[incomingPacketKey].Add(new List<Packet>());
-					}
+                        if (!incomingPackets.ContainsKey(incomingPacketKey)) {
+                            incomingPackets.Add(incomingPacketKey, new List<List<Packet>>());
+                        }
 
-					var insertionIndex = -1;
+                        int packetListIndex = incomingPackets[incomingPacketKey].Count;
+                        for(int i = 0; i < incomingPackets[incomingPacketKey].Count; i++) {
+                            if(incomingPackets[incomingPacketKey][i][0].id == packet.id) {
+                                packetListIndex = i;
+                                break;
+                            }
+                        }
+                        
+                        if (packetListIndex == incomingPackets[incomingPacketKey].Count) {
+                            incomingPackets[incomingPacketKey].Add(new List<Packet>());
+                        }
 
-					for (var i = 0; i < incomingPackets[incomingPacketKey][packetListIndex].Count; i++)
-					{
-						if (incomingPackets[incomingPacketKey][packetListIndex][i].fragment > packet.fragment)
-						{
-							insertionIndex = i;
-							break;
-						}
-					}
+                        int insertionIndex = -1;
 
-					if (insertionIndex >= 0)
-					{
-						incomingPackets[incomingPacketKey][packetListIndex].Insert(insertionIndex, packet);
-					}
-					else
-					{
-						incomingPackets[incomingPacketKey][packetListIndex].Add(packet);
-					}
-				}
-			}
+                        for (int i = 0; i < incomingPackets[incomingPacketKey][packetListIndex].Count; i++) {
+                            if (incomingPackets[incomingPacketKey][packetListIndex][i].fragment > packet.fragment) {
+                                insertionIndex = i;
+                                break;
+                            }
+                        }
 
-			// Find fully received packets
-			var emptyPacketLists = new List<List<Packet>>();
-			foreach (var keyValuePair in incomingPackets)
-			{
-				for (var packetList = 0; packetList < keyValuePair.Value.Count; packetList++)
-				{
-					var packetReady = true;
-					var packetLength = 0;
-					for (var packet = 0; packet < keyValuePair.Value[packetList].Count; packet++)
-					{
-						var tempPacket = keyValuePair.Value[packetList][packet];
-						if (tempPacket.fragment != packet || packet == keyValuePair.Value[packetList].Count - 1 && tempPacket.moreFragments)
-						{
-							packetReady = false;
-						}
-						else
-						{
-							packetLength += tempPacket.data.Length;
-						}
-					}
+                        if (insertionIndex >= 0) {
+                            incomingPackets[incomingPacketKey][packetListIndex].Insert(insertionIndex, packet);
+                        } else {
+                            incomingPackets[incomingPacketKey][packetListIndex].Add(packet);
+                        }
+                    }
+                }
 
-					if (packetReady)
-					{
-						var data = new byte[packetLength];
-						var dataIndex = 0;
+                // Find fully received packets
+                List<List<Packet>> emptyPacketLists = new List<List<Packet>>();
+                foreach(KeyValuePair<PacketKey, List<List<Packet>>> keyValuePair in incomingPackets) {
+                    for(int packetList = 0; packetList < keyValuePair.Value.Count; packetList++) {
+                        bool packetReady = true;
+                        int packetLength = 0;
+                        for (int packet = 0; packet < keyValuePair.Value[packetList].Count; packet++) {
+                            Packet tempPacket = keyValuePair.Value[packetList][packet];
+                            if (tempPacket.fragment != packet || (packet == keyValuePair.Value[packetList].Count - 1 && tempPacket.moreFragments)) {
+                                packetReady = false;
+                            } else {
+                                packetLength += tempPacket.data.Length;
+                            }
+                        }
 
-						for (var packet = 0; packet < keyValuePair.Value[packetList].Count; packet++)
-						{
-							Array.Copy(keyValuePair.Value[packetList][packet].data, 0, data, dataIndex, keyValuePair.Value[packetList][packet].data.Length);
-							dataIndex += keyValuePair.Value[packetList][packet].data.Length;
-						}
+                        if (packetReady) {
+                            byte[] data = new byte[packetLength];
+                            int dataIndex = 0;
 
-						OnReceiveData(data, keyValuePair.Key.productUserId, keyValuePair.Key.channel);
+                            for (int packet = 0; packet < keyValuePair.Value[packetList].Count; packet++) {
+                                Array.Copy(keyValuePair.Value[packetList][packet].data, 0, data, dataIndex, keyValuePair.Value[packetList][packet].data.Length);
+                                dataIndex += keyValuePair.Value[packetList][packet].data.Length;
+                            }
 
-						//keyValuePair.Value[packetList].Clear();
-						emptyPacketLists.Add(keyValuePair.Value[packetList]);
-					}
-				}
+                            OnReceiveData(data, keyValuePair.Key.productUserId, keyValuePair.Key.channel);
 
-				for (var i = 0; i < emptyPacketLists.Count; i++)
-				{
-					keyValuePair.Value.Remove(emptyPacketLists[i]);
-				}
+                            if(transport.ServerActive() || transport.ClientActive())
+                                emptyPacketLists.Add(keyValuePair.Value[packetList]);
+                        }
+                    }
 
-				emptyPacketLists.Clear();
-			}
-		}
-		catch (Exception e)
-		{
-			Debug.LogException(e);
-		}
-	}
+                    for (int i = 0; i < emptyPacketLists.Count; i++) {
+                        keyValuePair.Value.Remove(emptyPacketLists[i]);
+                    }
+                    emptyPacketLists.Clear();
+                }
 
-	protected abstract void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserID, SocketId socketId);
-	protected abstract void OnReceiveData(byte[] data, ProductUserId clientUserID, int channel);
-	protected abstract void OnConnectionFailed(ProductUserId remoteId);
+
+
+            } catch (Exception e) {
+                Debug.LogException(e);
+            }
+        }
+
+        protected abstract void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserID, SocketId socketId);
+        protected abstract void OnReceiveData(byte[] data, ProductUserId clientUserID, int channel);
+        protected abstract void OnConnectionFailed(ProductUserId remoteId);
+    }
 }

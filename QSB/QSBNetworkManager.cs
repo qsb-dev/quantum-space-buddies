@@ -67,7 +67,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private string _lastTransportError;
 	private static readonly string[] _kcpErrorLogs =
 	{
-		"KCP: received disconnect message",
+		"KcpPeer: received disconnect message",
 		"Failed to resolve host: .*"
 	};
 
@@ -110,7 +110,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		QSBCore.ProfileManager.OnProfileSignInComplete += _ => InitPlayerName();
 
 		playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
-		playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("m_AssetId", 1.ToGuid().ToString("N"));
+		playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("_assetId", (uint)1);
 
 		ShipPrefab = MakeNewNetworkObject(2, "NetworkShip", typeof(ShipTransformSync));
 		var shipVector3Sync = ShipPrefab.AddComponent<Vector3VariableSyncer>();
@@ -202,7 +202,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	/// this works by calling Unload(false) and then reloading the AssetBundle,
 	/// which makes LoadAsset give you a new resource.
 	/// see https://docs.unity3d.com/Manual/AssetBundles-Native.html.
-	private static GameObject MakeNewNetworkObject(int assetId, string name, Type networkBehaviourType)
+	private static GameObject MakeNewNetworkObject(uint assetId, string name, Type networkBehaviourType)
 	{
 		var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/qsb_empty");
 
@@ -216,7 +216,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		bundle.Unload(false);
 
 		template.name = name;
-		template.AddComponent<NetworkIdentity>().SetValue("m_AssetId", assetId.ToGuid().ToString("N"));
+		template.AddComponent<NetworkIdentity>().SetValue("_assetId", assetId);
 		template.AddComponent(networkBehaviourType);
 		return template;
 	}
