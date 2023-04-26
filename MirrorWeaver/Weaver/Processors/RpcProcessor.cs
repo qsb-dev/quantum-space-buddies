@@ -68,7 +68,7 @@ namespace Mirror.Weaver
             //worker.Emit(OpCodes.Ldstr, $"Call ClientRpc function {md.Name}");
             //worker.Emit(OpCodes.Call, WeaverTypes.logErrorReference);
 
-            NetworkBehaviourProcessor.WriteCreateWriter(worker, weaverTypes);
+            NetworkBehaviourProcessor.WriteGetWriter(worker, weaverTypes);
 
             // write all the arguments that the user passed to the Rpc call
             if (!NetworkBehaviourProcessor.WriteArguments(worker, writers, Log, md, RemoteCallType.ClientRpc, ref WeavingFailed))
@@ -82,6 +82,11 @@ namespace Mirror.Weaver
             worker.Emit(OpCodes.Ldarg_0);
             // pass full function name to avoid ClassA.Func <-> ClassB.Func collisions
             worker.Emit(OpCodes.Ldstr, md.FullName);
+            // pass the function hash so we don't have to compute it at runtime
+            // otherwise each GetStableHash call requires O(N) complexity.
+            // noticeable for long function names: 
+            // https://github.com/MirrorNetworking/Mirror/issues/3375
+            worker.Emit(OpCodes.Ldc_I4, md.FullName.GetStableHashCode());
             // writer
             worker.Emit(OpCodes.Ldloc_0);
             worker.Emit(OpCodes.Ldc_I4, channel);
@@ -89,7 +94,7 @@ namespace Mirror.Weaver
             worker.Emit(includeOwner ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
             worker.Emit(OpCodes.Callvirt, weaverTypes.sendRpcInternal);
 
-            NetworkBehaviourProcessor.WriteRecycleWriter(worker, weaverTypes);
+            NetworkBehaviourProcessor.WriteReturnWriter(worker, weaverTypes);
 
             worker.Emit(OpCodes.Ret);
 

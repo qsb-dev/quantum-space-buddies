@@ -19,6 +19,7 @@ namespace Mirror.Weaver
         AssemblyDefinition assembly;
         WeaverTypes weaverTypes;
         TypeDefinition GeneratedCodeClass;
+        // CHANGED
         internal Logger Log;
 
         Dictionary<TypeReference, MethodReference> readFuncs =
@@ -114,7 +115,9 @@ namespace Mirror.Weaver
 
                 return GenerateReadCollection(variableReference, elementType, nameof(NetworkReaderExtensions.ReadList), ref WeavingFailed);
             }
-            else if (variableReference.IsDerivedFrom<NetworkBehaviour>())
+            // handle both NetworkBehaviour and inheritors.
+            // fixes: https://github.com/MirrorNetworking/Mirror/issues/2939
+            else if (variableReference.IsDerivedFrom<NetworkBehaviour>() || variableReference.Is<NetworkBehaviour>())
             {
                 return GetNetworkBehaviourReader(variableReference);
             }
@@ -138,6 +141,7 @@ namespace Mirror.Weaver
                 WeavingFailed = true;
                 return null;
             }
+            // CHANGED
             /*
             if (variableDefinition.HasGenericParameters)
             {
@@ -270,6 +274,7 @@ namespace Mirror.Weaver
                 GenerateNullCheck(worker, ref WeavingFailed);
 
             CreateNew(variable, worker, td, ref WeavingFailed);
+            // CHANGED
             this.ReadAllFieldsGeneric(variable, worker, ref WeavingFailed);
 
             worker.Emit(OpCodes.Ldloc_0);
