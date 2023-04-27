@@ -39,6 +39,8 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			shape.OnShapeActivated -= OnEnable;
 			shape.OnShapeDeactivated -= OnDisable;
 		}
+
+		QSBPlayerManager.OnRemovePlayer -= OnRemovePlayer;
 	}
 
 	public override async UniTask Init(CancellationToken ct)
@@ -75,6 +77,14 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			ControllingPlayer = 0u;
 			IsEnabled = false;
 		}
+
+		QSBPlayerManager.OnRemovePlayer += OnRemovePlayer;
+	}
+
+	private void OnRemovePlayer(PlayerInfo player)
+	{
+		_visibleToProbes.Remove(player);
+		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any();
 	}
 
 	public override void SendInitialState(uint to) =>
@@ -252,7 +262,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			_visibleToProbes.Remove(player);
 		}
 		
-		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any();
 	}
 
 	public void OnRemoveProbeSnapshot(PlayerInfo player)
@@ -262,7 +272,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			_visibleToProbes.Remove(player);
 		}
 
-		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any(x => x != null);
+		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any();
 	}
 
 	public List<PlayerInfo> GetVisibleToProbePlayers() => _visibleToProbes;
