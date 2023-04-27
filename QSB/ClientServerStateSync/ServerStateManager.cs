@@ -3,6 +3,7 @@ using QSB.DeathSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Player.TransformSync;
+using QSB.TimeSync;
 using QSB.Utility;
 using System.Linq;
 using UnityEngine;
@@ -32,7 +33,7 @@ internal class ServerStateManager : MonoBehaviour
 		QSBSceneManager.OnPostSceneLoad += OnPostSceneLoad;
 		GlobalMessenger.AddListener("TriggerSupernova", OnTriggerSupernova);
 
-		Delay.RunWhen(() => PlayerTransformSync.LocalInstance != null,
+		Delay.RunWhen(() => PlayerTransformSync.LocalInstance != null && WakeUpSync.LocalInstance != null,
 			() => new ServerStateMessage(ForceGetCurrentState()).Send());
 	}
 
@@ -77,7 +78,7 @@ internal class ServerStateManager : MonoBehaviour
 				}
 				else
 				{
-					new ServerStateMessage(ServerState.InSolarSystem).Send();
+					new ServerStateMessage(ServerState.NotLoaded).Send();
 				}
 
 				break;
@@ -118,7 +119,11 @@ internal class ServerStateManager : MonoBehaviour
 		switch (currentScene)
 		{
 			case OWScene.SolarSystem:
-				return ServerState.InSolarSystem;
+				if (WakeUpSync.LocalInstance.HasWokenUp)
+				{
+					return ServerState.InSolarSystem;
+				}
+				return ServerState.NotLoaded;
 			case OWScene.EyeOfTheUniverse:
 				return ServerState.InEye;
 			default:

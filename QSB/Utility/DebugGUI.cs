@@ -1,4 +1,5 @@
-﻿using QSB.ClientServerStateSync;
+﻿using Mirror;
+using QSB.ClientServerStateSync;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.HUD;
 using QSB.Player;
@@ -8,6 +9,7 @@ using QSB.ShipSync.TransformSync;
 using QSB.ShipSync.WorldObjects;
 using QSB.TimeSync;
 using QSB.WorldSync;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -100,6 +102,7 @@ internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
 		#region Column1 - Server data
 
 		WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
+		WriteLine(1, $"Ping : {Math.Round(NetworkTime.rtt * 1000.0)} ms");
 		if (!QSBCore.DebugSettings.DrawGui)
 		{
 			return;

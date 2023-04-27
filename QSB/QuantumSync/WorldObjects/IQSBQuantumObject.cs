@@ -20,4 +20,5 @@ public interface IQSBQuantumObject : IWorldObject
 	VisibilityObject GetVisibilityObject();
 	void OnTakeProbeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId);
 	void OnRemoveProbeSnapshot(PlayerInfo player);
+	List<PlayerInfo> GetVisibleToProbePlayers();
 }

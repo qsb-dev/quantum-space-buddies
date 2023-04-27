@@ -61,7 +61,7 @@ public class ServerQuantumMoonPatches : QSBPatch
 			return false;
 		}
 
-		if (__instance._stateIndex == 5 && anyPlayerInQM && !__instance.IsPlayerEntangled())
+		if (__instance._stateIndex == 5 && anyPlayerInQM && !playersInQuantumMoon.All(x => x.EntangledObject != null && x.EntangledObject.AttachedObject == __instance))
 		{
 			__result = false;
 			return false;
