@@ -73,6 +73,9 @@ internal class ShipManager : WorldObjectManager
 		{
 			new FlyShipMessage(false).Send();
 		}
+
+		_playersInShip.Remove(player);
+		UpdateElectricalComponent();
 	}
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
