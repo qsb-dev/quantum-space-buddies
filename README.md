@@ -55,22 +55,28 @@ Spoilers within!
 
 ### How complete is this mod? How far through the game can I play?
 
-The base game is around 95% done, whereas EotE is around 80% done.
+You can play the entire game, plus DLC!
+There still might be one or two small mechanics that aren't synced - let us know if you find an obvious one that we've missed.
+Also, you might encounter bugs that mean you can't progress in multiplayer. Again, let us know if you find one!
 
 ### Compatibility with other mods
 TL;DR - Don't use any mods with QSB that aren't marked as QSB compatible. 
 
 QSB relies on object hierarchy to sync objects, so any mod that changes that risks breaking QSB. Also, QSB relies on certain game events being called when things happen in-game. Any mod that makes these things happen without calling the correct events will break QSB. Some mods will work fine and have been tested, like CrouchMod. Others may only work partly, like EnableDebugMode and TAICheat.
 
-### Will you make this compatible with NomaiVR?
+### Is this mod compatible with NomaiVR?
 
-Maybe.
+Short answer - Kind of.
+
+Long answer - We've done our best to try to keep them compatible, but no work has been done to explicitly make them play nice. Some things may work, others may not.
+Getting both mods to work together is a big undertaking, and would require rewrites to a lot of code in both mods.
+If you want to play with VR, make sure the server host has "Incompatible Mods Allowed" enabled.
 
 ### Why do I keep getting thrown around the ship?
 
 Boring boring physics stuff. The velocity of the ship is synced, as well as the angular velocity. However, this velocity is not also applied to the player. (Or it is sometimes. I don't 100% know.) This means the ship will accelerate, leaving the player "behind". Which makes you fly into the walls alot.
 
-**Update**: you can attach/detach yourself to/from the ship using the prompt in the center of the screen.
+To fix this, whilst in the ship you can attach yourself to it. Look at the top-left of your screen when inside the ship for the buttons to press.
 
 ### What's the difference between QSB and Outer Wilds Online?
 
@@ -199,7 +205,6 @@ The template for this file is this :
 - [Mirror](https://mirror-networking.com/)
     - [kcp2k](https://github.com/vis2k/kcp2k)
     - [Telepathy](https://github.com/vis2k/Telepathy)
-    - [where-allocation](https://github.com/vis2k/where-allocation)
 - [EpicOnlineTransport](https://github.com/FakeByte/EpicOnlineTransport)
 - [HarmonyX](https://github.com/BepInEx/HarmonyX)
 - [UniTask](https://github.com/Cysharp/UniTask)
