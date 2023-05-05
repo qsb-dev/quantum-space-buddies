@@ -157,12 +157,40 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			{
 				player.MinimapPlayerMarker.localPosition = GetLocalMapPosition(player, minimap);
 				player.MinimapPlayerMarker.LookAt(minimap._globeMeshTransform, minimap._globeMeshTransform.up);
+				player.MinimapPlayerMarker.GetComponent<MeshRenderer>().enabled = true;
 			}
 			else
 			{
 				player.MinimapPlayerMarker.localPosition = Vector3.zero;
 				player.MinimapPlayerMarker.localRotation = Quaternion.identity;
+				player.MinimapPlayerMarker.GetComponent<MeshRenderer>().enabled = false;
 			}	
+		}
+	}
+
+	public void HideMinimap(Minimap minimap)
+	{
+		foreach (var player in QSBPlayerManager.PlayerList)
+		{
+			if (player.MinimapPlayerMarker == null)
+			{
+				continue;
+			}
+
+			player.MinimapPlayerMarker.GetComponent<MeshRenderer>().enabled = false;
+		}
+	}
+
+	public void ShowMinimap(Minimap minimap)
+	{
+		foreach (var player in QSBPlayerManager.PlayerList)
+		{
+			if (player.MinimapPlayerMarker == null)
+			{
+				continue;
+			}
+
+			player.MinimapPlayerMarker.GetComponent<MeshRenderer>().enabled = true;
 		}
 	}
 
@@ -221,6 +249,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	private void OnRemovePlayer(PlayerInfo player)
 	{
 		Destroy(player.HUDBox?.gameObject);
+		Destroy(player.MinimapPlayerMarker);
 	}
 
 	private PlanetTrigger CreateTrigger(string parentPath, HUDIcon icon)
