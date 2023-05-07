@@ -170,9 +170,10 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			return;
 		}
+		Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
 		if (singleton != null)
 		{
-			singleton.transport = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+			singleton.transport = Transport.active;
 		}
 		if (MenuManager.Instance != null)
 		{
