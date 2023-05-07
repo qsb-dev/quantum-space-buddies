@@ -137,7 +137,6 @@ The template for this file is this :
 
 ```
 {
-  "useKcpTransport": false,
   "dumpWorldObjects": false,
   "instanceIdInLogs": false,
   "hookDebugLogs": false,
