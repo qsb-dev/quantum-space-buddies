@@ -101,7 +101,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			_eosTransport = gameObject.AddComponent<EosTransport>();
 			_eosTransport.SetTransportError = error => _lastTransportError = error;
 		}
-		UpdateTransport();
+		transport = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
 
 		gameObject.SetActive(true);
 
@@ -170,10 +170,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			return;
 		}
-		Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
 		if (singleton != null)
 		{
-			singleton.transport = Transport.active;
+			singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
 		}
 		if (MenuManager.Instance != null)
 		{
