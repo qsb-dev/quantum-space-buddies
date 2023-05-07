@@ -164,11 +164,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		ConfigureNetworkManager();
 	}
 
-	public static void UpdateTransport()
+	public static bool UpdateTransport()
 	{
 		if (QSBCore.IsInMultiplayer)
 		{
-			return;
+			return false;
 		}
 		if (singleton != null)
 		{
@@ -178,6 +178,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			MenuManager.Instance.OnLanguageChanged(); // hack to update text
 		}
+		return true;
 	}
 
 	private void InitPlayerName() =>

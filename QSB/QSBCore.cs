@@ -255,8 +255,14 @@ public class QSBCore : ModBehaviour
 
 	public override void Configure(IModConfig config)
 	{
+		var useKcpTransport = UseKcpTransport;
 		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport") || DebugSettings.AutoStart;
-		QSBNetworkManager.UpdateTransport();
+		if (!QSBNetworkManager.UpdateTransport())
+		{
+			UseKcpTransport = useKcpTransport;
+			config.SetSettingsValue("useKcpTransport", useKcpTransport);
+			Helper.Storage.Save(config, Constants.ModConfigFileName);
+		}
 
 		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
