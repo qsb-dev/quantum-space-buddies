@@ -12,6 +12,7 @@ using QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
 using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
+using QSB.Menus;
 using QSB.Messaging;
 using QSB.ModelShip;
 using QSB.ModelShip.TransformSync;
@@ -165,9 +166,17 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 	public static void UpdateTransport()
 	{
-		if (!QSBCore.IsInMultiplayer)
+		if (QSBCore.IsInMultiplayer)
+		{
+			return;
+		}
+		if (singleton != null)
 		{
 			singleton.transport = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+		}
+		if (MenuManager.Instance != null)
+		{
+			MenuManager.Instance.OnLanguageChanged(); // hack to update text
 		}
 	}
 

@@ -157,8 +157,6 @@ public class QSBCore : ModBehaviour
 		if (DebugSettings.AutoStart)
 		{
 			UseKcpTransport = true;
-			Helper.Config.SetSettingsValue("UseKcpTransport", UseKcpTransport);
-			Helper.Storage.Save(Helper.Config, Constants.ModConfigFileName);
 			DebugSettings.DebugMode = true;
 		}
 

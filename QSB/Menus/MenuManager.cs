@@ -111,7 +111,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		_nowLoadingSB.Length = 0;
 	}
 
-	private void OnLanguageChanged()
+	public void OnLanguageChanged()
 	{
 		if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
 		{
