@@ -72,7 +72,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	private List<string> _lines = new List<string>(new string[LINE_COUNT]);
 	private ListStack<string> _messages = new(LINE_COUNT);
 
-	public void RegisterMessage(string message)
+	public void WriteMessage(string message)
 	{
 		/* Tricky problem to solve.
 		 * - 11 available lines for text to fit onto

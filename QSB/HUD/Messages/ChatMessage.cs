@@ -15,6 +15,6 @@ internal class ChatMessage : QSBMessage<string>
 
 	public override void OnReceiveRemote()
 	{
-		MultiplayerHUDManager.Instance.RegisterMessage(Data);
+		MultiplayerHUDManager.Instance.WriteMessage(Data);
 	}
 }
