@@ -6,7 +6,7 @@
       "title": "Use KCP Transport",
       "type": "toggle",
       "value": false,
-      "tooltip": "Use alternative transport that requires port forwarding but seems to be more reliable. The port to forward is 7777. Use this if you are having trouble connecting. ALL PLAYERS MUST HAVE THIS AS THE SAME VALUE."
+      "tooltip": "Use alternative transport that requires port forwarding but seems to be more reliable. The port to forward is 7777 as TCP/UDP. Use this if you are having trouble connecting. ALL PLAYERS MUST HAVE THIS AS THE SAME VALUE."
     },
     "defaultServerIP": {
       "title": "Last Entered IP/ID",

@@ -47,7 +47,7 @@ Spoilers within!
 ## Frequently Asked Questions
 
 ### I keep timing out when trying to connect!
-Check the mod settings for "Use KCP Transport". You have to forward port 7777, or use Hamachi. All players must have this turned on or off.
+Check the mod settings for "Use KCP Transport". You have to forward port 7777 as TCP/UDP, or use Hamachi. All players must have this turned on or off.
 
 ### Requirements
 - Latest version of OWML.
