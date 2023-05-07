@@ -1,12 +1,16 @@
 ﻿using QSB.HUD.Messages;
+using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace QSB.HUD;
 
@@ -15,6 +19,8 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	public static MultiplayerHUDManager Instance;
 
 	private Transform _playerList;
+	private Transform _textChat;
+	private InputField _inputField;
 	private Material _markerMaterial;
 
 	public static Sprite UnknownSprite;
@@ -59,6 +65,89 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		SpaceSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_space.png");
 	}
 
+	private const int LINE_COUNT = 11;
+	private const int CHAR_COUNT = 41;
+
+	private bool _writingMessage;
+	private List<string> _lines = new List<string>(new string[LINE_COUNT]);
+	private ListStack<string> _messages = new(LINE_COUNT);
+
+	public void WriteMessage(string message)
+	{
+		/* Tricky problem to solve.
+		 * - 11 available lines for text to fit onto
+		 * - Each line can be max 41 characters
+		 * - Newest messages apepear at the bottom, and get pushed up by newer messages.
+		 * - Messages can use several lines.
+		 * 
+		 * From newest to oldest message, work out how many lines it needs
+		 * and set the lines correctly bottom-up.
+		 */
+
+		_messages.Push(message);
+
+		if (_messages.Count > LINE_COUNT)
+		{
+			_messages.RemoveFirstElementAndShift();
+		}
+
+		_lines = new List<string>(new string[LINE_COUNT]);
+
+		var currentLineIndex = 10;
+
+		foreach (var item in _messages.Reverse())
+		{
+			var characterCount = item.Length;
+			var linesNeeded = Mathf.CeilToInt((float)characterCount / CHAR_COUNT);
+			var chunk = 0;
+			for (var i = linesNeeded - 1; i >= 0; i--)
+			{
+				if (currentLineIndex - i < 0)
+				{
+					chunk++; ;
+					continue;
+				}
+
+				var chunkString = string.Concat(item.Skip(CHAR_COUNT * chunk).Take(CHAR_COUNT));
+				_lines[currentLineIndex - i] = chunkString;
+				chunk++;
+			}
+
+			currentLineIndex -= linesNeeded;
+
+			if (currentLineIndex < 0)
+			{
+				break;
+			}
+		}
+
+		var finalText = "";
+		foreach (var line in _lines)
+		{
+			if (line == default)
+			{
+				finalText += Environment.NewLine;
+			}
+			else if (line.Length == 42)
+			{
+				finalText += line;
+			}
+			else
+			{
+				finalText += $"{line}{Environment.NewLine}";
+			}
+		}
+
+		_textChat.Find("Messages").Find("Message").GetComponent<Text>().text = finalText;
+
+		if (Locator.GetPlayerSuit().IsWearingHelmet())
+		{
+			var audioController = Locator.GetPlayerAudioController();
+			audioController.PlayNotificationTextScrolling();
+			Delay.RunFramesLater(10, () => audioController.StopNotificationTextScrolling());
+		}
+	}
+
 	private void Update()
 	{
 		if (!QSBWorldSync.AllObjectsReady || _playerList == null)
@@ -67,6 +156,34 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		_playerList.gameObject.SetActive(ServerSettingsManager.ShowExtraHUD);
+
+		var inSuit = Locator.GetPlayerSuit().IsWearingHelmet();
+
+		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) && !_writingMessage && inSuit)
+		{
+			OWInput.ChangeInputMode(InputMode.KeyboardInput);
+			_writingMessage = true;
+			_inputField.ActivateInputField();
+		}
+
+		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.KeyboardInput) && _writingMessage)
+		{
+			OWInput.RestorePreviousInputs();
+			_writingMessage = false;
+			_inputField.DeactivateInputField();
+
+			var message = _inputField.text;
+			_inputField.text = "";
+			message = message.Replace("\n", "").Replace("\r", "");
+			message = $"{QSBPlayerManager.LocalPlayer.Name}: {message}";
+			new ChatMessage(message).Send();
+		}
+
+		if (OWInput.IsNewlyPressed(InputLibrary.escape, InputMode.KeyboardInput) && _writingMessage)
+		{
+			OWInput.RestorePreviousInputs();
+			_writingMessage = false;
+		}
 	}
 
 	private void OnWakeUp()
@@ -119,6 +236,12 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		HUDIconStack.Push(HUDIcon.TIMBER_HEARTH);
 
 		new PlanetMessage(HUDIcon.TIMBER_HEARTH).Send();
+
+		_textChat = multiplayerGroup.transform.Find("TextChat");
+		var inputFieldGO = _textChat.Find("InputField");
+		_inputField = inputFieldGO.GetComponent<InputField>();
+		_inputField.text = "";
+		_textChat.Find("Messages").Find("Message").GetComponent<Text>().text = "";
 	}
 
 	public void UpdateMinimapMarkers(Minimap minimap)
