@@ -58,10 +58,11 @@ public class QSBCore : ModBehaviour
 		// ignore the last patch numbers like the title screen does
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
+	public static bool UseKcpTransport { get; private set; }
 	public static bool IncompatibleModsAllowed { get; private set; }
 	public static bool ShowPlayerNames { get; private set; }
 	public static bool ShipDamage { get; private set; }
-	public static bool ShowExtraHUDElements { get ; private set; }
+	public static bool ShowExtraHUDElements { get; private set; }
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
@@ -155,7 +156,7 @@ public class QSBCore : ModBehaviour
 
 		if (DebugSettings.AutoStart)
 		{
-			DebugSettings.UseKcpTransport = true;
+			UseKcpTransport = true;
 			DebugSettings.DebugMode = true;
 		}
 
@@ -254,6 +255,9 @@ public class QSBCore : ModBehaviour
 
 	public override void Configure(IModConfig config)
 	{
+		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport") || DebugSettings.AutoStart;
+		QSBNetworkManager.UpdateTransport();
+
 		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
 		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
 		ShowPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");

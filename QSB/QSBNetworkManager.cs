@@ -12,6 +12,7 @@ using QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
 using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
+using QSB.Menus;
 using QSB.Messaging;
 using QSB.ModelShip;
 using QSB.ModelShip.TransformSync;
@@ -71,17 +72,17 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		"Failed to resolve host: .*"
 	};
 
+	private static kcp2k.KcpTransport _kcpTransport;
+	private static EosTransport _eosTransport;
+
 	public override void Awake()
 	{
 		gameObject.SetActive(false);
 
-		if (QSBCore.DebugSettings.UseKcpTransport)
 		{
-			var kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
-			kcpTransport.Timeout = int.MaxValue; // effectively disables kcp ping and timeout (good for testing)
-			transport = kcpTransport;
+			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
+			_kcpTransport.Timeout = int.MaxValue; // effectively disables kcp ping and timeout (good for testing)
 		}
-		else
 		{
 			// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
 			var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
@@ -97,10 +98,10 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			eosSdkComponent.apiKeys = eosApiKey;
 			eosSdkComponent.epicLoggerLevel = LogLevel.VeryVerbose;
 
-			var eosTransport = gameObject.AddComponent<EosTransport>();
-			eosTransport.SetTransportError = error => _lastTransportError = error;
-			transport = eosTransport;
+			_eosTransport = gameObject.AddComponent<EosTransport>();
+			_eosTransport.SetTransportError = error => _lastTransportError = error;
 		}
+		transport = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
 
 		gameObject.SetActive(true);
 
@@ -163,6 +164,22 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		ConfigureNetworkManager();
 	}
 
+	public static void UpdateTransport()
+	{
+		if (QSBCore.IsInMultiplayer)
+		{
+			return;
+		}
+		if (singleton != null)
+		{
+			singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+		}
+		if (MenuManager.Instance != null)
+		{
+			MenuManager.Instance.OnLanguageChanged(); // hack to update text
+		}
+	}
+
 	private void InitPlayerName() =>
 		Delay.RunWhen(PlayerData.IsLoaded, () =>
 		{
@@ -192,7 +209,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 				PlayerName = "Player";
 			}
 
-			if (!QSBCore.DebugSettings.UseKcpTransport)
 			{
 				EOSSDKComponent.DisplayName = PlayerName;
 			}
@@ -225,7 +241,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	{
 		networkAddress = QSBCore.DefaultServerIP;
 
-		if (QSBCore.DebugSettings.UseKcpTransport)
 		{
 			kcp2k.Log.Info = s =>
 			{
