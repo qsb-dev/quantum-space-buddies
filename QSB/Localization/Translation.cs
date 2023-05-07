@@ -35,6 +35,7 @@ public class Translation
 	public string AddonMismatch;
 	public string IncompatibleMod;
 	public string PlayerJoinedTheGame;
+	public string PlayerLeftTheGame;
 	public string PlayerWasKicked;
 	public string KickedFromServer;
 	public string RespawnPlayer;

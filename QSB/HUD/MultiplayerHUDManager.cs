@@ -373,6 +373,8 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	{
 		Destroy(player.HUDBox?.gameObject);
 		Destroy(player.MinimapPlayerMarker);
+		
+		WriteMessage($"<color=yellow>{string.Format(QSBLocalization.Current.PlayerLeftTheGame, player.Name)}</color>");
 	}
 
 	private PlanetTrigger CreateTrigger(string parentPath, HUDIcon icon)
