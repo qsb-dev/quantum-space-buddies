@@ -10,11 +10,11 @@ public class ListStack<T> : IEnumerable<T>
 
 	public int Count => _items.Count;
 
-	public readonly bool RemoveDuplicates;
+	private readonly bool _removeDuplicates;
 
 	public ListStack(bool removeDuplicates)
 	{
-		RemoveDuplicates = removeDuplicates;
+		_removeDuplicates = removeDuplicates;
 	}
 
 	public void Clear()
@@ -22,7 +22,7 @@ public class ListStack<T> : IEnumerable<T>
 
 	public void Push(T item)
 	{
-		if (RemoveDuplicates && _items.Contains(item))
+		if (_removeDuplicates && _items.Contains(item))
 		{
 			RemoveAll(x => EqualityComparer<T>.Default.Equals(x, item));
 		}
