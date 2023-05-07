@@ -241,6 +241,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		var inputFieldGO = _textChat.Find("InputField");
 		_inputField = inputFieldGO.GetComponent<InputField>();
 		_inputField.text = "";
+		_textChat.Find("Messages").Find("Message").GetComponent<Text>().text = "";
 	}
 
 	public void UpdateMinimapMarkers(Minimap minimap)
