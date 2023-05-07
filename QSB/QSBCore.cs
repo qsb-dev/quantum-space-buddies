@@ -157,6 +157,9 @@ public class QSBCore : ModBehaviour
 		if (DebugSettings.AutoStart)
 		{
 			UseKcpTransport = true;
+			var config = Helper.Config;
+			config.SetSettingsValue("useKcpTransport", UseKcpTransport);
+			Helper.Storage.Save(config, Constants.ModConfigFileName);
 			DebugSettings.DebugMode = true;
 		}
 
@@ -256,11 +259,11 @@ public class QSBCore : ModBehaviour
 	public override void Configure(IModConfig config)
 	{
 		var useKcpTransport = UseKcpTransport;
-		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport") || DebugSettings.AutoStart;
+		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport");
 		if (!QSBNetworkManager.UpdateTransport())
 		{
 			UseKcpTransport = useKcpTransport;
-			config.SetSettingsValue("useKcpTransport", useKcpTransport);
+			config.SetSettingsValue("useKcpTransport", UseKcpTransport);
 			Helper.Storage.Save(config, Constants.ModConfigFileName);
 		}
 
