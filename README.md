@@ -46,6 +46,9 @@ Spoilers within!
 
 ## Frequently Asked Questions
 
+### I keep timing out when trying to connect!
+Check the mod settings for "Use KCP Transport".
+
 ### Requirements
 - Latest version of OWML.
 - Latest version of Mod Manager. (If using)
