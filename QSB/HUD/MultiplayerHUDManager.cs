@@ -139,6 +139,13 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		}
 
 		_textChat.Find("Messages").Find("Message").GetComponent<Text>().text = finalText;
+
+		if (Locator.GetPlayerSuit().IsWearingHelmet())
+		{
+			var audioController = Locator.GetPlayerAudioController();
+			audioController.PlayNotificationTextScrolling();
+			Delay.RunFramesLater(10, () => audioController.StopNotificationTextScrolling());
+		}
 	}
 
 	private void Update()

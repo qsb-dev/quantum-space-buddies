@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using QSB.ClientServerStateSync;
+using QSB.HUD;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.RespawnSync;
@@ -40,7 +41,7 @@ public class PlayerDeathMessage : QSBMessage<DeathType>
 		var deathMessage = Necronomicon.GetPhrase(Data, NecronomiconIndex);
 		if (deathMessage != null)
 		{
-			DebugLog.ToAll(string.Format(deathMessage, playerName));
+			MultiplayerHUDManager.Instance.WriteMessage($"<color=brown>{string.Format(deathMessage, playerName)}</color>");
 		}
 
 		RespawnManager.Instance.OnPlayerDeath(player);
