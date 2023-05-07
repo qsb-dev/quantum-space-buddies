@@ -438,9 +438,13 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		var titleAnimationController = QSBWorldSync.GetUnityObject<TitleScreenManager>()._gfxController;
+		var activeAlpha = 1;
 
-		var activeAlpha = titleAnimationController.IsTitleAnimationComplete() ? 1 : 0;
+		if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
+		{
+			var titleAnimationController = QSBWorldSync.GetUnityObject<TitleScreenManager>()._gfxController;
+			activeAlpha = titleAnimationController.IsTitleAnimationComplete() ? 1 : 0;
+		}
 
 		button.SetActive(active);
 		button.GetComponent<CanvasGroup>().alpha = active ? activeAlpha : 0;
