@@ -40,11 +40,6 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 	public static ListStack<HUDIcon> HUDIconStack = new();
 
-	private readonly ScreenPrompt _chatPrompt = new(
-		InputLibrary.enter,
-		QSBLocalization.Current.DetachFromShip + "   <CMD>"
-	);
-
 	private void Start()
 	{
 		Instance = this;
@@ -68,8 +63,6 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		Interloper = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_interloper.png");
 		WhiteHole = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_whitehole.png");
 		SpaceSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_space.png");
-
-		Locator.GetPromptManager().AddScreenPrompt(_chatPrompt, PromptPosition.UpperRight);
 	}
 
 	private const int LINE_COUNT = 11;
@@ -157,7 +150,6 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 		_playerList.gameObject.SetActive(ServerSettingsManager.ShowExtraHUD);
 
-		_chatPrompt.SetVisibility(!_writingMessage);
 
 		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) && !_writingMessage)
 		{
