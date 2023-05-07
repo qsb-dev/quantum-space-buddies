@@ -69,7 +69,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	private const int CHAR_COUNT = 41;
 
 	private bool _writingMessage;
-	private List<string> _lines = new List<string>(new string[LINE_COUNT]);
+	private string[] _lines = new string[LINE_COUNT];
 	private ListStack<string> _messages = new(LINE_COUNT);
 
 	public void WriteMessage(string message)
@@ -90,8 +90,6 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		{
 			_messages.RemoveFirstElementAndShift();
 		}
-
-		_lines = new List<string>(new string[LINE_COUNT]);
 
 		var currentLineIndex = 10;
 
