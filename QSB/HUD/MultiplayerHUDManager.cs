@@ -1,4 +1,5 @@
-﻿using QSB.HUD.Messages;
+﻿using OWML.Common;
+using QSB.HUD.Messages;
 using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player;
@@ -6,7 +7,6 @@ using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -38,7 +38,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	public static Sprite Interloper;
 	public static Sprite WhiteHole;
 
-	public static ListStack<HUDIcon> HUDIconStack = new();
+	public static readonly ListStack<HUDIcon> HUDIconStack = new(true);
 
 	private void Start()
 	{
@@ -69,8 +69,9 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	private const int CHAR_COUNT = 41;
 
 	private bool _writingMessage;
-	private List<string> _lines = new List<string>(new string[LINE_COUNT]);
-	private ListStack<string> _messages = new(LINE_COUNT);
+	private readonly string[] _lines = new string[LINE_COUNT];
+	// this should really be a deque, but eh
+	private readonly ListStack<string> _messages = new(false);
 
 	public void WriteMessage(string message)
 	{
@@ -91,24 +92,22 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			_messages.RemoveFirstElementAndShift();
 		}
 
-		_lines = new List<string>(new string[LINE_COUNT]);
-
 		var currentLineIndex = 10;
 
-		foreach (var item in _messages.Reverse())
+		foreach (var msg in _messages.Reverse())
 		{
-			var characterCount = item.Length;
+			var characterCount = msg.Length;
 			var linesNeeded = Mathf.CeilToInt((float)characterCount / CHAR_COUNT);
 			var chunk = 0;
 			for (var i = linesNeeded - 1; i >= 0; i--)
 			{
 				if (currentLineIndex - i < 0)
 				{
-					chunk++; ;
+					chunk++;
 					continue;
 				}
 
-				var chunkString = string.Concat(item.Skip(CHAR_COUNT * chunk).Take(CHAR_COUNT));
+				var chunkString = string.Concat(msg.Skip(CHAR_COUNT * chunk).Take(CHAR_COUNT));
 				_lines[currentLineIndex - i] = chunkString;
 				chunk++;
 			}
@@ -259,7 +258,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			{
 				if (player.Body != null)
 				{
-					DebugLog.ToConsole($"Error - {player.PlayerId}'s RulesetDetector is null.", OWML.Common.MessageType.Error);
+					DebugLog.ToConsole($"Error - {player.PlayerId}'s RulesetDetector is null.", MessageType.Error);
 				}
 
 				continue;
@@ -287,7 +286,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 				player.MinimapPlayerMarker.localPosition = Vector3.zero;
 				player.MinimapPlayerMarker.localRotation = Quaternion.identity;
 				player.MinimapPlayerMarker.GetComponent<MeshRenderer>().enabled = false;
-			}	
+			}
 		}
 	}
 
@@ -373,7 +372,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	{
 		Destroy(player.HUDBox?.gameObject);
 		Destroy(player.MinimapPlayerMarker);
-		
+
 		WriteMessage($"<color=yellow>{string.Format(QSBLocalization.Current.PlayerLeftTheGame, player.Name)}</color>");
 	}
 
