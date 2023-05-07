@@ -150,8 +150,9 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 		_playerList.gameObject.SetActive(ServerSettingsManager.ShowExtraHUD);
 
+		var inSuit = Locator.GetPlayerSuit().IsWearingHelmet();
 
-		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) && !_writingMessage)
+		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) && !_writingMessage && inSuit)
 		{
 			OWInput.ChangeInputMode(InputMode.KeyboardInput);
 			_writingMessage = true;
