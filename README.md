@@ -47,7 +47,7 @@ Spoilers within!
 ## Frequently Asked Questions
 
 ### I keep timing out when trying to connect!
-Check the mod settings for "Use KCP Transport".
+Check the mod settings for "Use KCP Transport". You have to forward port 7777, or use Hamachi. All players must have this turned on or off.
 
 ### Requirements
 - Latest version of OWML.
@@ -157,7 +157,6 @@ The template for this file is this :
 }
 ```
 
-- useKcpTransport - Allows you to directly connect to IP addresses, rather than use the Epic relay.
 - dumpWorldObjects - Creates a file with information about the WorldObjects that were created.
 - instanceIdInLogs - Appends the game instance id to every log message sent.
 - hookDebugLogs - Print Unity logs and warnings.
