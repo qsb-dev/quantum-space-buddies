@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using QSB.HUD;
 using QSB.Localization;
 using QSB.Menus;
 using QSB.Messaging;
@@ -34,15 +35,15 @@ internal class PlayerKickMessage : QSBMessage<string>
 		{
 			if (QSBPlayerManager.PlayerExists(PlayerId))
 			{
-				DebugLog.ToAll(string.Format(QSBLocalization.Current.PlayerWasKicked, QSBPlayerManager.GetPlayer(PlayerId).Name));
+				MultiplayerHUDManager.Instance.WriteMessage($"<color=red>{string.Format(QSBLocalization.Current.PlayerWasKicked, QSBPlayerManager.GetPlayer(PlayerId).Name)}</color>");
 				return;
 			}
 
-			DebugLog.ToAll(string.Format(QSBLocalization.Current.PlayerWasKicked, PlayerId));
+			MultiplayerHUDManager.Instance.WriteMessage($"<color=red>{string.Format(QSBLocalization.Current.PlayerWasKicked, PlayerId)}</color>");
 			return;
 		}
 
-		DebugLog.ToAll(string.Format(QSBLocalization.Current.KickedFromServer, Data));
+		MultiplayerHUDManager.Instance.WriteMessage($"<color=red>{string.Format(QSBLocalization.Current.KickedFromServer, Data)}</color>");
 		MenuManager.Instance.OnKicked(Data);
 
 		NetworkClient.Disconnect();

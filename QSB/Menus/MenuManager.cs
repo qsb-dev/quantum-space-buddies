@@ -1,5 +1,6 @@
 ﻿using EpicTransport;
 using Mirror;
+using OWML.Common;
 using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
@@ -111,17 +112,17 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		_nowLoadingSB.Length = 0;
 	}
 
-	private void OnLanguageChanged()
+	public void OnLanguageChanged()
 	{
 		if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
 		{
-			DebugLog.ToConsole("Error - Language changed while not in title screen?! Should be impossible!", OWML.Common.MessageType.Error);
+			DebugLog.ToConsole("Error - Language changed while not in title screen?! Should be impossible!", MessageType.Error);
 			return;
 		}
 
 		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuHost;
 		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuConnect;
-		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
+		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
 		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalization.Current.Connect), new ScreenPrompt(QSBLocalization.Current.Cancel), false);
 		ConnectPopup.SetInputFieldPlaceholderText(text);
 		ExistingNewCopyPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNewOrCopy,
@@ -337,7 +338,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void CreateCommonPopups()
 	{
-		var text = QSBCore.DebugSettings.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
+		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
 		ConnectPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, QSBLocalization.Current.Connect, QSBLocalization.Current.Cancel);
 		ConnectPopup.CloseMenuOnOk(false);
 		ConnectPopup.OnPopupConfirm += () =>
@@ -434,13 +435,17 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		if (button == null)
 		{
-			DebugLog.DebugWrite($"Warning - Tried to set button to {active}, but it was null.", OWML.Common.MessageType.Warning);
+			DebugLog.DebugWrite($"Warning - Tried to set button to {active}, but it was null.", MessageType.Warning);
 			return;
 		}
 
-		var titleAnimationController = QSBWorldSync.GetUnityObject<TitleScreenManager>()._gfxController;
+		var activeAlpha = 1;
 
-		var activeAlpha = titleAnimationController.IsTitleAnimationComplete() ? 1 : 0;
+		if (QSBSceneManager.CurrentScene == OWScene.TitleScreen)
+		{
+			var titleAnimationController = QSBWorldSync.GetUnityObject<TitleScreenManager>()._gfxController;
+			activeAlpha = titleAnimationController.IsTitleAnimationComplete() ? 1 : 0;
+		}
 
 		button.SetActive(active);
 		button.GetComponent<CanvasGroup>().alpha = active ? activeAlpha : 0;
@@ -628,7 +633,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(NewGameButton, false);
 		_loadingText = HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>();
 
-		if (!QSBCore.DebugSettings.UseKcpTransport)
+		if (!QSBCore.UseKcpTransport)
 		{
 			var productUserId = EOSSDKComponent.LocalUserProductIdString;
 
@@ -684,8 +689,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		Locator.GetMenuInputModule().DisableInputs();
 
 		QSBNetworkManager.singleton.networkAddress = address;
-		// hack to get disconnect call if start client fails immediately (happens on kcp transport when failing to resolve host name)
-		typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection))!.SetValue(null, new NetworkConnectionToServer());
 		QSBNetworkManager.singleton.StartClient();
 	}
 
@@ -714,7 +717,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		OpenInfoPopup(string.Format(QSBLocalization.Current.ServerRefusedConnection, reason), QSBLocalization.Current.OK);
 	}
 
-	private void OnDisconnected(string error)
+	private void OnDisconnected(TransportError error, string reason)
 	{
 		QSBCore.IsInMultiplayer = false;
 
@@ -733,7 +736,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				}
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalization.Current.ClientDisconnectWithError, error), QSBLocalization.Current.OK);
+			OpenInfoPopup(string.Format(QSBLocalization.Current.ClientDisconnectWithError, reason), QSBLocalization.Current.OK);
 		}
 
 		SetButtonActive(DisconnectButton, false);

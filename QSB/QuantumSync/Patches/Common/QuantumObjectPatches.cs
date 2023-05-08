@@ -57,7 +57,7 @@ public class QuantumObjectPatches : QSBPatch
 
 		var worldObject = __instance.GetWorldObject<IQSBQuantumObject>();
 		var visibleToProbePlayers = worldObject.GetVisibleToProbePlayers();
-		__result = visibleToProbePlayers.Any(x => x.ProbeLauncherEquipped != default);
+		__result = visibleToProbePlayers.Any();
 		return false;
 	}
 }

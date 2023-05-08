@@ -1,4 +1,5 @@
-﻿using QSB.DeathSync.Messages;
+﻿using Mirror;
+using QSB.DeathSync.Messages;
 using QSB.Messaging;
 using QSB.Patches;
 using QSB.Player;
@@ -48,7 +49,7 @@ internal class RespawnManager : MonoBehaviour, IAddComponentOnStart
 		}
 	}
 
-	private void OnDisconnected(string error)
+	private void OnDisconnected(TransportError error, string reason)
 	{
 		_owRecoveryPoint?.SetActive(true);
 		_qsbRecoveryPoint?.SetActive(false);

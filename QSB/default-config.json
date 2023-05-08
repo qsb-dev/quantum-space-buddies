@@ -1,35 +1,42 @@
 {
-	"enabled": true,
-	"settings": {
-		"defaultServerIP": {
-			"title": "Last Entered IP/ID",
-			"type": "text",
-			"value": "localhost",
-			"tooltip": "Used if you leave the connect prompt blank."
-		},
-		"incompatibleModsAllowed": {
-			"title": "Incompatible Mods Allowed",
-			"type": "toggle",
-			"value": false,
-			"tooltip": "Kicks players if they have certain mods."
-		},
-		"showPlayerNames": {
-			"title": "Show Player Names",
-			"type": "toggle",
-			"value": true,
-			"tooltip": "Shows player names in the HUD and the map view."
-		},
-		"shipDamage": {
-			"title": "Ship Damage",
-			"type": "toggle",
-			"value": true,
-			"tooltip": "Take impact damage when inside the ship."
-		},
-		"showExtraHud": {
-			"title": "Show Extra HUD Elements",
-			"type": "toggle",
-			"value": true,
-			"tooltip" : "Show extra HUD elements, like player status and minimap icons."
-		}
-	}
+  "$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/config_schema.json",
+  "enabled": true,
+  "settings": {
+    "useKcpTransport": {
+      "title": "Use KCP Transport",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "Use alternative transport that requires port forwarding but seems to be more reliable. The port to forward is 7777 as TCP/UDP. Use this if you are having trouble connecting. ALL PLAYERS MUST HAVE THIS AS THE SAME VALUE."
+    },
+    "defaultServerIP": {
+      "title": "Last Entered IP/ID",
+      "type": "text",
+      "value": "localhost",
+      "tooltip": "Used if you leave the connect prompt blank."
+    },
+    "incompatibleModsAllowed": {
+      "title": "Incompatible Mods Allowed",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "Kicks players if they have certain mods."
+    },
+    "showPlayerNames": {
+      "title": "Show Player Names",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Shows player names in the HUD and the map view."
+    },
+    "shipDamage": {
+      "title": "Ship Damage",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Take impact damage when inside the ship."
+    },
+    "showExtraHud": {
+      "title": "Show Extra HUD Elements",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Show extra HUD elements, like player status and minimap icons."
+    }
+  }
 }

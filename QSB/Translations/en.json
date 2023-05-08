@@ -30,6 +30,7 @@
   "AddonMismatch": "Addon mismatch. (Client:{0} addons, Server:{1} addons)",
   "IncompatibleMod": "Using an incompatible/disallowed mod. First mod found was {0}",
   "PlayerJoinedTheGame": "{0} joined!",
+  "PlayerLeftTheGame": "{0} left!",
   "PlayerWasKicked": "{0} was kicked.",
   "KickedFromServer": "Kicked from server. Reason : {0}",
   "RespawnPlayer": "Respawn Player",

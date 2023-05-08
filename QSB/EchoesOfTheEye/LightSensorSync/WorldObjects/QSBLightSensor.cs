@@ -14,11 +14,6 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 
-/// <summary>
-/// BUG: this breaks in zone2.
-/// the sector it's enabled in is bigger than the sector the zone2 walls are enabled in :(
-/// maybe this can be fixed by making the collision group use the same sector.
-/// </summary>
 internal class QSBLightSensor : AuthWorldObject<SingleLightSensor>
 {
 	internal bool _locallyIlluminated;

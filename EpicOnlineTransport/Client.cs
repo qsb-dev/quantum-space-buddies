@@ -19,7 +19,7 @@ namespace EpicTransport {
         private event Action OnConnected;
         public event Action OnDisconnected;
         // CHANGED
-        private Action<string> SetTransportError;
+        private event Action<TransportError, string> OnReceivedError;
 
         private TimeSpan ConnectionTimeout;
 
@@ -43,7 +43,7 @@ namespace EpicTransport {
             c.OnDisconnected += () => transport.OnClientDisconnected.Invoke();
             c.OnReceivedData += (data, channel) => transport.OnClientDataReceived.Invoke(new ArraySegment<byte>(data), channel);
             // CHANGED
-            c.SetTransportError = transport.SetTransportError;
+            c.OnReceivedError += (error, reason) => transport.OnClientError?.Invoke(error, reason);
 
             return c;
         }
@@ -64,7 +64,7 @@ namespace EpicTransport {
 
                 if (await Task.WhenAny(connectedCompleteTask, Task.Delay(ConnectionTimeout/*, cancelToken.Token*/)) != connectedCompleteTask) {
                     // CHANGED
-                    SetTransportError($"Connection to {host} timed out.");
+                    OnReceivedError?.Invoke(TransportError.Timeout, $"Connection to {host} timed out.");
                     Debug.LogError($"Connection to {host} timed out.");
                     OnConnected -= SetConnectedComplete;
                     OnConnectionFailed(hostProductId);
@@ -73,13 +73,13 @@ namespace EpicTransport {
                 OnConnected -= SetConnectedComplete;
             } catch (FormatException) {
                 // CHANGED
-                SetTransportError("Connection string was not in the right format. Did you enter a ProductId?");
+                OnReceivedError?.Invoke(TransportError.DnsResolve, "Connection string was not in the right format. Did you enter a ProductId?");
                 Debug.LogError($"Connection string was not in the right format. Did you enter a ProductId?");
                 Error = true;
                 OnConnectionFailed(hostProductId);
             } catch (Exception ex) {
                 // CHANGED
-                SetTransportError(ex.Message);
+                OnReceivedError?.Invoke(TransportError.Unexpected, ex.Message);
                 Debug.LogError(ex.Message);
                 Error = true;
                 OnConnectionFailed(hostProductId);
@@ -158,7 +158,7 @@ namespace EpicTransport {
                     break;
                 case InternalMessages.DISCONNECT:
                     // CHANGED
-                    SetTransportError("host disconnected");
+                    OnReceivedError?.Invoke(TransportError.ConnectionClosed, "host disconnected");
                     Connected = false;
                     Debug.Log("Disconnected.");
 

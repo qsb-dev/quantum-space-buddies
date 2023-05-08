@@ -12,6 +12,7 @@ using QSB.EchoesOfTheEye.EclipseDoors.VariableSync;
 using QSB.EchoesOfTheEye.EclipseElevators.VariableSync;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.JellyfishSync.TransformSync;
+using QSB.Menus;
 using QSB.Messaging;
 using QSB.ModelShip;
 using QSB.ModelShip.TransformSync;
@@ -44,7 +45,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
 	public event Action OnClientConnected;
-	public event Action<string> OnClientDisconnected;
+	public event Action<TransportError, string> OnClientDisconnected;
 
 	public GameObject OrbPrefab { get; private set; }
 	public GameObject ShipPrefab { get; private set; }
@@ -64,24 +65,18 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private GameObject _probePrefab;
 	private bool _everConnected;
 
-	private string _lastTransportError;
-	private static readonly string[] _kcpErrorLogs =
-	{
-		"KcpPeer: received disconnect message",
-		"Failed to resolve host: .*"
-	};
+	private (TransportError error, string reason) _lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
+
+	private static kcp2k.KcpTransport _kcpTransport;
+	private static EosTransport _eosTransport;
 
 	public override void Awake()
 	{
 		gameObject.SetActive(false);
 
-		if (QSBCore.DebugSettings.UseKcpTransport)
 		{
-			var kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
-			kcpTransport.Timeout = int.MaxValue; // effectively disables kcp ping and timeout (good for testing)
-			transport = kcpTransport;
+			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
 		}
-		else
 		{
 			// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
 			var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
@@ -97,10 +92,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			eosSdkComponent.apiKeys = eosApiKey;
 			eosSdkComponent.epicLoggerLevel = LogLevel.VeryVerbose;
 
-			var eosTransport = gameObject.AddComponent<EosTransport>();
-			eosTransport.SetTransportError = error => _lastTransportError = error;
-			transport = eosTransport;
+			_eosTransport = gameObject.AddComponent<EosTransport>();
 		}
+		transport = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
 
 		gameObject.SetActive(true);
 
@@ -163,6 +157,22 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		ConfigureNetworkManager();
 	}
 
+	public static void UpdateTransport()
+	{
+		if (QSBCore.IsInMultiplayer)
+		{
+			return;
+		}
+		if (singleton != null)
+		{
+			singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+		}
+		if (MenuManager.Instance != null)
+		{
+			MenuManager.Instance.OnLanguageChanged(); // hack to update text
+		}
+	}
+
 	private void InitPlayerName() =>
 		Delay.RunWhen(PlayerData.IsLoaded, () =>
 		{
@@ -192,7 +202,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 				PlayerName = "Player";
 			}
 
-			if (!QSBCore.DebugSettings.UseKcpTransport)
 			{
 				EOSSDKComponent.DisplayName = PlayerName;
 			}
@@ -225,26 +234,18 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	{
 		networkAddress = QSBCore.DefaultServerIP;
 
-		if (QSBCore.DebugSettings.UseKcpTransport)
 		{
 			kcp2k.Log.Info = s =>
 			{
 				DebugLog.DebugWrite("[KCP] " + s);
-				if (_kcpErrorLogs.Any(p => Regex.IsMatch(s, p)))
+				// hack
+				if (s == "KcpPeer: received disconnect message")
 				{
-					_lastTransportError = s;
+					OnClientError(TransportError.ConnectionClosed, "host disconnected");
 				}
 			};
-			kcp2k.Log.Warning = s =>
-			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
-				_lastTransportError = s;
-			};
-			kcp2k.Log.Error = s =>
-			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
-				_lastTransportError = s;
-			};
+			kcp2k.Log.Warning = s => DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
+			kcp2k.Log.Error = s => DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
 		}
 
 		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
@@ -342,8 +343,8 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	{
 		DebugLog.DebugWrite("OnClientDisconnect");
 		base.OnClientDisconnect();
-		OnClientDisconnected?.SafeInvoke(_lastTransportError);
-		_lastTransportError = null;
+		OnClientDisconnected?.SafeInvoke(_lastTransportError.error, _lastTransportError.reason);
+		_lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
 	}
 
 	public override void OnServerDisconnect(NetworkConnectionToClient conn) // Called on the server when any client disconnects
@@ -408,5 +409,17 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		});
 
 		base.OnStopServer();
+	}
+
+	public override void OnServerError(NetworkConnectionToClient conn, TransportError error, string reason)
+	{
+		DebugLog.DebugWrite($"OnServerError({conn}, {error}, {reason})", MessageType.Error);
+		_lastTransportError = (error, reason);
+	}
+
+	public override void OnClientError(TransportError error, string reason)
+	{
+		DebugLog.DebugWrite($"OnClientError({error}, {reason})", MessageType.Error);
+		_lastTransportError = (error, reason);
 	}
 }
