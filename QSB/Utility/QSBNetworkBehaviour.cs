@@ -45,7 +45,7 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 			return;
 		}
 
-		if (!hasAuthority)
+		if (!isOwned)
 		{
 			return;
 		}
@@ -116,7 +116,7 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 			return;
 		}
 
-		if (hasAuthority)
+		if (isOwned)
 		{
 			return;
 		}

@@ -75,7 +75,7 @@ public class OrbPatches : QSBPatch
 		}
 
 		var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-		if (!qsbOrb.NetworkBehaviour.hasAuthority)
+		if (!qsbOrb.NetworkBehaviour.isOwned)
 		{
 			return false;
 		}
@@ -95,7 +95,7 @@ public class OrbPatches : QSBPatch
 		}
 
 		var qsbOrb = __instance.GetWorldObject<QSBOrb>();
-		if (qsbOrb.NetworkBehaviour.hasAuthority)
+		if (qsbOrb.NetworkBehaviour.isOwned)
 		{
 			if (__instance._occupiedSlot == null)
 			{

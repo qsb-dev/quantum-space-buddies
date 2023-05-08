@@ -215,7 +215,7 @@ internal class ShipPatches : QSBPatch
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(ShipDamageController), nameof(ShipDamageController.OnImpact))]
 	public static bool ShipDamageController_OnImpact()
-		=> ShipTransformSync.LocalInstance == null || ShipTransformSync.LocalInstance.hasAuthority;
+		=> ShipTransformSync.LocalInstance == null || ShipTransformSync.LocalInstance.isOwned;
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(ShipComponent), nameof(ShipComponent.RepairTick))]

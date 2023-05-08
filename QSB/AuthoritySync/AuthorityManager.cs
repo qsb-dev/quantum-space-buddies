@@ -81,7 +81,7 @@ public static class AuthorityManager
 
 	public static void UpdateAuthQueue(this NetworkIdentity identity, AuthQueueAction action)
 	{
-		if (action == AuthQueueAction.Force && identity.hasAuthority)
+		if (action == AuthQueueAction.Force && identity.isOwned)
 		{
 			return;
 		}
