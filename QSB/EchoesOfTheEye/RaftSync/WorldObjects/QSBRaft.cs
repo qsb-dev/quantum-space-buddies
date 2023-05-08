@@ -18,7 +18,7 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 	public override bool ShouldDisplayDebug() => false;
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.RaftPrefab;
-	protected override bool SpawnWithServerAuthority => false;
+	protected override bool SpawnWithServerOwnership => false;
 
 	private QSBLightSensor[] _lightSensors;
 
@@ -49,7 +49,7 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 	{
 		if (AttachedObject.IsPlayerRiding())
 		{
-			NetworkBehaviour.netIdentity.UpdateAuthQueue(OwnQueueAction.Force);
+			NetworkBehaviour.netIdentity.UpdateOwnQueue(OwnQueueAction.Force);
 		}
 	}
 }

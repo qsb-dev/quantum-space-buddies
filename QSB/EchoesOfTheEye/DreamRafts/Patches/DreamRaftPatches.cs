@@ -75,10 +75,10 @@ public class DreamRaftPatches : QSBPatch
 
 		if (__instance._lastUsedRaftProjector)
 		{
-			// still release authority over the raft tho
+			// still release ownership over the raft tho
 			__instance._lastUsedRaftProjector
 				._dreamRaftProjection.GetComponent<DreamRaftController>().GetWorldObject<QSBDreamRaft>()
-				.NetworkBehaviour.netIdentity.UpdateAuthQueue(OwnQueueAction.Remove);
+				.NetworkBehaviour.netIdentity.UpdateOwnQueue(OwnQueueAction.Remove);
 		}
 
 		return false;

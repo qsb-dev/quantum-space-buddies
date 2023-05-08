@@ -354,27 +354,27 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		// local conn = we are host, so skip
 		if (conn is not LocalConnectionToClient)
 		{
-			// revert authority from ship
+			// revert ownership from ship
 			if (ShipTransformSync.LocalInstance != null)
 			{
 				var identity = ShipTransformSync.LocalInstance.netIdentity;
 				if (identity != null && identity.connectionToClient == conn)
 				{
-					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+					identity.SetOwner(QSBPlayerManager.LocalPlayerId);
 				}
 			}
-			// revert authority from model ship
+			// revert ownership from model ship
 			if (ModelShipTransformSync.LocalInstance != null)
 			{
 				var identity = ModelShipTransformSync.LocalInstance.netIdentity;
 				if (identity != null && identity.connectionToClient == conn)
 				{
-					identity.SetAuthority(QSBPlayerManager.LocalPlayerId);
+					identity.SetOwner(QSBPlayerManager.LocalPlayerId);
 				}
 			}
 
 			// stop dragging for the orbs this player was dragging
-			// i THINK this is here because orb authority is in network behavior, which may not work properly in OnPlayerLeave
+			// i THINK this is here because orb ownership is in network behavior, which may not work properly in OnPlayerLeave
 			foreach (var qsbOrb in QSBWorldSync.GetWorldObjects<QSBOrb>())
 			{
 				if (qsbOrb.NetworkBehaviour == null)

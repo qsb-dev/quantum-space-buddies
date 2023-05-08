@@ -33,7 +33,7 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.RegisterAuthQueue();
+			netIdentity.RegisterOwnQueue();
 		}
 
 		base.OnStartClient();
@@ -43,7 +43,7 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.UnregisterAuthQueue();
+			netIdentity.UnregisterOwnQueue();
 		}
 
 		base.OnStopClient();
@@ -56,7 +56,7 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 
 		AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 		AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-		netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? OwnQueueAction.Remove : OwnQueueAction.Add);
+		netIdentity.UpdateOwnQueue(AttachedRigidbody.IsSuspended() ? OwnQueueAction.Remove : OwnQueueAction.Add);
 	}
 
 	protected override void Uninit()
@@ -67,12 +67,12 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 		AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
 	}
 
-	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(OwnQueueAction.Add);
-	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(OwnQueueAction.Remove);
+	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnQueue(OwnQueueAction.Add);
+	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnQueue(OwnQueueAction.Remove);
 
 
-	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} + AUTH");
-	public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - AUTH");
+	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} + OWN");
+	public override void OnStopAuthority() => DebugLog.DebugWrite($"{this} - OWN");
 
 	/// <summary>
 	/// replacement for base method

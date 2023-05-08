@@ -14,7 +14,7 @@ public class OwnQueueMessage : QSBMessage<(uint NetId, OwnQueueAction Action)>
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 	public override void OnReceiveLocal() => OnReceiveRemote();
-	public override void OnReceiveRemote() => NetworkServer.spawned[Data.NetId].ServerUpdateAuthQueue(From, Data.Action);
+	public override void OnReceiveRemote() => NetworkServer.spawned[Data.NetId].ServerUpdateOwnQueue(From, Data.Action);
 }
 
 public enum OwnQueueAction

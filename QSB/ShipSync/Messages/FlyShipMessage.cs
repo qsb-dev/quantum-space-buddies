@@ -57,7 +57,7 @@ internal class FlyShipMessage : QSBMessage<bool>
 
 		if (QSBCore.IsHost)
 		{
-			ShipTransformSync.LocalInstance.netIdentity.SetAuthority(isFlying
+			ShipTransformSync.LocalInstance.netIdentity.SetOwner(isFlying
 				? id
 				: QSBPlayerManager.LocalPlayerId);
 		}

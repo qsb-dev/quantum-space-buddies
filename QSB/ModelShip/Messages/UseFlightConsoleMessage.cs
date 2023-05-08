@@ -66,9 +66,9 @@ internal class UseFlightConsoleMessage : QSBMessage<bool>
 
 		if (QSBCore.IsHost)
 		{
-			ModelShipTransformSync.LocalInstance.netIdentity.SetAuthority(isFlying
+			ModelShipTransformSync.LocalInstance.netIdentity.SetOwner(isFlying
 				? flyer
-				: QSBPlayerManager.LocalPlayerId); // Host gets authority when its not in use
+				: QSBPlayerManager.LocalPlayerId); // Host gets ownership when its not in use
 		}
 
 		// Client messes up its position when they start flying it

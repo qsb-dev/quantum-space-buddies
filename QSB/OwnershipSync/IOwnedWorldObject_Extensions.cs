@@ -6,7 +6,7 @@ namespace QSB.OwnershipSync;
 public static class IOwnedWorldObject_Extensions
 {
 	/// <summary>
-	/// try and gain authority over the object
+	/// try and gain ownership over the object
 	/// </summary>
 	public static void RequestOwnership(this IOwnedWorldObject @this)
 	{
@@ -18,7 +18,7 @@ public static class IOwnedWorldObject_Extensions
 	}
 
 	/// <summary>
-	/// release authority over the object,
+	/// release ownership over the object,
 	/// potentially to giving it to someone else
 	/// </summary>
 	public static void ReleaseOwnership(this IOwnedWorldObject @this)

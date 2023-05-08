@@ -17,13 +17,13 @@ public abstract class LinkedWorldObject<T, TNetworkBehaviour> : WorldObject<T>, 
 	public void SetNetworkBehaviour(NetworkBehaviour networkBehaviour) => NetworkBehaviour = (TNetworkBehaviour)networkBehaviour;
 
 	protected abstract GameObject NetworkObjectPrefab { get; }
-	protected abstract bool SpawnWithServerAuthority { get; }
+	protected abstract bool SpawnWithServerOwnership { get; }
 
 	public override async UniTask Init(CancellationToken ct)
 	{
 		if (QSBCore.IsHost)
 		{
-			this.SpawnLinked(NetworkObjectPrefab, SpawnWithServerAuthority);
+			this.SpawnLinked(NetworkObjectPrefab, SpawnWithServerOwnership);
 		}
 		else
 		{

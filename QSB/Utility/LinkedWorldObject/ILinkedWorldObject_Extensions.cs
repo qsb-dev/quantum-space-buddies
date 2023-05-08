@@ -20,16 +20,16 @@ public static class ILinkedWorldObject_Extensions
 	/// link a world object and network object, then spawn it.
 	/// (host only)
 	/// </summary>
-	public static void SpawnLinked(this ILinkedWorldObject<NetworkBehaviour> @this, GameObject prefab, bool spawnWithServerAuthority)
+	public static void SpawnLinked(this ILinkedWorldObject<NetworkBehaviour> @this, GameObject prefab, bool spawnWithServerOwnership)
 	{
 		var go = Object.Instantiate(prefab);
 		var networkBehaviour = go.GetComponent<ILinkedNetworkBehaviour>();
 
 		@this.LinkTo(networkBehaviour);
 
-		if (spawnWithServerAuthority)
+		if (spawnWithServerOwnership)
 		{
-			go.SpawnWithServerAuthority();
+			go.SpawnWithServerOwnership();
 		}
 		else
 		{

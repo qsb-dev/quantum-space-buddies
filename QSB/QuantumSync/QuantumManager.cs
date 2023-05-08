@@ -51,7 +51,7 @@ internal class QuantumManager : WorldObjectManager
 		{
 			if (obj.ControllingPlayer == player.PlayerId)
 			{
-				obj.SendMessage(new QuantumAuthorityMessage(obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u));
+				obj.SendMessage(new QuantumOwnershipMessage(obj.IsEnabled ? QSBPlayerManager.LocalPlayerId : 0u));
 			}
 		}
 	}

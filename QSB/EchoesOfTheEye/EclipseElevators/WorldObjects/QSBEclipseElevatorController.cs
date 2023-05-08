@@ -10,7 +10,7 @@ internal class QSBEclipseElevatorController : QSBRotatingElements<EclipseElevato
 	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._lightSensors;
 
 	public override string ReturnLabel()
-		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value?.Join()}\r\n- HasAuth:{NetworkBehaviour.isOwned}";
+		=> $"{base.ReturnLabel()}\r\n- SyncerValue:{NetworkBehaviour.Value?.Join()}\r\n- IsOwned:{NetworkBehaviour.isOwned}";
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.ElevatorPrefab;
 }

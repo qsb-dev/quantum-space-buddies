@@ -12,7 +12,7 @@ public interface IOwnedWorldObject : IWorldObject
 	/// </summary>
 	public uint Owner { get; set; }
 	/// <summary>
-	/// can the world object have authority
+	/// can the world object be owned by this client
 	/// </summary>
 	public bool CanOwn { get; }
 }

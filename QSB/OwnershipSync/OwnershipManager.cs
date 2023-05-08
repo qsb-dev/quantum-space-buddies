@@ -10,54 +10,54 @@ public static class OwnershipManager
 	#region host only
 
 	/// <summary>
-	/// whoever is first gets authority
+	/// whoever is first gets ownership
 	/// </summary>
-	private static readonly Dictionary<NetworkIdentity, List<uint>> _authQueue = new();
+	private static readonly Dictionary<NetworkIdentity, List<uint>> _ownQueue = new();
 
-	public static void RegisterAuthQueue(this NetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
-	public static void UnregisterAuthQueue(this NetworkIdentity identity) => _authQueue.Remove(identity);
+	public static void RegisterOwnQueue(this NetworkIdentity identity) => _ownQueue.Add(identity, new List<uint>());
+	public static void UnregisterOwnQueue(this NetworkIdentity identity) => _ownQueue.Remove(identity);
 
-	public static void ServerUpdateAuthQueue(this NetworkIdentity identity, uint id, OwnQueueAction action)
+	public static void ServerUpdateOwnQueue(this NetworkIdentity identity, uint id, OwnQueueAction action)
 	{
-		var authQueue = _authQueue[identity];
-		var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
+		var ownQueue = _ownQueue[identity];
+		var oldOwner = ownQueue.Count != 0 ? ownQueue[0] : uint.MaxValue;
 
 		switch (action)
 		{
 			case OwnQueueAction.Add:
-				authQueue.SafeAdd(id);
+				ownQueue.SafeAdd(id);
 				break;
 
 			case OwnQueueAction.Remove:
-				authQueue.Remove(id);
+				ownQueue.Remove(id);
 				break;
 
 			case OwnQueueAction.Force:
-				authQueue.Remove(id);
-				authQueue.Insert(0, id);
+				ownQueue.Remove(id);
+				ownQueue.Insert(0, id);
 				break;
 		}
 
-		var newOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
+		var newOwner = ownQueue.Count != 0 ? ownQueue[0] : uint.MaxValue;
 		if (oldOwner != newOwner)
 		{
-			SetAuthority(identity, newOwner);
+			SetOwner(identity, newOwner);
 		}
 	}
 
 	/// <summary>
-	/// transfer authority to a different client
+	/// transfer ownership to a different client
 	/// </summary>
 	public static void OnDisconnect(NetworkConnectionToClient conn)
 	{
 		var id = conn.GetPlayerId();
-		foreach (var identity in _authQueue.Keys)
+		foreach (var identity in _ownQueue.Keys)
 		{
-			identity.ServerUpdateAuthQueue(id, OwnQueueAction.Remove);
+			identity.ServerUpdateOwnQueue(id, OwnQueueAction.Remove);
 		}
 	}
 
-	public static void SetAuthority(this NetworkIdentity identity, uint id)
+	public static void SetOwner(this NetworkIdentity identity, uint id)
 	{
 		var oldConn = identity.connectionToClient;
 		var newConn = id != uint.MaxValue ? id.GetNetworkConnection() : null;
@@ -79,7 +79,7 @@ public static class OwnershipManager
 
 	#region any client
 
-	public static void UpdateAuthQueue(this NetworkIdentity identity, OwnQueueAction action)
+	public static void UpdateOwnQueue(this NetworkIdentity identity, OwnQueueAction action)
 	{
 		if (action == OwnQueueAction.Force && identity.isOwned)
 		{
