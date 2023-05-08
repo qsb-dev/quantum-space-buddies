@@ -1,5 +1,5 @@
 ﻿using EpicTransport;
-using Mirror;
+using OWML.Common;
 using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
@@ -115,7 +115,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		if (QSBSceneManager.CurrentScene != OWScene.TitleScreen)
 		{
-			DebugLog.ToConsole("Error - Language changed while not in title screen?! Should be impossible!", OWML.Common.MessageType.Error);
+			DebugLog.ToConsole("Error - Language changed while not in title screen?! Should be impossible!", MessageType.Error);
 			return;
 		}
 
@@ -434,7 +434,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		if (button == null)
 		{
-			DebugLog.DebugWrite($"Warning - Tried to set button to {active}, but it was null.", OWML.Common.MessageType.Warning);
+			DebugLog.DebugWrite($"Warning - Tried to set button to {active}, but it was null.", MessageType.Warning);
 			return;
 		}
 
@@ -688,8 +688,6 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		Locator.GetMenuInputModule().DisableInputs();
 
 		QSBNetworkManager.singleton.networkAddress = address;
-		// hack to get disconnect call if start client fails immediately (happens on kcp transport when failing to resolve host name)
-		typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection))!.SetValue(null, new NetworkConnectionToServer());
 		QSBNetworkManager.singleton.StartClient();
 	}
 
