@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Mirror;
 using OWML.Common;
+using QSB.HUD;
 using QSB.Localization;
 using QSB.Messaging;
 using QSB.Utility;
@@ -125,7 +126,7 @@ public class PlayerJoinMessage : QSBMessage
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.Name = PlayerName;
-		DebugLog.ToAll(string.Format(QSBLocalization.Current.PlayerJoinedTheGame, player.Name), MessageType.Info);
+		MultiplayerHUDManager.Instance.WriteMessage($"<color=green>{string.Format(QSBLocalization.Current.PlayerJoinedTheGame, player.Name)}</color>");
 		DebugLog.DebugWrite($"{player} joined. qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
 	}
 

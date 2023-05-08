@@ -5,9 +5,6 @@ namespace QSB.Utility;
 [JsonObject(MemberSerialization.OptIn)]
 public class DebugSettings
 {
-	[JsonProperty("useKcpTransport")]
-	public bool UseKcpTransport;
-
 	[JsonProperty("dumpWorldObjects")]
 	public bool DumpWorldObjects;
 

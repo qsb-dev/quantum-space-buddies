@@ -338,6 +338,13 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		}
 
 		label += $"VisibleInProbeSnapshot:{AttachedObject._visibleInProbeSnapshot}\r\n";
+		label += $"IsLockedByProbeSnapshot:{AttachedObject.IsLockedByProbeSnapshot()}\r\n";
+		label += "VisibleToProbePlayers:\r\n";
+
+		foreach (var player in GetVisibleToProbePlayers())
+		{
+			label += $"  ID: {player.PlayerId}\r\n";
+		}
 
 		return label;
 	}

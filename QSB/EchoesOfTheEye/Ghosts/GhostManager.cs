@@ -53,6 +53,9 @@ internal class GhostManager : WorldObjectManager
 			_zone2Director._cityGhosts[i].GetWorldObject<QSBGhostBrain>().OnIdentifyIntruder += CustomOnCityGhostsIdentifiedIntruder;
 		}
 
+		// the collision group sector is smaller than the one for ghost light sensors,
+		// so ghosts can see thru walls.
+		// fix this by just changing the collision group sector :P
 		var allCollisionGroups = Resources.FindObjectsOfTypeAll<SectorCollisionGroup>();
 		var city = allCollisionGroups.First(x => x.name == "City");
 		city.SetSector(_zone2Director._sector);

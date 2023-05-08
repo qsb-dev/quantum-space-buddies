@@ -6,14 +6,23 @@ namespace QSB.Utility;
 
 public class ListStack<T> : IEnumerable<T>
 {
-	private readonly List<T> _items = new();
+	private List<T> _items = new();
+
+	public int Count => _items.Count;
+
+	private readonly bool _removeDuplicates;
+
+	public ListStack(bool removeDuplicates)
+	{
+		_removeDuplicates = removeDuplicates;
+	}
 
 	public void Clear()
 		=> _items.Clear();
 
 	public void Push(T item)
 	{
-		if (_items.Contains(item))
+		if (_removeDuplicates && _items.Contains(item))
 		{
 			RemoveAll(x => EqualityComparer<T>.Default.Equals(x, item));
 		}
@@ -31,6 +40,27 @@ public class ListStack<T> : IEnumerable<T>
 		}
 
 		return default;
+	}
+
+	public T RemoveFirstElementAndShift()
+	{
+		if (_items.Count == 0)
+		{
+			return default;
+		}
+
+		var firstElement = _items[0];
+
+		if (_items.Count == 0)
+		{
+			return firstElement;
+		}
+
+		// shift list left
+		// allocates blehhh who cares
+		_items = _items.GetRange(1, _items.Count - 1);
+
+		return firstElement;
 	}
 
 	public T Peek() => _items.Count > 0
