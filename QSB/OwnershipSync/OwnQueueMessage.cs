@@ -2,14 +2,14 @@
 using QSB.Messaging;
 using QSB.WorldSync;
 
-namespace QSB.AuthoritySync;
+namespace QSB.OwnershipSync;
 
 /// <summary>
 /// always sent to host
 /// </summary>
-public class AuthQueueMessage : QSBMessage<(uint NetId, AuthQueueAction Action)>
+public class OwnQueueMessage : QSBMessage<(uint NetId, OwnQueueAction Action)>
 {
-	public AuthQueueMessage(uint netId, AuthQueueAction action) : base((netId, action)) =>
+	public OwnQueueMessage(uint netId, OwnQueueAction action) : base((netId, action)) =>
 		To = 0;
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
@@ -17,7 +17,7 @@ public class AuthQueueMessage : QSBMessage<(uint NetId, AuthQueueAction Action)>
 	public override void OnReceiveRemote() => NetworkServer.spawned[Data.NetId].ServerUpdateAuthQueue(From, Data.Action);
 }
 
-public enum AuthQueueAction
+public enum OwnQueueAction
 {
 	/// <summary>
 	/// add player to the queue

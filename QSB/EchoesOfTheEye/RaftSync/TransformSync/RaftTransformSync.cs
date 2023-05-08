@@ -1,4 +1,4 @@
-﻿using QSB.AuthoritySync;
+﻿using QSB.OwnershipSync;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
@@ -56,7 +56,7 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 
 		AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 		AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-		netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+		netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? OwnQueueAction.Remove : OwnQueueAction.Add);
 	}
 
 	protected override void Uninit()
@@ -67,8 +67,8 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 		AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
 	}
 
-	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
-	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(OwnQueueAction.Add);
+	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(OwnQueueAction.Remove);
 
 
 	public override void OnStartAuthority() => DebugLog.DebugWrite($"{this} + AUTH");

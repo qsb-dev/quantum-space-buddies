@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
-using QSB.AuthoritySync;
 using QSB.Messaging;
+using QSB.OwnershipSync;
 using QSB.Player;
 using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.Tools.ProbeLauncherTool.VariableSync;

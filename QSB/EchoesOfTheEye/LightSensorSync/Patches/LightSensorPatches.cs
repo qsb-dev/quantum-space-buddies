@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.Messaging;
+using QSB.OwnershipSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Tools.FlashlightTool;

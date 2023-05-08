@@ -1,8 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
-using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 using QSB.EchoesOfTheEye.RaftSync.TransformSync;
 using QSB.ItemSync.WorldObjects;
+using QSB.OwnershipSync;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using System.Linq;
@@ -49,7 +49,7 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 	{
 		if (AttachedObject.IsPlayerRiding())
 		{
-			NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+			NetworkBehaviour.netIdentity.UpdateAuthQueue(OwnQueueAction.Force);
 		}
 	}
 }

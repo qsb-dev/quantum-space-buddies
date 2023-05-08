@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using QSB.AuthoritySync;
 using QSB.Messaging;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.WorldObjects;
+using QSB.OwnershipSync;
 using QSB.Patches;
 using QSB.WorldSync;
 using UnityEngine;
@@ -48,7 +48,7 @@ public class OrbPatches : QSBPatch
 
 				var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 				qsbOrb.SendMessage(new OrbDragMessage(true));
-				qsbOrb.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
+				qsbOrb.NetworkBehaviour.netIdentity.UpdateAuthQueue(OwnQueueAction.Force);
 			}
 		}
 		else

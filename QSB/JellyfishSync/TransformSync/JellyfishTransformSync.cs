@@ -1,6 +1,6 @@
 ﻿using Mirror;
-using QSB.AuthoritySync;
 using QSB.JellyfishSync.WorldObjects;
+using QSB.OwnershipSync;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
@@ -50,7 +50,7 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 
 		AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 		AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-		netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+		netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? OwnQueueAction.Remove : OwnQueueAction.Add);
 	}
 
 	protected override void Uninit()
@@ -61,8 +61,8 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 		AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
 	}
 
-	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
-	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(OwnQueueAction.Add);
+	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(OwnQueueAction.Remove);
 
 	protected override void Serialize(NetworkWriter writer)
 	{

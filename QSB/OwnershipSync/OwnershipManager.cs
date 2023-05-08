@@ -3,9 +3,9 @@ using QSB.Messaging;
 using QSB.Utility;
 using System.Collections.Generic;
 
-namespace QSB.AuthoritySync;
+namespace QSB.OwnershipSync;
 
-public static class AuthorityManager
+public static class OwnershipManager
 {
 	#region host only
 
@@ -17,22 +17,22 @@ public static class AuthorityManager
 	public static void RegisterAuthQueue(this NetworkIdentity identity) => _authQueue.Add(identity, new List<uint>());
 	public static void UnregisterAuthQueue(this NetworkIdentity identity) => _authQueue.Remove(identity);
 
-	public static void ServerUpdateAuthQueue(this NetworkIdentity identity, uint id, AuthQueueAction action)
+	public static void ServerUpdateAuthQueue(this NetworkIdentity identity, uint id, OwnQueueAction action)
 	{
 		var authQueue = _authQueue[identity];
 		var oldOwner = authQueue.Count != 0 ? authQueue[0] : uint.MaxValue;
 
 		switch (action)
 		{
-			case AuthQueueAction.Add:
+			case OwnQueueAction.Add:
 				authQueue.SafeAdd(id);
 				break;
 
-			case AuthQueueAction.Remove:
+			case OwnQueueAction.Remove:
 				authQueue.Remove(id);
 				break;
 
-			case AuthQueueAction.Force:
+			case OwnQueueAction.Force:
 				authQueue.Remove(id);
 				authQueue.Insert(0, id);
 				break;
@@ -53,7 +53,7 @@ public static class AuthorityManager
 		var id = conn.GetPlayerId();
 		foreach (var identity in _authQueue.Keys)
 		{
-			identity.ServerUpdateAuthQueue(id, AuthQueueAction.Remove);
+			identity.ServerUpdateAuthQueue(id, OwnQueueAction.Remove);
 		}
 	}
 
@@ -79,14 +79,14 @@ public static class AuthorityManager
 
 	#region any client
 
-	public static void UpdateAuthQueue(this NetworkIdentity identity, AuthQueueAction action)
+	public static void UpdateAuthQueue(this NetworkIdentity identity, OwnQueueAction action)
 	{
-		if (action == AuthQueueAction.Force && identity.isOwned)
+		if (action == OwnQueueAction.Force && identity.isOwned)
 		{
 			return;
 		}
 
-		new AuthQueueMessage(identity.netId, action).Send();
+		new OwnQueueMessage(identity.netId, action).Send();
 	}
 
 	#endregion

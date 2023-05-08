@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
-using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.Messaging;
+using QSB.OwnershipSync;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 
-internal class QSBLightSensor : AuthWorldObject<SingleLightSensor>
+internal class QSBLightSensor : OwnedWorldObject<SingleLightSensor>
 {
 	internal bool _locallyIlluminated;
 

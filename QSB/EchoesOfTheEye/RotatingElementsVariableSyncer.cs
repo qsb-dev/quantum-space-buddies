@@ -1,5 +1,5 @@
 ﻿using Mirror;
-using QSB.AuthoritySync;
+using QSB.OwnershipSync;
 using QSB.Utility.LinkedWorldObject;
 using QSB.Utility.VariableSync;
 using QSB.WorldSync;

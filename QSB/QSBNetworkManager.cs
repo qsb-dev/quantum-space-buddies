@@ -4,7 +4,6 @@ using Mirror;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
-using QSB.AuthoritySync;
 using QSB.ClientServerStateSync;
 using QSB.DeathSync;
 using QSB.EchoesOfTheEye.AirlockSync.VariableSync;
@@ -19,6 +18,7 @@ using QSB.ModelShip.TransformSync;
 using QSB.OrbSync.Messages;
 using QSB.OrbSync.TransformSync;
 using QSB.OrbSync.WorldObjects;
+using QSB.OwnershipSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
@@ -391,7 +391,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 				}
 			}
 
-			AuthorityManager.OnDisconnect(conn);
+			OwnershipManager.OnDisconnect(conn);
 		}
 
 		base.OnServerDisconnect(conn);

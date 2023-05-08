@@ -1,11 +1,11 @@
 ﻿using QSB.WorldSync;
 
-namespace QSB.AuthoritySync;
+namespace QSB.OwnershipSync;
 
 /// <summary>
 /// a world object that has an owner
 /// </summary>
-public interface IAuthWorldObject : IWorldObject
+public interface IOwnedWorldObject : IWorldObject
 {
 	/// <summary>
 	/// 0 = owned by no one
