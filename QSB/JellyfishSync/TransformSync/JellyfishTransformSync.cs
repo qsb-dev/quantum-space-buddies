@@ -24,7 +24,7 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.RegisterOwnQueue();
+			netIdentity.RegisterOwnerQueue();
 		}
 
 		base.OnStartClient();
@@ -34,7 +34,7 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.UnregisterOwnQueue();
+			netIdentity.UnregisterOwnerQueue();
 		}
 
 		base.OnStopClient();
@@ -50,7 +50,7 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 
 		AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 		AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-		netIdentity.UpdateOwnQueue(AttachedRigidbody.IsSuspended() ? OwnQueueAction.Remove : OwnQueueAction.Add);
+		netIdentity.UpdateOwnerQueue(AttachedRigidbody.IsSuspended() ? OwnerQueueAction.Remove : OwnerQueueAction.Add);
 	}
 
 	protected override void Uninit()
@@ -61,8 +61,8 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 		AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
 	}
 
-	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnQueue(OwnQueueAction.Add);
-	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnQueue(OwnQueueAction.Remove);
+	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnerQueue(OwnerQueueAction.Add);
+	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnerQueue(OwnerQueueAction.Remove);
 
 	protected override void Serialize(NetworkWriter writer)
 	{

@@ -49,7 +49,7 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 	{
 		if (AttachedObject.IsPlayerRiding())
 		{
-			NetworkBehaviour.netIdentity.UpdateOwnQueue(OwnQueueAction.Force);
+			NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Force);
 		}
 	}
 }

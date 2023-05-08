@@ -48,7 +48,7 @@ public class OrbPatches : QSBPatch
 
 				var qsbOrb = __instance.GetWorldObject<QSBOrb>();
 				qsbOrb.SendMessage(new OrbDragMessage(true));
-				qsbOrb.NetworkBehaviour.netIdentity.UpdateOwnQueue(OwnQueueAction.Force);
+				qsbOrb.NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Force);
 			}
 		}
 		else

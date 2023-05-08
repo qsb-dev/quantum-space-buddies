@@ -12,33 +12,33 @@ public static class OwnershipManager
 	/// <summary>
 	/// whoever is first gets ownership
 	/// </summary>
-	private static readonly Dictionary<NetworkIdentity, List<uint>> _ownQueue = new();
+	private static readonly Dictionary<NetworkIdentity, List<uint>> _ownerQueue = new();
 
-	public static void RegisterOwnQueue(this NetworkIdentity identity) => _ownQueue.Add(identity, new List<uint>());
-	public static void UnregisterOwnQueue(this NetworkIdentity identity) => _ownQueue.Remove(identity);
+	public static void RegisterOwnerQueue(this NetworkIdentity identity) => _ownerQueue.Add(identity, new List<uint>());
+	public static void UnregisterOwnerQueue(this NetworkIdentity identity) => _ownerQueue.Remove(identity);
 
-	public static void ServerUpdateOwnQueue(this NetworkIdentity identity, uint id, OwnQueueAction action)
+	public static void ServerUpdateOwnerQueue(this NetworkIdentity identity, uint id, OwnerQueueAction action)
 	{
-		var ownQueue = _ownQueue[identity];
-		var oldOwner = ownQueue.Count != 0 ? ownQueue[0] : uint.MaxValue;
+		var ownerQueue = _ownerQueue[identity];
+		var oldOwner = ownerQueue.Count != 0 ? ownerQueue[0] : uint.MaxValue;
 
 		switch (action)
 		{
-			case OwnQueueAction.Add:
-				ownQueue.SafeAdd(id);
+			case OwnerQueueAction.Add:
+				ownerQueue.SafeAdd(id);
 				break;
 
-			case OwnQueueAction.Remove:
-				ownQueue.Remove(id);
+			case OwnerQueueAction.Remove:
+				ownerQueue.Remove(id);
 				break;
 
-			case OwnQueueAction.Force:
-				ownQueue.Remove(id);
-				ownQueue.Insert(0, id);
+			case OwnerQueueAction.Force:
+				ownerQueue.Remove(id);
+				ownerQueue.Insert(0, id);
 				break;
 		}
 
-		var newOwner = ownQueue.Count != 0 ? ownQueue[0] : uint.MaxValue;
+		var newOwner = ownerQueue.Count != 0 ? ownerQueue[0] : uint.MaxValue;
 		if (oldOwner != newOwner)
 		{
 			SetOwner(identity, newOwner);
@@ -51,9 +51,9 @@ public static class OwnershipManager
 	public static void OnDisconnect(NetworkConnectionToClient conn)
 	{
 		var id = conn.GetPlayerId();
-		foreach (var identity in _ownQueue.Keys)
+		foreach (var identity in _ownerQueue.Keys)
 		{
-			identity.ServerUpdateOwnQueue(id, OwnQueueAction.Remove);
+			identity.ServerUpdateOwnerQueue(id, OwnerQueueAction.Remove);
 		}
 	}
 
@@ -79,14 +79,14 @@ public static class OwnershipManager
 
 	#region any client
 
-	public static void UpdateOwnQueue(this NetworkIdentity identity, OwnQueueAction action)
+	public static void UpdateOwnerQueue(this NetworkIdentity identity, OwnerQueueAction action)
 	{
-		if (action == OwnQueueAction.Force && identity.isOwned)
+		if (action == OwnerQueueAction.Force && identity.isOwned)
 		{
 			return;
 		}
 
-		new OwnQueueMessage(identity.netId, action).Send();
+		new OwnerQueueMessage(identity.netId, action).Send();
 	}
 
 	#endregion

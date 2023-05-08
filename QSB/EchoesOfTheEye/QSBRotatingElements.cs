@@ -52,7 +52,7 @@ internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 		_litSensors++;
 		if (_litSensors == 1)
 		{
-			NetworkBehaviour.netIdentity.UpdateOwnQueue(OwnQueueAction.Add);
+			NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Add);
 		}
 	}
 
@@ -61,7 +61,7 @@ internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 		_litSensors--;
 		if (_litSensors == 0)
 		{
-			NetworkBehaviour.netIdentity.UpdateOwnQueue(OwnQueueAction.Remove);
+			NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Remove);
 		}
 	}
 

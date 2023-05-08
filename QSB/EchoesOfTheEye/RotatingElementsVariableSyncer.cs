@@ -15,7 +15,7 @@ internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVaria
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.RegisterOwnQueue();
+			netIdentity.RegisterOwnerQueue();
 		}
 
 		base.OnStartClient();
@@ -25,7 +25,7 @@ internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVaria
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.UnregisterOwnQueue();
+			netIdentity.UnregisterOwnerQueue();
 		}
 
 		base.OnStopClient();

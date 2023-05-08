@@ -28,7 +28,7 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.RegisterOwnQueue();
+			netIdentity.RegisterOwnerQueue();
 		}
 
 		base.OnStartClient();
@@ -38,7 +38,7 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.UnregisterOwnQueue();
+			netIdentity.UnregisterOwnerQueue();
 		}
 
 		base.OnStopClient();
@@ -52,7 +52,7 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 
 		body.OnUnsuspendOWRigidbody += OnUnsuspend;
 		body.OnSuspendOWRigidbody += OnSuspend;
-		netIdentity.UpdateOwnQueue(body.IsSuspended() ? OwnQueueAction.Remove : OwnQueueAction.Add);
+		netIdentity.UpdateOwnerQueue(body.IsSuspended() ? OwnerQueueAction.Remove : OwnerQueueAction.Add);
 	}
 
 	protected override void Uninit()
@@ -64,8 +64,8 @@ public class NomaiOrbTransformSync : UnsectoredTransformSync, ILinkedNetworkBeha
 		body.OnSuspendOWRigidbody -= OnSuspend;
 	}
 
-	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnQueue(OwnQueueAction.Add);
-	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnQueue(OwnQueueAction.Remove);
+	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnerQueue(OwnerQueueAction.Add);
+	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnerQueue(OwnerQueueAction.Remove);
 
 	protected override void ApplyToAttached()
 	{

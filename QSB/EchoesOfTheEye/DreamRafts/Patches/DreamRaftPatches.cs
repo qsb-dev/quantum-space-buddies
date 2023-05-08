@@ -78,7 +78,7 @@ public class DreamRaftPatches : QSBPatch
 			// still release ownership over the raft tho
 			__instance._lastUsedRaftProjector
 				._dreamRaftProjection.GetComponent<DreamRaftController>().GetWorldObject<QSBDreamRaft>()
-				.NetworkBehaviour.netIdentity.UpdateOwnQueue(OwnQueueAction.Remove);
+				.NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Remove);
 		}
 
 		return false;
