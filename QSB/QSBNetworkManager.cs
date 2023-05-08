@@ -65,7 +65,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private GameObject _probePrefab;
 	private bool _everConnected;
 
-	private (TransportError error, string reason) _lastTransportError;
+	private (TransportError error, string reason) _lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
 
 	private static kcp2k.KcpTransport _kcpTransport;
 	private static EosTransport _eosTransport;
@@ -344,7 +344,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		DebugLog.DebugWrite("OnClientDisconnect");
 		base.OnClientDisconnect();
 		OnClientDisconnected?.SafeInvoke(_lastTransportError.error, _lastTransportError.reason);
-		_lastTransportError = default;
+		_lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
 	}
 
 	public override void OnServerDisconnect(NetworkConnectionToClient conn) // Called on the server when any client disconnects
