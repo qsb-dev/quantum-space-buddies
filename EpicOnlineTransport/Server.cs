@@ -109,7 +109,7 @@ namespace EpicTransport {
             }
 
             if (epicToMirrorIds.TryGetValue(clientUserId, out int connectionId)) {
-                OnReceivedData?.Invoke(connectionId, data, channel);
+                OnReceivedData.Invoke(connectionId, data, channel);
             } else {
                 SocketId socketId;
                 epicToSocketIds.TryGetValue(clientUserId, out socketId);
