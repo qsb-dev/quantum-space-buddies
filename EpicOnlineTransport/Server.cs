@@ -93,7 +93,7 @@ namespace EpicTransport {
                         Debug.Log($"Client with Product User ID {clientUserId} disconnected.");
                     } else {
                         // CHANGED
-                        OnReceivedError.Invoke(-1, TransportError.InvalidReceive, "ERROR Unknown Product User ID");
+                        OnReceivedError?.Invoke(-1, TransportError.InvalidReceive, "ERROR Unknown Product User ID");
                     }
 
                     break;
@@ -109,7 +109,7 @@ namespace EpicTransport {
             }
 
             if (epicToMirrorIds.TryGetValue(clientUserId, out int connectionId)) {
-                OnReceivedData.Invoke(connectionId, data, channel);
+                OnReceivedData?.Invoke(connectionId, data, channel);
             } else {
                 SocketId socketId;
                 epicToSocketIds.TryGetValue(clientUserId, out socketId);
@@ -120,7 +120,7 @@ namespace EpicTransport {
 
                 Debug.LogError("Data received from epic client thats not known " + productId);
                 // CHANGED
-                OnReceivedError.Invoke(-1, TransportError.InvalidReceive, "ERROR Unknown product ID");
+                OnReceivedError?.Invoke(-1, TransportError.InvalidReceive, "ERROR Unknown product ID");
             }
         }
 
@@ -158,7 +158,7 @@ namespace EpicTransport {
             } else {
                 Debug.LogError("Trying to send on unknown connection: " + connectionId);
                 // CHANGED
-                OnReceivedError.Invoke(connectionId, TransportError.InvalidSend, "ERROR Unknown Connection");
+                OnReceivedError?.Invoke(connectionId, TransportError.InvalidSend, "ERROR Unknown Connection");
             }
 
         }
@@ -171,7 +171,7 @@ namespace EpicTransport {
             } else {
                 Debug.LogError("Trying to get info on unknown connection: " + connectionId);
                 // CHANGED
-                OnReceivedError.Invoke(connectionId, TransportError.Unexpected, "ERROR Unknown Connection");
+                OnReceivedError?.Invoke(connectionId, TransportError.Unexpected, "ERROR Unknown Connection");
                 return string.Empty;
             }
         }
