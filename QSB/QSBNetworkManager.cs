@@ -45,7 +45,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	public new static QSBNetworkManager singleton => (QSBNetworkManager)NetworkManager.singleton;
 
 	public event Action OnClientConnected;
-	public event Action<string> OnClientDisconnected;
+	public event Action<TransportError, string> OnClientDisconnected;
 
 	public GameObject OrbPrefab { get; private set; }
 	public GameObject ShipPrefab { get; private set; }
@@ -65,12 +65,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private GameObject _probePrefab;
 	private bool _everConnected;
 
-	private string _lastTransportError;
-	private static readonly string[] _kcpErrorLogs =
-	{
-		"KcpPeer: received disconnect message",
-		"Failed to resolve host: .*"
-	};
+	private (TransportError error, string reason) _lastTransportError;
 
 	private static kcp2k.KcpTransport _kcpTransport;
 	private static EosTransport _eosTransport;
@@ -99,7 +94,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			eosSdkComponent.epicLoggerLevel = LogLevel.VeryVerbose;
 
 			_eosTransport = gameObject.AddComponent<EosTransport>();
-			_eosTransport.SetTransportError = error => _lastTransportError = error;
 		}
 		transport = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
 
@@ -242,23 +236,13 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		networkAddress = QSBCore.DefaultServerIP;
 
 		{
-			kcp2k.Log.Info = s =>
+			// hack
+			kcp2k.Log.Info += s =>
 			{
-				DebugLog.DebugWrite("[KCP] " + s);
-				if (_kcpErrorLogs.Any(p => Regex.IsMatch(s, p)))
+				if (s == "KcpPeer: received disconnect message")
 				{
-					_lastTransportError = s;
+					OnClientError(TransportError.ConnectionClosed, "host disconnected");
 				}
-			};
-			kcp2k.Log.Warning = s =>
-			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
-				_lastTransportError = s;
-			};
-			kcp2k.Log.Error = s =>
-			{
-				DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
-				_lastTransportError = s;
 			};
 		}
 
@@ -357,8 +341,8 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	{
 		DebugLog.DebugWrite("OnClientDisconnect");
 		base.OnClientDisconnect();
-		OnClientDisconnected?.SafeInvoke(_lastTransportError);
-		_lastTransportError = null;
+		OnClientDisconnected?.SafeInvoke(_lastTransportError.error, _lastTransportError.reason);
+		_lastTransportError = default;
 	}
 
 	public override void OnServerDisconnect(NetworkConnectionToClient conn) // Called on the server when any client disconnects
@@ -425,9 +409,15 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		base.OnStopServer();
 	}
 
-	public override void OnServerError(NetworkConnectionToClient conn, TransportError error, string reason) =>
+	public override void OnServerError(NetworkConnectionToClient conn, TransportError error, string reason)
+	{
 		DebugLog.DebugWrite($"OnServerError({conn}, {error}, {reason})", MessageType.Error);
+		_lastTransportError = (error, reason);
+	}
 
-	public override void OnClientError(TransportError error, string reason) =>
+	public override void OnClientError(TransportError error, string reason)
+	{
 		DebugLog.DebugWrite($"OnClientError({error}, {reason})", MessageType.Error);
+		_lastTransportError = (error, reason);
+	}
 }

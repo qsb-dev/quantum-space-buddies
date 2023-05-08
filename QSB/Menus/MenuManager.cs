@@ -1,4 +1,5 @@
 ﻿using EpicTransport;
+using Mirror;
 using OWML.Common;
 using QSB.Localization;
 using QSB.Messaging;
@@ -716,7 +717,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 		OpenInfoPopup(string.Format(QSBLocalization.Current.ServerRefusedConnection, reason), QSBLocalization.Current.OK);
 	}
 
-	private void OnDisconnected(string error)
+	private void OnDisconnected(TransportError error, string reason)
 	{
 		QSBCore.IsInMultiplayer = false;
 
@@ -735,7 +736,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				}
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalization.Current.ClientDisconnectWithError, error), QSBLocalization.Current.OK);
+			OpenInfoPopup(string.Format(QSBLocalization.Current.ClientDisconnectWithError, reason), QSBLocalization.Current.OK);
 		}
 
 		SetButtonActive(DisconnectButton, false);
