@@ -76,7 +76,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		{
 			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
-			_kcpTransport.Timeout = int.MaxValue; // effectively disables kcp ping and timeout (good for testing)
 		}
 		{
 			// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
