@@ -235,14 +235,17 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		networkAddress = QSBCore.DefaultServerIP;
 
 		{
-			// hack
-			kcp2k.Log.Info += s =>
+			kcp2k.Log.Info = s =>
 			{
+				DebugLog.DebugWrite("[KCP] " + s);
+				// hack
 				if (s == "KcpPeer: received disconnect message")
 				{
 					OnClientError(TransportError.ConnectionClosed, "host disconnected");
 				}
 			};
+			kcp2k.Log.Warning = s => DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
+			kcp2k.Log.Error = s => DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
 		}
 
 		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
