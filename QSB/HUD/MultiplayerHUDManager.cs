@@ -67,11 +67,14 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 	private const int LINE_COUNT = 11;
 	private const int CHAR_COUNT = 41;
+	private const float FADE_DELAY = 5f;
+	private const float FADE_TIME = 2f;
 
 	private bool _writingMessage;
 	private readonly string[] _lines = new string[LINE_COUNT];
 	// this should really be a deque, but eh
 	private readonly ListStack<string> _messages = new(false);
+	private float _lastMessageTime;
 
 	public void WriteMessage(string message)
 	{
@@ -84,6 +87,8 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		 * From newest to oldest message, work out how many lines it needs
 		 * and set the lines correctly bottom-up.
 		 */
+
+		_lastMessageTime = Time.time;
 
 		_messages.Push(message);
 
@@ -163,6 +168,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			OWInput.ChangeInputMode(InputMode.KeyboardInput);
 			_writingMessage = true;
 			_inputField.ActivateInputField();
+			_textChat.GetComponent<CanvasGroup>().alpha = 1;
 		}
 
 		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.KeyboardInput) && _writingMessage)
@@ -182,6 +188,20 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		{
 			OWInput.RestorePreviousInputs();
 			_writingMessage = false;
+		}
+
+		if (_writingMessage)
+		{
+			_lastMessageTime = Time.time;
+		}	
+
+		if (Time.time > _lastMessageTime + FADE_DELAY
+			&& !_writingMessage
+			&& Time.time > _lastMessageTime + FADE_DELAY + FADE_TIME + 1)
+		{
+			var difference = Time.time - (_lastMessageTime + FADE_DELAY);
+			var alpha = Mathf.Lerp(1, 0, difference / FADE_TIME);
+			_textChat.GetComponent<CanvasGroup>().alpha = alpha;
 		}
 	}
 
@@ -243,6 +263,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		_textChat.Find("Messages").Find("Message").GetComponent<Text>().text = "";
 		_lines.Clear();
 		_messages.Clear();
+		_textChat.GetComponent<CanvasGroup>().alpha = 0;
 	}
 
 	public void UpdateMinimapMarkers(Minimap minimap)
