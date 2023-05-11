@@ -28,7 +28,9 @@ public class PlayerBox : MonoBehaviour
 
 		if (player.Name != null)
 		{
-			PlayerName.text = player.Name.ToUpper();
+			Delay.RunWhen(
+				() => player.Name != null,
+				() => PlayerName.text = player.Name.ToUpper());
 		}
 		
 		InfoImage.sprite = MultiplayerHUDManager.UnknownSprite;
