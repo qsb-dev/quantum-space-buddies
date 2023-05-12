@@ -29,6 +29,10 @@ internal class PoolPatches : QSBPatch
 	public static bool NomaiRemoteCameraPlatform_OnPedestalContact() => false;
 
 	[HarmonyPrefix]
+	[HarmonyPatch(typeof(NomaiRemoteCameraStreaming), nameof(NomaiRemoteCameraPlatform.SwitchToPlayerCamera))]
+	public static bool NomaiRemoteCameraPlatform_SwitchToPlayerCamera() => false;
+
+	[HarmonyPrefix]
 	[HarmonyPatch(typeof(NomaiRemoteCameraStreaming), nameof(NomaiRemoteCameraStreaming.FixedUpdate))]
 	public static bool NomaiRemoteCameraStreaming_FixedUpdate() => false;
 
