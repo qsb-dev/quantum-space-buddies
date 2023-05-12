@@ -193,11 +193,11 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		if (_writingMessage)
 		{
 			_lastMessageTime = Time.time;
-		}	
+		}
 
-		if (Time.time > _lastMessageTime + FADE_DELAY
-			&& !_writingMessage
-			&& Time.time > _lastMessageTime + FADE_DELAY + FADE_TIME + 1)
+		if (!_writingMessage
+			&& Time.time > _lastMessageTime + FADE_DELAY
+			&& Time.time < _lastMessageTime + FADE_DELAY + FADE_TIME + 1)
 		{
 			var difference = Time.time - (_lastMessageTime + FADE_DELAY);
 			var alpha = Mathf.Lerp(1, 0, difference / FADE_TIME);
