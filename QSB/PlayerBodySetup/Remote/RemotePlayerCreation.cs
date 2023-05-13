@@ -5,6 +5,7 @@ using QSB.RoastingSync;
 using QSB.Tools;
 using QSB.Utility;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 namespace QSB.PlayerBodySetup.Remote;
 
@@ -67,11 +68,18 @@ public static class RemotePlayerCreation
 		 * SET UP PLAYER CAMERA
 		 */
 
-		REMOTE_PlayerCamera.GetComponent<Camera>().enabled = false;
+		var remoteCamera = REMOTE_PlayerCamera.GetComponent<Camera>();
+		remoteCamera.enabled = false;
+		remoteCamera.cullingMask = Locator.GetPlayerCamera().cullingMask;
+		remoteCamera.farClipPlane = Locator.GetPlayerCamera().farClipPlane;
+		remoteCamera.nearClipPlane = Locator.GetPlayerCamera().nearClipPlane;
 		var owcamera = REMOTE_PlayerCamera.GetComponent<OWCamera>();
 		player.Camera = owcamera;
 		player.CameraBody = REMOTE_PlayerCamera;
 		visibleCameraRoot = REMOTE_PlayerCamera.transform;
+		//REMOTE_PlayerCamera.GetComponent<PostProcessingBehaviour>().profile = Locator.GetPlayerCamera().postProcessing.profile;
+		//REMOTE_PlayerCamera.GetComponent<PlanetaryFogImageEffect>().fogShader = Locator.GetPlayerCamera().planetaryFog.fogShader;
+		//REMOTE_PlayerCamera.GetComponent<FlashbackScreenGrabImageEffect>()._downsampleShader = Locator.GetPlayerCamera().GetComponent<FlashbackScreenGrabImageEffect>()._downsampleShader;
 
 		player.LightSensor.gameObject.GetAddComponent<QSBPlayerLightSensor>();
 

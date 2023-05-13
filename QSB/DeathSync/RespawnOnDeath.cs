@@ -4,6 +4,7 @@ using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.RespawnSync;
 using QSB.ShipSync;
+using QSB.Spectate;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Linq;
@@ -58,7 +59,7 @@ public class RespawnOnDeath : MonoBehaviour
 		_deadTextStyle.fontSize = 20;
 	}
 
-	public void ResetPlayer()
+	public void KillPlayer()
 	{
 		DebugLog.DebugWrite($"RESET PLAYER");
 		if (_playerSpawnPoint == null)
@@ -67,7 +68,7 @@ public class RespawnOnDeath : MonoBehaviour
 			Init();
 		}
 
-		RespawnManager.Instance.TriggerRespawnMap();
+		SpectateManager.Instance.TriggerSpectate();
 
 		SetupDeathPositions();
 

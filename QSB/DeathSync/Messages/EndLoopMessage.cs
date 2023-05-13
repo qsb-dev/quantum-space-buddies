@@ -19,7 +19,7 @@ internal class EndLoopMessage : QSBMessage
 			return;
 		}
 
-		QSBPatchManager.DoUnpatchType(QSBPatchTypes.RespawnTime);
+		QSBPatchManager.DoUnpatchType(QSBPatchTypes.SpectateTime);
 
 		Locator.GetDeathManager().KillPlayer(DeathType.TimeLoop);
 		if (QSBCore.IsHost)

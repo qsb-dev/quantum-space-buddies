@@ -90,7 +90,7 @@ public class DeathPatches : QSBPatch
 			}
 			else if (!RespawnOnDeath.Instance.AllowedDeathTypes.Contains(__instance._deathType))
 			{
-				RespawnOnDeath.Instance.ResetPlayer();
+				RespawnOnDeath.Instance.KillPlayer();
 				QSBPlayerManager.LocalPlayer.IsDead = true;
 				new PlayerDeathMessage(__instance._deathType).Send();
 				if (PlayerAttachWatcher.Current)
