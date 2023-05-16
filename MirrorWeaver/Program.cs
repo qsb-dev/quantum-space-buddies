@@ -50,11 +50,14 @@ public static class Program
 
 		var log = new ConsoleLogger();
 		var weaver = new Weaver(log);
-		if (!weaver.Weave(assembly, resolver, out _))
+		if (!weaver.Weave(assembly, resolver, out var modified))
 		{
 			Environment.Exit(1);
 		}
 
-		assembly.Write(new WriterParameters { WriteSymbols = assembly.MainModule.HasSymbols });
+		if (modified)
+		{
+			assembly.Write(new WriterParameters { WriteSymbols = assembly.MainModule.HasSymbols });
+		}
 	}
 }
