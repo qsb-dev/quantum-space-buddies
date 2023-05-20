@@ -150,6 +150,8 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			audioController.PlayNotificationTextScrolling();
 			Delay.RunFramesLater(10, () => audioController.StopNotificationTextScrolling());
 		}
+
+		_textChat.GetComponent<CanvasGroup>().alpha = 1;
 	}
 
 	private void Update()
