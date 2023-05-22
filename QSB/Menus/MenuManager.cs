@@ -736,7 +736,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				}
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalization.Current.ClientDisconnectWithError, reason), QSBLocalization.Current.OK);
+			OpenInfoPopup(string.Format(QSBLocalization.Current.ClientDisconnectWithError, QSBLocalization.Current.TransportErrors[error], reason), QSBLocalization.Current.OK);
 		}
 
 		SetButtonActive(DisconnectButton, false);
