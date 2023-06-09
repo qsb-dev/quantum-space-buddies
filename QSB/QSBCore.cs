@@ -141,8 +141,9 @@ public class QSBCore : ModBehaviour
 				DebugLog.ToConsole("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.", MessageType.Error);
 			}
 
-			System.Environment.SetEnvironmentVariable("SteamAppId", "480");
-			System.Environment.SetEnvironmentVariable("SteamGameId", "480");
+			// from facepunch.steamworks SteamClient.cs
+			Environment.SetEnvironmentVariable("SteamAppId", "480");
+			Environment.SetEnvironmentVariable("SteamGameId", "480");
 
 			if (!SteamAPI.Init())
 			{
