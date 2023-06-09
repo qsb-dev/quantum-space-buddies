@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <Reference Include="com.rlabrecque.steamworks.net">
-      <HintPath>F:\Steam\steamapps\common\Outer Wilds\OuterWilds_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
     </Reference>
     <Reference Include="kcp2k">
       <HintPath>..\Mirror\kcp2k.dll</HintPath>
@@ -25,7 +25,7 @@
       <HintPath>..\Mirror\Telepathy.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>F:\Steam\steamapps\common\Outer Wilds\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 
