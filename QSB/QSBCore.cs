@@ -11,6 +11,7 @@ using QSB.SaveSync;
 using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -110,8 +111,10 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"FATAL - Could not determine game vendor.", MessageType.Fatal);
 		}
 
-		DebugLog.DebugWrite($"Determined game vendor as {GameVendor}", MessageType.Info);
+		DebugLog.ToConsole($"Determined game vendor as {GameVendor}", MessageType.Info);
 	}
+
+	private bool _steamworksInitialized;
 
 	public void Awake()
 	{
@@ -123,6 +126,39 @@ public class QSBCore : ModBehaviour
 
 		QSBPatchManager.Init();
 		QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
+
+		if (GameVendor != GameVendor.Steam)
+		{
+			DebugLog.ToConsole($"Not steam, initializing Steamworks...");
+
+			if (!Packsize.Test())
+			{
+				DebugLog.ToConsole("[Steamworks.NET] Packsize Test returned false, the wrong version of Steamworks.NET is being run in this platform.", MessageType.Error);
+			}
+
+			if (!DllCheck.Test())
+			{
+				DebugLog.ToConsole("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.", MessageType.Error);
+			}
+
+			System.Environment.SetEnvironmentVariable("SteamAppId", "480");
+			System.Environment.SetEnvironmentVariable("SteamGameId", "480");
+
+			if (!SteamAPI.Init())
+			{
+				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.", MessageType.Fatal);
+			}
+
+			_steamworksInitialized = true;
+		}
+	}
+
+	public void OnDestroy()
+	{
+		if (_steamworksInitialized)
+		{
+			SteamAPI.Shutdown();
+		}
 	}
 
 	public void Start()
@@ -281,6 +317,11 @@ public class QSBCore : ModBehaviour
 			DebugCameraSettings.UpdateFromDebugSetting();
 
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
+		}
+
+		if (_steamworksInitialized)
+		{
+			SteamAPI.RunCallbacks();
 		}
 	}
 

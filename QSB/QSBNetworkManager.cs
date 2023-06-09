@@ -1,5 +1,6 @@
 ﻿using Epic.OnlineServices.Logging;
 using Mirror;
+using Mirror.FizzySteam;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -67,6 +68,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private (TransportError error, string reason) _lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
 
 	private static kcp2k.KcpTransport _kcpTransport;
+	private static FizzySteamworks _steamTransport;
 
 	public override void Awake()
 	{
@@ -76,7 +78,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
 		}
 
-		transport = QSBCore.UseKcpTransport ? _kcpTransport : null;
+		{
+			_steamTransport = gameObject.AddComponent<FizzySteamworks>();
+		}
+
+		transport = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 
 		gameObject.SetActive(true);
 
@@ -147,7 +153,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		}
 		if (singleton != null)
 		{
-			singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : null;
+			singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 		}
 		if (MenuManager.Instance != null)
 		{

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Mirror.FizzySteam</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="com.rlabrecque.steamworks.net">
+      <HintPath>F:\Steam\steamapps\common\Outer Wilds\OuterWilds_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
+    </Reference>
+    <Reference Include="kcp2k">
+      <HintPath>..\Mirror\kcp2k.dll</HintPath>
+    </Reference>
+    <Reference Include="Mirror">
+      <HintPath>..\Mirror\Mirror.dll</HintPath>
+    </Reference>
+    <Reference Include="Mirror.Components">
+      <HintPath>..\Mirror\Mirror.Components.dll</HintPath>
+    </Reference>
+    <Reference Include="Mirror.Transports">
+      <HintPath>..\Mirror\Mirror.Transports.dll</HintPath>
+    </Reference>
+    <Reference Include="Telepathy">
+      <HintPath>..\Mirror\Telepathy.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>F:\Steam\steamapps\common\Outer Wilds\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
