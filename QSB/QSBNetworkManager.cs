@@ -1,5 +1,4 @@
 ﻿using Epic.OnlineServices.Logging;
-using EpicTransport;
 using Mirror;
 using OWML.Common;
 using OWML.Utils;
@@ -68,7 +67,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private (TransportError error, string reason) _lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
 
 	private static kcp2k.KcpTransport _kcpTransport;
-	private static EosTransport _eosTransport;
 
 	public override void Awake()
 	{
@@ -77,24 +75,8 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
 		}
-		{
-			// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
-			var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
-			eosApiKey.epicProductName = "QSB";
-			eosApiKey.epicProductVersion = "1.0";
-			eosApiKey.epicProductId = "d4623220acb64419921c72047931b165";
-			eosApiKey.epicSandboxId = "d9bc4035269747668524931b0840ca29";
-			eosApiKey.epicDeploymentId = "1f164829371e4cdcb23efedce98d99ad";
-			eosApiKey.epicClientId = "xyza7891TmlpkaiDv6KAnJH0f07aAbTu";
-			eosApiKey.epicClientSecret = "ft17miukylHF877istFuhTgq+Kw1le3Pfigvf9Dtu20";
 
-			var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
-			eosSdkComponent.apiKeys = eosApiKey;
-			eosSdkComponent.epicLoggerLevel = LogLevel.VeryVerbose;
-
-			_eosTransport = gameObject.AddComponent<EosTransport>();
-		}
-		transport = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+		transport = QSBCore.UseKcpTransport ? _kcpTransport : null;
 
 		gameObject.SetActive(true);
 
@@ -165,7 +147,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		}
 		if (singleton != null)
 		{
-			singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+			singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : null;
 		}
 		if (MenuManager.Instance != null)
 		{
@@ -200,10 +182,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			{
 				DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 				PlayerName = "Player";
-			}
-
-			{
-				EOSSDKComponent.DisplayName = PlayerName;
 			}
 		});
 

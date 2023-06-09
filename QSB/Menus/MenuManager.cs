@@ -1,5 +1,4 @@
-﻿using EpicTransport;
-using Mirror;
+﻿using Mirror;
 using OWML.Common;
 using QSB.Localization;
 using QSB.Messaging;
@@ -635,7 +634,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (!QSBCore.UseKcpTransport)
 		{
-			var productUserId = EOSSDKComponent.LocalUserProductIdString;
+			/*var productUserId = EOSSDKComponent.LocalUserProductIdString;
 
 			PopupClose += confirm =>
 			{
@@ -650,7 +649,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, productUserId)
 				, QSBLocalization.Current.Yes
-				, QSBLocalization.Current.No);
+				, QSBLocalization.Current.No);*/
 		}
 		else
 		{

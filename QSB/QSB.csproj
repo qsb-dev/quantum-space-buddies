@@ -72,8 +72,6 @@
     <PackageReference Include="OWML" Version="2.9.0" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
-    <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
-    <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>
