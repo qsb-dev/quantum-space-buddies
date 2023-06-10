@@ -1,4 +1,5 @@
-﻿using Steamworks;
+﻿using HarmonyLib;
+using Steamworks;
 using System;
 using System.IO;
 using System.Reflection;
@@ -63,20 +64,24 @@ public static class Program
 			case 0:
 				var owned = SteamApps.BIsDlcInstalled((AppId_t)1622100U);
 				Log($"dlc owned: {owned}");
-
 				exitCode = owned ? 1 : 0;
 				break;
 
 			// earn achievement
 			case 1:
-				Log("Earn " + type);
-				if (!SteamUserStats.SetAchievement(Achievements.s_names[type]))
+				var achievementType = (Achievements.Type)arg;
+				Log("Earn " + achievementType);
+				// for some reason even with unsafe code turned on it throws a FieldAccessException
+				var s_names = (string[])AccessTools.Field(typeof(Achievements), "s_names").GetValue(null);
+				if (!SteamUserStats.SetAchievement(s_names[(int)achievementType]))
 				{
-					LogError("Unable to grant achievement \"" + Achievements.s_names[type] + "\"");
+					LogError("Unable to grant achievement \"" + s_names[(int)achievementType] + "\"");
+				}
+				else
+				{
+					exitCode = 0;
 				}
 				SteamUserStats.StoreStats();
-
-				exitCode = 0;
 				break;
 		}
 

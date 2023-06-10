@@ -70,9 +70,9 @@ public static class Interop
 		});
 		process!.WaitForExit();
 
-		Log($"output:\n{process.StandardOutput.ReadToEnd()}");
-		LogError($"error:\n{process.StandardError.ReadToEnd()}");
-		Log($"exit code: {process.ExitCode}");
+		Log($"StandardOutput:\n{process.StandardOutput.ReadToEnd()}");
+		LogError($"StandardError:\n{process.StandardError.ReadToEnd()}");
+		Log($"ExitCode: {process.ExitCode}");
 
 		return process.ExitCode;
 	}
