@@ -18,7 +18,7 @@
   "Yes": "JA",
   "No": "NEIN",
   "StopHostingAreYouSure": "Bist du sicher, dass du aufhören willst zu hosten?\nDies wird die Verbindung alle anderen Spieler trennen und sie zurück in das Hauptmenü bringen.",
-  "CopyProductUserIDToClipboard": "Server wird gehostet.\nAndere Spieler werden sich mit Hilfe deiner Produktnutzer ID verbinden. Sie lautet :\n{0}\nWillst du das in die Zwischenablage kopieren?",
+  "CopySteamIDToClipboard": "Server wird gehostet.\nAndere Spieler werden sich mit Hilfe deiner Produktnutzer ID verbinden. Sie lautet :\n{0}\nWillst du das in die Zwischenablage kopieren?",
   "Connecting": "VERBINDEN...",
   "OK": "BESTÄTIGEN",
   "ServerRefusedConnection": "Der Server hat die Verbindung abgelehnt.\n{0}",

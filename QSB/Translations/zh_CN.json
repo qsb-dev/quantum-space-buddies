@@ -18,7 +18,7 @@
   "Yes": "是",
   "No": "否",
   "StopHostingAreYouSure": "您确定要停止服务器吗？\n将会与所有人断开连接并且使他们退出至主菜单。",
-  "CopyProductUserIDToClipboard": "开启服务器\n其他玩家需要使用您的用户ID连接至服务器，用户ID是：\n{0}\n您想要复制到剪切板吗？",
+  "CopySteamIDToClipboard": "开启服务器\n其他玩家需要使用您的用户ID连接至服务器，用户ID是：\n{0}\n您想要复制到剪切板吗？",
   "Connecting": "连接中……",
   "OK": "好的",
   "ServerRefusedConnection": "服务器拒绝了您的连接\n{0}",

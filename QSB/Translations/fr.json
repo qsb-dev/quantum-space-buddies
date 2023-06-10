@@ -18,7 +18,7 @@
   "Yes": "OUI",
   "No": "NON",
   "StopHostingAreYouSure": "Veux-tu vraiment arrêter l'hébergement?\n Cela déconnectera tous les clients et renverra tout le monde au menu principal.",
-  "CopyProductUserIDToClipboard": "Le serveur est maintenant hébergé. Les clients se connecteront en utilisant votre ID utilisateur, qui est : \n{0}\nVeux-tu copier ceci dans le presse-papier ?",
+  "CopySteamIDToClipboard": "Le serveur est maintenant hébergé. Les clients se connecteront en utilisant votre ID utilisateur, qui est : \n{0}\nVeux-tu copier ceci dans le presse-papier ?",
   "Connecting": "CONNEXION EN COURS...",
   "OK": "D'ACCORD",
   "ServerRefusedConnection": "Le serveur a refusé la connexion.\n{0}",

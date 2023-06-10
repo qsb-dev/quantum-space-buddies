@@ -18,7 +18,7 @@
   "Yes": "YES",
   "No": "NO",
   "StopHostingAreYouSure": "Are you sure you want to stop hosting?\nThis will disconnect all clients and send everyone back to the main menu.",
-  "CopyProductUserIDToClipboard": "Hosting server.\nClients will connect using your product user id, which is :\n{0}\nDo you want to copy this to the clipboard?",
+  "CopySteamIDToClipboard": "Hosting server.\nClients will connect using your Steam ID, which is :\n{0}\nDo you want to copy this to the clipboard?",
   "Connecting": "CONNECTING...",
   "OK": "OK",
   "ServerRefusedConnection": "Server refused connection.\n{0}",

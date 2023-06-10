@@ -648,7 +648,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, steamUserId)
+			OpenInfoPopup(string.Format(QSBLocalization.Current.CopySteamIDToClipboard, steamUserId)
 				, QSBLocalization.Current.Yes
 				, QSBLocalization.Current.No);
 		}

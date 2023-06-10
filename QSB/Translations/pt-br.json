@@ -18,7 +18,7 @@
   "Yes": "SIM",
   "No": "NÃO",
   "StopHostingAreYouSure": "Você tem certeza que quer parar de hospedar\nEssa ação irá de desconectar os jogadores conectados e eviará todos de volta ao menu principal.",
-  "CopyProductUserIDToClipboard": "Hospedando servidor.\nOutros jogadores poderão se conectar usando o seu ID de produto de usuário, o qual é :\n{0}\nVocê quer copia-lo para a área de transferência?",
+  "CopySteamIDToClipboard": "Hospedando servidor.\nOutros jogadores poderão se conectar usando o seu ID de produto de usuário, o qual é :\n{0}\nVocê quer copia-lo para a área de transferência?",
   "Connecting": "CONECTANDO...",
   "OK": "OK",
   "ServerRefusedConnection": "Servidor recusou a conexão.\n{0}",
