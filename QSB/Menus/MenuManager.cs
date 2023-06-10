@@ -635,20 +635,20 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (!QSBCore.UseKcpTransport)
 		{
-			var steamUserId = SteamUser.GetSteamID().ToString();
+			var steamId = SteamUser.GetSteamID().ToString();
 
 			PopupClose += confirm =>
 			{
 				if (confirm)
 				{
-					GUIUtility.systemCopyBuffer = steamUserId;
+					GUIUtility.systemCopyBuffer = steamId;
 				}
 
 				LoadGame(PlayerData.GetWarpedToTheEye());
 				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalization.Current.CopySteamIDToClipboard, steamUserId)
+			OpenInfoPopup(string.Format(QSBLocalization.Current.CopySteamIDToClipboard, steamId)
 				, QSBLocalization.Current.Yes
 				, QSBLocalization.Current.No);
 		}
