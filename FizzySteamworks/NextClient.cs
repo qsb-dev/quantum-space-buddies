@@ -227,7 +227,7 @@ namespace Mirror.FizzySteam
             {
                 Debug.LogError($"Could not send: {res.ToString()}");
                 // CHANGED
-                OnReceivedError.Invoke(TransportError.InvalidSend, $"Could not send: {res.ToString()}");
+                OnReceivedError.Invoke(TransportError.Unexpected, $"Could not send: {res.ToString()}");
             }
         }
 
