@@ -24,6 +24,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Title>Quantum Space Buddies</Title>
     <Authors>Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes</Authors>
+    <Company>Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes</Company>
     <Copyright>Copyright © Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes 2020-2023</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

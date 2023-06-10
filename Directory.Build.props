@@ -12,8 +12,6 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <NoWarn>MSB3270</NoWarn>
-    <Company>Henry Pointer, Aleksander Waage, Ricardo Lopes</Company>
-    <Copyright>Copyright © Henry Pointer, Aleksander Waage, Ricardo Lopes 2020-2021</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Label="Default Locations" Condition="!Exists('$(DevEnvLoc)')">
