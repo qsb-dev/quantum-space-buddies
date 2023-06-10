@@ -18,7 +18,7 @@
   "Yes": "EVET",
   "No": "HAYIR",
   "StopHostingAreYouSure": "Paylaşmayı durdurmak istediğinden emin misin?\nBu tüm oyuncuların bağlantısını kesip onları ana menüye döndürecektir.",
-  "CopySteamIDToClipboard": "Keşif paylaşılıyor\nDiğer oyuncular senin aşağıdaki kullanıcı kimliğini girerek bağlanabilirler.\n{0}\nBunu panoya kopyalamak ister misin?",
+  "CopySteamIDToClipboard": "Keşif paylaşılıyor\nDiğer oyuncular senin aşağıdaki Steam kimliğini girerek bağlanabilirler.\n{0}\nBunu panoya kopyalamak ister misin?",
   "Connecting": "BAĞLANIYOR...",
   "OK": "TAMAM",
   "ServerRefusedConnection": "Sunucu bağlantıyı reddetti.\n{0}",
