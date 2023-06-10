@@ -18,7 +18,7 @@
   "Yes": "SI",
   "No": "NO",
   "StopHostingAreYouSure": "¿Estás seguro que quieres dejar de alojar?\nEsto desconectará a todos los jugadores y los enviará de vuelta al menú principal.",
-  "CopySteamIDToClipboard": "Alojando servidor.\nLos jugadores se conectarán usando tu ID de Producto, la cual es :\n{0}\n¿Quieres copiarla en tu portapapeles?",
+  "CopySteamIDToClipboard": "Alojando servidor.\nLos jugadores se conectarán usando tu ID de Steam, la cual es :\n{0}\n¿Quieres copiarla en tu portapapeles?",
   "Connecting": "CONECTANDO...",
   "OK": "OK",
   "ServerRefusedConnection": "El servidor ha rechazado la conexión.\n{0}",
