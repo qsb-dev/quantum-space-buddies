@@ -162,7 +162,6 @@ public class QSBCore : ModBehaviour
 	public void OverrideAppId()
 	{
 		SteamManager.s_EverInitialized = false;
-		SteamManager.s_instance.m_bInitialized = false;
 		var instance = SteamManager.s_instance;
 		instance.m_bInitialized = false;
 		SteamManager.s_instance = null;
@@ -173,6 +172,7 @@ public class QSBCore : ModBehaviour
 		Environment.SetEnvironmentVariable("SteamGameId", "480");
 
 		instance.InitializeOnAwake();
+		// TODO also reregister hook and gamepad thing or else i think that wont work
 	}
 
 	public void OnDestroy()
