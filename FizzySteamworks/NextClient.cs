@@ -91,6 +91,8 @@ namespace Mirror.FizzySteam
                     else if (timeOutTask.IsCompleted)
                     {
                         Debug.LogError($"Connection to {host} timed out.");
+                        // CHANGED
+                        OnReceivedError.Invoke(TransportError.Timeout, $"Connection to {host} timed out.");
                     }
 
                     OnConnected -= SetConnectedComplete;
@@ -102,12 +104,16 @@ namespace Mirror.FizzySteam
             catch (FormatException)
             {
                 Debug.LogError($"Connection string was not in the right format. Did you enter a SteamId?");
+                // CHANGED
+                OnReceivedError.Invoke(TransportError.DnsResolve, $"Connection string was not in the right format. Did you enter a SteamId?");
                 Error = true;
                 OnConnectionFailed();
             }
             catch (Exception ex)
             {
                 Debug.LogError(ex.Message);
+                // CHANGED
+                OnReceivedError.Invoke(TransportError.Unexpected, ex.Message);
                 Error = true;
                 OnConnectionFailed();
             }
@@ -144,6 +150,8 @@ namespace Mirror.FizzySteam
             else if (param.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer || param.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally)
             {
                 Debug.Log($"Connection was closed by peer, {param.m_info.m_szEndDebug}");
+                // CHANGED
+                OnReceivedError.Invoke(TransportError.ConnectionClosed, $"Connection was closed by peer, {param.m_info.m_szEndDebug}");
                 Disconnect();
             }
             else
@@ -211,11 +219,15 @@ namespace Mirror.FizzySteam
             if (res == EResult.k_EResultNoConnection || res == EResult.k_EResultInvalidParam)
             {
                 Debug.Log($"Connection to server was lost.");
+                // CHANGED
+                OnReceivedError.Invoke(TransportError.ConnectionClosed, $"Connection to server was lost.");
                 InternalDisconnect();
             }
             else if (res != EResult.k_EResultOK)
             {
                 Debug.LogError($"Could not send: {res.ToString()}");
+                // CHANGED
+                OnReceivedError.Invoke(TransportError.InvalidSend, $"Could not send: {res.ToString()}");
             }
         }
 
