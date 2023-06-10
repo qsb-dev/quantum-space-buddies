@@ -15,9 +15,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MirrorWeaver", "MirrorWeaver\MirrorWeaver.csproj", "{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FizzySteamworks", "FizzySteamworks\FizzySteamworks.csproj", "{D47034D8-B92D-47DA-884C-C76F735E2D5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FizzySteamworks", "FizzySteamworks\FizzySteamworks.csproj", "{D47034D8-B92D-47DA-884C-C76F735E2D5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamRerouter", "SteamRerouter\SteamRerouter.csproj", "{750563ED-4F2A-42DD-81A3-3A85DEBB691E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamRerouter", "SteamRerouter\SteamRerouter.csproj", "{750563ED-4F2A-42DD-81A3-3A85DEBB691E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mirror", "Mirror", "{851AB4AD-366C-4D69-9F4E-E9EDC7CCD2BB}"
+	ProjectSection(SolutionItems) = preProject
+		Mirror\kcp2k.dll = Mirror\kcp2k.dll
+		Mirror\Mirror.Components.dll = Mirror\Mirror.Components.dll
+		Mirror\Mirror.dll = Mirror\Mirror.dll
+		Mirror\Mirror.Transports.dll = Mirror\Mirror.Transports.dll
+		Mirror\Telepathy.dll = Mirror\Telepathy.dll
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +53,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{851AB4AD-366C-4D69-9F4E-E9EDC7CCD2BB} = {2569F98D-F671-42AA-82DE-505B05CDCEF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {59091249-7726-4F95-86E2-3C3278C9CB9B}
