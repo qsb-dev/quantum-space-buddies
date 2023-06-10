@@ -39,7 +39,7 @@ public static class Interop
 		DoCommand(false, 1, (int)type);
 	}
 
-	private static int DoCommand(bool wait, int type, int arg = default)
+	private static int DoCommand(bool waitForExit, int type, int arg = default)
 	{
 		var processPath = Path.Combine(
 			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
@@ -68,12 +68,12 @@ public static class Interop
 			RedirectStandardOutput = true,
 			RedirectStandardError = true
 		});
-		if (wait)
+		if (waitForExit)
 		{
 			process!.WaitForExit();
 
 			Log($"StandardOutput:\n{process.StandardOutput.ReadToEnd()}");
-			LogError($"StandardError:\n{process.StandardError.ReadToEnd()}");
+			Log($"StandardError:\n{process.StandardError.ReadToEnd()}");
 			Log($"ExitCode: {process.ExitCode}");
 
 			return process.ExitCode;
