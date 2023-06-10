@@ -152,6 +152,27 @@ public class QSBCore : ModBehaviour
 
 			_steamworksInitialized = true;
 		}
+		else
+		{
+			DebugLog.ToConsole($"Is steam - overriding AppID");
+			OverrideAppId();
+		}
+	}
+
+	public void OverrideAppId()
+	{
+		SteamManager.s_EverInitialized = false;
+		SteamManager.s_instance.m_bInitialized = false;
+		var instance = SteamManager.s_instance;
+		instance.m_bInitialized = false;
+		SteamManager.s_instance = null;
+
+		SteamAPI.Shutdown();
+
+		System.Environment.SetEnvironmentVariable("SteamAppId", "480");
+		System.Environment.SetEnvironmentVariable("SteamGameId", "480");
+
+		instance.InitializeOnAwake();
 	}
 
 	public void OnDestroy()
