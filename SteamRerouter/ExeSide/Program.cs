@@ -51,8 +51,8 @@ public static class Program
 		}
 
 		// from facepunch.steamworks SteamClient.cs
-		Environment.SetEnvironmentVariable("SteamAppId", "753641");
-		Environment.SetEnvironmentVariable("SteamGameId", "753641");
+		Environment.SetEnvironmentVariable("SteamAppId", "753640");
+		Environment.SetEnvironmentVariable("SteamGameId", "753640");
 
 		if (!SteamAPI.Init())
 		{
