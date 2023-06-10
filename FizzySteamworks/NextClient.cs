@@ -18,7 +18,6 @@ namespace Mirror.FizzySteam
         private event Action<byte[], int> OnReceivedData;
         private event Action OnConnected;
         private event Action OnDisconnected;
-        // CHANGED
         private Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t> c_onConnectionChange = null;
 
         private CancellationTokenSource cancelToken;
@@ -62,7 +61,6 @@ namespace Mirror.FizzySteam
         private async void Connect(string host)
         {
             cancelToken = new CancellationTokenSource();
-            // CHANGED
             c_onConnectionChange = Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t>.Create(OnConnectionStatusChanged);
 
             try
