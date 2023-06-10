@@ -9,14 +9,9 @@
     <Company>Unity Technologies, vis2k, Paul and Contributors, William Corby</Company>
     <Copyright></Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageReadmeFile>Readme.txt</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
     <None Include="LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="Readme.txt">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
