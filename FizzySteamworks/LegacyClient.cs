@@ -15,6 +15,8 @@ namespace Mirror.FizzySteam
         private event Action<byte[], int> OnReceivedData;
         private event Action OnConnected;
         private event Action OnDisconnected;
+        // CHANGED
+        private event Action<TransportError, string> OnReceivedError;
 
         private TimeSpan ConnectionTimeout;
 
@@ -34,6 +36,8 @@ namespace Mirror.FizzySteam
             c.OnConnected += () => transport.OnClientConnected.Invoke();
             c.OnDisconnected += () => transport.OnClientDisconnected.Invoke();
             c.OnReceivedData += (data, channel) => transport.OnClientDataReceived.Invoke(new ArraySegment<byte>(data), channel);
+            // CHANGED
+            c.OnReceivedError += (error, reason) => transport.OnClientError.Invoke(error, reason);
 
 
             try

@@ -18,6 +18,8 @@ namespace Mirror.FizzySteam
         private event Action<byte[], int> OnReceivedData;
         private event Action OnConnected;
         private event Action OnDisconnected;
+        // CHANGED
+        private event Action<TransportError, string> OnReceivedError;
         private Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t> c_onConnectionChange = null;
 
         private CancellationTokenSource cancelToken;
@@ -39,6 +41,8 @@ namespace Mirror.FizzySteam
             c.OnConnected += () => transport.OnClientConnected.Invoke();
             c.OnDisconnected += () => transport.OnClientDisconnected.Invoke();
             c.OnReceivedData += (data, ch) => transport.OnClientDataReceived.Invoke(new ArraySegment<byte>(data), ch);
+            // CHANGED
+            c.OnReceivedError += (error, reason) => transport.OnClientError.Invoke(error, reason);
 
             try
             {
