@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>Mirror.FizzySteam</RootNamespace>
+    <AssemblyTitle>Fizzy Steamworks</AssemblyTitle>
+    <Product>Fizzy Steamworks</Product>
     <Title>Fizzy Steamworks</Title>
+    <Description></Description>
     <Authors></Authors>
     <Company></Company>
     <Copyright></Copyright>

@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <AssemblyTitle>Mirror Weaver</AssemblyTitle>
+    <Product>Mirror Weaver</Product>
     <Title>Mirror Weaver</Title>
+    <Description></Description>
     <Authors>Unity Technologies, vis2k, Paul and Contributors, William Corby</Authors>
     <Company>Unity Technologies, vis2k, Paul and Contributors, William Corby</Company>
     <Copyright></Copyright>
