@@ -28,18 +28,18 @@ public static class Interop
 
 	private static bool IsDlcOwned()
 	{
-		var ownershipStatus = DoCommand(0) != 0;
+		var ownershipStatus = DoCommand(true, 0) != 0;
 		Log($"dlc owned: {ownershipStatus}");
 		return ownershipStatus;
 	}
 
 	public static void EarnAchivement(Achievements.Type type)
 	{
-		DoCommand(1, (int)type);
-		Log($"earned achievement {type}");
+		Log($"earn achievement {type}");
+		DoCommand(false, 1, (int)type);
 	}
 
-	private static int DoCommand(int type, int arg = default)
+	private static int DoCommand(bool wait, int type, int arg = default)
 	{
 		var processPath = Path.Combine(
 			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
@@ -68,12 +68,16 @@ public static class Interop
 			RedirectStandardOutput = true,
 			RedirectStandardError = true
 		});
-		process!.WaitForExit();
+		if (wait)
+		{
+			process!.WaitForExit();
 
-		Log($"StandardOutput:\n{process.StandardOutput.ReadToEnd()}");
-		LogError($"StandardError:\n{process.StandardError.ReadToEnd()}");
-		Log($"ExitCode: {process.ExitCode}");
+			Log($"StandardOutput:\n{process.StandardOutput.ReadToEnd()}");
+			LogError($"StandardError:\n{process.StandardError.ReadToEnd()}");
+			Log($"ExitCode: {process.ExitCode}");
 
-		return process.ExitCode;
+			return process.ExitCode;
+		}
+		return -1;
 	}
 }
