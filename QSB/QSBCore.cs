@@ -118,8 +118,6 @@ public class QSBCore : ModBehaviour
 
 	public void Awake()
 	{
-		SteamRerouter.ModSide.Interop.Go();
-
 		// no, we cant localize this - languages are loaded after the splash screen
 		UIHelper.ReplaceUI(UITextType.PleaseUseController,
 			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
@@ -156,6 +154,8 @@ public class QSBCore : ModBehaviour
 		}
 		else
 		{
+			SteamRerouter.ModSide.Interop.Go();
+
 			DebugLog.ToConsole($"Is steam - overriding AppID");
 			OverrideAppId();
 		}

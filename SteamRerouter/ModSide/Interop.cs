@@ -15,19 +15,13 @@ public static class Interop
 
 	public static void Go()
 	{
-		if (typeof(EpicPlatformManager).GetField("_platformInterface", BindingFlags.NonPublic | BindingFlags.Instance) == null)
-		{
-			Log("not epic. don't reroute");
-			return;
-		}
-
 		Log("go");
 
 		Patches.Apply();
 
 		var processPath = Path.Combine(
 			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-			"EpicRerouter.exe"
+			"SteamRerouter.exe"
 		);
 		Log($"process path = {processPath}");
 		var gamePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(EpicPlatformManager).Assembly.Location)!, ".."));
@@ -64,5 +58,5 @@ public static class Interop
 		Log($"error:\n{process.StandardError.ReadToEnd()}");
 	}
 
-	public static void Log(object msg) => Debug.Log($"[EpicRerouter] {msg}");
+	public static void Log(object msg) => Debug.Log($"[SteamRerouter] {msg}");
 }
