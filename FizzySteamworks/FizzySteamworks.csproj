@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <RootNamespace>Mirror.FizzySteam</RootNamespace>
+    <!--TODO funny copyright and stuff-->
   </PropertyGroup>
 
   <ItemGroup>
