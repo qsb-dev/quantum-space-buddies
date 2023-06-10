@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 
 namespace SteamRerouter.ExeSide;
 
@@ -24,7 +25,14 @@ public static class Program
 			return File.Exists(path) ? Assembly.LoadFile(path) : null;
 		};
 
-		Go(port);
+		try
+		{
+			Go(port);
+		}
+		finally
+		{
+			Thread.Sleep(3000);
+		}
 	}
 
 	private static void Go(int port)
