@@ -7,7 +7,7 @@ using System.Reflection;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace EpicRerouter.ModSide;
+namespace SteamRerouter.ModSide;
 
 public static class Interop
 {

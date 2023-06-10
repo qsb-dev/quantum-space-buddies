@@ -2,7 +2,7 @@
 using UnityEngine;
 using static EntitlementsManager;
 
-namespace EpicRerouter.ModSide;
+namespace SteamRerouter.ModSide;
 
 [HarmonyPatch(typeof(EpicPlatformManager))]
 public static class Patches

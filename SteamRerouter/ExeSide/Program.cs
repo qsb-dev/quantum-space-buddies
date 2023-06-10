@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace EpicRerouter.ExeSide;
+namespace SteamRerouter.ExeSide;
 
 public static class Program
 {

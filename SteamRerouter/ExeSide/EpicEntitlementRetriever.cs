@@ -1,7 +1,7 @@
 ﻿using Epic.OnlineServices;
 using Epic.OnlineServices.Ecom;
 
-namespace EpicRerouter.ExeSide;
+namespace SteamRerouter.ExeSide;
 
 public static class EpicEntitlementRetriever
 {

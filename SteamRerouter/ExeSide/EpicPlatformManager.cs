@@ -4,7 +4,7 @@ using Epic.OnlineServices.Platform;
 using System;
 using System.Threading;
 
-namespace EpicRerouter.ExeSide;
+namespace SteamRerouter.ExeSide;
 
 public static class EpicPlatformManager
 {

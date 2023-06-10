@@ -118,7 +118,7 @@ public class QSBCore : ModBehaviour
 
 	public void Awake()
 	{
-		EpicRerouter.ModSide.Interop.Go();
+		SteamRerouter.ModSide.Interop.Go();
 
 		// no, we cant localize this - languages are loaded after the splash screen
 		UIHelper.ReplaceUI(UITextType.PleaseUseController,
