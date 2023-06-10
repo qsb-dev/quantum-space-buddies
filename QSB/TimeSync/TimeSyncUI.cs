@@ -1,8 +1,9 @@
-﻿using QSB.Localization;
+﻿using Mirror;
+using OWML.Common;
+using QSB.Localization;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -60,13 +61,13 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 	{
 		if (!QSBSceneManager.IsInUniverse)
 		{
-			DebugLog.ToConsole("Error - Tried to start time sync UI when not in universe!", OWML.Common.MessageType.Error);
+			DebugLog.ToConsole("Error - Tried to start time sync UI when not in universe!", MessageType.Error);
 			return;
 		}
 
 		_currentType = type;
 		_currentReason = reason;
-		_startTime = Time.timeSinceLevelLoad;
+		_startTime = (float)NetworkTime.localTime;
 		enabled = true;
 		_canvas.enabled = true;
 		Canvas.willRenderCanvases += OnWillRenderCanvases;
@@ -112,7 +113,7 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 				switch ((FastForwardReason)_currentReason)
 				{
 					case FastForwardReason.TooFarBehind:
-						var totalSeconds = Mathf.Max(TargetTime - Time.timeSinceLevelLoad, 0f);
+						var totalSeconds = Mathf.Max(TargetTime - (float)NetworkTime.localTime, 0f);
 						var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 						var seconds = Mathf.FloorToInt(totalSeconds) % 60;
 						var milliseconds = totalSeconds % 1 * 1000;
@@ -130,7 +131,7 @@ internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 						break;
 
 					case PauseReason.TooFarAhead:
-						var totalSeconds = Mathf.Max(Time.timeSinceLevelLoad - TargetTime, 0f);
+						var totalSeconds = Mathf.Max((float)NetworkTime.localTime - TargetTime, 0f);
 						var minutes = Mathf.FloorToInt(totalSeconds / 60f);
 						var seconds = Mathf.FloorToInt(totalSeconds) % 60;
 						var milliseconds = totalSeconds % 1 * 1000;
