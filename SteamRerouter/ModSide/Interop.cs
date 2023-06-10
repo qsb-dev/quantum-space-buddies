@@ -19,7 +19,7 @@ public class Interop : MonoBehaviour
 		Log("awake");
 
 		Harmony.CreateAndPatchAll(typeof(Patches));
-		var port = Socket.Listen();
+		var port = IpcServer.Listen();
 
 		var processPath = Path.Combine(
 			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
@@ -46,14 +46,14 @@ public class Interop : MonoBehaviour
 			CreateNoWindow = false //true
 		});
 
-		Socket.Accept();
+		IpcServer.Accept();
 	}
 
 	private void OnDestroy()
 	{
 		Log("destroy");
 
-		Socket.Quit();
+		IpcServer.Quit();
 		_process.WaitForExit();
 		_process.Dispose();
 	}

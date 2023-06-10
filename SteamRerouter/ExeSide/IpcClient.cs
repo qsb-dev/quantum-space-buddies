@@ -8,7 +8,7 @@ namespace SteamRerouter.ExeSide;
 /// <summary>
 /// handles communication with the mod
 /// </summary>
-public static class Socket
+public static class IpcClient
 {
 	private static TcpClient _tcpClient;
 

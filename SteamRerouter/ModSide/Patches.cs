@@ -9,7 +9,7 @@ public static class Patches
 	[HarmonyPatch(typeof(SteamEntitlementRetriever), nameof(SteamEntitlementRetriever.GetOwnershipStatus))]
 	private static bool SteamEntitlementRetriever_GetOwnershipStatus(out EntitlementsManager.AsyncOwnershipStatus __result)
 	{
-		__result = Socket.SteamEntitlementRetriever_GetOwnershipStatus();
+		__result = IpcServer.SteamEntitlementRetriever_GetOwnershipStatus();
 		return false;
 	}
 
@@ -17,7 +17,7 @@ public static class Patches
 	[HarmonyPatch(typeof(Achievements), nameof(Achievements.Earn))]
 	private static bool Achievements_Earn(Achievements.Type type)
 	{
-		Socket.Achievements_Earn(type);
+		IpcServer.Achievements_Earn(type);
 		return false;
 	}
 }

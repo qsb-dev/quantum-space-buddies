@@ -52,9 +52,9 @@ public static class Program
 			return;
 		}
 
-		Socket.Connect(port);
+		IpcClient.Connect(port);
 
-		Socket.Loop();
+		IpcClient.Loop();
 
 		Log("stop");
 		SteamAPI.Shutdown();
