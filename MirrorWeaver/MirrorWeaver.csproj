@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <PackageLicenseFile>License.md</PackageLicenseFile>
     <Title>Mirror Weaver</Title>
     <Authors>Unity Technologies, vis2k, Paul and Contributors, William Corby</Authors>
     <Company>Unity Technologies, vis2k, Paul and Contributors, William Corby</Company>
     <Copyright></Copyright>
+    <PackageLicenseFile>License.md</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.456" />
