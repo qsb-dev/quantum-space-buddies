@@ -78,6 +78,11 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 	public void WriteMessage(string message)
 	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
 		/* Tricky problem to solve.
 		 * - 11 available lines for text to fit onto
 		 * - Each line can be max 41 characters
