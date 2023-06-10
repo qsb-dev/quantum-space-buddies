@@ -225,7 +225,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 				// hack
 				if (s == "KcpPeer: received disconnect message")
 				{
-					OnClientError(TransportError.ConnectionClosed, "host disconnected");
+					OnClientError(TransportError.ConnectionClosed, s);
 				}
 			};
 			kcp2k.Log.Warning = s => DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);
