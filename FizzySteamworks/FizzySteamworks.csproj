@@ -6,27 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="com.rlabrecque.steamworks.net">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
-    </Reference>
-    <Reference Include="kcp2k">
-      <HintPath>..\Mirror\kcp2k.dll</HintPath>
-    </Reference>
-    <Reference Include="Mirror">
-      <HintPath>..\Mirror\Mirror.dll</HintPath>
-    </Reference>
-    <Reference Include="Mirror.Components">
-      <HintPath>..\Mirror\Mirror.Components.dll</HintPath>
-    </Reference>
-    <Reference Include="Mirror.Transports">
-      <HintPath>..\Mirror\Mirror.Transports.dll</HintPath>
-    </Reference>
-    <Reference Include="Telepathy">
-      <HintPath>..\Mirror\Telepathy.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" IncludeAssets="compile" />
+    <Reference Include="../Mirror/*.dll" />
   </ItemGroup>
 
 </Project>
