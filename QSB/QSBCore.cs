@@ -169,8 +169,8 @@ public class QSBCore : ModBehaviour
 
 		SteamAPI.Shutdown();
 
-		System.Environment.SetEnvironmentVariable("SteamAppId", "480");
-		System.Environment.SetEnvironmentVariable("SteamGameId", "480");
+		Environment.SetEnvironmentVariable("SteamAppId", "480");
+		Environment.SetEnvironmentVariable("SteamGameId", "480");
 
 		instance.InitializeOnAwake();
 	}
