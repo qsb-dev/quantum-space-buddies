@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 
 namespace SteamRerouter.ExeSide;
 
@@ -11,11 +10,9 @@ namespace SteamRerouter.ExeSide;
 /// </summary>
 public static class Program
 {
-	private static void Main(string[] args)
+	private static int Main(string[] args)
 	{
-		var port = int.Parse(args[0]);
-		Log($"port = {port}");
-		var managedDir = args[1];
+		var managedDir = args[0];
 		Log($"managed dir = {managedDir}");
 
 		AppDomain.CurrentDomain.AssemblyResolve += (_, e) =>
@@ -25,29 +22,28 @@ public static class Program
 			return File.Exists(path) ? Assembly.LoadFile(path) : null;
 		};
 
-		try
-		{
-			Go(port);
-		}
-		finally
-		{
-			Thread.Sleep(3000);
-		}
+		var type = int.Parse(args[1]);
+		Log($"command type = {type}");
+		var arg = int.Parse(args[2]);
+		Log($"command arg = {arg}");
+
+		return DoCommand(type, arg);
 	}
 
-	private static void Go(int port)
-	{
-		Log("go");
+	public static void Log(object msg) => Console.Out.WriteLine(msg);
+	public static void LogError(object msg) => Console.Error.WriteLine(msg);
 
+	private static int DoCommand(int type, int arg = default)
+	{
 		// copied from QSBCore
 		if (!Packsize.Test())
 		{
-			Log("[Steamworks.NET] Packsize Test returned false, the wrong version of Steamworks.NET is being run in this platform.");
+			LogError("[Steamworks.NET] Packsize Test returned false, the wrong version of Steamworks.NET is being run in this platform.");
 		}
 
 		if (!DllCheck.Test())
 		{
-			Log("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.");
+			LogError("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.");
 		}
 
 		// from facepunch.steamworks SteamClient.cs
@@ -56,17 +52,35 @@ public static class Program
 
 		if (!SteamAPI.Init())
 		{
-			Log($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.");
-			return;
+			LogError($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.");
+			return -1;
 		}
 
-		IpcClient.Connect(port);
+		var exitCode = -1;
+		switch (type)
+		{
+			// dlc status
+			case 0:
+				var owned = SteamApps.BIsDlcInstalled((AppId_t)1622100U);
+				Log($"dlc owned: {owned}");
 
-		IpcClient.Loop();
+				exitCode = owned ? 1 : 0;
+				break;
 
-		Log("stop");
+			// earn achievement
+			case 1:
+				Log("Earn " + type);
+				if (!SteamUserStats.SetAchievement(Achievements.s_names[type]))
+				{
+					LogError("Unable to grant achievement \"" + Achievements.s_names[type] + "\"");
+				}
+				SteamUserStats.StoreStats();
+
+				exitCode = 0;
+				break;
+		}
+
 		SteamAPI.Shutdown();
+		return exitCode;
 	}
-
-	public static void Log(object msg) => Console.Out.WriteLine(msg);
 }

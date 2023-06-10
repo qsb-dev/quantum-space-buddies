@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using UnityEngine;
 
 namespace SteamRerouter.ModSide;
 
@@ -6,18 +7,35 @@ namespace SteamRerouter.ModSide;
 public static class Patches
 {
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(SteamEntitlementRetriever), nameof(SteamEntitlementRetriever.GetOwnershipStatus))]
-	private static bool SteamEntitlementRetriever_GetOwnershipStatus(out EntitlementsManager.AsyncOwnershipStatus __result)
+	[HarmonyPatch(typeof(EntitlementsManager), nameof(EntitlementsManager.InitializeOnAwake))]
+	private static bool EntitlementsManager_InitializeOnAwake(EntitlementsManager __instance)
 	{
-		__result = IpcServer.SteamEntitlementRetriever_GetOwnershipStatus();
+		Object.Destroy(__instance);
 		return false;
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(EntitlementsManager), nameof(EntitlementsManager.Start))]
+	private static bool EntitlementsManager_Start() => false;
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(EntitlementsManager), nameof(EntitlementsManager.OnDestroy))]
+	private static bool EntitlementsManager_OnDestroy() => false;
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(EntitlementsManager), nameof(EntitlementsManager.IsDlcOwned))]
+	private static bool EntitlementsManager_IsDlcOwned(out EntitlementsManager.AsyncOwnershipStatus __result)
+	{
+		__result = Interop.OwnershipStatus;
+		return false;
+	}
+
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(Achievements), nameof(Achievements.Earn))]
 	private static bool Achievements_Earn(Achievements.Type type)
 	{
-		IpcServer.Achievements_Earn(type);
+		Interop.EarnAchivement(type);
 		return false;
 	}
 }

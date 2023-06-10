@@ -10,17 +10,37 @@ namespace SteamRerouter.ModSide;
 /// <summary>
 /// top level file on the mod
 /// </summary>
-public class Interop : MonoBehaviour
+public static class Interop
 {
-	private static Process _process;
+	public static EntitlementsManager.AsyncOwnershipStatus OwnershipStatus = EntitlementsManager.AsyncOwnershipStatus.NotReady;
 
-	private void Awake()
+	public static void Init()
 	{
-		Log("awake");
-
+		Log("init");
 		Harmony.CreateAndPatchAll(typeof(Patches));
-		var port = IpcServer.Listen();
 
+		// cache dlc ownership since the patched function gets called often
+		OwnershipStatus = IsDlcOwned() ? EntitlementsManager.AsyncOwnershipStatus.Owned : EntitlementsManager.AsyncOwnershipStatus.NotOwned;
+	}
+
+	public static void Log(object msg) => Debug.Log($"[SteamRerouter] {msg}");
+	public static void LogError(object msg) => Debug.LogError($"[SteamRerouter] {msg}");
+
+	private static bool IsDlcOwned()
+	{
+		var ownershipStatus = DoCommand(0) != 0;
+		Log($"dlc owned: {ownershipStatus}");
+		return ownershipStatus;
+	}
+
+	public static void EarnAchivement(Achievements.Type type)
+	{
+		DoCommand(1, (int)type);
+		Log($"earned achievement {type}");
+	}
+
+	private static int DoCommand(int type, int arg = default)
+	{
 		var processPath = Path.Combine(
 			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
 			"SteamRerouter.exe"
@@ -32,31 +52,28 @@ public class Interop : MonoBehaviour
 		Log($"working dir = {workingDirectory}");
 		var args = new[]
 		{
-			port.ToString(),
-			Path.Combine(gamePath, "Managed")
+			Path.Combine(gamePath, "Managed"),
+			type.ToString(),
+			arg.ToString()
 		};
 		Log($"args = {args.Join()}");
-		_process = Process.Start(new ProcessStartInfo
+		var process = Process.Start(new ProcessStartInfo
 		{
 			FileName = processPath,
 			WorkingDirectory = workingDirectory,
 			Arguments = args.Join(x => $"\"{x}\"", " "),
 
 			UseShellExecute = false,
-			CreateNoWindow = false //true
+			CreateNoWindow = true,
+			RedirectStandardOutput = true,
+			RedirectStandardError = true
 		});
+		process!.WaitForExit();
 
-		IpcServer.Accept();
+		Log($"output:\n{process.StandardOutput.ReadToEnd()}");
+		LogError($"error:\n{process.StandardError.ReadToEnd()}");
+		Log($"exit code: {process.ExitCode}");
+
+		return process.ExitCode;
 	}
-
-	private void OnDestroy()
-	{
-		Log("destroy");
-
-		IpcServer.Quit();
-		_process.WaitForExit();
-		_process.Dispose();
-	}
-
-	public static void Log(object msg) => Debug.Log($"[SteamRerouter] {msg}");
 }

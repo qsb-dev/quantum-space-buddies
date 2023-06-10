@@ -155,7 +155,7 @@ public class QSBCore : ModBehaviour
 		}
 		else
 		{
-			gameObject.AddComponent<SteamRerouter.ModSide.Interop>();
+			SteamRerouter.ModSide.Interop.Init();
 
 			DebugLog.ToConsole($"Is steam - overriding AppID");
 			OverrideAppId();
