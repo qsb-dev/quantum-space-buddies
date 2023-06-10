@@ -18,7 +18,7 @@ public class Interop : MonoBehaviour
 	{
 		Log("awake");
 
-		Patches.Apply();
+		Harmony.CreateAndPatchAll(typeof(Patches));
 		var port = Socket.Listen();
 
 		var processPath = Path.Combine(
@@ -54,6 +54,8 @@ public class Interop : MonoBehaviour
 		Log("destroy");
 
 		Socket.Quit();
+		_process.WaitForExit();
+		_process.Dispose();
 	}
 
 	public static void Log(object msg) => Debug.Log($"[SteamRerouter] {msg}");

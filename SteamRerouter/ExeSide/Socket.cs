@@ -1,6 +1,7 @@
 ﻿using Steamworks;
 using System.Net;
 using System.Net.Sockets;
+using static SteamRerouter.ExeSide.Program;
 
 namespace SteamRerouter.ExeSide;
 
@@ -13,6 +14,7 @@ public static class Socket
 
 	public static void Connect(int port)
 	{
+		Log($"connecting to {port}");
 		_tcpClient = new TcpClient();
 		_tcpClient.Connect(IPAddress.Loopback, port);
 	}
@@ -24,6 +26,8 @@ public static class Socket
 	/// </summary>
 	public static void Loop()
 	{
+		Log("message loop");
+
 		while (true)
 		{
 			// recv message

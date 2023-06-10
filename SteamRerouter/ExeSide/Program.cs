@@ -29,6 +29,8 @@ public static class Program
 
 	private static void Go(int port)
 	{
+		Log("go");
+
 		// copied from QSBCore
 		if (!Packsize.Test())
 		{
@@ -51,7 +53,7 @@ public static class Program
 		}
 
 		Socket.Connect(port);
-		
+
 		Socket.Loop();
 
 		Log("stop");

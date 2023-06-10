@@ -1,65 +1,23 @@
 ﻿using HarmonyLib;
-using UnityEngine;
-using static EntitlementsManager;
 
 namespace SteamRerouter.ModSide;
 
-[HarmonyPatch(typeof(EpicPlatformManager))]
+[HarmonyPatch]
 public static class Patches
 {
-	public static void Apply()
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(SteamEntitlementRetriever), nameof(SteamEntitlementRetriever.GetOwnershipStatus))]
+	private static bool SteamEntitlementRetriever_GetOwnershipStatus(out EntitlementsManager.AsyncOwnershipStatus __result)
 	{
-		var harmony = new Harmony(typeof(Patches).FullName);
-		harmony.PatchAll(typeof(EntitlementsManagerPatches));
-		harmony.PatchAll(typeof(EpicPlatformManagerPatches));
+		__result = Socket.SteamEntitlementRetriever_GetOwnershipStatus();
+		return false;
 	}
 
-	[HarmonyPatch(typeof(EntitlementsManager))]
-	private static class EntitlementsManagerPatches
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(Achievements), nameof(Achievements.Earn))]
+	private static bool Achievements_Earn(Achievements.Type type)
 	{
-		[HarmonyPrefix]
-		[HarmonyPatch(nameof(EntitlementsManager.InitializeOnAwake))]
-		private static bool InitializeOnAwake(EntitlementsManager __instance)
-		{
-			Object.Destroy(__instance);
-			return false;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch(nameof(EntitlementsManager.Start))]
-		private static bool Start() => false;
-
-		[HarmonyPrefix]
-		[HarmonyPatch(nameof(EntitlementsManager.OnDestroy))]
-		private static bool OnDestroy() => false;
-
-		[HarmonyPrefix]
-		[HarmonyPatch(nameof(EntitlementsManager.IsDlcOwned))]
-		private static bool IsDlcOwned(out AsyncOwnershipStatus __result)
-		{
-			__result = Interop.OwnershipStatus;
-			Interop.Log($"ownership status = {__result}");
-			return false;
-		}
-	}
-
-	[HarmonyPatch(typeof(EpicPlatformManager))]
-	private static class EpicPlatformManagerPatches
-	{
-		[HarmonyPrefix]
-		[HarmonyPatch("Awake")]
-		private static bool Awake(EpicPlatformManager __instance)
-		{
-			Object.Destroy(__instance);
-			return false;
-		}
-
-		[HarmonyPrefix]
-		[HarmonyPatch("Start")]
-		private static bool Start() => false;
-
-		[HarmonyPrefix]
-		[HarmonyPatch("OnDestroy")]
-		private static bool OnDestroy() => false;
+		Socket.Achievements_Earn(type);
+		return false;
 	}
 }
