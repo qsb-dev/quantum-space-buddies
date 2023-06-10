@@ -20,6 +20,12 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 {
 	public static WakeUpSync LocalInstance { get; private set; }
 
+	private static float _sceneLoadTime;
+	/// <summary>
+	/// Time.timeSinceLevelLoad is scaled. this is not
+	/// </summary>
+	public static float TimeSinceLevelLoad = Time.unscaledTime - _sceneLoadTime;
+
 	private const float PauseOrFastForwardThreshold = 1.0f;
 	private const float TimescaleBounds = 0.3f;
 
@@ -66,7 +72,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 	public float GetTimeDifference()
 	{
-		var myTime = Time.timeSinceLevelLoad;
+		var myTime = TimeSinceLevelLoad;
 		return myTime - _serverTime;
 	}
 
@@ -90,6 +96,8 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 	private void OnSceneLoaded(OWScene oldScene, OWScene newScene, bool isInUniverse)
 	{
+		_sceneLoadTime = Time.unscaledTime;
+
 		HasWokenUp = false;
 		if (isInUniverse)
 		{
@@ -160,7 +168,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		var myTime = Time.timeSinceLevelLoad;
+		var myTime = TimeSinceLevelLoad;
 		var diff = myTime - _serverTime;
 
 		if (ServerStateManager.Instance.GetServerState() is not (ServerState.InSolarSystem or ServerState.InEye))
@@ -194,7 +202,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
+		DebugLog.DebugWrite($"START FASTFORWARD (Target:{_serverTime} Current:{TimeSinceLevelLoad})", MessageType.Info);
 		if (Locator.GetActiveCamera() != null)
 		{
 			Locator.GetActiveCamera().enabled = false;
@@ -218,7 +226,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{Time.timeSinceLevelLoad})", MessageType.Info);
+		DebugLog.DebugWrite($"START PAUSING (Target:{_serverTime} Current:{TimeSinceLevelLoad})", MessageType.Info);
 		Locator.GetActiveCamera().enabled = false;
 
 		//OWInput.ChangeInputMode(InputMode.None);
@@ -272,7 +280,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 	private void UpdateServer()
 	{
-		_serverTime = Time.timeSinceLevelLoad;
+		_serverTime = TimeSinceLevelLoad;
 
 		if (ServerStateManager.Instance == null)
 		{
@@ -346,7 +354,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 				Locator.GetPlayerCamera().enabled = false;
 			}
 
-			var diff = _serverTime - Time.timeSinceLevelLoad;
+			var diff = _serverTime - TimeSinceLevelLoad;
 			OWTime.SetTimeScale(Mathf.SmoothStep(MinFastForwardSpeed, MaxFastForwardSpeed, Mathf.Abs(diff) / MaxFastForwardDiff));
 
 			TimeSyncUI.TargetTime = _serverTime;
@@ -405,7 +413,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 		if (CurrentState == State.Pausing && (PauseReason)CurrentReason == PauseReason.TooFarAhead)
 		{
-			if (Time.timeSinceLevelLoad <= _serverTime)
+			if (TimeSinceLevelLoad <= _serverTime)
 			{
 				ResetTimeScale();
 			}
@@ -413,7 +421,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 		if (CurrentState == State.FastForwarding && (FastForwardReason)CurrentReason == FastForwardReason.TooFarBehind)
 		{
-			if (Time.timeSinceLevelLoad >= _serverTime)
+			if (TimeSinceLevelLoad >= _serverTime)
 			{
 				ResetTimeScale();
 			}
