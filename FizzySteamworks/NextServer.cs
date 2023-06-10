@@ -20,7 +20,8 @@ namespace Mirror.FizzySteam
 
         private HSteamListenSocket listenSocket;
 
-        private Callback<SteamNetConnectionStatusChangedCallback_t> c_onConnectionChange = null;
+        // CHANGED
+        private Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t> c_onConnectionChange = null;
 
         private NextServer(int maxConnections)
         {
@@ -28,7 +29,8 @@ namespace Mirror.FizzySteam
             connToMirrorID = new BidirectionalDictionary<HSteamNetConnection, int>();
             steamIDToMirrorID = new BidirectionalDictionary<CSteamID, int>();
             nextConnectionID = 1;
-            c_onConnectionChange = Callback<SteamNetConnectionStatusChangedCallback_t>.Create(OnConnectionStatusChanged);
+            // CHANGED
+            c_onConnectionChange = Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t>.Create(OnConnectionStatusChanged);
         }
 
         public static NextServer CreateServer(FizzySteamworks transport, int maxConnections)

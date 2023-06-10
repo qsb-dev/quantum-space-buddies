@@ -18,8 +18,9 @@ namespace Mirror.FizzySteam
             DISCONNECT
         }
 
-        private Callback<P2PSessionRequest_t> callback_OnNewConnection = null;
-        private Callback<P2PSessionConnectFail_t> callback_OnConnectFail = null;
+        // CHANGED
+        private Steamworks.Callback<P2PSessionRequest_t> callback_OnNewConnection = null;
+        private Steamworks.Callback<P2PSessionConnectFail_t> callback_OnConnectFail = null;
 
         protected readonly FizzySteamworks transport;
 
@@ -27,8 +28,9 @@ namespace Mirror.FizzySteam
         {
             channels = transport.Channels;
 
-            callback_OnNewConnection = Callback<P2PSessionRequest_t>.Create(OnNewConnection);
-            callback_OnConnectFail = Callback<P2PSessionConnectFail_t>.Create(OnConnectFail);
+            // CHANGED
+            callback_OnNewConnection = Steamworks.Callback<P2PSessionRequest_t>.Create(OnNewConnection);
+            callback_OnConnectFail = Steamworks.Callback<P2PSessionConnectFail_t>.Create(OnConnectFail);
 
             this.transport = transport;
         }
