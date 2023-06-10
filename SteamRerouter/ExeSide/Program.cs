@@ -1,25 +1,21 @@
-﻿using System;
+﻿using Steamworks;
+using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace SteamRerouter.ExeSide;
 
+/// <summary>
+/// top level file on the exe
+/// </summary>
 public static class Program
 {
-	public static string ProductName;
-	public static string Version;
-
 	private static void Main(string[] args)
 	{
-		ProductName = args[0];
-		Log($"product name = {ProductName}");
-		Version = args[1];
-		Log($"version = {Version}");
-		var managedDir = args[2];
+		var port = int.Parse(args[0]);
+		Log($"port = {port}");
+		var managedDir = args[1];
 		Log($"managed dir = {managedDir}");
-		var gameArgs = args.Skip(3).ToArray();
-		Log($"game args = {string.Join(", ", gameArgs)}");
 
 		AppDomain.CurrentDomain.AssemblyResolve += (_, e) =>
 		{
@@ -28,29 +24,39 @@ public static class Program
 			return File.Exists(path) ? Assembly.LoadFile(path) : null;
 		};
 
-		Go();
+		Go(port);
 	}
 
-	private static void Go()
+	private static void Go(int port)
 	{
-		try
+		// copied from QSBCore
+		if (!Packsize.Test())
 		{
-			EpicPlatformManager.Init();
-			EpicEntitlementRetriever.Init();
-
-			while (EpicEntitlementRetriever.GetOwnershipStatus() == EntitlementsManager.AsyncOwnershipStatus.NotReady)
-			{
-				EpicPlatformManager.Tick();
-			}
+			Log("[Steamworks.NET] Packsize Test returned false, the wrong version of Steamworks.NET is being run in this platform.");
 		}
-		finally
+
+		if (!DllCheck.Test())
 		{
-			EpicEntitlementRetriever.Uninit();
-			EpicPlatformManager.Uninit();
-
-			Environment.Exit((int)EpicEntitlementRetriever.GetOwnershipStatus());
+			Log("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.");
 		}
+
+		// from facepunch.steamworks SteamClient.cs
+		Environment.SetEnvironmentVariable("SteamAppId", "753641");
+		Environment.SetEnvironmentVariable("SteamGameId", "753641");
+
+		if (!SteamAPI.Init())
+		{
+			Log($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.");
+			return;
+		}
+
+		Socket.Connect(port);
+		
+		Socket.Loop();
+
+		Log("stop");
+		SteamAPI.Shutdown();
 	}
 
-	public static void Log(object msg) => Console.Error.WriteLine(msg);
+	public static void Log(object msg) => Console.Out.WriteLine(msg);
 }

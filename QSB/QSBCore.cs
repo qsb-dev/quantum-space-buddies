@@ -148,13 +148,14 @@ public class QSBCore : ModBehaviour
 			if (!SteamAPI.Init())
 			{
 				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.", MessageType.Fatal);
+				return;
 			}
 
 			_steamworksInitialized = true;
 		}
 		else
 		{
-			SteamRerouter.ModSide.Interop.Go();
+			gameObject.AddComponent<SteamRerouter.ModSide.Interop>();
 
 			DebugLog.ToConsole($"Is steam - overriding AppID");
 			OverrideAppId();

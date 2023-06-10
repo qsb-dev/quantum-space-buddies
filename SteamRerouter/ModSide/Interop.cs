@@ -1,61 +1,59 @@
 ﻿using HarmonyLib;
-using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace SteamRerouter.ModSide;
 
-public static class Interop
+/// <summary>
+/// top level file on the mod
+/// </summary>
+public class Interop : MonoBehaviour
 {
-	public static EntitlementsManager.AsyncOwnershipStatus OwnershipStatus = EntitlementsManager.AsyncOwnershipStatus.NotReady;
+	private static Process _process;
 
-	public static void Go()
+	private void Awake()
 	{
-		Log("go");
+		Log("awake");
 
 		Patches.Apply();
+		var port = Socket.Listen();
 
 		var processPath = Path.Combine(
 			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
 			"SteamRerouter.exe"
 		);
 		Log($"process path = {processPath}");
-		var gamePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(EpicPlatformManager).Assembly.Location)!, ".."));
+		var gamePath = Application.dataPath;
 		Log($"game path = {gamePath}");
 		var workingDirectory = Path.Combine(gamePath, "Plugins", "x86_64");
 		Log($"working dir = {workingDirectory}");
 		var args = new[]
 		{
-			Application.productName,
-			Application.version,
+			port.ToString(),
 			Path.Combine(gamePath, "Managed")
 		};
 		Log($"args = {args.Join()}");
-		var gameArgs = Environment.GetCommandLineArgs();
-		Log($"game args = {gameArgs.Join()}");
-		var process = Process.Start(new ProcessStartInfo
+		_process = Process.Start(new ProcessStartInfo
 		{
 			FileName = processPath,
 			WorkingDirectory = workingDirectory,
-			Arguments = args
-				.Concat(gameArgs)
-				.Join(x => $"\"{x}\"", " "),
+			Arguments = args.Join(x => $"\"{x}\"", " "),
 
 			UseShellExecute = false,
-			CreateNoWindow = true,
-			RedirectStandardOutput = true,
-			RedirectStandardError = true
+			CreateNoWindow = false //true
 		});
-		process!.WaitForExit();
-		OwnershipStatus = (EntitlementsManager.AsyncOwnershipStatus)process.ExitCode;
-		Log($"ownership status = {OwnershipStatus}");
 
-		Log($"output:\n{process.StandardOutput.ReadToEnd()}");
-		Log($"error:\n{process.StandardError.ReadToEnd()}");
+		Socket.Accept();
+	}
+
+	private void OnDestroy()
+	{
+		Log("destroy");
+
+		Socket.Quit();
 	}
 
 	public static void Log(object msg) => Debug.Log($"[SteamRerouter] {msg}");
