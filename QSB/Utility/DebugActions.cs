@@ -10,6 +10,7 @@ using QSB.ShipSync;
 using QSB.Utility.Messages;
 using QSB.WorldSync;
 using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -200,7 +201,10 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad4].wasPressedThisFrame)
 		{
-			DamageShipElectricalSystem();
+			if (QSBCore.IsHost)
+			{
+				StartCoroutine(SendPacketLossTest());
+			}
 		}
 
 		if (Keyboard.current[Key.Numpad5].wasPressedThisFrame)
@@ -240,6 +244,23 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		if (Keyboard.current[Key.Numpad0].wasPressedThisFrame)
 		{
 			RespawnManager.Instance.RespawnSomePlayer();
+		}
+	}
+
+	const int MAX_MESSAGES = 100;
+
+	int currentMessage = 1;
+
+	public static int TotalMessages;
+
+	IEnumerator SendPacketLossTest()
+	{
+		DebugLog.DebugWrite($"STARTING DROPPED MESSAGE TEST...");
+		while (currentMessage <= MAX_MESSAGES)
+		{
+			new PacketLossTestMessage().Send();
+			currentMessage++;
+			yield return new WaitForSeconds(0.25f);
 		}
 	}
 }
