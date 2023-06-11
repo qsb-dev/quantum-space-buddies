@@ -80,6 +80,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		{
 			_steamTransport = gameObject.AddComponent<FizzySteamworks>();
+			_steamTransport.UseNextGenSteamNetworking = false;
 		}
 
 		transport = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;

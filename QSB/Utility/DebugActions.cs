@@ -247,7 +247,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		}
 	}
 
-	const int MAX_MESSAGES = 100;
+	const int MAX_MESSAGES = 200;
 
 	int currentMessage = 1;
 
@@ -255,12 +255,13 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 	IEnumerator SendPacketLossTest()
 	{
+		currentMessage = 1;
 		DebugLog.DebugWrite($"STARTING DROPPED MESSAGE TEST...");
 		while (currentMessage <= MAX_MESSAGES)
 		{
 			new PacketLossTestMessage().Send();
 			currentMessage++;
-			yield return new WaitForSeconds(0.25f);
+			yield return new WaitForSeconds(0.1f);
 		}
 	}
 }
