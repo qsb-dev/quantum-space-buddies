@@ -49,7 +49,7 @@ public class QSBNetworkTransformChild : QSBNetworkBehaviour
 	{
 		if (AttachedTransform)
 		{
-			if (hasAuthority)
+			if (isOwned)
 			{
 				Target.localPosition = AttachedTransform.localPosition;
 				Target.localRotation = AttachedTransform.localRotation;

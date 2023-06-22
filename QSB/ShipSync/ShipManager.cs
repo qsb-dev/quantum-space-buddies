@@ -114,7 +114,7 @@ internal class ShipManager : WorldObjectManager
 				DebugLog.ToConsole($"Error - Tried to spawn ship, but LocalPlayer's TransformSync is null!", MessageType.Error);
 			}
 
-			Instantiate(QSBNetworkManager.singleton.ShipPrefab).SpawnWithServerAuthority();
+			Instantiate(QSBNetworkManager.singleton.ShipPrefab).SpawnWithServerOwnership();
 		}
 
 		QSBWorldSync.Init<QSBShipComponent, ShipComponent>();

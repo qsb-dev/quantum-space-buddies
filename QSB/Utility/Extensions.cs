@@ -62,7 +62,7 @@ public static class Extensions
 		return conn;
 	}
 
-	public static void SpawnWithServerAuthority(this GameObject go) =>
+	public static void SpawnWithServerOwnership(this GameObject go) =>
 		NetworkServer.Spawn(go, NetworkServer.localConnection);
 
 	#endregion

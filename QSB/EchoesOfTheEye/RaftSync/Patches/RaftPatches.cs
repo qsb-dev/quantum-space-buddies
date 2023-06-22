@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.RaftSync.Messages;
 using QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 using QSB.Messaging;
+using QSB.OwnershipSync;
 using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -21,8 +21,8 @@ public class RaftPatches : QSBPatch
 		__instance._interactReceiver.SetInteractionEnabled(false);
 
 		var qsbRaft = __instance.GetWorldObject<QSBRaft>();
-		qsbRaft.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Force);
-		Delay.RunWhen(() => qsbRaft.NetworkBehaviour.hasAuthority, () =>
+		qsbRaft.NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Force);
+		Delay.RunWhen(() => qsbRaft.NetworkBehaviour.isOwned, () =>
 		{
 			var normalized = Vector3.ProjectOnPlane(Locator.GetPlayerCamera().transform.forward, __instance.transform.up).normalized;
 			__instance._raftBody.AddVelocityChange(normalized * 5f);

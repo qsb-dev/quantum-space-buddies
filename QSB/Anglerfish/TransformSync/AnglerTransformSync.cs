@@ -1,5 +1,5 @@
 ﻿using QSB.Anglerfish.WorldObjects;
-using QSB.AuthoritySync;
+using QSB.OwnershipSync;
 using QSB.Syncs.Unsectored.Rigidbodies;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
@@ -22,7 +22,7 @@ public class AnglerTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehavi
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.RegisterAuthQueue();
+			netIdentity.RegisterOwnerQueue();
 		}
 
 		base.OnStartClient();
@@ -32,7 +32,7 @@ public class AnglerTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehavi
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.UnregisterAuthQueue();
+			netIdentity.UnregisterOwnerQueue();
 		}
 
 		base.OnStopClient();
@@ -48,7 +48,7 @@ public class AnglerTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehavi
 
 		AttachedRigidbody.OnUnsuspendOWRigidbody += OnUnsuspend;
 		AttachedRigidbody.OnSuspendOWRigidbody += OnSuspend;
-		netIdentity.UpdateAuthQueue(AttachedRigidbody.IsSuspended() ? AuthQueueAction.Remove : AuthQueueAction.Add);
+		netIdentity.UpdateOwnerQueue(AttachedRigidbody.IsSuspended() ? OwnerQueueAction.Remove : OwnerQueueAction.Add);
 	}
 
 	protected override void Uninit()
@@ -59,8 +59,8 @@ public class AnglerTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehavi
 		AttachedRigidbody.OnSuspendOWRigidbody -= OnSuspend;
 	}
 
-	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
-	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+	private void OnUnsuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnerQueue(OwnerQueueAction.Add);
+	private void OnSuspend(OWRigidbody suspendedBody) => netIdentity.UpdateOwnerQueue(OwnerQueueAction.Remove);
 
 	protected override void OnRenderObject()
 	{

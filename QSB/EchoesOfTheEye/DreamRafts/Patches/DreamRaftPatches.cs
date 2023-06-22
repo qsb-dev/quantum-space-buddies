@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
-using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.DreamCandles.Patches;
 using QSB.EchoesOfTheEye.DreamObjectProjectors.WorldObject;
 using QSB.EchoesOfTheEye.DreamRafts.Messages;
 using QSB.EchoesOfTheEye.DreamRafts.WorldObjects;
 using QSB.Messaging;
+using QSB.OwnershipSync;
 using QSB.Patches;
 using QSB.WorldSync;
 
@@ -75,10 +75,10 @@ public class DreamRaftPatches : QSBPatch
 
 		if (__instance._lastUsedRaftProjector)
 		{
-			// still release authority over the raft tho
+			// still release ownership over the raft tho
 			__instance._lastUsedRaftProjector
 				._dreamRaftProjection.GetComponent<DreamRaftController>().GetWorldObject<QSBDreamRaft>()
-				.NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+				.NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Remove);
 		}
 
 		return false;

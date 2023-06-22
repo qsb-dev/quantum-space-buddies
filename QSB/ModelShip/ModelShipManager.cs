@@ -46,7 +46,7 @@ internal class ModelShipManager : WorldObjectManager
 
 		if (QSBCore.IsHost)
 		{
-			Instantiate(QSBNetworkManager.singleton.ModelShipPrefab).SpawnWithServerAuthority();
+			Instantiate(QSBNetworkManager.singleton.ModelShipPrefab).SpawnWithServerOwnership();
 		}
 
 		// Is 0 by default -> 2D (bad)

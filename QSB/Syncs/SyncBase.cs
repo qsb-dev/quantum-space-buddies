@@ -189,7 +189,7 @@ public abstract class SyncBase : QSBNetworkTransform
 
 	protected virtual void Uninit()
 	{
-		if (IsPlayerObject && !hasAuthority && AttachedTransform)
+		if (IsPlayerObject && !isOwned && AttachedTransform)
 		{
 			Destroy(AttachedTransform.gameObject);
 		}
@@ -255,7 +255,7 @@ public abstract class SyncBase : QSBNetworkTransform
 
 		if (IsValid && _interpolating)
 		{
-			if (hasAuthority)
+			if (isOwned)
 			{
 				_interpolating = false;
 				return;
@@ -294,13 +294,13 @@ public abstract class SyncBase : QSBNetworkTransform
 		}
 
 		ReferenceTransform = referenceTransform;
-		if (IsPlayerObject && !hasAuthority && AttachedTransform)
+		if (IsPlayerObject && !isOwned && AttachedTransform)
 		{
 			AttachedTransform.parent = ReferenceTransform;
 			AttachedTransform.localScale = Vector3.one;
 		}
 
-		if (UseInterpolation && !hasAuthority && AttachedTransform && ReferenceTransform)
+		if (UseInterpolation && !isOwned && AttachedTransform && ReferenceTransform)
 		{
 			SmoothPosition = ReferenceTransform.ToRelPos(AttachedTransform.position);
 			SmoothRotation = ReferenceTransform.ToRelRot(AttachedTransform.rotation);

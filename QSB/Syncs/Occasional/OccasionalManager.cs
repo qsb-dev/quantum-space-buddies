@@ -48,7 +48,7 @@ internal class OccasionalManager : WorldObjectManager
 
 		if (QSBCore.IsHost)
 		{
-			Instantiate(QSBNetworkManager.singleton.OccasionalPrefab).SpawnWithServerAuthority();
+			Instantiate(QSBNetworkManager.singleton.OccasionalPrefab).SpawnWithServerOwnership();
 		}
 	}
 

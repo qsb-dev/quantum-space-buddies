@@ -12,7 +12,7 @@ namespace QSB.ShipSync.WorldObjects;
 internal class QSBShipDetachableModule : LinkedWorldObject<ShipDetachableModule, ShipModuleTransformSync>
 {
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.ShipModulePrefab;
-	protected override bool SpawnWithServerAuthority => true;
+	protected override bool SpawnWithServerOwnership => true;
 
 	public override void SendInitialState(uint to)
 	{

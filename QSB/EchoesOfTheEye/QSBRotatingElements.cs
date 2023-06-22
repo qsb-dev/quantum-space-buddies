@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
-using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
+using QSB.OwnershipSync;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using System.Collections.Generic;
@@ -52,7 +52,7 @@ internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 		_litSensors++;
 		if (_litSensors == 1)
 		{
-			NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Add);
+			NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Add);
 		}
 	}
 
@@ -61,9 +61,9 @@ internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 		_litSensors--;
 		if (_litSensors == 0)
 		{
-			NetworkBehaviour.netIdentity.UpdateAuthQueue(AuthQueueAction.Remove);
+			NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Remove);
 		}
 	}
 
-	protected override bool SpawnWithServerAuthority => false;
+	protected override bool SpawnWithServerOwnership => false;
 }

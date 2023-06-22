@@ -16,7 +16,7 @@ namespace QSB.EchoesOfTheEye.LightSensorSync;
 /// only purpose is to handle initial state sync.
 ///
 /// we don't have to worry about start illuminated or sectors.
-/// authority is always given to local player light sensor.
+/// ownership is always given to local player light sensor.
 ///
 /// 2 uses:
 /// - AlarmTotem.CheckPlayerVisible

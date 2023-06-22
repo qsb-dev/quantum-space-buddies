@@ -13,7 +13,7 @@ public class QSBOrb : LinkedWorldObject<NomaiInterfaceOrb, NomaiOrbTransformSync
 	public override bool ShouldDisplayDebug() => false;
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.OrbPrefab;
-	protected override bool SpawnWithServerAuthority => false;
+	protected override bool SpawnWithServerOwnership => false;
 
 	public override void SendInitialState(uint to)
 	{

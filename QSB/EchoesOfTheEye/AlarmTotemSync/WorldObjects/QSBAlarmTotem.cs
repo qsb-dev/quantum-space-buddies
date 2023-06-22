@@ -1,10 +1,10 @@
-﻿using QSB.AuthoritySync;
-using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
+﻿using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.Messaging;
+using QSB.OwnershipSync;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 
-public class QSBAlarmTotem : AuthWorldObject<AlarmTotem>
+public class QSBAlarmTotem : OwnedWorldObject<AlarmTotem>
 {
 	public override bool CanOwn => AttachedObject.enabled;
 

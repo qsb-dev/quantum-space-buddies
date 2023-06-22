@@ -88,7 +88,7 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 	}
 
 	public override void SendInitialState(uint to) =>
-		((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(ControllingPlayer) { To = to });
+		((IQSBQuantumObject)this).SendMessage(new QuantumOwnershipMessage(ControllingPlayer) { To = to });
 
 	public List<Shape> GetAttachedShapes()
 	{
@@ -149,8 +149,8 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 			return;
 		}
 
-		// no one is controlling this object right now, request authority
-		((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId));
+		// no one is controlling this object right now, request ownership
+		((IQSBQuantumObject)this).SendMessage(new QuantumOwnershipMessage(QSBPlayerManager.LocalPlayerId));
 	}
 
 	private void OnDisable(Shape s) =>
@@ -179,8 +179,8 @@ internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 				return;
 			}
 
-			// send event to other players that we're releasing authority
-			((IQSBQuantumObject)this).SendMessage(new QuantumAuthorityMessage(0u));
+			// send event to other players that we're releasing ownership
+			((IQSBQuantumObject)this).SendMessage(new QuantumOwnershipMessage(0u));
 		});
 
 	public void OnTakeProbeSnapshot(PlayerInfo player, ProbeCamera.ID cameraId)

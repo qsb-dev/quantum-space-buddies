@@ -5,19 +5,19 @@ using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;
 
-namespace QSB.AuthoritySync;
+namespace QSB.OwnershipSync;
 
 /// <summary>
 /// helper implementation of the interface
 /// </summary>
-public abstract class AuthWorldObject<T> : WorldObject<T>, IAuthWorldObject
+public abstract class OwnedWorldObject<T> : WorldObject<T>, IOwnedWorldObject
 	where T : MonoBehaviour
 {
 	public uint Owner { get; set; }
 	public abstract bool CanOwn { get; }
 
 	public override void SendInitialState(uint to) =>
-		((IAuthWorldObject)this).SendMessage(new AuthWorldObjectMessage(Owner) { To = to });
+		((IOwnedWorldObject)this).SendMessage(new OwnedWorldObjectMessage(Owner) { To = to });
 
 	public override async UniTask Init(CancellationToken ct) =>
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
@@ -33,7 +33,7 @@ public abstract class AuthWorldObject<T> : WorldObject<T>, IAuthWorldObject
 		}
 		if (Owner == player.PlayerId)
 		{
-			((IAuthWorldObject)this).SendMessage(new AuthWorldObjectMessage(CanOwn ? QSBPlayerManager.LocalPlayerId : 0));
+			((IOwnedWorldObject)this).SendMessage(new OwnedWorldObjectMessage(CanOwn ? QSBPlayerManager.LocalPlayerId : 0));
 		}
 	}
 }

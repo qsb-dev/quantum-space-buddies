@@ -516,6 +516,9 @@ internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 
 	private void SwitchToPlayerCamera()
 	{
+		// does nothing except run CCU's prefix
+		_oldPlatform.SwitchToPlayerCamera();
+
 		if (_slavePlatform._visualSector != null)
 		{
 			if (!_alreadyOccupiedSectors.Contains(_slavePlatform._visualSector))

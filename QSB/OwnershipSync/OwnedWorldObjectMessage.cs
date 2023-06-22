@@ -1,14 +1,14 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
 
-namespace QSB.AuthoritySync;
+namespace QSB.OwnershipSync;
 
 /// <summary>
 /// request or release ownership of a world object
 /// </summary>
-public class AuthWorldObjectMessage : QSBWorldObjectMessage<IAuthWorldObject, uint>
+public class OwnedWorldObjectMessage : QSBWorldObjectMessage<IOwnedWorldObject, uint>
 {
-	public AuthWorldObjectMessage(uint owner) : base(owner) { }
+	public OwnedWorldObjectMessage(uint owner) : base(owner) { }
 
 	public override bool ShouldReceive
 	{
@@ -39,7 +39,7 @@ public class AuthWorldObjectMessage : QSBWorldObjectMessage<IAuthWorldObject, ui
 		if (WorldObject.Owner == 0 && WorldObject.CanOwn)
 		{
 			// object has no owner, but is still active for this player. request ownership
-			WorldObject.SendMessage(new AuthWorldObjectMessage(QSBPlayerManager.LocalPlayerId));
+			WorldObject.SendMessage(new OwnedWorldObjectMessage(QSBPlayerManager.LocalPlayerId));
 		}
 	}
 }

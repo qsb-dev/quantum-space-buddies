@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
-using QSB.AuthoritySync;
 using QSB.Messaging;
+using QSB.OwnershipSync;
 using QSB.Player;
 using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.Tools.ProbeLauncherTool.VariableSync;
@@ -74,10 +74,10 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 
 		_currentUser = isInUse ? user : uint.MaxValue;
 
-		// Whoever is using it needs authority to be able to rotate it
+		// Whoever is using it needs ownership to be able to rotate it
 		if (QSBCore.IsHost)
 		{
-			NetworkBehaviour.netIdentity.SetAuthority(_currentUser);
+			NetworkBehaviour.netIdentity.SetOwner(_currentUser);
 		}
 
 		UpdateUse();
@@ -89,10 +89,10 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 
 		_currentUser = isInUse ? QSBPlayerManager.LocalPlayerId : uint.MaxValue;
 
-		// Whoever is using it needs authority to be able to rotate it
+		// Whoever is using it needs ownership to be able to rotate it
 		if (QSBCore.IsHost)
 		{
-			NetworkBehaviour.netIdentity.SetAuthority(_currentUser);
+			NetworkBehaviour.netIdentity.SetOwner(_currentUser);
 		}
 
 		this.SendMessage(new StationaryProbeLauncherMessage(isInUse, _currentUser));

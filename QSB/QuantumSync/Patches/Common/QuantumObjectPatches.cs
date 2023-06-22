@@ -56,6 +56,7 @@ public class QuantumObjectPatches : QSBPatch
 		}
 
 		var worldObject = __instance.GetWorldObject<IQSBQuantumObject>();
+		// TODO: this should just be equal to _visibleinprobesnapshot. check if theyre in sync and just go back to using that like we did before
 		var visibleToProbePlayers = worldObject.GetVisibleToProbePlayers();
 		__result = visibleToProbePlayers.Any();
 		return false;

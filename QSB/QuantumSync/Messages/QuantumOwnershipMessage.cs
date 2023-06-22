@@ -4,9 +4,9 @@ using QSB.QuantumSync.WorldObjects;
 
 namespace QSB.QuantumSync.Messages;
 
-public class QuantumAuthorityMessage : QSBWorldObjectMessage<IQSBQuantumObject, uint>
+public class QuantumOwnershipMessage : QSBWorldObjectMessage<IQSBQuantumObject, uint>
 {
-	public QuantumAuthorityMessage(uint authorityOwner) : base(authorityOwner) { }
+	public QuantumOwnershipMessage(uint owner) : base(owner) { }
 
 	public override bool ShouldReceive
 	{
@@ -38,7 +38,7 @@ public class QuantumAuthorityMessage : QSBWorldObjectMessage<IQSBQuantumObject, 
 		if (WorldObject.ControllingPlayer == 00 && WorldObject.IsEnabled)
 		{
 			// object has no owner, but is still active for this player. request ownership
-			WorldObject.SendMessage(new QuantumAuthorityMessage(QSBPlayerManager.LocalPlayerId));
+			WorldObject.SendMessage(new QuantumOwnershipMessage(QSBPlayerManager.LocalPlayerId));
 		}
 	}
 }

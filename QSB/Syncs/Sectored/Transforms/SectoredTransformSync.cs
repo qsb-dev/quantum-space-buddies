@@ -9,7 +9,7 @@ public abstract class SectoredTransformSync : BaseSectoredSync
 	protected abstract Transform InitRemoteTransform();
 
 	protected sealed override Transform InitAttachedTransform()
-		=> hasAuthority ? InitLocalTransform() : InitRemoteTransform();
+		=> isOwned ? InitLocalTransform() : InitRemoteTransform();
 
 	protected override void GetFromAttached()
 	{

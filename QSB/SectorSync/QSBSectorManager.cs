@@ -44,7 +44,7 @@ public class QSBSectorManager : WorldObjectManager
 
 		foreach (var sync in SectoredSyncs)
 		{
-			if (sync.hasAuthority
+			if (sync.isOwned
 				&& sync.IsValid
 				&& sync.AttachedTransform.gameObject.activeInHierarchy)
 			{

@@ -207,7 +207,7 @@ namespace Mirror.Weaver
                 Console.WriteLine($"Script Module: {moduleDefinition.Name}");
 
                 // CHANGED
-                QSBReaderWriterProcessor.Process(moduleDefinition, writers, readers, ref WeavingFailed);
+                modified |= QSBReaderWriterProcessor.Process(moduleDefinition, writers, readers, ref WeavingFailed);
 
                 modified |= WeaveModule(moduleDefinition);
 

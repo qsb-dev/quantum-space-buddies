@@ -1,5 +1,5 @@
 ﻿using Mirror;
-using QSB.AuthoritySync;
+using QSB.OwnershipSync;
 using QSB.Utility.LinkedWorldObject;
 using QSB.Utility.VariableSync;
 using QSB.WorldSync;
@@ -15,7 +15,7 @@ internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVaria
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.RegisterAuthQueue();
+			netIdentity.RegisterOwnerQueue();
 		}
 
 		base.OnStartClient();
@@ -25,7 +25,7 @@ internal abstract class RotatingElementsVariableSyncer<TWorldObject> : BaseVaria
 	{
 		if (QSBCore.IsHost)
 		{
-			netIdentity.UnregisterAuthQueue();
+			netIdentity.UnregisterOwnerQueue();
 		}
 
 		base.OnStopClient();

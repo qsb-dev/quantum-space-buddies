@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using QSB.AuthoritySync;
 using QSB.EchoesOfTheEye.AlarmTotemSync.Messages;
 using QSB.EchoesOfTheEye.AlarmTotemSync.WorldObjects;
 using QSB.Messaging;
+using QSB.OwnershipSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Utility;

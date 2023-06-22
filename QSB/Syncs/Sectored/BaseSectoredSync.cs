@@ -63,7 +63,7 @@ public abstract class BaseSectoredSync : SyncBase
 	/// <summary>
 	/// use this instead of SetReferenceTransform
 	/// <para/>
-	/// called by QSBSectorManager (authority) and ApplyToSector (non authority)
+	/// called by QSBSectorManager (owner) and ApplyToSector (non owner)
 	/// </summary>
 	public void SetReferenceSector(QSBSector sector)
 	{
