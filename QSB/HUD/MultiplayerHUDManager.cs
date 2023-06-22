@@ -165,7 +165,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 		var inSuit = Locator.GetPlayerSuit().IsWearingHelmet();
 
-		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) && !_writingMessage && inSuit)
+		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) && !_writingMessage && inSuit && QSBCore.TextChatInput)
 		{
 			OWInput.ChangeInputMode(InputMode.KeyboardInput);
 			_writingMessage = true;
