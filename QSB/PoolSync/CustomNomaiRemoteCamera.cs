@@ -4,7 +4,7 @@ namespace QSB.PoolSync;
 
 internal class CustomNomaiRemoteCamera : MonoBehaviour
 {
-	private OWCamera _camera;
+	public OWCamera _camera;
 	private AudioListener _audioListener;
 	private NomaiViewerImageEffect _viewerImageEffect;
 	private CustomNomaiRemoteCameraPlatform _owningPlatform;
