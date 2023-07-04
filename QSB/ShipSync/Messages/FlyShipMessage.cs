@@ -40,12 +40,12 @@ internal class FlyShipMessage : QSBMessage<bool>
 		if (Data)
 		{
 			QSBPlayerManager.GetPlayer(From)?.AudioController?.PlayOneShot(AudioType.ShipCockpitBuckleUp);
-			shipCockpitController._interactVolume.DisableInteraction();
+			shipCockpitController._interactVolume?.DisableInteraction();
 		}
 		else
 		{
 			QSBPlayerManager.GetPlayer(From)?.AudioController?.PlayOneShot(AudioType.ShipCockpitUnbuckle);
-			shipCockpitController._interactVolume.EnableInteraction();
+			shipCockpitController._interactVolume?.EnableInteraction();
 		}
 	}
 
