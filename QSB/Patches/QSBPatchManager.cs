@@ -27,7 +27,8 @@ public static class QSBPatchManager
 
 			foreach (var type in typeof(QSBPatch).GetDerivedTypes())
 			{
-				if (!newPatches.Any(x => x.GetType() == type))
+				if (!newPatches.Any(x => x.GetType() == type)
+					&& !_patchList.Any(x => x.GetType() == type))
 				{
 					newPatches.Add((QSBPatch)Activator.CreateInstance(type));
 				}
@@ -36,7 +37,7 @@ public static class QSBPatchManager
 			_patchList.AddRange(newPatches);
 
 			// could do lots of code to make sure all addon patches are done here,
-			// but the only patche type that will have been used by this point in the
+			// but the only patch type that will have been used by this point in the
 			// mod execution is OnModStart
 
 			DebugLog.DebugWrite($"Re-patching block OnModStart for addons", MessageType.Info);
