@@ -1,127 +1,137 @@
 {
-  "Language": "TURKISH",
-  "MainMenuHost": "ÇOK OYUNCULU PAYLAŞ",
-  "MainMenuConnect": "ÇOK OYUNCULU BAĞLAN",
-  "PauseMenuDisconnect": "BAGLANTIYI KES",
-  "PauseMenuStopHosting": "PAYLAŞMAYI DURDUR",
-  "PublicIPAddress": "Genel IP Adresi\n\n(ÇOK OYUNCULU İLERLEMENİZ SİLİNECEKTİR)",
-  "ProductUserID": "Kullanıcı Kimliği\n\n(ÇOK OYUNCULU İLERLEMENİZ SİLİNECEKTİR)",
-  "Connect": "BAĞLAN",
-  "Cancel": "İPTAL",
-  "HostExistingOrNewOrCopy": "Mevcut bir tek oyunculu keşfi çok oyunculu olarak mı paylaşmak (çok oyunculuya kopyalamak), yoksa mevcut olan veya yeni bir çok oyunculu keşfi mi paylaşmak istiyorsun?",
-  "HostNewOrCopy": "Mevcut bir tek oyunculu keşfi çok oyunculu olarak mı paylaşmak, yoksa yeni bir çok oyunculu keşif mi paylaşmak istiyorsun?",
-  "HostExistingOrNew": "Yeni bir çok oyunculu keşif mi, yoksa mevcut olan bir çok oyunculu keşif mi paylaşmak istiyorsun?",
-  "ExistingSave": "MEVCUT KEŞİF",
-  "NewSave": "YENİ KEŞİF",
-  "CopySave": "KEŞFİ KOPYALA",
-  "DisconnectAreYouSure": "Baglantıyı kesmek istediginden emin misin?\nBu seni ana menüye döndürecektir.",
-  "Yes": "EVET",
-  "No": "HAYIR",
-  "StopHostingAreYouSure": "Paylaşmayı durdurmak istediğinden emin misin?\nBu tüm oyuncuların bağlantısını kesip onları ana menüye döndürecektir.",
-  "CopyProductUserIDToClipboard": "Keşif paylaşılıyor\nDiğer oyuncular senin aşağıdaki kullanıcı kimliğini girerek bağlanabilirler.\n{0}\nBunu panoya kopyalamak ister misin?",
-  "Connecting": "BAĞLANIYOR...",
-  "OK": "TAMAM",
-  "ServerRefusedConnection": "Sunucu bağlantıyı reddetti.\n{0}",
-  "ClientDisconnectWithError": "Bir hata nedeniyle istemcinin bağlantısı kesildi!\n{0}",
-  "QSBVersionMismatch": "QSB sürümü uyumlu değil. (İstemci:{0}, Sunucu:{1})",
-  "OWVersionMismatch": "Outer Wilds sürümü uyumlu değil. (İstemci:{0}, Sunucu:{1})",
-  "DLCMismatch": "DLC yüklenme durumu uyumlu değil. (İstemci:{0}, Sunucu:{1})",
-  "GameProgressLimit": "Oyun çok fazla ilerlemiş.",
-  "AddonMismatch": "Yüklü eklentiler uyumsuz. (İstemci:{0} eklentileri, Sunucu:{1} eklentileri)",
-  "IncompatibleMod": "İzin verilmeyen veya uyumsuz mod kullanılıyor. İlk bulunan mod {0}",
-  "PlayerJoinedTheGame": "{0} katıldı!",
-  "PlayerLeftTheGame": "{0} ayrıldı.",
-  "PlayerWasKicked": "{0} atıldı.",
-  "KickedFromServer": "Sunucudan atıldın. Sebep : {0}",
-  "RespawnPlayer": "Oyuncuyu yeniden canlandır",
-  "TimeSyncTooFarBehind": "{0}\nSunucu vaktine uymak için ileri sarılıyor...",
-  "TimeSyncWaitingForStartOfServer": "Sunucunun başlaması bekleniyor...",
-  "TimeSyncTooFarAhead": "{0}\nSunucu vaktine uymak için duraklatılıyor...",
-  "TimeSyncWaitForAllToReady": "Döngünün başlaması bekleniyor...",
-  "TimeSyncWaitForAllToDie": "Döngünün bitmesi bekleniyor...",
-  "GalaxyMapEveryoneNotPresent": "Henüz vakti değil. Buna şahitlik etmesi için herkesin burda olması gerek.",
-  "YouAreDead": "Öldün.",
-  "WaitingForRespawn": "Birinin seni yeniden canlandırması bekleniyor...",
-  "WaitingForAllToDie": "{0} oyuncunun daha ölmesi bekleniyor...",
-  "AttachToShip": "Gemiye tutun",
-  "DetachFromShip": "Gemiyi bırak",
-  "DeathMessages": {
-    "Default": [
-      "{0} öldü",
-      "{0} öldürüldü"
-    ],
-    "Impact": [
-      "{0} retro-iticilerini kullanmayı unuttu",
-      "{0} yere yapıştı",
-      "{0} yere çakıldı",
-      "{0} çok sert bir iniş yaptı",
-      "{0} çarpışma nedeniyle öldü",
-      "{0} kütleçekimini keşfetti"
-    ],
-    "Asphyxiation": [
-      "{0} nefes almayı unuttu",
-      "{0} boğuldu",
-      "{0} boğularak öldü",
-      "{0} nasıl nefes alınacağını unuttu",
-      "{0} oksijenini kontrol etmeyi unuttu",
-      "{0} nefessiz kaldı",
-      "{0} oksijensiz kaldı",
-      "{0} için zaten nefes almaya gerek yoktu"
-    ],
-    "Energy": [
-      "{0} pişirildi"
-    ],
-    "Supernova": [
-      "{0} için vakit doldu",
-      "{0} yandı",
-      "{0} pişti",
-      "{0} buharlaştı",
-      "{0} zamanın akışında kayboldu"
-    ],
-    "Digestion": [
-      "{0} canlı canlı yenildi",
-      "{0} balık buldu",
-      "{0} kötü bir yaratıkla karşılaştı",
-      "{0} yanlış balığa bulaştı",
-      "{0} sindirildi",
-      "{0} sindirilerek öldü"
-    ],
-    "Crushed": [
-      "{0} ezildi",
-      "{0} sıkıştırıldı",
-      "{0} gömüldü",
-      "{0} zamanında çıkamadı",
-      "{0} kumda yüzmeye gitti",
-      "{0} kumu hafife aldı",
-      "{0} kumun altında sıkıştı"
-    ],
-    "Lava": [
-      "{0} lavın içinde öldü",
-      "{0} eritildi",
-      "{0} lavda yüzmeye çalıştı",
-      "{0} lava düştü",
-      "{0} lava düşerek öldü",
-      "{0} lavda yüzdü",
-      "{0} lavda kızartıldı"
-    ],
-    "BlackHole": [
-      "{0} anılarını kovaladı"
-    ],
-    "DreamExplosion": [
-      "{0} patladı",
-      "{0} ilk kullanıcı oldu",
-      "{0} bom diye patladı",
-      "{0} kızartıldı",
-      "{0} patlama nedeniyle öldü",
-      "{0} yanlış eseri kullandı"
-    ],
-    "CrushedByElevator": [
-      "{0} ezildi",
-      "{0} sıkıştırıldı",
-      "{0} asansör tarafından ezildi",
-      "{0} asansör altında durdu",
-      "{0} dümdüz oldu",
-      "{0} asansör tarafından sıkıştırıldı"
-    ]
-  }
+    "Language": "TURKISH",
+    "MainMenuHost": "ÇOK OYUNCULU PAYLAŞ",
+    "MainMenuConnect": "ÇOK OYUNCULU BAĞLAN",
+    "PauseMenuDisconnect": "BAGLANTIYI KES",
+    "PauseMenuStopHosting": "PAYLAŞMAYI DURDUR",
+    "PublicIPAddress": "Genel IP Adresi\n\n(ÇOK OYUNCULU İLERLEMENİZ SİLİNECEKTİR)",
+    "ProductUserID": "Kullanıcı Kimliği\n\n(ÇOK OYUNCULU İLERLEMENİZ SİLİNECEKTİR)",
+    "Connect": "BAĞLAN",
+    "Cancel": "İPTAL",
+    "HostExistingOrNewOrCopy": "Mevcut bir tek oyunculu keşfi çok oyunculu olarak mı paylaşmak (çok oyunculuya kopyalamak), yoksa mevcut olan veya yeni bir çok oyunculu keşfi mi paylaşmak istiyorsun?",
+    "HostNewOrCopy": "Mevcut bir tek oyunculu keşfi çok oyunculu olarak mı paylaşmak, yoksa yeni bir çok oyunculu keşif mi paylaşmak istiyorsun?",
+    "HostExistingOrNew": "Yeni bir çok oyunculu keşif mi, yoksa mevcut olan bir çok oyunculu keşif mi paylaşmak istiyorsun?",
+    "ExistingSave": "MEVCUT KEŞİF",
+    "NewSave": "YENİ KEŞİF",
+    "CopySave": "KEŞFİ KOPYALA",
+    "DisconnectAreYouSure": "Baglantıyı kesmek istediginden emin misin?\nBu seni ana menüye döndürecektir.",
+    "Yes": "EVET",
+    "No": "HAYIR",
+    "StopHostingAreYouSure": "Paylaşmayı durdurmak istediğinden emin misin?\nBu tüm oyuncuların bağlantısını kesip onları ana menüye döndürecektir.",
+    "CopyProductUserIDToClipboard": "Keşif paylaşılıyor\nDiğer oyuncular senin aşağıdaki kullanıcı kimliğini girerek bağlanabilirler.\n{0}\nBunu panoya kopyalamak ister misin?",
+    "Connecting": "BAĞLANIYOR...",
+    "OK": "TAMAM",
+    "ServerRefusedConnection": "Sunucu bağlantıyı reddetti.\n{0}",
+    "ClientDisconnectWithError": "Hata nedeniyle istemcinin bağlantısı kesildi!\n{0}\nDaha fazla bilgi: {1}",
+    "TransportErrors": {
+        "DnsResolve": "Sunucu adı çözümlenemedi.",
+        "Refused": "Bağlantı reddedildi.",
+        "Timeout": "Bağlantı zaman aşımına uğradı.",
+        "Congestion": "Ulaşımda tıkanıklık.",
+        "InvalidReceive": "Mesaj alınırken hata oluştu.",
+        "InvalidSend": "Mesaj gönderilirken hata oluştu.",
+        "ConnectionClosed": "Bağlantı kapandı.",
+        "Unexpected": "Beklenmedik hata."
+    },
+    "QSBVersionMismatch": "QSB sürümü uyumlu değil. (İstemci:{0}, Sunucu:{1})",
+    "OWVersionMismatch": "Outer Wilds sürümü uyumlu değil. (İstemci:{0}, Sunucu:{1})",
+    "DLCMismatch": "DLC yüklenme durumu uyumlu değil. (İstemci:{0}, Sunucu:{1})",
+    "GameProgressLimit": "Oyun çok fazla ilerlemiş.",
+    "AddonMismatch": "Yüklü eklentiler uyumsuz. (İstemci:{0} eklentileri, Sunucu:{1} eklentileri)",
+    "IncompatibleMod": "İzin verilmeyen veya uyumsuz mod kullanılıyor. İlk bulunan mod {0}",
+    "PlayerJoinedTheGame": "{0} katıldı!",
+    "PlayerLeftTheGame": "{0} ayrıldı.",
+    "PlayerWasKicked": "{0} atıldı.",
+    "KickedFromServer": "Sunucudan atıldın. Sebep : {0}",
+    "RespawnPlayer": "Oyuncuyu yeniden canlandır",
+    "TimeSyncTooFarBehind": "{0}\nSunucu vaktine uymak için ileri sarılıyor...",
+    "TimeSyncWaitingForStartOfServer": "Sunucunun başlaması bekleniyor...",
+    "TimeSyncTooFarAhead": "{0}\nSunucu vaktine uymak için duraklatılıyor...",
+    "TimeSyncWaitForAllToReady": "Döngünün başlaması bekleniyor...",
+    "TimeSyncWaitForAllToDie": "Döngünün bitmesi bekleniyor...",
+    "GalaxyMapEveryoneNotPresent": "Henüz vakti değil. Buna şahitlik etmesi için herkesin burda olması gerek.",
+    "YouAreDead": "Öldün.",
+    "WaitingForRespawn": "Birinin seni yeniden canlandırması bekleniyor...",
+    "WaitingForAllToDie": "{0} oyuncunun daha ölmesi bekleniyor...",
+    "AttachToShip": "Gemiye tutun",
+    "DetachFromShip": "Gemiyi bırak",
+    "DeathMessages": {
+        "Default": [
+            "{0} öldü",
+            "{0} öldürüldü"
+        ],
+        "Impact": [
+            "{0} retro-iticilerini kullanmayı unuttu",
+            "{0} yere yapıştı",
+            "{0} yere çakıldı",
+            "{0} çok sert bir iniş yaptı",
+            "{0} çarpışma nedeniyle öldü",
+            "{0} kütleçekimini keşfetti"
+        ],
+        "Asphyxiation": [
+            "{0} nefes almayı unuttu",
+            "{0} boğuldu",
+            "{0} boğularak öldü",
+            "{0} nasıl nefes alınacağını unuttu",
+            "{0} oksijenini kontrol etmeyi unuttu",
+            "{0} nefessiz kaldı",
+            "{0} oksijensiz kaldı",
+            "{0} için zaten nefes almaya gerek yoktu"
+        ],
+        "Energy": [
+            "{0} pişirildi"
+        ],
+        "Supernova": [
+            "{0} için vakit doldu",
+            "{0} yandı",
+            "{0} pişti",
+            "{0} buharlaştı",
+            "{0} zamanın akışında kayboldu"
+        ],
+        "Digestion": [
+            "{0} canlı canlı yenildi",
+            "{0} balık buldu",
+            "{0} kötü bir yaratıkla karşılaştı",
+            "{0} yanlış balığa bulaştı",
+            "{0} sindirildi",
+            "{0} sindirilerek öldü"
+        ],
+        "Crushed": [
+            "{0} ezildi",
+            "{0} sıkıştırıldı",
+            "{0} gömüldü",
+            "{0} zamanında çıkamadı",
+            "{0} kumda yüzmeye gitti",
+            "{0} kumu hafife aldı",
+            "{0} kumun altında sıkıştı"
+        ],
+        "Lava": [
+            "{0} lavın içinde öldü",
+            "{0} eritildi",
+            "{0} lavda yüzmeye çalıştı",
+            "{0} lava düştü",
+            "{0} lava düşerek öldü",
+            "{0} lavda yüzdü",
+            "{0} lavda kızartıldı"
+        ],
+        "BlackHole": [
+            "{0} anılarını kovaladı"
+        ],
+        "DreamExplosion": [
+            "{0} patladı",
+            "{0} ilk kullanıcı oldu",
+            "{0} bom diye patladı",
+            "{0} kızartıldı",
+            "{0} patlama nedeniyle öldü",
+            "{0} yanlış eseri kullandı"
+        ],
+        "CrushedByElevator": [
+            "{0} ezildi",
+            "{0} sıkıştırıldı",
+            "{0} asansör tarafından ezildi",
+            "{0} asansör altında durdu",
+            "{0} dümdüz oldu",
+            "{0} asansör tarafından sıkıştırıldı"
+        ]
+    }
 }
