@@ -37,6 +37,12 @@ internal class FlyShipMessage : QSBMessage<bool>
 	{
 		SetCurrentFlyer(From, Data);
 		var shipCockpitController = ShipManager.Instance.CockpitController;
+
+		if (shipCockpitController == null)
+		{
+			return;
+		}
+
 		if (Data)
 		{
 			QSBPlayerManager.GetPlayer(From)?.AudioController?.PlayOneShot(AudioType.ShipCockpitBuckleUp);
