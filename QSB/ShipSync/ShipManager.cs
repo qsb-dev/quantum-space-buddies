@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync;
 
-internal class ShipManager : WorldObjectManager
+public class ShipManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 
