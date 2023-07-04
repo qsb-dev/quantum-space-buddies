@@ -167,6 +167,7 @@ public class QSBCore : ModBehaviour
 
 		// init again to get addon patches
 		QSBPatchManager.Init();
+		QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
 
 		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
