@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync.Patches;
 
-internal class ShipAudioPatches : QSBPatch
+public class ShipAudioPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
