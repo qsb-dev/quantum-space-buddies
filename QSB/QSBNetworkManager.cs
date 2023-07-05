@@ -207,7 +207,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			}
 		});
 
-	private static int _assetId = 2; // 1 is the player
+	private static uint _assetId = 2; // 1 is the player
 
 	/// create a new network prefab from the network object prefab template.
 	/// this works by calling Unload(false) and then reloading the AssetBundle,
