@@ -22,17 +22,7 @@
   "Connecting": "CONNECTING...",
   "OK": "OK",
   "ServerRefusedConnection": "Server refused connection.\n{0}",
-  "ClientDisconnectWithError": "Client disconnected with error!\n{0}\nMore info: {1}",
-  "TransportErrors": {
-    "DnsResolve": "Failed to resolve host name.",
-    "Refused": "Connection refused.",
-    "Timeout": "Connection timed out.",
-    "Congestion": "Congestion on transport.",
-    "InvalidReceive": "Error receiving message.",
-    "InvalidSend": "Error sending message.",
-    "ConnectionClosed": "Connection closed.",
-    "Unexpected": "Unexpected error."
-  },
+  "ClientDisconnectWithError": "Client disconnected with error!\n{0}",
   "QSBVersionMismatch": "QSB version does not match. (Client:{0}, Server:{1})",
   "OWVersionMismatch": "Outer Wilds version does not match. (Client:{0}, Server:{1})",
   "DLCMismatch": "DLC installation state does not match. (Client:{0}, Server:{1})",
