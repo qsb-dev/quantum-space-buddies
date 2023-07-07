@@ -11,6 +11,7 @@ using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
 using QSB.Tools;
 using QSB.Utility;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -176,6 +177,22 @@ public partial class PlayerInfo
 		IsDead = false;
 		SetVisible(true, 1);
 		HUDBox.OnRespawn();
+	}
+
+	private Dictionary<string, object> _customData = new();
+
+	public void SetCustomData<T>(string key, T data)
+		=> _customData[key] = data;
+
+	public T GetCustomData<T>(string key)
+	{
+		if (!_customData.ContainsKey(key))
+		{
+			DebugLog.ToConsole($"Custom data for {ToString()} does not contain entry with key {key}!", MessageType.Error);
+			return default;
+		}
+
+		return (T)_customData[key];
 	}
 
 	public override string ToString() => $"{PlayerId}:{GetType().Name} ({Name})";
