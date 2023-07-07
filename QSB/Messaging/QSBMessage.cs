@@ -7,7 +7,7 @@ public abstract class QSBMessage
 	/// <summary>
 	/// set automatically by Send
 	/// </summary>
-	internal uint From;
+	protected internal uint From;
 	/// <summary>
 	/// (default) uint.MaxValue = send to everyone <br/>
 	/// 0 = send to host
