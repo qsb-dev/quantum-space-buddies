@@ -94,7 +94,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 		if (_messages.Count > LINE_COUNT)
 		{
-			_messages.RemoveFirstElementAndShift();
+			_messages.PopFromBack();
 		}
 
 		var currentLineIndex = 10;
