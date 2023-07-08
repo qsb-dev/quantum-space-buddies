@@ -102,6 +102,18 @@ public class ListStack<T> : IEnumerable<T>
 	public int RemoveAll(Predicate<T> match)
 		=> _items.RemoveAll(match);
 
+	/// <summary>
+	/// Returns the index of the given item, where 0 is the back of the stack.
+	/// </summary>
+	public int IndexOf(T item)
+		=> _items.IndexOf(item);
+
+	public T this[int index]
+	{
+		get => _items[index];
+		set => _items[index] = value;
+	}
+
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => ((IEnumerable<T>)_items).GetEnumerator();
 	public IEnumerator GetEnumerator() => ((IEnumerable<T>)_items).GetEnumerator();
 }
