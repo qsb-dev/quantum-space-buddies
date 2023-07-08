@@ -188,7 +188,6 @@ public partial class PlayerInfo
 	{
 		if (!_customData.ContainsKey(key))
 		{
-			DebugLog.ToConsole($"Custom data for {ToString()} does not contain entry with key {key}!", MessageType.Error);
 			return default;
 		}
 
