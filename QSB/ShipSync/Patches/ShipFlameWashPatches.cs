@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync.Patches;
 
-internal class ShipFlameWashPatches : QSBPatch
+public class ShipFlameWashPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

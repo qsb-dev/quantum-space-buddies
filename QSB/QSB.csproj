@@ -68,8 +68,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.9.0" IncludeAssets="compile" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.9.3" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />

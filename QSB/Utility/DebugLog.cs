@@ -1,8 +1,8 @@
 ﻿using OWML.Common;
 using OWML.Logging;
+using OWML.Utils;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 #pragma warning disable CS0618
@@ -28,7 +28,20 @@ public static class DebugLog
 		}
 		else
 		{
-			QSBCore.Helper.Console.WriteLine(message, type, GetCallingType());
+			var socket = QSBCore.Helper.Console.GetValue<IModSocket>("_socket");
+			socket.WriteToSocket(new ModSocketMessage
+			{
+				SenderName = "QSB",
+				SenderType = GetCallingType(),
+				Type = type,
+				Message = message
+			});
+
+			if (type == MessageType.Fatal)
+			{
+				socket.Close();
+				Process.GetCurrentProcess().Kill();
+			}
 		}
 	}
 

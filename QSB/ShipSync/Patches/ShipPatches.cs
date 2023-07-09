@@ -13,7 +13,7 @@ using UnityEngine;
 namespace QSB.ShipSync.Patches;
 
 [HarmonyPatch]
-internal class ShipPatches : QSBPatch
+public class ShipPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
