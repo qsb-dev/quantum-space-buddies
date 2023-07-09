@@ -9,6 +9,7 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -157,6 +158,8 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		_textChat.GetComponent<CanvasGroup>().alpha = 1;
 	}
 
+	ListStack<string> previousMessages = new(true);
+
 	private void Update()
 	{
 		if (!QSBWorldSync.AllObjectsReady || _playerList == null)
@@ -168,12 +171,39 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 		var inSuit = Locator.GetPlayerSuit().IsWearingHelmet();
 
-		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) && !_writingMessage && inSuit && QSBCore.TextChatInput)
+		if ((OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) || (Keyboard.current[Key.Slash].wasPressedThisFrame && OWInput.IsInputMode(InputMode.Character)))
+			&& !_writingMessage && inSuit && QSBCore.TextChatInput)
 		{
 			OWInput.ChangeInputMode(InputMode.KeyboardInput);
 			_writingMessage = true;
 			_inputField.ActivateInputField();
 			_textChat.GetComponent<CanvasGroup>().alpha = 1;
+
+			if (Keyboard.current[Key.Slash].wasPressedThisFrame)
+			{
+				Delay.RunNextFrame(() => _inputField.text = "/");
+			}
+		}
+
+		if (Keyboard.current[Key.UpArrow].wasPressedThisFrame && _writingMessage)
+		{
+			var currentText = _inputField.text;
+
+			if (previousMessages.Contains(currentText))
+			{
+				var index = previousMessages.IndexOf(currentText);
+
+				if (index == 0)
+				{
+					return;
+				}
+
+				_inputField.text = previousMessages[index - 1];
+			}
+			else
+			{
+				_inputField.text = previousMessages.Last();
+			}
 		}
 
 		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.KeyboardInput) && _writingMessage)
@@ -185,6 +215,14 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			var message = _inputField.text;
 			_inputField.text = "";
 			message = message.Replace("\n", "").Replace("\r", "");
+
+			previousMessages.Push(message);
+
+			if (QSBCore.DebugSettings.DebugMode && CommandInterpreter.InterpretCommand(message))
+			{
+				return;
+			}
+			
 			message = $"{QSBPlayerManager.LocalPlayer.Name}: {message}";
 			new ChatMessage(message, Color.white).Send();
 		}
