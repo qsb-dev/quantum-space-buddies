@@ -8,8 +8,8 @@
     <Copyright></Copyright>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" />
-    <PackageReference Include="OWML" Version="2.9.0" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" />
+    <PackageReference Include="OWML" Version="2.9.3" />
     <Reference Include="../Mirror/*.dll" />
   </ItemGroup>
   <ItemGroup>
