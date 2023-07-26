@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.MeteorSync.WorldObjects;
 using QSB.WorldSync;
-using System.Linq;
 using System.Threading;
 
 namespace QSB.MeteorSync;
@@ -17,9 +16,7 @@ public class MeteorManager : WorldObjectManager
 		// wait for all late initializers (which includes meteor launchers) to finish
 		await UniTask.WaitUntil(() => LateInitializerManager.isDoneInitializing, cancellationToken: ct);
 
-		// NH can make multiple so ensure its the stock whitehole 
-		var whiteHole = QSBWorldSync.GetUnityObjects<AstroObject>().First(x => x.GetAstroObjectName() == AstroObject.Name.WhiteHole);
-		WhiteHoleVolume = whiteHole?.GetComponentInChildren<WhiteHoleVolume>();
+		WhiteHoleVolume = QSBWorldSync.GetUnityObject<WhiteHoleVolume>();
 		QSBWorldSync.Init<QSBFragment, FragmentIntegrity>();
 		QSBWorldSync.Init<QSBMeteorLauncher, MeteorLauncher>();
 		QSBWorldSync.Init<QSBMeteor, MeteorController>();
