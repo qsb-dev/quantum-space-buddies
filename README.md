@@ -101,10 +101,10 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 
 ### Authors
 
-- [\_nebula](https://github.com/misternebula) - Developer of v0.3.0 onwards
-- [JohnCorby](https://github.com/JohnCorby) - Co-developer of v0.13.0 onwards.
-- [AmazingAlek](https://github.com/amazingalek) - Developer of v0.1.0 - v0.7.1.
-- [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1.0 - v0.2.0.
+- [\_nebula](https://github.com/misternebula) - Lead Dev *(v0.3.0 onwards.)*
+- [JohnCorby](https://github.com/JohnCorby) - Lead Dev *(v0.13.0 onwards)*
+- [AmazingAlek](https://github.com/amazingalek) - Ex-Developer *(v0.1.0 - v0.7.1)*
+- [Raicuparta](https://github.com/Raicuparta) - Ex-Developer *(v0.1.0 - v0.2.0)*
 
 ### Contributers
 
