@@ -45,7 +45,7 @@ public abstract class QSBMessage
 
 public abstract class QSBMessage<D> : QSBMessage
 {
-	protected D Data { get; private set; }
+	public D Data { get; private set; }
 	protected QSBMessage(D data) => Data = data;
 
 	public override void Serialize(NetworkWriter writer)

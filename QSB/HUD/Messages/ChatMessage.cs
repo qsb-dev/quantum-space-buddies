@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.HUD.Messages;
 
-internal class ChatMessage : QSBMessage<(string message, Color color)>
+public class ChatMessage : QSBMessage<(string message, Color color)>
 {
 	public ChatMessage(string msg, Color color) : base((msg, color)) { }
 
