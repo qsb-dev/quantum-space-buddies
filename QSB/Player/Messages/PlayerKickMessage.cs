@@ -36,15 +36,15 @@ internal class PlayerKickMessage : QSBMessage<string>
 		{
 			if (QSBPlayerManager.PlayerExists(PlayerId))
 			{
-				MultiplayerHUDManager.Instance.WriteMessage(string.Format(QSBLocalization.Current.PlayerWasKicked, QSBPlayerManager.GetPlayer(PlayerId).Name), Color.red);
+				MultiplayerHUDManager.Instance.WriteSystemMessage(string.Format(QSBLocalization.Current.PlayerWasKicked, QSBPlayerManager.GetPlayer(PlayerId).Name), Color.red);
 				return;
 			}
 
-			MultiplayerHUDManager.Instance.WriteMessage(string.Format(QSBLocalization.Current.PlayerWasKicked, PlayerId), Color.red);
+			MultiplayerHUDManager.Instance.WriteSystemMessage(string.Format(QSBLocalization.Current.PlayerWasKicked, PlayerId), Color.red);
 			return;
 		}
 
-		MultiplayerHUDManager.Instance.WriteMessage(string.Format(QSBLocalization.Current.KickedFromServer, Data), Color.red);
+		MultiplayerHUDManager.Instance.WriteSystemMessage(string.Format(QSBLocalization.Current.KickedFromServer, Data), Color.red);
 		MenuManager.Instance.OnKicked(Data);
 
 		NetworkClient.Disconnect();

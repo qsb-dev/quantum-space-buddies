@@ -127,7 +127,7 @@ public class PlayerJoinMessage : QSBMessage
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.Name = PlayerName;
-		MultiplayerHUDManager.Instance.WriteMessage(string.Format(QSBLocalization.Current.PlayerJoinedTheGame, player.Name), Color.green);
+		MultiplayerHUDManager.Instance.WriteSystemMessage(string.Format(QSBLocalization.Current.PlayerJoinedTheGame, player.Name), Color.green);
 		DebugLog.DebugWrite($"{player} joined. qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
 	}
 
