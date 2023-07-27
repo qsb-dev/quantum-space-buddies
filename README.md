@@ -7,7 +7,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/misternebula/quantum-space-buddies/latest/total?style=flat-square)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/misternebula/quantum-space-buddies/dev?label=last%20commit%20to%20dev&style=flat-square)
 
-[![Install Quantum Space Buddies](https://img.shields.io/endpoint?url=https%3A%2F%2Fouterwildsmods.com%2Fapi%2FRaicuparta.QuantumSpaceBuddies%2Fbadge.json)](https://outerwildsmods.com/mods/quantumspacebuddies/)
+[![Install Quantum Space Buddies](https://img.shields.io/endpoint?url=https%3A%2F%2Fouterwildsmods.com%2Fapi%2FRaicuparta.QuantumSpaceBuddies%2Fbadge.json)](owmods://install-mod/Raicuparta.QuantumSpaceBuddies)
 
 [![Support on Patreon](https://img.shields.io/badge/dynamic/json?style=for-the-badge&color=%23e85b46&label=Patreon&query=data.attributes.patron_count&suffix=%20patrons&url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F8528628&logo=patreon)](https://www.patreon.com/qsb)
 [![Donate with PayPal](https://img.shields.io/badge/PayPal-Donate%20(nebula)-blue?style=for-the-badge&color=blue&logo=paypal)](https://www.paypal.com/paypalme/nebula2056/5)
