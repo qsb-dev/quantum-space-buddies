@@ -45,6 +45,7 @@ public abstract class QSBMessage
 
 public abstract class QSBMessage<D> : QSBMessage
 {
+	// public so it can be accessed by a patch
 	public D Data { get; private set; }
 	protected QSBMessage(D data) => Data = data;
 
