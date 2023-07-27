@@ -184,6 +184,11 @@ public class ShipManager : WorldObjectManager
 
 	private void UpdateElectricalComponent()
 	{
+		if (ShipElectricalComponent == null)
+		{
+			return;
+		}
+
 		var electricalSystem = ShipElectricalComponent._electricalSystem;
 		var damaged = ShipElectricalComponent._damaged;
 
