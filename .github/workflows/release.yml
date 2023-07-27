@@ -16,6 +16,7 @@ permissions:
 env:
   PROJ_USERNAME: Raicuparta
   PROJ_NAME: QuantumSpaceBuddies
+  REAL_PROJ_NAME: QSB
 
 jobs:
   pre_job:
@@ -33,7 +34,7 @@ jobs:
 
       - name: Read Manifest
         id: read-manifest
-        run: echo "manifest=$(< ./${{ env.PROJ_NAME }}/manifest.json sed ':a;N;$!ba;s/\n/ /g')" >> $GITHUB_OUTPUT
+        run: echo "manifest=$(< ./${{ env.REAL_PROJ_NAME }}/manifest.json sed ':a;N;$!ba;s/\n/ /g')" >> $GITHUB_OUTPUT
 
       - name: Check For Release
         id: check-tag
@@ -63,7 +64,7 @@ jobs:
         uses: "actions/setup-dotnet@v3"
 
       - name: Remove .csproj.user
-        run: if (Test-Path ${{ env.PROJ_NAME }}/${{ env.PROJ_NAME }}.csproj.user) { rm ${{ env.PROJ_NAME }}/${{ env.PROJ_NAME }}.csproj.user }
+        run: if (Test-Path ${{ env.REAL_PROJ_NAME }}/${{ env.REAL_PROJ_NAME }}.csproj.user) { rm ${{ env.REAL_PROJ_NAME }}/${{ env.REAL_PROJ_NAME }}.csproj.user }
 
       - name: Build Mod
         run: dotnet build -c Release
@@ -72,10 +73,10 @@ jobs:
         uses: "actions/upload-artifact@v3"
         with:
           name: "${{ env.PROJ_USERNAME }}.${{ env.PROJ_NAME }}"
-          path: "${{ env.PROJ_NAME }}/bin/Release"
+          path: "${{ env.REAL_PROJ_NAME }}/bin/Release"
 
       - name: Zip For Release
-        run: 7z a ${{ env.PROJ_USERNAME }}.${{ env.PROJ_NAME }}.zip ./${{ env.PROJ_NAME }}/bin/Release/**
+        run: 7z a ${{ env.PROJ_USERNAME }}.${{ env.PROJ_NAME }}.zip ./${{ env.REAL_PROJ_NAME }}/bin/Release/**
 
       - name: Create Release
         uses: "ncipollo/release-action@v1"
