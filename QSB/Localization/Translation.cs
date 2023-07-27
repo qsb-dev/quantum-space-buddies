@@ -1,5 +1,4 @@
-﻿using Mirror;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace QSB.Localization;
 
@@ -29,7 +28,6 @@ public class Translation
 	public string OK;
 	public string ServerRefusedConnection;
 	public string ClientDisconnectWithError;
-	public Dictionary<TransportError, string> TransportErrors;
 	public string QSBVersionMismatch;
 	public string OWVersionMismatch;
 	public string DLCMismatch;

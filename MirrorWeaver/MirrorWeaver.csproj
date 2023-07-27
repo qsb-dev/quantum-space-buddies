@@ -11,7 +11,12 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="LICENSE">
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" />
+    <PackageReference Include="OWML" Version="2.9.3" />
+    <Reference Include="../Mirror/*.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="License.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

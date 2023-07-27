@@ -23,16 +23,44 @@ public static class QSBPatchManager
 	{
 		if (_inited)
 		{
-			var count = _patchList.Count;
+			var newPatches = new List<QSBPatch>();
+
 			foreach (var type in typeof(QSBPatch).GetDerivedTypes())
 			{
-				if (!_patchList.Any(x => x.GetType() == type))
+				if (!newPatches.Any(x => x.GetType() == type)
+					&& !_patchList.Any(x => x.GetType() == type))
 				{
-					_patchList.Add((QSBPatch)Activator.CreateInstance(type));
+					newPatches.Add((QSBPatch)Activator.CreateInstance(type));
 				}
 			}
 
-			DebugLog.DebugWrite($"Registered {_patchList.Count - count} addon patches.", MessageType.Success);
+			_patchList.AddRange(newPatches);
+
+			// could do lots of code to make sure all addon patches are done here,
+			// but the only patch type that will have been used by this point in the
+			// mod execution is OnModStart
+
+			DebugLog.DebugWrite($"Re-patching block OnModStart for addons", MessageType.Info);
+			var harmonyInstance = TypeToInstance[QSBPatchTypes.OnModStart];
+			foreach (var patch in newPatches)
+			{
+				if (patch.Type != QSBPatchTypes.OnModStart)
+				{
+					continue;
+				}
+
+				DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
+				try
+				{
+					patch.DoPatches(harmonyInstance);
+				}
+				catch (Exception ex)
+				{
+					DebugLog.ToConsole($"Error while patching {patch.GetType().Name} :\r\n{ex}", MessageType.Error);
+				}
+			}
+
+			DebugLog.DebugWrite($"Registered {newPatches.Count()} addon patches.", MessageType.Success);
 			return;
 		}
 
@@ -59,10 +87,10 @@ public static class QSBPatchManager
 		}
 
 		OnPatchType?.SafeInvoke(type);
-		//DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
+		DebugLog.DebugWrite($"Patch block {Enum.GetName(typeof(QSBPatchTypes), type)}", MessageType.Info);
 		foreach (var patch in _patchList.Where(x => x.Type == type && x.PatchVendor.HasFlag(QSBCore.GameVendor)))
 		{
-			//DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
+			DebugLog.DebugWrite($" - Patching in {patch.GetType().Name}", MessageType.Info);
 			try
 			{
 				patch.DoPatches(TypeToInstance[type]);

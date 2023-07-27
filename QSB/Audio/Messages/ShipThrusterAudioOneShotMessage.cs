@@ -13,7 +13,13 @@ public class ShipThrusterAudioOneShotMessage : QSBMessage<(AudioType audioType, 
 
 	public override void OnReceiveRemote()
 	{
-		var source = ShipManager.Instance.ShipThrusterAudio._rotationalSource;
+		var source = ShipManager.Instance?.ShipThrusterAudio?._rotationalSource;
+
+		if (source == null)
+		{
+			return;
+		}
+
 		source.pitch = Data.pitch;
 		source.PlayOneShot(Data.audioType, Data.volume);
 	}

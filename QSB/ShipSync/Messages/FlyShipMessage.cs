@@ -37,15 +37,21 @@ internal class FlyShipMessage : QSBMessage<bool>
 	{
 		SetCurrentFlyer(From, Data);
 		var shipCockpitController = ShipManager.Instance.CockpitController;
+
+		if (shipCockpitController == null)
+		{
+			return;
+		}
+
 		if (Data)
 		{
 			QSBPlayerManager.GetPlayer(From)?.AudioController?.PlayOneShot(AudioType.ShipCockpitBuckleUp);
-			shipCockpitController._interactVolume.DisableInteraction();
+			shipCockpitController._interactVolume?.DisableInteraction();
 		}
 		else
 		{
 			QSBPlayerManager.GetPlayer(From)?.AudioController?.PlayOneShot(AudioType.ShipCockpitUnbuckle);
-			shipCockpitController._interactVolume.EnableInteraction();
+			shipCockpitController._interactVolume?.EnableInteraction();
 		}
 	}
 
@@ -57,7 +63,7 @@ internal class FlyShipMessage : QSBMessage<bool>
 
 		if (QSBCore.IsHost)
 		{
-			ShipTransformSync.LocalInstance.netIdentity.SetOwner(isFlying
+			ShipTransformSync.LocalInstance?.netIdentity.SetOwner(isFlying
 				? id
 				: QSBPlayerManager.LocalPlayerId);
 		}

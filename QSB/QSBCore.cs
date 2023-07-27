@@ -64,6 +64,7 @@ public class QSBCore : ModBehaviour
 	public static bool ShowPlayerNames { get; private set; }
 	public static bool ShipDamage { get; private set; }
 	public static bool ShowExtraHUDElements { get; private set; }
+	public static bool TextChatInput { get; private set; }
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
@@ -322,6 +323,7 @@ public class QSBCore : ModBehaviour
 		ShowPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
 		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
 		ShowExtraHUDElements = config.GetSettingsValue<bool>("showExtraHud");
+		TextChatInput = config.GetSettingsValue<bool>("textChatInput");
 
 		if (IsHost)
 		{
