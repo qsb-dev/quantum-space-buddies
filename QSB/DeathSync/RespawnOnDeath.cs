@@ -239,7 +239,7 @@ public class RespawnOnDeath : MonoBehaviour
 		}
 
 		var cloak = Locator.GetCloakFieldController();
-		// visible stranger and maybe NH disables cloak
+		// visible stranger disables cloak
 		if (cloak)
 		{
 			cloak._playerInsideCloak = false;

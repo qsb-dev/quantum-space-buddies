@@ -23,6 +23,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	private Transform _textChat;
 	private InputField _inputField;
 	private Material _markerMaterial;
+	private bool _ready;
 
 	public static Sprite UnknownSprite;
 	public static Sprite DeadSprite;
@@ -64,6 +65,11 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		Interloper = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_interloper.png");
 		WhiteHole = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_whitehole.png");
 		SpaceSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_space.png");
+
+		QSBSceneManager.OnPostSceneLoad += (OWScene old, OWScene newScene) =>
+		{
+			_ready = false;
+		};
 	}
 
 	private const int LINE_COUNT = 11;
@@ -77,8 +83,21 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	private readonly ListStack<(string msg, Color color)> _messages = new(false);
 	private float _lastMessageTime;
 
+	// this just exists so i can patch this in my tts addon
+	// perks of being a qsb dev :-)
+	public void WriteSystemMessage(string message, Color color)
+	{
+		WriteMessage(message, color);
+	}
+
 	public void WriteMessage(string message, Color color)
 	{
+		// dont write messages when not ready
+		if (!_ready)
+		{
+			return;
+		}
+
 		/* Tricky problem to solve.
 		 * - 11 available lines for text to fit onto
 		 * - Each line can be max 41 characters
@@ -307,6 +326,8 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		_lines.Clear();
 		_messages.Clear();
 		_textChat.GetComponent<CanvasGroup>().alpha = 0;
+
+		_ready = true;
 	}
 
 	public void UpdateMinimapMarkers(Minimap minimap)
@@ -439,7 +460,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		Destroy(player.HUDBox?.gameObject);
 		Destroy(player.MinimapPlayerMarker);
 
-		WriteMessage(string.Format(QSBLocalization.Current.PlayerLeftTheGame, player.Name), Color.yellow);
+		WriteSystemMessage(string.Format(QSBLocalization.Current.PlayerLeftTheGame, player.Name), Color.yellow);
 	}
 
 	private PlanetTrigger CreateTrigger(string parentPath, HUDIcon icon)

@@ -79,7 +79,7 @@ public class QSBCore : ModBehaviour
 	{
 		// incompatible mods
 		"Raicuparta.NomaiVR",
-		// "xen.NewHorizons",
+		"xen.NewHorizons",
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
@@ -308,32 +308,3 @@ public class QSBCore : ModBehaviour
 		}
 	}
 }
-
-/*
- * _nebula's music thanks
- * I listen to music constantly while programming/working - here's my thanks to them for keeping me entertained :P
- *
- * Wintergatan
- * HOME
- * C418
- * Lupus Nocte
- * Max Cooper
- * Darren Korb
- * Harry Callaghan
- * Toby Fox
- * Andrew Prahlow
- * Valve (Mike Morasky, Kelly Bailey)
- * Joel Nielsen
- * Vulfpeck
- * Detektivbyrån
- * Ben Prunty
- * ConcernedApe
- * Jake Chudnow
- * Murray Gold
- * Teleskärm
- * Daft Punk
- * Natalie Holt
- * WMD
- * Woody Jackson
- * Brian David Gilbert
- */

@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2569F98D-F671-42AA-82DE-505B05CDCEF2}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		DEVELOPMENT.md = DEVELOPMENT.md
 		LICENSE = LICENSE
 		README.md = README.md
 		TRANSLATING.md = TRANSLATING.md
@@ -15,9 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MirrorWeaver", "MirrorWeaver\MirrorWeaver.csproj", "{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicOnlineTransport", "EpicOnlineTransport\EpicOnlineTransport.csproj", "{971AA4A1-6729-40DE-AADF-2754F1E8783A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpicOnlineTransport", "EpicOnlineTransport\EpicOnlineTransport.csproj", "{971AA4A1-6729-40DE-AADF-2754F1E8783A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicRerouter", "EpicRerouter\EpicRerouter.csproj", "{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpicRerouter", "EpicRerouter\EpicRerouter.csproj", "{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

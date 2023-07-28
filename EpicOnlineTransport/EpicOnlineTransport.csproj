@@ -8,7 +8,7 @@
     <PackageLicenseFile>License.md</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.393" IncludeAssets="compile" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" IncludeAssets="compile" />
     <Reference Include="../Mirror/*.dll" />
   </ItemGroup>
   <ItemGroup>
