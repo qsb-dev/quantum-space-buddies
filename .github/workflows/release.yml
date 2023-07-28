@@ -1,0 +1,91 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: Prerelease
+        type: boolean
+      bypassCheck:
+        description: Bypass Version Check
+        type: boolean
+
+permissions:
+  contents: write
+
+env:
+  PROJ_USERNAME: Raicuparta
+  PROJ_NAME: QuantumSpaceBuddies
+  REAL_PROJ_NAME: QSB
+
+jobs:
+  pre_job:
+    name: Check For Other Releases
+    outputs:
+      version: ${{ steps.out.outputs.version }}
+      exists: ${{ steps.out.outputs.exists }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: "actions/checkout@v3"
+
+      - name: Fetch
+        run: git fetch
+
+      - name: Read Manifest
+        id: read-manifest
+        run: echo "manifest=$(< ./${{ env.REAL_PROJ_NAME }}/manifest.json sed ':a;N;$!ba;s/\n/ /g')" >> $GITHUB_OUTPUT
+
+      - name: Check For Release
+        id: check-tag
+        run: echo "exists=$(git ls-remote --exit-code --tags origin ${{ env.TAG }} >/dev/null 2>&1 && echo true || echo false)" >> $GITHUB_OUTPUT
+        env:
+          TAG: "v${{fromJson(steps.read-manifest.outputs.manifest).version}}"
+
+      - name: Output Version Info
+        id: out
+        run: |
+          echo "version=${{fromJson(steps.read-manifest.outputs.manifest).version}}" >> $GITHUB_OUTPUT
+          echo "exists=${{steps.check-tag.outputs.exists}}" >> $GITHUB_OUTPUT
+
+      - name: Error
+        if: ${{ steps.out.outputs.exists != 'false' && (!inputs.bypassCheck) }}
+        run: echo "::error file=manifest.json,title=Refusing to Release::Your mod was not released because there is already a release with the version in manifest.json"
+  release:
+    needs: pre_job
+    if: ${{ (needs.pre_job.outputs.version != '0.0.0') && (needs.pre_job.outputs.exists == 'false') || (inputs.bypassCheck) }}
+    name: Create Release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: "actions/checkout@v3"
+
+      - name: Setup .NET
+        uses: "actions/setup-dotnet@v3"
+
+      - name: Remove .csproj.user
+        run: if (Test-Path ${{ env.REAL_PROJ_NAME }}/${{ env.REAL_PROJ_NAME }}.csproj.user) { rm ${{ env.REAL_PROJ_NAME }}/${{ env.REAL_PROJ_NAME }}.csproj.user }
+
+      - name: Build Mod
+        run: dotnet build -c Release
+
+      - name: Upload Artifact
+        uses: "actions/upload-artifact@v3"
+        with:
+          name: "${{ env.PROJ_USERNAME }}.${{ env.PROJ_NAME }}"
+          path: "${{ env.REAL_PROJ_NAME }}/bin/Release"
+
+      - name: Zip For Release
+        run: 7z a ${{ env.PROJ_USERNAME }}.${{ env.PROJ_NAME }}.zip ./${{ env.REAL_PROJ_NAME }}/bin/Release/**
+
+      - name: Create Release
+        uses: "ncipollo/release-action@v1"
+        with:
+          allowUpdates: true
+          commit: ${{ github.ref_name }}
+          tag: v${{ needs.pre_job.outputs.version }}
+          name: Version ${{ needs.pre_job.outputs.version }}
+          omitBodyDuringUpdate: true
+          artifacts: "${{ env.PROJ_USERNAME}}.${{ env.PROJ_NAME }}.zip"
+          draft: true
+          prerelease: ${{ inputs.prerelease }}
