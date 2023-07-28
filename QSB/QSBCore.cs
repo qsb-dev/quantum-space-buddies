@@ -294,12 +294,12 @@ public class QSBCore : ModBehaviour
 		var compatMod = "";
 		var missingCompat = false;
 
-		if (Helper.Interaction.ModExists(NEW_HORIZONS) && !Helper.Interaction.ModExists(NEW_HORIZONS_COMPAT))
+		/*if (Helper.Interaction.ModExists(NEW_HORIZONS) && !Helper.Interaction.ModExists(NEW_HORIZONS_COMPAT))
 		{
 			mainMod = NEW_HORIZONS;
 			compatMod = NEW_HORIZONS_COMPAT;
 			missingCompat = true;
-		}
+		}*/
 
 		if (missingCompat)
 		{
