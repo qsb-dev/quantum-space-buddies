@@ -2,7 +2,7 @@
 
 namespace QSB.Utility;
 
-internal static class UIHelper
+public static class UIHelper
 {
 	public static void ReplaceUI(UITextType key, string text)
 	{

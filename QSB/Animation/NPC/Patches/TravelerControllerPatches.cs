@@ -108,7 +108,7 @@ public class TravelerControllerPatches : QSBPatch
 	}
 }
 
-internal static class TravelerAudioManagerExtensions
+public static class TravelerAudioManagerExtensions
 {
 	/// bad, but works great
 	private static SignalName? TravelerToSignalName(TravelerController traveler)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.Animation.Player.Thrusters;
 
-internal static class ThrusterManager
+public static class ThrusterManager
 {
 	public static void CreateRemotePlayerVFX(PlayerInfo player)
 	{
