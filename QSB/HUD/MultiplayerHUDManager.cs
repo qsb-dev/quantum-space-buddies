@@ -322,6 +322,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		var inputFieldGO = _textChat.Find("InputField");
 		_inputField = inputFieldGO.GetComponent<InputField>();
 		_inputField.text = "";
+		_inputField.characterLimit = 256;
 		_textChat.Find("Messages").Find("Message").GetComponent<Text>().text = "";
 		_lines.Clear();
 		_messages.Clear();
