@@ -12,7 +12,7 @@ using QSB.Utility;
 
 namespace QSB.Tools.ProbeTool.Messages;
 
-internal class ProbeEnterLeaveMessage : QSBMessage<ProbeEnterLeaveType>
+public class ProbeEnterLeaveMessage : QSBMessage<ProbeEnterLeaveType>
 {
 	static ProbeEnterLeaveMessage()
 	{

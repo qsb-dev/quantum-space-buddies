@@ -11,7 +11,7 @@ namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 /// <summary>
 /// todo SendInitialState
 /// </summary>
-internal class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternItem>
+public class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternItem>
 {
 	static EnterDreamWorldMessage()
 	{

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class FacePlayerMessage : QSBWorldObjectMessage<QSBGhostController, (uint playerId, TurnSpeed turnSpeed)>
+public class FacePlayerMessage : QSBWorldObjectMessage<QSBGhostController, (uint playerId, TurnSpeed turnSpeed)>
 {
 	public FacePlayerMessage(uint playerId, TurnSpeed turnSpeed) : base((playerId, turnSpeed)) { }
 

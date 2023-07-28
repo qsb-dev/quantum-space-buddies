@@ -5,7 +5,7 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages;
 
-internal class PlayerLauncherTakeSnapshotMessage : QSBMessage<ProbeCamera.ID>
+public class PlayerLauncherTakeSnapshotMessage : QSBMessage<ProbeCamera.ID>
 {
 	public PlayerLauncherTakeSnapshotMessage(ProbeCamera.ID cameraId) : base(cameraId) { }
 

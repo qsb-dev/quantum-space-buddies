@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.WineCellar;
 
-internal class WineCellarManager : WorldObjectManager
+public class WineCellarManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;

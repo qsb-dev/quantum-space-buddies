@@ -14,7 +14,7 @@ using UnityEngine;
 namespace QSB.EchoesOfTheEye.Ghosts.Patches;
 
 [HarmonyPatch(typeof(GhostBrain))]
-internal class GhostBrainPatches : QSBPatch
+public class GhostBrainPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

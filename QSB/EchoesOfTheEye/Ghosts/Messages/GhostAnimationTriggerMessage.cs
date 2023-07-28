@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class GhostAnimationTriggerMessage : QSBWorldObjectMessage<QSBGhostEffects, GhostAnimationType>
+public class GhostAnimationTriggerMessage : QSBWorldObjectMessage<QSBGhostEffects, GhostAnimationType>
 {
 	public GhostAnimationTriggerMessage(GhostAnimationType type) : base(type) { }
 

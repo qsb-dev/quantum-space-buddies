@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.RoastingSync.Messages;
 
-internal class MarshmallowEventMessage : QSBMessage<MarshmallowMessageType>
+public class MarshmallowEventMessage : QSBMessage<MarshmallowMessageType>
 {
 	public MarshmallowEventMessage(MarshmallowMessageType type) : base(type) { }
 

@@ -15,7 +15,7 @@ using UnityEngine;
 
 namespace QSB.Utility;
 
-internal class DebugGUI : MonoBehaviour, IAddComponentOnStart
+public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 {
 	private const float _debugLineSpacing = 8f;
 	private const float FixedWidth = 200f;

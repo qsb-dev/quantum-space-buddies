@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.Messages;
 
-internal class AirlockCallToOpenMessage : QSBWorldObjectMessage<QSBAirlockInterface, bool>
+public class AirlockCallToOpenMessage : QSBWorldObjectMessage<QSBAirlockInterface, bool>
 {
 	public AirlockCallToOpenMessage(bool front) : base(front) { }
 

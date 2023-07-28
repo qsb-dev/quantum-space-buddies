@@ -11,7 +11,7 @@ using UnityEngine;
 namespace QSB.QuantumSync.Patches.Common;
 
 [HarmonyPatch(typeof(QuantumShuffleObject))]
-internal class QuantumShuffleObjectPatches : QSBPatch
+public class QuantumShuffleObjectPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

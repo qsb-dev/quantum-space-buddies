@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.ModelShip.Messages;
 
-internal class RespawnModelShipMessage : QSBMessage<bool>
+public class RespawnModelShipMessage : QSBMessage<bool>
 {
 	public RespawnModelShipMessage(bool playEffects) : base(playEffects) { }
 

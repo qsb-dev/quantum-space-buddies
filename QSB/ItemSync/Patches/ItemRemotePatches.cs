@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync.Patches;
 
-internal class ItemRemotePatches : QSBPatch
+public class ItemRemotePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

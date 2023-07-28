@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.Tools.TranslatorTool.Patches;
 
-internal class TranslatorPatches : QSBPatch
+public class TranslatorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

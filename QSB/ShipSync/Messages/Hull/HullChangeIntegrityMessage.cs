@@ -3,7 +3,7 @@ using QSB.ShipSync.WorldObjects;
 
 namespace QSB.ShipSync.Messages.Hull;
 
-internal class HullChangeIntegrityMessage : QSBWorldObjectMessage<QSBShipHull, float>
+public class HullChangeIntegrityMessage : QSBWorldObjectMessage<QSBShipHull, float>
 {
 	public HullChangeIntegrityMessage(float integrity) : base(integrity) { }
 

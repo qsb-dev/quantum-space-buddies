@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.Messages;
 
-internal class SocketStateChangeMessage : QSBWorldObjectMessage<QSBSocketedQuantumObject>
+public class SocketStateChangeMessage : QSBWorldObjectMessage<QSBSocketedQuantumObject>
 {
 	private int SocketId;
 	private Quaternion LocalRotation;

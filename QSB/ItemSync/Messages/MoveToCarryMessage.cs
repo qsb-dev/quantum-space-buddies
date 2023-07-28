@@ -5,7 +5,7 @@ using QSB.Utility;
 
 namespace QSB.ItemSync.Messages;
 
-internal class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem, uint>
+public class MoveToCarryMessage : QSBWorldObjectMessage<IQSBItem, uint>
 {
 	public MoveToCarryMessage(uint playerHolding) : base(playerHolding) { }
 

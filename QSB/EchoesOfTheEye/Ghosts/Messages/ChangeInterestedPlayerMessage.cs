@@ -5,7 +5,7 @@ using QSB.Utility;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class ChangeInterestedPlayerMessage : QSBWorldObjectMessage<QSBGhostSensors, uint>
+public class ChangeInterestedPlayerMessage : QSBWorldObjectMessage<QSBGhostSensors, uint>
 {
 	public ChangeInterestedPlayerMessage(uint playerId) : base(playerId) { }
 

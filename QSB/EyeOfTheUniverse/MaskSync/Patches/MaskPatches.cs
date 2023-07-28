@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.MaskSync.Patches;
 
-internal class MaskPatches : QSBPatch
+public class MaskPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

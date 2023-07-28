@@ -9,7 +9,7 @@ using QSB.WorldSync;
 
 namespace QSB.RoastingSync.Messages;
 
-internal class EnterExitRoastingMessage : QSBMessage<bool>
+public class EnterExitRoastingMessage : QSBMessage<bool>
 {
 	static EnterExitRoastingMessage()
 	{

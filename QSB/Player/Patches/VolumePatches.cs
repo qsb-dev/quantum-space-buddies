@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.Player.Patches;
 
-internal class VolumePatches : QSBPatch
+public class VolumePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

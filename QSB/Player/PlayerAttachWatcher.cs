@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.Player;
 
 [HarmonyPatch(typeof(PlayerAttachPoint))]
-internal class PlayerAttachWatcher : QSBPatch
+public class PlayerAttachWatcher : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 

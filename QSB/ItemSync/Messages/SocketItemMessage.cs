@@ -7,7 +7,7 @@ using QSB.WorldSync;
 
 namespace QSB.ItemSync.Messages;
 
-internal class SocketItemMessage : QSBWorldObjectMessage<IQSBItem, (SocketMessageType Type, int SocketId)>
+public class SocketItemMessage : QSBWorldObjectMessage<IQSBItem, (SocketMessageType Type, int SocketId)>
 {
 	public SocketItemMessage(SocketMessageType type, OWItemSocket socket) : base((
 		type,

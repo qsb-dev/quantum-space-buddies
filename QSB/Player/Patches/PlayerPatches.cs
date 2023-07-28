@@ -6,7 +6,7 @@ using QSB.Player.Messages;
 namespace QSB.Player.Patches;
 
 [HarmonyPatch]
-internal class PlayerPatches : QSBPatch
+public class PlayerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

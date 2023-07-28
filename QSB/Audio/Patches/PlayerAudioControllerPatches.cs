@@ -8,7 +8,7 @@ using UnityEngine;
 namespace QSB.Audio.Patches;
 
 [HarmonyPatch]
-internal class PlayerAudioControllerPatches : QSBPatch
+public class PlayerAudioControllerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

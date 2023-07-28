@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace QSB.TimeSync;
 
-internal class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
+public class TimeSyncUI : MonoBehaviour, IAddComponentOnStart
 {
 	private static TimeSyncUI _instance;
 

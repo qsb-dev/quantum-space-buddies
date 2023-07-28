@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.SaveSync.Patches;
 
 [HarmonyPatch(typeof(InGameProfileMenuManager))]
-internal class InGameProfileMenuManagerPatches : QSBPatch
+public class InGameProfileMenuManagerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 

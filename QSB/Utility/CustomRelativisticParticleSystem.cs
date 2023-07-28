@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QSB.Utility;
 
 [UsedInUnityProject]
-internal class CustomRelativisticParticleSystem : MonoBehaviour
+public class CustomRelativisticParticleSystem : MonoBehaviour
 {
 	private ParticleSystem _particleSystem;
 	private Transform _simulationSpace;

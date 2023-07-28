@@ -8,7 +8,7 @@ using UnityEngine;
 namespace QSB.SaveSync.Patches;
 
 [HarmonyPatch(typeof(Gdk))]
-internal class GdkPatches : QSBPatch
+public class GdkPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 	public override GameVendor PatchVendor => GameVendor.Gamepass;

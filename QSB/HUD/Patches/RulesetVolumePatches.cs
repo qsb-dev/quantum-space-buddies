@@ -12,7 +12,7 @@ using UnityEngine;
 namespace QSB.HUD.Patches;
 
 [HarmonyPatch(typeof(RulesetVolume))]
-internal class RulesetVolumePatches : QSBPatch
+public class RulesetVolumePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

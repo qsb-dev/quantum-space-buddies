@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.Patches;
 
-internal class AirlockPatches : QSBPatch
+public class AirlockPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

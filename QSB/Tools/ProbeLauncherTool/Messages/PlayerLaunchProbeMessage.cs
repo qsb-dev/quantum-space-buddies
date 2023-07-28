@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages;
 
-internal class PlayerLaunchProbeMessage : QSBMessage
+public class PlayerLaunchProbeMessage : QSBMessage
 {
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts;
 
-internal class GhostManager : WorldObjectManager
+public class GhostManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;

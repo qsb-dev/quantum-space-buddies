@@ -5,7 +5,7 @@ using QSB.WorldSync;
 
 namespace QSB.ShipSync.WorldObjects;
 
-internal class QSBShipComponent : WorldObject<ShipComponent>
+public class QSBShipComponent : WorldObject<ShipComponent>
 {
 	public override void SendInitialState(uint to)
 	{

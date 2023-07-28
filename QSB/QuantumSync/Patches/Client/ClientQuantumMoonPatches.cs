@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.QuantumSync.Patches.Client;
 
 [HarmonyPatch(typeof(QuantumMoon))]
-internal class ClientQuantumMoonPatches : QSBPatch
+public class ClientQuantumMoonPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 

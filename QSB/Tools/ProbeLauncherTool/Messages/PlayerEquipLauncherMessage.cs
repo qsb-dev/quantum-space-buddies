@@ -3,7 +3,7 @@ using QSB.Player;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages;
 
-internal class PlayerEquipLauncherMessage : QSBMessage<bool>
+public class PlayerEquipLauncherMessage : QSBMessage<bool>
 {
 	public PlayerEquipLauncherMessage(bool equipped) : base(equipped) { }
 

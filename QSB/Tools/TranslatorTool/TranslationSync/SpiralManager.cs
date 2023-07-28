@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.Tools.TranslatorTool.TranslationSync;
 
-internal class SpiralManager : WorldObjectManager
+public class SpiralManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 

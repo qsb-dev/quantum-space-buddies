@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class GrabRemotePlayerMessage : QSBWorldObjectMessage<QSBGhostGrabController, (float speed, uint playerId)>
+public class GrabRemotePlayerMessage : QSBWorldObjectMessage<QSBGhostGrabController, (float speed, uint playerId)>
 {
 	public GrabRemotePlayerMessage(float speed, uint playerId) : base((speed, playerId)) { }
 

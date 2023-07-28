@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap.Messages;
 
-internal class ZoomOutMessage : QSBMessage
+public class ZoomOutMessage : QSBMessage
 {
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

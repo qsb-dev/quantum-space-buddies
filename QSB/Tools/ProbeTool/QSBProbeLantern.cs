@@ -6,7 +6,7 @@ using UnityEngine;
 namespace QSB.Tools.ProbeTool;
 
 [UsedInUnityProject]
-internal class QSBProbeLantern : MonoBehaviour
+public class QSBProbeLantern : MonoBehaviour
 {
 	public float _fadeInDuration;
 	public AnimationCurve _fadeInCurve;

@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.ConversationSync.Messages;
 
-internal class PersistentConditionMessage : QSBMessage<(string Condition, bool State)>
+public class PersistentConditionMessage : QSBMessage<(string Condition, bool State)>
 {
 	public PersistentConditionMessage(string condition, bool state) : base((condition, state)) { }
 

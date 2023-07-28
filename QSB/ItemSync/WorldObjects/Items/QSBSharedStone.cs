@@ -1,3 +1,3 @@
 ﻿namespace QSB.ItemSync.WorldObjects.Items;
 
-internal class QSBSharedStone : QSBItem<SharedStone> { }
+public class QSBSharedStone : QSBItem<SharedStone> { }

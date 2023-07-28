@@ -11,7 +11,7 @@ namespace QSB.Player.Messages;
 /// <summary>
 /// always sent by host
 /// </summary>
-internal class PlayerKickMessage : QSBMessage<string>
+public class PlayerKickMessage : QSBMessage<string>
 {
 	private uint PlayerId;
 

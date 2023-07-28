@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects;
 
-internal class QSBQuantumMoon : QSBQuantumObject<QuantumMoon>
+public class QSBQuantumMoon : QSBQuantumObject<QuantumMoon>
 {
 	public override bool HostControls => true;
 

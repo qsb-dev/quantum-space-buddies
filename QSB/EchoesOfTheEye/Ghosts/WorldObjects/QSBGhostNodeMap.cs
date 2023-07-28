@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 
-internal class QSBGhostNodeMap : WorldObject<GhostNodeMap>
+public class QSBGhostNodeMap : WorldObject<GhostNodeMap>
 {
 	public override void SendInitialState(uint to)
 	{

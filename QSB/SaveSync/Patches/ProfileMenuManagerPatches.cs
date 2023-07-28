@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace QSB.SaveSync.Patches;
 
 [HarmonyPatch(typeof(ProfileMenuManager))]
-internal class ProfileMenuManagerPatches : QSBPatch
+public class ProfileMenuManagerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 	public override GameVendor PatchVendor => GameVendor.Epic | GameVendor.Steam;

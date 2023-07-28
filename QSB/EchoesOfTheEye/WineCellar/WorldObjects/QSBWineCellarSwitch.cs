@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.WineCellar.WorldObjects;
 
-internal class QSBWineCellarSwitch : WorldObject<WineCellarSwitch>
+public class QSBWineCellarSwitch : WorldObject<WineCellarSwitch>
 {
 	public override void SendInitialState(uint to)
 	{

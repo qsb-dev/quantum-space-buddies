@@ -21,7 +21,7 @@ using UnityEngine;
 namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
 
 [HarmonyPatch(typeof(SingleLightSensor))]
-internal class LightSensorPatches : QSBPatch
+public class LightSensorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

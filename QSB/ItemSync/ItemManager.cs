@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync;
 
-internal class ItemManager : WorldObjectManager
+public class ItemManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 

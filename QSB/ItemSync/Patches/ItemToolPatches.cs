@@ -10,7 +10,7 @@ using UnityEngine;
 namespace QSB.ItemSync.Patches;
 
 [HarmonyPatch(typeof(ItemTool))]
-internal class ItemToolPatches : QSBPatch
+public class ItemToolPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

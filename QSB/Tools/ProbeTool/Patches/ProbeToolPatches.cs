@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool.Patches;
 
-internal class ProbeToolPatches : QSBPatch
+public class ProbeToolPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

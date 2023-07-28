@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.AirlockSync;
 
-internal class AirlockManager : WorldObjectManager
+public class AirlockManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;

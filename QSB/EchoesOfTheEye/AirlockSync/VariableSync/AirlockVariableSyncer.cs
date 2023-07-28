@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.VariableSync;
 
-internal class AirlockVariableSyncer : RotatingElementsVariableSyncer<QSBAirlockInterface>
+public class AirlockVariableSyncer : RotatingElementsVariableSyncer<QSBAirlockInterface>
 {
 	protected override Transform[] RotatingElements => WorldObject.AttachedObject._rotatingElements;
 

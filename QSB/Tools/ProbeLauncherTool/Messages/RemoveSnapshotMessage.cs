@@ -5,7 +5,7 @@ using QSB.QuantumSync;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages;
 
-internal class RemoveSnapshotMessage : QSBMessage
+public class RemoveSnapshotMessage : QSBMessage
 {
 	static RemoveSnapshotMessage()
 		=> GlobalMessenger.AddListener(OWEvents.ProbeSnapshotRemoved, Handle);

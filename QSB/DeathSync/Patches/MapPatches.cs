@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QSB.DeathSync.Patches;
 
 [HarmonyPatch]
-internal class MapPatches : QSBPatch
+public class MapPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.RespawnTime;
 

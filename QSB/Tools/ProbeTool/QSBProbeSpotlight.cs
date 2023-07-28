@@ -6,7 +6,7 @@ using UnityEngine;
 namespace QSB.Tools.ProbeTool;
 
 [UsedInUnityProject]
-internal class QSBProbeSpotlight : MonoBehaviour
+public class QSBProbeSpotlight : MonoBehaviour
 {
 	public ProbeCamera.ID _id;
 	public float _fadeInLength = 1f;

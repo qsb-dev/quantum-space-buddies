@@ -15,7 +15,7 @@ using UnityEngine.UI;
 
 namespace QSB.HUD;
 
-internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
+public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static MultiplayerHUDManager Instance;
 

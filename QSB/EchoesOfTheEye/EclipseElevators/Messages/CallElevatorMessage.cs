@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.EclipseElevators.Messages;
 
-internal class CallElevatorMessage : QSBWorldObjectMessage<QSBElevatorDestination>
+public class CallElevatorMessage : QSBWorldObjectMessage<QSBElevatorDestination>
 {
 	public override void OnReceiveRemote()
 	{

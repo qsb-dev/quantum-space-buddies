@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.HUD.Patches;
 
 [HarmonyPatch(typeof(Minimap))]
-internal class MinimapPatches : QSBPatch
+public class MinimapPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

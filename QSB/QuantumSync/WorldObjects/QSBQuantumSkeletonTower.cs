@@ -1,6 +1,6 @@
 ﻿namespace QSB.QuantumSync.WorldObjects;
 
-internal class QSBQuantumSkeletonTower : QSBQuantumObject<QuantumSkeletonTower>
+public class QSBQuantumSkeletonTower : QSBQuantumObject<QuantumSkeletonTower>
 {
 	public override string ReturnLabel() => $"{base.ReturnLabel()}"
 	                                        + $"{AttachedObject._index} {AttachedObject._waitForPlayerToLookAtTower}\n"

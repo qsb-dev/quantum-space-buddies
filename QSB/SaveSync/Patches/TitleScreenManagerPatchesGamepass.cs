@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace QSB.SaveSync.Patches;
 
 [HarmonyPatch(typeof(TitleScreenManager))]
-internal class TitleScreenManagerPatchesGamepass : QSBPatch
+public class TitleScreenManagerPatchesGamepass : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 	public override GameVendor PatchVendor => GameVendor.Gamepass;

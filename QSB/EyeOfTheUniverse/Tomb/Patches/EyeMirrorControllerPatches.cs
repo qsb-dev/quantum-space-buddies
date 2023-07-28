@@ -14,7 +14,7 @@ using UnityEngine;
 namespace QSB.EyeOfTheUniverse.Tomb.Patches;
 
 [HarmonyPatch(typeof(EyeMirrorController))]
-internal class EyeMirrorControllerPatches : QSBPatch
+public class EyeMirrorControllerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

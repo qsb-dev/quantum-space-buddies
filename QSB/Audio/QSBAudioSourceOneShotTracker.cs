@@ -31,7 +31,7 @@ public class QSBAudioSourceOneShotTracker : MonoBehaviour
 }
 
 [HarmonyPatch(typeof(OWAudioSource))]
-internal class OneShotTrackerPatches : QSBPatch
+public class OneShotTrackerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

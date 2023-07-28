@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.QuantumSync.Patches.Client;
 
 [HarmonyPatch(typeof(EyeProxyQuantumMoon))]
-internal class ClientEyeProxyQuantumMoonPatches : QSBPatch
+public class ClientEyeProxyQuantumMoonPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 
