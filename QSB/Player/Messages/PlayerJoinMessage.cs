@@ -41,6 +41,7 @@ public class PlayerJoinMessage : QSBMessage
 		}
 
 		AddonHashes = QSBCore.Addons.Keys
+			.Except(QSBCore.CosmeticAddons)
 			.Select(x => x.GetStableHashCode())
 			.ToArray();
 	}
@@ -109,6 +110,7 @@ public class PlayerJoinMessage : QSBMessage
 			}
 
 			var addonHashes = QSBCore.Addons.Keys
+				.Except(QSBCore.CosmeticAddons)
 				.Select(x => x.GetStableHashCode())
 				.ToArray();
 			if (!AddonHashes.SequenceEqual(addonHashes))

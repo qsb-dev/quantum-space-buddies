@@ -215,6 +215,7 @@ public class QSBCore : ModBehaviour
 	}
 
 	public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
+	public static readonly List<string> CosmeticAddons = new();
 
 	private void RegisterAddons()
 	{
@@ -224,6 +225,29 @@ public class QSBCore : ModBehaviour
 			DebugLog.DebugWrite($"Registering addon {addon.ModHelper.Manifest.UniqueName}");
 			Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
 		}
+	}
+
+	/// <summary>
+	/// Registers an addon that shouldn't be considered for hash checks when joining.
+	/// This addon MUST NOT send any network messages, or create any worldobjects.
+	/// </summary>
+	/// <param name="addon">The behaviour of the addon.</param>
+	public static void RegisterCosmeticAddon(IModBehaviour addon)
+	{
+		var uniqueName = addon.ModHelper.Manifest.UniqueName;
+		var addonAssembly = addon.GetType().Assembly;
+
+		foreach (var type in addonAssembly.GetTypes())
+		{
+			if (typeof(QSBMessage).IsAssignableFrom(type) || typeof(WorldObjectManager).IsAssignableFrom(type) || typeof(IWorldObject).IsAssignableFrom(type))
+			{
+				DebugLog.ToConsole($"Addon \"{uniqueName}\" cannot be cosmetic, as it creates networking events or objects.", MessageType.Error);
+				return;
+			}
+		}
+
+		DebugLog.DebugWrite($"Registering {uniqueName} as a cosmetic addon.");
+		CosmeticAddons.Add(uniqueName);
 	}
 
 	private static void InitAssemblies()
