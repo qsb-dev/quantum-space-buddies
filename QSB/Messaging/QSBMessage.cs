@@ -7,6 +7,7 @@ public abstract class QSBMessage
 	/// <summary>
 	/// set automatically by Send
 	/// </summary>
+	// public so it can be accessed by a patch
 	public uint From;
 	/// <summary>
 	/// (default) uint.MaxValue = send to everyone <br/>
