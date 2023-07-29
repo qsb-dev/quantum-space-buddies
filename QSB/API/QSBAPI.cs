@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QSB.API.Messages;
 using QSB.Messaging;
 using QSB.Player;
 
 namespace QSB.API;
 
-internal class QSBAPI : IQSBAPI
+public class QSBAPI : IQSBAPI
 {
 	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
 

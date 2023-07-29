@@ -2,7 +2,7 @@
 
 namespace QSB.API;
 
-internal interface IQSBAPI
+public interface IQSBAPI
 {
 	uint GetLocalPlayerID();
 

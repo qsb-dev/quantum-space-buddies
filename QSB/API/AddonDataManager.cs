@@ -10,7 +10,7 @@ namespace QSB.API;
 
 public static class AddonDataManager
 {
-	private static Dictionary<string, (Type objectType, dynamic action)> _handlerDict = new();
+	private static Dictionary<string, (Type objectType, Action<object> action)> _handlerDict = new();
 
 	public static void OnReceiveDataMessage(string messageType, object data)
 	{
@@ -26,6 +26,6 @@ public static class AddonDataManager
 	public static void RegisterHandler<T>(string messageType, Action<T> handler)
 	{
 		DebugLog.DebugWrite($"Registering handler for \"{messageType}\" with type of {typeof(T).Name}");
-		_handlerDict.Add(messageType, (typeof(T), handler));
+		_handlerDict.Add(messageType, (typeof(T), o => handler((T)o)));
 	}
 }
