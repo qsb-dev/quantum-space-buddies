@@ -22,6 +22,6 @@ public static class AddonDataManager
 	public static void RegisterHandler<T>(string messageType, Action<T> handler)
 	{
 		DebugLog.DebugWrite($"Registering handler for \"{messageType}\" with type of {typeof(T).Name}");
-		_handlers.Add(messageType, o => handler((T)o));
+		_handlers.Add(messageType, data => handler((T)data));
 	}
 }
