@@ -17,8 +17,8 @@ public class QSBAPI : IQSBAPI
 		new AddonDataMessage(messageType, data).Send();
 	}
 
-	public void RegisterHandler<T>(string messageType, Action<T> action)
+	public void RegisterHandler<T>(string messageType, Action<T> handler)
 	{
-		AddonDataManager.RegisterHandler(messageType, action);
+		AddonDataManager.RegisterHandler(messageType, handler);
 	}
 }
