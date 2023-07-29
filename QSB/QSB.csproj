@@ -68,7 +68,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" IncludeAssets="compile" />
     <PackageReference Include="OWML" Version="2.9.4" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />

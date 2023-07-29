@@ -3,31 +3,31 @@ using System.Runtime.Serialization.Formatters.Binary;
 using QSB.Messaging;
 
 namespace QSB.API.Messages;
+
 public class AddonDataMessage : QSBMessage<(string messageType, byte[] data)>
 {
-	public AddonDataMessage(string messageType, object data) : base((messageType, ObjectToByteArray(data))) {}
+	public AddonDataMessage(string messageType, object data) : base((messageType, Obj2Bytes(data))) { }
 
-	private static byte[] ObjectToByteArray(object obj)
+	private static byte[] Obj2Bytes(object obj)
 	{
-		var bf = new BinaryFormatter();
 		using var ms = new MemoryStream();
+		var bf = new BinaryFormatter();
 		bf.Serialize(ms, obj);
-		return ms.ToArray();
+		var bytes = ms.ToArray();
+		return bytes;
 	}
 
-	private static object ByteArrayToObject(byte[] arrBytes)
+	private static object Bytes2Obj(byte[] bytes)
 	{
-		using var memStream = new MemoryStream();
-		var binForm = new BinaryFormatter();
-		memStream.Write(arrBytes, 0, arrBytes.Length);
-		memStream.Seek(0, SeekOrigin.Begin);
-		var obj = binForm.Deserialize(memStream);
+		using var ms = new MemoryStream(bytes);
+		var bf = new BinaryFormatter();
+		var obj = bf.Deserialize(ms);
 		return obj;
 	}
 
 	public override void OnReceiveRemote()
 	{
-		var obj = ByteArrayToObject(Data.data);
+		var obj = Bytes2Obj(Data.data);
 		AddonDataManager.OnReceiveDataMessage(Data.messageType, obj);
 	}
 }

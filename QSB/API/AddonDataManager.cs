@@ -1,26 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QSB.Utility;
-using UnityEngine;
 
 namespace QSB.API;
 
 public static class AddonDataManager
 {
-	private static Dictionary<string, (Type objectType, Action<object> action)> _handlerDict = new();
+	private static readonly Dictionary<string, (Type objectType, Action<object> action)> _handlerDict = new();
 
 	public static void OnReceiveDataMessage(string messageType, object data)
 	{
 		DebugLog.DebugWrite($"Received data message of message type \"{messageType}\"!");
-		if (!_handlerDict.ContainsKey(messageType))
+		if (!_handlerDict.TryGetValue(messageType, out var handler))
 		{
 			return;
 		}
 
-		_handlerDict[messageType].action(Convert.ChangeType(data, _handlerDict[messageType].objectType));
+		handler.action(Convert.ChangeType(data, handler.objectType));
 	}
 
 	public static void RegisterHandler<T>(string messageType, Action<T> handler)
