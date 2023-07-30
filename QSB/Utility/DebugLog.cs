@@ -44,23 +44,6 @@ public static class DebugLog
 		}
 	}
 
-	public static void ToHud(string message)
-	{
-		if (Locator.GetPlayerBody() == null)
-		{
-			return;
-		}
-
-		var data = new NotificationData(NotificationTarget.Player, message.ToUpper());
-		NotificationManager.SharedInstance.PostNotification(data);
-	}
-
-	public static void ToAll(string message, MessageType type = MessageType.Message)
-	{
-		ToConsole(message, type);
-		ToHud(message);
-	}
-
 	public static void DebugWrite(string message, MessageType type = MessageType.Message)
 	{
 		if (QSBCore.DebugSettings.DebugMode)
