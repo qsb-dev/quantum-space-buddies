@@ -21,15 +21,14 @@ public static class DebugLog
 			message = $"[{ProcessInstanceId}] " + message;
 		}
 
-		if (QSBCore.Helper == null)
+		// copied from https://github.com/ow-mods/owml/blob/master/src/OWML.Logging/ModSocketOutput.cs#L33
 		{
-			// yes i know this is only meant for OWML, but it's useful as a backup
-			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType());
-		}
-		else
-		{
-			var socket = QSBCore.Helper.Console.GetValue<IModSocket>("_socket");
-			socket.WriteToSocket(new ModSocketMessage
+			var Logger = ModConsole.OwmlConsole.GetValue<IModLogger>("Logger");
+			var _socket = ModConsole.OwmlConsole.GetValue<IModSocket>("_socket");
+
+			Logger?.Log($"{type}: {message}");
+
+			_socket.WriteToSocket(new ModSocketMessage
 			{
 				SenderName = "QSB",
 				SenderType = GetCallingType(),
@@ -39,7 +38,7 @@ public static class DebugLog
 
 			if (type == MessageType.Fatal)
 			{
-				socket.Close();
+				_socket.Close();
 				Process.GetCurrentProcess().Kill();
 			}
 		}
@@ -74,6 +73,7 @@ public static class DebugLog
 		new StackTrace(2) // skip this function and calling function
 			.GetFrames()!
 			.Select(x => x.GetMethod().DeclaringType!)
+			// BUG: this part doesnt work for some reason
 			.First(x => x != typeof(DebugLog) && !x.IsDefined(typeof(CompilerGeneratedAttribute), true))
 			.Name;
 }
