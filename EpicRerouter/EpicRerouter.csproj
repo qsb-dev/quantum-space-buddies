@@ -15,6 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.9.3" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.9.4" IncludeAssets="compile" />
   </ItemGroup>
 </Project>

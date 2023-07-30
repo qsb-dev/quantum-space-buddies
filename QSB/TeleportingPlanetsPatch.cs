@@ -8,7 +8,7 @@ using UnityEngine;
 namespace QSB;
 
 /// <summary>
-/// TEMPORARY: this is for trying to solve this stupid fucking bug (gorp)
+/// "TEMPORARY": this is for trying to solve this stupid fucking bug (gorp)
 /// </summary>
 [HarmonyPatch(typeof(OWRigidbody))]
 public class TeleportingPlanetsPatch : QSBPatch
@@ -21,7 +21,7 @@ public class TeleportingPlanetsPatch : QSBPatch
 	{
 		if (__instance.TryGetComponent<AstroObject>(out var astroObject) && astroObject._name != AstroObject.Name.ProbeCannon)
 		{
-			DebugLog.ToAll($"AHHHHHHHHH!!!!!!!!!\n{__instance.name}\n{Environment.StackTrace}", MessageType.Error);
+			DebugLog.ToConsole($"AHHHHHHHHH!!!!!!!!!\nPlanet {__instance.name} teleported! Please screenshot this and contact devs!\n{Environment.StackTrace}", MessageType.Fatal);
 		}
 	}
 }

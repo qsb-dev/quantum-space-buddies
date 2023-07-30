@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using QSB.API;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -85,6 +86,8 @@ public class QSBCore : ModBehaviour
 		"_nebula.StopTime",
 		"PacificEngine.OW_Randomizer",
 	};
+
+	public override object GetApi() => new QSBAPI();
 
 	private static void DetermineGameVendor()
 	{
