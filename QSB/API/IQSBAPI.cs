@@ -10,6 +10,6 @@ public interface IQSBAPI
 	void SetCustomData<T>(uint playerId, string key, T data);
 	T GetCustomData<T>(uint playerId, string key);
 
-	void SendMessage<T>(string messageType, T data);
-	void RegisterHandler<T>(string messageType, Action<T> handler);
+	void SendMessage<T>(string messageType, T data, bool receiveLocally = false);
+	void RegisterHandler<T>(string messageType, Action<uint, T> handler);
 }
