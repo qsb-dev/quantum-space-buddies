@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpicOnlineTransport", "Epic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpicRerouter", "EpicRerouter\EpicRerouter.csproj", "{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APITestMod", "APITestMod\APITestMod.csproj", "{0A10143E-6C00-409B-B3A5-C54C1B01599D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,10 @@ Global
 		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
