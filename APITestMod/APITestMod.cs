@@ -1,4 +1,5 @@
-﻿using OWML.ModHelper;
+﻿using OWML.Common;
+using OWML.ModHelper;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,11 +21,21 @@ public class APITestMod : ModBehaviour
 
 			var button = menuFrameworkAPI.PauseMenu_MakeSimpleButton("QSB Api Test");
 
+			qsbAPI.OnPlayerJoin().AddListener((uint playerId) => ModHelper.Console.WriteLine($"{playerId} joined the game!", MessageType.Success));
+			qsbAPI.OnPlayerLeave().AddListener((uint playerId) => ModHelper.Console.WriteLine($"{playerId} left the game!", MessageType.Success));
+
 			button.onClick.AddListener(() =>
 			{
 				ModHelper.Console.WriteLine("TESTING QSB API!");
 
 				ModHelper.Console.WriteLine($"Local Player ID : {qsbAPI.GetLocalPlayerID()}");
+
+				ModHelper.Console.WriteLine("Player IDs :");
+
+				foreach (var playerID in qsbAPI.GetPlayerIDs())
+				{
+					ModHelper.Console.WriteLine($" - id:{playerID} name:{qsbAPI.GetPlayerName(playerID)}");
+				}
 
 				ModHelper.Console.WriteLine("Setting custom data as \"QSB TEST STRING\"");
 				qsbAPI.SetCustomData(qsbAPI.GetLocalPlayerID(), "APITEST.TESTSTRING", "QSB TEST STRING");
