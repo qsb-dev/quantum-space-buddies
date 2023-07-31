@@ -43,15 +43,15 @@ public class APITestMod : ModBehaviour
 
 				ModHelper.Console.WriteLine("Sending string message test...");
 				qsbAPI.RegisterHandler<string>("apitest-string", MessageHandler);
-				qsbAPI.SendMessage("apitest-string", "STRING MESSAGE", true);
+				qsbAPI.SendMessage("apitest-string", "STRING MESSAGE", receiveLocally: true);
 
 				ModHelper.Console.WriteLine("Sending int message test...");
 				qsbAPI.RegisterHandler<int>("apitest-int", MessageHandler);
-				qsbAPI.SendMessage("apitest-int", 123, true);
+				qsbAPI.SendMessage("apitest-int", 123, receiveLocally: true);
 
 				ModHelper.Console.WriteLine("Sending float message test...");
 				qsbAPI.RegisterHandler<float>("apitest-float", MessageHandler);
-				qsbAPI.SendMessage("apitest-float", 3.14f, true);
+				qsbAPI.SendMessage("apitest-float", 3.14f, receiveLocally: true);
 			});
 		};
 	}
