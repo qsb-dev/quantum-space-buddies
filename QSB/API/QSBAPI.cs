@@ -27,8 +27,8 @@ public class QSBAPI : IQSBAPI
 	public void SetCustomData<T>(uint playerId, string key, T data) => QSBPlayerManager.GetPlayer(playerId).SetCustomData(key, data);
 	public T GetCustomData<T>(uint playerId, string key) => QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);
 
-	public void SendMessage<T>(string messageType, T data, bool receiveLocally = false)
-		=> new AddonDataMessage(messageType, data, receiveLocally).Send();
+	public void SendMessage<T>(string messageType, T data, uint to = uint.MaxValue, bool receiveLocally = false)
+		=> new AddonDataMessage(messageType, data, receiveLocally) {To = to} .Send();
 
 	public void RegisterHandler<T>(string messageType, Action<uint, T> handler)
 		=> AddonDataManager.RegisterHandler(messageType, handler);

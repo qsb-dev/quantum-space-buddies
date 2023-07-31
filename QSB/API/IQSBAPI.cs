@@ -52,15 +52,16 @@ public interface IQSBAPI
 	/// <param name="key">The unique key of the data you want to access.</param>
 	/// <returns>The data requested. If key is not valid, returns default.</returns>
 	T GetCustomData<T>(uint playerId, string key);
-
+	
 	/// <summary>
 	/// Sends a message containing arbitrary data to every player.
 	/// </summary>
 	/// <typeparam name="T">The type of the data being sent. This type must be serializable.</typeparam>
 	/// <param name="messageType">The unique key of the message.</param>
 	/// <param name="data">The data to send.</param>
+	/// <param name="to">The player to send this message to. (0 is the host, uint.MaxValue means every player)</param>
 	/// <param name="receiveLocally">If true, the action given to <see cref="RegisterHandler{T}"/> will also be called on the same client that is sending the message.</param>
-	void SendMessage<T>(string messageType, T data, bool receiveLocally = false);
+	void SendMessage<T>(string messageType, T data, uint to = uint.MaxValue, bool receiveLocally = false);
 
 	/// <summary>
 	/// Registers an action to be called when a message is received.
