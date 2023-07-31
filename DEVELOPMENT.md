@@ -99,4 +99,3 @@ The template for this file is this :
 - drawQuantumVisibilityObjects - Indicates visibility objects with an orange shape.
 - drawGhostAI - Draws debug lines and labels just for the ghosts.
 - greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.
-
