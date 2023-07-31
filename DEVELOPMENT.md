@@ -41,6 +41,10 @@ For documentation reasons, here is the build flow :
 - QSB.dll is processed ("weaved") by MirrorWeaver. This injects all the boilerplate code that Mirror needs to function.
 - If needed/possible, any `.dll` or `.exe` files are copied to the Unity project.
 
+## API
+
+Use the API by copying [the API definition](https://github.com/misternebula/quantum-space-buddies/blob/master/QSB/API/IQSBAPI.cs) into your mod.
+
 ## Debugging
 ### Debug Actions :
 
