@@ -235,7 +235,7 @@ public class QSBCore : ModBehaviour
 	/// This addon MUST NOT send any network messages, or create any worldobjects.
 	/// </summary>
 	/// <param name="addon">The behaviour of the addon.</param>
-	public static void RegisterCosmeticAddon(IModBehaviour addon)
+	public static void RegisterNotRequiredForAllPlayers(IModBehaviour addon)
 	{
 		var uniqueName = addon.ModHelper.Manifest.UniqueName;
 		var addonAssembly = addon.GetType().Assembly;

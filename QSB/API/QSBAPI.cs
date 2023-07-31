@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using OWML.Common;
 using QSB.API.Messages;
 using QSB.Messaging;
 using QSB.Player;
@@ -9,6 +10,12 @@ namespace QSB.API;
 
 public class QSBAPI : IQSBAPI
 {
+	public void RegisterRequiredForAllPlayers(IModBehaviour mod)
+	{
+		var uniqueName = mod.ModHelper.Manifest.UniqueName;
+		QSBCore.Addons.Add(uniqueName, mod);
+	}
+
 	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
 	public string GetPlayerName(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Name;
 	public uint[] GetPlayerIDs() => QSBPlayerManager.PlayerList.Select(x => x.PlayerId).ToArray();

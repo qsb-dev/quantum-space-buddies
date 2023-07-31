@@ -1,10 +1,13 @@
-﻿using System;
+﻿using OWML.Common;
 using UnityEngine.Events;
-
-namespace APITestMod;
 
 public interface IQSBAPI
 {
+	/// <summary>
+	/// If called, all players connected to YOUR hosted game must have this mod installed.
+	/// </summary>
+	void RegisterRequiredForAllPlayers(IModBehaviour mod);
+
 	/// <summary>
 	/// Returns the player ID of the current player.
 	/// </summary>
