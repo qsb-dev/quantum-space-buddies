@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap;
 
-internal class CustomDialogueTree : MonoBehaviour
+public class CustomDialogueTree : MonoBehaviour
 {
 	public TextAsset _xmlCharacterDialogueAsset;
 	public Transform _attentionPoint;

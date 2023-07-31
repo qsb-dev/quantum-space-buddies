@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.Messages;
 
-internal class SetIlluminatedMessage : QSBWorldObjectMessage<QSBLightSensor, bool>
+public class SetIlluminatedMessage : QSBWorldObjectMessage<QSBLightSensor, bool>
 {
 	public SetIlluminatedMessage(bool illuminated) : base(illuminated) { }
 

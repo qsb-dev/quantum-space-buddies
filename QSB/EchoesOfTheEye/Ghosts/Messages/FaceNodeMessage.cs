@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class FaceNodeMessage : QSBWorldObjectMessage<QSBGhostController, (int mapId, int nodeIndex, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern)>
+public class FaceNodeMessage : QSBWorldObjectMessage<QSBGhostController, (int mapId, int nodeIndex, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern)>
 {
 	public FaceNodeMessage(GhostNode node, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern) : base(Process(node, turnSpeed, nodeDelay, autoFocusLantern)) { }
 

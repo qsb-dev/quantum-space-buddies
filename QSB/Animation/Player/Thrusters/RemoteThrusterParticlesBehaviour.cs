@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QSB.Animation.Player.Thrusters;
 
 [UsedInUnityProject]
-internal class RemoteThrusterParticlesBehaviour : MonoBehaviour
+public class RemoteThrusterParticlesBehaviour : MonoBehaviour
 {
 	[SerializeField]
 	private Thruster _thruster;

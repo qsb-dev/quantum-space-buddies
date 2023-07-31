@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace QSB.Tools.ProbeLauncherTool;
 
-internal class ProbeLauncherManager : WorldObjectManager
+public class ProbeLauncherManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 

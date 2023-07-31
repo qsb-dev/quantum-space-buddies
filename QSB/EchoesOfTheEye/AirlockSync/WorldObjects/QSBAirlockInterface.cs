@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
 
-internal class QSBAirlockInterface : QSBRotatingElements<AirlockInterface, AirlockVariableSyncer>
+public class QSBAirlockInterface : QSBRotatingElements<AirlockInterface, AirlockVariableSyncer>
 {
 	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._lightSensors;
 

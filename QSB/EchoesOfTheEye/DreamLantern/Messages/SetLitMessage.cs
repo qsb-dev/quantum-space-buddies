@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.Messages;
 
-internal class SetLitMessage : QSBWorldObjectMessage<QSBDreamLanternController, bool>
+public class SetLitMessage : QSBWorldObjectMessage<QSBDreamLanternController, bool>
 {
 	public SetLitMessage(bool lit) : base(lit) { }
 

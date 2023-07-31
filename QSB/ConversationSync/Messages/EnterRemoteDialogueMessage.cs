@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.ConversationSync.Messages;
 
-internal class EnterRemoteDialogueMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger, int>
+public class EnterRemoteDialogueMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger, int>
 {
 	public EnterRemoteDialogueMessage(int dialogueIndex) : base(dialogueIndex) { }
 

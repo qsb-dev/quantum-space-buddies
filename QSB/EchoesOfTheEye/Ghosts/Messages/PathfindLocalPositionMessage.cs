@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController,
+public class PathfindLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController,
 	(Vector3 localPosition, float speed, float acceleration)>
 {
 	public PathfindLocalPositionMessage(Vector3 localPosition, float speed, float acceleration) :

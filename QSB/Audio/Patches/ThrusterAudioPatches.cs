@@ -5,7 +5,7 @@ using QSB.Patches;
 
 namespace QSB.Audio.Patches;
 
-internal class ThrusterAudioPatches : QSBPatch
+public class ThrusterAudioPatches : QSBPatch
 {
 	// Since we patch Start we do it when the mod starts, else it won't run
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;

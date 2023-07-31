@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.ProbeTool.Messages;
 
-internal class ProbeStartRetrieveMessage : QSBMessage<float>
+public class ProbeStartRetrieveMessage : QSBMessage<float>
 {
 	public ProbeStartRetrieveMessage(float duration) : base(duration) { }
 

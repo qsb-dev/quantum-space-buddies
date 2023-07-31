@@ -3,7 +3,7 @@ using QSB.ShipSync.WorldObjects;
 
 namespace QSB.ShipSync.Messages;
 
-internal class ShipLightMessage : QSBWorldObjectMessage<QSBShipLight, bool>
+public class ShipLightMessage : QSBWorldObjectMessage<QSBShipLight, bool>
 {
 	public ShipLightMessage(bool on) : base(on) { }
 

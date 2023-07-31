@@ -2,7 +2,7 @@
 
 namespace QSB.Tools.TranslatorTool;
 
-internal static class TranslatorCreator
+public static class TranslatorCreator
 {
 	internal static void CreateTranslator(PlayerInfo player)
 	{

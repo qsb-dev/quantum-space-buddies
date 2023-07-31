@@ -7,7 +7,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.DreamObjectProjectors.Patches;
 
-internal class ProjectorPatches : QSBPatch
+public class ProjectorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

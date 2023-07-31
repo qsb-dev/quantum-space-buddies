@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QSB.Animation.Player.Thrusters;
 
 [UsedInUnityProject]
-internal class RemoteThrusterWashController : MonoBehaviour
+public class RemoteThrusterWashController : MonoBehaviour
 {
 	[SerializeField]
 	private float _raycastDistance = 10f;

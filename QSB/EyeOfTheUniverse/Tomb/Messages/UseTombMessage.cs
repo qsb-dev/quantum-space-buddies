@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.EyeOfTheUniverse.Tomb.Messages;
 
-internal class UseTombMessage : QSBMessage<bool>
+public class UseTombMessage : QSBMessage<bool>
 {
 	public UseTombMessage(bool use) : base(use) { }
 

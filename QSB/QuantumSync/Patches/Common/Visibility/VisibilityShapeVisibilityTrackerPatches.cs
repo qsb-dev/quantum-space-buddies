@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.QuantumSync.Patches.Common.Visibility;
 
 [HarmonyPatch(typeof(ShapeVisibilityTracker))]
-internal class VisibilityShapeVisibilityTrackerPatches : QSBPatch
+public class VisibilityShapeVisibilityTrackerPatches : QSBPatch
 {
     public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

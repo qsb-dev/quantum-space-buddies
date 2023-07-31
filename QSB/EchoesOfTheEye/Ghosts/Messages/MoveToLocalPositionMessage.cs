@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class MoveToLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController, (Vector3 localPosition, float speed, float acceleration)>
+public class MoveToLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController, (Vector3 localPosition, float speed, float acceleration)>
 {
 	public MoveToLocalPositionMessage(Vector3 localPos, float speed, float accel) : base((localPos, speed, accel)) { }
 

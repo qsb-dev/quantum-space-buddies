@@ -8,7 +8,7 @@ using QSB.WorldSync;
 
 namespace QSB.ModelShip.Messages;
 
-internal class UseFlightConsoleMessage : QSBMessage<bool>
+public class UseFlightConsoleMessage : QSBMessage<bool>
 {
 	static UseFlightConsoleMessage()
 	{

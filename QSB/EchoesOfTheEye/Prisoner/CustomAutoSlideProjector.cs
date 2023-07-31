@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Prisoner;
 
-internal class CustomAutoSlideProjector : MonoBehaviour
+public class CustomAutoSlideProjector : MonoBehaviour
 {
 	public float _defaultSlideDuration;
 	public float _endPauseDuration;

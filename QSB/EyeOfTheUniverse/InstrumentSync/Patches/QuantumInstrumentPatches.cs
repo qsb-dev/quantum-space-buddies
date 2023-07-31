@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.InstrumentSync.Patches;
 
-internal class QuantumInstrumentPatches : QSBPatch
+public class QuantumInstrumentPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

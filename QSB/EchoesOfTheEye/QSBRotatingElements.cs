@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye;
 
-internal abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
+public abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 	where T : MonoBehaviour
 	where U : NetworkBehaviour
 {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.Tomb;
 
-internal class EyeTombWatcher : MonoBehaviour
+public class EyeTombWatcher : MonoBehaviour
 {
 	private EyeTombController _tomb;
 

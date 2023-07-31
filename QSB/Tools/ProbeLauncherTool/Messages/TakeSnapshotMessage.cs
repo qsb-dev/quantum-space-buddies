@@ -5,7 +5,7 @@ using QSB.Tools.ProbeLauncherTool.WorldObjects;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages;
 
-internal class TakeSnapshotMessage : QSBWorldObjectMessage<QSBProbeLauncher, ProbeCamera.ID>
+public class TakeSnapshotMessage : QSBWorldObjectMessage<QSBProbeLauncher, ProbeCamera.ID>
 {
 	public TakeSnapshotMessage(ProbeCamera.ID cameraId) : base(cameraId) { }
 

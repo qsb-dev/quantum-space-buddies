@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace QSB;
-internal class Ghostbuster : MonoBehaviour, IAddComponentOnStart
+public class Ghostbuster : MonoBehaviour, IAddComponentOnStart
 {
 	private const int UpdateInterval = 60;
 

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class FaceNodeListMessage : QSBWorldObjectMessage<QSBGhostController, (int mapId, int[] nodeIndexes, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern)>
+public class FaceNodeListMessage : QSBWorldObjectMessage<QSBGhostController, (int mapId, int[] nodeIndexes, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocusLantern)>
 {
 	public FaceNodeListMessage(GhostNode[] nodeList, int numNodes, TurnSpeed turnSpeed, float nodeDelay, bool autoFocus) : base(Process(nodeList, numNodes, turnSpeed, nodeDelay, autoFocus)) { }
 

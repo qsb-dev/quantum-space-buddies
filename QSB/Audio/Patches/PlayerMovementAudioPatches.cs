@@ -6,7 +6,7 @@ using QSB.Player;
 
 namespace QSB.Audio.Patches;
 
-internal class PlayerMovementAudioPatches : QSBPatch
+public class PlayerMovementAudioPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 
-internal class QSBNomaiText : WorldObject<NomaiText>
+public class QSBNomaiText : WorldObject<NomaiText>
 {
 	public override void SendInitialState(uint to) =>
 		GetTranslatedIds().ForEach(id =>

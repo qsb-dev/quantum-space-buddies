@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace QSB.EchoesOfTheEye.Prisoner.Messages;
 
-internal class EmergeTriggerMessage : QSBMessage
+public class EmergeTriggerMessage : QSBMessage
 {
 	public override void OnReceiveRemote()
 	{

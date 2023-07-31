@@ -142,7 +142,7 @@ internal struct Wrapper : NetworkMessage
 	public static implicit operator Wrapper(QSBMessage msg) => new() { Msg = msg };
 }
 
-internal static class ReaderWriterExtensions
+public static class ReaderWriterExtensions
 {
 	private static QSBMessage ReadQSBMessage(this NetworkReader reader)
 	{

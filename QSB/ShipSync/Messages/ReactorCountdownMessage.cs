@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.ShipSync.Messages;
 
-internal class ReactorCountdownMessage : QSBMessage<float>
+public class ReactorCountdownMessage : QSBMessage<float>
 {
 	public ReactorCountdownMessage(float countdown) : base(countdown) { }
 

@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.QuantumSync.Patches.Common;
 
 [HarmonyPatch(typeof(QuantumSocketCollapseTrigger))]
-internal class QuantumSocketCollapseTriggerPatches : QSBPatch
+public class QuantumSocketCollapseTriggerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

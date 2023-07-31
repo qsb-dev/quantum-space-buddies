@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.PoolSync.Patches;
 
 [HarmonyPatch]
-internal class PoolPatches : QSBPatch
+public class PoolPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

@@ -7,7 +7,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.PictureFrameDoors.Patches;
 
-internal class PictureFrameDoorInterfacePatches : QSBPatch
+public class PictureFrameDoorInterfacePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

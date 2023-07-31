@@ -1,6 +1,6 @@
 ﻿namespace QSB.EchoesOfTheEye.PictureFrameDoors.WorldObjects;
 
-internal class QSBPictureFrameDoorInterface : QSBPictureFrameDoor<PictureFrameDoorInterface>
+public class QSBPictureFrameDoorInterface : QSBPictureFrameDoor<PictureFrameDoorInterface>
 {
 	public override void SetOpenState(bool open)
 	{

@@ -1,3 +1,3 @@
 ﻿namespace QSB.ItemSync.WorldObjects.Items;
 
-internal class QSBNomaiConversationStone : QSBItem<NomaiConversationStone> { }
+public class QSBNomaiConversationStone : QSBItem<NomaiConversationStone> { }

@@ -4,7 +4,7 @@ using QSB.Utility;
 
 namespace QSB.HUD.Messages;
 
-internal class PlanetMessage : QSBMessage<HUDIcon>
+public class PlanetMessage : QSBMessage<HUDIcon>
 {
 	public PlanetMessage(HUDIcon icon) : base(icon) { }
 

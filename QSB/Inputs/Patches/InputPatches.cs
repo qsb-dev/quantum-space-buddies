@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.Inputs.Patches;
 
 [HarmonyPatch]
-internal class InputPatches : QSBPatch
+public class InputPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

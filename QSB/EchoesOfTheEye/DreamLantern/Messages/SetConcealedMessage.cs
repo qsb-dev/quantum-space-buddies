@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.Messages;
 
-internal class SetConcealedMessage : QSBWorldObjectMessage<QSBDreamLanternController, bool>
+public class SetConcealedMessage : QSBWorldObjectMessage<QSBDreamLanternController, bool>
 {
 	public SetConcealedMessage(bool concealed) : base(concealed) { }
 

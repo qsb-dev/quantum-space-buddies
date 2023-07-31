@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.Messages;
 
-internal class EyeProxyMoonStateChangeMessage : QSBWorldObjectMessage<QSBEyeProxyQuantumMoon>
+public class EyeProxyMoonStateChangeMessage : QSBWorldObjectMessage<QSBEyeProxyQuantumMoon>
 {
 	private bool Active;
 	private float Angle;

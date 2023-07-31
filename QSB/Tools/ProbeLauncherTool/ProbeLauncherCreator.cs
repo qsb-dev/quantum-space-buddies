@@ -2,7 +2,7 @@
 
 namespace QSB.Tools.ProbeLauncherTool;
 
-internal static class ProbeLauncherCreator
+public static class ProbeLauncherCreator
 {
 	internal static void CreateProbeLauncher(PlayerInfo player)
 	{

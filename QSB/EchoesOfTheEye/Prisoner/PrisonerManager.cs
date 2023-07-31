@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Prisoner;
 
-internal class PrisonerManager : WorldObjectManager
+public class PrisonerManager : WorldObjectManager
 {
 	public override bool DlcOnly => true;
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;

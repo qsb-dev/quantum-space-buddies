@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class ChangeNodeMapMessage : QSBWorldObjectMessage<QSBGhostController, int>
+public class ChangeNodeMapMessage : QSBWorldObjectMessage<QSBGhostController, int>
 {
 	public ChangeNodeMapMessage(int nodeMapIndex) : base(nodeMapIndex) { }
 

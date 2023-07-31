@@ -12,7 +12,7 @@ namespace QSB.Player.Messages;
 /// <summary>
 /// todo SendInitialState
 /// </summary>
-internal class EnterLeaveMessage : QSBMessage<EnterLeaveType>
+public class EnterLeaveMessage : QSBMessage<EnterLeaveType>
 {
 	static EnterLeaveMessage()
 	{

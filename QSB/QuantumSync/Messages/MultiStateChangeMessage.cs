@@ -5,7 +5,7 @@ using QSB.Utility;
 
 namespace QSB.QuantumSync.Messages;
 
-internal class MultiStateChangeMessage : QSBWorldObjectMessage<QSBMultiStateQuantumObject, int>
+public class MultiStateChangeMessage : QSBWorldObjectMessage<QSBMultiStateQuantumObject, int>
 {
 	public MultiStateChangeMessage(int stateIndex) : base(stateIndex) { }
 

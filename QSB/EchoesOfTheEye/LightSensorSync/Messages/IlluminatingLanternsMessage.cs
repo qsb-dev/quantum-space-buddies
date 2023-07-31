@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.Messages;
 
-internal class IlluminatingLanternsMessage : QSBWorldObjectMessage<QSBLightSensor, int[]>
+public class IlluminatingLanternsMessage : QSBWorldObjectMessage<QSBLightSensor, int[]>
 {
 	public IlluminatingLanternsMessage(IEnumerable<DreamLanternController> lanterns) :
 		base(lanterns.Select(x => x.GetWorldObject<QSBDreamLanternController>().ObjectId).ToArray()) { }

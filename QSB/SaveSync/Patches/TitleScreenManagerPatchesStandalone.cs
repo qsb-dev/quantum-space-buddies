@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.SaveSync.Patches;
 
 [HarmonyPatch(typeof(TitleScreenManager))]
-internal class TitleScreenManagerPatchesStandalone : QSBPatch
+public class TitleScreenManagerPatchesStandalone : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 	public override GameVendor PatchVendor => GameVendor.Epic | GameVendor.Steam;

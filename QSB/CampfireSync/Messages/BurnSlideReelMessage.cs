@@ -9,7 +9,7 @@ namespace QSB.CampfireSync.Messages;
 /// <summary>
 /// TODO: initial state on campfire and item
 /// </summary>
-internal class BurnSlideReelMessage : QSBWorldObjectMessage<QSBSlideReelItem, int>
+public class BurnSlideReelMessage : QSBWorldObjectMessage<QSBSlideReelItem, int>
 {
 	public BurnSlideReelMessage(QSBCampfire campfire) : base(campfire.ObjectId) { }
 

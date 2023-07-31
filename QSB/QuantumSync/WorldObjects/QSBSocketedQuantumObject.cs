@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.QuantumSync.WorldObjects;
 
-internal class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
+public class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
 {
 	public override async UniTask Init(CancellationToken ct)
 	{

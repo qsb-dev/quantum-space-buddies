@@ -7,7 +7,7 @@ using QSB.WorldSync;
 
 namespace QSB.Tools.TranslatorTool.TranslationSync.Patches;
 
-internal class SpiralPatches : QSBPatch
+public class SpiralPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

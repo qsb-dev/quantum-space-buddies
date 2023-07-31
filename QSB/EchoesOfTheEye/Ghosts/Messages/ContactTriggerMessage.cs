@@ -4,7 +4,7 @@ using QSB.Player;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class ContactTriggerMessage : QSBWorldObjectMessage<QSBGhostSensors, bool>
+public class ContactTriggerMessage : QSBWorldObjectMessage<QSBGhostSensors, bool>
 {
 	public ContactTriggerMessage(bool inContact) : base(inContact) { }
 

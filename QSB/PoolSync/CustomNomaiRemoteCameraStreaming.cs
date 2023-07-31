@@ -1,6 +1,6 @@
 ﻿namespace QSB.PoolSync;
 
-internal class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
+public class CustomNomaiRemoteCameraStreaming : SectoredMonoBehaviour
 {
 	private CustomNomaiRemoteCameraPlatform _remoteCameraPlatform;
 	private StreamingGroup _streamingGroup;

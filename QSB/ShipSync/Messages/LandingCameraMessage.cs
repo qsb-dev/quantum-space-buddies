@@ -3,7 +3,7 @@ using QSB.Utility;
 
 namespace QSB.ShipSync.Messages;
 
-internal class LandingCameraMessage : QSBMessage<bool>
+public class LandingCameraMessage : QSBMessage<bool>
 {
 	public LandingCameraMessage(bool on) : base(on) { }
 

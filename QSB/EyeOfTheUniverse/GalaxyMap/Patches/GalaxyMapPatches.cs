@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap.Patches;
 
-internal class GalaxyMapPatches : QSBPatch
+public class GalaxyMapPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

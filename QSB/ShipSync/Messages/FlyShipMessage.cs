@@ -11,7 +11,7 @@ namespace QSB.ShipSync.Messages;
 /// <summary>
 /// TODO: initial state for the current flyer
 /// </summary>
-internal class FlyShipMessage : QSBMessage<bool>
+public class FlyShipMessage : QSBMessage<bool>
 {
 	static FlyShipMessage()
 	{

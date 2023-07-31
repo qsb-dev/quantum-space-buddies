@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.ItemSync.Messages;
 
-internal class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
+public class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
 	(Vector3 localPosition, Vector3 localNormal, int sectorId, int dropTargetId, int rigidBodyId)>
 {
 	public DropItemMessage(Vector3 worldPosition, Vector3 worldNormal, Transform parent, Sector sector, IItemDropTarget customDropTarget, OWRigidbody targetRigidbody)

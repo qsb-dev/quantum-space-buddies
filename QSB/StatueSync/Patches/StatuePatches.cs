@@ -8,7 +8,7 @@ using UnityEngine;
 namespace QSB.StatueSync.Patches;
 
 [HarmonyPatch]
-internal class StatuePatches : QSBPatch
+public class StatuePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

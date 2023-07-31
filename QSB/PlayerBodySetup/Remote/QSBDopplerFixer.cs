@@ -19,7 +19,7 @@ public class QSBDopplerFixer : MonoBehaviour
 }
 
 [HarmonyPatch(typeof(OWAudioSource))]
-internal class DopplerFixerPatches : QSBPatch
+public class DopplerFixerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

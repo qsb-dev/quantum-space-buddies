@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.ModelShip.Messages;
 
-internal class CrashModelShipMessage : QSBMessage
+public class CrashModelShipMessage : QSBMessage
 {
 	public CrashModelShipMessage() { }
 

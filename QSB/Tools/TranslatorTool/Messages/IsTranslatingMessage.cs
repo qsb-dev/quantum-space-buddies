@@ -3,7 +3,7 @@ using QSB.Player;
 
 namespace QSB.Tools.TranslatorTool.Messages;
 
-internal class IsTranslatingMessage : QSBMessage<bool>
+public class IsTranslatingMessage : QSBMessage<bool>
 {
 	public IsTranslatingMessage(bool translating) : base(translating) { }
 

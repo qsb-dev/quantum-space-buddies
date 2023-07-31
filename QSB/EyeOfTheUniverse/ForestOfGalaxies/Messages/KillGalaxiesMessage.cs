@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages;
 
-internal class KillGalaxiesMessage : QSBMessage
+public class KillGalaxiesMessage : QSBMessage
 {
 	private List<float> _deathDelays;
 
