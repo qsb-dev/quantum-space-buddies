@@ -42,9 +42,7 @@ internal static class QSBAPIEvents
 		QSBPlayerManager.OnRemovePlayer += player => OnPlayerLeaveEvent.Invoke(player.PlayerId);
 	}
 
-	public static UnityEvent<uint> OnPlayerJoinEvent = new PlayerEvent();
-	public static UnityEvent<uint> OnPlayerLeaveEvent = new PlayerEvent();
+	internal class PlayerEvent : UnityEvent<uint> { }
+	internal static PlayerEvent OnPlayerJoinEvent = new PlayerEvent();
+	internal static PlayerEvent OnPlayerLeaveEvent = new PlayerEvent();
 }
-
-// i hate OOP sometimes
-internal class PlayerEvent : UnityEvent<uint> { }
