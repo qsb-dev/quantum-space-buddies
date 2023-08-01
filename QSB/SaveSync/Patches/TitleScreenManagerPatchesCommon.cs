@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.SaveSync.Patches;
 
 [HarmonyPatch(typeof(TitleScreenManager))]
-internal class TitleScreenManagerPatchesCommon : QSBPatch
+public class TitleScreenManagerPatchesCommon : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 

@@ -5,7 +5,7 @@ using static QSB.ShipSync.Messages.ShipIgnitionMessage;
 
 namespace QSB.ShipSync.Messages;
 
-internal class ShipIgnitionMessage : QSBMessage<ShipIgnitionType>
+public class ShipIgnitionMessage : QSBMessage<ShipIgnitionType>
 {
     public enum ShipIgnitionType
     {

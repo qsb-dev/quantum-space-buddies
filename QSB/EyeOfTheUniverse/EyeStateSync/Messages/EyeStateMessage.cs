@@ -8,7 +8,7 @@ namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages;
 /// <summary>
 /// todo SendInitialState
 /// </summary>
-internal class EyeStateMessage : QSBMessage<EyeState>
+public class EyeStateMessage : QSBMessage<EyeState>
 {
 	static EyeStateMessage() => GlobalMessenger<EyeState>.AddListener(OWEvents.EyeStateChanged, Handler);
 

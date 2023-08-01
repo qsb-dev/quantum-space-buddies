@@ -7,7 +7,7 @@ using UnityEngine;
 namespace QSB.RoastingSync.Patches;
 
 [HarmonyPatch]
-internal class RoastingPatches : QSBPatch
+public class RoastingPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

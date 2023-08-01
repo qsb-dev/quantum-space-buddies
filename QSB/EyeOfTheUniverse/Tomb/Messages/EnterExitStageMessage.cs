@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace QSB.EyeOfTheUniverse.Tomb.Messages;
 
-internal class EnterExitStageMessage : QSBMessage<bool>
+public class EnterExitStageMessage : QSBMessage<bool>
 {
 	public EnterExitStageMessage(bool enter) : base(enter) { }
 

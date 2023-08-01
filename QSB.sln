@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mirror", "Mirror", "{851AB4
 		Mirror\Telepathy.dll = Mirror\Telepathy.dll
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APITestMod", "APITestMod\APITestMod.csproj", "{0A10143E-6C00-409B-B3A5-C54C1B01599D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,7 +5,7 @@ using QSB.ZeroGCaveSync.Messages;
 
 namespace QSB.ZeroGCaveSync.WorldObjects;
 
-internal class QSBSatelliteNode : WorldObject<SatelliteNode>
+public class QSBSatelliteNode : WorldObject<SatelliteNode>
 {
 	public override void SendInitialState(uint to)
 	{

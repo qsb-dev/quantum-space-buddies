@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace QSB.SaveSync;
 
-internal class QSBStandaloneProfileManager : IProfileManager
+public class QSBStandaloneProfileManager : IProfileManager
 {
 	private static QSBStandaloneProfileManager s_instance;
 

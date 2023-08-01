@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace QSB.EchoesOfTheEye.EclipseCodeControllers.Messages;
 
-internal class InitialStateMessage : QSBWorldObjectMessage<QSBEclipseCodeController>
+public class InitialStateMessage : QSBWorldObjectMessage<QSBEclipseCodeController>
 {
 	private int _selectedDial;
 	private int[] _dialSelectedSymbols;

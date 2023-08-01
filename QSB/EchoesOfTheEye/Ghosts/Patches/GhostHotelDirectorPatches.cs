@@ -7,7 +7,7 @@ using QSB.WorldSync;
 namespace QSB.EchoesOfTheEye.Ghosts.Patches;
 
 [HarmonyPatch(typeof(GhostHotelDirector))]
-internal class GhostHotelDirectorPatches : QSBPatch
+public class GhostHotelDirectorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

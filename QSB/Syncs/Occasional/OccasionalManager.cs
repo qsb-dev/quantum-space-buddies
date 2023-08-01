@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace QSB.Syncs.Occasional;
 
-internal class OccasionalManager : WorldObjectManager
+public class OccasionalManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 

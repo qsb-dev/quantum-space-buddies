@@ -5,7 +5,7 @@ using QSB.WorldSync;
 
 namespace QSB.ModelShip.TransformSync;
 
-internal class ModelShipTransformSync : SectoredRigidbodySync
+public class ModelShipTransformSync : SectoredRigidbodySync
 {
 	public static ModelShipTransformSync LocalInstance { get; private set; }
 

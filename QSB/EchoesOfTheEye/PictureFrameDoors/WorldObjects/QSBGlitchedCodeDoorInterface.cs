@@ -1,6 +1,6 @@
 ﻿namespace QSB.EchoesOfTheEye.PictureFrameDoors.WorldObjects;
 
-internal class QSBGlitchedCodeDoorInterface : QSBPictureFrameDoor<GlitchedCodeDoorInterface>
+public class QSBGlitchedCodeDoorInterface : QSBPictureFrameDoor<GlitchedCodeDoorInterface>
 {
 	public override void SetOpenState(bool open)
 	{

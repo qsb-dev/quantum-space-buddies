@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.PoolSync;
 
-internal class PoolManager : WorldObjectManager
+public class PoolManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 

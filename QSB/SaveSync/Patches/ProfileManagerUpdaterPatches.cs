@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.SaveSync.Patches;
 
 [HarmonyPatch(typeof(ProfileManagerUpdater))]
-internal class ProfileManagerUpdaterPatches : QSBPatch
+public class ProfileManagerUpdaterPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 

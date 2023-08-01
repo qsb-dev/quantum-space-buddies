@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.CampfireSync;
 
-internal class CampfireManager : WorldObjectManager
+public class CampfireManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace QSB.EchoesOfTheEye.Prisoner.Messages;
 
-internal class MindProjectionCompleteMessage : QSBMessage
+public class MindProjectionCompleteMessage : QSBMessage
 {
 	public override void OnReceiveRemote()
 	{

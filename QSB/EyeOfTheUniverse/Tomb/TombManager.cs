@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace QSB.EyeOfTheUniverse.Tomb;
 
-internal class TombManager : WorldObjectManager
+public class TombManager : WorldObjectManager
 {
 	public override bool DlcOnly => true;
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Eye;

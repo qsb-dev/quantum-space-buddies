@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.Animation.NPC;
 
-internal class CharacterAnimManager : WorldObjectManager
+public class CharacterAnimManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 

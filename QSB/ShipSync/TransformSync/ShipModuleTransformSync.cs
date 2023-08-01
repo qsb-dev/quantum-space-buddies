@@ -5,7 +5,7 @@ using QSB.WorldSync;
 
 namespace QSB.ShipSync.TransformSync;
 
-internal class ShipModuleTransformSync : SectoredRigidbodySync, ILinkedNetworkBehaviour
+public class ShipModuleTransformSync : SectoredRigidbodySync, ILinkedNetworkBehaviour
 {
 	/// <summary>
 	/// normally prints error when attached object is null.

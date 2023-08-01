@@ -9,7 +9,7 @@ namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 /// <summary>
 /// todo SendInitialState
 /// </summary>
-internal class ExitDreamWorldMessage : QSBMessage
+public class ExitDreamWorldMessage : QSBMessage
 {
 	static ExitDreamWorldMessage()
 	{

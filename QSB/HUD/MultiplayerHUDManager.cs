@@ -15,7 +15,7 @@ using UnityEngine.UI;
 
 namespace QSB.HUD;
 
-internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
+public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static MultiplayerHUDManager Instance;
 
@@ -76,6 +76,13 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	// this should really be a deque, but eh
 	private readonly ListStack<(string msg, Color color)> _messages = new(false);
 	private float _lastMessageTime;
+
+	// this just exists so i can patch this in my tts addon
+	// perks of being a qsb dev :-)
+	public void WriteSystemMessage(string message, Color color)
+	{
+		WriteMessage(message, color);
+	}
 
 	public void WriteMessage(string message, Color color)
 	{
@@ -308,6 +315,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		var inputFieldGO = _textChat.Find("InputField");
 		_inputField = inputFieldGO.GetComponent<InputField>();
 		_inputField.text = "";
+		_inputField.characterLimit = 256;
 		_textChat.Find("Messages").Find("Message").GetComponent<Text>().text = "";
 		_lines.Clear();
 		_messages.Clear();
@@ -444,7 +452,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		Destroy(player.HUDBox?.gameObject);
 		Destroy(player.MinimapPlayerMarker);
 
-		WriteMessage(string.Format(QSBLocalization.Current.PlayerLeftTheGame, player.Name), Color.yellow);
+		WriteSystemMessage(string.Format(QSBLocalization.Current.PlayerLeftTheGame, player.Name), Color.yellow);
 	}
 
 	private PlanetTrigger CreateTrigger(string parentPath, HUDIcon icon)

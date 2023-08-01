@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using QSB.API;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -80,12 +81,14 @@ public class QSBCore : ModBehaviour
 	{
 		// incompatible mods
 		"Raicuparta.NomaiVR",
-		// "xen.NewHorizons",
+		"xen.NewHorizons",
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
 		"PacificEngine.OW_Randomizer",
 	};
+
+	public override object GetApi() => new QSBAPI();
 
 	private static void DetermineGameVendor()
 	{
@@ -274,6 +277,7 @@ public class QSBCore : ModBehaviour
 	}
 
 	public static readonly SortedDictionary<string, IModBehaviour> Addons = new();
+	public static readonly List<string> CosmeticAddons = new();
 
 	private void RegisterAddons()
 	{
@@ -283,6 +287,29 @@ public class QSBCore : ModBehaviour
 			DebugLog.DebugWrite($"Registering addon {addon.ModHelper.Manifest.UniqueName}");
 			Addons.Add(addon.ModHelper.Manifest.UniqueName, addon);
 		}
+	}
+
+	/// <summary>
+	/// Registers an addon that shouldn't be considered for hash checks when joining.
+	/// This addon MUST NOT send any network messages, or create any worldobjects.
+	/// </summary>
+	/// <param name="addon">The behaviour of the addon.</param>
+	public static void RegisterNotRequiredForAllPlayers(IModBehaviour addon)
+	{
+		var uniqueName = addon.ModHelper.Manifest.UniqueName;
+		var addonAssembly = addon.GetType().Assembly;
+
+		foreach (var type in addonAssembly.GetTypes())
+		{
+			if (typeof(QSBMessage).IsAssignableFrom(type) || typeof(WorldObjectManager).IsAssignableFrom(type) || typeof(IWorldObject).IsAssignableFrom(type))
+			{
+				DebugLog.ToConsole($"Addon \"{uniqueName}\" cannot be cosmetic, as it creates networking events or objects.", MessageType.Error);
+				return;
+			}
+		}
+
+		DebugLog.DebugWrite($"Registering {uniqueName} as a cosmetic addon.");
+		CosmeticAddons.Add(uniqueName);
 	}
 
 	private static void InitAssemblies()
@@ -358,12 +385,12 @@ public class QSBCore : ModBehaviour
 		var compatMod = "";
 		var missingCompat = false;
 
-		if (Helper.Interaction.ModExists(NEW_HORIZONS) && !Helper.Interaction.ModExists(NEW_HORIZONS_COMPAT))
+		/*if (Helper.Interaction.ModExists(NEW_HORIZONS) && !Helper.Interaction.ModExists(NEW_HORIZONS_COMPAT))
 		{
 			mainMod = NEW_HORIZONS;
 			compatMod = NEW_HORIZONS_COMPAT;
 			missingCompat = true;
-		}
+		}*/
 
 		if (missingCompat)
 		{
@@ -372,32 +399,3 @@ public class QSBCore : ModBehaviour
 		}
 	}
 }
-
-/*
- * _nebula's music thanks
- * I listen to music constantly while programming/working - here's my thanks to them for keeping me entertained :P
- *
- * Wintergatan
- * HOME
- * C418
- * Lupus Nocte
- * Max Cooper
- * Darren Korb
- * Harry Callaghan
- * Toby Fox
- * Andrew Prahlow
- * Valve (Mike Morasky, Kelly Bailey)
- * Joel Nielsen
- * Vulfpeck
- * Detektivbyrån
- * Ben Prunty
- * ConcernedApe
- * Jake Chudnow
- * Murray Gold
- * Teleskärm
- * Daft Punk
- * Natalie Holt
- * WMD
- * Woody Jackson
- * Brian David Gilbert
- */

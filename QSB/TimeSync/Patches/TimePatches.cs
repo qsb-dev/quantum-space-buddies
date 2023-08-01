@@ -9,7 +9,7 @@ using UnityEngine;
 namespace QSB.TimeSync.Patches;
 
 [HarmonyPatch]
-internal class TimePatches : QSBPatch
+public class TimePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
@@ -44,7 +44,7 @@ internal class TimePatches : QSBPatch
 		=> OWInput.ChangeInputMode(InputMode.Character);
 }
 
-internal class ClientTimePatches : QSBPatch
+public class ClientTimePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 

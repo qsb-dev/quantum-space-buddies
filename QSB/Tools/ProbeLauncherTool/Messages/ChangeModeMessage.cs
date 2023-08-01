@@ -3,7 +3,7 @@ using QSB.Tools.ProbeLauncherTool.WorldObjects;
 
 namespace QSB.Tools.ProbeLauncherTool.Messages;
 
-internal class ChangeModeMessage : QSBWorldObjectMessage<QSBProbeLauncher>
+public class ChangeModeMessage : QSBWorldObjectMessage<QSBProbeLauncher>
 {
 	public ChangeModeMessage() : base() { }
 

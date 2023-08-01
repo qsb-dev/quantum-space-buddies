@@ -7,7 +7,7 @@ using QSB.Utility;
 namespace QSB.DeathSync.Messages;
 
 // when all players die
-internal class EndLoopMessage : QSBMessage
+public class EndLoopMessage : QSBMessage
 {
 	public override void OnReceiveLocal() => OnReceiveRemote();
 

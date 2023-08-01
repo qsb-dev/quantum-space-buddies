@@ -8,7 +8,7 @@ using QSB.WorldSync;
 namespace QSB.EchoesOfTheEye.SlideProjectors.Patches;
 
 [HarmonyPatch(typeof(SlideProjector))]
-internal class SlideProjectorPatches : QSBPatch
+public class SlideProjectorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

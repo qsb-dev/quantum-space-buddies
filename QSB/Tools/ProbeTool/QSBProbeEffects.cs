@@ -6,7 +6,7 @@ using UnityEngine;
 namespace QSB.Tools.ProbeTool;
 
 [UsedInUnityProject]
-internal class QSBProbeEffects : MonoBehaviour
+public class QSBProbeEffects : MonoBehaviour
 {
 	public OWAudioSource _flightLoopAudio;
 	public OWAudioSource _anchorAudio;

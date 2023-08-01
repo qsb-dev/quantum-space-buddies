@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseCodeControllers;
 
-internal class CodeControllerRemoteUpdater : MonoBehaviour
+public class CodeControllerRemoteUpdater : MonoBehaviour
 {
 	private QSBEclipseCodeController _attachedWorldObject;
 	private EclipseCodeController4 _codeController => _attachedWorldObject.AttachedObject;

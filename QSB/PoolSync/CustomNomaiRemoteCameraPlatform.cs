@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.PoolSync;
 
-internal class CustomNomaiRemoteCameraPlatform : NomaiShared
+public class CustomNomaiRemoteCameraPlatform : NomaiShared
 {
 	public static List<CustomNomaiRemoteCameraPlatform> CustomPlatformList;
 	private static MaterialPropertyBlock s_matPropBlock;

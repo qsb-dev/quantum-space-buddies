@@ -7,7 +7,7 @@ using UnityEngine;
 namespace QSB.QuantumSync.Patches.Common.Visibility;
 
 [HarmonyPatch(typeof(RendererVisibilityTracker))]
-internal class VisibilityRendererVisibilityTrackerPatches : QSBPatch
+public class VisibilityRendererVisibilityTrackerPatches : QSBPatch
 {
     public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

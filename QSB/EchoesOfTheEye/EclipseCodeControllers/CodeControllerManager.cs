@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.EclipseCodeControllers;
 
-internal class CodeControllerManager : WorldObjectManager
+public class CodeControllerManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;

@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync;
 
-internal class LightSensorManager : WorldObjectManager
+public class LightSensorManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 	public override bool DlcOnly => true;

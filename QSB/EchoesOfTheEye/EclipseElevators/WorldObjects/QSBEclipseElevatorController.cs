@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseElevators.WorldObjects;
 
-internal class QSBEclipseElevatorController : QSBRotatingElements<EclipseElevatorController, EclipseElevatorVariableSyncer>
+public class QSBEclipseElevatorController : QSBRotatingElements<EclipseElevatorController, EclipseElevatorVariableSyncer>
 {
 	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._lightSensors;
 

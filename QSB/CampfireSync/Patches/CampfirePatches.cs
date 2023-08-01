@@ -10,7 +10,7 @@ using UnityEngine;
 namespace QSB.CampfireSync.Patches;
 
 [HarmonyPatch]
-internal class CampfirePatches : QSBPatch
+public class CampfirePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

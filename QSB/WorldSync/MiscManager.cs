@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.WorldSync;
 
-internal class MiscManager : WorldObjectManager
+public class MiscManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 	public override bool DlcOnly => false;

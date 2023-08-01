@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.StatueSync.Messages;
 
-internal class StartStatueMessage : QSBMessage
+public class StartStatueMessage : QSBMessage
 {
 	private Vector3 PlayerPosition;
 	private Quaternion PlayerRotation;

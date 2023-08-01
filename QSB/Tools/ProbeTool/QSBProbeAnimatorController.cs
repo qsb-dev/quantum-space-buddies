@@ -3,7 +3,7 @@
 namespace QSB.Tools.ProbeTool;
 
 [RequireComponent(typeof(Animator))]
-internal class QSBProbeAnimatorController : MonoBehaviour
+public class QSBProbeAnimatorController : MonoBehaviour
 {
 	private Animator _animator;
 	private QSBSurveyorProbe _probe;

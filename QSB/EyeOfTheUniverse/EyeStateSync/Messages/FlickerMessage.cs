@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.EyeStateSync.Messages;
 
-internal class FlickerMessage : QSBMessage
+public class FlickerMessage : QSBMessage
 {
 	public static bool IgnoreNextMessage;
 

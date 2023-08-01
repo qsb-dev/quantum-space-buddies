@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool;
 
-internal static class ProbeCreator
+public static class ProbeCreator
 {
 	private static GameObject _prefab;
 

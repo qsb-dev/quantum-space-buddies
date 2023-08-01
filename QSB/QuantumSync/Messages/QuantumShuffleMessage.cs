@@ -3,7 +3,7 @@ using QSB.QuantumSync.WorldObjects;
 
 namespace QSB.QuantumSync.Messages;
 
-internal class QuantumShuffleMessage : QSBWorldObjectMessage<QSBQuantumShuffleObject, int[]>
+public class QuantumShuffleMessage : QSBWorldObjectMessage<QSBQuantumShuffleObject, int[]>
 {
 	public QuantumShuffleMessage(int[] indexArray) : base(indexArray) { }
 

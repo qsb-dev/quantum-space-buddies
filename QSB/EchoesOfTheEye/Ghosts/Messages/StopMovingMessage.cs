@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class StopMovingMessage : QSBWorldObjectMessage<QSBGhostController, bool>
+public class StopMovingMessage : QSBWorldObjectMessage<QSBGhostController, bool>
 {
 	public StopMovingMessage(bool instant) : base(instant) { }
 

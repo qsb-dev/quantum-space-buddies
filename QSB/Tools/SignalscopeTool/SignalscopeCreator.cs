@@ -2,7 +2,7 @@
 
 namespace QSB.Tools.SignalscopeTool;
 
-internal static class SignalscopeCreator
+public static class SignalscopeCreator
 {
 	internal static void CreateSignalscope(PlayerInfo player)
 	{

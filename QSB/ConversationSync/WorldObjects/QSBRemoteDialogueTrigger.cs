@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.ConversationSync.WorldObjects;
 
-internal class QSBRemoteDialogueTrigger : WorldObject<RemoteDialogueTrigger>
+public class QSBRemoteDialogueTrigger : WorldObject<RemoteDialogueTrigger>
 {
 	public override void SendInitialState(uint to) =>
 		this.SendMessage(new RemoteDialogueInitialStateMessage(AttachedObject) { To = to });

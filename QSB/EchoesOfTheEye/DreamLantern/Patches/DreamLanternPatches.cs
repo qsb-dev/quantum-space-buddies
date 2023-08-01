@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.Patches;
 
-internal class DreamLanternPatches : QSBPatch
+public class DreamLanternPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

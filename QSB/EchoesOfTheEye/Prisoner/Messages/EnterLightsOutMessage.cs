@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace QSB.EchoesOfTheEye.Prisoner.Messages;
 
-internal class EnterLightsOutMessage : QSBMessage
+public class EnterLightsOutMessage : QSBMessage
 {
 	public override void OnReceiveRemote()
 	{

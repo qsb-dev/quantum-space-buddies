@@ -41,6 +41,7 @@ public class PlayerJoinMessage : QSBMessage
 		}
 
 		AddonHashes = QSBCore.Addons.Keys
+			.Except(QSBCore.CosmeticAddons)
 			.Select(x => x.GetStableHashCode())
 			.ToArray();
 	}
@@ -109,6 +110,7 @@ public class PlayerJoinMessage : QSBMessage
 			}
 
 			var addonHashes = QSBCore.Addons.Keys
+				.Except(QSBCore.CosmeticAddons)
 				.Select(x => x.GetStableHashCode())
 				.ToArray();
 			if (!AddonHashes.SequenceEqual(addonHashes))
@@ -127,7 +129,7 @@ public class PlayerJoinMessage : QSBMessage
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.Name = PlayerName;
-		MultiplayerHUDManager.Instance.WriteMessage(string.Format(QSBLocalization.Current.PlayerJoinedTheGame, player.Name), Color.green);
+		MultiplayerHUDManager.Instance.WriteSystemMessage(string.Format(QSBLocalization.Current.PlayerJoinedTheGame, player.Name), Color.green);
 		DebugLog.DebugWrite($"{player} joined. qsbVersion:{QSBVersion}, gameVersion:{GameVersion}, dlcInstalled:{DlcInstalled}", MessageType.Info);
 	}
 

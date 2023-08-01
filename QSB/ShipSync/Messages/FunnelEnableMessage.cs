@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.ShipSync.Messages;
 
-internal class FunnelEnableMessage : QSBMessage
+public class FunnelEnableMessage : QSBMessage
 {
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

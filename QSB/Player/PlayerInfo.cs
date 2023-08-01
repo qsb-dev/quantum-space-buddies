@@ -186,12 +186,12 @@ public partial class PlayerInfo
 
 	public T GetCustomData<T>(string key)
 	{
-		if (!_customData.ContainsKey(key))
+		if (!_customData.TryGetValue(key, out var value))
 		{
 			return default;
 		}
 
-		return (T)_customData[key];
+		return (T)value;
 	}
 
 	public override string ToString() => $"{PlayerId}:{GetType().Name} ({Name})";

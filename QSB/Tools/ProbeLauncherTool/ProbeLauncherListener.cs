@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool;
 
-internal class ProbeLauncherListener : MonoBehaviour
+public class ProbeLauncherListener : MonoBehaviour
 {
 	private PlayerProbeLauncher _attachedLauncher;
 

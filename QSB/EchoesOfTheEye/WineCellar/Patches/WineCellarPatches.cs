@@ -7,7 +7,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.WineCellar.Patches;
 
-internal class WineCellarPatches : QSBPatch
+public class WineCellarPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

@@ -42,7 +42,7 @@ public class PlayerDeathMessage : QSBMessage<DeathType>
 		var deathMessage = Necronomicon.GetPhrase(Data, NecronomiconIndex);
 		if (deathMessage != null)
 		{
-			MultiplayerHUDManager.Instance.WriteMessage(string.Format(deathMessage, playerName), Color.grey);
+			MultiplayerHUDManager.Instance.WriteSystemMessage(string.Format(deathMessage, playerName), Color.grey);
 		}
 
 		RespawnManager.Instance.OnPlayerDeath(player);

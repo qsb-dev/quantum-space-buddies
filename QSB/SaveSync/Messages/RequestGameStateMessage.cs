@@ -9,7 +9,7 @@ namespace QSB.SaveSync.Messages;
 /// <summary>
 /// always sent to host
 /// </summary>
-internal class RequestGameStateMessage : QSBMessage
+public class RequestGameStateMessage : QSBMessage
 {
 	public RequestGameStateMessage() => To = 0;
 

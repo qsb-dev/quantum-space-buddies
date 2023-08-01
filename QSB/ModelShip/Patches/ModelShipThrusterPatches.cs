@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.ModelShip.Patches;
 
-internal class ModelShipThrusterPatches : QSBPatch
+public class ModelShipThrusterPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

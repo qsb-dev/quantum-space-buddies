@@ -1,0 +1,9 @@
+{
+  "filename": "APITestMod.dll",
+  "author": "_nebula",
+  "name": "QSB API Test Mod",
+  "uniqueName": "_nebula.QSBAPITest",
+  "version": "1.0.0",
+  "owmlVersion": "2.9.5",
+  "dependencies": [ "Raicuparta.QuantumSpaceBuddies", "_nebula.MenuFramework" ]
+}

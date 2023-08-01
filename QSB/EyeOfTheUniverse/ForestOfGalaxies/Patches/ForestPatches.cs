@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Patches;
 
-internal class ForestPatches : QSBPatch
+public class ForestPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

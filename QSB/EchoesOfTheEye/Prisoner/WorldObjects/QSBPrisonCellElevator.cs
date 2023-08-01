@@ -6,7 +6,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.Prisoner.WorldObjects;
 
-internal class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDropTarget, IGhostObject
+public class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDropTarget, IGhostObject
 {
 	public override void SendInitialState(uint to) =>
 		this.SendMessage(new CellevatorCallMessage(AttachedObject._targetFloorIndex) { To = to });

@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 
-internal class QSBLightSensor : OwnedWorldObject<SingleLightSensor>
+public class QSBLightSensor : OwnedWorldObject<SingleLightSensor>
 {
 	internal bool _locallyIlluminated;
 

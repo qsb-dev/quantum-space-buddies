@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.StatueSync;
 
-internal class StatueManager : MonoBehaviour, IAddComponentOnStart
+public class StatueManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static StatueManager Instance { get; private set; }
 	public bool HasStartedStatueLocally;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Actions;
 
-internal class QSBGrabAction : QSBGhostAction
+public class QSBGrabAction : QSBGhostAction
 {
 	private bool _playerIsGrabbed;
 	private bool _grabAnimComplete;

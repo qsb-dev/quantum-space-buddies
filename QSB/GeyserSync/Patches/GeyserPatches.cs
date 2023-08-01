@@ -4,7 +4,7 @@ using QSB.Patches;
 namespace QSB.GeyserSync.Patches;
 
 [HarmonyPatch]
-internal class GeyserPatches : QSBPatch
+public class GeyserPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnNonServerClientConnect;
 

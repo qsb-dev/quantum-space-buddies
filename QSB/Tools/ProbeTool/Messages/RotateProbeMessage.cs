@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool.Messages;
 
-internal class RotateProbeMessage : QSBMessage<(RotationType rotationType, Vector2 cameraRotation)>
+public class RotateProbeMessage : QSBMessage<(RotationType rotationType, Vector2 cameraRotation)>
 {
 	public RotateProbeMessage(RotationType rotationType, Vector2 cameraRotation) : base((rotationType, cameraRotation)) { }
 

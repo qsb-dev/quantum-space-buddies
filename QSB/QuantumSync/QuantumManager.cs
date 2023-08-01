@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace QSB.QuantumSync;
 
-internal class QuantumManager : WorldObjectManager
+public class QuantumManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Both;
 

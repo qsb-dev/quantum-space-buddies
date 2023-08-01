@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.DreamObjectProjectors.Messages;
 
-internal class ProjectorLitMessage : QSBWorldObjectMessage<QSBDreamObjectProjector, bool>
+public class ProjectorLitMessage : QSBWorldObjectMessage<QSBDreamObjectProjector, bool>
 {
 	public ProjectorLitMessage(bool lit) : base(lit) { }
 

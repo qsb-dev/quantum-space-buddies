@@ -10,7 +10,7 @@ using UnityEngine;
 namespace QSB.ZeroGCaveSync.Patches;
 
 [HarmonyPatch]
-internal class ZeroGCavePatches : QSBPatch
+public class ZeroGCavePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class StopFacingMessage : QSBWorldObjectMessage<QSBGhostController>
+public class StopFacingMessage : QSBWorldObjectMessage<QSBGhostController>
 {
 	public override void OnReceiveRemote()
 	{

@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace QSB.ModelShip;
 
-internal class ModelShipManager : WorldObjectManager
+public class ModelShipManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => false;

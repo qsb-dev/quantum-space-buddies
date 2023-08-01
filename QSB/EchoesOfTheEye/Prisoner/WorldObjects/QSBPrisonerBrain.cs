@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Prisoner.WorldObjects;
 
-internal class QSBPrisonerBrain : WorldObject<PrisonerBrain>, IGhostObject
+public class QSBPrisonerBrain : WorldObject<PrisonerBrain>, IGhostObject
 {
 	public override void SendInitialState(uint to)
 	{

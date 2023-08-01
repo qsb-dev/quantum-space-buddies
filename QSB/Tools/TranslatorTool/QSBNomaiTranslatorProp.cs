@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace QSB.Tools.TranslatorTool;
 
 [UsedInUnityProject]
-internal class QSBNomaiTranslatorProp : MonoBehaviour
+public class QSBNomaiTranslatorProp : MonoBehaviour
 {
 	private static MaterialPropertyBlock s_matPropBlock;
 	private static int s_propID_EmissionColor;

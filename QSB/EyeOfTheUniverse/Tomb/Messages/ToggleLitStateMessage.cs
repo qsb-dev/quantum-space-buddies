@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.EyeOfTheUniverse.Tomb.Messages;
 
-internal class ToggleLitStateMessage : QSBMessage<(int stateIndex, int direction, bool wasLit)>
+public class ToggleLitStateMessage : QSBMessage<(int stateIndex, int direction, bool wasLit)>
 {
 	public ToggleLitStateMessage(int currentStateIndex, int direction, bool wasLit) : base((currentStateIndex, direction, wasLit)) { }
 
