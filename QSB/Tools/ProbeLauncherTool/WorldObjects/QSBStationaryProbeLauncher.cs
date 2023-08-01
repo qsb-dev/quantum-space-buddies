@@ -61,13 +61,6 @@ public class QSBStationaryProbeLauncher : QSBProbeLauncher, ILinkedWorldObject<S
 
 	private void OnPressInteract() => OnLocalUseStateChanged(true);
 
-	public override void SendInitialState(uint to)
-	{
-		base.SendInitialState(to);
-
-		this.SendMessage(new StationaryProbeLauncherMessage(_isInUse, _currentUser) { To = to });
-	}
-
 	public void OnRemoteUseStateChanged(bool isInUse, uint user)
 	{
 		_isInUse = isInUse;

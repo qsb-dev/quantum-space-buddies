@@ -6,7 +6,6 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using QSB.WorldSync;
 using System;
 using UnityEngine;
 
@@ -31,17 +30,7 @@ public class AnimationSync : PlayerSyncObject
 		InvisibleAnimator = gameObject.GetRequiredComponent<Animator>();
 		NetworkAnimator = gameObject.GetRequiredComponent<NetworkAnimator>();
 		NetworkAnimator.enabled = false;
-		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 	}
-
-	protected void OnDestroy() => RequestInitialStatesMessage.SendInitialState -= SendInitialState;
-
-	/// <summary>
-	/// This wipes the NetworkAnimator's fields, so it assumes the parameters have changed.
-	/// Basically just forces it to set all its dirty flags.
-	/// BUG: this doesnt work for other players because its only called by the host.
-	/// </summary>
-	private void SendInitialState(uint to) => NetworkAnimator.Invoke("Awake");
 
 	public void Reset() => InSuitedUpState = false;
 

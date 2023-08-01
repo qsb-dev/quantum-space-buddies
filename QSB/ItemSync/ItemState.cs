@@ -11,11 +11,6 @@ namespace QSB.ItemSync;
 /// </summary>
 public class ItemState
 {
-	/// <summary>
-	/// if this is false, there's no need to sync initial state for this item
-	/// </summary>
-	public bool HasBeenInteractedWith;
-
 	public ItemStateType State;
 
 	// on ground

@@ -23,9 +23,6 @@ public class QSBElevator : WorldObject<Elevator>
 		_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
 	}
 
-	public override void SendInitialState(uint to) =>
-		this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd) { To = to });
-
 	public void RemoteCall(bool isGoingUp)
 	{
 		if (AttachedObject._goingToTheEnd == isGoingUp)

@@ -86,34 +86,6 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 		}
 	}
 
-	public override void SendInitialState(uint to)
-	{
-		if (!ItemState.HasBeenInteractedWith)
-		{
-			return;
-		}
-
-		switch (ItemState.State)
-		{
-			case ItemStateType.Held:
-				((IQSBItem)this).SendMessage(new MoveToCarryMessage(ItemState.HoldingPlayer.PlayerId) { To = to });
-				break;
-			case ItemStateType.Socketed:
-				((IQSBItem)this).SendMessage(new SocketItemMessage(SocketMessageType.Socket, ItemState.Socket) { To = to });
-				break;
-			case ItemStateType.OnGround:
-				((IQSBItem)this).SendMessage(
-					new DropItemMessage(
-						ItemState.WorldPosition,
-						ItemState.WorldNormal,
-						ItemState.Parent,
-						ItemState.Sector,
-						ItemState.CustomDropTarget,
-						ItemState.Rigidbody) { To = to });
-				break;
-		}
-	}
-
 	public ItemType GetItemType() => AttachedObject.GetItemType();
 
 	public virtual void PickUpItem(Transform holdTransform) =>

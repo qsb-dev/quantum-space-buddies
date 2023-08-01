@@ -21,16 +21,6 @@ public class QSBCharacterDialogueTree : WorldObject<CharacterDialogueTree>
 		QSBPlayerManager.OnRemovePlayer -= OnRemovePlayer;
 	}
 
-	public override void SendInitialState(uint to)
-	{
-		var playerId = ConversationManager.Instance.GetPlayerTalkingToTree(AttachedObject);
-		if (playerId != uint.MaxValue)
-		{
-			this.SendMessage(new ConversationStartEndMessage(playerId, true) { To = to });
-		}
-		// TODO: maybe also sync the dialogue box and player box?
-	}
-
 	private void OnRemovePlayer(PlayerInfo player)
 	{
 		if (player.CurrentCharacterDialogueTree == this)

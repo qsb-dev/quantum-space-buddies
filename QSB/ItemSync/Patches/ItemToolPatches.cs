@@ -20,7 +20,6 @@ public class ItemToolPatches : QSBPatch
 	{
 		var qsbItem = item.GetWorldObject<IQSBItem>();
 		QSBPlayerManager.LocalPlayer.HeldItem = qsbItem;
-		qsbItem.ItemState.HasBeenInteractedWith = true;
 		qsbItem.ItemState.State = ItemStateType.Held;
 		qsbItem.ItemState.HoldingPlayer = QSBPlayerManager.LocalPlayer;
 		qsbItem.SendMessage(new MoveToCarryMessage(QSBPlayerManager.LocalPlayer.PlayerId));
@@ -44,7 +43,6 @@ public class ItemToolPatches : QSBPatch
 	{
 		var item = socket.GetSocketedItem();
 		var qsbItem = item.GetWorldObject<IQSBItem>();
-		qsbItem.ItemState.HasBeenInteractedWith = true;
 		QSBPlayerManager.LocalPlayer.HeldItem = qsbItem;
 		qsbItem.SendMessage(new SocketItemMessage(SocketMessageType.StartUnsocket, socket));
 	}

@@ -23,7 +23,6 @@ public class SocketItemMessage : QSBWorldObjectMessage<IQSBItem, (SocketMessageT
 					var qsbItemSocket = Data.SocketId.GetWorldObject<QSBItemSocket>();
 
 					qsbItemSocket.PlaceIntoSocket(WorldObject);
-					WorldObject.ItemState.HasBeenInteractedWith = true;
 					WorldObject.ItemState.State = ItemStateType.Socketed;
 					WorldObject.ItemState.Socket = qsbItemSocket.AttachedObject;
 
