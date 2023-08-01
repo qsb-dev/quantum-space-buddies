@@ -23,8 +23,6 @@ public class SocketItemMessage : QSBWorldObjectMessage<IQSBItem, (SocketMessageT
 					var qsbItemSocket = Data.SocketId.GetWorldObject<QSBItemSocket>();
 
 					qsbItemSocket.PlaceIntoSocket(WorldObject);
-					WorldObject.ItemState.State = ItemStateType.Socketed;
-					WorldObject.ItemState.Socket = qsbItemSocket.AttachedObject;
 
 					var player = QSBPlayerManager.GetPlayer(From);
 					player.HeldItem = null;

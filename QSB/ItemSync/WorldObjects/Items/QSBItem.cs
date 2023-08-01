@@ -15,23 +15,11 @@ namespace QSB.ItemSync.WorldObjects.Items;
 public class QSBItem<T> : WorldObject<T>, IQSBItem
 	where T : OWItem
 {
-	public ItemState ItemState { get; } = new();
-
 	private Transform _lastParent;
 	private Vector3 _lastPosition;
 	private Quaternion _lastRotation;
 	private QSBSector _lastSector;
 	private QSBItemSocket _lastSocket;
-
-	public override string ReturnLabel()
-	{
-		return $"{ToString()}" +
-			$"\r\nState:{ItemState.State}" +
-			$"\r\nParent:{ItemState.Parent?.name}" +
-			$"\r\nLocalPosition:{ItemState.LocalPosition}" +
-			$"\r\nLocalNormal:{ItemState.LocalNormal}" +
-			$"\r\nHoldingPlayer:{ItemState.HoldingPlayer?.PlayerId}";
-	}
 
 	public override async UniTask Init(CancellationToken ct)
 	{
