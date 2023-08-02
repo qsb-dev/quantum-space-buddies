@@ -32,6 +32,8 @@ public interface IQSBAPI
 
 	/// <summary>
 	/// Returns the list of IDs of all connected players.
+	///
+	/// The first player in the list is the host.
 	/// </summary>
 	uint[] GetPlayerIDs();
 
@@ -65,6 +67,8 @@ public interface IQSBAPI
 
 	/// <summary>
 	/// Sends a message containing arbitrary data to every player.
+	///
+	/// Keep your messages under around 1100 bytes.
 	/// </summary>
 	/// <typeparam name="T">The type of the data being sent. This type must be serializable.</typeparam>
 	/// <param name="messageType">The unique key of the message.</param>
