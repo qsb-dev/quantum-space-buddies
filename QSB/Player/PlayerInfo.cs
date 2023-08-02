@@ -181,7 +181,7 @@ public partial class PlayerInfo
 		HUDBox.OnRespawn();
 	}
 
-	// internal for message
+	// internal for RequestStateResyncMessage
 	internal readonly Dictionary<string, object> _customData = new();
 
 	public void SetCustomData<T>(string key, T data)
