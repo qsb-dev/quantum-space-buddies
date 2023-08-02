@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using QSB.Messaging;
+﻿using QSB.Messaging;
 using QSB.Utility;
 
 namespace QSB.API.Messages;

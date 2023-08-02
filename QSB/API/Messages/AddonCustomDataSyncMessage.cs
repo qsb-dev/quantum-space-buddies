@@ -8,7 +8,5 @@ public class AddonCustomDataSyncMessage : QSBMessage<(uint playerId, string key,
 {
 	public AddonCustomDataSyncMessage(uint playerId, string key, object data) : base((playerId, key, data.ToBytes())) { }
 
-	public override void OnReceiveLocal() => OnReceiveRemote();
-
 	public override void OnReceiveRemote() => QSBPlayerManager.GetPlayer(Data.playerId).SetCustomData(Data.key, Data.data.ToObject());
 }

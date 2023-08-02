@@ -27,7 +27,7 @@ public class QSBAPI : IQSBAPI
 	public UnityEvent<uint> OnPlayerLeave() => QSBAPIEvents.OnPlayerLeaveEvent;
 
 	public void SetCustomData<T>(uint playerId, string key, T data) 
-		=> new AddonCustomDataSyncMessage(playerId, key, data).Send();
+		=> QSBPlayerManager.GetPlayer(playerId).SetCustomData<T>(key, data);
 
 	public T GetCustomData<T>(uint playerId, string key)
 		=> QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);
