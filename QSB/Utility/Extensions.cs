@@ -239,6 +239,9 @@ public static class Extensions
 		return sb.ToString();
 	}
 
+	/// <summary>
+	/// only works for c# serializable objects
+	/// </summary>
 	public static byte[] ToBytes(this object obj)
 	{
 		using var ms = new MemoryStream();
@@ -248,6 +251,9 @@ public static class Extensions
 		return bytes;
 	}
 
+	/// <summary>
+	/// only works for c# serializable objects
+	/// </summary>
 	public static object ToObject(this byte[] bytes)
 	{
 		using var ms = new MemoryStream(bytes);

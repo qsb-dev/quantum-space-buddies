@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.API.Messages;
 using QSB.Messaging;
 using QSB.Player;
+using System;
+using System.Linq;
 using UnityEngine.Events;
 
 namespace QSB.API;
@@ -26,11 +26,8 @@ public class QSBAPI : IQSBAPI
 	public UnityEvent<uint> OnPlayerJoin() => QSBAPIEvents.OnPlayerJoinEvent;
 	public UnityEvent<uint> OnPlayerLeave() => QSBAPIEvents.OnPlayerLeaveEvent;
 
-	public void SetCustomData<T>(uint playerId, string key, T data) 
-		=> QSBPlayerManager.GetPlayer(playerId).SetCustomData<T>(key, data);
-
-	public T GetCustomData<T>(uint playerId, string key)
-		=> QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);
+	public void SetCustomData<T>(uint playerId, string key, T data) => QSBPlayerManager.GetPlayer(playerId).SetCustomData(key, data);
+	public T GetCustomData<T>(uint playerId, string key) => QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);
 
 	public void SendMessage<T>(string messageType, T data, uint to = uint.MaxValue, bool receiveLocally = false)
 		=> new AddonDataMessage(messageType, data, receiveLocally) { To = to }.Send();

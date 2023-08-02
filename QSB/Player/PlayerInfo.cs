@@ -181,7 +181,8 @@ public partial class PlayerInfo
 		HUDBox.OnRespawn();
 	}
 
-	private Dictionary<string, object> _customData = new();
+	// internal for message
+	internal readonly Dictionary<string, object> _customData = new();
 
 	public void SetCustomData<T>(string key, T data)
 	{
@@ -193,7 +194,6 @@ public partial class PlayerInfo
 		}
 	}
 
-
 	public T GetCustomData<T>(string key)
 	{
 		if (!_customData.TryGetValue(key, out var value))
@@ -203,8 +203,6 @@ public partial class PlayerInfo
 
 		return (T)value;
 	}
-
-	public IEnumerable<string> GetCustomDataKeys() => _customData.Keys;
 
 	public override string ToString() => $"{PlayerId}:{GetType().Name} ({Name})";
 }

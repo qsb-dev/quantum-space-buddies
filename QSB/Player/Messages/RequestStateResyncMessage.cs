@@ -53,10 +53,9 @@ public class RequestStateResyncMessage : QSBMessage
 		new PlayerInformationMessage { To = From }.Send();
 
 		// Initial sync of all custom data from APIs
-		foreach (var key in QSBPlayerManager.LocalPlayer.GetCustomDataKeys())
+		foreach (var kvp in QSBPlayerManager.LocalPlayer._customData)
 		{
-			var data = QSBPlayerManager.LocalPlayer.GetCustomData<object>(key);
-			new AddonCustomDataSyncMessage(QSBPlayerManager.LocalPlayerId, key, data) { To = From }.Send();
+			new AddonCustomDataSyncMessage(QSBPlayerManager.LocalPlayerId, kvp.Key, kvp.Value) { To = From }.Send();
 		}
 	}
 }
