@@ -24,8 +24,13 @@ public class QSBAPI : IQSBAPI
 	public uint[] GetPlayerIDs() => QSBPlayerManager.PlayerList.Select(x => x.PlayerId).ToArray();
 
 	public UnityEvent<uint> OnPlayerJoin() => QSBAPIEvents.OnPlayerJoinEvent;
-
 	public UnityEvent<uint> OnPlayerLeave() => QSBAPIEvents.OnPlayerLeaveEvent;
+
+	public UnityEvent OnLocalJoin() => QSBAPIEvents.OnLocalJoinEvent;
+	public UnityEvent OnLocalLeave() => QSBAPIEvents.OnLocalLeaveEvent;
+
+	public UnityEvent<uint> OnPeerJoin() => QSBAPIEvents.OnPeerJoinEvent;
+	public UnityEvent<uint> OnPeerLeave() => QSBAPIEvents.OnPeerLeaveEvent;
 
 	public void SetCustomData<T>(uint playerId, string key, T data) => QSBPlayerManager.GetPlayer(playerId).SetCustomData(key, data);
 	public T GetCustomData<T>(uint playerId, string key) => QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);
@@ -41,11 +46,43 @@ internal static class QSBAPIEvents
 {
 	static QSBAPIEvents()
 	{
-		QSBPlayerManager.OnAddPlayer += player => OnPlayerJoinEvent.Invoke(player.PlayerId);
-		QSBPlayerManager.OnRemovePlayer += player => OnPlayerLeaveEvent.Invoke(player.PlayerId);
+		QSBPlayerManager.OnAddPlayer += (player) =>
+		{
+			OnPlayerJoinEvent.Invoke(player.PlayerId);
+
+			if (player.IsLocalPlayer)
+			{
+				OnLocalJoinEvent.Invoke();
+			}
+			else
+			{
+				OnPeerJoinEvent.Invoke(player.PlayerId);
+			}
+		};
+
+		QSBPlayerManager.OnRemovePlayer += (player) =>
+		{
+			OnPlayerLeaveEvent.Invoke(player.PlayerId);
+
+			if (player.IsLocalPlayer)
+			{
+				OnLocalLeaveEvent.Invoke();
+			}
+			else
+			{
+				OnPeerLeaveEvent.Invoke(player.PlayerId);
+			}
+		};
 	}
 
 	internal class PlayerEvent : UnityEvent<uint> { }
-	internal static PlayerEvent OnPlayerJoinEvent = new PlayerEvent();
-	internal static PlayerEvent OnPlayerLeaveEvent = new PlayerEvent();
+
+	internal static PlayerEvent OnPlayerJoinEvent = new();
+	internal static PlayerEvent OnPlayerLeaveEvent = new();
+
+	internal static UnityEvent OnLocalJoinEvent = new();
+	internal static UnityEvent OnLocalLeaveEvent = new();
+
+	internal static PlayerEvent OnPeerJoinEvent = new();
+	internal static PlayerEvent OnPeerLeaveEvent = new();
 }
