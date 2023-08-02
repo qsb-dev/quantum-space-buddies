@@ -257,7 +257,7 @@ public class RespawnOnDeath : MonoBehaviour
 		var sectorList = PlayerTransformSync.LocalInstance.SectorDetector.SectorList;
 		if (sectorList.All(x => x.Type != Sector.Name.TimberHearth))
 		{
-			// stops sectors from breaking when you die on TH??
+			// If you die on TH, things would be unloaded when you respawn. So reset all that stuff.
 			Locator.GetPlayerSectorDetector().RemoveFromAllSectors();
 			Locator.GetPlayerCameraDetector().GetComponent<AudioDetector>().DeactivateAllVolumes(0f);
 		}
