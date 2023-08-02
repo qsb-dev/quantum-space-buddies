@@ -32,18 +32,42 @@ public interface IQSBAPI
 
 	/// <summary>
 	/// Returns the list of IDs of all connected players.
+	///
+	/// The first player in the list is the host.
 	/// </summary>
 	uint[] GetPlayerIDs();
 
 	/// <summary>
-	/// Invoked when a player joins the game.
+	/// Invoked when any player (local or remote) joins the game.
 	/// </summary>
 	UnityEvent<uint> OnPlayerJoin();
 
 	/// <summary>
-	/// Invoked when a player leaves the game.
+	/// Invoked when any player (local or remote) leaves the game.
 	/// </summary>
 	UnityEvent<uint> OnPlayerLeave();
+
+	/// <summary>
+	/// Invoked when the local client joins a game,
+	/// either through connecting to an external game or hosting their own game.
+	/// </summary>
+	UnityEvent OnLocalJoin();
+
+	/// <summary>
+	/// Invoked when a client (but not the local player) joins the game.
+	/// </summary>
+	UnityEvent<uint> OnPeerJoin();
+
+	/// <summary>
+	/// Invoked when the local client leaves a game,
+	/// either through disconnecting from an external game or shutting down the hosted server.
+	/// </summary>
+	UnityEvent OnLocalLeave();
+
+	/// <summary>
+	/// Invoked when a client (but not the local player) leaves the game.
+	/// </summary>
+	UnityEvent<uint> OnPeerLeave();
 
 	/// <summary>
 	/// Sets some arbitrary data for a given player.
@@ -65,6 +89,8 @@ public interface IQSBAPI
 
 	/// <summary>
 	/// Sends a message containing arbitrary data to every player.
+	///
+	/// Keep your messages under around 1100 bytes.
 	/// </summary>
 	/// <typeparam name="T">The type of the data being sent. This type must be serializable.</typeparam>
 	/// <param name="messageType">The unique key of the message.</param>
