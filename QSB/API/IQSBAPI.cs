@@ -55,6 +55,8 @@ public interface IQSBAPI
 
 	/// <summary>
 	/// Sets some arbitrary data for a given player.
+	///
+	/// Not synced.
 	/// </summary>
 	/// <typeparam name="T">The type of the data.</typeparam>
 	/// <param name="playerId">The ID of the player.</param>
@@ -64,6 +66,8 @@ public interface IQSBAPI
 
 	/// <summary>
 	/// Returns some arbitrary data from a given player.
+	///
+	/// Not synced.
 	/// </summary>
 	/// <typeparam name="T">The type of the data.</typeparam>
 	/// <param name="playerId">The ID of the player.</param>

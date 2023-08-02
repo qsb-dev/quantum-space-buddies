@@ -179,7 +179,7 @@ public partial class PlayerInfo
 		HUDBox.OnRespawn();
 	}
 
-	private Dictionary<string, object> _customData = new();
+	private readonly Dictionary<string, object> _customData = new();
 
 	public void SetCustomData<T>(string key, T data)
 		=> _customData[key] = data;
