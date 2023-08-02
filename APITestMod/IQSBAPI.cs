@@ -21,16 +21,6 @@ public interface IQSBAPI
 	/// </summary>
 	bool GetIsInMultiplayer();
 
-	/// <summary>
-	/// Invoked on the host when the server is first started.
-	/// </summary>
-	UnityEvent OnStartHost();
-
-	/// <summary>
-	/// Invoked on the host when the server is closed.
-	/// </summary>
-	UnityEvent OnStopHost();
-
 	#endregion
 
 	#region Player

@@ -19,9 +19,6 @@ public class QSBAPI : IQSBAPI
 	public bool GetIsHost() => QSBCore.IsHost;
 	public bool GetIsInMultiplayer() => QSBCore.IsInMultiplayer;
 
-	public UnityEvent OnStartHost() => QSBAPIEvents.OnStartHostEvent;
-	public UnityEvent OnStopHost() => QSBAPIEvents.OnStopHostEvent;
-
 	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
 	public string GetPlayerName(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Name;
 	public uint[] GetPlayerIDs() => QSBPlayerManager.PlayerList.Select(x => x.PlayerId).ToArray();
@@ -51,7 +48,4 @@ internal static class QSBAPIEvents
 
 	internal static readonly PlayerEvent OnPlayerJoinEvent = new();
 	internal static readonly PlayerEvent OnPlayerLeaveEvent = new();
-
-	internal static readonly UnityEvent OnStartHostEvent = new();
-	internal static readonly UnityEvent OnStopHostEvent = new();
 }
