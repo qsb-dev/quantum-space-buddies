@@ -19,6 +19,9 @@ public class QSBAPI : IQSBAPI
 	public bool GetIsHost() => QSBCore.IsHost;
 	public bool GetIsInMultiplayer() => QSBCore.IsInMultiplayer;
 
+	public UnityEvent OnStartHost() => QSBAPIEvents.OnStartHostEvent;
+	public UnityEvent OnStopHost() => QSBAPIEvents.OnStopHostEvent;
+
 	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
 	public string GetPlayerName(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Name;
 	public uint[] GetPlayerIDs() => QSBPlayerManager.PlayerList.Select(x => x.PlayerId).ToArray();
@@ -31,9 +34,6 @@ public class QSBAPI : IQSBAPI
 
 	public UnityEvent<uint> OnPeerJoin() => QSBAPIEvents.OnPeerJoinEvent;
 	public UnityEvent<uint> OnPeerLeave() => QSBAPIEvents.OnPeerLeaveEvent;
-
-	public UnityEvent OnStartHost() => QSBAPIEvents.OnStartHostEvent;
-	public UnityEvent OnStopHost() => QSBAPIEvents.OnStopHostEvent;
 
 	public void SetCustomData<T>(uint playerId, string key, T data) => QSBPlayerManager.GetPlayer(playerId).SetCustomData(key, data);
 	public T GetCustomData<T>(uint playerId, string key) => QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);

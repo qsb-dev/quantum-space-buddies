@@ -4,6 +4,8 @@ using UnityEngine.Events;
 
 public interface IQSBAPI
 {
+	#region General
+
 	/// <summary>
 	/// If called, all players connected to YOUR hosted game must have this mod installed.
 	/// </summary>
@@ -18,6 +20,20 @@ public interface IQSBAPI
 	/// Returns if the current player is in multiplayer.
 	/// </summary>
 	bool GetIsInMultiplayer();
+
+	/// <summary>
+	/// Invoked on the host when the server is first started.
+	/// </summary>
+	UnityEvent OnStartHost();
+
+	/// <summary>
+	/// Invoked on the host when the server is closed.
+	/// </summary>
+	UnityEvent OnStopHost();
+
+	#endregion
+
+	#region Player
 
 	/// <summary>
 	/// Returns the player ID of the current player.
@@ -70,16 +86,6 @@ public interface IQSBAPI
 	UnityEvent<uint> OnPeerLeave();
 
 	/// <summary>
-	/// Invoked on the host when the server is first started.
-	/// </summary>
-	UnityEvent OnStartHost();
-
-	/// <summary>
-	/// Invoked on the host when the server is closed.
-	/// </summary>
-	UnityEvent OnStopHost();
-
-	/// <summary>
 	/// Sets some arbitrary data for a given player.
 	/// </summary>
 	/// <typeparam name="T">The type of the data.</typeparam>
@@ -96,6 +102,10 @@ public interface IQSBAPI
 	/// <param name="key">The unique key of the data you want to access.</param>
 	/// <returns>The data requested. If key is not valid, returns default.</returns>
 	T GetCustomData<T>(uint playerId, string key);
+
+	#endregion
+
+	#region Messaging
 
 	/// <summary>
 	/// Sends a message containing arbitrary data to every player.
@@ -116,4 +126,6 @@ public interface IQSBAPI
 	/// <param name="messageType">The unique key of the message.</param>
 	/// <param name="handler">The action to be ran when the message is received. The uint is the player ID that sent the messsage.</param>
 	void RegisterHandler<T>(string messageType, Action<uint, T> handler);
+
+	#endregion
 }
