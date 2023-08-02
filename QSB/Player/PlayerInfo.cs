@@ -194,5 +194,7 @@ public partial class PlayerInfo
 		return (T)value;
 	}
 
+	public IEnumerable<string> GetCustomDataKeys() => _customData.Keys;
+
 	public override string ToString() => $"{PlayerId}:{GetType().Name} ({Name})";
 }
