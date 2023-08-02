@@ -17,6 +17,7 @@ public class QSBAPI : IQSBAPI
 	}
 
 	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
+	public bool GetIsHost() => QSBCore.IsHost;
 	public string GetPlayerName(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Name;
 	public uint[] GetPlayerIDs() => QSBPlayerManager.PlayerList.Select(x => x.PlayerId).ToArray();
 

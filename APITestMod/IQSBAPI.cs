@@ -15,6 +15,11 @@ public interface IQSBAPI
 	uint GetLocalPlayerID();
 
 	/// <summary>
+	/// Returns if the current player is the host.
+	/// </summary>
+	bool GetIsHost();
+
+	/// <summary>
 	/// Returns the name of a given player.
 	/// </summary>
 	/// <param name="playerID">The ID of the player you want the name of.</param>
