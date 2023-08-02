@@ -32,6 +32,9 @@ public class QSBAPI : IQSBAPI
 	public UnityEvent<uint> OnPeerJoin() => QSBAPIEvents.OnPeerJoinEvent;
 	public UnityEvent<uint> OnPeerLeave() => QSBAPIEvents.OnPeerLeaveEvent;
 
+	public UnityEvent OnStartHost() => QSBAPIEvents.OnStartHostEvent;
+	public UnityEvent OnStopHost() => QSBAPIEvents.OnStopHostEvent;
+
 	public void SetCustomData<T>(uint playerId, string key, T data) => QSBPlayerManager.GetPlayer(playerId).SetCustomData(key, data);
 	public T GetCustomData<T>(uint playerId, string key) => QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);
 
@@ -85,4 +88,7 @@ internal static class QSBAPIEvents
 
 	internal static PlayerEvent OnPeerJoinEvent = new();
 	internal static PlayerEvent OnPeerLeaveEvent = new();
+
+	internal static UnityEvent OnStartHostEvent = new();
+	internal static UnityEvent OnStopHostEvent = new();
 }

@@ -70,6 +70,16 @@ public interface IQSBAPI
 	UnityEvent<uint> OnPeerLeave();
 
 	/// <summary>
+	/// Invoked on the host when the server is first started.
+	/// </summary>
+	UnityEvent OnStartHost();
+
+	/// <summary>
+	/// Invoked on the host when the server is closed.
+	/// </summary>
+	UnityEvent OnStopHost();
+
+	/// <summary>
 	/// Sets some arbitrary data for a given player.
 	/// </summary>
 	/// <typeparam name="T">The type of the data.</typeparam>

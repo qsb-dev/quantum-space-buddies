@@ -36,6 +36,7 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using QSB.API;
 using UnityEngine;
 
 namespace QSB;
@@ -402,8 +403,15 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		base.OnServerDisconnect(conn);
 	}
 
+	public override void OnStartServer()
+	{
+		QSBAPIEvents.OnStartHostEvent.Invoke();
+		base.OnStartServer();
+	}
+
 	public override void OnStopServer()
 	{
+		QSBAPIEvents.OnStopHostEvent.Invoke();
 		DebugLog.DebugWrite("OnStopServer", MessageType.Info);
 		Destroy(GetComponent<RespawnOnDeath>());
 		DebugLog.ToConsole("Server stopped!", MessageType.Info);
