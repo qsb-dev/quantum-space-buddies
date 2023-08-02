@@ -29,12 +29,6 @@ public class QSBAPI : IQSBAPI
 	public UnityEvent<uint> OnPlayerJoin() => QSBAPIEvents.OnPlayerJoinEvent;
 	public UnityEvent<uint> OnPlayerLeave() => QSBAPIEvents.OnPlayerLeaveEvent;
 
-	public UnityEvent OnLocalJoin() => QSBAPIEvents.OnLocalJoinEvent;
-	public UnityEvent OnLocalLeave() => QSBAPIEvents.OnLocalLeaveEvent;
-
-	public UnityEvent<uint> OnPeerJoin() => QSBAPIEvents.OnPeerJoinEvent;
-	public UnityEvent<uint> OnPeerLeave() => QSBAPIEvents.OnPeerLeaveEvent;
-
 	public void SetCustomData<T>(uint playerId, string key, T data) => QSBPlayerManager.GetPlayer(playerId).SetCustomData(key, data);
 	public T GetCustomData<T>(uint playerId, string key) => QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);
 
@@ -49,45 +43,14 @@ internal static class QSBAPIEvents
 {
 	static QSBAPIEvents()
 	{
-		QSBPlayerManager.OnAddPlayer += (player) =>
-		{
-			OnPlayerJoinEvent.Invoke(player.PlayerId);
-
-			if (player.IsLocalPlayer)
-			{
-				OnLocalJoinEvent.Invoke();
-			}
-			else
-			{
-				OnPeerJoinEvent.Invoke(player.PlayerId);
-			}
-		};
-
-		QSBPlayerManager.OnRemovePlayer += (player) =>
-		{
-			OnPlayerLeaveEvent.Invoke(player.PlayerId);
-
-			if (player.IsLocalPlayer)
-			{
-				OnLocalLeaveEvent.Invoke();
-			}
-			else
-			{
-				OnPeerLeaveEvent.Invoke(player.PlayerId);
-			}
-		};
+		QSBPlayerManager.OnAddPlayer += player => OnPlayerJoinEvent.Invoke(player.PlayerId);
+		QSBPlayerManager.OnRemovePlayer += player => OnPlayerLeaveEvent.Invoke(player.PlayerId);
 	}
 
 	internal class PlayerEvent : UnityEvent<uint> { }
 
 	internal static readonly PlayerEvent OnPlayerJoinEvent = new();
 	internal static readonly PlayerEvent OnPlayerLeaveEvent = new();
-
-	internal static readonly UnityEvent OnLocalJoinEvent = new();
-	internal static readonly UnityEvent OnLocalLeaveEvent = new();
-
-	internal static readonly PlayerEvent OnPeerJoinEvent = new();
-	internal static readonly PlayerEvent OnPeerLeaveEvent = new();
 
 	internal static readonly UnityEvent OnStartHostEvent = new();
 	internal static readonly UnityEvent OnStopHostEvent = new();
