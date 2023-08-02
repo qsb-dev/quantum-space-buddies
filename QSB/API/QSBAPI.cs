@@ -80,15 +80,15 @@ internal static class QSBAPIEvents
 
 	internal class PlayerEvent : UnityEvent<uint> { }
 
-	internal static PlayerEvent OnPlayerJoinEvent = new();
-	internal static PlayerEvent OnPlayerLeaveEvent = new();
+	internal static readonly PlayerEvent OnPlayerJoinEvent = new();
+	internal static readonly PlayerEvent OnPlayerLeaveEvent = new();
 
-	internal static UnityEvent OnLocalJoinEvent = new();
-	internal static UnityEvent OnLocalLeaveEvent = new();
+	internal static readonly UnityEvent OnLocalJoinEvent = new();
+	internal static readonly UnityEvent OnLocalLeaveEvent = new();
 
-	internal static PlayerEvent OnPeerJoinEvent = new();
-	internal static PlayerEvent OnPeerLeaveEvent = new();
+	internal static readonly PlayerEvent OnPeerJoinEvent = new();
+	internal static readonly PlayerEvent OnPeerLeaveEvent = new();
 
-	internal static UnityEvent OnStartHostEvent = new();
-	internal static UnityEvent OnStopHostEvent = new();
+	internal static readonly UnityEvent OnStartHostEvent = new();
+	internal static readonly UnityEvent OnStopHostEvent = new();
 }
