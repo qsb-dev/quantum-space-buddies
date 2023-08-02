@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using QSB.API.Messages;
 using QSB.Messaging;
 using QSB.Player;
+using System;
+using System.Linq;
 using UnityEngine.Events;
 
 namespace QSB.API;
