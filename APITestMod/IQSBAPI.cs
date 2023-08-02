@@ -10,14 +10,19 @@ public interface IQSBAPI
 	void RegisterRequiredForAllPlayers(IModBehaviour mod);
 
 	/// <summary>
-	/// Returns the player ID of the current player.
-	/// </summary>
-	uint GetLocalPlayerID();
-
-	/// <summary>
 	/// Returns if the current player is the host.
 	/// </summary>
 	bool GetIsHost();
+
+	/// <summary>
+	/// Returns if the current player is in multiplayer.
+	/// </summary>
+	bool GetIsInMultiplayer();
+
+	/// <summary>
+	/// Returns the player ID of the current player.
+	/// </summary>
+	uint GetLocalPlayerID();
 
 	/// <summary>
 	/// Returns the name of a given player.

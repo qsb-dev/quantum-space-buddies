@@ -16,8 +16,10 @@ public class QSBAPI : IQSBAPI
 		QSBCore.Addons.Add(uniqueName, mod);
 	}
 
-	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
 	public bool GetIsHost() => QSBCore.IsHost;
+	public bool GetIsInMultiplayer() => QSBCore.IsInMultiplayer;
+
+	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
 	public string GetPlayerName(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Name;
 	public uint[] GetPlayerIDs() => QSBPlayerManager.PlayerList.Select(x => x.PlayerId).ToArray();
 
@@ -29,7 +31,7 @@ public class QSBAPI : IQSBAPI
 	public T GetCustomData<T>(uint playerId, string key) => QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);
 
 	public void SendMessage<T>(string messageType, T data, uint to = uint.MaxValue, bool receiveLocally = false)
-		=> new AddonDataMessage(messageType, data, receiveLocally) {To = to} .Send();
+		=> new AddonDataMessage(messageType, data, receiveLocally) { To = to }.Send();
 
 	public void RegisterHandler<T>(string messageType, Action<uint, T> handler)
 		=> AddonDataManager.RegisterHandler(messageType, handler);
