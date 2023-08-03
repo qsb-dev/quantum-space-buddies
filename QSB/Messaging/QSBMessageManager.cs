@@ -10,7 +10,6 @@ using QSB.Utility;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
@@ -20,17 +19,16 @@ public static class QSBMessageManager
 {
 	#region inner workings
 
-	internal static readonly Type[] _types;
-	internal static readonly Dictionary<Type, ushort> _typeToId = new();
+	internal static readonly Dictionary<ushort, Type> _types = new();
 
 	static QSBMessageManager()
 	{
-		_types = typeof(QSBMessage).GetDerivedTypes().ToArray();
-		for (ushort i = 0; i < _types.Length; i++)
+		foreach (var type in typeof(QSBMessage).GetDerivedTypes())
 		{
-			_typeToId.Add(_types[i], i);
+			var id = (ushort)type.FullName.GetStableHashCode();
+			_types.Add(id, type);
 			// call static constructor of message if needed
-			RuntimeHelpers.RunClassConstructor(_types[i].TypeHandle);
+			RuntimeHelpers.RunClassConstructor(type.TypeHandle);
 		}
 	}
 
@@ -42,6 +40,11 @@ public static class QSBMessageManager
 
 	private static void OnServerReceive(QSBMessage msg)
 	{
+		if (msg == null)
+		{
+			return;
+		}
+
 		if (msg.To == uint.MaxValue)
 		{
 			NetworkServer.SendToAll<Wrapper>(msg);
@@ -77,9 +80,9 @@ public static class QSBMessageManager
 			var player = QSBPlayerManager.GetPlayer(msg.From);
 
 			if (!player.IsReady
-			    && player.PlayerId != QSBPlayerManager.LocalPlayerId
-			    && player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
-			    && msg is not (PlayerInformationMessage or PlayerReadyMessage or RequestStateResyncMessage or ServerStateMessage))
+				&& player.PlayerId != QSBPlayerManager.LocalPlayerId
+				&& player.State is ClientState.AliveInSolarSystem or ClientState.AliveInEye or ClientState.DeadInSolarSystem
+				&& msg is not (PlayerInformationMessage or PlayerReadyMessage or RequestStateResyncMessage or ServerStateMessage))
 			{
 				//DebugLog.ToConsole($"Warning - Got message {msg} from player {msg.From}, but they were not ready. Asking for state resync, just in case.", MessageType.Warning);
 				new RequestStateResyncMessage().Send();
@@ -147,7 +150,11 @@ public static class ReaderWriterExtensions
 	private static QSBMessage ReadQSBMessage(this NetworkReader reader)
 	{
 		var id = reader.ReadUShort();
-		var type = QSBMessageManager._types[id];
+		if (!QSBMessageManager._types.TryGetValue(id, out var type))
+		{
+			DebugLog.DebugWrite($"unknown QSBMessage type with id {id}", MessageType.Error);
+			return null;
+		}
 		var msg = (QSBMessage)FormatterServices.GetUninitializedObject(type);
 		msg.Deserialize(reader);
 		return msg;
@@ -156,8 +163,8 @@ public static class ReaderWriterExtensions
 	private static void WriteQSBMessage(this NetworkWriter writer, QSBMessage msg)
 	{
 		var type = msg.GetType();
-		var id = QSBMessageManager._typeToId[type];
-		writer.Write(id);
+		var id = (ushort)type.FullName.GetStableHashCode();
+		writer.WriteUShort(id);
 		msg.Serialize(writer);
 	}
 }
