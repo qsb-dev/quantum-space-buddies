@@ -19,14 +19,14 @@ public static class QSBMessageManager
 {
 	#region inner workings
 
-	internal static readonly Dictionary<ushort, Type> _types = new();
+	internal static readonly Dictionary<int, Type> _types = new();
 
 	static QSBMessageManager()
 	{
 		foreach (var type in typeof(QSBMessage).GetDerivedTypes())
 		{
-			var id = (ushort)type.FullName.GetStableHashCode();
-			_types.Add(id, type);
+			var hash = type.FullName.GetStableHashCode();
+			_types.Add(hash, type);
 			// call static constructor of message if needed
 			RuntimeHelpers.RunClassConstructor(type.TypeHandle);
 		}
@@ -149,10 +149,10 @@ public static class ReaderWriterExtensions
 {
 	private static QSBMessage ReadQSBMessage(this NetworkReader reader)
 	{
-		var id = reader.ReadUShort();
-		if (!QSBMessageManager._types.TryGetValue(id, out var type))
+		var hash = reader.ReadInt();
+		if (!QSBMessageManager._types.TryGetValue(hash, out var type))
 		{
-			DebugLog.DebugWrite($"unknown QSBMessage type with id {id}", MessageType.Error);
+			DebugLog.DebugWrite($"unknown QSBMessage type with hash {hash}", MessageType.Error);
 			return null;
 		}
 		var msg = (QSBMessage)FormatterServices.GetUninitializedObject(type);
@@ -163,8 +163,8 @@ public static class ReaderWriterExtensions
 	private static void WriteQSBMessage(this NetworkWriter writer, QSBMessage msg)
 	{
 		var type = msg.GetType();
-		var id = (ushort)type.FullName.GetStableHashCode();
-		writer.WriteUShort(id);
+		var hash = type.FullName.GetStableHashCode();
+		writer.WriteInt(hash);
 		msg.Serialize(writer);
 	}
 }

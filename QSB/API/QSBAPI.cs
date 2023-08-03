@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Mirror;
+using OWML.Common;
 using QSB.API.Messages;
 using QSB.Messaging;
 using QSB.Player;
@@ -30,10 +31,10 @@ public class QSBAPI : IQSBAPI
 	public T GetCustomData<T>(uint playerId, string key) => QSBPlayerManager.GetPlayer(playerId).GetCustomData<T>(key);
 
 	public void SendMessage<T>(string messageType, T data, uint to = uint.MaxValue, bool receiveLocally = false)
-		=> new AddonDataMessage(messageType, data, receiveLocally) { To = to }.Send();
+		=> new AddonDataMessage(messageType.GetStableHashCode(), data, receiveLocally) { To = to }.Send();
 
 	public void RegisterHandler<T>(string messageType, Action<uint, T> handler)
-		=> AddonDataManager.RegisterHandler(messageType, handler);
+		=> AddonDataManager.RegisterHandler(messageType.GetStableHashCode(), handler);
 }
 
 internal static class QSBAPIEvents

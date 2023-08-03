@@ -3,9 +3,9 @@ using QSB.Utility;
 
 namespace QSB.API.Messages;
 
-public class AddonDataMessage : QSBMessage<(string messageType, byte[] data, bool receiveLocally)>
+public class AddonDataMessage : QSBMessage<(int hash, byte[] data, bool receiveLocally)>
 {
-	public AddonDataMessage(string messageType, object data, bool receiveLocally) : base((messageType, data.ToBytes(), receiveLocally)) { }
+	public AddonDataMessage(int hash, object data, bool receiveLocally) : base((hash, data.ToBytes(), receiveLocally)) { }
 
 	public override void OnReceiveLocal()
 	{
@@ -18,6 +18,6 @@ public class AddonDataMessage : QSBMessage<(string messageType, byte[] data, boo
 	public override void OnReceiveRemote()
 	{
 		var obj = Data.data.ToObject();
-		AddonDataManager.OnReceiveDataMessage(Data.messageType, obj, From);
+		AddonDataManager.OnReceiveDataMessage(Data.hash, obj, From);
 	}
 }
