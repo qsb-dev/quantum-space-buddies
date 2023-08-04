@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using QSB.API.Messages;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Messages;
 using QSB.Messaging;
@@ -50,5 +51,11 @@ public class RequestStateResyncMessage : QSBMessage
 		}
 
 		new PlayerInformationMessage { To = From }.Send();
+
+		// Initial sync of all custom data from APIs
+		foreach (var kvp in QSBPlayerManager.LocalPlayer._customData)
+		{
+			new AddonCustomDataSyncMessage(QSBPlayerManager.LocalPlayerId, kvp.Key, kvp.Value) { To = From }.Send();
+		}
 	}
 }

@@ -1,10 +1,12 @@
 ﻿using OWML.Common;
 using QSB.Animation.Player;
+using QSB.API.Messages;
 using QSB.Audio;
 using QSB.ClientServerStateSync;
 using QSB.HUD;
 using QSB.Messaging;
 using QSB.ModelShip;
+using QSB.Patches;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.QuantumSync.WorldObjects;
@@ -179,10 +181,18 @@ public partial class PlayerInfo
 		HUDBox.OnRespawn();
 	}
 
-	private Dictionary<string, object> _customData = new();
+	// internal for RequestStateResyncMessage
+	internal readonly Dictionary<string, object> _customData = new();
 
 	public void SetCustomData<T>(string key, T data)
-		=> _customData[key] = data;
+	{
+		_customData[key] = data;
+
+		if (!QSBPatch.Remote)
+		{
+			new AddonCustomDataSyncMessage(PlayerId, key, data).Send();
+		}
+	}
 
 	public T GetCustomData<T>(string key)
 	{

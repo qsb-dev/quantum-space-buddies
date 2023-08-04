@@ -4,8 +4,10 @@ using OWML.Common;
 using QSB.Player;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -235,6 +237,29 @@ public static class Extensions
 		}
 
 		return sb.ToString();
+	}
+
+	/// <summary>
+	/// only works for c# serializable objects
+	/// </summary>
+	public static byte[] ToBytes(this object obj)
+	{
+		using var ms = new MemoryStream();
+		var bf = new BinaryFormatter();
+		bf.Serialize(ms, obj);
+		var bytes = ms.ToArray();
+		return bytes;
+	}
+
+	/// <summary>
+	/// only works for c# serializable objects
+	/// </summary>
+	public static object ToObject(this byte[] bytes)
+	{
+		using var ms = new MemoryStream(bytes);
+		var bf = new BinaryFormatter();
+		var obj = bf.Deserialize(ms);
+		return obj;
 	}
 
 	#endregion

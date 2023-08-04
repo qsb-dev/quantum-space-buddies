@@ -645,6 +645,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 				}
 
 				LoadGame(PlayerData.GetWarpedToTheEye());
+				// wait until scene load and then wait until Start has ran
 				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 			};
 
@@ -655,6 +656,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 		else
 		{
 			LoadGame(PlayerData.GetWarpedToTheEye());
+			// wait until scene load and then wait until Start has ran
 			Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 		}
 	}
