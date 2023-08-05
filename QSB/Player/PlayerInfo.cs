@@ -188,7 +188,7 @@ public partial class PlayerInfo
 	{
 		_customData[key] = data;
 
-		if (!QSBPatch.Remote)
+		if (!QSBPatch.Remote && typeof(T).IsSerializable)
 		{
 			new AddonCustomDataSyncMessage(PlayerId, key, data).Send();
 		}
