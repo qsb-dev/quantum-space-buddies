@@ -110,7 +110,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 
 - [Chris Yeninas](https://github.com/PhantomGamers) - Help with project files and GitHub workflows.
 - [Tlya](https://github.com/Tllya) - Russian translation.
-- [Xen](https://github.com/xen-42) - French translation, and help with particle effects and sounds.
+- [xen](https://github.com/xen-42) - French translation, and help with syncing particle/sound effects, fixing lantern item bugs, and syncing addon data.
 - [ShoosGun](https://github.com/ShoosGun) - Portuguese translation.
 - [DertolleDude](https://github.com/DertolleDude) - German translation.
 - [SakuradaYuki](https://github.com/SakuradaYuki) - Chinese translation.
