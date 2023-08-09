@@ -56,7 +56,7 @@ public interface IQSBAPI
 	/// <summary>
 	/// Sets some arbitrary data for a given player.
 	/// </summary>
-	/// <typeparam name="T">The type of the data.</typeparam>
+	/// <typeparam name="T">The type of the data. If not serializable, data will not be synced.</typeparam>
 	/// <param name="playerId">The ID of the player.</param>
 	/// <param name="key">The unique key to access this data by.</param>
 	/// <param name="data">The data to set.</param>
