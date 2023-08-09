@@ -242,7 +242,9 @@ public class QSBCore : ModBehaviour
 
 		foreach (var type in addonAssembly.GetTypes())
 		{
-			if (typeof(WorldObjectManager).IsAssignableFrom(type) || typeof(IWorldObject).IsAssignableFrom(type))
+			if (typeof(WorldObjectManager).IsAssignableFrom(type) ||
+				typeof(IWorldObject).IsAssignableFrom(type) ||
+				typeof(NetworkBehaviour).IsAssignableFrom(type))
 			{
 				DebugLog.ToConsole($"Addon \"{uniqueName}\" cannot be cosmetic, as it creates networking objects.", MessageType.Error);
 				return;
