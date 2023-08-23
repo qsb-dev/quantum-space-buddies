@@ -14,7 +14,7 @@ public static class AddonDataManager
 		if (!_handlers.TryGetValue(hash, out var handler))
 		{
 			DebugLog.DebugWrite($"unknown addon message type with hash {hash}", MessageType.Error);
-			return;
+			return; // test
 		}
 		handler(from, data);
 	}
