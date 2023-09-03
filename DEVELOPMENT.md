@@ -65,7 +65,7 @@ Hold Q and press :
 
 ### Debug Settings :
 
-Create a file called `debugsettings.json` in the qsb folder.
+Create a file called `debugsettings.json` in the QSB folder.
 The template for this file is this :
 
 ```json
