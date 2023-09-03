@@ -9,7 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" />
-    <PackageReference Include="OWML" Version="2.9.5" />
+    <PackageReference Include="OWML" Version="2.9.7" />
     <Reference Include="../Mirror/*.dll" />
   </ItemGroup>
   <ItemGroup>
