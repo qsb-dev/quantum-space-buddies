@@ -9,6 +9,7 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -41,6 +42,9 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	public static Sprite WhiteHole;
 
 	public static readonly ListStack<HUDIcon> HUDIconStack = new(true);
+
+	public class ChatEvent : UnityEvent<string, uint> { }
+	public static readonly ChatEvent OnChatMessageEvent = new();
 
 	private void Start()
 	{
@@ -87,7 +91,8 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	// perks of being a qsb dev :-)
 	public void WriteSystemMessage(string message, Color color)
 	{
-		WriteMessage(message, color);
+		WriteMessage($"QSB: {message}", color);
+		OnChatMessageEvent.Invoke(message, uint.MaxValue);
 	}
 
 	public void WriteMessage(string message, Color color)

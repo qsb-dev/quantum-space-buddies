@@ -23,6 +23,7 @@ public class APITestMod : ModBehaviour
 
 			qsbAPI.OnPlayerJoin().AddListener((uint playerId) => ModHelper.Console.WriteLine($"{playerId} joined the game!", MessageType.Success));
 			qsbAPI.OnPlayerLeave().AddListener((uint playerId) => ModHelper.Console.WriteLine($"{playerId} left the game!", MessageType.Success));
+			qsbAPI.OnChatMessage().AddListener((string message, uint from) => ModHelper.Console.WriteLine($"Chat message \"{message}\" from {from} ({(from == uint.MaxValue ? "QSB" : qsbAPI.GetPlayerName(from))})"));
 
 			button.onClick.AddListener(() =>
 			{
@@ -52,6 +53,9 @@ public class APITestMod : ModBehaviour
 				ModHelper.Console.WriteLine("Sending float message test...");
 				qsbAPI.RegisterHandler<float>("apitest-float", MessageHandler);
 				qsbAPI.SendMessage("apitest-float", 3.14f, receiveLocally: true);
+
+				qsbAPI.SendChatMessage("Non-system chat message", false, Color.white);
+				qsbAPI.SendChatMessage("System chat message", true, Color.cyan);
 			});
 		};
 	}
