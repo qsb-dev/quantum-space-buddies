@@ -25,6 +25,10 @@ public class APITestMod : ModBehaviour
 			qsbAPI.OnPlayerLeave().AddListener((uint playerId) => ModHelper.Console.WriteLine($"{playerId} left the game!", MessageType.Success));
 			qsbAPI.OnChatMessage().AddListener((string message, uint from) => ModHelper.Console.WriteLine($"Chat message \"{message}\" from {from} ({(from == uint.MaxValue ? "QSB" : qsbAPI.GetPlayerName(from))})"));
 
+			qsbAPI.RegisterHandler<string>("apitest-string", MessageHandler);
+			qsbAPI.RegisterHandler<int>("apitest-int", MessageHandler);
+			qsbAPI.RegisterHandler<float>("apitest-float", MessageHandler);
+
 			button.onClick.AddListener(() =>
 			{
 				ModHelper.Console.WriteLine("TESTING QSB API!");
@@ -43,15 +47,12 @@ public class APITestMod : ModBehaviour
 				ModHelper.Console.WriteLine($"Retreiving custom data : {qsbAPI.GetCustomData<string>(qsbAPI.GetLocalPlayerID(), "APITEST.TESTSTRING")}");
 
 				ModHelper.Console.WriteLine("Sending string message test...");
-				qsbAPI.RegisterHandler<string>("apitest-string", MessageHandler);
 				qsbAPI.SendMessage("apitest-string", "STRING MESSAGE", receiveLocally: true);
 
 				ModHelper.Console.WriteLine("Sending int message test...");
-				qsbAPI.RegisterHandler<int>("apitest-int", MessageHandler);
 				qsbAPI.SendMessage("apitest-int", 123, receiveLocally: true);
 
 				ModHelper.Console.WriteLine("Sending float message test...");
-				qsbAPI.RegisterHandler<float>("apitest-float", MessageHandler);
 				qsbAPI.SendMessage("apitest-float", 3.14f, receiveLocally: true);
 
 				qsbAPI.SendChatMessage("Non-system chat message", false, Color.white);
