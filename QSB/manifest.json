@@ -1,4 +1,5 @@
 {
+	"$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/manifest_schema.json",
 	"filename": "QSB.dll",
 	"author": "Nebula, John, Alek, & Rai",
 	"name": "Quantum Space Buddies",
