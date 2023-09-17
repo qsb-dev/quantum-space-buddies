@@ -5,7 +5,10 @@ using QSB.Messaging;
 using QSB.Player;
 using System;
 using System.Linq;
+using QSB.HUD;
+using QSB.HUD.Messages;
 using UnityEngine.Events;
+using UnityEngine;
 
 namespace QSB.API;
 
@@ -35,6 +38,17 @@ public class QSBAPI : IQSBAPI
 
 	public void RegisterHandler<T>(string messageType, Action<uint, T> handler)
 		=> AddonDataManager.RegisterHandler(messageType.GetStableHashCode(), handler);
+
+	public UnityEvent<string, uint> OnChatMessage() => MultiplayerHUDManager.OnChatMessageEvent;
+
+	public void SendChatMessage(string message, bool systemMessage, Color color)
+	{
+		var fromName = systemMessage
+			? "QSB"
+			: QSBPlayerManager.LocalPlayer.Name;
+
+		new ChatMessage($"{fromName}: {message}", color).Send();
+	}
 }
 
 internal static class QSBAPIEvents

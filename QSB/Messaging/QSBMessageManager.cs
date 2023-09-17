@@ -93,6 +93,11 @@ public static class QSBMessageManager
 
 	private static void OnClientReceive(QSBMessage msg)
 	{
+		if (msg == null)
+		{
+			return;
+		}
+
 		if (PlayerTransformSync.LocalInstance == null)
 		{
 			DebugLog.ToConsole($"Warning - Tried to handle message {msg} before local player was established.", MessageType.Warning);

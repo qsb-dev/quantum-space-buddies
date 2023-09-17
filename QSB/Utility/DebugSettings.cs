@@ -29,6 +29,9 @@ public class DebugSettings
 	[JsonProperty("disableLoopDeath")]
 	public bool DisableLoopDeath;
 
+	[JsonProperty("latencySimulation")]
+	public int LatencySimulation;
+
 	[JsonProperty("debugMode")]
 	public bool DebugMode;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using OWML.Common;
+using UnityEngine;
 using UnityEngine.Events;
 
 public interface IQSBAPI
@@ -55,10 +56,8 @@ public interface IQSBAPI
 
 	/// <summary>
 	/// Sets some arbitrary data for a given player.
-	///
-	/// Not synced.
 	/// </summary>
-	/// <typeparam name="T">The type of the data.</typeparam>
+	/// <typeparam name="T">The type of the data. If not serializable, data will not be synced.</typeparam>
 	/// <param name="playerId">The ID of the player.</param>
 	/// <param name="key">The unique key to access this data by.</param>
 	/// <param name="data">The data to set.</param>
@@ -66,8 +65,6 @@ public interface IQSBAPI
 
 	/// <summary>
 	/// Returns some arbitrary data from a given player.
-	///
-	/// Not synced.
 	/// </summary>
 	/// <typeparam name="T">The type of the data.</typeparam>
 	/// <param name="playerId">The ID of the player.</param>
@@ -98,6 +95,25 @@ public interface IQSBAPI
 	/// <param name="messageType">The unique key of the message.</param>
 	/// <param name="handler">The action to be ran when the message is received. The uint is the player ID that sent the messsage.</param>
 	void RegisterHandler<T>(string messageType, Action<uint, T> handler);
+
+	#endregion
+
+	#region Chat
+
+	/// <summary>
+	/// Invoked when a chat message is received.
+	/// The string is the message body.
+	/// The uint is the player who sent the message. If it's a system message, this is uint.MaxValue.
+	/// </summary>
+	UnityEvent<string, uint> OnChatMessage();
+
+	/// <summary>
+	/// Sends a message in chat.
+	/// </summary>
+	/// <param name="message">The text of the message.</param>
+	/// <param name="systemMessage">If false, the message is sent as if the local player wrote it manually. If true, the message has no player attached to it, like the player join messages.</param>
+	/// <param name="color">The color of the message.</param>
+	void SendChatMessage(string message, bool systemMessage, Color color);
 
 	#endregion
 }

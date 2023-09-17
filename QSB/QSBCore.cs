@@ -291,7 +291,7 @@ public class QSBCore : ModBehaviour
 
 	/// <summary>
 	/// Registers an addon that shouldn't be considered for hash checks when joining.
-	/// This addon MUST NOT send any network messages, or create any worldobjects.
+	/// This addon MUST NOT create any WorldObjects or NetworkBehaviours.
 	/// </summary>
 	/// <param name="addon">The behaviour of the addon.</param>
 	public static void RegisterNotRequiredForAllPlayers(IModBehaviour addon)
@@ -301,7 +301,9 @@ public class QSBCore : ModBehaviour
 
 		foreach (var type in addonAssembly.GetTypes())
 		{
-			if (typeof(WorldObjectManager).IsAssignableFrom(type) || typeof(IWorldObject).IsAssignableFrom(type))
+			if (typeof(WorldObjectManager).IsAssignableFrom(type) ||
+				typeof(IWorldObject).IsAssignableFrom(type) ||
+				typeof(NetworkBehaviour).IsAssignableFrom(type))
 			{
 				DebugLog.ToConsole($"Addon \"{uniqueName}\" cannot be cosmetic, as it creates networking objects.", MessageType.Error);
 				return;

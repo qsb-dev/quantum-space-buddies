@@ -68,6 +68,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 	private (TransportError error, string reason) _lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
 
+	private static LatencySimulation _latencyTransport;
 	private static kcp2k.KcpTransport _kcpTransport;
 	private static FizzySteamworks _steamTransport;
 
@@ -83,7 +84,15 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			_steamTransport = gameObject.AddComponent<FizzySteamworks>();
 		}
 
-		transport = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
+		{
+			_latencyTransport = gameObject.AddComponent<LatencySimulation>();
+			_latencyTransport.reliableLatency = _latencyTransport.unreliableLatency = QSBCore.DebugSettings.LatencySimulation;
+			_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
+		}
+
+		transport = QSBCore.DebugSettings.LatencySimulation > 0
+			? _latencyTransport
+			: QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 
 		gameObject.SetActive(true);
 
@@ -152,10 +161,20 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			return;
 		}
+
 		if (singleton != null)
 		{
-			singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
+			if (QSBCore.DebugSettings.LatencySimulation > 0)
+			{
+				_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
+				singleton.transport = Transport.active = _latencyTransport;
+			}
+			else
+			{
+				singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
+			}
 		}
+
 		if (MenuManager.Instance != null)
 		{
 			MenuManager.Instance.OnLanguageChanged(); // hack to update text
