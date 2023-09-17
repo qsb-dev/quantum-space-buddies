@@ -12,6 +12,7 @@ using QSB.WorldSync;
 using System;
 using System.Collections;
 using System.Linq;
+using QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,7 +20,7 @@ namespace QSB.Utility;
 
 public class DebugActions : MonoBehaviour, IAddComponentOnStart
 {
-	public static Type WorldObjectSelection = typeof(QSBSocketedQuantumObject);
+	public static Type WorldObjectSelection = typeof(QSBRaft);
 
 	private static void GoToVessel()
 	{

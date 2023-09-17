@@ -52,4 +52,9 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 			NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Force);
 		}
 	}
+
+	public override string ReturnLabel()
+	{
+		return $"ID:{ObjectId}\r\nIsDockedOrDocking:{AttachedObject.IsDockingOrDocked()}\r\nGetLocalAcceleration:{AttachedObject.GetLocalAcceleration()}";
+	}
 }
