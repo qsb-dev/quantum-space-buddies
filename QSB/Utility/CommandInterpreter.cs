@@ -1,8 +1,8 @@
-﻿using EpicTransport;
-using QSB.HUD;
+﻿using QSB.HUD;
 using QSB.Messaging;
 using QSB.ShipSync.Messages;
 using QSB.WorldSync;
+using Steamworks;
 using System.Linq;
 using UnityEngine;
 
@@ -51,7 +51,7 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 		}
 
 		var productUserID = QSBCore.IsHost
-			? EOSSDKComponent.LocalUserProductIdString
+			? SteamUser.GetSteamID().ToString()
 			: QSBNetworkManager.singleton.networkAddress;
 
 		GUIUtility.systemCopyBuffer = productUserID;
