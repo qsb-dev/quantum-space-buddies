@@ -49,6 +49,7 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 	{
 		if (AttachedObject.IsPlayerRiding())
 		{
+			// force ownership to mask latency
 			NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Force);
 		}
 	}

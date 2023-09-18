@@ -132,6 +132,8 @@ public class LightSensorPatches : QSBPatch
 		UpdateLocalIllumination(__instance);
 		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
 		{
+			// force ownership to mask latency
+			qsbLightSensor.ForceOwnership();
 			qsbLightSensor.OnDetectLocalLight?.Invoke();
 		}
 		else if (locallyIlluminated && !qsbLightSensor._locallyIlluminated)
