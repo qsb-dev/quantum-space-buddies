@@ -15,8 +15,6 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 {
 	IItemDropTarget IQSBDropTarget.AttachedObject => AttachedObject;
 
-	public override bool ShouldDisplayDebug() => false;
-
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.RaftPrefab;
 	protected override bool SpawnWithServerOwnership => false;
 
