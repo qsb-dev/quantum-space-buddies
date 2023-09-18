@@ -8,7 +8,7 @@ public static class IOwnedWorldObject_Extensions
 	/// <summary>
 	/// try and gain ownership over the object
 	///
-	/// does nothing if object we cant own this object or there is already another owner
+	/// does nothing if we cant own this object or there is already another owner
 	/// </summary>
 	public static void RequestOwnership(this IOwnedWorldObject @this)
 	{
