@@ -81,11 +81,6 @@ public static class OwnershipManager
 
 	public static void UpdateOwnerQueue(this NetworkIdentity identity, OwnerQueueAction action)
 	{
-		if (action == OwnerQueueAction.Force && identity.isOwned)
-		{
-			return;
-		}
-
 		new OwnerQueueMessage(identity.netId, action).Send();
 	}
 

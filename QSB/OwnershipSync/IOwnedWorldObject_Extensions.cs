@@ -25,15 +25,9 @@ public static class IOwnedWorldObject_Extensions
 
 	/// <summary>
 	/// forcibly gain ownership over the object
-	///
-	/// does nothing if you already own this
 	/// </summary>
 	public static void ForceOwnership(this IOwnedWorldObject @this)
 	{
-		if (@this.Owner == QSBPlayerManager.LocalPlayerId)
-		{
-			return;
-		}
 		@this.SendMessage(new OwnedWorldObjectMessage(QSBPlayerManager.LocalPlayerId));
 	}
 
