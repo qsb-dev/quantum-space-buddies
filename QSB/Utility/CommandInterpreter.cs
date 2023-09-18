@@ -26,7 +26,7 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 				ShipCommand(commandParts.Skip(1).ToArray());
 				break;
 			case "copy-id":
-				CopyProductUserID();
+				CopySteamID();
 				break;
 			default:
 				WriteToChat($"Unknown command \"{command}\".", Color.red);
@@ -42,7 +42,7 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 		MultiplayerHUDManager.Instance.WriteMessage(message, color);
 	}
 
-	public static void CopyProductUserID()
+	public static void CopySteamID()
 	{
 		if (QSBCore.UseKcpTransport)
 		{
@@ -50,12 +50,12 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		var productUserID = QSBCore.IsHost
+		var steamID = QSBCore.IsHost
 			? SteamUser.GetSteamID().ToString()
 			: QSBNetworkManager.singleton.networkAddress;
 
-		GUIUtility.systemCopyBuffer = productUserID;
-		WriteToChat($"Copied {productUserID} to the clipboard.", Color.green);
+		GUIUtility.systemCopyBuffer = steamID;
+		WriteToChat($"Copied {steamID} to the clipboard.", Color.green);
 	}
 
 	public static void ShipCommand(string[] arguments)
