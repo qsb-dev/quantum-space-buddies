@@ -35,13 +35,15 @@ Spoilers within!
 #### Connecting to a server
 
 - On the title screen, click the option `CONNECT TO MULTIPLAYER`.
-- Enter the Product User ID of the person you are trying to connect to.
+- Enter the Steam ID of the person you are trying to connect to.
+    - If "Use KCP Transport" is enabled, enter the public IP address of the person instead.
 - Enjoy!
 
 #### Hosting a server
 
 - On the title screen, click the option `OPEN TO MULTIPLAYER`.
-- Share your Product User ID with the people who want to connect.
+- Share your Steam ID with the people who want to connect.
+    - If "Use KCP Transport" is enabled, share your public IP address instead. This can be found on websites like https://www.whatismyip.com/.
 - Enjoy!
 
 ## Frequently Asked Questions
