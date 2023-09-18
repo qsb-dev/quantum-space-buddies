@@ -10,28 +10,6 @@ public class OwnedWorldObjectMessage : QSBWorldObjectMessage<IOwnedWorldObject, 
 {
 	public OwnedWorldObjectMessage(uint owner) : base(owner) { }
 
-	public override bool ShouldReceive
-	{
-		get
-		{
-			if (!base.ShouldReceive)
-			{
-				return false;
-			}
-
-			// Deciding if to change the object's owner
-			//		  Message
-			//	   | = 0 | > 0 |
-			// = 0 | No  | Yes |
-			// > 0 | Yes | No  |
-			// if Obj==Message then No
-			// Obj
-
-			// ie if no owner, or we're trying to release ownership, and we're actually changing who the owner is
-			return (WorldObject.Owner == 0 || Data == 0) && WorldObject.Owner != Data;
-		}
-	}
-
 	public override void OnReceiveLocal() => WorldObject.Owner = Data;
 
 	public override void OnReceiveRemote()
