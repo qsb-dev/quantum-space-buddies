@@ -46,7 +46,7 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 	{
 		if (QSBCore.UseKcpTransport)
 		{
-			WriteToChat($"Cannot get Product User ID for KCP-hosted server.", Color.red);
+			WriteToChat($"Cannot get Steam ID for KCP-hosted server.", Color.red);
 			return;
 		}
 
