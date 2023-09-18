@@ -33,6 +33,7 @@ public abstract class OwnedWorldObject<T> : WorldObject<T>, IOwnedWorldObject
 		}
 		if (Owner == player.PlayerId)
 		{
+			// put CanOwn check here cuz it only does the thingy in OnReceiveRemote and we want to be able to own this
 			((IOwnedWorldObject)this).SendMessage(new OwnedWorldObjectMessage(CanOwn ? QSBPlayerManager.LocalPlayerId : 0));
 		}
 	}

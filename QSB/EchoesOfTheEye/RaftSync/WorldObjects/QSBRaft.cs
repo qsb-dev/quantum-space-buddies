@@ -15,8 +15,6 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 {
 	IItemDropTarget IQSBDropTarget.AttachedObject => AttachedObject;
 
-	public override bool ShouldDisplayDebug() => false;
-
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.RaftPrefab;
 	protected override bool SpawnWithServerOwnership => false;
 
@@ -49,7 +47,13 @@ public class QSBRaft : LinkedWorldObject<RaftController, RaftTransformSync>, IQS
 	{
 		if (AttachedObject.IsPlayerRiding())
 		{
+			// force ownership to mask latency
 			NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Force);
 		}
+	}
+
+	public override string ReturnLabel()
+	{
+		return $"ID:{ObjectId}\r\nIsDockedOrDocking:{AttachedObject.IsDockingOrDocked()}\r\nGetLocalAcceleration:{AttachedObject.GetLocalAcceleration()}";
 	}
 }

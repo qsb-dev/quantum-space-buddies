@@ -1,6 +1,6 @@
 ﻿using Epic.OnlineServices.Logging;
-using EpicTransport;
 using Mirror;
+using Mirror.FizzySteam;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -70,7 +70,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 	private static LatencySimulation _latencyTransport;
 	private static kcp2k.KcpTransport _kcpTransport;
-	private static EosTransport _eosTransport;
+	private static FizzySteamworks _steamTransport;
 
 	public override void Awake()
 	{
@@ -81,32 +81,18 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		}
 
 		{
-			// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
-			var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
-			eosApiKey.epicProductName = "QSB";
-			eosApiKey.epicProductVersion = "1.0";
-			eosApiKey.epicProductId = "d4623220acb64419921c72047931b165";
-			eosApiKey.epicSandboxId = "d9bc4035269747668524931b0840ca29";
-			eosApiKey.epicDeploymentId = "1f164829371e4cdcb23efedce98d99ad";
-			eosApiKey.epicClientId = "xyza7891TmlpkaiDv6KAnJH0f07aAbTu";
-			eosApiKey.epicClientSecret = "ft17miukylHF877istFuhTgq+Kw1le3Pfigvf9Dtu20";
-
-			var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
-			eosSdkComponent.apiKeys = eosApiKey;
-			eosSdkComponent.epicLoggerLevel = LogLevel.VeryVerbose;
-
-			_eosTransport = gameObject.AddComponent<EosTransport>();
+			_steamTransport = gameObject.AddComponent<FizzySteamworks>();
 		}
 
 		{
 			_latencyTransport = gameObject.AddComponent<LatencySimulation>();
 			_latencyTransport.reliableLatency = _latencyTransport.unreliableLatency = QSBCore.DebugSettings.LatencySimulation;
-			_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+			_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 		}
 
 		transport = QSBCore.DebugSettings.LatencySimulation > 0
 			? _latencyTransport
-			: QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+			: QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 
 		gameObject.SetActive(true);
 
@@ -180,12 +166,12 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			if (QSBCore.DebugSettings.LatencySimulation > 0)
 			{
-				_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+				_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 				singleton.transport = Transport.active = _latencyTransport;
 			}
 			else
 			{
-				singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+				singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 			}
 		}
 
@@ -222,10 +208,6 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			{
 				DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 				PlayerName = "Player";
-			}
-
-			{
-				EOSSDKComponent.DisplayName = PlayerName;
 			}
 		});
 
@@ -268,7 +250,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 				// hack
 				if (s == "KcpPeer: received disconnect message")
 				{
-					OnClientError(TransportError.ConnectionClosed, "host disconnected");
+					OnClientError(TransportError.ConnectionClosed, s);
 				}
 			};
 			kcp2k.Log.Warning = s => DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);

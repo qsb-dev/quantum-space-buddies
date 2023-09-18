@@ -9,6 +9,7 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -23,7 +24,6 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	private Transform _textChat;
 	private InputField _inputField;
 	private Material _markerMaterial;
-	private bool _ready;
 
 	public static Sprite UnknownSprite;
 	public static Sprite DeadSprite;
@@ -41,6 +41,9 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	public static Sprite WhiteHole;
 
 	public static readonly ListStack<HUDIcon> HUDIconStack = new(true);
+
+	public class ChatEvent : UnityEvent<string, uint> { }
+	public static readonly ChatEvent OnChatMessageEvent = new();
 
 	private void Start()
 	{
@@ -65,11 +68,6 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		Interloper = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_interloper.png");
 		WhiteHole = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_whitehole.png");
 		SpaceSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_space.png");
-
-		QSBSceneManager.OnPostSceneLoad += (OWScene old, OWScene newScene) =>
-		{
-			_ready = false;
-		};
 	}
 
 	private const int LINE_COUNT = 11;
@@ -87,13 +85,13 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	// perks of being a qsb dev :-)
 	public void WriteSystemMessage(string message, Color color)
 	{
-		WriteMessage(message, color);
+		WriteMessage($"QSB: {message}", color);
+		OnChatMessageEvent.Invoke(message, uint.MaxValue);
 	}
 
 	public void WriteMessage(string message, Color color)
 	{
-		// dont write messages when not ready
-		if (!_ready)
+		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
@@ -327,8 +325,6 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		_lines.Clear();
 		_messages.Clear();
 		_textChat.GetComponent<CanvasGroup>().alpha = 0;
-
-		_ready = true;
 	}
 
 	public void UpdateMinimapMarkers(Minimap minimap)

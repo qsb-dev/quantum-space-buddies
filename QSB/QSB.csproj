@@ -2,7 +2,13 @@
   <PropertyGroup>
     <AssemblyTitle>Quantum Space Buddies</AssemblyTitle>
     <Product>Quantum Space Buddies</Product>
+    <Title>Quantum Space Buddies</Title>
     <Description>Multiplayer mod for Outer Wilds</Description>
+    <Authors>Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes</Authors>
+    <Company>Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes</Company>
+    <Copyright>Copyright © Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes 2020-2023</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\Raicuparta.QuantumSpaceBuddies</OutputPath>
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
@@ -21,11 +27,6 @@
 
   <PropertyGroup>
     <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Title>Quantum Space Buddies</Title>
-    <Authors>Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes</Authors>
-    <Copyright>Copyright © Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes 2020-2023</Copyright>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)')">
     <ItemGroup>
@@ -45,6 +46,8 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="default-config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -69,11 +72,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.9.5" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.9.7" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
-    <ProjectReference Include="..\EpicOnlineTransport\EpicOnlineTransport.csproj" />
-    <ProjectReference Include="..\EpicRerouter\EpicRerouter.csproj" />
+    <ProjectReference Include="..\FizzySteamworks\FizzySteamworks.csproj" />
+    <ProjectReference Include="..\SteamRerouter\SteamRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>

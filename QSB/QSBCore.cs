@@ -11,6 +11,7 @@ using QSB.SaveSync;
 using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -114,13 +115,13 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"FATAL - Could not determine game vendor.", MessageType.Fatal);
 		}
 
-		DebugLog.DebugWrite($"Determined game vendor as {GameVendor}", MessageType.Info);
+		DebugLog.ToConsole($"Determined game vendor as {GameVendor}", MessageType.Info);
 	}
+
+	private bool _steamworksInitialized;
 
 	public void Awake()
 	{
-		EpicRerouter.ModSide.Interop.Go();
-
 		// no, we cant localize this - languages are loaded after the splash screen
 		UIHelper.ReplaceUI(UITextType.PleaseUseController,
 			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
@@ -129,6 +130,86 @@ public class QSBCore : ModBehaviour
 
 		QSBPatchManager.Init();
 		QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
+
+		if (GameVendor != GameVendor.Steam)
+		{
+			DebugLog.DebugWrite($"Not steam, initializing Steamworks...");
+
+			if (!Packsize.Test())
+			{
+				DebugLog.ToConsole("[Steamworks.NET] Packsize Test returned false, the wrong version of Steamworks.NET is being run in this platform.", MessageType.Error);
+			}
+
+			if (!DllCheck.Test())
+			{
+				DebugLog.ToConsole("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.", MessageType.Error);
+			}
+
+			// from facepunch.steamworks SteamClient.cs
+			// Normally, Steam sets these env vars when launching the game through the Steam library.
+			// These would also be set when running the .exe directly, thanks to Steam's "DRM" in the exe.
+			// We're setting these manually to 480 - an AppID that every Steam account owns by default.
+			// This tells Steam and Steamworks that the user is playing a game they own.
+			// This lets anyone use Steamworks, even if they don't own Outer Wilds.
+			// We also don't have to worry about Steam achievements or DLC in this case.
+			Environment.SetEnvironmentVariable("SteamAppId", "480");
+			Environment.SetEnvironmentVariable("SteamGameId", "480");
+
+			if (!SteamAPI.Init())
+			{
+				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.", MessageType.Fatal);
+				return;
+			}
+
+			_steamworksInitialized = true;
+		}
+		else
+		{
+			SteamRerouter.ModSide.Interop.Init();
+
+			DebugLog.DebugWrite($"Is steam - overriding AppID");
+			OverrideAppId();
+		}
+	}
+
+	public void OverrideAppId()
+	{
+		// Normally, Steam sets env vars when launching the game through the Steam library.
+		// These would also be set when running the .exe directly, thanks to Steam's "DRM" in the exe.
+		// However, for Steam players to be able to join non-Steam players, everyone has to be using Steamworks with the same AppID.
+		// At this point, OW has already initialized Steamworks.
+		// Since we handle achievements and DLC ownership in the rerouter, we need to re-initialize Steamworks with the new AppID.
+
+		// (Also, Mobius forgor to change some default Steamworks code, so sometimes these env vars aren't set at all.
+		// In this instance the overlay and achievements also don't work, but we can't fix that here.)
+
+		// reset steamworks instance
+		SteamManager.s_EverInitialized = false;
+		var instance = SteamManager.s_instance;
+		instance.m_bInitialized = false;
+		SteamManager.s_instance = null;
+
+		// Releases pointers and frees memory used by Steam to manage the current game.
+		// Does not unhook the overlay, so we dont have to worry about that :peepoHappy:
+		SteamAPI.Shutdown();
+
+		// Set the env vars to an AppID that everyone owns by default.
+		// from facepunch.steamworks SteamClient.cs
+		Environment.SetEnvironmentVariable("SteamAppId", "480");
+		Environment.SetEnvironmentVariable("SteamGameId", "480");
+
+		// Re-initialize Steamworks.
+		instance.InitializeOnAwake();
+
+		// TODO also reregister hook and gamepad thing or else i think that wont work
+	}
+
+	public void OnDestroy()
+	{
+		if (_steamworksInitialized)
+		{
+			SteamAPI.Shutdown();
+		}
 	}
 
 	public void Start()
@@ -232,7 +313,7 @@ public class QSBCore : ModBehaviour
 
 	/// <summary>
 	/// Registers an addon that shouldn't be considered for hash checks when joining.
-	/// This addon MUST NOT send any network messages, or create any worldobjects.
+	/// This addon MUST NOT create any WorldObjects or NetworkBehaviours.
 	/// </summary>
 	/// <param name="addon">The behaviour of the addon.</param>
 	public static void RegisterNotRequiredForAllPlayers(IModBehaviour addon)
@@ -314,6 +395,11 @@ public class QSBCore : ModBehaviour
 			DebugCameraSettings.UpdateFromDebugSetting();
 
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
+		}
+
+		if (_steamworksInitialized)
+		{
+			SteamAPI.RunCallbacks();
 		}
 	}
 

@@ -1,15 +1,24 @@
 ﻿using Mirror;
 using OWML.Common;
+using QSB.Audio.Messages;
 using QSB.ClientServerStateSync;
 using QSB.ClientServerStateSync.Messages;
+using QSB.GeyserSync.Messages;
+using QSB.MeteorSync.Messages;
+using QSB.OwnershipSync;
 using QSB.Patches;
 using QSB.Player;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
+using QSB.QuantumSync.Messages;
+using QSB.SaveSync.Messages;
+using QSB.TimeSync.Messages;
 using QSB.Utility;
+using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
@@ -20,6 +29,9 @@ public static class QSBMessageManager
 	#region inner workings
 
 	internal static readonly Dictionary<int, Type> _types = new();
+
+	private static string _rxPath;
+	private static string _txPath;
 
 	static QSBMessageManager()
 	{
@@ -36,6 +48,18 @@ public static class QSBMessageManager
 	{
 		NetworkServer.RegisterHandler<Wrapper>((_, wrapper) => OnServerReceive(wrapper));
 		NetworkClient.RegisterHandler<Wrapper>(wrapper => OnClientReceive(wrapper));
+
+		if (!QSBCore.DebugSettings.LogQSBMessages)
+		{
+			return;
+		}
+
+		var time = DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss");
+		_rxPath = Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, $"{time}_rx_log.txt");
+		_txPath = Path.Combine(QSBCore.Helper.Manifest.ModFolderPath, $"{time}_tx_log.txt");
+
+		File.Create(_rxPath);
+		File.Create(_txPath);
 	}
 
 	private static void OnServerReceive(QSBMessage msg)
@@ -103,6 +127,7 @@ public static class QSBMessageManager
 
 			if (msg.From != QSBPlayerManager.LocalPlayerId)
 			{
+				SaveRXTX(msg, false);
 				QSBPatch.Remote = true;
 				msg.OnReceiveRemote();
 				QSBPatch.Remote = false;
@@ -130,6 +155,7 @@ public static class QSBMessageManager
 		}
 
 		msg.From = QSBPlayerManager.LocalPlayerId;
+		SaveRXTX(msg, true);
 		NetworkClient.Send<Wrapper>(msg);
 	}
 
@@ -139,6 +165,42 @@ public static class QSBMessageManager
 	{
 		msg.ObjectId = worldObject.ObjectId;
 		Send(msg);
+	}
+
+	public static void SaveRXTX(QSBMessage msg, bool transmit)
+	{
+		if (!QSBCore.DebugSettings.LogQSBMessages)
+		{
+			return;
+		}
+
+		if (msg 
+			is ServerTimeMessage
+			or SocketStateChangeMessage
+			or OwnerQueueMessage 
+			or GeyserMessage 
+			or MeteorPreLaunchMessage 
+			or MeteorLaunchMessage 
+			or FragmentIntegrityMessage
+			or LinkMessage
+			or ShipLogFactSaveMessage
+			or QuantumOwnershipMessage
+			or PlayerMovementAudioFootstepMessage)
+		{
+			return;
+		}
+
+		var filepath = transmit ? _txPath : _rxPath;
+
+		DebugLog.DebugWrite($"{(transmit ? "TX" : "RX")} {msg.GetType().Name} from:{msg.From} to:{msg.To}");
+
+		var fileLines = File.ReadAllLines(filepath);
+
+		var newlines = new List<string>();
+		newlines.AddRange(fileLines);
+		newlines.Add($"{msg.GetType().Name},{msg.From},{msg.To}");
+
+		File.WriteAllLines(filepath, newlines);
 	}
 }
 
