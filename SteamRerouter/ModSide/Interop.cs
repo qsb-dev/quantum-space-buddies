@@ -19,8 +19,11 @@ public static class Interop
 		Log("init");
 		Harmony.CreateAndPatchAll(typeof(Patches));
 
-		// cache dlc ownership since the patched function gets called often
-		OwnershipStatus = IsDlcOwned() ? EntitlementsManager.AsyncOwnershipStatus.Owned : EntitlementsManager.AsyncOwnershipStatus.NotOwned;
+		// Cache DLC ownership since the patched function gets called often.
+		// This won't work if the player buys the DLC mid-game, but too bad!
+		OwnershipStatus = IsDlcOwned()
+			? EntitlementsManager.AsyncOwnershipStatus.Owned
+			: EntitlementsManager.AsyncOwnershipStatus.NotOwned;
 	}
 
 	public static void Log(object msg) => Debug.Log($"[SteamRerouter] {msg}");
@@ -56,6 +59,7 @@ public static class Interop
 			type.ToString(),
 			arg.ToString()
 		};
+
 		Log($"args = {args.Join()}");
 		var process = Process.Start(new ProcessStartInfo
 		{
@@ -68,6 +72,7 @@ public static class Interop
 			RedirectStandardOutput = true,
 			RedirectStandardError = true
 		});
+
 		if (waitForExit)
 		{
 			process!.WaitForExit();
@@ -78,6 +83,7 @@ public static class Interop
 
 			return process.ExitCode;
 		}
+
 		return -1;
 	}
 }

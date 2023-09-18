@@ -133,7 +133,7 @@ public class QSBCore : ModBehaviour
 
 		if (GameVendor != GameVendor.Steam)
 		{
-			DebugLog.ToConsole($"Not steam, initializing Steamworks...");
+			DebugLog.DebugWrite($"Not steam, initializing Steamworks...");
 
 			if (!Packsize.Test())
 			{
@@ -146,6 +146,12 @@ public class QSBCore : ModBehaviour
 			}
 
 			// from facepunch.steamworks SteamClient.cs
+			// Normally, Steam sets these env vars when launching the game through the Steam library.
+			// These would also be set when running the .exe directly, thanks to Steam's "DRM" in the exe.
+			// We're setting these manually to 480 - an AppID that every Steam account owns by default.
+			// This tells Steam and Steamworks that the user is playing a game they own.
+			// This lets anyone use Steamworks, even if they don't own Outer Wilds.
+			// We also don't have to worry about Steam achievements or DLC in this case.
 			Environment.SetEnvironmentVariable("SteamAppId", "480");
 			Environment.SetEnvironmentVariable("SteamGameId", "480");
 
@@ -161,24 +167,40 @@ public class QSBCore : ModBehaviour
 		{
 			SteamRerouter.ModSide.Interop.Init();
 
-			DebugLog.ToConsole($"Is steam - overriding AppID");
+			DebugLog.DebugWrite($"Is steam - overriding AppID");
 			OverrideAppId();
 		}
 	}
 
 	public void OverrideAppId()
 	{
+		// Normally, Steam sets env vars when launching the game through the Steam library.
+		// These would also be set when running the .exe directly, thanks to Steam's "DRM" in the exe.
+		// However, for Steam players to be able to join non-Steam players, everyone has to be using Steamworks with the same AppID.
+		// At this point, OW has already initialized Steamworks.
+		// Since we handle achievements and DLC ownership in the rerouter, we need to re-initialize Steamworks with the new AppID.
+
+		// (Also, Mobius forgor to change some default Steamworks code, so sometimes these env vars aren't set at all.
+		// In this instance the overlay and achievements also don't work, but we can't fix that here.)
+
+		// reset steamworks instance
 		SteamManager.s_EverInitialized = false;
 		var instance = SteamManager.s_instance;
 		instance.m_bInitialized = false;
 		SteamManager.s_instance = null;
 
+		// Releases pointers and frees memory used by Steam to manage the current game.
+		// Does not unhook the overlay, so we dont have to worry about that :peepoHappy:
 		SteamAPI.Shutdown();
 
+		// Set the env vars to an AppID that everyone owns by default.
+		// from facepunch.steamworks SteamClient.cs
 		Environment.SetEnvironmentVariable("SteamAppId", "480");
 		Environment.SetEnvironmentVariable("SteamGameId", "480");
 
+		// Re-initialize Steamworks.
 		instance.InitializeOnAwake();
+
 		// TODO also reregister hook and gamepad thing or else i think that wont work
 	}
 

@@ -30,7 +30,6 @@ public static class Patches
 		return false;
 	}
 
-
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(Achievements), nameof(Achievements.Earn))]
 	private static bool Achievements_Earn(Achievements.Type type)
