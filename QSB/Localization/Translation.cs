@@ -10,7 +10,7 @@ public class Translation
 	public string PauseMenuDisconnect;
 	public string PauseMenuStopHosting;
 	public string PublicIPAddress;
-	public string ProductUserID;
+	public string SteamID;
 	public string Connect;
 	public string Cancel;
 	public string HostExistingOrNewOrCopy;

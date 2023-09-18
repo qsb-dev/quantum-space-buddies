@@ -5,7 +5,7 @@
   "PauseMenuDisconnect": "DESCONECTAR",
   "PauseMenuStopHosting": "PARAR DE HOSPEDAR",
   "PublicIPAddress": "Endereço de IP Público\n\n(O DADOS DO SEU SAVE DE MULTIJOGADORES SERÃO SOBRESCRITOS)",
-  "ProductUserID": "ID de Produto de Usuário\n\n(O DADOS DO SEU SAVE DE MULTIJOGADORES SERÃO SOBRESCRITOS)",
+  "SteamID": "Steam ID\n\n(O DADOS DO SEU SAVE DE MULTIJOGADORES SERÃO SOBRESCRITOS)",
   "Connect": "CONECTAR",
   "Cancel": "CANCELAR",
   "HostExistingOrNewOrCopy": "Você quer hospedar uma expedição de multijogadores pré-existente, hospedar uma nova expedição, ou copiar a já existente expedição do seu save para multiplos jogadores?",

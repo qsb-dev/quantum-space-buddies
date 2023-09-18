@@ -5,7 +5,7 @@
   "PauseMenuDisconnect": "DISCONNECT",
   "PauseMenuStopHosting": "STOP HOSTING",
   "PublicIPAddress": "Public IP Address\n\n(YOUR MULTIPLAYER SAVE DATA WILL BE OVERWRITTEN)",
-  "ProductUserID": "Product User ID\n\n(YOUR MULTIPLAYER SAVE DATA WILL BE OVERWRITTEN)",
+  "SteamID": "Steam ID\n\n(YOUR MULTIPLAYER SAVE DATA WILL BE OVERWRITTEN)",
   "Connect": "CONNECT",
   "Cancel": "CANCEL",
   "HostExistingOrNewOrCopy": "Do you want to host an existing multiplayer expedition, host a new expedition, or copy the existing singleplayer expedition to multiplayer?",

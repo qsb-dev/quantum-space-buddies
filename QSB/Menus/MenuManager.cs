@@ -122,7 +122,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuHost;
 		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuConnect;
-		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
+		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.SteamID;
 		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalization.Current.Connect), new ScreenPrompt(QSBLocalization.Current.Cancel), false);
 		ConnectPopup.SetInputFieldPlaceholderText(text);
 		ExistingNewCopyPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNewOrCopy,
@@ -338,7 +338,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void CreateCommonPopups()
 	{
-		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
+		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.SteamID;
 		ConnectPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, QSBLocalization.Current.Connect, QSBLocalization.Current.Cancel);
 		ConnectPopup.CloseMenuOnOk(false);
 		ConnectPopup.OnPopupConfirm += () =>

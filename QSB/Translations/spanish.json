@@ -5,7 +5,7 @@
   "PauseMenuDisconnect": "DESCONECTAR",
   "PauseMenuStopHosting": "DEJAR DE ALOJAR",
   "PublicIPAddress": "IP Pública\n\n(TUS DATOS DE GUARDADO DE MULTIJUGADOR SERÁN SOBREESCRITOS)",
-  "ProductUserID": "ID de Producto\n\n(TUS DATOS DE GUARDADO DE MULTIJUGADOR SERÁN SOBREESCRITOS)",
+  "SteamID": "ID de Steam\n\n(TUS DATOS DE GUARDADO DE MULTIJUGADOR SERÁN SOBREESCRITOS)",
   "Connect": "CONECTARSE",
   "Cancel": "CANCELAR",
   "HostExistingOrNewOrCopy": "¿Quieres cargar una expedición multijugador ya existente, empezar una nueva expedición, o copiar y cargar tu expedición de un jugador?",

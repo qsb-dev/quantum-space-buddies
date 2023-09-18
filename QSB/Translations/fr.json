@@ -5,7 +5,7 @@
   "PauseMenuDisconnect": "DÉCONNECTER",
   "PauseMenuStopHosting": "ARRÊTER L'HÉBERGEMENT",
   "PublicIPAddress": "Adresse IP publique\n\n(CELA EFFACERA VOTRE PROGRESSION MULTIJOUEUR)",
-  "ProductUserID": "ID utilisateur\n\n(CELA EFFACERA VOTRE PROGRESSION MULTIJOUEUR)",
+  "SteamID": "ID utilisateur\n\n(CELA EFFACERA VOTRE PROGRESSION MULTIJOUEUR)",
   "Connect": "SE CONNECTER",
   "Cancel": "ANNULER",
   "HostExistingOrNewOrCopy": "Veux-tu héberger une expédition multijouer existante, héberger une nouvelle expédition, ou héberger une copie de ton expédition solo existante?",
