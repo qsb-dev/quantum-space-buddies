@@ -11,19 +11,14 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" />
-    <PackageReference Include="OWML" Version="2.9.7" />
-    <Reference Include="../Mirror/*.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="License.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.456" />
-    <PackageReference Include="OWML" Version="2.9.0" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" />
+    <PackageReference Include="OWML" Version="2.9.7" />
     <Reference Include="../Mirror/*.dll" />
   </ItemGroup>
 </Project>
