@@ -62,6 +62,7 @@ public class AlarmTotemPatches : QSBPatch
 						__instance._isPlayerVisible = false;
 						__instance._secondsConcealed = 0f;
 						Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
+						qsbAlarmTotem.SendMessage(new SetVisibleMessage(false));
 					}
 				}
 			});
