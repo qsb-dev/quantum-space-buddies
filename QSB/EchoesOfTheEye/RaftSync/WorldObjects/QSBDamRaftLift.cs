@@ -1,5 +1,3 @@
 ﻿namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 
-internal class QSBDamRaftLift : QSBRaftCarrier<DamRaftLift>
-{
-}
+public class QSBDamRaftLift : QSBRaftCarrier<DamRaftLift> { }

@@ -4,7 +4,8 @@ using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.RaftSync.Messages;
-internal class RaftCarrierOnEntryMessage : QSBWorldObjectMessage<IQSBRaftCarrier, int>
+
+public class RaftCarrierOnEntryMessage : QSBWorldObjectMessage<IQSBRaftCarrier, int>
 {
 	public RaftCarrierOnEntryMessage(QSBRaft raft) : base(raft.ObjectId) { }
 
@@ -13,7 +14,7 @@ internal class RaftCarrierOnEntryMessage : QSBWorldObjectMessage<IQSBRaftCarrier
 		// TODO : work out if we can just call RaftCarrier.OnEntry with a right gameobject? tried it with _fluidDetector.gameObject and it didn't work
 
 		var qsbRaft = Data.GetWorldObject<QSBRaft>();
-		var attachedObj = WorldObject.AttachedObject as RaftCarrier;
+		var attachedObj = (RaftCarrier)WorldObject.AttachedObject;
 
 		attachedObj._raft = qsbRaft.AttachedObject;
 		attachedObj._raft.OnArriveAtTarget += attachedObj.OnArriveAtTarget;

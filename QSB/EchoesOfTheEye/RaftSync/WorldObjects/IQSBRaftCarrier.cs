@@ -2,6 +2,4 @@
 
 namespace QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 
-internal interface IQSBRaftCarrier : IWorldObject
-{
-}
+public interface IQSBRaftCarrier : IWorldObject { }
