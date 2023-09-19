@@ -80,6 +80,15 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 	/// </summary>
 	protected override void ApplyToAttached()
 	{
+		if (_worldObject.AttachedObject is RaftController raft)
+		{
+			if (raft.IsDockingOrDocked())
+			{
+				// don't sync position if we're docking, dock sequence moves the raft itself
+				return;
+			}
+		}
+
 		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
 		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 
