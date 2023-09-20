@@ -12,6 +12,7 @@ public class RaftCarrierOnEntryMessage : QSBWorldObjectMessage<IQSBRaftCarrier, 
 	public override void OnReceiveRemote()
 	{
 		// TODO : work out if we can just call RaftCarrier.OnEntry with a right gameobject? tried it with _fluidDetector.gameObject and it didn't work
+		// even tho that is the gameobject with Raft_Detector tag. what?
 
 		var qsbRaft = Data.GetWorldObject<QSBRaft>();
 		var attachedObj = (RaftCarrier)WorldObject.AttachedObject;

@@ -63,6 +63,7 @@ public class RaftPatches : QSBPatch
 		{
 			var raft = hitObj.GetComponentInParent<RaftController>();
 			var qsbRaft = raft.GetWorldObject<QSBRaft>();
+			// owner will handle docking and sends a message telling everyone else to also dock
 			if (!qsbRaft.NetworkBehaviour.isOwned)
 			{
 				return false;
