@@ -64,11 +64,11 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 
 		switch (command)
 		{
-			case "explode":
+/*			case "explode":
 				WriteToChat($"Blowing up the ship.", Color.green);
 				var shipDamageController = Locator.GetShipTransform().GetComponentInChildren<ShipDamageController>();
 				shipDamageController.Explode();
-				break;
+				break;*/
 			case "repair":
 			case "damage":
 				var damage = command == "damage";
