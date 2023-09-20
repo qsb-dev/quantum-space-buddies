@@ -70,8 +70,8 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		SpaceSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_space.png");
 	}
 
-	private const int LINE_COUNT = 11;
-	private const int CHAR_COUNT = 41;
+	private const int LINE_COUNT = 10;
+	private const int CHAR_COUNT = 33;
 	private const float FADE_DELAY = 5f;
 	private const float FADE_TIME = 2f;
 
@@ -115,7 +115,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			_messages.PopFromBack();
 		}
 
-		var currentLineIndex = 10;
+		var currentLineIndex = LINE_COUNT - 1;
 
 		foreach (var msg in _messages.Reverse())
 		{
@@ -283,7 +283,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			rect.anchorMax = new Vector2(1, 0.5f);
 			rect.sizeDelta = new Vector2(100, 100);
 			rect.anchoredPosition3D = new Vector3(-267, 0, 0);
-			rect.localRotation = Quaternion.Euler(0, 55, 0);
+			rect.localRotation = Quaternion.identity;
 			rect.localScale = Vector3.one;
 		});
 
