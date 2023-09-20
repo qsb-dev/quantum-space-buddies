@@ -60,6 +60,11 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 
 	public static void ShipCommand(string[] arguments)
 	{
+		if (!QSBCore.DebugSettings.DebugMode)
+		{
+			return;
+		}
+
 		var command = arguments[0];
 
 		switch (command)
