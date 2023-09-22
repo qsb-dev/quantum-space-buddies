@@ -18,6 +18,9 @@ public class SocketedQuantumObjectPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	/// <summary>
+	/// we dont want to send messages when testing sockets
+	/// </summary>
 	public static bool TestSocketMove = false;
 
 	[HarmonyPrefix]
