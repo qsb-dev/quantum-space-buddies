@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
+using UnityEngine;
 
 namespace QSB.QuantumSync.Patches.Common.Visibility;
 
@@ -22,5 +23,22 @@ public class VisibilityShapeVisibilityTrackerPatches : QSBPatch
     {
         __result = QuantumManager.IsVisible(__instance, false);
         return false;
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(nameof(ShapeVisibilityTracker.IsInFrustum))]
+    public static bool IsInFrustum(ShapeVisibilityTracker __instance, Plane[] frustumPlanes, out bool __result)
+    {
+	    foreach (var shape in __instance._shapes)
+	    {
+		    if (shape.IsVisible(frustumPlanes))
+		    {
+			    __result = true;
+			    return false;
+		    }
+	    }
+
+	    __result = false;
+		return false;
     }
 }
