@@ -32,7 +32,8 @@ public class VisibilityShapeVisibilityTrackerPatches : QSBPatch
 	    foreach (var shape in __instance._shapes)
 	    {
 			// normally checks if enabled
-			// dont want to do that cuz other players can check visibility? idk nebula wrote this
+			// helps prevent state change when owner leaves and we are observing
+			// is this wrong? it feels wrong.
 		    if (shape.IsVisible(frustumPlanes))
 		    {
 			    __result = true;
