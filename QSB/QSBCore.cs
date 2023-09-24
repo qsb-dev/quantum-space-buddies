@@ -122,6 +122,8 @@ public class QSBCore : ModBehaviour
 
 	public void Awake()
 	{
+		// TODO: try manually loading steam dll for xbox. need to move all the steam stuff to new method or else it tries to load it first :(
+		
 		// no, we cant localize this - languages are loaded after the splash screen
 		UIHelper.ReplaceUI(UITextType.PleaseUseController,
 			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
@@ -251,6 +253,8 @@ public class QSBCore : ModBehaviour
 
 		// init again to get addon patches
 		QSBPatchManager.Init();
+		// have to register message after addons get added dummy
+		QSBMessageManager.InitTypes();
 
 		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
