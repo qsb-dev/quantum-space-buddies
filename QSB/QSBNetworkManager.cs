@@ -291,7 +291,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		OnClientConnected?.SafeInvoke();
 
-		QSBMessageManager.InitHandlers();
+		QSBMessageManager.Init();
 
 		gameObject.AddComponent<RespawnOnDeath>();
 		gameObject.AddComponent<ServerStateManager>();

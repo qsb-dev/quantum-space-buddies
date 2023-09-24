@@ -33,7 +33,7 @@ public static class QSBMessageManager
 	private static string _rxPath;
 	private static string _txPath;
 
-	public static void InitTypes()
+	static QSBMessageManager()
 	{
 		foreach (var type in typeof(QSBMessage).GetDerivedTypes())
 		{
@@ -44,7 +44,7 @@ public static class QSBMessageManager
 		}
 	}
 
-	public static void InitHandlers()
+	public static void Init()
 	{
 		NetworkServer.RegisterHandler<Wrapper>((_, wrapper) => OnServerReceive(wrapper));
 		NetworkClient.RegisterHandler<Wrapper>(wrapper => OnClientReceive(wrapper));
