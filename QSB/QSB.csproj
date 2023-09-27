@@ -71,8 +71,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.9.7" IncludeAssets="compile" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.14.768" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.9.8" IncludeAssets="compile" />
     <Reference Include="..\Mirror\*.dll" />
     <Reference Include="..\UniTask\*.dll" />
     <ProjectReference Include="..\FizzySteamworks\FizzySteamworks.csproj" />
