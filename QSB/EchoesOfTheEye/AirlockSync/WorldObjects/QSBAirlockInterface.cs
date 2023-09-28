@@ -8,8 +8,8 @@ namespace QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
 public class QSBAirlockInterface : QSBRotatingElements<AirlockInterface, AirlockVariableSyncer>
 {
 	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._lightSensors;
-
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.AirlockPrefab;
+	protected override bool LockedActive => AttachedObject.enabled;
 
 	public override string ReturnLabel()
 	{
