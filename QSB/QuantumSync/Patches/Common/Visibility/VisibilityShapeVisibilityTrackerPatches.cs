@@ -33,6 +33,13 @@ public class VisibilityShapeVisibilityTrackerPatches : QSBPatch
     {
         // todo : cache this somewhere? seems slow.
 	    var quantumObject = __instance.GetComponentInParent<QuantumObject>();
+
+	    if (quantumObject == null)
+	    {
+            __result = false;
+		    return true;
+	    }
+
 	    var worldObject = quantumObject.GetWorldObject<IQSBQuantumObject>();
 	    foreach (var shape in __instance._shapes)
 	    {
