@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using QSB.API;
+using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -53,6 +54,7 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
 	public static AssetBundle HUDAssetBundle { get; private set; }
+	public static AssetBundle BigBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer;
 	public static string QSBVersion => Helper.Manifest.Version;
@@ -66,6 +68,8 @@ public class QSBCore : ModBehaviour
 	public static bool ShipDamage { get; private set; }
 	public static bool ShowExtraHUDElements { get; private set; }
 	public static bool TextChatInput { get; private set; }
+	public static string SkinVariation { get; private set; }
+	public static string JetpackVariation { get; private set; }
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
@@ -258,6 +262,7 @@ public class QSBCore : ModBehaviour
 		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/qsb_network_big");
 		var request = AssetBundle.LoadFromFileAsync(path);
 		request.completed += _ => DebugLog.DebugWrite("qsb_network_big bundle loaded", MessageType.Success);
+		BigBundle = request.assetBundle;
 
 		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_network");
 		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_conversation");
@@ -375,11 +380,18 @@ public class QSBCore : ModBehaviour
 		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
 		ShowExtraHUDElements = config.GetSettingsValue<bool>("showExtraHud");
 		TextChatInput = config.GetSettingsValue<bool>("textChatInput");
+		SkinVariation = config.GetSettingsValue<string>("skinType");
+		JetpackVariation = config.GetSettingsValue<string>("jetpackType");
 
 		if (IsHost)
 		{
 			ServerSettingsManager.ServerShowPlayerNames = ShowPlayerNames;
 			new ServerSettingsMessage().Send();
+		}
+
+		if (IsInMultiplayer)
+		{
+			new PlayerInformationMessage().Send();
 		}
 	}
 

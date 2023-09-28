@@ -21,6 +21,8 @@ public class PlayerInformationMessage : QSBMessage
 	private float FieldOfView;
 	private bool IsInShip;
 	private HUDIcon HUDIcon;
+	private string SkinType;
+	private string JetpackType;
 
 	public PlayerInformationMessage()
 	{
@@ -37,6 +39,8 @@ public class PlayerInformationMessage : QSBMessage
 		FieldOfView = PlayerData.GetGraphicSettings().fieldOfView;
 		IsInShip = player.IsInShip;
 		HUDIcon = player.HUDBox == null ? HUDIcon.UNKNOWN : player.HUDBox.PlanetIcon;
+		SkinType = QSBCore.SkinVariation;
+		JetpackType = QSBCore.JetpackVariation;
 	}
 
 	public override void Serialize(NetworkWriter writer)
@@ -54,6 +58,8 @@ public class PlayerInformationMessage : QSBMessage
 		writer.Write(FieldOfView);
 		writer.Write(IsInShip);
 		writer.Write(HUDIcon);
+		writer.Write(SkinType);
+		writer.Write(JetpackType);
 	}
 
 	public override void Deserialize(NetworkReader reader)
@@ -71,6 +77,8 @@ public class PlayerInformationMessage : QSBMessage
 		FieldOfView = reader.ReadFloat();
 		IsInShip = reader.ReadBool();
 		HUDIcon = reader.Read<HUDIcon>();
+		SkinType = reader.ReadString();
+		JetpackType = reader.ReadString();
 	}
 
 	public override void OnReceiveRemote()
@@ -91,6 +99,9 @@ public class PlayerInformationMessage : QSBMessage
 			if (QSBPlayerManager.LocalPlayer.IsReady && player.IsReady)
 			{
 				player.UpdateObjectsFromStates();
+
+				var REMOTE_Traveller_HEA_Player_v2 = player.Body.transform.Find("REMOTE_Traveller_HEA_Player_v2");
+				BodyCustomization.BodyCustomizer.Instance.CustomizeRemoteBody(REMOTE_Traveller_HEA_Player_v2.gameObject, SkinType, JetpackType);
 			}
 
 			Delay.RunWhen(
