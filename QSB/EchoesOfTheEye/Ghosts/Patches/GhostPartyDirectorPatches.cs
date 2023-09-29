@@ -13,7 +13,7 @@ using UnityEngine;
 namespace QSB.EchoesOfTheEye.Ghosts.Patches;
 
 [HarmonyPatch(typeof(GhostPartyDirector))]
-internal class GhostPartyDirectorPatches : QSBPatch
+public class GhostPartyDirectorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

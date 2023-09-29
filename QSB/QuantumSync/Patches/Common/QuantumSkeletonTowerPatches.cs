@@ -9,7 +9,7 @@ using QSB.WorldSync;
 namespace QSB.QuantumSync.Patches.Common;
 
 [HarmonyPatch(typeof(QuantumSkeletonTower))]
-internal class QuantumSkeletonTowerPatches : QSBPatch
+public class QuantumSkeletonTowerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

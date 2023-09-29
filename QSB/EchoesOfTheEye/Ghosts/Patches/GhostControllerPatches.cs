@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace QSB.EchoesOfTheEye.Ghosts.Patches;
 
 [HarmonyPatch(typeof(GhostController))]
-internal class GhostControllerPatches : QSBPatch
+public class GhostControllerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

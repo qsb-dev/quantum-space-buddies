@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace QSB.RespawnSync;
 
-internal class ShipRecoveryPoint : MonoBehaviour
+public class ShipRecoveryPoint : MonoBehaviour
 {
 	private MultipleInteractionVolume _interactVolume;
 	private PlayerResources _playerResources;

@@ -19,13 +19,13 @@ Spoilers within!
 
 ### Easy installation (recommended)
 
-- [Install the Outer Wilds Mod Manager](https://github.com/Raicuparta/ow-mod-manager#how-do-i-use-this);
+- [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/);
 - Install Quantum Space Buddies from the mod list displayed in the application;
 - If you can't get the mod manager to work, follow the instructions for manual installation.
 
 ### Manual installation
 
-- [Install OWML](https://github.com/amazingalek/owml#installation);
+- [Install OWML](https://github.com/ow-mods/owml#installation);
 - [Download the latest Quantum Space Buddies release](https://github.com/misternebula/quantum-space-buddies/releases/latest);
 - Extract the `QSB` directory to the `OWML/Mods` directory;
 - Run `OWML.Launcher.exe` to start the game.
@@ -35,19 +35,21 @@ Spoilers within!
 #### Connecting to a server
 
 - On the title screen, click the option `CONNECT TO MULTIPLAYER`.
-- Enter the Product User ID of the person you are trying to connect to.
+- Enter the Steam ID of the person you are trying to connect to.
+    - If "Use KCP Transport" is enabled, enter the public IP address of the person instead.
 - Enjoy!
 
 #### Hosting a server
 
 - On the title screen, click the option `OPEN TO MULTIPLAYER`.
-- Share your Product User ID with the people who want to connect.
+- Share your Steam ID with the people who want to connect.
+    - If "Use KCP Transport" is enabled, share your public IP address instead. This can be found on websites like https://www.whatismyip.com/.
 - Enjoy!
 
 ## Frequently Asked Questions
 
 ### I keep timing out when trying to connect!
-Check the mod settings for "Use KCP Transport". You have to forward port 7777 as TCP/UDP, or use Hamachi. ALL PLAYERS MUST HAVE THIS AS THE SAME VALUE.
+Check the mod settings for "Use KCP Transport". You have to forward port 7777 as TCP/UDP, or use Hamachi. ***All players must either be using KCP, or not using KCP.***
 
 ### Requirements
 - Latest version of OWML.
@@ -89,108 +91,28 @@ QSB is a fully synced game. The other players are actually there in the world, a
 
 Outer Wilds Online is easier to set up, but much more basic in its features. The other players cannot affect your game, and do not contribute to anything in your save. The loop is entirely per-player.
 
-### Why would someone make this mod? Seems like a lot of effort for no reward.
-
-Good question.
-
-Let me know if you find an answer.
-
-**Update**: a plausible answer is the enjoyment you get seeing/hearing about others playing with their friends :) 
-
 ## Translating
 
 See [TRANSLATING.md](TRANSLATING.md)
 
-## Development Setup
+## Development Setup / Contributing
 
-- [Download the Outer Wilds Mod Manager](https://github.com/raicuparta/ow-mod-manager) and install it anywhere you like;
-- Install OWML using the Mod Manager
-- Clone QSB's source
-- Open the file `DevEnv.targets` in your favorite text editor
-- (optional if copying built dlls manually) Edit the entry `<OwmlDir>` to point to your OWML directory (it is installed inside the Mod Manager directory)
-- (optional if no unity project) Edit the entry `<UnityAssetsDir>` to point to the Assets folder of the QSB unity project
-- Open the project solution file `QSB.sln` in Visual Studio 2022
-
-If developing with the Steam version of Outer Wilds you can't run multiple instances of the game by default. To do so, create a file called `steam_appid.txt` in your Outer Wilds directory and write `753640` inside it, then run the exe directly.
-
-A powerful PC is needed for development, due to the high amount of RAM and CPU needed to run 2 or 3 instances of modded Outer Wilds.
-
-It is also recommended to lower all graphics settings to minimum, be in windowed mode, and lower resolution to roughly a quarter of your monitor space. This lets you run multiple instances of Outer Wilds to quickly test QSB.
-
-Some debugging options exist to make things easier. These come in the form of actions and settings.
-### Debug Actions :
-
-Hold Q and press :
-
-- Numpad 1 - Teleport to nearest player.
-- Numpad 2 - If holding LeftShift, warp to the dreamworld Vault fire. If not, warp to the Endless Canyon.
-- Numpad 3 - Unlock the Sealed Vault.
-- Numpad 4 - Damage the ship's electrical system.
-- Numpad 5 - Trigger the supernova.
-- Numpad 6 - Set the flags for having met Solanum and the Prisoner.
-- Numpad 7 - Warp to the Vessel.
-- Numpad 8 - Insert the Advanced Warp Core into the Vessel.
-- Numpad 9 - If holding LeftShift, load the SolarSystem scene. If not, load the EyeOfTheUniverse scene.
-- Numpad 0 - Revive a random dead player.
-
-### Debug Settings :
-
-Create a file called `debugsettings.json` in the mod folder.
-The template for this file is this :
-
-```
-{
-  "dumpWorldObjects": false,
-  "instanceIdInLogs": false,
-  "hookDebugLogs": false,
-  "avoidTimeSync": false,
-  "autoStart": false,
-  "kickEveryone": false,
-  "disableLoopDeath": false,
-  "debugMode": false,
-  "drawGui": false,
-  "drawLines": false,
-  "drawLabels": false,
-  "drawQuantumVisibilityObjects": false,
-  "drawGhostAI": false,
-  "greySkybox": false
-}
-```
-
-- dumpWorldObjects - Creates a file with information about the WorldObjects that were created.
-- instanceIdInLogs - Appends the game instance id to every log message sent.
-- hookDebugLogs - Print Unity logs and warnings.
-- avoidTimeSync - Disables the syncing of time.
-- autoStart - Host/connect automatically for faster testing.
-- kickEveryone - Kick anyone who joins a game.
-- disableLoopDeath - Make it so the loop doesn't end when everyone is dead.
-- debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
-- drawGui - Draws a GUI at the top of the screen that gives information on many things.
-- drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
-- drawLabels - Draws GUI labels attached to some objects. LAGGY.
-- drawQuantumVisibilityObjects - Indicates visibility objects with an orange shape.
-- drawGhostAI - Draws debug lines and labels just for the ghosts.
-- greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.
-
-**Warning : Mod development can lead to unexpected errors in your computer system.** 
-- **When editing the networking code, mistakes can lead to QSB overwhelming your network connection with excess packets**.
-- **Too high RAM usage will lead to Outer Wilds sticking at ~31% loading, then crashing**.
-- **There have been instances of graphics cards crashing, and needing to be disabled/re-enabled from Device Manager.**
+See [DEVELOPMENT.md](DEVELOPMENT.md)
 
 ## Authors and Special Thanks
 
 ### Authors
 
-- [\_nebula](https://github.com/misternebula) - Developer of v0.3.0 onwards
-- [JohnCorby](https://github.com/JohnCorby) - Co-developer of v0.13.0 onwards.
-- [AmazingAlek](https://github.com/amazingalek) - Developer of v0.1.0 - v0.7.1.
-- [Raicuparta](https://github.com/Raicuparta) - Developer of v0.1.0 - v0.2.0.
+- [\_nebula](https://github.com/misternebula) - Lead Dev *(v0.3.0 onwards.)*
+- [JohnCorby](https://github.com/JohnCorby) - Lead Dev *(v0.13.0 onwards)*
+- [AmazingAlek](https://github.com/amazingalek) - Ex-Developer *(v0.1.0 - v0.7.1)*
+- [Raicuparta](https://github.com/Raicuparta) - Ex-Developer *(v0.1.0 - v0.2.0)*
 
 ### Contributers
 
 - [Chris Yeninas](https://github.com/PhantomGamers) - Help with project files and GitHub workflows.
 - [Tlya](https://github.com/Tllya) - Russian translation.
-- [Xen](https://github.com/xen-42) - French translation, and help with particle effects and sounds.
+- [xen](https://github.com/xen-42) - French translation, and help with syncing particle/sound effects, fixing lantern item bugs, and syncing addon data.
 - [ShoosGun](https://github.com/ShoosGun) - Portuguese translation.
 - [DertolleDude](https://github.com/DertolleDude) - German translation.
 - [SakuradaYuki](https://github.com/SakuradaYuki) - Chinese translation.

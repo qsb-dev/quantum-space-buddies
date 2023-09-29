@@ -2,4 +2,4 @@
 
 namespace QSB.EchoesOfTheEye.Prisoner;
 
-internal class PrisonerBehaviourCueMarker : MonoBehaviour { }
+public class PrisonerBehaviourCueMarker : MonoBehaviour { }

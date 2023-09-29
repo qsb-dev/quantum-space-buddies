@@ -62,6 +62,7 @@ public class AlarmTotemPatches : QSBPatch
 						__instance._isPlayerVisible = false;
 						__instance._secondsConcealed = 0f;
 						Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
+						qsbAlarmTotem.SendMessage(new SetVisibleMessage(false));
 					}
 				}
 			});
@@ -120,6 +121,12 @@ public class AlarmTotemPatches : QSBPatch
 		}
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
+			// nebula said the error spam was annoying
+			if (!player.IsReady)
+			{
+				continue;
+			}
+
 			var position = player.Camera.transform.position;
 			if (__instance.CheckPointInVisionCone(position) && !__instance.CheckLineOccluded(__instance._sightOrigin.position, position))
 			{

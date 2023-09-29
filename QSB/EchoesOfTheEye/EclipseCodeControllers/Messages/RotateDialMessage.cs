@@ -4,7 +4,7 @@ using QSB.Utility;
 
 namespace QSB.EchoesOfTheEye.EclipseCodeControllers.Messages;
 
-internal class RotateDialMessage : QSBWorldObjectMessage<QSBEclipseCodeController, (bool right, int selectedDial)>
+public class RotateDialMessage : QSBWorldObjectMessage<QSBEclipseCodeController, (bool right, int selectedDial)>
 {
 	public RotateDialMessage(bool right, int selectedDial) : base((right, selectedDial)) { }
 

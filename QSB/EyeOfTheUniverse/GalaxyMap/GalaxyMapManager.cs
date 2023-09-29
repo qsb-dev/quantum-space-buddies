@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap;
 
-internal class GalaxyMapManager : MonoBehaviour, IAddComponentOnStart
+public class GalaxyMapManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static GalaxyMapManager Instance { get; private set; }
 

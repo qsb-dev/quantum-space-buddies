@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseDoors.WorldObjects;
 
-internal class QSBEclipseDoorController : QSBRotatingElements<EclipseDoorController, EclipseDoorVariableSyncer>
+public class QSBEclipseDoorController : QSBRotatingElements<EclipseDoorController, EclipseDoorVariableSyncer>
 {
 	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._lightSensors;
 

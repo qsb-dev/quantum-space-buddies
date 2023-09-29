@@ -8,7 +8,7 @@ using UnityEngine;
 namespace QSB.EyeOfTheUniverse.Tomb.Patches;
 
 [HarmonyPatch(typeof(EyeTombController))]
-internal class EyeTombControllerPatches : QSBPatch
+public class EyeTombControllerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

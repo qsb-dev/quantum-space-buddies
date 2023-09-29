@@ -1,8 +1,8 @@
 ﻿using OWML.Common;
 using OWML.Logging;
+using OWML.Utils;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 #pragma warning disable CS0618
@@ -21,32 +21,25 @@ public static class DebugLog
 			message = $"[{ProcessInstanceId}] " + message;
 		}
 
-		if (QSBCore.Helper == null)
-		{
-			// yes i know this is only meant for OWML, but it's useful as a backup
-			ModConsole.OwmlConsole.WriteLine(message, type, GetCallingType());
-		}
-		else
-		{
-			QSBCore.Helper.Console.WriteLine(message, type, GetCallingType());
-		}
-	}
+		var @this = QSBCore.Helper != null ? QSBCore.Helper.Console : ModConsole.OwmlConsole;
+		var Logger = @this.GetValue<IModLogger>("Logger");
+		var _socket = @this.GetValue<IModSocket>("_socket");
+		// copied from https://github.com/ow-mods/owml/blob/master/src/OWML.Logging/ModSocketOutput.cs#L33
+		Logger?.Log($"{type}: {message}");
 
-	public static void ToHud(string message)
-	{
-		if (Locator.GetPlayerBody() == null)
+		_socket.WriteToSocket(new ModSocketMessage
 		{
-			return;
+			SenderName = "QSB",
+			SenderType = GetCallingType(),
+			Type = type,
+			Message = message
+		});
+
+		if (type == MessageType.Fatal)
+		{
+			_socket.Close();
+			Process.GetCurrentProcess().Kill();
 		}
-
-		var data = new NotificationData(NotificationTarget.Player, message.ToUpper());
-		NotificationManager.SharedInstance.PostNotification(data);
-	}
-
-	public static void ToAll(string message, MessageType type = MessageType.Message)
-	{
-		ToConsole(message, type);
-		ToHud(message);
 	}
 
 	public static void DebugWrite(string message, MessageType type = MessageType.Message)
@@ -61,6 +54,7 @@ public static class DebugLog
 		new StackTrace(2) // skip this function and calling function
 			.GetFrames()!
 			.Select(x => x.GetMethod().DeclaringType!)
+			// BUG: this part doesnt work for some reason
 			.First(x => x != typeof(DebugLog) && !x.IsDefined(typeof(CompilerGeneratedAttribute), true))
 			.Name;
 }

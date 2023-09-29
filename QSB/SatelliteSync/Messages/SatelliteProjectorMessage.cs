@@ -2,7 +2,7 @@
 
 namespace QSB.SatelliteSync.Messages;
 
-internal class SatelliteProjectorMessage : QSBMessage<bool>
+public class SatelliteProjectorMessage : QSBMessage<bool>
 {
 	public SatelliteProjectorMessage(bool usingProjector) : base(usingProjector) { }
 

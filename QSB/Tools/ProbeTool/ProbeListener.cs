@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.Tools.ProbeTool;
 
-internal class ProbeListener : MonoBehaviour
+public class ProbeListener : MonoBehaviour
 {
 	private SurveyorProbe _attachedProbe;
 

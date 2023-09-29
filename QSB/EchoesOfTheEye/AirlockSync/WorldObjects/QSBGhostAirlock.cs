@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
 
-internal class QSBGhostAirlock : WorldObject<GhostAirlock>
+public class QSBGhostAirlock : WorldObject<GhostAirlock>
 {
 	public override void SendInitialState(uint to)
 		=> this.SendMessage(

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class PathfindNodeMessage : QSBWorldObjectMessage<QSBGhostController, (int mapId, int nodeIndex, float speed, float acceleration)>
+public class PathfindNodeMessage : QSBWorldObjectMessage<QSBGhostController, (int mapId, int nodeIndex, float speed, float acceleration)>
 {
 	public PathfindNodeMessage(GhostNode node, float speed, float acceleration) : base(Process(node, speed, acceleration)) { }
 

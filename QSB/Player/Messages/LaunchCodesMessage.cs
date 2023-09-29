@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.Player.Messages;
 
-internal class LaunchCodesMessage : QSBMessage
+public class LaunchCodesMessage : QSBMessage
 {
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;
 

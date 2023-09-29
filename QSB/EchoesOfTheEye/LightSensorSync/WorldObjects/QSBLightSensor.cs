@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.WorldObjects;
 
-internal class QSBLightSensor : OwnedWorldObject<SingleLightSensor>
+public class QSBLightSensor : OwnedWorldObject<SingleLightSensor>
 {
 	internal bool _locallyIlluminated;
 
@@ -46,6 +46,7 @@ internal class QSBLightSensor : OwnedWorldObject<SingleLightSensor>
 			{
 				if (AttachedObject._startIlluminated)
 				{
+					// dont need to do _illuminated cuz _startIlluminated means it already sets the thing and fires the event in Start
 					_locallyIlluminated = true;
 					OnDetectLocalLight?.Invoke();
 				}

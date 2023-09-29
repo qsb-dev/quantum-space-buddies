@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 
 namespace QSB.SaveSync;
 
-internal class QSBMSStoreProfileManager : IProfileManager
+public class QSBMSStoreProfileManager : IProfileManager
 {
 	private const string OW_SAVE_CONTAINER_NAME = "GameSave";
 	private const string OW_GAME_SAVE_BLOB_NAME = "Outer Wilds Converted";

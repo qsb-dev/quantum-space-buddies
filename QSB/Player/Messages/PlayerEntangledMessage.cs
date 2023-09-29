@@ -5,7 +5,7 @@ using QSB.WorldSync;
 namespace QSB.Player.Messages;
 
 // almost a world object message, but supports null (-1) as well
-internal class PlayerEntangledMessage : QSBMessage<int>
+public class PlayerEntangledMessage : QSBMessage<int>
 {
 	public PlayerEntangledMessage(int objectId) : base(objectId) { }
 

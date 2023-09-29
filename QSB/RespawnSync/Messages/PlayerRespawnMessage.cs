@@ -4,7 +4,7 @@ using QSB.Player;
 
 namespace QSB.RespawnSync.Messages;
 
-internal class PlayerRespawnMessage : QSBMessage<uint>
+public class PlayerRespawnMessage : QSBMessage<uint>
 {
 	public PlayerRespawnMessage(uint playerId) : base(playerId) { }
 

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.Messages;
 
-internal class PlayerIlluminatingLanternsMessage : QSBMessage<(uint playerId, int[] lanterns)>
+public class PlayerIlluminatingLanternsMessage : QSBMessage<(uint playerId, int[] lanterns)>
 {
 	public PlayerIlluminatingLanternsMessage(uint playerId, IEnumerable<DreamLanternController> lanterns) :
 		base((

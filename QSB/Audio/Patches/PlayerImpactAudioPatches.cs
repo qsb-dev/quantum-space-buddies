@@ -6,7 +6,7 @@ using QSB.Player;
 
 namespace QSB.Audio.Patches;
 
-internal class PlayerImpactAudioPatches : QSBPatch
+public class PlayerImpactAudioPatches : QSBPatch
 {
 	// Since we patch Start we do it when the mod starts, else it won't run
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;

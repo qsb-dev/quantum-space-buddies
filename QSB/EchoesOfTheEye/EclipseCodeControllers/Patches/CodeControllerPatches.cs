@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.EclipseCodeControllers.Patches;
 
-internal class CodeControllerPatches : QSBPatch
+public class CodeControllerPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

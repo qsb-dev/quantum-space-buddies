@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class FaceLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController, (Vector3 localPosition, float degreesPerSecond, float turnAcceleration)>
+public class FaceLocalPositionMessage : QSBWorldObjectMessage<QSBGhostController, (Vector3 localPosition, float degreesPerSecond, float turnAcceleration)>
 {
 	public FaceLocalPositionMessage(Vector3 localPos, float degPerSecond, float turnAccel) : base((localPos, degPerSecond, turnAccel)) { }
 

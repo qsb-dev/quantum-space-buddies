@@ -3,7 +3,7 @@ using QSB.Tools.TranslatorTool.TranslationSync.WorldObjects;
 
 namespace QSB.Tools.TranslatorTool.TranslationSync.Messages;
 
-internal class SetAsTranslatedMessage : QSBWorldObjectMessage<QSBNomaiText, int>
+public class SetAsTranslatedMessage : QSBWorldObjectMessage<QSBNomaiText, int>
 {
 	public SetAsTranslatedMessage(int textId) : base(textId) { }
 

@@ -9,7 +9,7 @@ using UnityEngine;
 namespace QSB.QuantumSync.Patches.Common;
 
 [HarmonyPatch(typeof(QuantumMoon))]
-internal class QuantumMoonPatches : QSBPatch
+public class QuantumMoonPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

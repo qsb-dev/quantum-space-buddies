@@ -18,7 +18,7 @@ namespace QSB.QuantumSync.WorldObjects;
 ///
 /// TODO: make it so only players in the sector (which sector?) are checked for visibility 
 /// </summary>
-internal abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
+public abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 	where T : QuantumObject
 {
 	public virtual bool HostControls => false;

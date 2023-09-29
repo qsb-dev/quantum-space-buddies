@@ -1,5 +1,4 @@
-﻿using EpicTransport;
-using Mirror;
+﻿using Mirror;
 using OWML.Common;
 using QSB.Localization;
 using QSB.Messaging;
@@ -8,6 +7,7 @@ using QSB.SaveSync;
 using QSB.SaveSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
+using Steamworks;
 using System;
 using System.Linq;
 using System.Text;
@@ -16,7 +16,7 @@ using UnityEngine.UI;
 
 namespace QSB.Menus;
 
-internal class MenuManager : MonoBehaviour, IAddComponentOnStart
+public class MenuManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static MenuManager Instance;
 
@@ -122,7 +122,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuHost;
 		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuConnect;
-		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
+		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.SteamID;
 		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalization.Current.Connect), new ScreenPrompt(QSBLocalization.Current.Cancel), false);
 		ConnectPopup.SetInputFieldPlaceholderText(text);
 		ExistingNewCopyPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNewOrCopy,
@@ -338,7 +338,7 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void CreateCommonPopups()
 	{
-		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.ProductUserID;
+		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.SteamID;
 		ConnectPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, QSBLocalization.Current.Connect, QSBLocalization.Current.Cancel);
 		ConnectPopup.CloseMenuOnOk(false);
 		ConnectPopup.OnPopupConfirm += () =>
@@ -635,26 +635,28 @@ internal class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		if (!QSBCore.UseKcpTransport)
 		{
-			var productUserId = EOSSDKComponent.LocalUserProductIdString;
+			var steamId = SteamUser.GetSteamID().ToString();
 
 			PopupClose += confirm =>
 			{
 				if (confirm)
 				{
-					GUIUtility.systemCopyBuffer = productUserId;
+					GUIUtility.systemCopyBuffer = steamId;
 				}
 
 				LoadGame(PlayerData.GetWarpedToTheEye());
+				// wait until scene load and then wait until Start has ran
 				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 			};
 
-			OpenInfoPopup(string.Format(QSBLocalization.Current.CopyProductUserIDToClipboard, productUserId)
+			OpenInfoPopup(string.Format(QSBLocalization.Current.CopySteamIDToClipboard, steamId)
 				, QSBLocalization.Current.Yes
 				, QSBLocalization.Current.No);
 		}
 		else
 		{
 			LoadGame(PlayerData.GetWarpedToTheEye());
+			// wait until scene load and then wait until Start has ran
 			Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 		}
 	}

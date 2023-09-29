@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.SlideProjectors.Messages;
 
-internal class NextSlideMessage : QSBWorldObjectMessage<QSBSlideProjector>
+public class NextSlideMessage : QSBWorldObjectMessage<QSBSlideProjector>
 {
 	public override void OnReceiveRemote() => WorldObject.AttachedObject.NextSlide();
 }

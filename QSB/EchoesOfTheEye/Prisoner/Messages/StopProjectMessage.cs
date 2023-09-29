@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace QSB.EchoesOfTheEye.Prisoner.Messages;
 
-internal class StopProjectMessage : QSBMessage<bool>
+public class StopProjectMessage : QSBMessage<bool>
 {
 	public StopProjectMessage(bool done) : base(done) { }
 

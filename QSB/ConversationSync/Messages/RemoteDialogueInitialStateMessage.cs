@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace QSB.ConversationSync.Messages;
 
-internal class RemoteDialogueInitialStateMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger>
+public class RemoteDialogueInitialStateMessage : QSBWorldObjectMessage<QSBRemoteDialogueTrigger>
 {
 	private bool _inRemoteDialogue;
 	private bool[] _activatedDialogues;

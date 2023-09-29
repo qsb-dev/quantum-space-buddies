@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.EchoesOfTheEye.DreamObjectProjectors;
 
-internal class ProjectorManager : WorldObjectManager
+public class ProjectorManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 	public override bool DlcOnly => true;

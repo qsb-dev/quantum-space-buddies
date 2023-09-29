@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QSB.SaveSync.Patches;
 
 [HarmonyPatch(typeof(PlayerData))]
-internal class PlayerDataPatches : QSBPatch
+public class PlayerDataPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
 

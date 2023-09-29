@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.EyeOfTheUniverse.Tomb.Messages;
 
-internal class CloseDoorMessage : QSBMessage
+public class CloseDoorMessage : QSBMessage
 {
 	public override void OnReceiveRemote()
 	{

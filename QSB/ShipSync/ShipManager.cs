@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync;
 
-internal class ShipManager : WorldObjectManager
+public class ShipManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 
@@ -184,6 +184,11 @@ internal class ShipManager : WorldObjectManager
 
 	private void UpdateElectricalComponent()
 	{
+		if (ShipElectricalComponent == null)
+		{
+			return;
+		}
+
 		var electricalSystem = ShipElectricalComponent._electricalSystem;
 		var damaged = ShipElectricalComponent._damaged;
 

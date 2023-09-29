@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <AssemblyTitle>Steam Rerouter</AssemblyTitle>
+        <Product>Steam Rerouter</Product>
+        <Title>Steam Rerouter</Title>
+        <Description>Handles game steam interaction, since qsb uses its own app id</Description>
+        <Authors>William Corby, Henry Pointer</Authors>
+        <Company>William Corby, Henry Pointer</Company>
+        <Copyright>Copyright © William Corby, Henry Pointer 2022-2023</Copyright>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" IncludeAssets="compile" />
+        <PackageReference Include="OWML" Version="2.9.7" IncludeAssets="compile" />
+    </ItemGroup>
+</Project>

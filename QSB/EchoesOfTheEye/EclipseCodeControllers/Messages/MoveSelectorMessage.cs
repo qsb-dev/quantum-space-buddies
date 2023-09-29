@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.EclipseCodeControllers.Messages;
 
-internal class MoveSelectorMessage : QSBWorldObjectMessage<QSBEclipseCodeController, (int newSelectedDial, bool up)>
+public class MoveSelectorMessage : QSBWorldObjectMessage<QSBEclipseCodeController, (int newSelectedDial, bool up)>
 {
 	public MoveSelectorMessage(int selectedDial, bool up) : base((selectedDial, up)) { }
 

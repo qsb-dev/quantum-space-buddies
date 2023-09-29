@@ -14,7 +14,7 @@ public static class QSBReaderWriterProcessor
 	/// traverses from non generic classes up thru base types
 	/// in order to replace generic parameters with their corresponding generic arguments.
 	/// </summary>
-	public static void Process(ModuleDefinition module, Writers writers, Readers readers, ref bool weavingFailed)
+	public static bool Process(ModuleDefinition module, Writers writers, Readers readers, ref bool weavingFailed)
 	{
 		var sw = Stopwatch.StartNew();
 
@@ -85,5 +85,6 @@ public static class QSBReaderWriterProcessor
 		}
 
 		Console.WriteLine($"got/generated {count} read/write funcs in {sw.ElapsedMilliseconds} ms");
+		return count > 0;
 	}
 }

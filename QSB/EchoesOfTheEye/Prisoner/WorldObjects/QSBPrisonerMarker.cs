@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Prisoner.WorldObjects;
 
-internal class QSBPrisonerMarker : WorldObject<PrisonerBehaviourCueMarker>
+public class QSBPrisonerMarker : WorldObject<PrisonerBehaviourCueMarker>
 {
 	public Transform Transform => AttachedObject.transform;
 }

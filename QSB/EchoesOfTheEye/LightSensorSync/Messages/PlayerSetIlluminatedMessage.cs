@@ -3,7 +3,7 @@ using QSB.Player;
 
 namespace QSB.EchoesOfTheEye.LightSensorSync.Messages;
 
-internal class PlayerSetIlluminatedMessage : QSBMessage<(uint playerId, bool illuminated)>
+public class PlayerSetIlluminatedMessage : QSBMessage<(uint playerId, bool illuminated)>
 {
 	public PlayerSetIlluminatedMessage(uint playerId, bool illuminated) : base((playerId, illuminated)) { }
 

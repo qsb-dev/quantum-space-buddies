@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.Messages;
 
-internal class AirlockInitialStateMessage : QSBWorldObjectMessage<QSBGhostAirlock, (bool innerDoorOpen, bool outerDoorOpen, bool pressurized)>
+public class AirlockInitialStateMessage : QSBWorldObjectMessage<QSBGhostAirlock, (bool innerDoorOpen, bool outerDoorOpen, bool pressurized)>
 {
 	public AirlockInitialStateMessage(bool innerDoorOpen, bool outerDoorOpen, bool pressurized) : base((innerDoorOpen, outerDoorOpen, pressurized)) { }
 

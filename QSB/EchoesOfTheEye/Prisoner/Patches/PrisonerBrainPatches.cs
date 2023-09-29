@@ -11,7 +11,7 @@ using UnityEngine;
 namespace QSB.EchoesOfTheEye.Prisoner.Patches;
 
 [HarmonyPatch(typeof(PrisonerBrain))]
-internal class PrisonerBrainPatches : QSBPatch
+public class PrisonerBrainPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

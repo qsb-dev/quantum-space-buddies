@@ -7,7 +7,8 @@ public abstract class QSBMessage
 	/// <summary>
 	/// set automatically by Send
 	/// </summary>
-	internal uint From;
+	// public so it can be accessed by a patch
+	public uint From;
 	/// <summary>
 	/// (default) uint.MaxValue = send to everyone <br/>
 	/// 0 = send to host
@@ -45,7 +46,8 @@ public abstract class QSBMessage
 
 public abstract class QSBMessage<D> : QSBMessage
 {
-	protected D Data { get; private set; }
+	// public so it can be accessed by a patch
+	public D Data { get; private set; }
 	protected QSBMessage(D data) => Data = data;
 
 	public override void Serialize(NetworkWriter writer)

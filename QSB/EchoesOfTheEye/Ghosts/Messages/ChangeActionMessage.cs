@@ -4,7 +4,7 @@ using QSB.Utility;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class ChangeActionMessage : QSBWorldObjectMessage<QSBGhostBrain, GhostAction.Name>
+public class ChangeActionMessage : QSBWorldObjectMessage<QSBGhostBrain, GhostAction.Name>
 {
 	public ChangeActionMessage(GhostAction.Name name) : base(name) { }
 

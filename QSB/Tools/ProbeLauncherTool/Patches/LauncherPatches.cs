@@ -10,7 +10,7 @@ using QSB.WorldSync;
 namespace QSB.Tools.ProbeLauncherTool.Patches;
 
 [HarmonyPatch]
-internal class LauncherPatches : QSBPatch
+public class LauncherPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

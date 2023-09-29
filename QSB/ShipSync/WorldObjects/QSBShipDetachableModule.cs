@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync.WorldObjects;
 
-internal class QSBShipDetachableModule : LinkedWorldObject<ShipDetachableModule, ShipModuleTransformSync>
+public class QSBShipDetachableModule : LinkedWorldObject<ShipDetachableModule, ShipModuleTransformSync>
 {
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.ShipModulePrefab;
 	protected override bool SpawnWithServerOwnership => true;

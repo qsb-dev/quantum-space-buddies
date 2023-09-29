@@ -3,7 +3,7 @@ using QSB.Player;
 
 namespace QSB.Tools.TranslatorTool.Messages;
 
-internal class TranslatorScrollMessage : QSBMessage<float>
+public class TranslatorScrollMessage : QSBMessage<float>
 {
 	public TranslatorScrollMessage(float scrollPos) : base(scrollPos) { }
 

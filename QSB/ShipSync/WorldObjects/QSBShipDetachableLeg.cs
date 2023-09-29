@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.ShipSync.WorldObjects;
 
-internal class QSBShipDetachableLeg : LinkedWorldObject<ShipDetachableLeg, ShipLegTransformSync>
+public class QSBShipDetachableLeg : LinkedWorldObject<ShipDetachableLeg, ShipLegTransformSync>
 {
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.ShipLegPrefab;
 	protected override bool SpawnWithServerOwnership => true;

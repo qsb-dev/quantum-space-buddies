@@ -3,7 +3,7 @@ using QSB.WorldSync;
 
 namespace QSB.EyeOfTheUniverse.InstrumentSync.WorldObjects;
 
-internal class QSBQuantumInstrument : WorldObject<QuantumInstrument>
+public class QSBQuantumInstrument : WorldObject<QuantumInstrument>
 {
 	public void Gather()
 	{

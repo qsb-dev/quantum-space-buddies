@@ -10,7 +10,7 @@ namespace QSB.SaveSync.Messages;
 /// <summary>
 /// always sent by host
 /// </summary>
-internal class GameStateMessage : QSBMessage
+public class GameStateMessage : QSBMessage
 {
 	private bool WarpedToTheEye;
 	private float SecondsRemainingOnWarp;

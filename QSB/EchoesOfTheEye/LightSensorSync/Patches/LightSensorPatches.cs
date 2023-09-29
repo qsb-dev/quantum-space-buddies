@@ -21,7 +21,7 @@ using UnityEngine;
 namespace QSB.EchoesOfTheEye.LightSensorSync.Patches;
 
 [HarmonyPatch(typeof(SingleLightSensor))]
-internal class LightSensorPatches : QSBPatch
+public class LightSensorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
@@ -132,6 +132,8 @@ internal class LightSensorPatches : QSBPatch
 		UpdateLocalIllumination(__instance);
 		if (!locallyIlluminated && qsbLightSensor._locallyIlluminated)
 		{
+			// force ownership to mask latency
+			qsbLightSensor.ForceOwnership();
 			qsbLightSensor.OnDetectLocalLight?.Invoke();
 		}
 		else if (locallyIlluminated && !qsbLightSensor._locallyIlluminated)

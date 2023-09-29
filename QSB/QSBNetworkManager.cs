@@ -1,6 +1,6 @@
 ﻿using Epic.OnlineServices.Logging;
-using EpicTransport;
 using Mirror;
+using Mirror.FizzySteam;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -36,6 +36,7 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using QSB.API;
 using UnityEngine;
 
 namespace QSB;
@@ -67,8 +68,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 	private (TransportError error, string reason) _lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
 
+	private static LatencySimulation _latencyTransport;
 	private static kcp2k.KcpTransport _kcpTransport;
-	private static EosTransport _eosTransport;
+	private static FizzySteamworks _steamTransport;
 
 	public override void Awake()
 	{
@@ -77,24 +79,20 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
 		}
+
 		{
-			// https://dev.epicgames.com/portal/en-US/qsb/sdk/credentials/qsb
-			var eosApiKey = ScriptableObject.CreateInstance<EosApiKey>();
-			eosApiKey.epicProductName = "QSB";
-			eosApiKey.epicProductVersion = "1.0";
-			eosApiKey.epicProductId = "d4623220acb64419921c72047931b165";
-			eosApiKey.epicSandboxId = "d9bc4035269747668524931b0840ca29";
-			eosApiKey.epicDeploymentId = "1f164829371e4cdcb23efedce98d99ad";
-			eosApiKey.epicClientId = "xyza7891TmlpkaiDv6KAnJH0f07aAbTu";
-			eosApiKey.epicClientSecret = "ft17miukylHF877istFuhTgq+Kw1le3Pfigvf9Dtu20";
-
-			var eosSdkComponent = gameObject.AddComponent<EOSSDKComponent>();
-			eosSdkComponent.apiKeys = eosApiKey;
-			eosSdkComponent.epicLoggerLevel = LogLevel.VeryVerbose;
-
-			_eosTransport = gameObject.AddComponent<EosTransport>();
+			_steamTransport = gameObject.AddComponent<FizzySteamworks>();
 		}
-		transport = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+
+		{
+			_latencyTransport = gameObject.AddComponent<LatencySimulation>();
+			_latencyTransport.reliableLatency = _latencyTransport.unreliableLatency = QSBCore.DebugSettings.LatencySimulation;
+			_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
+		}
+
+		transport = QSBCore.DebugSettings.LatencySimulation > 0
+			? _latencyTransport
+			: QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 
 		gameObject.SetActive(true);
 
@@ -106,52 +104,52 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		playerPrefab = QSBCore.NetworkAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/NETWORK_Player_Body.prefab");
 		playerPrefab.GetRequiredComponent<NetworkIdentity>().SetValue("_assetId", (uint)1);
 
-		ShipPrefab = MakeNewNetworkObject(2, "NetworkShip", typeof(ShipTransformSync));
+		ShipPrefab = MakeNewNetworkObject("NetworkShip", typeof(ShipTransformSync));
 		var shipVector3Sync = ShipPrefab.AddComponent<Vector3VariableSyncer>();
 		var shipThrustSync = ShipPrefab.AddComponent<ShipThrusterVariableSyncer>();
 		shipThrustSync.AccelerationSyncer = shipVector3Sync;
 		spawnPrefabs.Add(ShipPrefab);
 
-		_probePrefab = MakeNewNetworkObject(3, "NetworkProbe", typeof(PlayerProbeSync));
+		_probePrefab = MakeNewNetworkObject("NetworkProbe", typeof(PlayerProbeSync));
 		spawnPrefabs.Add(_probePrefab);
 
-		OrbPrefab = MakeNewNetworkObject(4, "NetworkOrb", typeof(NomaiOrbTransformSync));
+		OrbPrefab = MakeNewNetworkObject("NetworkOrb", typeof(NomaiOrbTransformSync));
 		spawnPrefabs.Add(OrbPrefab);
 
-		AnglerPrefab = MakeNewNetworkObject(5, "NetworkAngler", typeof(AnglerTransformSync));
+		AnglerPrefab = MakeNewNetworkObject("NetworkAngler", typeof(AnglerTransformSync));
 		spawnPrefabs.Add(AnglerPrefab);
 
-		JellyfishPrefab = MakeNewNetworkObject(6, "NetworkJellyfish", typeof(JellyfishTransformSync));
+		JellyfishPrefab = MakeNewNetworkObject("NetworkJellyfish", typeof(JellyfishTransformSync));
 		spawnPrefabs.Add(JellyfishPrefab);
 
-		OccasionalPrefab = MakeNewNetworkObject(7, "NetworkOccasional", typeof(OccasionalTransformSync));
+		OccasionalPrefab = MakeNewNetworkObject("NetworkOccasional", typeof(OccasionalTransformSync));
 		spawnPrefabs.Add(OccasionalPrefab);
 
-		RaftPrefab = MakeNewNetworkObject(8, "NetworkRaft", typeof(RaftTransformSync));
+		RaftPrefab = MakeNewNetworkObject("NetworkRaft", typeof(RaftTransformSync));
 		spawnPrefabs.Add(RaftPrefab);
 
-		DoorPrefab = MakeNewNetworkObject(9, "NetworkEclipseDoor", typeof(EclipseDoorVariableSyncer));
+		DoorPrefab = MakeNewNetworkObject("NetworkEclipseDoor", typeof(EclipseDoorVariableSyncer));
 		spawnPrefabs.Add(DoorPrefab);
 
-		ElevatorPrefab = MakeNewNetworkObject(10, "NetworkEclipseElevator", typeof(EclipseElevatorVariableSyncer));
+		ElevatorPrefab = MakeNewNetworkObject("NetworkEclipseElevator", typeof(EclipseElevatorVariableSyncer));
 		spawnPrefabs.Add(ElevatorPrefab);
 
-		AirlockPrefab = MakeNewNetworkObject(11, "NetworkGhostAirlock", typeof(AirlockVariableSyncer));
+		AirlockPrefab = MakeNewNetworkObject("NetworkGhostAirlock", typeof(AirlockVariableSyncer));
 		spawnPrefabs.Add(AirlockPrefab);
 
-		ShipModulePrefab = MakeNewNetworkObject(12, "NetworkShipModule", typeof(ShipModuleTransformSync));
+		ShipModulePrefab = MakeNewNetworkObject("NetworkShipModule", typeof(ShipModuleTransformSync));
 		spawnPrefabs.Add(ShipModulePrefab);
 
-		ShipLegPrefab = MakeNewNetworkObject(13, "NetworkShipLeg", typeof(ShipLegTransformSync));
+		ShipLegPrefab = MakeNewNetworkObject("NetworkShipLeg", typeof(ShipLegTransformSync));
 		spawnPrefabs.Add(ShipLegPrefab);
 
-		ModelShipPrefab = MakeNewNetworkObject(14, "NetworkModelShip", typeof(ModelShipTransformSync));
+		ModelShipPrefab = MakeNewNetworkObject("NetworkModelShip", typeof(ModelShipTransformSync));
 		var modelShipVector3Syncer = ModelShipPrefab.AddComponent<Vector3VariableSyncer>();
 		var modelShipThrusterVariableSyncer = ModelShipPrefab.AddComponent<ModelShipThrusterVariableSyncer>();
 		modelShipThrusterVariableSyncer.AccelerationSyncer = modelShipVector3Syncer;
 		spawnPrefabs.Add(ModelShipPrefab);
 
-		StationaryProbeLauncherPrefab = MakeNewNetworkObject(15, "NetworkStationaryProbeLauncher", typeof(StationaryProbeLauncherVariableSyncer));
+		StationaryProbeLauncherPrefab = MakeNewNetworkObject("NetworkStationaryProbeLauncher", typeof(StationaryProbeLauncherVariableSyncer));
 		spawnPrefabs.Add(StationaryProbeLauncherPrefab);
 
 		ConfigureNetworkManager();
@@ -163,10 +161,20 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			return;
 		}
+
 		if (singleton != null)
 		{
-			singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _eosTransport;
+			if (QSBCore.DebugSettings.LatencySimulation > 0)
+			{
+				_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
+				singleton.transport = Transport.active = _latencyTransport;
+			}
+			else
+			{
+				singleton.transport = Transport.active = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
+			}
 		}
+
 		if (MenuManager.Instance != null)
 		{
 			MenuManager.Instance.OnLanguageChanged(); // hack to update text
@@ -201,17 +209,15 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 				DebugLog.ToConsole($"Error - Exception when getting player name : {ex}", MessageType.Error);
 				PlayerName = "Player";
 			}
-
-			{
-				EOSSDKComponent.DisplayName = PlayerName;
-			}
 		});
+
+	private static uint _assetId = 2; // 1 is the player
 
 	/// create a new network prefab from the network object prefab template.
 	/// this works by calling Unload(false) and then reloading the AssetBundle,
 	/// which makes LoadAsset give you a new resource.
 	/// see https://docs.unity3d.com/Manual/AssetBundles-Native.html.
-	private static GameObject MakeNewNetworkObject(uint assetId, string name, Type networkBehaviourType)
+	public static GameObject MakeNewNetworkObject(string name, Type networkBehaviourType)
 	{
 		var bundle = QSBCore.Helper.Assets.LoadBundle("AssetBundles/qsb_empty");
 
@@ -225,8 +231,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		bundle.Unload(false);
 
 		template.name = name;
-		template.AddComponent<NetworkIdentity>().SetValue("_assetId", assetId);
+		template.AddComponent<NetworkIdentity>().SetValue("_assetId", _assetId);
 		template.AddComponent(networkBehaviourType);
+
+		_assetId++;
+
 		return template;
 	}
 
@@ -241,7 +250,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 				// hack
 				if (s == "KcpPeer: received disconnect message")
 				{
-					OnClientError(TransportError.ConnectionClosed, "host disconnected");
+					OnClientError(TransportError.ConnectionClosed, s);
 				}
 			};
 			kcp2k.Log.Warning = s => DebugLog.DebugWrite("[KCP] " + s, MessageType.Warning);

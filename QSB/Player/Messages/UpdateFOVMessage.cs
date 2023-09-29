@@ -3,7 +3,7 @@ using QSB.Utility;
 
 namespace QSB.Player.Messages;
 
-internal class UpdateFOVMessage : QSBMessage<float>
+public class UpdateFOVMessage : QSBMessage<float>
 {
 	static UpdateFOVMessage()
 		=> GlobalMessenger<GraphicSettings>.AddListener(

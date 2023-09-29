@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.Messages;
 
-internal class SetRangeMessage : QSBWorldObjectMessage<QSBDreamLanternController, (float minRange, float maxRange)>
+public class SetRangeMessage : QSBWorldObjectMessage<QSBDreamLanternController, (float minRange, float maxRange)>
 {
 	public SetRangeMessage(float minRange, float maxRange) : base((minRange, maxRange)) { }
 

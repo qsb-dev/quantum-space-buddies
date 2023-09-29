@@ -8,6 +8,9 @@ public class DebugSettings
 	[JsonProperty("dumpWorldObjects")]
 	public bool DumpWorldObjects;
 
+	[JsonProperty("logQSBMessages")]
+	public bool LogQSBMessages;
+
 	[JsonProperty("instanceIdInLogs")]
 	public bool InstanceIdInLogs;
 
@@ -25,6 +28,9 @@ public class DebugSettings
 
 	[JsonProperty("disableLoopDeath")]
 	public bool DisableLoopDeath;
+
+	[JsonProperty("latencySimulation")]
+	public int LatencySimulation;
 
 	[JsonProperty("debugMode")]
 	public bool DebugMode;

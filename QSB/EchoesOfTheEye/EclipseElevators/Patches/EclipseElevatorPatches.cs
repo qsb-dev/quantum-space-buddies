@@ -7,7 +7,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.EclipseElevators.Patches;
 
-internal class EclipseElevatorPatches : QSBPatch
+public class EclipseElevatorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

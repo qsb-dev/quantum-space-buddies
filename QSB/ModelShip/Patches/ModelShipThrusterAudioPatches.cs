@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace QSB.ModelShip.Patches;
 
-internal class ModelShipThrusterAudioPatches : QSBPatch
+public class ModelShipThrusterAudioPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

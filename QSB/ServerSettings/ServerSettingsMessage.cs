@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.ServerSettings;
 
-internal class ServerSettingsMessage : QSBMessage
+public class ServerSettingsMessage : QSBMessage
 {
 	private bool _showPlayerNames;
 

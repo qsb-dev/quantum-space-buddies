@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.Player;
 
-internal class PlayerEntanglementWatcher : MonoBehaviour, IAddComponentOnStart
+public class PlayerEntanglementWatcher : MonoBehaviour, IAddComponentOnStart
 {
 	private QuantumObject _previousCollidingQuantumObject;
 

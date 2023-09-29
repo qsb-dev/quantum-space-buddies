@@ -6,7 +6,7 @@ using QSB.Utility;
 
 namespace QSB.DeathSync.Messages;
 
-internal class StartLoopMessage : QSBMessage
+public class StartLoopMessage : QSBMessage
 {
 	public override void OnReceiveLocal() => OnReceiveRemote();
 

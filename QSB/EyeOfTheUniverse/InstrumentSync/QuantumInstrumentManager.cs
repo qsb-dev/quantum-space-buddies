@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.EyeOfTheUniverse.InstrumentSync;
 
-internal class QuantumInstrumentManager : WorldObjectManager
+public class QuantumInstrumentManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.Eye;
 

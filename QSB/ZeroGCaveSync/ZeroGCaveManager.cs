@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace QSB.ZeroGCaveSync;
 
-internal class ZeroGCaveManager : WorldObjectManager
+public class ZeroGCaveManager : WorldObjectManager
 {
 	public override WorldObjectScene WorldObjectScene => WorldObjectScene.SolarSystem;
 

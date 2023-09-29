@@ -4,7 +4,7 @@ using QSB.Utility;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class FaceVelocityMessage : QSBWorldObjectMessage<QSBGhostController>
+public class FaceVelocityMessage : QSBWorldObjectMessage<QSBGhostController>
 {
 	public override void OnReceiveRemote()
 	{

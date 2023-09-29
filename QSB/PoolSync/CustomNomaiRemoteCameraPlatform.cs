@@ -6,11 +6,12 @@ using QSB.Player.Messages;
 using QSB.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace QSB.PoolSync;
 
-internal class CustomNomaiRemoteCameraPlatform : NomaiShared
+public class CustomNomaiRemoteCameraPlatform : NomaiShared
 {
 	public static List<CustomNomaiRemoteCameraPlatform> CustomPlatformList;
 	private static MaterialPropertyBlock s_matPropBlock;
@@ -516,8 +517,16 @@ internal class CustomNomaiRemoteCameraPlatform : NomaiShared
 
 	private void SwitchToPlayerCamera()
 	{
-		// does nothing except run CCU's prefix
-		_oldPlatform.SwitchToPlayerCamera();
+		if (QSBCore.Helper.Interaction.ModExists("xen.CommonCameraUtility"))
+		{
+			// this is a really fucking dumb fix, but i cannot be
+			// bothered to rewrite this class to make this work better
+			var ccuAssembly = QSBCore.Helper.Interaction.TryGetMod("xen.CommonCameraUtility").GetType().Assembly;
+			var utilClass = ccuAssembly.GetType("CommonCameraUtil.CommonCameraUtil");
+			var instance = utilClass.GetField("Instance", BindingFlags.Public | BindingFlags.Static).GetValue(null);
+			var removeCameraMethod = utilClass.GetMethod("RemoveCamera", BindingFlags.Public | BindingFlags.Instance);
+			removeCameraMethod.Invoke(instance, new object[] { _slavePlatform._ownedCamera._camera });
+		}
 
 		if (_slavePlatform._visualSector != null)
 		{

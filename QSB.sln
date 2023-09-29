@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2569F98D-F671-42AA-82DE-505B05CDCEF2}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		DEVELOPMENT.md = DEVELOPMENT.md
 		LICENSE = LICENSE
 		README.md = README.md
 		TRANSLATING.md = TRANSLATING.md
@@ -15,9 +16,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MirrorWeaver", "MirrorWeaver\MirrorWeaver.csproj", "{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicOnlineTransport", "EpicOnlineTransport\EpicOnlineTransport.csproj", "{971AA4A1-6729-40DE-AADF-2754F1E8783A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FizzySteamworks", "FizzySteamworks\FizzySteamworks.csproj", "{D47034D8-B92D-47DA-884C-C76F735E2D5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicRerouter", "EpicRerouter\EpicRerouter.csproj", "{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamRerouter", "SteamRerouter\SteamRerouter.csproj", "{750563ED-4F2A-42DD-81A3-3A85DEBB691E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mirror", "Mirror", "{851AB4AD-366C-4D69-9F4E-E9EDC7CCD2BB}"
+	ProjectSection(SolutionItems) = preProject
+		Mirror\kcp2k.dll = Mirror\kcp2k.dll
+		Mirror\Mirror.Components.dll = Mirror\Mirror.Components.dll
+		Mirror\Mirror.dll = Mirror\Mirror.dll
+		Mirror\Mirror.Transports.dll = Mirror\Mirror.Transports.dll
+		Mirror\Telepathy.dll = Mirror\Telepathy.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APITestMod", "APITestMod\APITestMod.csproj", "{0A10143E-6C00-409B-B3A5-C54C1B01599D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,17 +45,24 @@ Global
 		{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{971AA4A1-6729-40DE-AADF-2754F1E8783A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{971AA4A1-6729-40DE-AADF-2754F1E8783A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{971AA4A1-6729-40DE-AADF-2754F1E8783A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{971AA4A1-6729-40DE-AADF-2754F1E8783A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{639EFAEE-C4A1-4DA2-8457-D0472A9F6343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D47034D8-B92D-47DA-884C-C76F735E2D5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D47034D8-B92D-47DA-884C-C76F735E2D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D47034D8-B92D-47DA-884C-C76F735E2D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D47034D8-B92D-47DA-884C-C76F735E2D5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A10143E-6C00-409B-B3A5-C54C1B01599D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{851AB4AD-366C-4D69-9F4E-E9EDC7CCD2BB} = {2569F98D-F671-42AA-82DE-505B05CDCEF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {59091249-7726-4F95-86E2-3C3278C9CB9B}

@@ -8,7 +8,7 @@ using QSB.WorldSync;
 namespace QSB.ShipSync.Patches;
 
 [HarmonyPatch(typeof(ShipDetachableModule))]
-internal class ShipDetachableModulePatches : QSBPatch
+public class ShipDetachableModulePatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

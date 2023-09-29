@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class PlayVoiceAudioMessage : QSBWorldObjectMessage<QSBGhostEffects, (AudioType audioType, float volumeScale, bool near)>
+public class PlayVoiceAudioMessage : QSBWorldObjectMessage<QSBGhostEffects, (AudioType audioType, float volumeScale, bool near)>
 {
 	public PlayVoiceAudioMessage(AudioType audioType, float volumeScale, bool near) : base((audioType, volumeScale, near)) { }
 

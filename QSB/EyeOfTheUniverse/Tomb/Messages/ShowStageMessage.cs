@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.Tomb.Messages;
 
-internal class ShowStageMessage : QSBMessage
+public class ShowStageMessage : QSBMessage
 {
 	public override void OnReceiveRemote()
 	{

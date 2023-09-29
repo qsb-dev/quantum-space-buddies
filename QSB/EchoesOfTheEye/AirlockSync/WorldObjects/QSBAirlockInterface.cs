@@ -5,11 +5,14 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.AirlockSync.WorldObjects;
 
-internal class QSBAirlockInterface : QSBRotatingElements<AirlockInterface, AirlockVariableSyncer>
+public class QSBAirlockInterface : QSBRotatingElements<AirlockInterface, AirlockVariableSyncer>
 {
 	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._lightSensors;
-
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.AirlockPrefab;
+
+	// RotatingElements normally releases authority when not longer being lit
+	// force the airlocks to keep network updating when they could still be moving
+	protected override bool LockedActive => AttachedObject.enabled;
 
 	public override string ReturnLabel()
 	{

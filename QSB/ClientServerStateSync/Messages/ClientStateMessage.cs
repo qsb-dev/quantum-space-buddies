@@ -8,7 +8,7 @@ namespace QSB.ClientServerStateSync.Messages;
 /// <summary>
 /// sets the state both locally and remotely
 /// </summary>
-internal class ClientStateMessage : QSBMessage<ClientState>
+public class ClientStateMessage : QSBMessage<ClientState>
 {
 	public ClientStateMessage(ClientState state) : base(state) { }
 

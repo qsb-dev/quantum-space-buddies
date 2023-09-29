@@ -16,7 +16,7 @@ public class PlanetTrigger : SectoredMonoBehaviour
 		}
 
 		MultiplayerHUDManager.HUDIconStack.Push(Icon);
-		var top = MultiplayerHUDManager.HUDIconStack.Peek();
+		var top = MultiplayerHUDManager.HUDIconStack.PeekFront();
 		new PlanetMessage(top).Send();
 	}
 
@@ -28,7 +28,7 @@ public class PlanetTrigger : SectoredMonoBehaviour
 		}
 
 		MultiplayerHUDManager.HUDIconStack.Remove(Icon);
-		var top = MultiplayerHUDManager.HUDIconStack.Peek();
+		var top = MultiplayerHUDManager.HUDIconStack.PeekFront();
 		new PlanetMessage(top).Send();
 	}
 }

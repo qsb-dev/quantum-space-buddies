@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QSB.Tools.TranslatorTool;
 
 [UsedInUnityProject]
-internal class QSBTranslatorScanBeam : MonoBehaviour
+public class QSBTranslatorScanBeam : MonoBehaviour
 {
 	public Renderer _projectorRenderer;
 	public Renderer _lightVolumeRenderer;

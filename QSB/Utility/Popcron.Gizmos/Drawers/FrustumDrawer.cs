@@ -2,7 +2,7 @@
 
 namespace Popcron
 {
-	internal class FrustumDrawer : Drawer
+	public class FrustumDrawer : Drawer
 	{
 		public FrustumDrawer()
 		{

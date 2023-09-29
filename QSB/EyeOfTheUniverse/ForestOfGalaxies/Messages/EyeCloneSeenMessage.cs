@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.ForestOfGalaxies.Messages;
 
-internal class EyeCloneSeenMessage : QSBMessage
+public class EyeCloneSeenMessage : QSBMessage
 {
 
 	public override bool ShouldReceive => QSBWorldSync.AllObjectsReady;

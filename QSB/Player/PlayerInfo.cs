@@ -1,16 +1,19 @@
 ﻿using OWML.Common;
 using QSB.Animation.Player;
+using QSB.API.Messages;
 using QSB.Audio;
 using QSB.ClientServerStateSync;
 using QSB.HUD;
 using QSB.Messaging;
 using QSB.ModelShip;
+using QSB.Patches;
 using QSB.Player.Messages;
 using QSB.Player.TransformSync;
 using QSB.QuantumSync.WorldObjects;
 using QSB.ShipSync;
 using QSB.Tools;
 using QSB.Utility;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -176,6 +179,29 @@ public partial class PlayerInfo
 		IsDead = false;
 		SetVisible(true, 1);
 		HUDBox.OnRespawn();
+	}
+
+	// internal for RequestStateResyncMessage
+	internal readonly Dictionary<string, object> _customData = new();
+
+	public void SetCustomData<T>(string key, T data)
+	{
+		_customData[key] = data;
+
+		if (!QSBPatch.Remote && typeof(T).IsSerializable)
+		{
+			new AddonCustomDataSyncMessage(PlayerId, key, data).Send();
+		}
+	}
+
+	public T GetCustomData<T>(string key)
+	{
+		if (!_customData.TryGetValue(key, out var value))
+		{
+			return default;
+		}
+
+		return (T)value;
 	}
 
 	public override string ToString() => $"{PlayerId}:{GetType().Name} ({Name})";

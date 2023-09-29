@@ -1,6 +1,6 @@
 ﻿namespace QSB.QuantumSync.WorldObjects;
 
-internal class QSBEyeProxyQuantumMoon : QSBQuantumObject<EyeProxyQuantumMoon>
+public class QSBEyeProxyQuantumMoon : QSBQuantumObject<EyeProxyQuantumMoon>
 {
 	public override bool HostControls => true;
 

@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace QSB.QuantumSync.WorldObjects;
 
-internal class QSBMultiStateQuantumObject : QSBQuantumObject<MultiStateQuantumObject>
+public class QSBMultiStateQuantumObject : QSBQuantumObject<MultiStateQuantumObject>
 {
 	public List<QSBQuantumState> QuantumStates { get; private set; }
 	public int CurrentState => AttachedObject._stateIndex;

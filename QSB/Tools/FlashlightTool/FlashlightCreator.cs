@@ -2,7 +2,7 @@
 
 namespace QSB.Tools.FlashlightTool;
 
-internal static class FlashlightCreator
+public static class FlashlightCreator
 {
 	internal static void CreateFlashlight(PlayerInfo player)
 	{

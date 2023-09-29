@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>APITestMod</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\_nebula.QSBAPITest</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.9.7" IncludeAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="manifest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

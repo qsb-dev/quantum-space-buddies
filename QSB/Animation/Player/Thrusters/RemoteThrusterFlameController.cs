@@ -6,7 +6,7 @@ using UnityEngine;
 namespace QSB.Animation.Player.Thrusters;
 
 [UsedInUnityProject]
-internal class RemoteThrusterFlameController : MonoBehaviour
+public class RemoteThrusterFlameController : MonoBehaviour
 {
 	[SerializeField]
 	private Thruster _thruster;

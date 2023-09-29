@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.SaveSync.Messages;
 
-internal class ShipLogFactSaveMessage : QSBMessage
+public class ShipLogFactSaveMessage : QSBMessage
 {
 	private string _id;
 	private int _revealOrder;

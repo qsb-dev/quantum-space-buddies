@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Actions;
 
-internal class QSBChaseAction : QSBGhostAction
+public class QSBChaseAction : QSBGhostAction
 {
 	private float _lastScreamTime;
 

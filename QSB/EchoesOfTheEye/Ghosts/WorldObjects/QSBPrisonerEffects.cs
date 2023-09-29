@@ -2,7 +2,7 @@
 
 namespace QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 
-internal class QSBPrisonerEffects : QSBGhostEffects
+public class QSBPrisonerEffects : QSBGhostEffects
 {
 	public override void PlaySleepAnimation(bool remote = false)
 	{

@@ -2,7 +2,7 @@
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap;
 
-internal class QSBDialogueNode
+public class QSBDialogueNode
 {
 	private List<string> _listPagesToDisplay;
 

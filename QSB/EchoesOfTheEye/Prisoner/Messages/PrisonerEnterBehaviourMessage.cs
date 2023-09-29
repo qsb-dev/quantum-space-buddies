@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.Prisoner.Messages;
 
-internal class PrisonerEnterBehaviourMessage : QSBWorldObjectMessage<QSBPrisonerBrain, (PrisonerBehavior behaviour, int markerIndex)>
+public class PrisonerEnterBehaviourMessage : QSBWorldObjectMessage<QSBPrisonerBrain, (PrisonerBehavior behaviour, int markerIndex)>
 {
 	public PrisonerEnterBehaviourMessage(PrisonerBehavior behaviour, PrisonerBehaviourCueMarker marker)
 		: base((behaviour, marker != null ? marker.GetWorldObject<QSBPrisonerMarker>().ObjectId : -1)) { }

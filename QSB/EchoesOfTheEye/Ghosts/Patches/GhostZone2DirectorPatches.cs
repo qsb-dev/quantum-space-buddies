@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Patches;
 
-internal class GhostZone2DirectorPatches : QSBPatch
+public class GhostZone2DirectorPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

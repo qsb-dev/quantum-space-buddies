@@ -1,6 +1,6 @@
 ﻿namespace QSB.QuantumSync.WorldObjects;
 
-internal class QSBQuantumShuffleObject : QSBQuantumObject<QuantumShuffleObject>
+public class QSBQuantumShuffleObject : QSBQuantumObject<QuantumShuffleObject>
 {
 	public override void SendInitialState(uint to)
 	{

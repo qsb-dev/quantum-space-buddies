@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Messages;
 
-internal class Zone2ElevatorStateMessage : QSBMessage<(int index, Zone2ElevatorState state)>
+public class Zone2ElevatorStateMessage : QSBMessage<(int index, Zone2ElevatorState state)>
 {
 	public Zone2ElevatorStateMessage(int index, Zone2ElevatorState state) : base((index, state)) { }
 

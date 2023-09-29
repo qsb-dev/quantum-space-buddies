@@ -9,12 +9,14 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace QSB.HUD;
 
-internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
+public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static MultiplayerHUDManager Instance;
 
@@ -39,6 +41,9 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	public static Sprite WhiteHole;
 
 	public static readonly ListStack<HUDIcon> HUDIconStack = new(true);
+
+	public class ChatEvent : UnityEvent<string, uint> { }
+	public static readonly ChatEvent OnChatMessageEvent = new();
 
 	private void Start()
 	{
@@ -65,23 +70,36 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		SpaceSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_space.png");
 	}
 
-	private const int LINE_COUNT = 11;
-	private const int CHAR_COUNT = 41;
+	private const int LINE_COUNT = 10;
+	private const int CHAR_COUNT = 33;
 	private const float FADE_DELAY = 5f;
 	private const float FADE_TIME = 2f;
 
 	private bool _writingMessage;
-	private readonly string[] _lines = new string[LINE_COUNT];
+	private readonly (string msg, Color color)[] _lines = new (string msg, Color color)[LINE_COUNT];
 	// this should really be a deque, but eh
-	private readonly ListStack<string> _messages = new(false);
+	private readonly ListStack<(string msg, Color color)> _messages = new(false);
 	private float _lastMessageTime;
 
-	public void WriteMessage(string message)
+	// this just exists so i can patch this in my tts addon
+	// perks of being a qsb dev :-)
+	public void WriteSystemMessage(string message, Color color)
 	{
+		WriteMessage($"QSB: {message}", color);
+		OnChatMessageEvent.Invoke(message, uint.MaxValue);
+	}
+
+	public void WriteMessage(string message, Color color)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
 		/* Tricky problem to solve.
 		 * - 11 available lines for text to fit onto
 		 * - Each line can be max 41 characters
-		 * - Newest messages apepear at the bottom, and get pushed up by newer messages.
+		 * - Newest messages appear at the bottom, and get pushed up by newer messages.
 		 * - Messages can use several lines.
 		 * 
 		 * From newest to oldest message, work out how many lines it needs
@@ -90,18 +108,18 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 		_lastMessageTime = Time.time;
 
-		_messages.Push(message);
+		_messages.Push((message, color));
 
 		if (_messages.Count > LINE_COUNT)
 		{
-			_messages.RemoveFirstElementAndShift();
+			_messages.PopFromBack();
 		}
 
-		var currentLineIndex = 10;
+		var currentLineIndex = LINE_COUNT - 1;
 
 		foreach (var msg in _messages.Reverse())
 		{
-			var characterCount = msg.Length;
+			var characterCount = msg.msg.Length;
 			var linesNeeded = Mathf.CeilToInt((float)characterCount / CHAR_COUNT);
 			var chunk = 0;
 			for (var i = linesNeeded - 1; i >= 0; i--)
@@ -112,8 +130,8 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 					continue;
 				}
 
-				var chunkString = string.Concat(msg.Skip(CHAR_COUNT * chunk).Take(CHAR_COUNT));
-				_lines[currentLineIndex - i] = chunkString;
+				var chunkString = string.Concat(msg.msg.Skip(CHAR_COUNT * chunk).Take(CHAR_COUNT));
+				_lines[currentLineIndex - i] = (chunkString, msg.color);
 				chunk++;
 			}
 
@@ -128,17 +146,20 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		var finalText = "";
 		foreach (var line in _lines)
 		{
+			var msgColor = ColorUtility.ToHtmlStringRGBA(line.color);
+			var msg = $"<color=#{msgColor}>{line.msg}</color>";
+
 			if (line == default)
 			{
 				finalText += Environment.NewLine;
 			}
-			else if (line.Length == 42)
+			else if (line.msg.Length == CHAR_COUNT + 1)
 			{
-				finalText += line;
+				finalText += msg;
 			}
 			else
 			{
-				finalText += $"{line}{Environment.NewLine}";
+				finalText += $"{msg}{Environment.NewLine}";
 			}
 		}
 
@@ -150,7 +171,11 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			audioController.PlayNotificationTextScrolling();
 			Delay.RunFramesLater(10, () => audioController.StopNotificationTextScrolling());
 		}
+
+		_textChat.GetComponent<CanvasGroup>().alpha = 1;
 	}
+
+	ListStack<string> previousMessages = new(true);
 
 	private void Update()
 	{
@@ -163,12 +188,39 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 		var inSuit = Locator.GetPlayerSuit().IsWearingHelmet();
 
-		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) && !_writingMessage && inSuit)
+		if ((OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.Character) || (Keyboard.current[Key.Slash].wasPressedThisFrame && OWInput.IsInputMode(InputMode.Character)))
+			&& !_writingMessage && inSuit && QSBCore.TextChatInput)
 		{
 			OWInput.ChangeInputMode(InputMode.KeyboardInput);
 			_writingMessage = true;
 			_inputField.ActivateInputField();
 			_textChat.GetComponent<CanvasGroup>().alpha = 1;
+
+			if (Keyboard.current[Key.Slash].wasPressedThisFrame)
+			{
+				Delay.RunNextFrame(() => _inputField.text = "/");
+			}
+		}
+
+		if (Keyboard.current[Key.UpArrow].wasPressedThisFrame && _writingMessage)
+		{
+			var currentText = _inputField.text;
+
+			if (previousMessages.Contains(currentText))
+			{
+				var index = previousMessages.IndexOf(currentText);
+
+				if (index == 0)
+				{
+					return;
+				}
+
+				_inputField.text = previousMessages[index - 1];
+			}
+			else
+			{
+				_inputField.text = previousMessages.Last();
+			}
 		}
 
 		if (OWInput.IsNewlyPressed(InputLibrary.enter, InputMode.KeyboardInput) && _writingMessage)
@@ -180,8 +232,16 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			var message = _inputField.text;
 			_inputField.text = "";
 			message = message.Replace("\n", "").Replace("\r", "");
+
+			previousMessages.Push(message);
+
+			if (QSBCore.DebugSettings.DebugMode && CommandInterpreter.InterpretCommand(message))
+			{
+				return;
+			}
+			
 			message = $"{QSBPlayerManager.LocalPlayer.Name}: {message}";
-			new ChatMessage(message).Send();
+			new ChatMessage(message, Color.white).Send();
 		}
 
 		if (OWInput.IsNewlyPressed(InputLibrary.escape, InputMode.KeyboardInput) && _writingMessage)
@@ -223,7 +283,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			rect.anchorMax = new Vector2(1, 0.5f);
 			rect.sizeDelta = new Vector2(100, 100);
 			rect.anchoredPosition3D = new Vector3(-267, 0, 0);
-			rect.localRotation = Quaternion.Euler(0, 55, 0);
+			rect.localRotation = Quaternion.identity;
 			rect.localScale = Vector3.one;
 		});
 
@@ -260,6 +320,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		var inputFieldGO = _textChat.Find("InputField");
 		_inputField = inputFieldGO.GetComponent<InputField>();
 		_inputField.text = "";
+		_inputField.characterLimit = 256;
 		_textChat.Find("Messages").Find("Message").GetComponent<Text>().text = "";
 		_lines.Clear();
 		_messages.Clear();
@@ -396,7 +457,7 @@ internal class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		Destroy(player.HUDBox?.gameObject);
 		Destroy(player.MinimapPlayerMarker);
 
-		WriteMessage($"<color=yellow>{string.Format(QSBLocalization.Current.PlayerLeftTheGame, player.Name)}</color>");
+		WriteSystemMessage(string.Format(QSBLocalization.Current.PlayerLeftTheGame, player.Name), Color.yellow);
 	}
 
 	private PlanetTrigger CreateTrigger(string parentPath, HUDIcon icon)
