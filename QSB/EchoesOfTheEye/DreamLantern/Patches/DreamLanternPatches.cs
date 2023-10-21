@@ -132,7 +132,7 @@ public class DreamLanternPatches : QSBPatch
 	public static void Awake(DreamLanternController __instance)
 	{
 		__instance._lensFlare.brightness = 0.5f; // ghost lanterns use this
-		// also has more blue lens flare. keep it like that for gameplay or wtv
+		// also has blue lens flare instead of green. keep it like that for gameplay or wtv
 	}
 
 	[HarmonyPrefix]
