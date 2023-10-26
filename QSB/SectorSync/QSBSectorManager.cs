@@ -103,7 +103,11 @@ public class QSBSectorManager : WorldObjectManager
 		{
 			// just create a sphere at the attach point lol
 			// since players will be moved there when riding the elevator
-			FakeSector.Create(elevator._attachPoint.gameObject,
+			// --
+			// The log lift needs the attach point on the game object itself to
+			// sync player attachment properly.
+			var go = elevator.name == "LogLift" ? elevator.gameObject : elevator._attachPoint.gameObject;
+			FakeSector.Create(go,
 				elevator.GetComponentInParent<Sector>(),
 				x =>
 				{
