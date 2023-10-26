@@ -12,16 +12,23 @@ namespace QSB.ElevatorSync.WorldObjects;
 public class QSBElevator : WorldObject<Elevator>
 {
 	private OWTriggerVolume _elevatorTrigger;
-	private bool IsLogLift => Name == "LogLift";
 
-	// Used by log lift to reset attach position
+	// Used to reset attach position. This is in local space.
 	public Vector3 originalAttachPosition;
 
 	public override async UniTask Init(CancellationToken ct)
 	{
 		var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
 		boxShape.center = new Vector3(0, 1.75f, 0.25f);
-		boxShape.size = new Vector3(3, 3.5f, 3);
+
+		if (Name == "LogLift")
+		{
+			boxShape.size = new Vector3(5, 3.5f, 8);
+		}
+		else
+		{
+			boxShape.size = new Vector3(3, 3.5f, 3);
+		}
 
 		_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
 		originalAttachPosition = AttachedObject._attachPoint.transform.localPosition;
@@ -41,11 +48,7 @@ public class QSBElevator : WorldObject<Elevator>
 		if (_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
 		{
 			var attachPoint = AttachedObject._attachPoint;
-			if (IsLogLift)
-			{
-				attachPoint.transform.position = Locator.GetPlayerTransform().position;
-				QSBCore.Helper.Console.WriteLine($"Moved the anchor point to {attachPoint.transform.position}");
-			}
+			attachPoint.transform.position = Locator.GetPlayerTransform().position;
 
 			attachPoint.AttachPlayer();
 			if (Locator.GetPlayerSuit().IsWearingSuit() && Locator.GetPlayerSuit().IsTrainingSuit())
@@ -55,16 +58,14 @@ public class QSBElevator : WorldObject<Elevator>
 		}
 
 		AttachedObject.StartLift();
-		
-		if (IsLogLift)
+
+		// Runs when the lift/elevator is done moving.
+		// Reset the position of the attach point.
+		Delay.RunWhen(() => !AttachedObject.enabled, () =>
 		{
-			// Runs when the lift is done moving.
-			// Reset the position of the attach point.
-			Delay.RunWhen(() => !AttachedObject.enabled, () =>
-			{
-				AttachedObject._attachPoint.transform.localPosition = originalAttachPosition;
-			});
-		}
+			AttachedObject._attachPoint.transform.localPosition = originalAttachPosition;
+		});
+	
 	}
 
 	private void SetDirection(bool isGoingUp)
@@ -76,9 +77,6 @@ public class QSBElevator : WorldObject<Elevator>
 
 	public override void DisplayLines()
 	{
-		//Popcron.Gizmos.Sphere(AttachedObject._attachPoint.transform.position, 0.5f, Color.blue);
-		//Popcron.Gizmos.Sphere(originalAttachPosition, 0.5f, Color.magenta);
-
 		var boxShape = (BoxShape)_elevatorTrigger._shape;
 		Popcron.Gizmos.Cube(
 			ShapeUtil.Box.CalcWorldSpaceCenter(boxShape),
