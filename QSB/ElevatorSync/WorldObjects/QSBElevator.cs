@@ -41,10 +41,10 @@ public class QSBElevator : WorldObject<Elevator>
 		if (_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
 		{
 			var attachPoint = AttachedObject._attachPoint;
-            if (IsLogLift)
+			if (IsLogLift)
 			{
-                attachPoint.transform.position = Locator.GetPlayerTransform().position;
-                QSBCore.Helper.Console.WriteLine($"Moved the anchor point to {attachPoint.transform.position}");
+				attachPoint.transform.position = Locator.GetPlayerTransform().position;
+				QSBCore.Helper.Console.WriteLine($"Moved the anchor point to {attachPoint.transform.position}");
 			}
 
 			attachPoint.AttachPlayer();
