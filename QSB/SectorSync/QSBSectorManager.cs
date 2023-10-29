@@ -101,18 +101,9 @@ public class QSBSectorManager : WorldObjectManager
 		// TH elevators
 		foreach (var elevator in QSBWorldSync.GetUnityObjects<Elevator>())
 		{
-			// just create a sphere at the attach point lol
-			// since players will be moved there when riding the elevator
-			// --
-			// The attach point on the game object itself to
-			// sync player attachment properly.
 			FakeSector.Create(elevator.gameObject,
 				elevator.GetComponentInParent<Sector>(),
-				x =>
-				{
-					x.gameObject.AddComponent<OWTriggerVolume>();
-					x.gameObject.AddComponent<SphereShape>();
-				});
+				x => x._triggerRoot = elevator.gameObject);
 		}
 
 		// rafts

@@ -19,15 +19,16 @@ public class QSBElevator : WorldObject<Elevator>
 	public override async UniTask Init(CancellationToken ct)
 	{
 		var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
-		boxShape.center = new Vector3(0, 1.75f, 0.25f);
 
 		if (Name == "LogLift")
 		{
-			boxShape.size = new Vector3(5, 3.5f, 8);
+			boxShape.size = new Vector3(4.6f, 3.5f, 12);
+			boxShape.center = new Vector3(0.1f, 1.75f, 1.3f);
 		}
 		else
 		{
 			boxShape.size = new Vector3(3, 3.5f, 3);
+			boxShape.center = new Vector3(0, 1.75f, 0.25f);
 		}
 
 		_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
