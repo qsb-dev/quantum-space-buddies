@@ -8,7 +8,7 @@
 		"body": "- Disable *all* other mods. (Can heavily affect performance)\n- Make sure you are not running any other network-intensive applications."
 	},
 	"uniqueName": "Raicuparta.QuantumSpaceBuddies",
-	"version": "0.31.1",
+	"version": "1.0.0",
 	"owmlVersion": "2.9.8",
 	"dependencies": [ "_nebula.MenuFramework", "JohnCorby.VanillaFix" ],
 	"pathsToPreserve": [ "debugsettings.json" ],

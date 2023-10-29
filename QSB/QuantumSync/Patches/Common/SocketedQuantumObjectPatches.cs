@@ -18,6 +18,11 @@ public class SocketedQuantumObjectPatches : QSBPatch
 {
 	public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 
+	/// <summary>
+	/// we dont want to send messages when testing sockets
+	/// </summary>
+	public static bool TestSocketMove = false;
+
 	[HarmonyPrefix]
 	[HarmonyPatch(nameof(SocketedQuantumObject.ChangeQuantumState))]
 	public static bool ChangeQuantumState(
@@ -32,6 +37,10 @@ public class SocketedQuantumObjectPatches : QSBPatch
 			{
 				return false;
 			}
+		}
+		else
+		{
+			return true;
 		}
 
 		foreach (var socket in __instance._childSockets)
@@ -77,9 +86,15 @@ public class SocketedQuantumObjectPatches : QSBPatch
 		for (var i = 0; i < 20; i++)
 		{
 			var index = Random.Range(0, list.Count);
+			TestSocketMove = true;
 			__instance.MoveToSocket(list[index]);
+			TestSocketMove = false;
 			if (skipInstantVisibilityCheck)
 			{
+				if (__instance.GetWorldObject<QSBSocketedQuantumObject>().ControllingPlayer == QSBPlayerManager.LocalPlayerId)
+				{
+					__instance.GetWorldObject<QSBSocketedQuantumObject>().SendMessage(new SocketStateChangeMessage(list[index].GetWorldObject<QSBQuantumSocket>().ObjectId, __instance.transform.localRotation));
+				}
 				__result = true;
 				return false;
 			}
@@ -104,12 +119,16 @@ public class SocketedQuantumObjectPatches : QSBPatch
 				else
 				{
 					// socket not suitable if player is inside object
-					socketNotSuitable = playersEntangled.Any(x => __instance.CheckPointInside(x.CameraBody.transform.position));
+					socketNotSuitable = QSBPlayerManager.PlayerList.Any(x => __instance.CheckPointInside(x.CameraBody.transform.position));
 				}
 			}
 
 			if (!socketNotSuitable)
 			{
+				if (__instance.GetWorldObject<QSBSocketedQuantumObject>().ControllingPlayer == QSBPlayerManager.LocalPlayerId)
+				{
+					__instance.GetWorldObject<QSBSocketedQuantumObject>().SendMessage(new SocketStateChangeMessage(list[index].GetWorldObject<QSBQuantumSocket>().ObjectId, __instance.transform.localRotation));
+				}
 				__result = true;
 				return false;
 			}
@@ -121,7 +140,9 @@ public class SocketedQuantumObjectPatches : QSBPatch
 			}
 		}
 
+		TestSocketMove = true;
 		__instance.MoveToSocket(occupiedSocket);
+		TestSocketMove = false;
 		__result = false;
 		return false;
 	}
@@ -131,6 +152,11 @@ public class SocketedQuantumObjectPatches : QSBPatch
 	public static void MoveToSocket(SocketedQuantumObject __instance, QuantumSocket socket)
 	{
 		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
+		if (TestSocketMove)
 		{
 			return;
 		}

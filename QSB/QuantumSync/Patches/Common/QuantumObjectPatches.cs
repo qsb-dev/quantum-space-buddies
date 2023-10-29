@@ -28,6 +28,8 @@ public class QuantumObjectPatches : QSBPatch
 	{
 		if (QSBWorldSync.AllObjectsReady)
 		{
+			// non-owners should still be able to set it quantum
+			// ie the eye reibeck building if a non owner walks over to it
 			__instance.GetWorldObject<IQSBQuantumObject>().SendMessage(new SetIsQuantumMessage(__instance.IsQuantum()));
 		}
 	}

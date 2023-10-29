@@ -31,8 +31,8 @@
   <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)')">
     <ItemGroup>
       <_Files Remove="@(_Files)" />
-      <_Files Include="$(OutputPath)\*.dll" />
-      <_Files Include="$(OutputPath)\*.exe" />
+      <_Files Include="$(OutputPath)/*.dll" />
+      <_Files Include="$(OutputPath)/*.exe" />
     </ItemGroup>
     <Copy SourceFiles="@(_Files)" DestinationFolder="$(UnityDllsDir)" />
   </Target>
@@ -69,12 +69,14 @@
     <None Condition="Exists('debugsettings.json')" Include="debugsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\Lib\*.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.14.768" IncludeAssets="compile" />
     <PackageReference Include="OWML" Version="2.9.8" IncludeAssets="compile" />
-    <Reference Include="..\Mirror\*.dll" />
-    <Reference Include="..\UniTask\*.dll" />
+    <Reference Include="..\Lib\*.dll" />
     <ProjectReference Include="..\FizzySteamworks\FizzySteamworks.csproj" />
     <ProjectReference Include="..\SteamRerouter\SteamRerouter.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />

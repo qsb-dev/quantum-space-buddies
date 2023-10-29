@@ -124,4 +124,74 @@ public class DreamLanternPatches : QSBPatch
 		}
 		qsbDreamLantern.SendMessage(new SetRangeMessage(minRange, maxRange));
 	}
+
+	#region flare stuff
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.Awake))]
+	public static void Awake(DreamLanternController __instance)
+	{
+		__instance._lensFlare.brightness = 0.5f; // ghost lanterns use this
+		// also has blue lens flare instead of green. keep it like that for gameplay or wtv
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.Update))]
+	public static bool Update(DreamLanternController __instance)
+	{
+		// mmm i love not using transpiler LOL cry about it
+
+		var num = 0f;
+		// we want player lanterns to also have flare so remote player lanterns have it
+		if (__instance._lit && !__instance._concealed /*&& !__instance._heldByPlayer*/)
+		{
+			var vector = Locator.GetActiveCamera().transform.position - __instance._light.transform.position;
+			var num2 = 1f;
+			if (vector.sqrMagnitude > __instance._light.GetLight().range * __instance._light.GetLight().range)
+			{
+				num2 = 0f;
+			}
+			else if (Vector3.Angle(__instance._light.transform.forward, vector) > __instance._light.GetLight().spotAngle * 0.5f)
+			{
+				num2 = 0f;
+			}
+			num = Mathf.MoveTowards(__instance._lensFlare.brightness, __instance._origLensFlareBrightness * num2, Time.deltaTime * 4f);
+		}
+		if (__instance._lensFlareStrength != num)
+		{
+			__instance._lensFlareStrength = num;
+			__instance._dirtyFlag_lensFlareStrength = true;
+		}
+		var num3 = 0f;
+		var num4 = 0.1f;
+		if (__instance._lit)
+		{
+			num3 = __instance._concealed ? 0f : 1f;
+			if (Time.time - __instance._litTime <= 1f)
+			{
+				num4 = 1f;
+			}
+			else
+			{
+				num4 = __instance._concealed ? 0.2f : 0.5f;
+			}
+		}
+		var num5 = Mathf.MoveTowards(__instance._flameStrength, num3, Time.deltaTime / num4);
+		if (__instance._flameStrength != num5)
+		{
+			__instance._flameStrength = num5;
+			__instance._dirtyFlag_flameStrength = true;
+		}
+		var num6 = Mathf.MoveTowards(__instance._concealment, __instance._concealed ? 1f : 0f, Time.deltaTime / (__instance._concealed ? 0.15f : 0.5f));
+		if (__instance._concealment != num6)
+		{
+			__instance._concealment = num6;
+			__instance._dirtyFlag_concealment = true;
+		}
+		__instance.UpdateVisuals();
+
+		return false;
+	}
+
+	#endregion
 }

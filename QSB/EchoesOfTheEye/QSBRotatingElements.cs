@@ -7,6 +7,7 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye;
@@ -16,6 +17,7 @@ public abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 	where U : NetworkBehaviour
 {
 	protected abstract IEnumerable<SingleLightSensor> LightSensors { get; }
+	protected virtual bool LockedActive => false;
 	private QSBLightSensor[] _qsbLightSensors;
 	private int _litSensors;
 
@@ -61,7 +63,9 @@ public abstract class QSBRotatingElements<T, U> : LinkedWorldObject<T, U>
 		_litSensors--;
 		if (_litSensors == 0)
 		{
-			NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Remove);
+			Delay.RunWhen(
+				() => LockedActive == false,
+				() => NetworkBehaviour.netIdentity.UpdateOwnerQueue(OwnerQueueAction.Remove));
 		}
 	}
 
