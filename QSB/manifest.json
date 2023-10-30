@@ -12,5 +12,6 @@
 	"owmlVersion": "2.9.8",
 	"dependencies": [ "_nebula.MenuFramework", "JohnCorby.VanillaFix" ],
 	"pathsToPreserve": [ "debugsettings.json" ],
-	"requireLatestVersion": true
+	"requireLatestVersion": true,
+	"patcher": "QSBPatcher.exe"
 }
