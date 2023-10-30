@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using QSB.API;
+using QSB.BodyCustomization;
 using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -55,7 +56,6 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle DebugAssetBundle { get; private set; }
 	public static AssetBundle HUDAssetBundle { get; private set; }
-	public static AssetBundle SkinsBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer;
 	public static string QSBVersion => Helper.Manifest.Version;
@@ -260,11 +260,7 @@ public class QSBCore : ModBehaviour
 		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
 		LoadBundleAsync("qsb_network_big");
-		LoadBundleAsync("qsb_skins", request =>
-		{
-			SkinsBundle = request.assetBundle;
-			OnSkinsBundleLoaded?.SafeInvoke();
-		});
+		LoadBundleAsync("qsb_skins", request => BodyCustomizer.Instance.OnBundleLoaded(request.assetBundle));
 
 		NetworkAssetBundle = LoadBundle("qsb_network");
 		ConversationAssetBundle = LoadBundle("qsb_conversation");
