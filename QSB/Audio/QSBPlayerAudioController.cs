@@ -12,6 +12,7 @@ public class QSBPlayerAudioController : MonoBehaviour
 	public OWAudioSource _damageAudioSource;
 
 	private AudioManager _audioManager;
+	private float _playWearHelmetTime;
 
 	public void Start()
 	{
@@ -28,6 +29,15 @@ public class QSBPlayerAudioController : MonoBehaviour
 		_damageAudioSource.spatialBlend = 1f;
 		_damageAudioSource.gameObject.GetAddComponent<QSBDopplerFixer>();
 		damageAudio.SetActive(true);
+	}
+
+	private void Update()
+	{
+		if (Time.time > this._playWearHelmetTime)
+		{
+			enabled = false;
+			PlayOneShot(global::AudioType.PlayerSuitWearHelmet);
+		}
 	}
 
 	public void PlayEquipTool()
@@ -47,6 +57,18 @@ public class QSBPlayerAudioController : MonoBehaviour
 
 	public void PlayRemoveSuit()
 		=> PlayOneShot(AudioType.PlayerSuitRemoveSuit);
+
+	public void PlayRemoveHelmet()
+	{
+		enabled = false;
+		PlayOneShot(AudioType.PlayerSuitRemoveHelmet);
+	}
+
+	public void PlayWearHelmet()
+	{
+		enabled = true;
+		_playWearHelmetTime = Time.time + 0.4f;
+	}
 
 	public void PlayOneShot(AudioType audioType, float pitch = 1f, float volume = 1f)
 	{

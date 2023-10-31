@@ -70,13 +70,17 @@ public class BodyCustomizer : MonoBehaviour, IAddComponentOnStart
 		return SkinsBundle.LoadAsset<Texture2D>($"Assets/GameAssets/Texture2D/Jetpack Variations/{jetpackName}.png");
 	}
 
-	public void CustomizeRemoteBody(GameObject REMOTE_Traveller_HEA_Player_v2, string skinType, string jetpackType)
+	public void CustomizeRemoteBody(GameObject REMOTE_Traveller_HEA_Player_v2, GameObject fakeHead, string skinType, string jetpackType)
 	{
 		var headMesh = REMOTE_Traveller_HEA_Player_v2.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head");
-		var skinMaterial = headMesh.GetComponent<SkinnedMeshRenderer>().material;
 
+		var skinMaterial = headMesh.GetComponent<SkinnedMeshRenderer>().material;
 		skinMaterial.SetTexture("_MainTex", skinMap[skinType].albedo);
 		skinMaterial.SetTexture("_BumpMap", skinMap[skinType].normal);
+
+		var fakeHeadMaterial = fakeHead.GetComponent<SkinnedMeshRenderer>().material;
+		fakeHeadMaterial.SetTexture("_MainTex", skinMap[skinType].albedo);
+		fakeHeadMaterial.SetTexture("_BumpMap", skinMap[skinType].normal);
 
 		var jetpackMesh = REMOTE_Traveller_HEA_Player_v2.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:Props_HEA_Jetpack");
 		var jetpackMaterial = jetpackMesh.GetComponent<SkinnedMeshRenderer>().material;
