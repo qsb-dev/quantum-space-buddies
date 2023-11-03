@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net48</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
-    <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\Raicuparta.QuantumSpaceBuddies</OutputPath>
+    <AssemblyTitle>QSB Patcher</AssemblyTitle>
+    <Product>QSB Patcher</Product>
+    <Title>QSB Patcher</Title>
+    <Description>Copies steamworks into the game for non-steam vendors</Description>
+    <Authors>William Corby, Henry Pointer</Authors>
+    <Company>William Corby, Henry Pointer</Company>
+    <Copyright>Copyright © William Corby, Henry Pointer 2022-2023</Copyright>
   </PropertyGroup>
-
 </Project>
