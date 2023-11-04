@@ -162,7 +162,7 @@ public class QSBCore : ModBehaviour
 
 			if (!SteamAPI.Init())
 			{
-				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.", MessageType.Fatal);
+				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Do you have Steam open, and are you logged in?", MessageType.Fatal);
 				return;
 			}
 
