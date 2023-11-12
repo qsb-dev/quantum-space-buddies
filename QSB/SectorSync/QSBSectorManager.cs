@@ -101,15 +101,9 @@ public class QSBSectorManager : WorldObjectManager
 		// TH elevators
 		foreach (var elevator in QSBWorldSync.GetUnityObjects<Elevator>())
 		{
-			// just create a sphere at the attach point lol
-			// since players will be moved there when riding the elevator
-			FakeSector.Create(elevator._attachPoint.gameObject,
+			FakeSector.Create(elevator.gameObject,
 				elevator.GetComponentInParent<Sector>(),
-				x =>
-				{
-					x.gameObject.AddComponent<OWTriggerVolume>();
-					x.gameObject.AddComponent<SphereShape>();
-				});
+				x => x._triggerRoot = elevator.gameObject);
 		}
 
 		// rafts
@@ -120,9 +114,44 @@ public class QSBSectorManager : WorldObjectManager
 				x => x._triggerRoot = raft._rideVolume.gameObject);
 		}
 
-		// todo cage elevators
-		// todo prisoner elevator
 		// todo black hole forge
+
+		// cage elevators
+		foreach (var cageElevator in QSBWorldSync.GetUnityObjects<CageElevator>())
+		{
+			FakeSector.Create(cageElevator._platformBody.gameObject,
+				cageElevator.gameObject.GetComponentInParent<Sector>(),
+				x =>
+				{
+					x.gameObject.AddComponent<OWTriggerVolume>();
+					var shape = x.gameObject.AddComponent<BoxShape>();
+					shape.size = new Vector3(2.5f, 4.25f, 2.5f);
+					shape.center = new Vector3(0, 2.15f, 0);
+
+					// When the cage elevator warps when entering/exiting the underground,
+					// the player's sector detector is removed from the fake sector.
+					// So when the elevator is moving and they leave the sector, it means they have warped
+					// and should be added back in.
+					x.OnOccupantExitSector.AddListener((e) => 
+					{ 
+						if (cageElevator.isMoving) x.AddOccupant(e); 
+					});
+				});
+		}
+
+		// prisoner elevator
+		{
+			var prisonerElevator = QSBWorldSync.GetUnityObject<PrisonCellElevator>();
+			FakeSector.Create(prisonerElevator._elevatorBody.gameObject,
+				prisonerElevator.gameObject.GetComponentInParent<Sector>(),
+				x =>
+				{
+					x.gameObject.AddComponent<OWTriggerVolume>();
+					var shape = x.gameObject.AddComponent<BoxShape>();
+					shape.size = new Vector3(4f, 6.75f, 6.7f);
+					shape.center = new Vector3(0, 3.3f, 3.2f);
+				});
+		}
 
 		// OPC probe
 		{
