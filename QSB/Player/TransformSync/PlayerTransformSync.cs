@@ -35,6 +35,12 @@ public class PlayerTransformSync : SectoredTransformSync
 	{
 		var player = new PlayerInfo(this);
 		QSBPlayerManager.PlayerList.SafeAdd(player);
+
+		if (isLocalPlayer)
+		{
+			LocalInstance = this;
+		}
+
 		base.OnStartClient();
 		QSBPatch.Remote = !isLocalPlayer;
 		QSBPlayerManager.OnAddPlayer?.SafeInvoke(Player);
