@@ -12,4 +12,5 @@ public partial class PlayerInfo
 	internal QSBDitheringAnimator _ditheringAnimator;
 	public DreamWorldSpawnAnimator DreamWorldSpawnAnimator { get; set; }
 	public RemotePlayerFluidDetector FluidDetector { get; set; }
+	public HelmetAnimator HelmetAnimator { get; set; }
 }

@@ -25,6 +25,13 @@ public class QSBAPI : IQSBAPI
 
 	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
 	public string GetPlayerName(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Name;
+	public Vector3 GetPlayerPosition(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Body.transform.position;
+
+	public bool GetPlayerReady(uint playerId)
+	{
+		var player = QSBPlayerManager.GetPlayer(playerId);
+		return player.IsReady && player.Body != null;
+	}
 	public uint[] GetPlayerIDs() => QSBPlayerManager.PlayerList.Select(x => x.PlayerId).ToArray();
 
 	public UnityEvent<uint> OnPlayerJoin() => QSBAPIEvents.OnPlayerJoinEvent;

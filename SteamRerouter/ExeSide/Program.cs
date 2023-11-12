@@ -53,7 +53,7 @@ public static class Program
 
 		if (!SteamAPI.Init())
 		{
-			LogError($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.");
+			LogError($"FATAL - SteamAPI.Init() failed. Do you have Steam open, and are you logged in?");
 			return -1;
 		}
 

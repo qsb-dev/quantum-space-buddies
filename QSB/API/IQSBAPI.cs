@@ -38,6 +38,19 @@ public interface IQSBAPI
 	string GetPlayerName(uint playerID);
 
 	/// <summary>
+	/// Returns the position of a given player.
+	/// This position is in world space, where (0, 0, 0) is roughly where the local player is located.
+	/// </summary>
+	/// <param name="playerID">The ID of the player you want the position of.</param>
+	Vector3 GetPlayerPosition(uint playerID);
+
+	/// <summary>
+	/// Returns true if a given player has fully loaded into the game. If the local player is still loading into the game, this will return false.
+	/// </summary>
+	/// <param name="playerID">The ID of the player.</param>
+	bool GetPlayerReady(uint playerID);
+
+	/// <summary>
 	/// Returns the list of IDs of all connected players.
 	///
 	/// The first player in the list is the host.

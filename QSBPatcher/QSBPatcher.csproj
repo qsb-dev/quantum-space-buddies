@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyTitle>QSB Patcher</AssemblyTitle>
+    <Product>QSB Patcher</Product>
+    <Title>QSB Patcher</Title>
+    <Description>Copies steamworks into the game for non-steam vendors</Description>
+    <Authors>William Corby, Henry Pointer</Authors>
+    <Company>William Corby, Henry Pointer</Company>
+    <Copyright>Copyright © William Corby, Henry Pointer 2022-2023</Copyright>
+  </PropertyGroup>
+</Project>
