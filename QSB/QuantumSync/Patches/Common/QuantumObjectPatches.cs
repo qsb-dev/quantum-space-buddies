@@ -18,7 +18,7 @@ public class QuantumObjectPatches : QSBPatch
 	public static bool IsLockedByPlayerContact(out bool __result, QuantumObject __instance)
 	{
 		var playersEntangled = QuantumManager.GetEntangledPlayers(__instance);
-		__result = playersEntangled.Count() != 0 && __instance.IsIlluminated();
+		__result = playersEntangled.Count() != 0 && (__instance.IsIlluminated() || playersEntangled.Any(x => x.FlashlightActive));
 		return false;
 	}
 
