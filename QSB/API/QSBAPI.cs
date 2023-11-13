@@ -25,7 +25,8 @@ public class QSBAPI : IQSBAPI
 
 	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
 	public string GetPlayerName(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Name;
-	public Vector3 GetPlayerPosition(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Body.transform.position;
+	public GameObject GetPlayerBody(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Body;
+	public GameObject GetPlayerCamera(uint playerId) => QSBPlayerManager.GetPlayer(playerId).CameraBody;
 
 	public bool GetPlayerReady(uint playerId)
 	{

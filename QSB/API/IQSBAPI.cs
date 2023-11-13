@@ -38,11 +38,16 @@ public interface IQSBAPI
 	string GetPlayerName(uint playerID);
 
 	/// <summary>
-	/// Returns the position of a given player.
-	/// This position is in world space, where (0, 0, 0) is roughly where the local player is located.
+	/// Returns the body object of a given player. The pivot of this object is at the player's feet.
 	/// </summary>
-	/// <param name="playerID">The ID of the player you want the position of.</param>
-	Vector3 GetPlayerPosition(uint playerID);
+	/// <param name="playerID">The ID of the player you want the body of.</param>
+	GameObject GetPlayerBody(uint playerID);
+
+	/// <summary>
+	/// Returns the camera object of a given player. The pivot of this object is at the player's point of view.
+	/// </summary>
+	/// <param name="playerID">The ID of the player you want the camera of.</param>
+	GameObject GetPlayerCamera(uint playerID);
 
 	/// <summary>
 	/// Returns true if a given player has fully loaded into the game. If the local player is still loading into the game, this will return false.
