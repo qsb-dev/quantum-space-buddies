@@ -106,11 +106,13 @@ public class PlayerInformationMessage : QSBMessage
 			{
 				player.UpdateObjectsFromStates();
 				player.HelmetAnimator.SetHelmetInstant(HelmetOn);
+				player.Camera.fieldOfView = FieldOfView;
+			});
 
+			Delay.RunWhen(() => player.Body != null, () =>
+			{
 				var REMOTE_Traveller_HEA_Player_v2 = player.Body.transform.Find("REMOTE_Traveller_HEA_Player_v2");
 				BodyCustomization.BodyCustomizer.Instance.CustomizeRemoteBody(REMOTE_Traveller_HEA_Player_v2.gameObject, player.HelmetAnimator.FakeHead.gameObject, SkinType, JetpackType);
-
-				player.Camera.fieldOfView = FieldOfView;
 			});
 
 			player.State = ClientState;
