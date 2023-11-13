@@ -289,7 +289,7 @@ public class QSBCore : ModBehaviour
 	{
 		var timer = new Stopwatch();
 		timer.Start();
-		var ret = Helper.Assets.LoadBundle($"AssetBundles/{name}");
+		var ret = Helper.Assets.LoadBundle(Path.Combine("AssetBundles", name));
 		timer.Stop();
 		DebugLog.ToConsole($"Bundle {name} loaded in {timer.ElapsedMilliseconds} ms!", MessageType.Success);
 		return ret;
@@ -300,7 +300,7 @@ public class QSBCore : ModBehaviour
 		DebugLog.DebugWrite($"Loading {bundleName}...", MessageType.Info);
 		var timer = new Stopwatch();
 		timer.Start();
-		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, $"AssetBundles/{bundleName}");
+		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles", name);
 		var request = AssetBundle.LoadFromFileAsync(path);
 		request.completed += _ =>
 		{
