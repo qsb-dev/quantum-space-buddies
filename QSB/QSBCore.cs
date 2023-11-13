@@ -285,13 +285,13 @@ public class QSBCore : ModBehaviour
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
 	}
 
-	private AssetBundle LoadBundle(string name)
+	private AssetBundle LoadBundle(string bundleName)
 	{
 		var timer = new Stopwatch();
 		timer.Start();
-		var ret = Helper.Assets.LoadBundle(Path.Combine("AssetBundles", name));
+		var ret = Helper.Assets.LoadBundle(Path.Combine("AssetBundles", bundleName));
 		timer.Stop();
-		DebugLog.ToConsole($"Bundle {name} loaded in {timer.ElapsedMilliseconds} ms!", MessageType.Success);
+		DebugLog.ToConsole($"Bundle {bundleName} loaded in {timer.ElapsedMilliseconds} ms!", MessageType.Success);
 		return ret;
 	}
 
@@ -300,7 +300,7 @@ public class QSBCore : ModBehaviour
 		DebugLog.DebugWrite($"Loading {bundleName}...", MessageType.Info);
 		var timer = new Stopwatch();
 		timer.Start();
-		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles", name);
+		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles", bundleName);
 		var request = AssetBundle.LoadFromFileAsync(path);
 		request.completed += _ =>
 		{
