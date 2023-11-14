@@ -47,10 +47,6 @@ public class DebugSettings
 	private bool _drawLabels;
 	public bool DrawLabels => DebugMode && _drawLabels;
 
-	[JsonProperty("drawQuantumVisibilityObjects")]
-	private bool _drawQuantumVisibilityObjects;
-	public bool DrawQuantumVisibilityObjects => DebugMode && _drawQuantumVisibilityObjects;
-
 	[JsonProperty("drawGhostAI")]
 	private bool _drawGhostAI;
 	public bool DrawGhostAI => DebugMode && _drawGhostAI;

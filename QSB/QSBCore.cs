@@ -54,7 +54,6 @@ public class QSBCore : ModBehaviour
 	public static string DefaultServerIP;
 	public static AssetBundle NetworkAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
-	public static AssetBundle DebugAssetBundle { get; private set; }
 	public static AssetBundle HUDAssetBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer;
@@ -264,10 +263,9 @@ public class QSBCore : ModBehaviour
 
 		NetworkAssetBundle = LoadBundle("qsb_network");
 		ConversationAssetBundle = LoadBundle("qsb_conversation");
-		DebugAssetBundle = LoadBundle("qsb_debug");
 		HUDAssetBundle = LoadBundle("qsb_hud");
 
-		if (NetworkAssetBundle == null || ConversationAssetBundle == null || DebugAssetBundle == null || HUDAssetBundle == null)
+		if (NetworkAssetBundle == null || ConversationAssetBundle == null || HUDAssetBundle == null)
 		{
 			DebugLog.ToConsole($"FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
 			return;
@@ -426,7 +424,6 @@ public class QSBCore : ModBehaviour
 
 			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
 			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
-			QuantumManager.UpdateFromDebugSetting();
 			DebugCameraSettings.UpdateFromDebugSetting();
 
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
