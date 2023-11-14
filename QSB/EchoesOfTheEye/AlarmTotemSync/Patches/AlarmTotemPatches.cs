@@ -87,7 +87,7 @@ public class AlarmTotemPatches : QSBPatch
 
 		var isPlayerVisible = __instance._isPlayerVisible;
 		__instance._isPlayerVisible = __instance.CheckPlayerVisible();
-		if (__instance._isPlayerVisible && !isPlayerVisible)
+		if (!isPlayerVisible && __instance._isPlayerVisible)
 		{
 			Locator.GetAlarmSequenceController().IncreaseAlarmCounter();
 			__instance._secondsConcealed = 0f;
@@ -97,8 +97,7 @@ public class AlarmTotemPatches : QSBPatch
 			GlobalMessenger.FireEvent("AlarmTotemTriggered");
 			qsbAlarmTotem.SendMessage(new SetVisibleMessage(true));
 		}
-
-		if (isPlayerVisible && !__instance._isPlayerVisible)
+		else if (isPlayerVisible && !__instance._isPlayerVisible)
 		{
 			Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
 			__instance._secondsConcealed = 0f;
