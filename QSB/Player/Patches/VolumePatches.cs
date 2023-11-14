@@ -45,6 +45,7 @@ public class VolumePatches : QSBPatch
 	[HarmonyPatch(typeof(ElectricityVolume), nameof(ElectricityVolume.OnEffectVolumeEnter))]
 	[HarmonyPatch(typeof(DreamWarpVolume), nameof(DreamWarpVolume.OnEnterTriggerVolume))]
 	[HarmonyPatch(typeof(NomaiWarpPlatform), nameof(NomaiWarpPlatform.OnEntry))]
+	[HarmonyPatch(typeof(NomaiWarpReceiver), nameof(NomaiWarpReceiver.OnEntry))]
 	public static bool PreventRemotePlayerEnter(object __instance, GameObject hitObj)
 		=> hitObj.name is not ("REMOTE_PlayerDetector" or "REMOTE_CameraDetector" or "REMOTE_ProbeDetector");
 
