@@ -1,6 +1,4 @@
-﻿using QSB.JellyfishSync.Messages;
-using QSB.JellyfishSync.TransformSync;
-using QSB.Messaging;
+﻿using QSB.JellyfishSync.TransformSync;
 using QSB.Utility.LinkedWorldObject;
 using UnityEngine;
 
@@ -12,9 +10,6 @@ public class QSBJellyfish : LinkedWorldObject<JellyfishController, JellyfishTran
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.JellyfishPrefab;
 	protected override bool SpawnWithServerOwnership => false;
-
-	public override void SendInitialState(uint to) =>
-		this.SendMessage(new JellyfishRisingMessage(AttachedObject._isRising) { To = to });
 
 	public void SetIsRising(bool value)
 	{

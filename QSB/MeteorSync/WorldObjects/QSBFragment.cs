@@ -1,6 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using QSB.Messaging;
-using QSB.MeteorSync.Messages;
 using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;
@@ -16,12 +14,6 @@ public class QSBFragment : WorldObject<FragmentIntegrity>
 			LeashLength = Random.Range(MeteorManager.WhiteHoleVolume._debrisDistMin, MeteorManager.WhiteHoleVolume._debrisDistMax);
 			// SetIntegrity(0);
 		}
-	}
-
-	public override void SendInitialState(uint to)
-	{
-		this.SendMessage(new FragmentInitialStateMessage(AttachedObject._origIntegrity, (float)LeashLength) { To = to });
-		this.SendMessage(new FragmentIntegrityMessage(AttachedObject._integrity) { To = to });
 	}
 
 	public void SetIntegrity(float integrity)

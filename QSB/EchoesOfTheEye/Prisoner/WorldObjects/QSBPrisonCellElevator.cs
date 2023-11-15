@@ -1,16 +1,11 @@
 ﻿using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
-using QSB.EchoesOfTheEye.Prisoner.Messages;
 using QSB.ItemSync.WorldObjects;
-using QSB.Messaging;
 using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.Prisoner.WorldObjects;
 
 public class QSBPrisonCellElevator : WorldObject<PrisonCellElevator>, IQSBDropTarget, IGhostObject
 {
-	public override void SendInitialState(uint to) =>
-		this.SendMessage(new CellevatorCallMessage(AttachedObject._targetFloorIndex) { To = to });
-
 	IItemDropTarget IQSBDropTarget.AttachedObject => AttachedObject;
 
 	/*public override async UniTask Init(CancellationToken ct)

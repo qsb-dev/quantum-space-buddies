@@ -12,11 +12,4 @@ public interface IWorldObject
 	bool ShouldDisplayDebug();
 	string ReturnLabel();
 	void DisplayLines();
-
-	/// <summary>
-	/// called on the host to send over initial state messages
-	/// <para/>
-	/// world objects will be ready on both sides at this point
-	/// </summary>
-	void SendInitialState(uint to);
 }

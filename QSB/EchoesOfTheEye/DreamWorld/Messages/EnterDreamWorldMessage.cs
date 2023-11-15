@@ -8,9 +8,6 @@ using QSB.WorldSync;
 
 namespace QSB.EchoesOfTheEye.DreamWorld.Messages;
 
-/// <summary>
-/// todo SendInitialState
-/// </summary>
 public class EnterDreamWorldMessage : QSBWorldObjectMessage<QSBDreamLanternItem>
 {
 	static EnterDreamWorldMessage()

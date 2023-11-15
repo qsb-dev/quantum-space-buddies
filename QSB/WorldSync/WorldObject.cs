@@ -18,6 +18,4 @@ public abstract class WorldObject<T> : IWorldObject
 	public virtual bool ShouldDisplayDebug() => QSBWorldSync.AllObjectsReady && AttachedObject && AttachedObject.gameObject.activeInHierarchy;
 	public virtual string ReturnLabel() => ToString();
 	public virtual void DisplayLines() { }
-
-	public virtual void SendInitialState(uint to) { }
 }

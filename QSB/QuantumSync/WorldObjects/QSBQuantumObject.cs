@@ -87,9 +87,6 @@ public abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any();
 	}
 
-	public override void SendInitialState(uint to) =>
-		((IQSBQuantumObject)this).SendMessage(new QuantumOwnershipMessage(ControllingPlayer) { To = to });
-
 	public List<Shape> GetAttachedShapes()
 	{
 		if (AttachedObject == null)

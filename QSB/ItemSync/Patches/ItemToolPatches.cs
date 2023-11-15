@@ -20,9 +20,6 @@ public class ItemToolPatches : QSBPatch
 	{
 		var qsbItem = item.GetWorldObject<IQSBItem>();
 		QSBPlayerManager.LocalPlayer.HeldItem = qsbItem;
-		qsbItem.ItemState.HasBeenInteractedWith = true;
-		qsbItem.ItemState.State = ItemStateType.Held;
-		qsbItem.ItemState.HoldingPlayer = QSBPlayerManager.LocalPlayer;
 		qsbItem.SendMessage(new MoveToCarryMessage(QSBPlayerManager.LocalPlayer.PlayerId));
 	}
 
@@ -33,8 +30,6 @@ public class ItemToolPatches : QSBPatch
 		var item = __instance._heldItem;
 		QSBPlayerManager.LocalPlayer.HeldItem = null;
 		var qsbItem = item.GetWorldObject<IQSBItem>();
-		qsbItem.ItemState.State = ItemStateType.Socketed;
-		qsbItem.ItemState.Socket = socket;
 		qsbItem.SendMessage(new SocketItemMessage(SocketMessageType.Socket, socket));
 	}
 
@@ -44,7 +39,6 @@ public class ItemToolPatches : QSBPatch
 	{
 		var item = socket.GetSocketedItem();
 		var qsbItem = item.GetWorldObject<IQSBItem>();
-		qsbItem.ItemState.HasBeenInteractedWith = true;
 		QSBPlayerManager.LocalPlayer.HeldItem = qsbItem;
 		qsbItem.SendMessage(new SocketItemMessage(SocketMessageType.StartUnsocket, socket));
 	}
@@ -99,14 +93,6 @@ public class ItemToolPatches : QSBPatch
 		Locator.GetToolModeSwapper().UnequipTool();
 
 		qsbItem.SendMessage(new DropItemMessage(hit.point, hit.normal, parent, sector, customDropTarget, targetRigidbody));
-
-		qsbItem.ItemState.State = ItemStateType.OnGround;
-		qsbItem.ItemState.Parent = parent;
-		qsbItem.ItemState.LocalPosition = parent.InverseTransformPoint(hit.point);
-		qsbItem.ItemState.LocalNormal = parent.InverseTransformDirection(hit.normal);
-		qsbItem.ItemState.Sector = sector;
-		qsbItem.ItemState.CustomDropTarget = customDropTarget;
-		qsbItem.ItemState.Rigidbody = targetRigidbody;
 
 		return false;
 	}

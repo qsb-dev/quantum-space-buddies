@@ -21,21 +21,6 @@ public class QSBProbeLauncher : WorldObject<ProbeLauncher>
 	public override void OnRemoval() =>
 		AttachedObject.OnLaunchProbe -= OnLaunchProbe;
 
-	public override void SendInitialState(uint to)
-	{
-		// Retrieval resets the probe owner ID
-		var probeOwnerID = _probeOwnerID;
-
-		if (AttachedObject._preLaunchProbeProxy.activeSelf)
-		{
-			this.SendMessage(new RetrieveProbeMessage(false));
-		}
-		else
-		{
-			this.SendMessage(new LaunchProbeMessage(false, probeOwnerID));
-		}
-	}
-
 	private void OnLaunchProbe(SurveyorProbe probe) =>
 		this.SendMessage(new LaunchProbeMessage(true, QSBPlayerManager.LocalPlayerId));
 

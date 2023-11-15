@@ -54,9 +54,6 @@ public abstract class QSBTrigger<TO> : WorldObject<OWTriggerVolume>, IQSBTrigger
 
 	private void OnPlayerLeave(PlayerInfo player) => Exit(player);
 
-	public override void SendInitialState(uint to) =>
-		((IQSBTrigger)this).SendMessage(new TriggerInitialStateMessage(Occupants) { To = to });
-
 	protected void OnEnterEvent(GameObject hitObj)
 	{
 		if (hitObj.CompareTag(CompareTag))

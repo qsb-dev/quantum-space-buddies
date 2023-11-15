@@ -15,23 +15,11 @@ namespace QSB.ItemSync.WorldObjects.Items;
 public class QSBItem<T> : WorldObject<T>, IQSBItem
 	where T : OWItem
 {
-	public ItemState ItemState { get; } = new();
-
 	private Transform _lastParent;
 	private Vector3 _lastPosition;
 	private Quaternion _lastRotation;
 	private QSBSector _lastSector;
 	private QSBItemSocket _lastSocket;
-
-	public override string ReturnLabel()
-	{
-		return $"{ToString()}" +
-			$"\r\nState:{ItemState.State}" +
-			$"\r\nParent:{ItemState.Parent?.name}" +
-			$"\r\nLocalPosition:{ItemState.LocalPosition}" +
-			$"\r\nLocalNormal:{ItemState.LocalNormal}" +
-			$"\r\nHoldingPlayer:{ItemState.HoldingPlayer?.PlayerId}";
-	}
 
 	public override async UniTask Init(CancellationToken ct)
 	{
@@ -83,34 +71,6 @@ public class QSBItem<T> : WorldObject<T>, IQSBItem
 			AttachedObject.transform.localScale = Vector3.one;
 			AttachedObject.SetSector(_lastSector?.AttachedObject);
 			AttachedObject.SetColliderActivation(true);
-		}
-	}
-
-	public override void SendInitialState(uint to)
-	{
-		if (!ItemState.HasBeenInteractedWith)
-		{
-			return;
-		}
-
-		switch (ItemState.State)
-		{
-			case ItemStateType.Held:
-				((IQSBItem)this).SendMessage(new MoveToCarryMessage(ItemState.HoldingPlayer.PlayerId) { To = to });
-				break;
-			case ItemStateType.Socketed:
-				((IQSBItem)this).SendMessage(new SocketItemMessage(SocketMessageType.Socket, ItemState.Socket) { To = to });
-				break;
-			case ItemStateType.OnGround:
-				((IQSBItem)this).SendMessage(
-					new DropItemMessage(
-						ItemState.WorldPosition,
-						ItemState.WorldNormal,
-						ItemState.Parent,
-						ItemState.Sector,
-						ItemState.CustomDropTarget,
-						ItemState.Rigidbody) { To = to });
-				break;
 		}
 	}
 

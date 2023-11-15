@@ -19,11 +19,6 @@ public class QSBGhostBrain : WorldObject<GhostBrain>, IGhostObject
 {
 	#region World Object Stuff
 
-	public override void SendInitialState(uint to)
-	{
-		// todo SendInitialState
-	}
-
 	public override async UniTask Init(CancellationToken ct)
 	{
 		Awake();

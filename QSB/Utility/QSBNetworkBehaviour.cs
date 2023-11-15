@@ -15,10 +15,7 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 	public override void OnStartClient()
 	{
 		DontDestroyOnLoad(gameObject);
-		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 	}
-
-	public override void OnStopClient() => RequestInitialStatesMessage.SendInitialState -= SendInitialState;
 
 	/// <summary>
 	/// checked before serializing
@@ -81,19 +78,6 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 		}
 	}
 
-	/// <summary>
-	/// called on the host to send the last known data to a new client
-	/// <para/>
-	/// world objects will be ready on both sides at this point
-	/// </summary>
-	private void SendInitialState(uint to)
-	{
-		if (_lastKnownData != null)
-		{
-			TargetSendInitialData(to.GetNetworkConnection(), new ArraySegment<byte>(_lastKnownData));
-		}
-	}
-
 	[Command(channel = Channels.Reliable, requiresAuthority = true)]
 	private void CmdSendDataReliable(ArraySegment<byte> data) => RpcSendDataReliable(data);
 
@@ -105,9 +89,6 @@ public abstract class QSBNetworkBehaviour : NetworkBehaviour
 
 	[ClientRpc(channel = Channels.Unreliable, includeOwner = false)]
 	private void RpcSendDataUnreliable(ArraySegment<byte> data) => OnData(data);
-
-	[TargetRpc(channel = Channels.Reliable)]
-	private void TargetSendInitialData(NetworkConnection target, ArraySegment<byte> data) => OnData(data);
 
 	private void OnData(ArraySegment<byte> data)
 	{
