@@ -17,18 +17,6 @@ public class QSBPlayerAudioController : MonoBehaviour
 	public void Start()
 	{
 		_audioManager = Locator.GetAudioManager();
-
-		// TODO: This should be done in the Unity project
-		var damageAudio = new GameObject("DamageAudioSource");
-		damageAudio.SetActive(false);
-		damageAudio.transform.SetParent(transform, false);
-		damageAudio.transform.localPosition = Vector3.zero;
-		_damageAudioSource = damageAudio.AddComponent<OWAudioSource>();
-		_damageAudioSource._audioSource = damageAudio.GetAddComponent<AudioSource>();
-		_damageAudioSource.SetTrack(_repairToolSource.GetTrack());
-		_damageAudioSource.spatialBlend = 1f;
-		_damageAudioSource.gameObject.GetAddComponent<QSBDopplerFixer>();
-		damageAudio.SetActive(true);
 	}
 
 	private void Update()
