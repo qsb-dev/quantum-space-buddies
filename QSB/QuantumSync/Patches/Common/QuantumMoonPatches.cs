@@ -73,7 +73,16 @@ public class QuantumMoonPatches : QSBPatch
 				}
 				else
 				{
-					var shouldStayAtEye = __instance._hasSunCollapsed || __instance.IsLockedByProbeSnapshot();
+					var anyoneInMoon = QSBPlayerManager.PlayerList.Any(x => x.IsInMoon && !x.IsLocalPlayer);
+					var playersWhoCanSeeMoon = QuantumManager.IsVisibleUsingCameraFrustum((ShapeVisibilityTracker)__instance._visibilityTracker, true).PlayersWhoCanSee;
+					var shipInFog = GetShipInFog(__instance);
+
+					var shouldStayAtEye = 
+						__instance._hasSunCollapsed || 
+						__instance.IsLockedByProbeSnapshot() ||
+						anyoneInMoon ||
+						playersWhoCanSeeMoon.Any(x => !(shipInFog && x.IsInShip) && !GetTransformInFog(__instance, x.CameraBody.transform));
+
 					var vector = Locator.GetPlayerTransform().position - __instance.transform.position;
 					Locator.GetPlayerBody().SetVelocity(__instance._moonBody.GetPointVelocity(Locator.GetPlayerTransform().position) - vector.normalized * 5f);
 					var offset = shouldStayAtEye ? 80f : __instance._fogRadius - 1f;

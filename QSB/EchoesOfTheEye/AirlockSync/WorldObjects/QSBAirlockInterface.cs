@@ -10,7 +10,7 @@ public class QSBAirlockInterface : QSBRotatingElements<AirlockInterface, Airlock
 	protected override IEnumerable<SingleLightSensor> LightSensors => AttachedObject._lightSensors;
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.AirlockPrefab;
 
-	// RotatingElements normally releases authority when not longer being lit
+	// RotatingElements normally releases ownership when not longer being lit
 	// force the airlocks to keep network updating when they could still be moving
 	protected override bool LockedActive => AttachedObject.enabled;
 

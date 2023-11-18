@@ -36,8 +36,6 @@ public class QuantumManager : WorldObjectManager
 		{
 			Shrine = QSBWorldSync.GetUnityObject<QuantumShrine>();
 		}
-
-		UpdateFromDebugSetting();
 	}
 
 	public void PlayerLeave(PlayerInfo player)
@@ -147,81 +145,4 @@ public class QuantumManager : WorldObjectManager
 			}
 		}
 	}
-
-	#region debug shapes
-
-	private static GameObject _debugSphere, _debugCube, _debugCapsule;
-
-	private class DebugShape : MonoBehaviour { }
-
-	public static void UpdateFromDebugSetting()
-	{
-		if (QSBCore.DebugSettings.DrawQuantumVisibilityObjects)
-		{
-			if (_debugSphere == null)
-			{
-				_debugSphere = QSBCore.DebugAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/Sphere.prefab");
-			}
-
-			if (_debugCube == null)
-			{
-				_debugCube = QSBCore.DebugAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/Cube.prefab");
-			}
-
-			if (_debugCapsule == null)
-			{
-				_debugCapsule = QSBCore.DebugAssetBundle.LoadAsset<GameObject>("Assets/Prefabs/Capsule.prefab");
-			}
-
-			foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
-			{
-				foreach (var shape in quantumObject.GetAttachedShapes())
-				{
-					if (shape is BoxShape boxShape)
-					{
-						var newCube = Instantiate(_debugCube);
-						newCube.transform.parent = shape.transform;
-						newCube.transform.localPosition = Vector3.zero;
-						newCube.transform.localRotation = Quaternion.Euler(0, 0, 0);
-						newCube.transform.localScale = boxShape.size;
-						newCube.AddComponent<DebugShape>();
-					}
-					else if (shape is SphereShape sphereShape)
-					{
-						var newSphere = Instantiate(_debugSphere);
-						newSphere.transform.parent = shape.transform;
-						newSphere.transform.localPosition = Vector3.zero;
-						newSphere.transform.localRotation = Quaternion.Euler(0, 0, 0);
-						newSphere.transform.localScale = Vector3.one * (sphereShape.radius * 2);
-						newSphere.AddComponent<DebugShape>();
-					}
-					else if (shape is CapsuleShape capsuleShape)
-					{
-						var newCapsule = Instantiate(_debugCapsule);
-						newCapsule.transform.parent = shape.transform;
-						newCapsule.transform.localPosition = Vector3.zero;
-						newCapsule.transform.localRotation = Quaternion.Euler(0, 0, 0);
-						newCapsule.transform.localScale = new Vector3(capsuleShape.radius * 2, capsuleShape.height, capsuleShape.radius * 2);
-						newCapsule.AddComponent<DebugShape>();
-					}
-				}
-			}
-		}
-		else
-		{
-			foreach (var quantumObject in QSBWorldSync.GetWorldObjects<IQSBQuantumObject>())
-			{
-				foreach (var shape in quantumObject.GetAttachedShapes())
-				{
-					var debugShape = shape.GetComponentInChildren<DebugShape>();
-					if (debugShape)
-					{
-						Destroy(debugShape.gameObject);
-					}
-				}
-			}
-		}
-	}
-
-	#endregion
 }

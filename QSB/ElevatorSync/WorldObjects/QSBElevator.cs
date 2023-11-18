@@ -2,6 +2,7 @@
 using QSB.ElevatorSync.Messages;
 using QSB.Messaging;
 using QSB.Patches;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Threading;
 using UnityEngine;
@@ -12,15 +13,26 @@ public class QSBElevator : WorldObject<Elevator>
 {
 	private OWTriggerVolume _elevatorTrigger;
 
+	// Used to reset attach position. This is in local space.
+	public Vector3 originalAttachPosition;
+
 	public override async UniTask Init(CancellationToken ct)
 	{
-		// BUG : This won't work for the log lift! need to make a different trigger for that
-
 		var boxShape = AttachedObject.gameObject.GetAddComponent<BoxShape>();
-		boxShape.center = new Vector3(0, 1.75f, 0.25f);
-		boxShape.size = new Vector3(3, 3.5f, 3);
+
+		if (Name == "LogLift")
+		{
+			boxShape.size = new Vector3(4.6f, 3.5f, 12);
+			boxShape.center = new Vector3(0.1f, 1.75f, 1.3f);
+		}
+		else
+		{
+			boxShape.size = new Vector3(3, 3.5f, 3);
+			boxShape.center = new Vector3(0, 1.75f, 0.25f);
+		}
 
 		_elevatorTrigger = AttachedObject.gameObject.GetAddComponent<OWTriggerVolume>();
+		originalAttachPosition = AttachedObject._attachPoint.transform.localPosition;
 	}
 
 	public override void SendInitialState(uint to) =>
@@ -36,7 +48,10 @@ public class QSBElevator : WorldObject<Elevator>
 		SetDirection(isGoingUp);
 		if (_elevatorTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
 		{
-			AttachedObject._attachPoint.AttachPlayer();
+			var attachPoint = AttachedObject._attachPoint;
+			attachPoint.transform.position = Locator.GetPlayerTransform().position;
+
+			attachPoint.AttachPlayer();
 			if (Locator.GetPlayerSuit().IsWearingSuit() && Locator.GetPlayerSuit().IsTrainingSuit())
 			{
 				Locator.GetPlayerSuit().RemoveSuit();
@@ -44,6 +59,14 @@ public class QSBElevator : WorldObject<Elevator>
 		}
 
 		AttachedObject.StartLift();
+
+		// Runs when the lift/elevator is done moving.
+		// Reset the position of the attach point.
+		Delay.RunWhen(() => !AttachedObject.enabled, () =>
+		{
+			AttachedObject._attachPoint.transform.localPosition = originalAttachPosition;
+		});
+	
 	}
 
 	private void SetDirection(bool isGoingUp)

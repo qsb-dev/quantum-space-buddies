@@ -79,6 +79,7 @@
     <Reference Include="..\Lib\*.dll" />
     <ProjectReference Include="..\FizzySteamworks\FizzySteamworks.csproj" />
     <ProjectReference Include="..\SteamRerouter\SteamRerouter.csproj" />
+    <ProjectReference Include="..\QSBPatcher\QSBPatcher.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>

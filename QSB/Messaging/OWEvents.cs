@@ -41,4 +41,6 @@ public static class OWEvents
 	public const string ProbeExitQuantumMoon = nameof(ProbeExitQuantumMoon);
 	public const string EnterCloak = nameof(EnterCloak);
 	public const string ExitCloak = nameof(ExitCloak);
+	public const string PutOnHelmet = nameof(PutOnHelmet);
+	public const string RemoveHelmet = nameof(RemoveHelmet);
 }

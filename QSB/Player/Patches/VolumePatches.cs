@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
-using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Player.Patches;
@@ -47,18 +46,10 @@ public class VolumePatches : QSBPatch
 	[HarmonyPatch(typeof(DreamWarpVolume), nameof(DreamWarpVolume.OnEnterTriggerVolume))]
 	[HarmonyPatch(typeof(NomaiWarpPlatform), nameof(NomaiWarpPlatform.OnEntry))]
 	public static bool PreventRemotePlayerEnter(object __instance, GameObject hitObj)
-	{
-		DebugLog.DebugWrite($"{__instance} funny prevent enter {hitObj}");
-		// TODO: also do this with remote probes
-		return hitObj.name is not ("REMOTE_PlayerDetector" or "REMOTE_CameraDetector");
-	}
+		=> hitObj.name is not ("REMOTE_PlayerDetector" or "REMOTE_CameraDetector" or "REMOTE_ProbeDetector");
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(VanishVolume), nameof(VanishVolume.OnTriggerEnter))]
 	public static bool PreventRemotePlayerEnter(object __instance, Collider hitCollider)
-	{
-		DebugLog.DebugWrite($"{__instance} funny prevent enter {hitCollider}");
-		// TODO: also do this with remote probes
-		return hitCollider.name is not ("REMOTE_PlayerDetector" or "REMOTE_CameraDetector");
-	}
+		=> hitCollider.name is not ("REMOTE_PlayerDetector" or "REMOTE_CameraDetector" or "REMOTE_ProbeDetector");
 }

@@ -14,10 +14,12 @@ using QSB.WorldSync;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using QSB.API;
+using QSB.BodyCustomization;
 using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -52,9 +54,7 @@ public class QSBCore : ModBehaviour
 	public static string DefaultServerIP;
 	public static AssetBundle NetworkAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
-	public static AssetBundle DebugAssetBundle { get; private set; }
 	public static AssetBundle HUDAssetBundle { get; private set; }
-	public static AssetBundle BigBundle { get; private set; }
 	public static bool IsHost => NetworkServer.active;
 	public static bool IsInMultiplayer;
 	public static string QSBVersion => Helper.Manifest.Version;
@@ -78,8 +78,6 @@ public class QSBCore : ModBehaviour
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
 
-	public const string NEW_HORIZONS = "xen.NewHorizons";
-	public const string NEW_HORIZONS_COMPAT = "xen.NHQSBCompat";
 
 	public static readonly string[] IncompatibleMods =
 	{
@@ -91,6 +89,8 @@ public class QSBCore : ModBehaviour
 		"_nebula.StopTime",
 		"PacificEngine.OW_Randomizer",
 	};
+
+	public static event Action OnSkinsBundleLoaded;
 
 	public override object GetApi() => new QSBAPI();
 
@@ -161,7 +161,7 @@ public class QSBCore : ModBehaviour
 
 			if (!SteamAPI.Init())
 			{
-				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Refer to Valve's documentation.", MessageType.Fatal);
+				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Do you have Steam open, and are you logged in?", MessageType.Fatal);
 				return;
 			}
 
@@ -258,18 +258,14 @@ public class QSBCore : ModBehaviour
 
 		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
-		DebugLog.DebugWrite("loading qsb_network_big bundle", MessageType.Info);
-		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/qsb_network_big");
-		var request = AssetBundle.LoadFromFileAsync(path);
-		request.completed += _ => DebugLog.DebugWrite("qsb_network_big bundle loaded", MessageType.Success);
-		BigBundle = request.assetBundle;
+		LoadBundleAsync("qsb_network_big");
+		LoadBundleAsync("qsb_skins", request => BodyCustomizer.Instance.OnBundleLoaded(request.assetBundle));
 
-		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_network");
-		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_conversation");
-		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_debug");
-		HUDAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_hud");
+		NetworkAssetBundle = LoadBundle("qsb_network");
+		ConversationAssetBundle = LoadBundle("qsb_conversation");
+		HUDAssetBundle = LoadBundle("qsb_hud");
 
-		if (NetworkAssetBundle == null || ConversationAssetBundle == null || DebugAssetBundle == null)
+		if (NetworkAssetBundle == null || ConversationAssetBundle == null || HUDAssetBundle == null)
 		{
 			DebugLog.ToConsole($"FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
 			return;
@@ -285,6 +281,31 @@ public class QSBCore : ModBehaviour
 		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
+	}
+
+	private AssetBundle LoadBundle(string bundleName)
+	{
+		var timer = new Stopwatch();
+		timer.Start();
+		var ret = Helper.Assets.LoadBundle(Path.Combine("AssetBundles", bundleName));
+		timer.Stop();
+		DebugLog.ToConsole($"Bundle {bundleName} loaded in {timer.ElapsedMilliseconds} ms!", MessageType.Success);
+		return ret;
+	}
+
+	private void LoadBundleAsync(string bundleName, Action<AssetBundleCreateRequest> runOnLoaded = null)
+	{
+		DebugLog.DebugWrite($"Loading {bundleName}...", MessageType.Info);
+		var timer = new Stopwatch();
+		timer.Start();
+		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles", bundleName);
+		var request = AssetBundle.LoadFromFileAsync(path);
+		request.completed += _ =>
+		{
+			timer.Stop();
+			DebugLog.ToConsole($"Bundle {bundleName} loaded in {timer.ElapsedMilliseconds} ms!", MessageType.Success);
+			runOnLoaded?.Invoke(request);
+		};
 	}
 
 	private static void OnPatchType(QSBPatchTypes type)
@@ -403,7 +424,6 @@ public class QSBCore : ModBehaviour
 
 			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
 			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
-			QuantumManager.UpdateFromDebugSetting();
 			DebugCameraSettings.UpdateFromDebugSetting();
 
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");

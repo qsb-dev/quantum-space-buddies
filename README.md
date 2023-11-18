@@ -34,6 +34,7 @@ Spoilers within!
 
 #### Connecting to a server
 
+- Make sure to have Steam open and logged in.
 - On the title screen, click the option `CONNECT TO MULTIPLAYER`.
 - Enter the Steam ID of the person you are trying to connect to.
     - If "Use KCP Transport" is enabled, enter the public IP address of the person instead.
@@ -41,6 +42,7 @@ Spoilers within!
 
 #### Hosting a server
 
+- Make sure to have Steam open and logged in.
 - On the title screen, click the option `OPEN TO MULTIPLAYER`.
 - Share your Steam ID with the people who want to connect.
     - If "Use KCP Transport" is enabled, share your public IP address instead. This can be found on websites like https://www.whatismyip.com/.
@@ -110,13 +112,20 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 
 ### Contributers
 
+- [xen](https://github.com/xen-42) - Help with syncing particle/sound effects, fixing lantern item bugs, and syncing addon data.
+- [Moonstone](https://github.com/MoonstoneStudios) - Improvements to elevators and lifts.
 - [Chris Yeninas](https://github.com/PhantomGamers) - Help with project files and GitHub workflows.
+- [Locochoco](https://github.com/loco-choco) - Code improvements.
+
+### Translators
+
 - [Tlya](https://github.com/Tllya) - Russian translation.
-- [xen](https://github.com/xen-42) - French translation, and help with syncing particle/sound effects, fixing lantern item bugs, and syncing addon data.
-- [ShoosGun](https://github.com/ShoosGun) - Portuguese translation.
+- [xen](https://github.com/xen-42) and [MerlinConnected](https://github.com/MerlinConnected) - French translation.
+- [Locochoco](https://github.com/loco-choco) - Portuguese translation.
 - [DertolleDude](https://github.com/DertolleDude) - German translation.
-- [SakuradaYuki](https://github.com/SakuradaYuki) - Chinese translation.
+- [SakuradaYuki](https://github.com/SakuradaYuki) and [isrecalpear](https://github.com/isrecalpear) - Chinese translation.
 - [poleshe](https://github.com/poleshe) - Spanish translation.
+- [Deniz](https://github.com/dumbdeniz) - Turkish translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.
@@ -128,7 +137,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 - [Mirror](https://mirror-networking.com/)
     - [kcp2k](https://github.com/vis2k/kcp2k)
     - [Telepathy](https://github.com/vis2k/Telepathy)
-- [EpicOnlineTransport](https://github.com/FakeByte/EpicOnlineTransport)
+- [FizzySteamworks](https://github.com/Chykary/FizzySteamworks)
 - [HarmonyX](https://github.com/BepInEx/HarmonyX)
 - [UniTask](https://github.com/Cysharp/UniTask)
 - Modified code from [Popcron's Gizmos](https://github.com/popcron/gizmos)
