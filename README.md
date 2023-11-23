@@ -53,6 +53,9 @@ Spoilers within!
 ### I keep timing out when trying to connect!
 Check the mod settings for "Use KCP Transport". You have to forward port 7777 as TCP/UDP, or use Hamachi. ***All players must either be using KCP, or not using KCP.***
 
+### Why does SpaceWar show up in my Steam library?
+This is for players who own the game on Epic or Xbox. Steam networking only works if you own the game on Steam, so we have to pretend to be SpaceWar (which every Steam user owns) so everyone can play.
+
 ### Requirements
 - Latest version of OWML.
 - Latest version of Mod Manager. (If using)
