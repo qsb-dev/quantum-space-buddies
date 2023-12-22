@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.ElevatorSync.Patches;
@@ -13,6 +14,8 @@ public class NomaiElevatorPatches : QSBPatch
 	private static OWTriggerVolume blackHoleForgeTrigger;
 	private static NomaiElevator blackHoleForgeEntrance;
 	private static OWTriggerVolume blackHoleForgeEntranceTrigger;
+
+	private static bool runOnce;
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(NomaiElevator), nameof(NomaiElevator.FixedUpdate))]
@@ -34,23 +37,8 @@ public class NomaiElevatorPatches : QSBPatch
 		if (!blackHoleForgeEntrance || !blackHoleForgeEntranceTrigger)
 		{
 			blackHoleForgeEntrance = GameObject.Find("BlackHoleForge_EntrancePivot").GetComponent<NomaiElevator>();
-
-			// Use a built-in trigger and alter it.
-			var baseTrigger = GameObject.Find("BrittleHollow_Body/Sector_BH/Sector_NorthHemisphere/" +
-				"Sector_NorthPole/Sector_HangingCity/Sector_HangingCity_BlackHoleForge/" +
-				"BlackHoleForgePivot/Interactables_BlackHoleForge/BlackHoleForge_EntrancePivot/" +
-				"Geometry_BlackHoleForge_Entrance/GravityVolume (20)");
-
-			var newTrigger = Object.Instantiate(baseTrigger, baseTrigger.transform.parent);
-			blackHoleForgeEntranceTrigger = newTrigger.GetComponent<OWTriggerVolume>();
-
-			// Make a new box and move it so that the entrance trigger is aligned with the entrance better.
-			// This prevents the player from moving with the entrance when they aren't in it
-			// because the base shape is too far up.
-			var box = (BoxShape)blackHoleForgeEntranceTrigger._shape;
-			// The shape is rotated so we dont use Y.
-			box.center = new Vector3(-1.85f, 0f, 0f);
-			box.enabled = true;
+			blackHoleForgeEntranceTrigger = GameObject.Find("FakeSector_BlackHoleForge_EntrancePivot")
+				.GetComponent<OWTriggerVolume>();
 		}
 
 		var speed = blackHoleForge._speed;
@@ -72,6 +60,18 @@ public class NomaiElevatorPatches : QSBPatch
 			// This makes sure they move with the forge.
 			var newPos = Locator.GetPlayerTransform().position + new Vector3(0f, speed * Time.deltaTime, 0f);
 			Locator.GetPlayerTransform().position = newPos;
+		}
+
+		if (!runOnce)
+		{
+			// Recenter the universe because the player has been manually moved.
+			runOnce = true;
+			
+			Delay.RunWhen(() => !__instance.enabled, () =>
+			{
+				runOnce = false;
+				CenterOfTheUniverse.s_instance.OnPlayerRepositioned();
+			});
 		}
 	}
 }
