@@ -153,6 +153,36 @@ public class QSBSectorManager : WorldObjectManager
 				});
 		}
 
+
+		//black hole forge
+		{
+			var forge = GameObject.Find("BlackHoleForgePivot");
+			FakeSector.Create(forge,
+				forge.GetComponentInParent<Sector>(),
+				x =>
+				{
+					var trigger = x.gameObject.AddComponent<OWTriggerVolume>();
+					x._triggerRoot = GameObject.Find("BrittleHollow_Body/Sector_BH/Sector_NorthHemisphere/Sector_NorthPole/" +
+						"Sector_HangingCity/Sector_HangingCity_BlackHoleForge/BlackHoleForgePivot/" +
+						"Volumes_BlackHoleForge/DirectionalForceVolume");
+				});
+		}
+
+		// black hole forge entrance elevator
+		{
+			var entrance = GameObject.Find("BlackHoleForge_EntrancePivot");
+			var sector = GameObject.Find("Sector_HangingCity_BlackHoleForge").GetComponent<Sector>();
+			FakeSector.Create(entrance,
+				sector,
+				x =>
+				{
+					x.gameObject.AddComponent<OWTriggerVolume>();
+					var shape = x.gameObject.AddComponent<BoxShape>();
+					shape.size = new Vector3(5.5f, 5.8f, 5.5f);
+					shape.center = new Vector3(0f, 2.9f, 1.5f);
+				});
+		}
+
 		// OPC probe
 		{
 			var probe = Locator._orbitalProbeCannon
