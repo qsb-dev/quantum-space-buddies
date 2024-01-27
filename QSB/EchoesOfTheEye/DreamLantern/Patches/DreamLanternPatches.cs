@@ -128,14 +128,6 @@ public class DreamLanternPatches : QSBPatch
 	#region flare stuff
 
 	[HarmonyPrefix]
-	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.Awake))]
-	public static void Awake(DreamLanternController __instance)
-	{
-		__instance._lensFlare.brightness = 0.5f; // ghost lanterns use this
-		// also has blue lens flare instead of green. keep it like that for gameplay or wtv
-	}
-
-	[HarmonyPrefix]
 	[HarmonyPatch(typeof(DreamLanternController), nameof(DreamLanternController.Update))]
 	public static bool Update(DreamLanternController __instance)
 	{

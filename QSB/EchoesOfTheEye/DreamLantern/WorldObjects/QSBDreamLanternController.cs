@@ -16,6 +16,10 @@ public class QSBDreamLanternController : WorldObject<DreamLanternController>
 		if (!IsGhostLantern)
 		{
 			DreamLanternItem = AttachedObject.GetComponent<DreamLanternItem>();
+
+			AttachedObject._lensFlare.brightness = 0.5f; // ghost lanterns use this. in vanilla its 0
+			// also has blue lens flare instead of green. keep it like that for gamplay or wtv
+			AttachedObject._origLensFlareBrightness = AttachedObject._lensFlare.brightness;
 		}
 	}
 
