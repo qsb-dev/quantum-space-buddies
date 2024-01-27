@@ -114,8 +114,6 @@ public class QSBSectorManager : WorldObjectManager
 				x => x._triggerRoot = raft._rideVolume.gameObject);
 		}
 
-		// todo black hole forge
-
 		// cage elevators
 		foreach (var cageElevator in QSBWorldSync.GetUnityObjects<CageElevator>())
 		{
