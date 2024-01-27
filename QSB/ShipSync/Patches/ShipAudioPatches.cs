@@ -41,4 +41,27 @@ public class ShipAudioPatches : QSBPatch
 			return true;
 		}
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(TravelMusicController), nameof(TravelMusicController.Update))]
+	public static bool TravelMusicController_Update(TravelMusicController instance)
+	{
+		// only this line is changed
+		instance._isTraveling = PlayerState.IsInsideShip()
+		                        && ShipManager.Instance.CurrentFlyer != uint.MaxValue
+		                        && Locator.GetPlayerRulesetDetector().AllowTravelMusic();
+
+		if (instance._isTraveling && !instance._wasTraveling)
+		{
+			instance._audioSource.FadeIn(5f, false, false, 1f);
+		}
+		else if (!instance._isTraveling && instance._wasTraveling)
+		{
+			instance._audioSource.FadeOut(5f, OWAudioSource.FadeOutCompleteAction.PAUSE, 0f);
+		}
+
+		instance._wasTraveling = instance._isTraveling;
+
+		return false;
+	}
 }
