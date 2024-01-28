@@ -44,23 +44,23 @@ public class ShipAudioPatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(TravelMusicController), nameof(TravelMusicController.Update))]
-	public static bool TravelMusicController_Update(TravelMusicController instance)
+	public static bool TravelMusicController_Update(TravelMusicController __instance)
 	{
 		// only this line is changed
-		instance._isTraveling = PlayerState.IsInsideShip()
-		                        && ShipManager.Instance.CurrentFlyer != uint.MaxValue
-		                        && Locator.GetPlayerRulesetDetector().AllowTravelMusic();
+		__instance._isTraveling = PlayerState.IsInsideShip()
+		                          && ShipManager.Instance.CurrentFlyer != uint.MaxValue
+		                          && Locator.GetPlayerRulesetDetector().AllowTravelMusic();
 
-		if (instance._isTraveling && !instance._wasTraveling)
+		if (__instance._isTraveling && !__instance._wasTraveling)
 		{
-			instance._audioSource.FadeIn(5f, false, false, 1f);
+			__instance._audioSource.FadeIn(5f, false, false, 1f);
 		}
-		else if (!instance._isTraveling && instance._wasTraveling)
+		else if (!__instance._isTraveling && __instance._wasTraveling)
 		{
-			instance._audioSource.FadeOut(5f, OWAudioSource.FadeOutCompleteAction.PAUSE, 0f);
+			__instance._audioSource.FadeOut(5f, OWAudioSource.FadeOutCompleteAction.PAUSE, 0f);
 		}
 
-		instance._wasTraveling = instance._isTraveling;
+		__instance._wasTraveling = __instance._isTraveling;
 
 		return false;
 	}
