@@ -30,7 +30,7 @@ public class BodyCustomizer : MonoBehaviour, IAddComponentOnStart
 	{
 		DebugLog.DebugWrite($"Loading skin assets...", MessageType.Info);
 
-		skinMap.Add("Default", (SkinsBundle.LoadAsset<Texture2D>("Assets/GameAssets/Texture2D/Traveller_HEA_Player_Skin_d.png"), SkinsBundle.LoadAsset<Texture2D>("Assets/GameAssets/Texture2D/Traveller_HEA_Player_Skin_n.png")));
+		skinMap.Add("Default", LoadSkin("Type 0"));
 		skinMap.Add("Type 1", LoadSkin("Type 1"));
 		skinMap.Add("Type 2", LoadSkin("Type 2"));
 		skinMap.Add("Type 3", LoadSkin("Type 3"));
@@ -49,7 +49,7 @@ public class BodyCustomizer : MonoBehaviour, IAddComponentOnStart
 		skinMap.Add("Type 16", LoadSkin("Type 16"));
 		skinMap.Add("Type 17", LoadSkin("Type 17"));
 
-		jetpackMap.Add("Orange", SkinsBundle.LoadAsset<Texture2D>("Assets/GameAssets/Texture2D/Props_HEA_Jetpack_d.png"));
+		jetpackMap.Add("Orange", LoadJetpack("default"));
 		jetpackMap.Add("Yellow", LoadJetpack("yellow"));
 		jetpackMap.Add("Red", LoadJetpack("red"));
 		jetpackMap.Add("Pink", LoadJetpack("pink"));
