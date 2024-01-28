@@ -18,11 +18,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
 using QSB.API;
 using QSB.BodyCustomization;
 using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = System.Random;
 
 /*
 	Copyright (C) 2020 - 2023
@@ -77,6 +79,9 @@ public class QSBCore : ModBehaviour
 		: QSBMSStoreProfileManager.SharedInstance;
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
+
+	private static string randomSkinType;
+	private static string randomJetpackType;
 
 
 	public static readonly string[] IncompatibleMods =
@@ -281,6 +286,19 @@ public class QSBCore : ModBehaviour
 		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
+
+		if (DebugSettings.RandomizeSkins)
+		{
+			var skinSetting = (JObject)ModHelper.Config.Settings["skinType"];
+			var skinOptions = skinSetting["options"].ToObject<string[]>();
+			randomSkinType = skinOptions[UnityEngine.Random.Range(0, skinOptions.Length - 1)];
+
+			var jetpackSetting = (JObject)ModHelper.Config.Settings["jetpackType"];
+			var jetpackOptions = jetpackSetting["options"].ToObject<string[]>();
+			randomJetpackType = jetpackOptions[UnityEngine.Random.Range(0, jetpackOptions.Length - 1)];
+
+			Configure(ModHelper.Config);
+		}
 	}
 
 	private AssetBundle LoadBundle(string bundleName)
@@ -401,8 +419,17 @@ public class QSBCore : ModBehaviour
 		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
 		ShowExtraHUDElements = config.GetSettingsValue<bool>("showExtraHud");
 		TextChatInput = config.GetSettingsValue<bool>("textChatInput");
-		SkinVariation = config.GetSettingsValue<string>("skinType");
-		JetpackVariation = config.GetSettingsValue<string>("jetpackType");
+
+		if (DebugSettings.RandomizeSkins)
+		{
+			SkinVariation = randomSkinType;
+			JetpackVariation = randomJetpackType;
+		}
+		else
+		{
+			SkinVariation = config.GetSettingsValue<string>("skinType");
+			JetpackVariation = config.GetSettingsValue<string>("jetpackType");
+		}
 
 		if (IsHost)
 		{

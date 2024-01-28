@@ -32,6 +32,9 @@ public class DebugSettings
 	[JsonProperty("latencySimulation")]
 	public int LatencySimulation;
 
+	[JsonProperty("randomizeSkins")]
+	public bool RandomizeSkins;
+
 	[JsonProperty("debugMode")]
 	public bool DebugMode;
 
