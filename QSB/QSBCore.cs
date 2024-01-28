@@ -70,8 +70,8 @@ public class QSBCore : ModBehaviour
 	public static bool ShipDamage { get; private set; }
 	public static bool ShowExtraHUDElements { get; private set; }
 	public static bool TextChatInput { get; private set; }
-	public static string SkinVariation { get; private set; }
-	public static string JetpackVariation { get; private set; }
+	public static string SkinVariation { get; private set; } = "Default";
+	public static string JetpackVariation { get; private set; } = "Orange";
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
