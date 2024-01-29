@@ -4,6 +4,8 @@ using QSB.Patches;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Reflection;
+using QSB.EchoesOfTheEye.Ghosts.Messages;
+using QSB.Messaging;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Patches;
@@ -76,8 +78,11 @@ public class GhostPartyPathDirectorPatches : QSBPatch
 					if (!__instance._respawnBlockTrigger.IsTrackingObject(Locator.GetPlayerDetector()))
 					{
 						__instance._dispatchedGhosts.QuickRemoveAt(i);
-						ghostBrain.AttachedObject.transform.position = __instance._ghostSpawns[Random.Range(0, __instance._ghostSpawns.Length)].spawnTransform.position;
-						ghostBrain.AttachedObject.transform.eulerAngles = Vector3.up * __instance._ghostSpawns[Random.Range(0, __instance._ghostSpawns.Length)].spawnTransform.eulerAngles.y;
+						var indexOne = Random.Range(0, __instance._ghostSpawns.Length);
+						var indexTwo = Random.Range(0, __instance._ghostSpawns.Length);
+						ghostBrain.SendMessage(new PartyPathResetMessage(indexOne, indexTwo, __instance._numEnabledGhostProxies));
+						ghostBrain.AttachedObject.transform.position = __instance._ghostSpawns[indexOne].spawnTransform.position;
+						ghostBrain.AttachedObject.transform.eulerAngles = Vector3.up * __instance._ghostSpawns[indexTwo].spawnTransform.eulerAngles.y;
 						ghostBrain.TabulaRasa();
 						partyPathAction.ResetPath();
 						if (!__instance._disableGhostProxies && __instance._numEnabledGhostProxies < __instance._ghostFinalDestinations.Length)
