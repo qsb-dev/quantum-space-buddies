@@ -159,7 +159,6 @@ public class QSBSectorManager : WorldObjectManager
 				forge.GetComponentInParent<Sector>(),
 				x =>
 				{
-					var trigger = x.gameObject.AddComponent<OWTriggerVolume>();
 					x._triggerRoot = GameObject.Find("BrittleHollow_Body/Sector_BH/Sector_NorthHemisphere/Sector_NorthPole/" +
 						"Sector_HangingCity/Sector_HangingCity_BlackHoleForge/BlackHoleForgePivot/" +
 						"Volumes_BlackHoleForge/DirectionalForceVolume");
