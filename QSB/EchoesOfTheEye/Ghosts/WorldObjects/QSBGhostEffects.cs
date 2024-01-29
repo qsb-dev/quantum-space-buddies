@@ -103,7 +103,7 @@ public class QSBGhostEffects : WorldObject<GhostEffects>, IGhostObject
 		var closestPlayer = QSBPlayerManager.GetClosestPlayerToWorldPoint(AttachedObject.transform.position, true);
 		var num5 = (closestPlayer?.AssignedSimulationLantern?.AttachedObject?.GetLanternController()?.GetLight()?.GetFlickerScale() - 1f + 0.07f) / 0.14f ?? 0;
 		num5 = Mathf.Lerp(0.7f, 1f, num5);
-		AttachedObject.SetEyeGlow(AttachedObject._eyeGlow * num3);
+		AttachedObject.SetEyeGlow(AttachedObject._eyeGlow * num5);
 
 		if (AttachedObject._playingDeathSequence)
 		{
