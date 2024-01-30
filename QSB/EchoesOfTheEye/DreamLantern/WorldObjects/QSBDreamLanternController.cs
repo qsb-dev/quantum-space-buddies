@@ -14,6 +14,7 @@ public class QSBDreamLanternController : WorldObject<DreamLanternController>
 
 	public Transform[] NonVMFocuserPetals;
 	public Transform[] NonVMConcealerRoots;
+	public Transform[] NonVMConcealerCovers;
 
 	public override async UniTask Init(CancellationToken ct)
 	{
