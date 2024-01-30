@@ -33,6 +33,13 @@ public class QSBAPI : IQSBAPI
 		var player = QSBPlayerManager.GetPlayer(playerId);
 		return player.IsReady && player.Body != null;
 	}
+
+	public bool GetPlayerDead(uint playerId)
+	{
+		var player = QSBPlayerManager.GetPlayer(playerId);
+		return player.IsDead;
+	}
+
 	public uint[] GetPlayerIDs() => QSBPlayerManager.PlayerList.Select(x => x.PlayerId).ToArray();
 
 	public UnityEvent<uint> OnPlayerJoin() => QSBAPIEvents.OnPlayerJoinEvent;

@@ -56,6 +56,12 @@ public interface IQSBAPI
 	bool GetPlayerReady(uint playerID);
 
 	/// <summary>
+	/// Returns true if the given player is dead.
+	/// </summary>
+	/// <param name="playerID">The ID of the player.</param>
+	bool GetPlayerDead(uint playerID);
+
+	/// <summary>
 	/// Returns the list of IDs of all connected players.
 	///
 	/// The first player in the list is the host.
