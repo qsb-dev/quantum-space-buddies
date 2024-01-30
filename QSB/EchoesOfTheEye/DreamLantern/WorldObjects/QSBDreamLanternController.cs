@@ -21,7 +21,6 @@ public class QSBDreamLanternController : WorldObject<DreamLanternController>
 		// Ghosts don't have the item and instead the effects are controlled by GhostEffects
 		if (!IsGhostLantern)
 		{
-			DebugLog.DebugWrite($"Not GhostLantern, getting DreamLanternItem");
 			DreamLanternItem = AttachedObject.GetComponent<DreamLanternItem>();
 
 			if (DreamLanternItem == null) // ghost lanterns don't have DreamLanternItems attached
@@ -29,10 +28,8 @@ public class QSBDreamLanternController : WorldObject<DreamLanternController>
 				return;
 			}
 
-			DebugLog.DebugWrite($"_lanternType is {DreamLanternItem._lanternType}");
 			if (DreamLanternItem._lanternType == DreamLanternType.Malfunctioning)
 			{
-				DebugLog.DebugWrite($"returning...");
 				return;
 			}
 
