@@ -1,45 +1,17 @@
-﻿using Cysharp.Threading.Tasks;
-using QSB.ItemSync.WorldObjects.Items;
-using System.Linq;
-using System.Threading;
+﻿using QSB.ItemSync.WorldObjects.Items;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 
 public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 {
-	private Material[] _materials;
-
-	public override async UniTask Init(CancellationToken ct)
-	{
-		await base.Init(ct);
-
-		// Some lanterns (ie, nonfunctioning) don't have a view model group
-		if (AttachedObject._lanternType != DreamLanternType.Nonfunctioning)
-		{
-			_materials = AttachedObject._lanternController._viewModelGroup?.GetComponentsInChildren<MeshRenderer>(true)?.SelectMany(x => x.materials)?.ToArray();
-		}
-	}
-
 	public override void PickUpItem(Transform holdTransform)
 	{
 		base.PickUpItem(holdTransform);
 
-		// Fixes #502: Artifact is visible through the walls
 		if (AttachedObject._lanternType != DreamLanternType.Nonfunctioning)
 		{
-			foreach (var m in _materials)
-			{
-				if (m.renderQueue >= 2000)
-				{
-					m.renderQueue -= 2000;
-				}
-			}
-
-			// The view model looks much smaller than the dropped item
 			AttachedObject.gameObject.transform.localScale = Vector3.one * 2f;
-			
-			// BUG: iirc grapple totem fov change doesnt show on viewmodel so it looks weird with other players holding the lanterns
 		}
 
 		AttachedObject.EnableInteraction(true);
@@ -51,15 +23,7 @@ public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 
 		if (AttachedObject._lanternType != DreamLanternType.Nonfunctioning)
 		{
-			foreach (var m in _materials)
-			{
-				if (m.renderQueue < 2000)
-				{
-					m.renderQueue += 2000;
-				}
-			}
-
-			AttachedObject.gameObject.transform.localScale = Vector3.one;
+			if (AttachedObject._lanternType != DreamLanternType.Nonfunctioning)
 		}
 
 		// If in the DreamWorld, don't let other people pick up your lantern
