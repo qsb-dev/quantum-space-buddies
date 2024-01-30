@@ -23,7 +23,7 @@ public class QSBDreamLanternItem : QSBItem<DreamLanternItem>
 
 		if (AttachedObject._lanternType != DreamLanternType.Nonfunctioning)
 		{
-			if (AttachedObject._lanternType != DreamLanternType.Nonfunctioning)
+			AttachedObject.gameObject.transform.localScale = Vector3.one;
 		}
 
 		// If in the DreamWorld, don't let other people pick up your lantern
