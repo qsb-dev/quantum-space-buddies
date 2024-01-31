@@ -11,11 +11,10 @@ public class PartyPathResetMessage : QSBWorldObjectMessage<QSBGhostBrain, (int i
 	public override void OnReceiveRemote()
 	{
 		var __instance = QSBWorldSync.GetUnityObject<GhostPartyPathDirector>();
-		var partyPathAction = (QSBPartyPathAction)WorldObject.GetCurrentAction();
+
 		WorldObject.AttachedObject.transform.position = __instance._ghostSpawns[Data.indexOne].spawnTransform.position;
 		WorldObject.AttachedObject.transform.eulerAngles = Vector3.up * __instance._ghostSpawns[Data.indexTwo].spawnTransform.eulerAngles.y;
 		WorldObject.TabulaRasa();
-		partyPathAction.ResetPath();
 
 		__instance._numEnabledGhostProxies = Data.proxyIndex;
 

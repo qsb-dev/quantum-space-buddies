@@ -115,7 +115,7 @@ public class GhostPartyPathDirectorPatches : QSBPatch
 			__instance._waitingGhosts.RemoveAt(0);
 			__instance._lastDispatchedGhost = ghostBrain2.AttachedObject;
 			__instance._dispatchedGhosts.Add(ghostBrain2.AttachedObject);
-			__instance._nextGhostDispatchTime = Time.timeSinceLevelLoad + Random.Range(__instance._minGhostDispatchDelay, __instance._maxGhostDispatchDelay);
+			__instance._nextGhostDispatchTime = Time.timeSinceLevelLoad + UnityEngine.Random.Range(__instance._minGhostDispatchDelay, __instance._maxGhostDispatchDelay);
 		}
 
 		for (var j = 0; j < __instance._ghostSpawns.Length; j++)
