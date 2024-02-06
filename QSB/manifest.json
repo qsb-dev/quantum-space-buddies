@@ -13,5 +13,6 @@
 	"dependencies": [ "_nebula.MenuFramework", "JohnCorby.VanillaFix" ],
 	"pathsToPreserve": [ "debugsettings.json" ],
 	"requireLatestVersion": true,
-	"patcher": "QSBPatcher.exe"
+	"patcher": "QSBPatcher.exe",
+	"donateLinks": [ "https://www.paypal.me/nebula2056", "https://www.paypal.me/johncorby" ]
 }
