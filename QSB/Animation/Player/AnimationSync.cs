@@ -115,7 +115,7 @@ public class AnimationSync : PlayerSyncObject
 
 	private void OnEnableBigHeadMode()
 	{
-		var bone = GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Head);
+		var bone = VisibleAnimator.GetBoneTransform(HumanBodyBones.Head);
 		bone.localScale = new Vector3(2.5f, 2.5f, 2.5f);
 	}
 
