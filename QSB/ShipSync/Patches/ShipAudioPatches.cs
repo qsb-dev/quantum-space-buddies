@@ -91,5 +91,7 @@ public class ShipAudioPatches : QSBPatch
 		{
 			__instance._darkBrambleSource.FadeOut(5f, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
 		}
+
+		return false;
 	}
 }
