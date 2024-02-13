@@ -1,7 +1,7 @@
 ﻿using QSB.EchoesOfTheEye.LightSensorSync.Messages;
 using QSB.Messaging;
 using QSB.Player;
-using QSB.WorldSync;
+using QSB.WorldSync.Messages;
 using System.Linq;
 using UnityEngine;
 

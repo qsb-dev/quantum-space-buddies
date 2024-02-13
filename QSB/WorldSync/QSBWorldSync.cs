@@ -9,6 +9,7 @@ using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
+using QSB.WorldSync.Messages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

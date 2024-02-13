@@ -6,7 +6,7 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using QSB.WorldSync;
+using QSB.WorldSync.Messages;
 using System;
 using UnityEngine;
 
