@@ -250,6 +250,8 @@ public static class QSBWorldSync
 
 	public static IEnumerable<IWorldObject> GetWorldObjects() => WorldObjects;
 
+	public static IEnumerable<IWorldObject> GetWorldObjectsFromManager(string managerName) => _managerToBuiltObjects[managerName];
+
 	public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 		where TWorldObject : IWorldObject
 		=> WorldObjects.OfType<TWorldObject>();
