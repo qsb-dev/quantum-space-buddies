@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using QSB.Patches;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,8 +9,10 @@ namespace QSB.Utility.Deterministic;
 /// used to capture the true path of a rigidbody before it unparents
 /// </summary>
 [HarmonyPatch(typeof(OWRigidbody))]
-public static class DeterministicRigidbodyPatches
+public class DeterministicRigidbodyPatches : QSBPatch
 {
+	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
+
 	/// <summary>
 	/// changing the parent has to be deferred until Start to preserve the sibling index.
 	/// for example, anglerfish bodies all share the same parent, so unparenting one clobbers the sibling index of all the others.
@@ -23,7 +26,7 @@ public static class DeterministicRigidbodyPatches
 		__instance._transform = __instance.transform;
 
 		// ADDED
-		DeterministicManager.Cache.Add(__instance._transform, (__instance._transform.GetSiblingIndex(), __instance._transform.parent));
+		DeterministicManager.ParentCache.Add(__instance._transform, (__instance._transform.GetSiblingIndex(), __instance._transform.parent));
 
 		if (!__instance._scaleRoot)
 		{
@@ -87,7 +90,7 @@ public static class DeterministicRigidbodyPatches
 	[HarmonyPatch(nameof(OWRigidbody.OnDestroy))]
 	private static void OnDestroy(OWRigidbody __instance)
 	{
-		DeterministicManager.Cache.Remove(__instance._transform);
+		DeterministicManager.ParentCache.Remove(__instance._transform);
 		_setParentQueue.Remove(__instance);
 	}
 
