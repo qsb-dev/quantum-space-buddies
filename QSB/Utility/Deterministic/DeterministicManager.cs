@@ -24,7 +24,7 @@ public static class DeterministicManager
 
             if (!_patched)
             {
-                _harmony.PatchAll(typeof(OWRigidbodyPatches));
+                _harmony.PatchAll(typeof(DeterministicRigidbodyPatches));
                 _patched = true;
             }
         };

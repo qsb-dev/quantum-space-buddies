@@ -4,9 +4,16 @@ using UnityEngine;
 
 namespace QSB.Utility.Deterministic;
 
+/// <summary>
+/// used to capture the true path of a rigidbody before it unparents
+/// </summary>
 [HarmonyPatch(typeof(OWRigidbody))]
-public static class OWRigidbodyPatches
+public static class DeterministicRigidbodyPatches
 {
+	/// <summary>
+	/// changing the parent has to be deferred until Start to preserve the sibling index.
+	/// for example, anglerfish bodies all share the same parent, so unparenting one clobbers the sibling index of all the others.
+	/// </summary>
 	private static readonly Dictionary<OWRigidbody, Transform> _setParentQueue = new();
 
 	[HarmonyPrefix]
