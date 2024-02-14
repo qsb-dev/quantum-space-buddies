@@ -11,21 +11,21 @@ namespace QSB.WorldSync.Messages;
 /// </summary>
 public class RequestInitialStatesMessage : QSBMessage
 {
-    public RequestInitialStatesMessage() => To = 0;
+	public RequestInitialStatesMessage() => To = 0;
 
-    public override void OnReceiveRemote() =>
-        Delay.RunWhen(() => QSBWorldSync.AllObjectsReady,
-            () => SendInitialStates(From));
+	public override void OnReceiveRemote() =>
+		Delay.RunWhen(() => QSBWorldSync.AllObjectsReady,
+			() => SendInitialStates(From));
 
-    private static void SendInitialStates(uint to)
-    {
-        SendInitialState?.SafeInvoke(to);
-        DebugLog.DebugWrite($"sent initial states to {to}");
-    }
+	private static void SendInitialStates(uint to)
+	{
+		SendInitialState?.SafeInvoke(to);
+		DebugLog.DebugWrite($"sent initial states to {to}");
+	}
 
-    /// <summary>
-    /// called on the host.
-    /// use this to send initial states to whoever is asking for it.
-    /// </summary>
-    public static event Action<uint> SendInitialState;
+	/// <summary>
+	/// called on the host.
+	/// use this to send initial states to whoever is asking for it.
+	/// </summary>
+	public static event Action<uint> SendInitialState;
 }

@@ -10,26 +10,26 @@ namespace QSB.WorldSync.Messages;
 /// </summary>
 public class WorldObjectsHashMessage : QSBMessage<(string managerName, string hash, int count)>
 {
-    public WorldObjectsHashMessage(string managerName, string hash, int count) : base((managerName, hash, count)) => To = 0;
+	public WorldObjectsHashMessage(string managerName, string hash, int count) : base((managerName, hash, count)) => To = 0;
 
-    public override void OnReceiveRemote()
-    {
-        Delay.RunWhen(() => QSBWorldSync.AllObjectsAdded, () =>
-        {
-            var (hash, count) = QSBWorldSync.ManagerHashes[Data.managerName];
+	public override void OnReceiveRemote()
+	{
+		Delay.RunWhen(() => QSBWorldSync.AllObjectsAdded, () =>
+		{
+			var (hash, count) = QSBWorldSync.ManagerHashes[Data.managerName];
 
-            if (hash != Data.hash)
-            {
-                // oh fuck oh no oh god
-                /*DebugLog.ToConsole($"Kicking {From} because their WorldObjects hash for {Data.managerName} is wrong. (Server:{hash} count:{count}, Client:{Data.hash} count:{Data.count})", MessageType.Error);
-                new PlayerKickMessage(From, $"WorldObject hash error for {Data.managerName}. (Server:{hash} count:{count}, Client:{Data.hash}, count:{Data.count})").Send();*/
+			if (hash != Data.hash)
+			{
+				// oh fuck oh no oh god
+				/*DebugLog.ToConsole($"Kicking {From} because their WorldObjects hash for {Data.managerName} is wrong. (Server:{hash} count:{count}, Client:{Data.hash} count:{Data.count})", MessageType.Error);
+				new PlayerKickMessage(From, $"WorldObject hash error for {Data.managerName}. (Server:{hash} count:{count}, Client:{Data.hash}, count:{Data.count})").Send();*/
 
-                DebugLog.ToConsole($"{From} has an incorrect hash for {Data.managerName}. (S:{hash}:{count}, C:{Data.hash}-{Data.count}) Requesting data for analysis...", MessageType.Error);
+				DebugLog.ToConsole($"{From} has an incorrect hash for {Data.managerName}. (S:{hash}:{count}, C:{Data.hash}-{Data.count}) Requesting data for analysis...", MessageType.Error);
 
-                HashErrorAnalysis.Instances.Add(Data.managerName, new HashErrorAnalysis(Data.managerName));
-                
-                new RequestHashBreakdownMessage(Data.managerName) {To = From}.Send();
-            }
-        });
-    }
+				HashErrorAnalysis.Instances.Add(Data.managerName, new HashErrorAnalysis(Data.managerName));
+				
+				new RequestHashBreakdownMessage(Data.managerName) {To = From}.Send();
+			}
+		});
+	}
 }
