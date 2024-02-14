@@ -21,8 +21,14 @@ public class WorldObjectsHashMessage : QSBMessage<(string managerName, string ha
             if (hash != Data.hash)
             {
                 // oh fuck oh no oh god
-                DebugLog.ToConsole($"Kicking {From} because their WorldObjects hash for {Data.managerName} is wrong. (Server:{hash} count:{count}, Client:{Data.hash} count:{Data.count})", MessageType.Error);
-                new PlayerKickMessage(From, $"WorldObject hash error for {Data.managerName}. (Server:{hash} count:{count}, Client:{Data.hash}, count:{Data.count})").Send();
+                /*DebugLog.ToConsole($"Kicking {From} because their WorldObjects hash for {Data.managerName} is wrong. (Server:{hash} count:{count}, Client:{Data.hash} count:{Data.count})", MessageType.Error);
+                new PlayerKickMessage(From, $"WorldObject hash error for {Data.managerName}. (Server:{hash} count:{count}, Client:{Data.hash}, count:{Data.count})").Send();*/
+
+                DebugLog.ToConsole($"{From} has an incorrect hash for {Data.managerName}. (S:{hash}:{count}, C:{Data.hash}-{Data.count}) Requesting data for analysis...", MessageType.Error);
+
+                HashErrorAnalysis.Instances.Add(Data.managerName, new HashErrorAnalysis(Data.managerName));
+                
+                new RequestHashBreakdownMessage(Data.managerName) {To = From}.Send();
             }
         });
     }
