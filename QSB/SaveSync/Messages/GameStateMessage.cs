@@ -4,6 +4,8 @@ using QSB.Menus;
 using QSB.Messaging;
 using QSB.Utility;
 using System.Collections.Generic;
+using QSB.TimeSync.Patches;
+using UnityEngine;
 
 namespace QSB.SaveSync.Messages;
 
@@ -19,6 +21,10 @@ public class GameStateMessage : QSBMessage
 	private bool[] KnownFrequencies;
 	private Dictionary<int, bool> KnownSignals;
 	private bool ReducedFrights;
+	private bool IsLoopAfterStatue;
+	private Quaternion StatueRotation;
+	private Vector3 PlayerPosition;
+	private Quaternion PlayerRotation;
 
 	public GameStateMessage(uint toId)
 	{
@@ -31,6 +37,10 @@ public class GameStateMessage : QSBMessage
 		KnownFrequencies = gameSave.knownFrequencies;
 		KnownSignals = gameSave.knownSignals;
 		ReducedFrights = PlayerData.GetReducedFrights();
+		IsLoopAfterStatue = TimeLoopPatches.IsLoopAfterStatue;
+		StatueRotation = MemoryUplinkTrigger._savedStatueRotation;
+		PlayerPosition = PlayerSpawner._localResetPos;
+		PlayerRotation = PlayerSpawner._localResetRotation;
 	}
 
 	public override void Serialize(NetworkWriter writer)
@@ -51,6 +61,10 @@ public class GameStateMessage : QSBMessage
 		}
 
 		writer.Write(ReducedFrights);
+		writer.Write(IsLoopAfterStatue);
+		writer.Write(StatueRotation);
+		writer.Write(PlayerPosition);
+		writer.Write(PlayerRotation);
 	}
 
 	public override void Deserialize(NetworkReader reader)
@@ -73,6 +87,10 @@ public class GameStateMessage : QSBMessage
 		}
 
 		ReducedFrights = reader.Read<bool>();
+		IsLoopAfterStatue = reader.Read<bool>();
+		StatueRotation = reader.ReadQuaternion();
+		PlayerPosition = reader.ReadVector3();
+		PlayerRotation = reader.ReadQuaternion();
 	}
 
 	public override void OnReceiveRemote()
@@ -94,6 +112,12 @@ public class GameStateMessage : QSBMessage
 
 		PlayerData.SetPersistentCondition("LAUNCH_CODES_GIVEN", LaunchCodesGiven);
 		PlayerData._settingsSave.reducedFrights = ReducedFrights;
+
+		TimeLoop._startTimeLoopOnReload = IsLoopAfterStatue;
+
+		MemoryUplinkTrigger._savedStatueRotation = StatueRotation;
+		PlayerSpawner._localResetPos = PlayerPosition;
+		PlayerSpawner._localResetRotation = PlayerRotation;
 
 		PlayerData.SaveCurrentGame();
 
