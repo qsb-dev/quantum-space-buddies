@@ -25,6 +25,7 @@ using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = System.Random;
+using QSB.Utility.Deterministic;
 
 /*
 	Copyright (C) 2020 - 2023

@@ -5,9 +5,6 @@ namespace QSB.Utility;
 [JsonObject(MemberSerialization.OptIn)]
 public class DebugSettings
 {
-	[JsonProperty("dumpWorldObjects")]
-	public bool DumpWorldObjects;
-
 	[JsonProperty("logQSBMessages")]
 	public bool LogQSBMessages;
 

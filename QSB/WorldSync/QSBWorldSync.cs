@@ -8,6 +8,7 @@ using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
+using QSB.Utility.Deterministic;
 using QSB.Utility.LinkedWorldObject;
 using QSB.WorldSync.Messages;
 using System;

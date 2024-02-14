@@ -4,6 +4,7 @@ using QSB.ItemSync.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Utility;
+using QSB.Utility.Deterministic;
 using QSB.WorldSync;
 using System.Linq;
 using System.Threading;

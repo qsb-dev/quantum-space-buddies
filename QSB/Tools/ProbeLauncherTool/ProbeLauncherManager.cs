@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.Tools.ProbeLauncherTool.WorldObjects;
-using QSB.Utility;
+using QSB.Utility.Deterministic;
 using QSB.WorldSync;
 using System.Linq;
 using System.Threading;
