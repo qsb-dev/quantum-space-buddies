@@ -70,7 +70,6 @@ The template for this file is this :
 
 ```json
 {
-  "dumpWorldObjects": false,
   "instanceIdInLogs": false,
   "hookDebugLogs": false,
   "avoidTimeSync": false,
@@ -86,7 +85,6 @@ The template for this file is this :
 }
 ```
 
-- dumpWorldObjects - Creates a file with information about the WorldObjects that were created.
 - instanceIdInLogs - Appends the game instance id to every log message sent.
 - hookDebugLogs - Print Unity logs and warnings.
 - avoidTimeSync - Disables the syncing of time.
