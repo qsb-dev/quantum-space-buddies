@@ -6,7 +6,7 @@ using UnityEngine;
 namespace QSB.Utility.Deterministic;
 
 /// <summary>
-/// used to capture the true path of a rigidbody before it unparents
+/// used to capture the true path of a rigidbody before it changes parent
 /// </summary>
 [HarmonyPatch(typeof(OWRigidbody))]
 public class DeterministicRigidbodyPatches : QSBPatch

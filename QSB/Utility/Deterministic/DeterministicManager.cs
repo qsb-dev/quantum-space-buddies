@@ -6,7 +6,10 @@ using UnityEngine;
 namespace QSB.Utility.Deterministic;
 
 /// <summary>
-/// holds parenting information used for reliably sorting objects based on path
+/// holds parenting information used for reliably sorting objects based on path.
+///
+/// NOTE: sibling indexes MAY be slightly different between vendors because of extra switch optimization gameobjects,
+/// but the order is still the same, so sorting is still deterministic 
 /// </summary>
 public static class DeterministicManager
 {
