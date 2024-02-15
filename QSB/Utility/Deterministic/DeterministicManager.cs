@@ -14,7 +14,7 @@ namespace QSB.Utility.Deterministic;
 /// </summary>
 public static class DeterministicManager
 {
-	private static readonly Harmony _harmony = new(typeof(DeterministicManager).FullName);
+	private static readonly Harmony _harmony = new(typeof(DeterministicRigidbodyPatches).FullName);
 	private static bool _patched;
 	
 	public static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> ParentCache = new();
