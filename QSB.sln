@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		DEVELOPMENT.md = DEVELOPMENT.md
+		.github\FUNDING.yml = .github\FUNDING.yml
 		LICENSE = LICENSE
 		README.md = README.md
 		TRANSLATING.md = TRANSLATING.md
@@ -31,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mirror", "Mirror", "{851AB4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APITestMod", "APITestMod\APITestMod.csproj", "{0A10143E-6C00-409B-B3A5-C54C1B01599D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSBPatcher", "QSBPatcher\QSBPatcher.csproj", "{CA4CBA2B-54D5-4C4B-9B51-957BC6D77D6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QSBPatcher", "QSBPatcher\QSBPatcher.csproj", "{CA4CBA2B-54D5-4C4B-9B51-957BC6D77D6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
