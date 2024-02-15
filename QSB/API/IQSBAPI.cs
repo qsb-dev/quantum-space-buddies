@@ -50,6 +50,18 @@ public interface IQSBAPI
 	GameObject GetPlayerCamera(uint playerID);
 
 	/// <summary>
+	/// Returns the hud marker component of a given player.
+	/// </summary>
+	/// <param name="playerID">The ID of the player you want the hud marker of.</param>
+	HUDDistanceMarker GetPlayerHUDMarker(uint playerID);
+
+	/// <summary>
+	/// Returns the map marker component of a given player.
+	/// </summary>
+	/// <param name="playerID">The ID of the player you want the map marker of.</param>
+	MonoBehaviour GetPlayerMapMarker(uint playerID);
+
+	/// <summary>
 	/// Returns true if a given player has fully loaded into the game. If the local player is still loading into the game, this will return false.
 	/// </summary>
 	/// <param name="playerID">The ID of the player.</param>

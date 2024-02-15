@@ -27,6 +27,8 @@ public class QSBAPI : IQSBAPI
 	public string GetPlayerName(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Name;
 	public GameObject GetPlayerBody(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Body;
 	public GameObject GetPlayerCamera(uint playerId) => QSBPlayerManager.GetPlayer(playerId).CameraBody;
+	public HUDDistanceMarker GetPlayerHUDMarker(uint playerId) => QSBPlayerManager.GetPlayer(playerId).HudMarker;
+	public MonoBehaviour GetPlayerMapMarker(uint playerId) => QSBPlayerManager.GetPlayer(playerId).MapMarker;
 
 	public bool GetPlayerReady(uint playerId)
 	{
