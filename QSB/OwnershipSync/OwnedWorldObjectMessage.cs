@@ -4,7 +4,8 @@ using QSB.Player;
 namespace QSB.OwnershipSync;
 
 /// <summary>
-/// request or release ownership of a world object
+/// sets the owner of a world object
+/// also potentially gives ownership to someone else if possible
 /// </summary>
 public class OwnedWorldObjectMessage : QSBWorldObjectMessage<IOwnedWorldObject, uint>
 {

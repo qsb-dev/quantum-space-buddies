@@ -42,6 +42,36 @@ public class RaftPatches : QSBPatch
 			return;
 		}
 
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return;
+		}
+
 		__instance.GetWorldObject<QSBRaftDock>().SendMessage(new RaftDockOnPressInteractMessage());
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(RaftCarrier), nameof(RaftCarrier.OnEntry))]
+	private static bool RaftCarrier_OnEntry(RaftCarrier __instance, GameObject hitObj)
+	{
+		if (!QSBWorldSync.AllObjectsReady)
+		{
+			return true;
+		}
+
+		if (hitObj.CompareTag("RaftDetector") && __instance._state == RaftCarrier.DockState.Ready)
+		{
+			var raft = hitObj.GetComponentInParent<RaftController>();
+			var qsbRaft = raft.GetWorldObject<QSBRaft>();
+			// owner will handle docking and sends a message telling everyone else to also dock
+			if (!qsbRaft.NetworkBehaviour.isOwned)
+			{
+				return false;
+			}
+
+			__instance.GetWorldObject<IQSBRaftCarrier>().SendMessage(new RaftCarrierOnEntryMessage(qsbRaft));
+		}
+
+		return true;
 	}
 }

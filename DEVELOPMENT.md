@@ -70,7 +70,6 @@ The template for this file is this :
 
 ```json
 {
-  "dumpWorldObjects": false,
   "instanceIdInLogs": false,
   "hookDebugLogs": false,
   "avoidTimeSync": false,
@@ -81,13 +80,11 @@ The template for this file is this :
   "drawGui": false,
   "drawLines": false,
   "drawLabels": false,
-  "drawQuantumVisibilityObjects": false,
   "drawGhostAI": false,
   "greySkybox": false
 }
 ```
 
-- dumpWorldObjects - Creates a file with information about the WorldObjects that were created.
 - instanceIdInLogs - Appends the game instance id to every log message sent.
 - hookDebugLogs - Print Unity logs and warnings.
 - avoidTimeSync - Disables the syncing of time.
@@ -98,6 +95,5 @@ The template for this file is this :
 - drawGui - Draws a GUI at the top of the screen that gives information on many things.
 - drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
 - drawLabels - Draws GUI labels attached to some objects. LAGGY.
-- drawQuantumVisibilityObjects - Indicates visibility objects with an orange shape.
 - drawGhostAI - Draws debug lines and labels just for the ghosts.
 - greySkybox - Turns the skybox grey. Useful in the Eye, where it's pretty dark.

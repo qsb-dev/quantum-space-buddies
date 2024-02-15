@@ -60,15 +60,20 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 
 	public static void ShipCommand(string[] arguments)
 	{
+		if (!QSBCore.DebugSettings.DebugMode)
+		{
+			return;
+		}
+
 		var command = arguments[0];
 
 		switch (command)
 		{
-			case "explode":
+/*			case "explode":
 				WriteToChat($"Blowing up the ship.", Color.green);
 				var shipDamageController = Locator.GetShipTransform().GetComponentInChildren<ShipDamageController>();
 				shipDamageController.Explode();
-				break;
+				break;*/
 			case "repair":
 			case "damage":
 				var damage = command == "damage";

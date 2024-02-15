@@ -239,6 +239,22 @@ public static class Extensions
 		return sb.ToString();
 	}
 
+	public static string GetMD5Hash(this string input)
+	{
+		using var md5 = System.Security.Cryptography.MD5.Create();
+
+		var bytes = Encoding.ASCII.GetBytes(input);
+		var hashBytes = md5.ComputeHash(bytes);
+
+		var sb = new StringBuilder();
+		for (var i = 0; i < hashBytes.Length; i++)
+		{
+			sb.Append(hashBytes[i].ToString("X2"));
+		}
+
+		return sb.ToString();
+	}
+
 	/// <summary>
 	/// only works for c# serializable objects
 	/// </summary>

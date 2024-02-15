@@ -18,7 +18,7 @@ public class QuantumObjectPatches : QSBPatch
 	public static bool IsLockedByPlayerContact(out bool __result, QuantumObject __instance)
 	{
 		var playersEntangled = QuantumManager.GetEntangledPlayers(__instance);
-		__result = playersEntangled.Count() != 0 && __instance.IsIlluminated();
+		__result = playersEntangled.Count() != 0 && (__instance.IsIlluminated() || playersEntangled.Any(x => x.FlashlightActive));
 		return false;
 	}
 
@@ -28,6 +28,8 @@ public class QuantumObjectPatches : QSBPatch
 	{
 		if (QSBWorldSync.AllObjectsReady)
 		{
+			// non-owners should still be able to set it quantum
+			// ie the eye reibeck building if a non owner walks over to it
 			__instance.GetWorldObject<IQSBQuantumObject>().SendMessage(new SetIsQuantumMessage(__instance.IsQuantum()));
 		}
 	}

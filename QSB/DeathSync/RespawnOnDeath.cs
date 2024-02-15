@@ -82,8 +82,8 @@ public class RespawnOnDeath : MonoBehaviour
 		ResetCanvases();
 
 		var mixer = Locator.GetAudioMixer();
-		mixer._deathMixed = false;
-		mixer._nonEndTimesVolume.FadeTo(1, 0.5f);
+		//mixer._deathMixed = false;
+		//mixer._nonEndTimesVolume.FadeTo(1, 0.5f);
 		mixer._endTimesVolume.FadeTo(1, 0.5f);
 		mixer.MixMap();
 

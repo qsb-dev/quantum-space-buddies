@@ -6,7 +6,7 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
-using QSB.WorldSync;
+using QSB.WorldSync.Messages;
 using System;
 using UnityEngine;
 
@@ -34,7 +34,11 @@ public class AnimationSync : PlayerSyncObject
 		RequestInitialStatesMessage.SendInitialState += SendInitialState;
 	}
 
-	protected void OnDestroy() => RequestInitialStatesMessage.SendInitialState -= SendInitialState;
+	protected void OnDestroy()
+	{
+		RequestInitialStatesMessage.SendInitialState -= SendInitialState;
+		GlobalMessenger.RemoveListener("EnableBigHeadMode", new Callback(OnEnableBigHeadMode));
+	}
 
 	/// <summary>
 	/// This wipes the NetworkAnimator's fields, so it assumes the parameters have changed.
@@ -98,6 +102,8 @@ public class AnimationSync : PlayerSyncObject
 
 		Delay.RunWhen(() => Player.CameraBody != null,
 			() => body.GetComponent<PlayerHeadRotationSync>().Init(Player.CameraBody.transform));
+
+		GlobalMessenger.AddListener("EnableBigHeadMode", new Callback(OnEnableBigHeadMode));
 	}
 
 	private void InitAccelerationSync()
@@ -105,6 +111,12 @@ public class AnimationSync : PlayerSyncObject
 		Player.JetpackAcceleration = GetComponent<JetpackAccelerationSync>();
 		var thrusterModel = isOwned ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
 		Player.JetpackAcceleration.Init(thrusterModel);
+	}
+
+	private void OnEnableBigHeadMode()
+	{
+		var bone = VisibleAnimator.GetBoneTransform(HumanBodyBones.Head);
+		bone.localScale = new Vector3(2.5f, 2.5f, 2.5f);
 	}
 
 	public void SetSuitState(bool suitedUp)

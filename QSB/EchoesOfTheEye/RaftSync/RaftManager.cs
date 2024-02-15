@@ -14,5 +14,6 @@ public class RaftManager : WorldObjectManager
 	{
 		QSBWorldSync.Init<QSBRaft, RaftController>();
 		QSBWorldSync.Init<QSBRaftDock, RaftDock>();
+		QSBWorldSync.Init<QSBDamRaftLift, DamRaftLift>();
 	}
 }

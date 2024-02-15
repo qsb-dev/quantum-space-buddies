@@ -121,7 +121,6 @@ public class AlarmTotemPatches : QSBPatch
 		}
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
-			// nebula said the error spam was annoying
 			if (!player.IsReady)
 			{
 				continue;
@@ -132,13 +131,17 @@ public class AlarmTotemPatches : QSBPatch
 			{
 				if (player.LightSensor.IsIlluminated())
 				{
+					// Player is visible and illuminated.
 					__result = true;
 					return false;
 				}
+
 				if (player.AssignedSimulationLantern == null)
 				{
+					// Player is not holding a lantern.
 					continue;
 				}
+
 				var lanternController = player.AssignedSimulationLantern.AttachedObject.GetLanternController();
 				if (lanternController.IsHeldByPlayer())
 				{
@@ -153,14 +156,16 @@ public class AlarmTotemPatches : QSBPatch
 								GlobalMessenger.FireEvent("ConcealFromAlarmTotem");
 							}
 						}
-						__result = false;
-						return false;
+
+						continue;
 					}
+
 					__result = true;
 					return false;
 				}
 			}
 		}
+
 		__result = false;
 		return false;
 	}

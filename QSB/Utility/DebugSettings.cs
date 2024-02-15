@@ -5,9 +5,6 @@ namespace QSB.Utility;
 [JsonObject(MemberSerialization.OptIn)]
 public class DebugSettings
 {
-	[JsonProperty("dumpWorldObjects")]
-	public bool DumpWorldObjects;
-
 	[JsonProperty("logQSBMessages")]
 	public bool LogQSBMessages;
 
@@ -32,6 +29,9 @@ public class DebugSettings
 	[JsonProperty("latencySimulation")]
 	public int LatencySimulation;
 
+	[JsonProperty("randomizeSkins")]
+	public bool RandomizeSkins;
+
 	[JsonProperty("debugMode")]
 	public bool DebugMode;
 
@@ -46,10 +46,6 @@ public class DebugSettings
 	[JsonProperty("drawLabels")]
 	private bool _drawLabels;
 	public bool DrawLabels => DebugMode && _drawLabels;
-
-	[JsonProperty("drawQuantumVisibilityObjects")]
-	private bool _drawQuantumVisibilityObjects;
-	public bool DrawQuantumVisibilityObjects => DebugMode && _drawQuantumVisibilityObjects;
 
 	[JsonProperty("drawGhostAI")]
 	private bool _drawGhostAI;

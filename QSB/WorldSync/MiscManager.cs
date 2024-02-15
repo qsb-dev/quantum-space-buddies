@@ -1,5 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
-using QSB.Utility;
+using QSB.Utility.Deterministic;
 using System.Linq;
 using System.Threading;
 

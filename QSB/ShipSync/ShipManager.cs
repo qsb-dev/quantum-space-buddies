@@ -30,6 +30,10 @@ public class ShipManager : WorldObjectManager
 	public ShipElectricalComponent ShipElectricalComponent;
 	public ShipCockpitUI ShipCockpitUI;
 	private GameObject _shipCustomAttach;
+
+	/// <summary>
+	/// PlayerID of the person who is flying the ship. If no one is flying, this is <see cref="uint.MaxValue"/>.
+	/// </summary>
 	public uint CurrentFlyer
 	{
 		get => _currentFlyer;

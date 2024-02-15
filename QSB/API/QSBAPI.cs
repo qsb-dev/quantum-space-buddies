@@ -25,6 +25,21 @@ public class QSBAPI : IQSBAPI
 
 	public uint GetLocalPlayerID() => QSBPlayerManager.LocalPlayerId;
 	public string GetPlayerName(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Name;
+	public GameObject GetPlayerBody(uint playerId) => QSBPlayerManager.GetPlayer(playerId).Body;
+	public GameObject GetPlayerCamera(uint playerId) => QSBPlayerManager.GetPlayer(playerId).CameraBody;
+
+	public bool GetPlayerReady(uint playerId)
+	{
+		var player = QSBPlayerManager.GetPlayer(playerId);
+		return player.IsReady && player.Body != null;
+	}
+
+	public bool GetPlayerDead(uint playerId)
+	{
+		var player = QSBPlayerManager.GetPlayer(playerId);
+		return player.IsDead;
+	}
+
 	public uint[] GetPlayerIDs() => QSBPlayerManager.PlayerList.Select(x => x.PlayerId).ToArray();
 
 	public UnityEvent<uint> OnPlayerJoin() => QSBAPIEvents.OnPlayerJoinEvent;
