@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using HarmonyLib;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -13,6 +14,9 @@ namespace QSB.Utility.Deterministic;
 /// </summary>
 public static class DeterministicManager
 {
+	private static readonly Harmony _harmony = new(typeof(DeterministicManager).FullName);
+	private static bool _patched;
+	
 	public static readonly Dictionary<Transform, (int SiblingIndex, Transform Parent)> ParentCache = new();
 
 	public static void Init()
@@ -21,11 +25,30 @@ public static class DeterministicManager
 		{
 			DebugLog.DebugWrite("cleared deterministic parent cache");
 			ParentCache.Clear();
+			
+			if (!_patched)
+			{
+				_harmony.PatchAll(typeof(DeterministicRigidbodyPatches));
+				_patched = true;
+			}
 		};
+	}
+	
+	/// <summary>
+	/// unpatch DeterministicRigidbodyPatches so rigidbodies added/activated later dont get counted towards the cache.
+	/// also breaks with e.g. QuantumInstrument since transform is added to the cache twice (once by body and once by instrument)
+	/// </summary>
+	public static void OnWorldObjectsAdded()
+	{
+		if (_patched)
+		{
+			_harmony.UnpatchSelf();
+			_patched = false;
+		}
 	}
 
 	/// <summary>
-	/// world object managers call this as early as possible to capture parents before they change
+	/// only world object managers call this, to do it as early as possible to capture parents before they change
 	/// </summary>
 	public static string DeterministicPath(this Component component)
 	{
@@ -56,7 +79,7 @@ public static class DeterministicManager
 	}
 
 	/// <summary>
-	/// world object managers call this as early as possible to capture parents before they change
+	/// only world object managers call this, to do it as early as possible to capture parents before they change
 	/// </summary>
 	public static IEnumerable<T> SortDeterministic<T>(this IEnumerable<T> components) where T : Component
 		=> components.OrderBy(DeterministicPath);

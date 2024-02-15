@@ -9,10 +9,8 @@ namespace QSB.Utility.Deterministic;
 /// used to capture the true path of a rigidbody before it changes parent
 /// </summary>
 [HarmonyPatch(typeof(OWRigidbody))]
-public class DeterministicRigidbodyPatches : QSBPatch
+public static class DeterministicRigidbodyPatches
 {
-	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
-
 	/// <summary>
 	/// changing the parent has to be deferred until Start to preserve the sibling index.
 	/// for example, anglerfish bodies all share the same parent, so unparenting one clobbers the sibling index of all the others.

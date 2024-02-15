@@ -88,6 +88,8 @@ public static class QSBWorldSync
 		AllObjectsAdded = true;
 		DebugLog.DebugWrite("World Objects added.", MessageType.Success);
 
+		DeterministicManager.OnWorldObjectsAdded();
+
 		foreach (var item in _managerToBuiltObjects)
 		{
 			var worldObjects = item.Value;
