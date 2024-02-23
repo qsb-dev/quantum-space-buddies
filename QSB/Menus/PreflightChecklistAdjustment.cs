@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QSB.Menus;
 
@@ -53,9 +54,9 @@ internal class PreflightChecklistAdjustment : MonoBehaviour, IAddComponentOnStar
 				var settingsMenuView = GameObject.FindObjectOfType<SettingsMenuView>();
 				settingsMenuView._listSettingsOptions = DestroyFreezeTimeOptions(settingsMenuView._listSettingsOptions);
 
-				// This one also points to the same options, so just update the list to not have the old broken ones
+				// This one also points to the same options, have to remove the destroyed objects from it
 				var menuGameplayPreFlight = GameObject.Find("PauseMenu/OptionsCanvas/OptionsMenu-Panel/OptionsDisplayPanel/GameplayMenu/MenuGameplayPreFl/").GetComponent<Menu>();
-				menuGameplayPreFlight._menuOptions = settingsMenuView._listSettingsOptions;
+				Delay.RunNextFrame(() => menuGameplayPreFlight._menuOptions = menuGameplayPreFlight._menuOptions.Where(x => x != null).ToArray());
 			}
 		};
 	}
