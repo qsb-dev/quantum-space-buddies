@@ -67,10 +67,8 @@ public class HelmetAnimator : MonoBehaviour
 	    {
 		    _fakeHelmetDitheringAnimator.SetVisible(false);
 			FakeHelmet.gameObject.SetActive(false);
-		    if (!SuitGroup.activeSelf)
-		    {
-			    FakeHead.gameObject.SetActive(false);
-		    }
+			// If the player is currently wearing their suit but has no helmet on, make sure to make the head visible (#655)
+			FakeHead.gameObject.SetActive(SuitGroup.activeSelf);
 		}
     }
 
