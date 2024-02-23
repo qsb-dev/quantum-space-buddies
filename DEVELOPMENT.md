@@ -76,6 +76,7 @@ The template for this file is this :
   "autoStart": false,
   "kickEveryone": false,
   "disableLoopDeath": false,
+  "timeout": 25,
   "debugMode": false,
   "drawGui": false,
   "drawLines": false,
@@ -91,6 +92,7 @@ The template for this file is this :
 - autoStart - Host/connect automatically for faster testing.
 - kickEveryone - Kick anyone who joins a game.
 - disableLoopDeath - Make it so the loop doesn't end when everyone is dead.
+- timeout - How many seconds for your connection to timeout, in seconds.
 - debugMode - Enables debug mode. If this is set to `false`, none of the following settings do anything.
 - drawGui - Draws a GUI at the top of the screen that gives information on many things.
 - drawLines - Draws gizmo-esque lines around things. Indicates reference sectors/transforms, triggers, etc. LAGGY.
