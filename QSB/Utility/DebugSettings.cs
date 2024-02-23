@@ -54,4 +54,10 @@ public class DebugSettings
 	[JsonProperty("greySkybox")]
 	private bool _greySkybox;
 	public bool GreySkybox => DebugMode && _greySkybox;
+
+	/// <summary>
+	/// Timeout in seconds
+	/// </summary>
+	[JsonProperty("timeout")]
+	public int Timeout = 25;
 }
