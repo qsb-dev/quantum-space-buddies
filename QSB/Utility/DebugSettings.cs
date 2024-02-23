@@ -32,6 +32,12 @@ public class DebugSettings
 	[JsonProperty("randomizeSkins")]
 	public bool RandomizeSkins;
 
+	/// <summary>
+	/// Timeout in seconds
+	/// </summary>
+	[JsonProperty("timeout")]
+	public int Timeout = 25;
+
 	[JsonProperty("debugMode")]
 	public bool DebugMode;
 
