@@ -78,10 +78,14 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		{
 			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
+			// KCP uses milliseconds
+			_kcpTransport.Timeout = QSBCore.DebugSettings.Timeout * 1000;
 		}
 
 		{
 			_steamTransport = gameObject.AddComponent<FizzySteamworks>();
+			// Steam uses seconds
+			_steamTransport.Timeout = QSBCore.DebugSettings.Timeout;
 		}
 
 		{
