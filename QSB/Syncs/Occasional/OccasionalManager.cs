@@ -23,6 +23,12 @@ public class OccasionalManager : WorldObjectManager
 
 		foreach (var proxy in cannon._realDebrisSectorProxies)
 		{
+			// NH can remove these
+			if (!proxy)
+			{
+				continue;
+			}
+
 			SpawnOccasional(proxy.transform.root.GetAttachedOWRigidbody(), gdBody);
 		}
 
