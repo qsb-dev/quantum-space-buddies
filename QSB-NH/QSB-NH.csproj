@@ -17,6 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Mirror">
+      <HintPath>..\Lib\Mirror.dll</HintPath>
+    </Reference>
     <Reference Include="NewHorizons">
       <HintPath>lib\NewHorizons.dll</HintPath>
       <Private>false</Private>
