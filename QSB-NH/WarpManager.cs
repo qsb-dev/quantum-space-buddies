@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Mirror;
+using QSB.Patches;
 using QSB.Utility;
 
 namespace QSBNH;
@@ -118,8 +119,10 @@ public static class WarpManager
 	}
 
 	[HarmonyPatch]
-	public class NHWarpPatch
+	public class NHWarpPatch : QSBPatch
 	{
+		public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
+
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(NewHorizons.Main), nameof(NewHorizons.Main.ChangeCurrentStarSystem))]
 		public static bool NewHorizons_ChangeCurrentStarSystem(string newStarSystem, bool warp, bool vessel)
