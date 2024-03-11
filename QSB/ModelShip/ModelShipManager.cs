@@ -37,13 +37,6 @@ public class ModelShipManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		// NH can remove this
-		var modelShip = QSBWorldSync.GetUnityObject<RemoteFlightConsole>()._modelShipBody;
-		if (!modelShip)
-		{
-			return;
-		}
-
 		if (QSBCore.IsHost)
 		{
 			Instantiate(QSBNetworkManager.singleton.ModelShipPrefab).SpawnWithServerOwnership();
