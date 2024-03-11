@@ -467,6 +467,7 @@ public class QSBCore : ModBehaviour
 	{
 		if (ModHelper.Interaction.ModExists("xen.NewHorizons"))
 		{
+			// NH compat has to be in a different DLL since it uses IAddComponentOnStart, and depends on the NH DLL.
 			QSBNHAssembly = Assembly.LoadFrom(Path.Combine(ModHelper.Manifest.ModFolderPath, "QSB-NH.dll"));
 			gameObject.AddComponent(QSBNHAssembly.GetType("QSBNH.QSBNH", true));
 		}
