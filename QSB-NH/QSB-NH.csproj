@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>QSBNH</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\Raicuparta.QuantumSpaceBuddies</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="lib\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QSB\QSB.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Mirror">
+      <HintPath>..\Lib\Mirror.dll</HintPath>
+    </Reference>
+    <Reference Include="NewHorizons">
+      <HintPath>lib\NewHorizons.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UniTask">
+      <HintPath>..\Lib\UniTask.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -205,6 +205,8 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 				WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", referenceSector == null ? Color.red : Color.white);
 				WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
+				WriteLine(2, $"   - Local Position : {player.Body.transform.localPosition}");
+				WriteLine(2, $"   - Position : {player.Body.transform.position}");
 			}
 		}
 

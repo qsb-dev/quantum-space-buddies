@@ -84,12 +84,12 @@ public class QSBCore : ModBehaviour
 	private static string randomSkinType;
 	private static string randomJetpackType;
 
+	public static Assembly QSBNHAssembly = null;
 
 	public static readonly string[] IncompatibleMods =
 	{
 		// incompatible mods
 		"Raicuparta.NomaiVR",
-		"xen.NewHorizons",
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
@@ -227,7 +227,7 @@ public class QSBCore : ModBehaviour
 		Helper = ModHelper;
 		DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-		CheckCompatibilityMods();
+		CheckNewHorizons();
 
 		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
 
@@ -463,23 +463,13 @@ public class QSBCore : ModBehaviour
 		}
 	}
 
-	private void CheckCompatibilityMods()
+	private void CheckNewHorizons()
 	{
-		var mainMod = "";
-		var compatMod = "";
-		var missingCompat = false;
-
-		/*if (Helper.Interaction.ModExists(NEW_HORIZONS) && !Helper.Interaction.ModExists(NEW_HORIZONS_COMPAT))
+		if (ModHelper.Interaction.ModExists("xen.NewHorizons"))
 		{
-			mainMod = NEW_HORIZONS;
-			compatMod = NEW_HORIZONS_COMPAT;
-			missingCompat = true;
-		}*/
-
-		if (missingCompat)
-		{
-			DebugLog.ToConsole($"FATAL - You have mod \"{mainMod}\" installed, which is not compatible with QSB without the compatibility mod \"{compatMod}\". " +
-				$"Either disable the mod, or install/enable the compatibility mod.", MessageType.Fatal);
+			// NH compat has to be in a different DLL since it uses IAddComponentOnStart, and depends on the NH DLL.
+			QSBNHAssembly = Assembly.LoadFrom(Path.Combine(ModHelper.Manifest.ModFolderPath, "QSB-NH.dll"));
+			gameObject.AddComponent(QSBNHAssembly.GetType("QSBNH.QSBNH", true));
 		}
 	}
 }
