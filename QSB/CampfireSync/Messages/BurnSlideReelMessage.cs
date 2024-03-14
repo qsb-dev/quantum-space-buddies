@@ -1,4 +1,5 @@
-﻿using QSB.CampfireSync.WorldObjects;
+﻿using QSB.Animation.Player;
+using QSB.CampfireSync.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
@@ -23,7 +24,7 @@ public class BurnSlideReelMessage : QSBWorldObjectMessage<QSBSlideReelItem, int>
 			campfire._burnedSlideReelSocket,
 			campfire._sector, null);
 		fromPlayer.HeldItem = null;
-		fromPlayer.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
+		fromPlayer.AnimationSync.VisibleAnimator.SetTrigger(AnimationSync.DROP_HELD_ITEM);
 		WorldObject.AttachedObject.Burn();
 		campfire.SetDropSlideReelMode(false);
 		campfire._hasBurnedSlideReel = true;
