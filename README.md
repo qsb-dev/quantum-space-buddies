@@ -18,16 +18,8 @@ Spoilers within!
 
 ### Easy installation (recommended)
 
-- [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/);
-- Install Quantum Space Buddies from the mod list displayed in the application;
-- If you can't get the mod manager to work, follow the instructions for manual installation.
-
-### Manual installation
-
-- [Install OWML](https://github.com/ow-mods/owml#installation);
-- [Download the latest Quantum Space Buddies release](https://github.com/misternebula/quantum-space-buddies/releases/latest);
-- Extract the `QSB` directory to the `OWML/Mods` directory;
-- Run `OWML.Launcher.exe` to start the game.
+- [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/)
+- Install Quantum Space Buddies from the mod list displayed in the application
 
 ## Hosting / Connecting
 
