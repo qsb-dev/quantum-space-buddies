@@ -9,6 +9,7 @@ using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using QSB.Utility.Deterministic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,8 +42,9 @@ public class ConversationManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>();
-		QSBWorldSync.Init<QSBCharacterDialogueTree, CharacterDialogueTree>();
+		// dont create worldobjects 
+		QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>(QSBWorldSync.GetUnityObjects<RemoteDialogueTrigger>().Where(x => x.name != "WarpDriveRemoteTrigger").SortDeterministic());
+		QSBWorldSync.Init<QSBCharacterDialogueTree, CharacterDialogueTree>(QSBWorldSync.GetUnityObjects<CharacterDialogueTree>().Where(x => x.name != "WarpDriveDialogue").SortDeterministic());
 	}
 
 	public uint GetPlayerTalkingToTree(CharacterDialogueTree tree) =>

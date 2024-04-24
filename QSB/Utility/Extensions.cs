@@ -182,13 +182,21 @@ public static class Extensions
 		multiDelegate.SafeInvoke(args);
 	}
 
-	public static IEnumerable<Type> GetDerivedTypes(this Type type) =>
-		QSBCore.Addons.Values
+	public static IEnumerable<Type> GetDerivedTypes(this Type type)
+	{
+		var assemblies = QSBCore.Addons.Values
 			.Select(x => x.GetType().Assembly)
-			.Append(type.Assembly)
-			.SelectMany(x => x.GetTypes())
+			.Append(type.Assembly);
+
+		if (QSBCore.QSBNHAssembly != null)
+		{
+			assemblies = assemblies.Append(QSBCore.QSBNHAssembly);
+		}
+
+		return assemblies.SelectMany(x => x.GetTypes())
 			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x))
 			.OrderBy(x => x.FullName);
+	}
 
 	public static Guid ToGuid(this int value)
 	{
