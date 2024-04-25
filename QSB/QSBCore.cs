@@ -385,6 +385,11 @@ public class QSBCore : ModBehaviour
 		DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
 		foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
 		{
+			if (Path.GetFileNameWithoutExtension(path) == "QSB-NH")
+			{
+				continue;
+			}
+
 			var assembly = Assembly.LoadFile(path);
 			Init(assembly);
 		}
