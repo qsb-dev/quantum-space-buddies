@@ -20,8 +20,8 @@ public class NewHorizonsDataPatches : QSBPatch
 	{
 		if (QSBCore.IsInMultiplayer)
 		{
-			DebugLog.DebugWrite($"using fake multiplayer profile for nh");
 			__result = QSBStandaloneProfileManager.SharedInstance?.currentProfile?.profileName + "_mult";
+			DebugLog.DebugWrite($"using fake multiplayer profile {__result} for NH");
 		}
 		else
 		{
