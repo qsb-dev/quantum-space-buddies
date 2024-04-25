@@ -71,21 +71,6 @@ public static class Extensions
 
 	#region C#
 
-	public static void SafeInvoke(this MulticastDelegate multicast, params object[] args)
-	{
-		foreach (var del in multicast.GetInvocationList())
-		{
-			try
-			{
-				del.DynamicInvoke(args);
-			}
-			catch (TargetInvocationException ex)
-			{
-				DebugLog.ToConsole($"Error invoking delegate! {ex.InnerException}", MessageType.Error);
-			}
-		}
-	}
-
 	public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo, bool clamp)
 	{
 		var mappedValue = (value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom) + outputFrom;
@@ -164,23 +149,6 @@ public static class Extensions
 	}
 
 	public static bool IsInRange<T>(this IList<T> list, int index) => index >= 0 && index < list.Count;
-
-	public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
-	{
-		const BindingFlags flags = BindingFlags.Instance
-			| BindingFlags.Static
-			| BindingFlags.Public
-			| BindingFlags.NonPublic
-			| BindingFlags.DeclaredOnly;
-		if (typeof(T)
-				.GetField(eventName, flags)?
-				.GetValue(instance) is not MulticastDelegate multiDelegate)
-		{
-			return;
-		}
-
-		multiDelegate.SafeInvoke(args);
-	}
 
 	public static IEnumerable<Type> GetDerivedTypes(this Type type)
 	{
