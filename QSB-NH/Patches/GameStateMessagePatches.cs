@@ -16,10 +16,10 @@ namespace QSBNH.Patches;
 
 
 /// <summary>
-/// extremely jank way to inject system and nh addons when joining.
+/// extremely jank way to inject system and NH addons when joining.
 /// this should probably be split into its own separate message, but it doesnt really matter :P
 ///
-/// BUG: completely explodes if one person has nh and the other does not
+/// BUG: completely explodes if one person has NH and the other does not
 /// </summary>
 internal class GameStateMessagePatches : QSBPatch
 {

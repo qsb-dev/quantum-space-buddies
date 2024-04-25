@@ -8,7 +8,7 @@ using QSB.Utility;
 namespace QSBNH.Patches;
 
 /// <summary>
-/// pretends to be a new profile when in multiplayer so nh saves its data to a new place
+/// pretends to be a new profile when in multiplayer so NH saves its data to a new place
 /// </summary>
 public class NewHorizonsDataPatches : QSBPatch
 {
