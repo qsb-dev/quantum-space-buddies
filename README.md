@@ -18,7 +18,7 @@ Spoilers within!
 
 ### Easy installation (recommended)
 
-- [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/)``
+- [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/)
 - Install Quantum Space Buddies from the mod list displayed in the application
 
 ## Hosting / Connecting
