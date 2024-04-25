@@ -17,8 +17,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.13.457" />
-    <PackageReference Include="OWML" Version="2.9.7" />
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.14.768" />
+    <PackageReference Include="OWML" Version="2.11.1" />
     <Reference Include="..\Lib\*.dll" />
   </ItemGroup>
 </Project>
