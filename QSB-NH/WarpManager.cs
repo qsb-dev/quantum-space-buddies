@@ -118,7 +118,6 @@ public static class WarpManager
 		}
 	}
 
-	[HarmonyPatch]
 	public class NHWarpPatch : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;

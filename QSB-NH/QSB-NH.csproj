@@ -4,8 +4,8 @@
     <TargetFramework>net48</TargetFramework>
     <RootNamespace>QSBNH</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\Raicuparta.QuantumSpaceBuddies</OutputPath>
+    <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
