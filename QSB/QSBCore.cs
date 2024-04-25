@@ -88,10 +88,11 @@ public class QSBCore : ModBehaviour
 
 	public static readonly string[] IncompatibleMods =
 	{
+		// probably extremely outdated list. oh well
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
-		"PacificEngine.OW_Randomizer",
+		"PacificEngine.OW_CommonResources" // breaks random shit in NH so i do not trust it here
 	};
 
 	public static event Action OnSkinsBundleLoaded;

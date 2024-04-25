@@ -8,6 +8,12 @@
 	"owmlVersion": "2.9.8",
 	"dependencies": [ "_nebula.MenuFramework", "JohnCorby.VanillaFix" ],
 	"pathsToPreserve": [ "debugsettings.json" ],
+	"conflicts": [
+		"Vesper.AutoResume",
+		"Vesper.OuterWildsMMO",
+		"_nebula.StopTime",
+		"PacificEngine.OW_CommonResources"
+	],
 	"requireLatestVersion": true,
 	"patcher": "QSBPatcher.exe",
 	"donateLinks": [ "https://www.paypal.me/nebula2056", "https://www.paypal.me/johncorby" ]
