@@ -67,7 +67,7 @@ jobs:
         run: if (Test-Path ${{ env.REAL_PROJ_NAME }}/${{ env.REAL_PROJ_NAME }}.csproj.user) { rm ${{ env.REAL_PROJ_NAME }}/${{ env.REAL_PROJ_NAME }}.csproj.user }
 
       - name: Build Mod
-        run: dotnet build -c Release ${{ env.REAL_PROJ_NAME }}.sln
+        run: dotnet build -c Release
 
       - name: Upload Artifact
         uses: "actions/upload-artifact@v3"
