@@ -28,7 +28,6 @@
   "DLCMismatch": "DLC yüklenme durumu uyumlu değil. (İstemci:{0}, Sunucu:{1})",
   "GameProgressLimit": "Oyun çok fazla ilerlemiş.",
   "AddonMismatch": "Yüklü eklentiler uyumsuz. (İstemci:{0} eklentileri, Sunucu:{1} eklentileri)",
-  "IncompatibleMod": "İzin verilmeyen veya uyumsuz mod kullanılıyor. İlk bulunan mod {0}",
   "PlayerJoinedTheGame": "{0} katıldı!",
   "PlayerLeftTheGame": "{0} ayrıldı.",
   "PlayerWasKicked": "{0} atıldı.",

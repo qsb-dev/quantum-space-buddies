@@ -28,7 +28,6 @@
   "DLCMismatch": "El estado de instalación del DLC no coincide. (Cliente:{0}, Servidor:{1})",
   "GameProgressLimit": "El juego ha progresado mas del límite permitido.",
   "AddonMismatch": "Incompatibilidad de Addons. (Cliente:{0} addons, Servidor:{1} addons)",
-  "IncompatibleMod": "Se está usando un mod incompatible/no permitido. El primer mod encontrado ha sido {0}",
   "PlayerJoinedTheGame": "¡{0} se ha unido!",
   "PlayerWasKicked": "{0} ha sido expulsado.",
   "KickedFromServer": "Expulsado del servidor. Razón : {0}",

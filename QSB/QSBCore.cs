@@ -66,7 +66,6 @@ public class QSBCore : ModBehaviour
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static bool UseKcpTransport { get; private set; }
-	public static bool IncompatibleModsAllowed { get; private set; }
 	public static bool ShowPlayerNames { get; private set; }
 	public static bool ShipDamage { get; private set; }
 	public static bool ShowExtraHUDElements { get; private set; }
@@ -85,15 +84,6 @@ public class QSBCore : ModBehaviour
 	private static string randomJetpackType;
 
 	public static Assembly QSBNHAssembly = null;
-
-	public static readonly string[] IncompatibleMods =
-	{
-		// probably extremely outdated list. oh well
-		"Vesper.AutoResume",
-		"Vesper.OuterWildsMMO",
-		"_nebula.StopTime",
-		"PacificEngine.OW_CommonResources" // breaks random shit in NH so i do not trust it here
-	};
 
 	public static event Action OnSkinsBundleLoaded;
 
@@ -414,7 +404,6 @@ public class QSBCore : ModBehaviour
 		QSBNetworkManager.UpdateTransport();
 
 		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
-		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
 		ShowPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
 		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
 		ShowExtraHUDElements = config.GetSettingsValue<bool>("showExtraHud");
