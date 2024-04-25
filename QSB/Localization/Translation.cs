@@ -33,7 +33,6 @@ public class Translation
 	public string DLCMismatch;
 	public string GameProgressLimit;
 	public string AddonMismatch;
-	public string IncompatibleMod;
 	public string PlayerJoinedTheGame;
 	public string PlayerLeftTheGame;
 	public string PlayerWasKicked;

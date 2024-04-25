@@ -71,21 +71,6 @@ public static class Extensions
 
 	#region C#
 
-	public static void SafeInvoke(this MulticastDelegate multicast, params object[] args)
-	{
-		foreach (var del in multicast.GetInvocationList())
-		{
-			try
-			{
-				del.DynamicInvoke(args);
-			}
-			catch (TargetInvocationException ex)
-			{
-				DebugLog.ToConsole($"Error invoking delegate! {ex.InnerException}", MessageType.Error);
-			}
-		}
-	}
-
 	public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo, bool clamp)
 	{
 		var mappedValue = (value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom) + outputFrom;
@@ -165,30 +150,21 @@ public static class Extensions
 
 	public static bool IsInRange<T>(this IList<T> list, int index) => index >= 0 && index < list.Count;
 
-	public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
+	public static IEnumerable<Type> GetDerivedTypes(this Type type)
 	{
-		const BindingFlags flags = BindingFlags.Instance
-			| BindingFlags.Static
-			| BindingFlags.Public
-			| BindingFlags.NonPublic
-			| BindingFlags.DeclaredOnly;
-		if (typeof(T)
-				.GetField(eventName, flags)?
-				.GetValue(instance) is not MulticastDelegate multiDelegate)
+		var assemblies = QSBCore.Addons.Values
+			.Select(x => x.GetType().Assembly)
+			.Append(type.Assembly);
+
+		if (QSBCore.QSBNHAssembly != null)
 		{
-			return;
+			assemblies = assemblies.Append(QSBCore.QSBNHAssembly);
 		}
 
-		multiDelegate.SafeInvoke(args);
-	}
-
-	public static IEnumerable<Type> GetDerivedTypes(this Type type) =>
-		QSBCore.Addons.Values
-			.Select(x => x.GetType().Assembly)
-			.Append(type.Assembly)
-			.SelectMany(x => x.GetTypes())
+		return assemblies.SelectMany(x => x.GetTypes())
 			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x))
 			.OrderBy(x => x.FullName);
+	}
 
 	public static Guid ToGuid(this int value)
 	{

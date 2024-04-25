@@ -34,6 +34,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APITestMod", "APITestMod\AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QSBPatcher", "QSBPatcher\QSBPatcher.csproj", "{CA4CBA2B-54D5-4C4B-9B51-957BC6D77D6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSB-NH", "QSB-NH\QSB-NH.csproj", "{74F84A39-1C9D-4EF7-889A-485D33B7B324}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{CA4CBA2B-54D5-4C4B-9B51-957BC6D77D6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA4CBA2B-54D5-4C4B-9B51-957BC6D77D6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA4CBA2B-54D5-4C4B-9B51-957BC6D77D6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74F84A39-1C9D-4EF7-889A-485D33B7B324}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F84A39-1C9D-4EF7-889A-485D33B7B324}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74F84A39-1C9D-4EF7-889A-485D33B7B324}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74F84A39-1C9D-4EF7-889A-485D33B7B324}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -16,8 +16,6 @@ public class PlayerJoinMessage : QSBMessage
 	private string QSBVersion;
 	private string GameVersion;
 	private bool DlcInstalled;
-	// empty if no incompatible mods
-	private string FirstIncompatibleMod;
 
 	private int[] AddonHashes;
 
@@ -27,18 +25,6 @@ public class PlayerJoinMessage : QSBMessage
 		QSBVersion = QSBCore.QSBVersion;
 		GameVersion = QSBCore.GameVersion;
 		DlcInstalled = QSBCore.DLCInstalled;
-
-		var allEnabledMods = QSBCore.Helper.Interaction.GetMods();
-
-		FirstIncompatibleMod = "";
-
-		foreach (var mod in allEnabledMods)
-		{
-			if (QSBCore.IncompatibleMods.Contains(mod.ModHelper.Manifest.UniqueName))
-			{
-				FirstIncompatibleMod = mod.ModHelper.Manifest.UniqueName;
-			}
-		}
 
 		AddonHashes = QSBCore.Addons.Keys
 			.Except(QSBCore.CosmeticAddons)
@@ -53,7 +39,6 @@ public class PlayerJoinMessage : QSBMessage
 		writer.Write(QSBVersion);
 		writer.Write(GameVersion);
 		writer.Write(DlcInstalled);
-		writer.Write(FirstIncompatibleMod);
 
 		writer.Write(AddonHashes);
 	}
@@ -65,7 +50,6 @@ public class PlayerJoinMessage : QSBMessage
 		QSBVersion = reader.ReadString();
 		GameVersion = reader.ReadString();
 		DlcInstalled = reader.Read<bool>();
-		FirstIncompatibleMod = reader.ReadString();
 
 		AddonHashes = reader.Read<int[]>();
 	}
@@ -118,12 +102,6 @@ public class PlayerJoinMessage : QSBMessage
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with addon mismatch. (Client:{AddonHashes.Join()}, Server:{addonHashes.Join()})", MessageType.Error);
 				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.AddonMismatch, AddonHashes.Length, addonHashes.Length)).Send();
 				return;
-			}
-
-			if (FirstIncompatibleMod != "" && !QSBCore.IncompatibleModsAllowed)
-			{
-				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with incompatible mod. (First mod found was {FirstIncompatibleMod})");
-				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.IncompatibleMod, FirstIncompatibleMod)).Send();
 			}
 		}
 

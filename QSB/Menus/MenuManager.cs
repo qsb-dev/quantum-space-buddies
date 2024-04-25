@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using OWML.Common;
+using OWML.Utils;
 using QSB.Localization;
 using QSB.Messaging;
 using QSB.Player.TransformSync;
@@ -646,6 +647,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 				LoadGame(PlayerData.GetWarpedToTheEye());
 				// wait until scene load and then wait until Start has ran
+				// why is this done? GameStateMessage etc works on title screen since nonhost has to deal with that
 				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 			};
 
@@ -657,6 +659,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 		{
 			LoadGame(PlayerData.GetWarpedToTheEye());
 			// wait until scene load and then wait until Start has ran
+			// why is this done? GameStateMessage etc works on title screen since nonhost has to deal with that
 			Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
 		}
 	}

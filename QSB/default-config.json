@@ -28,12 +28,6 @@
       "value": "localhost",
       "tooltip": "Used if you leave the connect prompt blank."
     },
-    "incompatibleModsAllowed": {
-      "title": "Incompatible Mods Allowed",
-      "type": "toggle",
-      "value": false,
-      "tooltip": "Kicks players if they have certain mods."
-    },
     "showPlayerNames": {
       "title": "Show Player Names",
       "type": "toggle",

@@ -28,7 +28,6 @@
   "DLCMismatch": "DLC安装情况不匹配。（客户端：{0}，服务端：{1}）",
   "GameProgressLimit": "游戏中时间太久了。",
   "AddonMismatch": "插件不匹配（客户端：{0}插件，服务端：{1}插件）",
-  "IncompatibleMod": "使用了不兼容/不允许的模组，检测到的第一个模组是{0}",
   "PlayerJoinedTheGame": "{0}加入了游戏！",
   "PlayerWasKicked": "{0}被踢出了游戏。",
   "KickedFromServer": "被踢出了游戏，理由是：{0}",

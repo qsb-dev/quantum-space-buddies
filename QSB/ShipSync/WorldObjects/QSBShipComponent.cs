@@ -1,4 +1,5 @@
-﻿using QSB.Messaging;
+﻿using OWML.Utils;
+using QSB.Messaging;
 using QSB.ShipSync.Messages.Component;
 using QSB.Utility;
 using QSB.WorldSync;

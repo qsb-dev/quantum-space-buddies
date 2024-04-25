@@ -61,17 +61,27 @@ There still might be one or two small mechanics that aren't synced - let us know
 Also, you might encounter bugs that mean you can't progress in multiplayer. Again, let us know if you find one!
 
 ### Compatibility with other mods
-TL;DR - Don't use any mods with QSB that aren't marked as QSB compatible. 
 
-QSB relies on object hierarchy to sync objects, so any mod that changes that risks breaking QSB. Also, QSB relies on certain game events being called when things happen in-game. Any mod that makes these things happen without calling the correct events will break QSB. Some mods will work fine and have been tested, like CrouchMod. Others may only work partly, like EnableDebugMode and TAICheat.
+QSB relies on object hierarchy to sync objects, so any mod that changes that risks breaking QSB.
+QSB also relies on certain game events being called when things happen in-game, so any mod that makes these things happen without calling the correct events will break QSB.
 
-### Is this mod compatible with NomaiVR?
+Most small mods will work fine. The more complex and far reaching the mod, the less likely it will work completely.
+Try as many mods as you like, but don't be surprised if things break.
 
-Short answer - Kind of.
+#### NomaiVr
 
-Long answer - We've done our best to try to keep them compatible, but no work has been done to explicitly make them play nice. Some things may work, others may not.
-Getting both mods to work together is a big undertaking, and would require rewrites to a lot of code in both mods.
-If you want to play with VR, make sure the server host has "Incompatible Mods Allowed" enabled.
+[Here](https://github.com/qsb-dev/quantum-space-buddies/issues?q=is%3Aissue+is%3Aopen+label%3ANomaiVR) are the known issues. You are welcome to add to this list by creating issues.
+
+Most things seem to work _enough_. There are some visual bugs, and I believe a few softlocks, but the experience shouldn't be too bad.
+
+We haven't done too much work to make them compatible, so the things that are broken are unlikely to be fixed.
+
+#### New Horizons
+
+[Here](https://github.com/qsb-dev/quantum-space-buddies/issues?q=is%3Aissue+is%3Aopen+label%3A%22New+Horizons%22) are the known issues. You are welcome to add to this list by creating issues.
+
+We do our best to stay mostly compatible with base New Horizons, but the compatibility of each addon is mixed.
+Most of them at least partially work. Most custom mechanics will not work until the addon developer explicitly adds QSB support.
 
 ### Why do I keep getting thrown around the ship?
 
