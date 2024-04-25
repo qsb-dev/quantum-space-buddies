@@ -18,7 +18,7 @@ Spoilers within!
 
 ### Easy installation (recommended)
 
-- [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/)
+- [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/)``
 - Install Quantum Space Buddies from the mod list displayed in the application
 
 ## Hosting / Connecting
@@ -70,11 +70,15 @@ Try as many mods as you like, but don't be surprised if things break.
 
 #### NomaiVr
 
+[Here](https://github.com/qsb-dev/quantum-space-buddies/issues?q=is%3Aissue+is%3Aopen+label%3ANomaiVR) are the known issues. You are welcome to add to this list by creating issues.
+
 Most things seem to work _enough_. There are some visual bugs, and I believe a few softlocks, but the experience shouldn't be too bad.
 
 We haven't done too much work to make them compatible, so the things that are broken are unlikely to be fixed.
 
 #### New Horizons
+
+[Here](https://github.com/qsb-dev/quantum-space-buddies/issues?q=is%3Aissue+is%3Aopen+label%3A%22New+Horizons%22) are the known issues. You are welcome to add to this list by creating issues.
 
 We do our best to stay mostly compatible with base New Horizons, but the compatibility of each addon is mixed.
 Most of them at least partially work. Most custom mechanics will not work until the addon developer explicitly adds QSB support.
