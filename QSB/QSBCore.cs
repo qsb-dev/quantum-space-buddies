@@ -88,8 +88,6 @@ public class QSBCore : ModBehaviour
 
 	public static readonly string[] IncompatibleMods =
 	{
-		// incompatible mods
-		"Raicuparta.NomaiVR",
 		"Vesper.AutoResume",
 		"Vesper.OuterWildsMMO",
 		"_nebula.StopTime",
