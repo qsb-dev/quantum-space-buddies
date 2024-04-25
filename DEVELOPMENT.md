@@ -48,7 +48,8 @@ Use the API by copying [the API definition](https://github.com/misternebula/quan
 ## Debugging
 ### Debug Actions :
 
-> [!NOTE] this list is slightly outdated. it will be updated when debug settings are updated
+> [!NOTE]
+> this list is slightly outdated. it will be updated when debug settings are updated
 
 Press Q + Numpad Enter to toggle debug mode in game (corresponds with the debug setting "debugMode" in the section below).
 
@@ -67,7 +68,8 @@ Hold Q and press :
 
 ### Debug Settings :
 
-> [!NOTE] this list is slightly outdated because it will be replaced by mod options at some point
+> [!NOTE]
+> this list is slightly outdated because it will be replaced by mod options at some point
 
 Create a file called `debugsettings.json` in the QSB folder.
 The template for this file is this :
