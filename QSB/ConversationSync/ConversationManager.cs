@@ -42,7 +42,7 @@ public class ConversationManager : WorldObjectManager
 
 	public override async UniTask BuildWorldObjects(OWScene scene, CancellationToken ct)
 	{
-		// dont create worldobjects 
+		// dont create worldobjects for NH warp drive stuff
 		QSBWorldSync.Init<QSBRemoteDialogueTrigger, RemoteDialogueTrigger>(QSBWorldSync.GetUnityObjects<RemoteDialogueTrigger>().Where(x => x.name != "WarpDriveRemoteTrigger").SortDeterministic());
 		QSBWorldSync.Init<QSBCharacterDialogueTree, CharacterDialogueTree>(QSBWorldSync.GetUnityObjects<CharacterDialogueTree>().Where(x => x.name != "WarpDriveDialogue").SortDeterministic());
 	}
