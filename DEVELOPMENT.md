@@ -1,8 +1,8 @@
-> :warning: Warning! :warning:  
-Mod development needs a powerful PC!  
-Unexpected errors and issues may occur when editing networking code.  
-Running multiple instances of the game can be very taxing on your computer.  
-We're not responsible if you push your PC too hard.
+> [!WARNING]
+> Mod development needs a powerful PC!\
+> Unexpected errors and issues may occur when editing networking code.\
+> Running multiple instances of the game can be very taxing on your computer.\
+> We're not responsible if you push your PC too hard.
 
 ## Prerequisites
 - Visual Studio 2022.
@@ -48,6 +48,8 @@ Use the API by copying [the API definition](https://github.com/misternebula/quan
 ## Debugging
 ### Debug Actions :
 
+> [!NOTE] this list is slightly outdated. it will be updated when debug settings are updated
+
 Press Q + Numpad Enter to toggle debug mode in game (corresponds with the debug setting "debugMode" in the section below).
 
 Hold Q and press :
@@ -64,6 +66,8 @@ Hold Q and press :
 - Numpad 0 - Revive a random dead player.
 
 ### Debug Settings :
+
+> [!NOTE] this list is slightly outdated because it will be replaced by mod options at some point
 
 Create a file called `debugsettings.json` in the QSB folder.
 The template for this file is this :
