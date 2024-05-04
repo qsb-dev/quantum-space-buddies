@@ -28,7 +28,7 @@ using Random = System.Random;
 using QSB.Utility.Deterministic;
 
 /*
-	Copyright (C) 2020 - 2023
+	Copyright (C) 2020 - 2024
 			Henry Pointer (_nebula / misternebula),
 			Will Corby (JohnCorby),
 			Aleksander Waage (AmazingAlek),
