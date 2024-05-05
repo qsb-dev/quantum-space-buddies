@@ -29,4 +29,27 @@
     </Reference>
   </ItemGroup>
 
+  
+  
+  <!--  qsb-nh is the top of the dependency graph so things have to be done here-->
+  <Target Name="clean after building" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <_Files Remove="@(_Files)" />
+      <_Files Include="$(OutputPath)\*.exe.config" />
+    </ItemGroup>
+    <Delete Files="@(_Files)" />
+  </Target>
+
+  <PropertyGroup>
+    <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
+  </PropertyGroup>
+  <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)')">
+    <ItemGroup>
+      <_Files Remove="@(_Files)" />
+      <_Files Include="$(OutputPath)/*.dll" />
+      <_Files Include="$(OutputPath)/*.exe" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_Files)" DestinationFolder="$(UnityDllsDir)" />
+  </Target>
+
 </Project>

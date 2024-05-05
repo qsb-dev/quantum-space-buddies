@@ -13,28 +13,8 @@
     <NoWarn>CS1998;CS0649</NoWarn>
   </PropertyGroup>
 
-  <Target Name="clean after building" AfterTargets="PostBuildEvent">
-    <ItemGroup>
-      <_Files Remove="@(_Files)" />
-      <_Files Include="$(OutputPath)\*.exe.config" />
-    </ItemGroup>
-    <Delete Files="@(_Files)" />
-  </Target>
-
   <Target Name="weave qsb" AfterTargets="PostBuildEvent">
     <Exec Command=".\MirrorWeaver &quot;$(TargetPath)&quot;" WorkingDirectory="..\MirrorWeaver\bin\$(Configuration)\" />
-  </Target>
-
-  <PropertyGroup>
-    <UnityDllsDir Condition="Exists('$(UnityAssetsDir)')">$(UnityAssetsDir)\Dlls</UnityDllsDir>
-  </PropertyGroup>
-  <Target Name="copy dlls to unity" AfterTargets="PostBuildEvent" Condition="Exists('$(UnityDllsDir)')">
-    <ItemGroup>
-      <_Files Remove="@(_Files)" />
-      <_Files Include="$(OutputPath)/*.dll" />
-      <_Files Include="$(OutputPath)/*.exe" />
-    </ItemGroup>
-    <Copy SourceFiles="@(_Files)" DestinationFolder="$(UnityDllsDir)" />
   </Target>
 
   <ItemGroup>
