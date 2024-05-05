@@ -8,7 +8,9 @@ using QSB.Messaging;
 using QSB.Player.TransformSync;
 using QSB.TriggerSync.WorldObjects;
 using QSB.Utility;
+using QSB.Utility.Deterministic;
 using QSB.Utility.LinkedWorldObject;
+using QSB.WorldSync.Messages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -228,6 +230,8 @@ public static class QSBWorldSync
 	}
 
 	public static IEnumerable<IWorldObject> GetWorldObjects() => WorldObjects;
+
+	public static IEnumerable<IWorldObject> GetWorldObjectsFromManager(string managerName) => _managerToBuiltObjects[managerName];
 
 	public static IEnumerable<TWorldObject> GetWorldObjects<TWorldObject>()
 		where TWorldObject : IWorldObject

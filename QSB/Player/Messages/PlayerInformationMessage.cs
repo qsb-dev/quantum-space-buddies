@@ -13,6 +13,7 @@ public class PlayerInformationMessage : QSBMessage
 	private bool IsReady;
 	private bool FlashlightActive;
 	private bool SuitedUp;
+	private bool HelmetOn;
 	private bool LocalProbeLauncherEquipped;
 	private bool SignalscopeEquipped;
 	private bool TranslatorEquipped;
@@ -21,6 +22,8 @@ public class PlayerInformationMessage : QSBMessage
 	private float FieldOfView;
 	private bool IsInShip;
 	private HUDIcon HUDIcon;
+	private string SkinType;
+	private string JetpackType;
 
 	public PlayerInformationMessage()
 	{
@@ -29,6 +32,7 @@ public class PlayerInformationMessage : QSBMessage
 		IsReady = player.IsReady;
 		FlashlightActive = player.FlashlightActive;
 		SuitedUp = player.SuitedUp;
+		HelmetOn = Locator.GetPlayerSuit() != null && Locator.GetPlayerSuit().IsWearingHelmet();
 		LocalProbeLauncherEquipped = player.LocalProbeLauncherEquipped;
 		SignalscopeEquipped = player.SignalscopeEquipped;
 		TranslatorEquipped = player.TranslatorEquipped;
@@ -37,6 +41,8 @@ public class PlayerInformationMessage : QSBMessage
 		FieldOfView = PlayerData.GetGraphicSettings().fieldOfView;
 		IsInShip = player.IsInShip;
 		HUDIcon = player.HUDBox == null ? HUDIcon.UNKNOWN : player.HUDBox.PlanetIcon;
+		SkinType = QSBCore.SkinVariation;
+		JetpackType = QSBCore.JetpackVariation;
 	}
 
 	public override void Serialize(NetworkWriter writer)
@@ -46,6 +52,7 @@ public class PlayerInformationMessage : QSBMessage
 		writer.Write(IsReady);
 		writer.Write(FlashlightActive);
 		writer.Write(SuitedUp);
+		writer.Write(HelmetOn);
 		writer.Write(LocalProbeLauncherEquipped);
 		writer.Write(SignalscopeEquipped);
 		writer.Write(TranslatorEquipped);
@@ -54,6 +61,8 @@ public class PlayerInformationMessage : QSBMessage
 		writer.Write(FieldOfView);
 		writer.Write(IsInShip);
 		writer.Write(HUDIcon);
+		writer.Write(SkinType);
+		writer.Write(JetpackType);
 	}
 
 	public override void Deserialize(NetworkReader reader)
@@ -63,6 +72,7 @@ public class PlayerInformationMessage : QSBMessage
 		IsReady = reader.Read<bool>();
 		FlashlightActive = reader.Read<bool>();
 		SuitedUp = reader.Read<bool>();
+		HelmetOn = reader.Read<bool>();
 		LocalProbeLauncherEquipped = reader.Read<bool>();
 		SignalscopeEquipped = reader.Read<bool>();
 		TranslatorEquipped = reader.Read<bool>();
@@ -71,6 +81,8 @@ public class PlayerInformationMessage : QSBMessage
 		FieldOfView = reader.ReadFloat();
 		IsInShip = reader.ReadBool();
 		HUDIcon = reader.Read<HUDIcon>();
+		SkinType = reader.ReadString();
+		JetpackType = reader.ReadString();
 	}
 
 	public override void OnReceiveRemote()
@@ -83,19 +95,25 @@ public class PlayerInformationMessage : QSBMessage
 			player.IsReady = IsReady;
 			player.FlashlightActive = FlashlightActive;
 			player.SuitedUp = SuitedUp;
+			
 			player.LocalProbeLauncherEquipped = LocalProbeLauncherEquipped;
 			player.SignalscopeEquipped = SignalscopeEquipped;
 			player.TranslatorEquipped = TranslatorEquipped;
 			player.ProbeActive = ProbeActive;
 			player.IsInShip = IsInShip;
-			if (QSBPlayerManager.LocalPlayer.IsReady && player.IsReady)
+
+			Delay.RunWhen(() => player.IsReady && QSBPlayerManager.LocalPlayer.IsReady, () =>
 			{
 				player.UpdateObjectsFromStates();
-			}
+				player.HelmetAnimator.SetHelmetInstant(HelmetOn);
+				player.Camera.fieldOfView = FieldOfView;
+			});
 
-			Delay.RunWhen(
-				() => player.Camera != null,
-				() => player.Camera.fieldOfView = FieldOfView);
+			Delay.RunWhen(() => player.Body != null, () =>
+			{
+				var REMOTE_Traveller_HEA_Player_v2 = player.Body.transform.Find("REMOTE_Traveller_HEA_Player_v2");
+				BodyCustomization.BodyCustomizer.Instance.CustomizeRemoteBody(REMOTE_Traveller_HEA_Player_v2.gameObject, player.HelmetAnimator.FakeHead.gameObject, SkinType, JetpackType);
+			});
 
 			player.State = ClientState;
 

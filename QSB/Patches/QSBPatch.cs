@@ -11,7 +11,7 @@ public abstract class QSBPatch
 	public void DoPatches(Harmony instance) => instance.PatchAll(GetType());
 
 	/// <summary>
-	/// this is true when a message is received remotely (OnReceiveRemote) or a player leaves (OnRemovePlayer)
+	/// this is true when a message is received remotely (OnReceiveRemote) or a remote player joins/leaves (OnAddPlayer/OnRemovePlayer)
 	/// </summary>
 	public static bool Remote;
 }

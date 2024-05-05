@@ -94,7 +94,7 @@ public class QSBNomaiTranslator : QSBTool
 			if (_currentNomaiText is NomaiWallText nomaiWallText)
 			{
 				var nomaiTextLine = nomaiWallText.GetClosestTextLineByCenter(raycastHit.point);
-				if (_lastLineLocked)
+				if (_lastLineLocked && _lastHighlightedTextLine != null)
 				{
 					var distToCenter = _lastHighlightedTextLine.GetDistToCenter(raycastHit.point);
 					if (distToCenter > _lastLineDist + 0.1f)

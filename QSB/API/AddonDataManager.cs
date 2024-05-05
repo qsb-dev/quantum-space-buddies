@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using OWML.Common;
 using QSB.Utility;
 
 namespace QSB.API;
 
 public static class AddonDataManager
 {
-	private static readonly Dictionary<string, Action<uint, object>> _handlers = new();
+	private static readonly Dictionary<int, Action<uint, object>> _handlers = new();
 
-	public static void OnReceiveDataMessage(string messageType, object data, uint from)
+	public static void OnReceiveDataMessage(int hash, object data, uint from)
 	{
-		DebugLog.DebugWrite($"Received data message of message type \"{messageType}\" from {from}!");
-		if (!_handlers.TryGetValue(messageType, out var handler))
+		if (!_handlers.TryGetValue(hash, out var handler))
 		{
+			DebugLog.DebugWrite($"unknown addon message type with hash {hash}", MessageType.Error);
 			return;
 		}
-
 		handler(from, data);
 	}
 
-	public static void RegisterHandler<T>(string messageType, Action<uint, T> handler)
+	public static void RegisterHandler<T>(int hash, Action<uint, T> handler)
 	{
-		DebugLog.DebugWrite($"Registering handler for \"{messageType}\" with type of {typeof(T).Name}");
-		_handlers.Add(messageType, (from, data) => handler(from, (T)data));
+		_handlers.Add(hash, (from, data) => handler(from, (T)data));
 	}
 }

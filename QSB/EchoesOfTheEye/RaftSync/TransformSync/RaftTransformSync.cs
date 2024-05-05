@@ -10,8 +10,13 @@ namespace QSB.EchoesOfTheEye.RaftSync.TransformSync;
 
 public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviour
 {
+	/// <summary>
+	/// move if on the raft
+	/// or in air near the raft
+	/// </summary>
 	private bool ShouldMovePlayer =>
-		Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 10;
+		Locator.GetPlayerController().GetGroundBody() == AttachedRigidbody ||
+		(Locator.GetPlayerController().GetGroundBody() == null && Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 10);
 	protected override bool UseInterpolation => !ShouldMovePlayer;
 
 	private float _lastSetPositionTime;
@@ -80,6 +85,15 @@ public class RaftTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehaviou
 	/// </summary>
 	protected override void ApplyToAttached()
 	{
+		if (_worldObject.AttachedObject is RaftController raft)
+		{
+			if (raft.IsDockingOrDocked())
+			{
+				// don't sync position if we're docking, dock sequence moves the raft itself
+				return;
+			}
+		}
+
 		var targetPos = ReferenceTransform.FromRelPos(UseInterpolation ? SmoothPosition : transform.position);
 		var targetRot = ReferenceTransform.FromRelRot(UseInterpolation ? SmoothRotation : transform.rotation);
 

@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using QSB.WorldSync;
+using QSB.WorldSync.Messages;
 using System;
 
 namespace QSB.Utility;

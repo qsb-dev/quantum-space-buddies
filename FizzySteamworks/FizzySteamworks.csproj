@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Mirror.FizzySteam</RootNamespace>
+    <AssemblyTitle>Fizzy Steamworks</AssemblyTitle>
+    <Product>Fizzy Steamworks</Product>
+    <Title>Fizzy Steamworks</Title>
+    <Description></Description>
+    <Authors>Fizz Cube Ltd, Marco Hoffmann, William Corby</Authors>
+    <Company>Fizz Cube Ltd, Marco Hoffmann, William Corby</Company>
+    <Copyright></Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.14.768" IncludeAssets="compile" />
+    <Reference Include="..\Lib\*.dll" />
+  </ItemGroup>
+</Project>

@@ -110,3 +110,17 @@ public class ClientTimePatches : QSBPatch
 		new SetSecondsRemainingMessage(secondsRemaining).Send();
 	}
 }
+
+public class TimeLoopPatches : QSBPatch
+{
+	public override QSBPatchTypes Type => QSBPatchTypes.OnModStart;
+
+	public static bool IsLoopAfterStatue;
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(TimeLoop), nameof(TimeLoop.Start))]
+	private static void TimeLoopStart()
+	{
+		IsLoopAfterStatue = TimeLoop._startTimeLoopOnReload;
+	}
+}

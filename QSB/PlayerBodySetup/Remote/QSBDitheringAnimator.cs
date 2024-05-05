@@ -59,6 +59,10 @@ public class QSBDitheringAnimator : MonoBehaviour
 
 	private void UpdateRenderers()
 	{
+		_renderers ??= GetComponentsInChildren<Renderer>(true)
+				.Select(x => (x.gameObject.GetAddComponent<OWRenderer>(), x.shadowCastingMode != ShadowCastingMode.Off))
+				.ToArray();
+
 		foreach (var (renderer, updateShadows) in _renderers)
 		{
 			if (renderer == null)

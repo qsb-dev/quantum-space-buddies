@@ -12,22 +12,20 @@ public class QSBPlayerAudioController : MonoBehaviour
 	public OWAudioSource _damageAudioSource;
 
 	private AudioManager _audioManager;
+	private float _playWearHelmetTime;
 
 	public void Start()
 	{
 		_audioManager = Locator.GetAudioManager();
+	}
 
-		// TODO: This should be done in the Unity project
-		var damageAudio = new GameObject("DamageAudioSource");
-		damageAudio.SetActive(false);
-		damageAudio.transform.SetParent(transform, false);
-		damageAudio.transform.localPosition = Vector3.zero;
-		_damageAudioSource = damageAudio.AddComponent<OWAudioSource>();
-		_damageAudioSource._audioSource = damageAudio.GetAddComponent<AudioSource>();
-		_damageAudioSource.SetTrack(_repairToolSource.GetTrack());
-		_damageAudioSource.spatialBlend = 1f;
-		_damageAudioSource.gameObject.GetAddComponent<QSBDopplerFixer>();
-		damageAudio.SetActive(true);
+	private void Update()
+	{
+		if (Time.time > this._playWearHelmetTime)
+		{
+			enabled = false;
+			PlayOneShot(global::AudioType.PlayerSuitWearHelmet);
+		}
 	}
 
 	public void PlayEquipTool()
@@ -47,6 +45,18 @@ public class QSBPlayerAudioController : MonoBehaviour
 
 	public void PlayRemoveSuit()
 		=> PlayOneShot(AudioType.PlayerSuitRemoveSuit);
+
+	public void PlayRemoveHelmet()
+	{
+		enabled = false;
+		PlayOneShot(AudioType.PlayerSuitRemoveHelmet);
+	}
+
+	public void PlayWearHelmet()
+	{
+		enabled = true;
+		_playWearHelmetTime = Time.time + 0.4f;
+	}
 
 	public void PlayOneShot(AudioType audioType, float pitch = 1f, float volume = 1f)
 	{

@@ -7,7 +7,6 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/misternebula/quantum-space-buddies/latest/total?style=flat-square)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/misternebula/quantum-space-buddies/dev?label=last%20commit%20to%20dev&style=flat-square)
 
-[![Support on Patreon](https://img.shields.io/badge/dynamic/json?style=for-the-badge&color=%23e85b46&label=Patreon&query=data.attributes.patron_count&suffix=%20patrons&url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F8528628&logo=patreon)](https://www.patreon.com/qsb)
 [![Donate with PayPal](https://img.shields.io/badge/PayPal-Donate%20(nebula)-blue?style=for-the-badge&color=blue&logo=paypal)](https://www.paypal.com/paypalme/nebula2056/5)
 [![Donate with PayPal](https://img.shields.io/badge/PayPal-Donate%20(johncorby)-blue?style=for-the-badge&color=blue&logo=paypal)](https://www.paypal.com/paypalme/johncorby/5)
 
@@ -19,35 +18,34 @@ Spoilers within!
 
 ### Easy installation (recommended)
 
-- [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/);
-- Install Quantum Space Buddies from the mod list displayed in the application;
-- If you can't get the mod manager to work, follow the instructions for manual installation.
-
-### Manual installation
-
-- [Install OWML](https://github.com/ow-mods/owml#installation);
-- [Download the latest Quantum Space Buddies release](https://github.com/misternebula/quantum-space-buddies/releases/latest);
-- Extract the `QSB` directory to the `OWML/Mods` directory;
-- Run `OWML.Launcher.exe` to start the game.
+- [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/)
+- Install Quantum Space Buddies from the mod list displayed in the application
 
 ## Hosting / Connecting
 
 #### Connecting to a server
 
+- Make sure to have Steam open and logged in.
 - On the title screen, click the option `CONNECT TO MULTIPLAYER`.
-- Enter the Product User ID of the person you are trying to connect to.
+- Enter the Steam ID of the person you are trying to connect to.
+    - If "Use KCP Transport" is enabled, enter the public IP address of the person instead.
 - Enjoy!
 
 #### Hosting a server
 
+- Make sure to have Steam open and logged in.
 - On the title screen, click the option `OPEN TO MULTIPLAYER`.
-- Share your Product User ID with the people who want to connect.
+- Share your Steam ID with the people who want to connect.
+    - If "Use KCP Transport" is enabled, share your public IP address instead. This can be found on websites like https://www.whatismyip.com/.
 - Enjoy!
 
 ## Frequently Asked Questions
 
 ### I keep timing out when trying to connect!
 Check the mod settings for "Use KCP Transport". You have to forward port 7777 as TCP/UDP, or use Hamachi. ***All players must either be using KCP, or not using KCP.***
+
+### Why does SpaceWar show up in my Steam library?
+This is for players who own the game on Epic or Xbox. Steam networking only works if you own the game on Steam, so we have to pretend to be SpaceWar (which every Steam user owns) so everyone can play.
 
 ### Requirements
 - Latest version of OWML.
@@ -63,17 +61,27 @@ There still might be one or two small mechanics that aren't synced - let us know
 Also, you might encounter bugs that mean you can't progress in multiplayer. Again, let us know if you find one!
 
 ### Compatibility with other mods
-TL;DR - Don't use any mods with QSB that aren't marked as QSB compatible. 
 
-QSB relies on object hierarchy to sync objects, so any mod that changes that risks breaking QSB. Also, QSB relies on certain game events being called when things happen in-game. Any mod that makes these things happen without calling the correct events will break QSB. Some mods will work fine and have been tested, like CrouchMod. Others may only work partly, like EnableDebugMode and TAICheat.
+QSB relies on object hierarchy to sync objects, so any mod that changes that risks breaking QSB.
+QSB also relies on certain game events being called when things happen in-game, so any mod that makes these things happen without calling the correct events will break QSB.
 
-### Is this mod compatible with NomaiVR?
+Most small mods will work fine. The more complex and far reaching the mod, the less likely it will work completely.
+Try as many mods as you like, but don't be surprised if things break.
 
-Short answer - Kind of.
+#### NomaiVr
 
-Long answer - We've done our best to try to keep them compatible, but no work has been done to explicitly make them play nice. Some things may work, others may not.
-Getting both mods to work together is a big undertaking, and would require rewrites to a lot of code in both mods.
-If you want to play with VR, make sure the server host has "Incompatible Mods Allowed" enabled.
+[Here](https://github.com/qsb-dev/quantum-space-buddies/issues?q=is%3Aissue+is%3Aopen+label%3ANomaiVR) are the known issues. You are welcome to add to this list by creating issues.
+
+Most things seem to work _enough_. There are some visual bugs, and I believe a few softlocks, but the experience shouldn't be too bad.
+
+We haven't done too much work to make them compatible, so the things that are broken are unlikely to be fixed.
+
+#### New Horizons
+
+[Here](https://github.com/qsb-dev/quantum-space-buddies/issues?q=is%3Aissue+is%3Aopen+label%3A%22New+Horizons%22) are the known issues. You are welcome to add to this list by creating issues.
+
+We do our best to stay mostly compatible with base New Horizons, but the compatibility of each addon is mixed.
+Most of them at least partially work. Most custom mechanics will not work until the addon developer explicitly adds QSB support.
 
 ### Why do I keep getting thrown around the ship?
 
@@ -108,13 +116,20 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 
 ### Contributers
 
+- [xen](https://github.com/xen-42) - Help with syncing particle/sound effects, fixing lantern item bugs, and syncing addon data.
+- [Moonstone](https://github.com/MoonstoneStudios) - Improvements to elevators and lifts.
 - [Chris Yeninas](https://github.com/PhantomGamers) - Help with project files and GitHub workflows.
+- [Locochoco](https://github.com/loco-choco) - Code improvements.
+
+### Translators
+
 - [Tlya](https://github.com/Tllya) - Russian translation.
-- [Xen](https://github.com/xen-42) - French translation, and help with particle effects and sounds.
-- [ShoosGun](https://github.com/ShoosGun) - Portuguese translation.
+- [xen](https://github.com/xen-42) and [MerlinConnected](https://github.com/MerlinConnected) - French translation.
+- [Locochoco](https://github.com/loco-choco) - Portuguese translation.
 - [DertolleDude](https://github.com/DertolleDude) - German translation.
-- [SakuradaYuki](https://github.com/SakuradaYuki) - Chinese translation.
+- [SakuradaYuki](https://github.com/SakuradaYuki) and [isrecalpear](https://github.com/isrecalpear) - Chinese translation.
 - [poleshe](https://github.com/poleshe) - Spanish translation.
+- [Deniz](https://github.com/dumbdeniz) - Turkish translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.
@@ -126,7 +141,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 - [Mirror](https://mirror-networking.com/)
     - [kcp2k](https://github.com/vis2k/kcp2k)
     - [Telepathy](https://github.com/vis2k/Telepathy)
-- [EpicOnlineTransport](https://github.com/FakeByte/EpicOnlineTransport)
+- [FizzySteamworks](https://github.com/Chykary/FizzySteamworks)
 - [HarmonyX](https://github.com/BepInEx/HarmonyX)
 - [UniTask](https://github.com/Cysharp/UniTask)
 - Modified code from [Popcron's Gizmos](https://github.com/popcron/gizmos)
@@ -137,7 +152,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 
 ## License and legal stuff
 
-Copyright (C) 2020 - 2023 : 
+Copyright (C) 2020 - 2024 : 
 - Henry Pointer (_nebula or misternebula)
 - Will Corby (JohnCorby)
 - Aleksander Waage (AmazingAlek)

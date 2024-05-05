@@ -132,6 +132,10 @@ public class ShipTransformSync : SectoredRigidbodySync
 	#endregion
 
 
+	/// <summary>
+	/// move if inside the ship
+	/// or in space near the ship
+	/// </summary>
 	private bool ShouldMovePlayer =>
 		PlayerState.IsInsideShip() ||
 		(PlayerState.InZeroG() && Vector3.Distance(AttachedTransform.position, Locator.GetPlayerBody().GetPosition()) < 100);

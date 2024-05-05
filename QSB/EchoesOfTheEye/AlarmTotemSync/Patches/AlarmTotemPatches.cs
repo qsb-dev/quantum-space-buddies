@@ -62,6 +62,7 @@ public class AlarmTotemPatches : QSBPatch
 						__instance._isPlayerVisible = false;
 						__instance._secondsConcealed = 0f;
 						Locator.GetAlarmSequenceController().DecreaseAlarmCounter();
+						qsbAlarmTotem.SendMessage(new SetVisibleMessage(false));
 					}
 				}
 			});
@@ -120,18 +121,27 @@ public class AlarmTotemPatches : QSBPatch
 		}
 		foreach (var player in QSBPlayerManager.PlayerList)
 		{
+			if (!player.IsReady)
+			{
+				continue;
+			}
+
 			var position = player.Camera.transform.position;
 			if (__instance.CheckPointInVisionCone(position) && !__instance.CheckLineOccluded(__instance._sightOrigin.position, position))
 			{
 				if (player.LightSensor.IsIlluminated())
 				{
+					// Player is visible and illuminated.
 					__result = true;
 					return false;
 				}
+
 				if (player.AssignedSimulationLantern == null)
 				{
+					// Player is not holding a lantern.
 					continue;
 				}
+
 				var lanternController = player.AssignedSimulationLantern.AttachedObject.GetLanternController();
 				if (lanternController.IsHeldByPlayer())
 				{
@@ -146,14 +156,16 @@ public class AlarmTotemPatches : QSBPatch
 								GlobalMessenger.FireEvent("ConcealFromAlarmTotem");
 							}
 						}
-						__result = false;
-						return false;
+
+						continue;
 					}
+
 					__result = true;
 					return false;
 				}
 			}
 		}
+
 		__result = false;
 		return false;
 	}

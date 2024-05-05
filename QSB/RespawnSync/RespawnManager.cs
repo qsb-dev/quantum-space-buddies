@@ -139,6 +139,12 @@ public class RespawnManager : MonoBehaviour, IAddComponentOnStart
 		cameraEffectController.OpenEyes(1f);
 
 		OWInput.ChangeInputMode(InputMode.Character);
+
+		var mixer = Locator.GetAudioMixer();
+		mixer._deathMixed = false;
+		mixer._nonEndTimesVolume.FadeTo(1, 0.5f);
+		mixer._endTimesVolume.FadeTo(1, 0.5f);
+		mixer.UnmixMap();
 	}
 
 	public void OnPlayerDeath(PlayerInfo player)

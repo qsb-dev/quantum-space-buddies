@@ -11,17 +11,24 @@ using QSB.SaveSync;
 using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
+using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
 using QSB.API;
+using QSB.BodyCustomization;
+using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = System.Random;
+using QSB.Utility.Deterministic;
 
 /*
-	Copyright (C) 2020 - 2023
+	Copyright (C) 2020 - 2024
 			Henry Pointer (_nebula / misternebula),
 			Will Corby (JohnCorby),
 			Aleksander Waage (AmazingAlek),
@@ -50,7 +57,6 @@ public class QSBCore : ModBehaviour
 	public static string DefaultServerIP;
 	public static AssetBundle NetworkAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
-	public static AssetBundle DebugAssetBundle { get; private set; }
 	public static AssetBundle HUDAssetBundle { get; private set; }
 	public static bool IsHost => (MenuManager.Instance != null && MenuManager.Instance.WillBeHost) || NetworkServer.active;
 	public static bool IsInMultiplayer;
@@ -60,11 +66,12 @@ public class QSBCore : ModBehaviour
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static bool UseKcpTransport { get; private set; }
-	public static bool IncompatibleModsAllowed { get; private set; }
 	public static bool ShowPlayerNames { get; private set; }
 	public static bool ShipDamage { get; private set; }
 	public static bool ShowExtraHUDElements { get; private set; }
 	public static bool TextChatInput { get; private set; }
+	public static string SkinVariation { get; private set; } = "Default";
+	public static string JetpackVariation { get; private set; } = "Orange";
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
@@ -73,19 +80,12 @@ public class QSBCore : ModBehaviour
 	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
 
-	public const string NEW_HORIZONS = "xen.NewHorizons";
-	public const string NEW_HORIZONS_COMPAT = "xen.NHQSBCompat";
+	private static string randomSkinType;
+	private static string randomJetpackType;
 
-	public static readonly string[] IncompatibleMods =
-	{
-		// incompatible mods
-		"Raicuparta.NomaiVR",
-		"xen.NewHorizons",
-		"Vesper.AutoResume",
-		"Vesper.OuterWildsMMO",
-		"_nebula.StopTime",
-		"PacificEngine.OW_Randomizer",
-	};
+	public static Assembly QSBNHAssembly = null;
+
+	public static event Action OnSkinsBundleLoaded;
 
 	public override object GetApi() => new QSBAPI();
 
@@ -114,13 +114,13 @@ public class QSBCore : ModBehaviour
 			DebugLog.ToConsole($"FATAL - Could not determine game vendor.", MessageType.Fatal);
 		}
 
-		DebugLog.DebugWrite($"Determined game vendor as {GameVendor}", MessageType.Info);
+		DebugLog.ToConsole($"Determined game vendor as {GameVendor}", MessageType.Info);
 	}
+
+	private bool _steamworksInitialized;
 
 	public void Awake()
 	{
-		EpicRerouter.ModSide.Interop.Go();
-
 		// no, we cant localize this - languages are loaded after the splash screen
 		UIHelper.ReplaceUI(UITextType.PleaseUseController,
 			"<color=orange>Quantum Space Buddies</color> is best experienced with friends...");
@@ -129,6 +129,86 @@ public class QSBCore : ModBehaviour
 
 		QSBPatchManager.Init();
 		QSBPatchManager.DoPatchType(QSBPatchTypes.OnModStart);
+
+		if (GameVendor != GameVendor.Steam)
+		{
+			DebugLog.DebugWrite($"Not steam, initializing Steamworks...");
+
+			if (!Packsize.Test())
+			{
+				DebugLog.ToConsole("[Steamworks.NET] Packsize Test returned false, the wrong version of Steamworks.NET is being run in this platform.", MessageType.Error);
+			}
+
+			if (!DllCheck.Test())
+			{
+				DebugLog.ToConsole("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.", MessageType.Error);
+			}
+
+			// from facepunch.steamworks SteamClient.cs
+			// Normally, Steam sets these env vars when launching the game through the Steam library.
+			// These would also be set when running the .exe directly, thanks to Steam's "DRM" in the exe.
+			// We're setting these manually to 480 - an AppID that every Steam account owns by default.
+			// This tells Steam and Steamworks that the user is playing a game they own.
+			// This lets anyone use Steamworks, even if they don't own Outer Wilds.
+			// We also don't have to worry about Steam achievements or DLC in this case.
+			Environment.SetEnvironmentVariable("SteamAppId", "480");
+			Environment.SetEnvironmentVariable("SteamGameId", "480");
+
+			if (!SteamAPI.Init())
+			{
+				DebugLog.ToConsole($"FATAL - SteamAPI.Init() failed. Do you have Steam open, and are you logged in?", MessageType.Fatal);
+				return;
+			}
+
+			_steamworksInitialized = true;
+		}
+		else
+		{
+			SteamRerouter.ModSide.Interop.Init();
+
+			DebugLog.DebugWrite($"Is steam - overriding AppID");
+			OverrideAppId();
+		}
+	}
+
+	public void OverrideAppId()
+	{
+		// Normally, Steam sets env vars when launching the game through the Steam library.
+		// These would also be set when running the .exe directly, thanks to Steam's "DRM" in the exe.
+		// However, for Steam players to be able to join non-Steam players, everyone has to be using Steamworks with the same AppID.
+		// At this point, OW has already initialized Steamworks.
+		// Since we handle achievements and DLC ownership in the rerouter, we need to re-initialize Steamworks with the new AppID.
+
+		// (Also, Mobius forgor to change some default Steamworks code, so sometimes these env vars aren't set at all.
+		// In this instance the overlay and achievements also don't work, but we can't fix that here.)
+
+		// reset steamworks instance
+		SteamManager.s_EverInitialized = false;
+		var instance = SteamManager.s_instance;
+		instance.m_bInitialized = false;
+		SteamManager.s_instance = null;
+
+		// Releases pointers and frees memory used by Steam to manage the current game.
+		// Does not unhook the overlay, so we dont have to worry about that :peepoHappy:
+		SteamAPI.Shutdown();
+
+		// Set the env vars to an AppID that everyone owns by default.
+		// from facepunch.steamworks SteamClient.cs
+		Environment.SetEnvironmentVariable("SteamAppId", "480");
+		Environment.SetEnvironmentVariable("SteamGameId", "480");
+
+		// Re-initialize Steamworks.
+		instance.InitializeOnAwake();
+
+		// TODO also reregister hook and gamepad thing or else i think that wont work
+	}
+
+	public void OnDestroy()
+	{
+		if (_steamworksInitialized)
+		{
+			SteamAPI.Shutdown();
+		}
 	}
 
 	public void Start()
@@ -136,7 +216,7 @@ public class QSBCore : ModBehaviour
 		Helper = ModHelper;
 		DebugLog.ToConsole($"* Start of QSB version {QSBVersion} - authored by {Helper.Manifest.Author}", MessageType.Info);
 
-		CheckCompatibilityMods();
+		CheckNewHorizons();
 
 		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
 
@@ -173,17 +253,14 @@ public class QSBCore : ModBehaviour
 
 		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
-		DebugLog.DebugWrite("loading qsb_network_big bundle", MessageType.Info);
-		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles/qsb_network_big");
-		var request = AssetBundle.LoadFromFileAsync(path);
-		request.completed += _ => DebugLog.DebugWrite("qsb_network_big bundle loaded", MessageType.Success);
+		LoadBundleAsync("qsb_network_big");
+		LoadBundleAsync("qsb_skins", request => BodyCustomizer.Instance.OnBundleLoaded(request.assetBundle));
 
-		NetworkAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_network");
-		ConversationAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_conversation");
-		DebugAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_debug");
-		HUDAssetBundle = Helper.Assets.LoadBundle("AssetBundles/qsb_hud");
+		NetworkAssetBundle = LoadBundle("qsb_network");
+		ConversationAssetBundle = LoadBundle("qsb_conversation");
+		HUDAssetBundle = LoadBundle("qsb_hud");
 
-		if (NetworkAssetBundle == null || ConversationAssetBundle == null || DebugAssetBundle == null)
+		if (NetworkAssetBundle == null || ConversationAssetBundle == null || HUDAssetBundle == null)
 		{
 			DebugLog.ToConsole($"FATAL - An assetbundle is missing! Re-install mod or contact devs.", MessageType.Fatal);
 			return;
@@ -199,6 +276,44 @@ public class QSBCore : ModBehaviour
 		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
+
+		if (DebugSettings.RandomizeSkins)
+		{
+			var skinSetting = (JObject)ModHelper.Config.Settings["skinType"];
+			var skinOptions = skinSetting["options"].ToObject<string[]>();
+			randomSkinType = skinOptions[UnityEngine.Random.Range(0, skinOptions.Length - 1)];
+
+			var jetpackSetting = (JObject)ModHelper.Config.Settings["jetpackType"];
+			var jetpackOptions = jetpackSetting["options"].ToObject<string[]>();
+			randomJetpackType = jetpackOptions[UnityEngine.Random.Range(0, jetpackOptions.Length - 1)];
+
+			Configure(ModHelper.Config);
+		}
+	}
+
+	private AssetBundle LoadBundle(string bundleName)
+	{
+		var timer = new Stopwatch();
+		timer.Start();
+		var ret = Helper.Assets.LoadBundle(Path.Combine("AssetBundles", bundleName));
+		timer.Stop();
+		DebugLog.ToConsole($"Bundle {bundleName} loaded in {timer.ElapsedMilliseconds} ms!", MessageType.Success);
+		return ret;
+	}
+
+	private void LoadBundleAsync(string bundleName, Action<AssetBundleCreateRequest> runOnLoaded = null)
+	{
+		DebugLog.DebugWrite($"Loading {bundleName}...", MessageType.Info);
+		var timer = new Stopwatch();
+		timer.Start();
+		var path = Path.Combine(ModHelper.Manifest.ModFolderPath, "AssetBundles", bundleName);
+		var request = AssetBundle.LoadFromFileAsync(path);
+		request.completed += _ =>
+		{
+			timer.Stop();
+			DebugLog.ToConsole($"Bundle {bundleName} loaded in {timer.ElapsedMilliseconds} ms!", MessageType.Success);
+			runOnLoaded?.Invoke(request);
+		};
 	}
 
 	private static void OnPatchType(QSBPatchTypes type)
@@ -232,7 +347,7 @@ public class QSBCore : ModBehaviour
 
 	/// <summary>
 	/// Registers an addon that shouldn't be considered for hash checks when joining.
-	/// This addon MUST NOT send any network messages, or create any worldobjects.
+	/// This addon MUST NOT create any WorldObjects or NetworkBehaviours.
 	/// </summary>
 	/// <param name="addon">The behaviour of the addon.</param>
 	public static void RegisterNotRequiredForAllPlayers(IModBehaviour addon)
@@ -242,9 +357,11 @@ public class QSBCore : ModBehaviour
 
 		foreach (var type in addonAssembly.GetTypes())
 		{
-			if (typeof(QSBMessage).IsAssignableFrom(type) || typeof(WorldObjectManager).IsAssignableFrom(type) || typeof(IWorldObject).IsAssignableFrom(type))
+			if (typeof(WorldObjectManager).IsAssignableFrom(type) ||
+				typeof(IWorldObject).IsAssignableFrom(type) ||
+				typeof(NetworkBehaviour).IsAssignableFrom(type))
 			{
-				DebugLog.ToConsole($"Addon \"{uniqueName}\" cannot be cosmetic, as it creates networking events or objects.", MessageType.Error);
+				DebugLog.ToConsole($"Addon \"{uniqueName}\" cannot be cosmetic, as it creates networking objects.", MessageType.Error);
 				return;
 			}
 		}
@@ -268,6 +385,11 @@ public class QSBCore : ModBehaviour
 		DebugLog.DebugWrite("Running RuntimeInitializeOnLoad methods for our assemblies", MessageType.Info);
 		foreach (var path in Directory.EnumerateFiles(Helper.Manifest.ModFolderPath, "*.dll"))
 		{
+			if (Path.GetFileNameWithoutExtension(path) == "QSB-NH")
+			{
+				continue;
+			}
+
 			var assembly = Assembly.LoadFile(path);
 			Init(assembly);
 		}
@@ -287,16 +409,31 @@ public class QSBCore : ModBehaviour
 		QSBNetworkManager.UpdateTransport();
 
 		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");
-		IncompatibleModsAllowed = config.GetSettingsValue<bool>("incompatibleModsAllowed");
 		ShowPlayerNames = config.GetSettingsValue<bool>("showPlayerNames");
 		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
 		ShowExtraHUDElements = config.GetSettingsValue<bool>("showExtraHud");
 		TextChatInput = config.GetSettingsValue<bool>("textChatInput");
 
+		if (DebugSettings.RandomizeSkins)
+		{
+			SkinVariation = randomSkinType;
+			JetpackVariation = randomJetpackType;
+		}
+		else
+		{
+			SkinVariation = config.GetSettingsValue<string>("skinType");
+			JetpackVariation = config.GetSettingsValue<string>("jetpackType");
+		}
+
 		if (IsHost)
 		{
 			ServerSettingsManager.ServerShowPlayerNames = ShowPlayerNames;
 			new ServerSettingsMessage().Send();
+		}
+
+		if (IsInMultiplayer)
+		{
+			new PlayerInformationMessage().Send();
 		}
 	}
 
@@ -308,30 +445,24 @@ public class QSBCore : ModBehaviour
 
 			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
 			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
-			QuantumManager.UpdateFromDebugSetting();
 			DebugCameraSettings.UpdateFromDebugSetting();
 
 			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
+
+		if (_steamworksInitialized)
+		{
+			SteamAPI.RunCallbacks();
+		}
 	}
 
-	private void CheckCompatibilityMods()
+	private void CheckNewHorizons()
 	{
-		var mainMod = "";
-		var compatMod = "";
-		var missingCompat = false;
-
-		/*if (Helper.Interaction.ModExists(NEW_HORIZONS) && !Helper.Interaction.ModExists(NEW_HORIZONS_COMPAT))
+		if (ModHelper.Interaction.ModExists("xen.NewHorizons"))
 		{
-			mainMod = NEW_HORIZONS;
-			compatMod = NEW_HORIZONS_COMPAT;
-			missingCompat = true;
-		}*/
-
-		if (missingCompat)
-		{
-			DebugLog.ToConsole($"FATAL - You have mod \"{mainMod}\" installed, which is not compatible with QSB without the compatibility mod \"{compatMod}\". " +
-				$"Either disable the mod, or install/enable the compatibility mod.", MessageType.Fatal);
+			// NH compat has to be in a different DLL since it uses IAddComponentOnStart, and depends on the NH DLL.
+			QSBNHAssembly = Assembly.LoadFrom(Path.Combine(ModHelper.Manifest.ModFolderPath, "QSB-NH.dll"));
+			gameObject.AddComponent(QSBNHAssembly.GetType("QSBNH.QSBNH", true));
 		}
 	}
 }

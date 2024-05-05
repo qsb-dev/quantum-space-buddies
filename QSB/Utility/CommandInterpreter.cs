@@ -1,8 +1,8 @@
 ﻿using QSB.HUD;
 using QSB.Messaging;
-using QSB.ShipSync;
 using QSB.ShipSync.Messages;
 using QSB.WorldSync;
+using Steamworks;
 using System.Linq;
 using UnityEngine;
 
@@ -25,25 +25,55 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 			case "ship":
 				ShipCommand(commandParts.Skip(1).ToArray());
 				break;
+			case "copy-id":
+				CopySteamID();
+				break;
 			default:
-				MultiplayerHUDManager.Instance.WriteMessage($"Unknown command \"{command}\".", Color.red);
+				WriteToChat($"Unknown command \"{command}\".", Color.red);
 				break;
 		}
 
 		return true;
 	}
 
+	private static void WriteToChat(string message, Color color)
+	{
+		// TODO : make italics work in chat so we can use them here
+		MultiplayerHUDManager.Instance.WriteMessage(message, color);
+	}
+
+	public static void CopySteamID()
+	{
+		if (QSBCore.UseKcpTransport)
+		{
+			WriteToChat($"Cannot get Steam ID for KCP-hosted server.", Color.red);
+			return;
+		}
+
+		var steamID = QSBCore.IsHost
+			? SteamUser.GetSteamID().ToString()
+			: QSBNetworkManager.singleton.networkAddress;
+
+		GUIUtility.systemCopyBuffer = steamID;
+		WriteToChat($"Copied {steamID} to the clipboard.", Color.green);
+	}
+
 	public static void ShipCommand(string[] arguments)
 	{
+		if (!QSBCore.DebugSettings.DebugMode)
+		{
+			return;
+		}
+
 		var command = arguments[0];
 
 		switch (command)
 		{
-			case "explode":
-				MultiplayerHUDManager.Instance.WriteMessage($"Blowing up the ship.", Color.green);
+/*			case "explode":
+				WriteToChat($"Blowing up the ship.", Color.green);
 				var shipDamageController = Locator.GetShipTransform().GetComponentInChildren<ShipDamageController>();
 				shipDamageController.Explode();
-				break;
+				break;*/
 			case "repair":
 			case "damage":
 				var damage = command == "damage";
@@ -56,7 +86,7 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 					default:
 						break;
 				}
-				MultiplayerHUDManager.Instance.WriteMessage($"{(damage ? "Damaging" : "Repairing")} the {arguments[1]}.", Color.green);
+				WriteToChat($"{(damage ? "Damaging" : "Repairing")} the {arguments[1]}.", Color.green);
 				break;
 			case "open-hatch":
 				QSBWorldSync.GetUnityObject<HatchController>().OpenHatch();
@@ -67,7 +97,7 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 				new HatchMessage(false).Send();
 				break;
 			default:
-				MultiplayerHUDManager.Instance.WriteMessage($"Unknown ship command \"{command}\".", Color.red);
+				WriteToChat($"Unknown ship command \"{command}\".", Color.red);
 				break;
 		}
 	}

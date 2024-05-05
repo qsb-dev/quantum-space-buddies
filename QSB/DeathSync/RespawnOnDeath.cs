@@ -82,8 +82,8 @@ public class RespawnOnDeath : MonoBehaviour
 		ResetCanvases();
 
 		var mixer = Locator.GetAudioMixer();
-		mixer._deathMixed = false;
-		mixer._nonEndTimesVolume.FadeTo(1, 0.5f);
+		//mixer._deathMixed = false;
+		//mixer._nonEndTimesVolume.FadeTo(1, 0.5f);
 		mixer._endTimesVolume.FadeTo(1, 0.5f);
 		mixer.MixMap();
 
@@ -257,7 +257,10 @@ public class RespawnOnDeath : MonoBehaviour
 		var sectorList = PlayerTransformSync.LocalInstance.SectorDetector.SectorList;
 		if (sectorList.All(x => x.Type != Sector.Name.TimberHearth))
 		{
-			// stops sectors from breaking when you die on TH??
+			// Spooky scary legacy code?
+			// Original comment was "stops sectors from breaking when you die on TH??"
+			// I think dying on TH used to break all the sectors. Something about you not technically re-entering TH when dying inside it.
+			// I commented out these lines, and everything seemed fine. But I'm not gonna touch them just in case. :P
 			Locator.GetPlayerSectorDetector().RemoveFromAllSectors();
 			Locator.GetPlayerCameraDetector().GetComponent<AudioDetector>().DeactivateAllVolumes(0f);
 		}

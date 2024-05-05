@@ -41,6 +41,7 @@ public class GhostHotelDirectorPatches : QSBPatch
 	/*
 	 * I have no idea why, but for some reason unknown to the damned souls that walk this mortal plane,
 	 * this method only runs when this patch is here. What the absolute fuck.
+	 * Update - This is still needed. Run while you still can.
 	 */
 
 	[HarmonyPrefix]

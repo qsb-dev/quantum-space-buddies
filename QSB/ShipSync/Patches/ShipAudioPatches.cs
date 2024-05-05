@@ -41,4 +41,57 @@ public class ShipAudioPatches : QSBPatch
 			return true;
 		}
 	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(GlobalMusicController), nameof(GlobalMusicController.UpdateTravelMusic))]
+	public static bool GlobalMusicController_UpdateTravelMusic(GlobalMusicController __instance)
+	{
+		// only this line is changed
+		bool flag = PlayerState.IsInsideShip() 
+		            && ShipManager.Instance.CurrentFlyer != uint.MaxValue
+		            && Locator.GetPlayerRulesetDetector().AllowTravelMusic()
+		            && !PlayerState.IsHullBreached()
+		            && !__instance._playingFinalEndTimes;
+
+
+		bool flag2 = __instance._travelSource.isPlaying && !__instance._travelSource.IsFadingOut();
+		if (flag && !flag2)
+		{
+			__instance._travelSource.FadeIn(5f, false, false, 1f);
+			return false;
+		}
+		if (!flag && flag2)
+		{
+			__instance._travelSource.FadeOut(5f, OWAudioSource.FadeOutCompleteAction.PAUSE, 0f);
+		}
+
+		return false;
+	}
+
+	[HarmonyPrefix]
+	[HarmonyPatch(typeof(GlobalMusicController), nameof(GlobalMusicController.UpdateBrambleMusic))]
+	public static bool GlobalMusicController_UpdateBrambleMusic(GlobalMusicController __instance)
+	{
+		bool flag = Locator.GetPlayerSectorDetector().InBrambleDimension()
+		            && !Locator.GetPlayerSectorDetector().InVesselDimension()
+		            && PlayerState.IsInsideShip()
+		            && ShipManager.Instance.CurrentFlyer != uint.MaxValue
+					&& !PlayerState.IsHullBreached()
+		            && !__instance._playingFinalEndTimes;
+
+		bool flag2 = __instance._darkBrambleSource.isPlaying && !__instance._darkBrambleSource.IsFadingOut();
+
+		if (flag && !flag2)
+		{
+			__instance._darkBrambleSource.FadeIn(5f, false, false, 1f);
+			return false;
+		}
+
+		if (!flag && flag2)
+		{
+			__instance._darkBrambleSource.FadeOut(5f, OWAudioSource.FadeOutCompleteAction.STOP, 0f);
+		}
+
+		return false;
+	}
 }

@@ -21,32 +21,30 @@ public static class DebugLog
 			message = $"[{ProcessInstanceId}] " + message;
 		}
 
+		var @this = QSBCore.Helper != null ? QSBCore.Helper.Console : ModConsole.OwmlConsole;
+		var Logger = @this.GetValue<IModLogger>("Logger");
+		var _socket = @this.GetValue<IModSocket>("_socket");
 		// copied from https://github.com/ow-mods/owml/blob/master/src/OWML.Logging/ModSocketOutput.cs#L33
+		Logger?.Log($"{type}: {message}");
+
+		_socket.WriteToSocket(new ModSocketMessage
 		{
-			var Logger = ModConsole.OwmlConsole.GetValue<IModLogger>("Logger");
-			var _socket = ModConsole.OwmlConsole.GetValue<IModSocket>("_socket");
+			SenderName = "QSB",
+			SenderType = GetCallingType(),
+			Type = type,
+			Message = message
+		});
 
-			Logger?.Log($"{type}: {message}");
-
-			_socket.WriteToSocket(new ModSocketMessage
-			{
-				SenderName = "QSB",
-				SenderType = GetCallingType(),
-				Type = type,
-				Message = message
-			});
-
-			if (type == MessageType.Fatal)
-			{
-				_socket.Close();
-				Process.GetCurrentProcess().Kill();
-			}
+		if (type == MessageType.Fatal)
+		{
+			_socket.Close();
+			Process.GetCurrentProcess().Kill();
 		}
 	}
 
 	public static void DebugWrite(string message, MessageType type = MessageType.Message)
 	{
-		if (QSBCore.DebugSettings.DebugMode)
+		if (QSBCore.Helper == null || QSBCore.DebugSettings.DebugMode)
 		{
 			ToConsole(message, type);
 		}

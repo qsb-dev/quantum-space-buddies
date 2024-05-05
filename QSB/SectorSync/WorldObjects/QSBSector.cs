@@ -78,7 +78,7 @@ public class QSBSector : WorldObject<Sector>
 
 	public float GetScore(OWRigidbody rigidbody)
 	{
-		var sqrDistance = (Transform.position - rigidbody.GetPosition()).sqrMagnitude;
+		var sqrDistance = (AttachedObject._triggerRoot.transform.position - rigidbody.GetPosition()).sqrMagnitude;
 		var radius = GetRadius();
 		var sqrVelocity = GetSqrVelocity(rigidbody);
 

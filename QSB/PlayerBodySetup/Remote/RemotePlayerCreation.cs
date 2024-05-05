@@ -1,4 +1,5 @@
-﻿using QSB.Audio;
+﻿using QSB.Animation.Player;
+using QSB.Audio;
 using QSB.EchoesOfTheEye.LightSensorSync;
 using QSB.Player;
 using QSB.RoastingSync;
@@ -54,6 +55,7 @@ public static class RemotePlayerCreation
 		player.ThrusterLightTracker = player.Body.GetComponentInChildren<ThrusterLightTracker>();
 		player.FluidDetector = REMOTE_PlayerDetector.GetComponent<RemotePlayerFluidDetector>();
 		player.RulesetDetector = REMOTE_PlayerDetector.GetComponent<RemotePlayerRulesetDetector>();
+		player.HelmetAnimator = REMOTE_Traveller_HEA_Player_v2.GetComponent<HelmetAnimator>();
 
 		player.AnimationSync.InitRemote(REMOTE_Traveller_HEA_Player_v2.transform);
 

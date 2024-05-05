@@ -4,8 +4,10 @@ using OWML.Common;
 using QSB.Player;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -68,21 +70,6 @@ public static class Extensions
 	#endregion
 
 	#region C#
-
-	public static void SafeInvoke(this MulticastDelegate multicast, params object[] args)
-	{
-		foreach (var del in multicast.GetInvocationList())
-		{
-			try
-			{
-				del.DynamicInvoke(args);
-			}
-			catch (TargetInvocationException ex)
-			{
-				DebugLog.ToConsole($"Error invoking delegate! {ex.InnerException}", MessageType.Error);
-			}
-		}
-	}
 
 	public static float Map(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo, bool clamp)
 	{
@@ -163,30 +150,21 @@ public static class Extensions
 
 	public static bool IsInRange<T>(this IList<T> list, int index) => index >= 0 && index < list.Count;
 
-	public static void RaiseEvent<T>(this T instance, string eventName, params object[] args)
+	public static IEnumerable<Type> GetDerivedTypes(this Type type)
 	{
-		const BindingFlags flags = BindingFlags.Instance
-			| BindingFlags.Static
-			| BindingFlags.Public
-			| BindingFlags.NonPublic
-			| BindingFlags.DeclaredOnly;
-		if (typeof(T)
-				.GetField(eventName, flags)?
-				.GetValue(instance) is not MulticastDelegate multiDelegate)
+		var assemblies = QSBCore.Addons.Values
+			.Select(x => x.GetType().Assembly)
+			.Append(type.Assembly);
+
+		if (QSBCore.QSBNHAssembly != null)
 		{
-			return;
+			assemblies = assemblies.Append(QSBCore.QSBNHAssembly);
 		}
 
-		multiDelegate.SafeInvoke(args);
-	}
-
-	public static IEnumerable<Type> GetDerivedTypes(this Type type) =>
-		QSBCore.Addons.Values
-			.Select(x => x.GetType().Assembly)
-			.Append(type.Assembly)
-			.SelectMany(x => x.GetTypes())
+		return assemblies.SelectMany(x => x.GetTypes())
 			.Where(x => !x.IsInterface && !x.IsAbstract && type.IsAssignableFrom(x))
 			.OrderBy(x => x.FullName);
+	}
 
 	public static Guid ToGuid(this int value)
 	{
@@ -235,6 +213,45 @@ public static class Extensions
 		}
 
 		return sb.ToString();
+	}
+
+	public static string GetMD5Hash(this string input)
+	{
+		using var md5 = System.Security.Cryptography.MD5.Create();
+
+		var bytes = Encoding.ASCII.GetBytes(input);
+		var hashBytes = md5.ComputeHash(bytes);
+
+		var sb = new StringBuilder();
+		for (var i = 0; i < hashBytes.Length; i++)
+		{
+			sb.Append(hashBytes[i].ToString("X2"));
+		}
+
+		return sb.ToString();
+	}
+
+	/// <summary>
+	/// only works for c# serializable objects
+	/// </summary>
+	public static byte[] ToBytes(this object obj)
+	{
+		using var ms = new MemoryStream();
+		var bf = new BinaryFormatter();
+		bf.Serialize(ms, obj);
+		var bytes = ms.ToArray();
+		return bytes;
+	}
+
+	/// <summary>
+	/// only works for c# serializable objects
+	/// </summary>
+	public static object ToObject(this byte[] bytes)
+	{
+		using var ms = new MemoryStream(bytes);
+		var bf = new BinaryFormatter();
+		var obj = bf.Deserialize(ms);
+		return obj;
 	}
 
 	#endregion

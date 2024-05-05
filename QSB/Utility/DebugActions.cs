@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using OWML.Utils;
 using QSB.EchoesOfTheEye.DreamLantern;
 using QSB.EchoesOfTheEye.DreamLantern.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
@@ -10,7 +11,9 @@ using QSB.ShipSync;
 using QSB.Utility.Messages;
 using QSB.WorldSync;
 using System;
+using System.Collections;
 using System.Linq;
+using QSB.EchoesOfTheEye.RaftSync.WorldObjects;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,7 +21,7 @@ namespace QSB.Utility;
 
 public class DebugActions : MonoBehaviour, IAddComponentOnStart
 {
-	public static Type WorldObjectSelection = typeof(QSBSocketedQuantumObject);
+	public static Type WorldObjectSelection = typeof(QSBRaft);
 
 	private static void GoToVessel()
 	{
@@ -170,7 +173,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 					var dreamLanternItem = QSBWorldSync.GetWorldObjects<QSBDreamLanternItem>().First(x =>
 						x.AttachedObject._lanternType == DreamLanternType.Functioning &&
 						QSBPlayerManager.PlayerList.All(y => y.HeldItem != x) &&
-						!x.AttachedObject.GetLanternController().IsLit()
+						!x.AttachedObject.GetLanternController().IsLit() // lit = someone else is holding. backup in case held item isnt initial state synced
 					).AttachedObject;
 					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
 				}
@@ -200,7 +203,10 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad4].wasPressedThisFrame)
 		{
-			DamageShipElectricalSystem();
+			if (QSBCore.IsHost)
+			{
+				StartCoroutine(SendPacketLossTest());
+			}
 		}
 
 		if (Keyboard.current[Key.Numpad5].wasPressedThisFrame)
@@ -240,6 +246,24 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 		if (Keyboard.current[Key.Numpad0].wasPressedThisFrame)
 		{
 			RespawnManager.Instance.RespawnSomePlayer();
+		}
+	}
+
+	const int MAX_MESSAGES = 200;
+
+	int currentMessage = 1;
+
+	public static int TotalMessages;
+
+	IEnumerator SendPacketLossTest()
+	{
+		currentMessage = 1;
+		DebugLog.DebugWrite($"STARTING DROPPED MESSAGE TEST...");
+		while (currentMessage <= MAX_MESSAGES)
+		{
+			new PacketLossTestMessage().Send();
+			currentMessage++;
+			yield return new WaitForSeconds(0.1f);
 		}
 	}
 }

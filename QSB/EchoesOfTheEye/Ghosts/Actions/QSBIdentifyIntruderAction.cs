@@ -260,7 +260,7 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 				{
 					_controller.SetLanternConcealed(false, true);
 					_controller.ChangeLanternFocus(1f, 2f);
-					_controller.FaceNodeList(IdentifyIntruderAction.s_nodesToSpotlight, num, TurnSpeed.MEDIUM, 1f, false);
+					_controller.FaceNodeList(s_nodesToSpotlight, num, TurnSpeed.MEDIUM, 1f, false);
 					return;
 				}
 			}
@@ -291,9 +291,9 @@ public class QSBIdentifyIntruderAction : QSBGhostAction
 		{
 			if (Vector3.Angle(node.neighbors[i].localPosition - localPosition, ignoreDirection) >= 45f)
 			{
-				IdentifyIntruderAction.s_nodesToSpotlight[num] = node.neighbors[i];
+				s_nodesToSpotlight[num] = node.neighbors[i];
 				num++;
-				if (num == IdentifyIntruderAction.s_nodesToSpotlight.Length)
+				if (num == s_nodesToSpotlight.Length)
 				{
 					break;
 				}

@@ -6,6 +6,7 @@ using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.Utility;
+using QSB.WorldSync.Messages;
 using System;
 using UnityEngine;
 
@@ -30,6 +31,11 @@ public class AnimationSync : PlayerSyncObject
 		InvisibleAnimator = gameObject.GetRequiredComponent<Animator>();
 		NetworkAnimator = gameObject.GetRequiredComponent<NetworkAnimator>();
 		NetworkAnimator.enabled = false;
+	}
+
+	protected void OnDestroy()
+	{
+		GlobalMessenger.RemoveListener("EnableBigHeadMode", new Callback(OnEnableBigHeadMode));
 	}
 
 	public void Reset() => InSuitedUpState = false;
@@ -87,6 +93,8 @@ public class AnimationSync : PlayerSyncObject
 
 		Delay.RunWhen(() => Player.CameraBody != null,
 			() => body.GetComponent<PlayerHeadRotationSync>().Init(Player.CameraBody.transform));
+
+		GlobalMessenger.AddListener("EnableBigHeadMode", new Callback(OnEnableBigHeadMode));
 	}
 
 	private void InitAccelerationSync()
@@ -94,6 +102,12 @@ public class AnimationSync : PlayerSyncObject
 		Player.JetpackAcceleration = GetComponent<JetpackAccelerationSync>();
 		var thrusterModel = isOwned ? Locator.GetPlayerBody().GetComponent<ThrusterModel>() : null;
 		Player.JetpackAcceleration.Init(thrusterModel);
+	}
+
+	private void OnEnableBigHeadMode()
+	{
+		var bone = VisibleAnimator.GetBoneTransform(HumanBodyBones.Head);
+		bone.localScale = new Vector3(2.5f, 2.5f, 2.5f);
 	}
 
 	public void SetSuitState(bool suitedUp)

@@ -9,6 +9,7 @@ using QSB.WorldSync;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -23,7 +24,6 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	private Transform _textChat;
 	private InputField _inputField;
 	private Material _markerMaterial;
-	private bool _ready;
 
 	public static Sprite UnknownSprite;
 	public static Sprite DeadSprite;
@@ -41,6 +41,9 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	public static Sprite WhiteHole;
 
 	public static readonly ListStack<HUDIcon> HUDIconStack = new(true);
+
+	public class ChatEvent : UnityEvent<string, uint> { }
+	public static readonly ChatEvent OnChatMessageEvent = new();
 
 	private void Start()
 	{
@@ -65,15 +68,10 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		Interloper = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_interloper.png");
 		WhiteHole = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_whitehole.png");
 		SpaceSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_space.png");
-
-		QSBSceneManager.OnPostSceneLoad += (OWScene old, OWScene newScene) =>
-		{
-			_ready = false;
-		};
 	}
 
-	private const int LINE_COUNT = 11;
-	private const int CHAR_COUNT = 41;
+	private const int LINE_COUNT = 10;
+	private const int CHAR_COUNT = 33;
 	private const float FADE_DELAY = 5f;
 	private const float FADE_TIME = 2f;
 
@@ -87,13 +85,13 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	// perks of being a qsb dev :-)
 	public void WriteSystemMessage(string message, Color color)
 	{
-		WriteMessage(message, color);
+		WriteMessage($"QSB: {message}", color);
+		OnChatMessageEvent.Invoke(message, uint.MaxValue);
 	}
 
 	public void WriteMessage(string message, Color color)
 	{
-		// dont write messages when not ready
-		if (!_ready)
+		if (!QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}
@@ -117,7 +115,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			_messages.PopFromBack();
 		}
 
-		var currentLineIndex = 10;
+		var currentLineIndex = LINE_COUNT - 1;
 
 		foreach (var msg in _messages.Reverse())
 		{
@@ -285,7 +283,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			rect.anchorMax = new Vector2(1, 0.5f);
 			rect.sizeDelta = new Vector2(100, 100);
 			rect.anchoredPosition3D = new Vector3(-267, 0, 0);
-			rect.localRotation = Quaternion.Euler(0, 55, 0);
+			rect.localRotation = Quaternion.identity;
 			rect.localScale = Vector3.one;
 		});
 
@@ -327,8 +325,6 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		_lines.Clear();
 		_messages.Clear();
 		_textChat.GetComponent<CanvasGroup>().alpha = 0;
-
-		_ready = true;
 	}
 
 	public void UpdateMinimapMarkers(Minimap minimap)

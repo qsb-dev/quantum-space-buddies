@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
-using QSB.Utility;
+using QSB.Utility.Deterministic;
 using QSB.WorldSync;
 using System.Collections.Generic;
 using System.Linq;
