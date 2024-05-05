@@ -108,6 +108,7 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
+		WriteLine(1, $"IsHost : {QSBCore.IsHost}");
 		WriteLine(1, $"HasWokenUp : {QSBWorldSync.AllObjectsReady}");
 		if (WakeUpSync.LocalInstance != null)
 		{
