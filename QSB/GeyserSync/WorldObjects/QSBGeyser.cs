@@ -26,9 +26,6 @@ public class QSBGeyser : WorldObject<GeyserController>
 		}
 	}
 
-	public override void SendInitialState(uint to) =>
-		this.SendMessage(new GeyserMessage(AttachedObject._isActive) { To = to });
-
 	private void OnActivate() => this.SendMessage(new GeyserMessage(true));
 	private void OnDeactivate() => this.SendMessage(new GeyserMessage(false));
 

@@ -21,6 +21,8 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 {
 	public static MenuManager Instance;
 
+	public bool WillBeHost;
+
 	private PopupMenu OneButtonInfoPopup;
 	private PopupMenu TwoButtonInfoPopup;
 	private bool _addedPauseLock;
@@ -561,8 +563,8 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private void PreHost()
 	{
-		var doesSingleplayerSaveExist = false;
-		var doesMultiplayerSaveExist = false;
+		bool doesSingleplayerSaveExist;
+		bool doesMultiplayerSaveExist;
 		if (!QSBCore.IsStandalone)
 		{
 			var manager = QSBMSStoreProfileManager.SharedInstance;
@@ -583,19 +585,19 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 			// start a new multiplayer save, or copy the singleplayer save
 			ExistingNewCopyPopup.EnableMenu(true);
 		}
-		else if (doesSingleplayerSaveExist && !doesMultiplayerSaveExist)
+		else if (doesSingleplayerSaveExist)
 		{
 			DebugLog.DebugWrite("CASE 2 - Only a singleplayer save exists.");
 			// ask if we want to start a new multiplayer save or copy the singleplayer save
 			NewCopyPopup.EnableMenu(true);
 		}
-		else if (!doesSingleplayerSaveExist && doesMultiplayerSaveExist)
+		else if (doesMultiplayerSaveExist)
 		{
 			DebugLog.DebugWrite("CASE 3 - Only multiplayer save exists.");
 			// ask if we want to use the existing multiplayer save or start a new one
 			ExistingNewPopup.EnableMenu(true);
 		}
-		else if (!doesSingleplayerSaveExist && !doesMultiplayerSaveExist)
+		else
 		{
 			DebugLog.DebugWrite("CASE 4 - Neither a singleplayer or a multiplayer save exists.");
 			// create a new multiplayer save - nothing to copy or load
@@ -606,6 +608,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private void Host(bool newMultiplayerSave)
 	{
 		QSBCore.IsInMultiplayer = true;
+		WillBeHost = true;
 
 		if (newMultiplayerSave)
 		{
@@ -704,6 +707,8 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 			Delay.RunWhen(() => PlayerTransformSync.LocalInstance,
 				() => new RequestGameStateMessage().Send());
 		}
+
+		Instance.WillBeHost = false;
 	}
 
 	public void OnKicked(string reason)

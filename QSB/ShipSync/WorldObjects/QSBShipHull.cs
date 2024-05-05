@@ -1,27 +1,11 @@
-﻿using OWML.Utils;
-using QSB.Messaging;
-using QSB.ShipSync.Messages.Hull;
 using QSB.Utility;
+﻿using OWML.Utils;
 using QSB.WorldSync;
 
 namespace QSB.ShipSync.WorldObjects;
 
 public class QSBShipHull : WorldObject<ShipHull>
 {
-	public override void SendInitialState(uint to)
-	{
-		if (AttachedObject._damaged)
-		{
-			this.SendMessage(new HullDamagedMessage { To = to });
-		}
-		else
-		{
-			this.SendMessage(new HullRepairedMessage { To = to });
-		}
-
-		this.SendMessage(new HullChangeIntegrityMessage(AttachedObject._integrity) { To = to });
-	}
-
 	public void SetDamaged()
 	{
 		if (AttachedObject._damaged)

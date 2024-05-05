@@ -1,10 +1,6 @@
-﻿using OWML.Utils;
-using QSB.Messaging;
-using QSB.OrbSync.Messages;
+using OWML.Utils;
 using QSB.OrbSync.TransformSync;
-using QSB.Utility;
 using QSB.Utility.LinkedWorldObject;
-using System;
 using UnityEngine;
 
 namespace QSB.OrbSync.WorldObjects;
@@ -15,13 +11,6 @@ public class QSBOrb : LinkedWorldObject<NomaiInterfaceOrb, NomaiOrbTransformSync
 
 	protected override GameObject NetworkObjectPrefab => QSBNetworkManager.singleton.OrbPrefab;
 	protected override bool SpawnWithServerOwnership => false;
-
-	public override void SendInitialState(uint to)
-	{
-		this.SendMessage(new OrbDragMessage(AttachedObject._isBeingDragged) { To = to });
-		var slotIndex = Array.IndexOf(AttachedObject._slots, AttachedObject._occupiedSlot);
-		this.SendMessage(new OrbSlotMessage(slotIndex, false) { To = to });
-	}
 
 	public void SetDragging(bool value)
 	{

@@ -16,9 +16,6 @@ public abstract class OwnedWorldObject<T> : WorldObject<T>, IOwnedWorldObject
 	public uint Owner { get; set; }
 	public abstract bool CanOwn { get; }
 
-	public override void SendInitialState(uint to) =>
-		((IOwnedWorldObject)this).SendMessage(new OwnedWorldObjectMessage(Owner) { To = to });
-
 	public override async UniTask Init(CancellationToken ct) =>
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
 

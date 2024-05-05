@@ -1,6 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using QSB.EchoesOfTheEye.LightSensorSync.Messages;
-using QSB.Messaging;
 using QSB.OwnershipSync;
 using QSB.Utility;
 using QSB.WorldSync;
@@ -21,19 +19,7 @@ public class QSBLightSensor : OwnedWorldObject<SingleLightSensor>
 	public Action OnDetectLocalLight;
 	public Action OnDetectLocalDarkness;
 
-
 	public override bool CanOwn => AttachedObject.enabled;
-
-	public override void SendInitialState(uint to)
-	{
-		base.SendInitialState(to);
-
-		this.SendMessage(new SetIlluminatedMessage(AttachedObject._illuminated) { To = to });
-		if (AttachedObject._illuminatingDreamLanternList != null)
-		{
-			this.SendMessage(new IlluminatingLanternsMessage(AttachedObject._illuminatingDreamLanternList) { To = to });
-		}
-	}
 
 	public override async UniTask Init(CancellationToken ct)
 	{

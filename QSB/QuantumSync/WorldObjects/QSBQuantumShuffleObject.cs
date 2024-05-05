@@ -2,13 +2,6 @@
 
 public class QSBQuantumShuffleObject : QSBQuantumObject<QuantumShuffleObject>
 {
-	public override void SendInitialState(uint to)
-	{
-		base.SendInitialState(to);
-
-		// todo SendInitialState
-	}
-
 	public void ShuffleObjects(int[] indexArray)
 	{
 		var shuffledObjects = AttachedObject._shuffledObjects;

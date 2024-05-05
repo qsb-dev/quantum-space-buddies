@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using QSB.Utility;
 using QSB.WorldSync;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -29,13 +28,6 @@ public class QSBMultiStateQuantumObject : QSBQuantumObject<MultiStateQuantumObje
 
 	public override string ReturnLabel()
 		=> $"{base.ReturnLabel()}StateIndex:{AttachedObject._stateIndex}";
-
-	public override void SendInitialState(uint to)
-	{
-		base.SendInitialState(to);
-
-		// todo SendInitialState
-	}
 
 	public void ChangeState(int newStateIndex)
 	{

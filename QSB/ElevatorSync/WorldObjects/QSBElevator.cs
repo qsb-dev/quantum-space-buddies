@@ -35,9 +35,6 @@ public class QSBElevator : WorldObject<Elevator>
 		originalAttachPosition = AttachedObject._attachPoint.transform.localPosition;
 	}
 
-	public override void SendInitialState(uint to) =>
-		this.SendMessage(new ElevatorMessage(AttachedObject._goingToTheEnd) { To = to });
-
 	public void RemoteCall(bool isGoingUp)
 	{
 		if (AttachedObject._goingToTheEnd == isGoingUp)

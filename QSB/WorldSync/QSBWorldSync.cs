@@ -116,11 +116,6 @@ public static class QSBWorldSync
 
 		AllObjectsReady = true;
 		DebugLog.DebugWrite("World Objects ready.", MessageType.Success);
-
-		if (!QSBCore.IsHost)
-		{
-			new RequestInitialStatesMessage().Send();
-		}
 	}
 
 	public static void RemoveWorldObjects()
@@ -157,7 +152,6 @@ public static class QSBWorldSync
 		foreach (var worldObject in WorldObjects)
 		{
 			worldObject.Try("removing", worldObject.OnRemoval);
-			RequestInitialStatesMessage.SendInitialState -= worldObject.SendInitialState;
 		}
 
 		WorldObjects.Clear();
@@ -212,15 +206,6 @@ public static class QSBWorldSync
 				// i.e. wait until Start has been called
 				Delay.RunNextFrame(() => BuildWorldObjects(loadScene).Forget());
 			}
-		};
-
-		RequestInitialStatesMessage.SendInitialState += to =>
-		{
-			DialogueConditions.ForEach(condition
-				=> new DialogueConditionMessage(condition.Key, condition.Value) { To = to }.Send());
-
-			ShipLogFacts.ForEach(fact
-				=> new RevealFactMessage(fact.Id, fact.SaveGame, false) { To = to }.Send());
 		};
 	}
 
@@ -455,7 +440,6 @@ public static class QSBWorldSync
 		}
 
 		WorldObjects.Add(worldObject);
-		RequestInitialStatesMessage.SendInitialState += worldObject.SendInitialState;
 
 		var task = UniTask.Create(async () =>
 		{

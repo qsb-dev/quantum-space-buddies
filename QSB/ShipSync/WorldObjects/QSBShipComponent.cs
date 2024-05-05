@@ -1,27 +1,11 @@
-﻿using OWML.Utils;
-using QSB.Messaging;
-using QSB.ShipSync.Messages.Component;
 using QSB.Utility;
+﻿using OWML.Utils;
 using QSB.WorldSync;
 
 namespace QSB.ShipSync.WorldObjects;
 
 public class QSBShipComponent : WorldObject<ShipComponent>
 {
-	public override void SendInitialState(uint to)
-	{
-		if (AttachedObject._damaged)
-		{
-			this.SendMessage(new ComponentDamagedMessage { To = to });
-		}
-		else
-		{
-			this.SendMessage(new ComponentRepairedMessage { To = to });
-		}
-
-		this.SendMessage(new ComponentRepairTickMessage(AttachedObject._repairFraction) { To = to });
-	}
-
 	public void SetDamaged()
 	{
 		if (AttachedObject._damaged)

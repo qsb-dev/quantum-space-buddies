@@ -1,23 +1,11 @@
-﻿using OWML.Utils;
-using QSB.Messaging;
 using QSB.Utility;
+﻿using OWML.Utils;
 using QSB.WorldSync;
-using QSB.ZeroGCaveSync.Messages;
 
 namespace QSB.ZeroGCaveSync.WorldObjects;
 
 public class QSBSatelliteNode : WorldObject<SatelliteNode>
 {
-	public override void SendInitialState(uint to)
-	{
-		if (!AttachedObject._damaged)
-		{
-			this.SendMessage(new SatelliteNodeRepairedMessage { To = to });
-		}
-
-		this.SendMessage(new SatelliteNodeRepairTickMessage(AttachedObject._repairFraction) { To = to });
-	}
-
 	public void SetRepaired()
 	{
 		if (!AttachedObject._damaged)

@@ -12,11 +12,6 @@ namespace QSB.EchoesOfTheEye.Prisoner.WorldObjects;
 
 public class QSBPrisonerBrain : WorldObject<PrisonerBrain>, IGhostObject
 {
-	public override void SendInitialState(uint to)
-	{
-		// todo SendInitialState
-	}
-
 	public override async UniTask Init(CancellationToken ct)
 	{
 		Start();

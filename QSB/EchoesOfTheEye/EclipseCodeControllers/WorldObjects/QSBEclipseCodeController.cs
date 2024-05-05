@@ -11,12 +11,6 @@ public class QSBEclipseCodeController : WorldObject<EclipseCodeController4>
 {
 	public PlayerInfo PlayerInControl;
 
-	public override void SendInitialState(uint to)
-	{
-		this.SendMessage(new InitialStateMessage(AttachedObject) { To = to });
-		this.SendMessage(new UseControllerMessage(PlayerInControl?.PlayerId ?? 0) { To = to });
-	}
-
 	public override async UniTask Init(CancellationToken ct)
 	{
 		QSBPlayerManager.OnRemovePlayer += OnPlayerLeave;
