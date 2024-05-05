@@ -66,6 +66,11 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 	public float GetTimeDifference()
 	{
+		if (QSBCore.IsHost)
+		{
+			return 0f;
+		}
+
 		var myTime = Time.timeSinceLevelLoad;
 		return myTime - _serverTime;
 	}
@@ -114,6 +119,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 		CurrentState = State.Loaded;
 		if (QSBCore.IsHost)
 		{
+			_serverTime = Time.timeSinceLevelLoad;
 			SendServerTime();
 		}
 		else
@@ -160,8 +166,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		var myTime = Time.timeSinceLevelLoad;
-		var diff = myTime - _serverTime;
+		var diff = GetTimeDifference();
 
 		if (ServerStateManager.Instance.GetServerState() is not (ServerState.InSolarSystem or ServerState.InEye))
 		{
@@ -188,6 +193,12 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 	private void StartFastForwarding(FastForwardReason reason)
 	{
+		if (QSBCore.IsHost)
+		{
+			DebugLog.ToConsole($"Tried to fast-forward as server??? What???? _serverTime = {_serverTime}, GetTimeDifference() = {GetTimeDifference()}", MessageType.Error);
+			return;
+		}
+
 		if (CurrentState == State.FastForwarding)
 		{
 			TimeSyncUI.TargetTime = _serverTime;
@@ -276,13 +287,11 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 
 		if (ServerStateManager.Instance == null)
 		{
-			DebugLog.ToConsole($"Warning - ServerStateManager.Instance is null!", MessageType.Warning);
 			return;
 		}
 
 		if (QSBPlayerManager.LocalPlayer == null)
 		{
-			DebugLog.ToConsole($"Warning - LocalPlayer is null!", MessageType.Warning);
 			return;
 		}
 

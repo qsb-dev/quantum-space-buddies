@@ -58,7 +58,7 @@ public class QSBCore : ModBehaviour
 	public static AssetBundle NetworkAssetBundle { get; private set; }
 	public static AssetBundle ConversationAssetBundle { get; private set; }
 	public static AssetBundle HUDAssetBundle { get; private set; }
-	public static bool IsHost => NetworkServer.active;
+	public static bool IsHost => NetworkServer.active || (IsInMultiplayer && MenuManager.Instance.WillBeHost);
 	public static bool IsInMultiplayer;
 	public static string QSBVersion => Helper.Manifest.Version;
 	public static string GameVersion =>

@@ -11,6 +11,7 @@ using QSB.TimeSync;
 using QSB.WorldSync;
 using System;
 using System.Linq;
+using QSB.Menus;
 using UnityEngine;
 
 namespace QSB.Utility;
@@ -108,7 +109,7 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			return;
 		}
 
-		WriteLine(1, $"IsHost : {QSBCore.IsHost}");
+		WriteLine(1, $"IsHost : {QSBCore.IsHost} (WillBeHost : {(MenuManager.Instance != null ? MenuManager.Instance.WillBeHost : "MenuManager null")})");
 		WriteLine(1, $"HasWokenUp : {QSBWorldSync.AllObjectsReady}");
 		if (WakeUpSync.LocalInstance != null)
 		{
