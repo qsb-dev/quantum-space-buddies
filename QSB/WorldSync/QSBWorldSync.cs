@@ -149,6 +149,11 @@ public static class QSBWorldSync
 
 		GameReset();
 
+		foreach (var worldObject in WorldObjects)
+		{
+			worldObject.Try("removing", worldObject.OnRemoval);
+		}
+
 		WorldObjects.Clear();
 		UnityObjectsToWorldObjects.Clear();
 
