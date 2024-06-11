@@ -16,8 +16,6 @@ Spoilers within!
 
 ## Installation
 
-### Easy installation (recommended)
-
 - [Install the Outer Wilds Mod Manager](https://outerwildsmods.com/mod-manager/)
 - Install Quantum Space Buddies from the mod list displayed in the application
 
@@ -152,7 +150,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 
 ## License and legal stuff
 
-Copyright (C) 2020 - 2023 : 
+Copyright (C) 2020 - 2024 : 
 - Henry Pointer (_nebula or misternebula)
 - Will Corby (JohnCorby)
 - Aleksander Waage (AmazingAlek)

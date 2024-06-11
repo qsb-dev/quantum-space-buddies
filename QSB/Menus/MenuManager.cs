@@ -50,6 +50,8 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	private GameObject _choicePopupPrefab;
 
+	public bool WillBeHost;
+
 	public void Start()
 	{
 		Instance = this;
@@ -606,6 +608,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private void Host(bool newMultiplayerSave)
 	{
 		QSBCore.IsInMultiplayer = true;
+		WillBeHost = true;
 
 		if (newMultiplayerSave)
 		{
@@ -648,7 +651,11 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 				LoadGame(PlayerData.GetWarpedToTheEye());
 				// wait until scene load and then wait until Start has ran
 				// why is this done? GameStateMessage etc works on title screen since nonhost has to deal with that
-				Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
+				Delay.RunWhen(() => TimeLoop._initialized, () =>
+				{
+					QSBNetworkManager.singleton.StartHost();
+					Delay.RunWhen(() => NetworkServer.active, () => WillBeHost = false);
+				});
 			};
 
 			OpenInfoPopup(string.Format(QSBLocalization.Current.CopySteamIDToClipboard, steamId)
@@ -660,7 +667,11 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 			LoadGame(PlayerData.GetWarpedToTheEye());
 			// wait until scene load and then wait until Start has ran
 			// why is this done? GameStateMessage etc works on title screen since nonhost has to deal with that
-			Delay.RunWhen(() => TimeLoop._initialized, QSBNetworkManager.singleton.StartHost);
+			Delay.RunWhen(() => TimeLoop._initialized, () =>
+			{
+				QSBNetworkManager.singleton.StartHost();
+				Delay.RunWhen(() => NetworkServer.active, () => WillBeHost = false);
+			});
 		}
 	}
 
