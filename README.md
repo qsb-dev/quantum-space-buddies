@@ -128,6 +128,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 - [SakuradaYuki](https://github.com/SakuradaYuki) and [isrecalpear](https://github.com/isrecalpear) - Chinese translation.
 - [poleshe](https://github.com/poleshe) - Spanish translation.
 - [Deniz](https://github.com/dumbdeniz) - Turkish translation.
+- [Akasha0513](https://github.com/Akasha0513) - Korean translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.
