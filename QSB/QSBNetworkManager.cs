@@ -80,6 +80,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
 			// KCP uses milliseconds
 			_kcpTransport.Timeout = QSBCore.DebugSettings.Timeout * 1000;
+			_kcpTransport.Port = QSBCore.KcpPort;
 		}
 
 		{
@@ -161,6 +162,13 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 	public static void UpdateTransport()
 	{
+		if (_kcpTransport == null)
+		{
+			return;
+		}
+
+		_kcpTransport.Port = QSBCore.KcpPort;
+
 		if (QSBCore.IsInMultiplayer)
 		{
 			return;
