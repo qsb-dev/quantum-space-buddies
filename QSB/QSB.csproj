@@ -75,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.15.1018" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.13.0" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.14.0" IncludeAssets="compile" />
     <Reference Include="..\Lib\*.dll" />
     <ProjectReference Include="..\FizzySteamworks\FizzySteamworks.csproj" />
     <ProjectReference Include="..\SteamRerouter\SteamRerouter.csproj" />
