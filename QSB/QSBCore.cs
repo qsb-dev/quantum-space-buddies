@@ -66,6 +66,7 @@ public class QSBCore : ModBehaviour
 		Application.version.Split('.').Take(3).Join(delimiter: ".");
 	public static bool DLCInstalled => EntitlementsManager.IsDlcOwned() == EntitlementsManager.AsyncOwnershipStatus.Owned;
 	public static bool UseKcpTransport { get; private set; }
+	public static ushort KcpPort { get; private set; } = 7777;
 	public static bool ShowPlayerNames { get; private set; }
 	public static bool ShipDamage { get; private set; }
 	public static bool ShowExtraHUDElements { get; private set; }
@@ -406,6 +407,8 @@ public class QSBCore : ModBehaviour
 	public override void Configure(IModConfig config)
 	{
 		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport") || DebugSettings.AutoStart;
+		var foundValue = config.GetSettingsValue<int>("kcpPort");
+		KcpPort = (ushort)Mathf.Clamp(foundValue, ushort.MinValue, ushort.MaxValue);
 		QSBNetworkManager.UpdateTransport();
 
 		DefaultServerIP = config.GetSettingsValue<string>("defaultServerIP");

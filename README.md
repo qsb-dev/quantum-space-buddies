@@ -40,7 +40,7 @@ Spoilers within!
 ## Frequently Asked Questions
 
 ### I keep timing out when trying to connect!
-Check the mod settings for "Use KCP Transport". You have to forward port 7777 as TCP/UDP, or use Hamachi. ***All players must either be using KCP, or not using KCP.***
+Check the mod settings for "Use KCP Transport". You have to forward port 7777 as TCP/UDP (or a custom port number, which can be set in the mod settings), or use Hamachi. ***All players must either be using KCP, or not using KCP.***
 
 ### Why does SpaceWar show up in my Steam library?
 This is for players who own the game on Epic or Xbox. Steam networking only works if you own the game on Steam, so we have to pretend to be SpaceWar (which every Steam user owns) so everyone can play.
@@ -128,6 +128,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 - [SakuradaYuki](https://github.com/SakuradaYuki) and [isrecalpear](https://github.com/isrecalpear) - Chinese translation.
 - [poleshe](https://github.com/poleshe) - Spanish translation.
 - [Deniz](https://github.com/dumbdeniz) - Turkish translation.
+- [Akasha0513](https://github.com/Akasha0513) - Korean translation.
 
 ### Special Thanks
 - Thanks to Logan Ver Hoef for help with the game code, and for helping make the damn game in the first place.
