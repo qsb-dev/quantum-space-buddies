@@ -32,11 +32,21 @@ public class TimePatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(OWTime), nameof(OWTime.Pause))]
-	public static bool StopPausing(OWTime.PauseType pauseType)
-		=> pauseType
-			is OWTime.PauseType.Initializing
+	public static bool OWTime_Pause(ref OWTime.PauseType pauseType)
+	{
+		if (pauseType is OWTime.PauseType.Initializing
 			or OWTime.PauseType.Streaming
-			or OWTime.PauseType.Loading;
+			or OWTime.PauseType.Loading)
+		{
+			return true;
+		}
+		else
+		{
+			// stop NomaiVR from pausing manually grrrrrrrrrrr
+			pauseType = OWTime.PauseType.Menu;
+			return false;
+		}
+	}
 
 	[HarmonyPostfix]
 	[HarmonyPatch(typeof(SubmitActionSkipToNextLoop), nameof(SubmitActionSkipToNextLoop.AdvanceToNewTimeLoop))]
