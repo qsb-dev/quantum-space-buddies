@@ -32,7 +32,7 @@ public class TimePatches : QSBPatch
 
 	[HarmonyPrefix]
 	[HarmonyPatch(typeof(OWTime), nameof(OWTime.Pause))]
-	public static bool OWTime_Pause(ref OWTime.PauseType pauseType)
+	public static bool StopPausing(ref OWTime.PauseType pauseType)
 	{
 		if (pauseType is OWTime.PauseType.Initializing
 			or OWTime.PauseType.Streaming
