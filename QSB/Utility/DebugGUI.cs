@@ -209,6 +209,8 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 				WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
 				WriteLine(2, $"   - Local Position : {player.Body.transform.localPosition}");
 				WriteLine(2, $"   - Position : {player.Body.transform.position}");
+
+				WriteLine(2, $" - Entangled Object: {(player.EntangledObject == null ? "NULL" : player.EntangledObject.Name)}");
 			}
 		}
 

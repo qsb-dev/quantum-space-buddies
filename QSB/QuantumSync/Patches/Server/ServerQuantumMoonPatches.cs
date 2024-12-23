@@ -61,11 +61,9 @@ public class ServerQuantumMoonPatches : QSBPatch
 			return false;
 		}
 
-		if (__instance._stateIndex == 5 && anyPlayerInQM && !playersInQuantumMoon.All(x => x.EntangledObject != null && x.EntangledObject.AttachedObject == __instance))
-		{
-			__result = false;
-			return false;
-		}
+		// Base code has a check here, but it's broken and does nothing.
+		// if (this._stateIndex == 5 && this._isPlayerInside && !this.IsPlayerEntangled())
+		// QuantumMoon overrides IsPlayerEntangled() to just return _isPlayerInside.
 
 		for (var i = 0; i < 10; i++)
 		{
