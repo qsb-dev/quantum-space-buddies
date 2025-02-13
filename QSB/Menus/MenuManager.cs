@@ -12,6 +12,7 @@ using Steamworks;
 using System;
 using System.Linq;
 using System.Text;
+using OWML.Common.Interfaces.Menus;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,18 +28,18 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 	// Pause menu only
 	private GameObject QuitButton;
-	private GameObject DisconnectButton;
+	private SubmitAction DisconnectButton;
 	private PopupMenu DisconnectPopup;
 
 	// title screen only
 	private GameObject ResumeGameButton;
 	private GameObject NewGameButton;
-	private Button HostButton;
-	private GameObject ConnectButton;
-	private PopupInputMenu ConnectPopup;
-	private FourChoicePopupMenu ExistingNewCopyPopup;
-	private ThreeChoicePopupMenu NewCopyPopup;
-	private ThreeChoicePopupMenu ExistingNewPopup;
+	private SubmitAction HostButton;
+	private SubmitAction ConnectButton;
+	private IOWMLPopupInputMenu ConnectPopup;
+	private IOWMLFourChoicePopupMenu ExistingNewCopyPopup;
+	private IOWMLThreeChoicePopupMenu NewCopyPopup;
+	private IOWMLThreeChoicePopupMenu ExistingNewPopup;
 	private Text _loadingText;
 	private StringBuilder _nowLoadingSB;
 	private const int _titleButtonIndex = 2;
@@ -126,33 +127,10 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 		HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuHost;
 		ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = QSBLocalization.Current.MainMenuConnect;
 		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.SteamID;
-		ConnectPopup.SetUpPopup(text, InputLibrary.menuConfirm, InputLibrary.cancel, new ScreenPrompt(QSBLocalization.Current.Connect), new ScreenPrompt(QSBLocalization.Current.Cancel), false);
-		ConnectPopup.SetInputFieldPlaceholderText(text);
-		ExistingNewCopyPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNewOrCopy,
-			InputLibrary.menuConfirm,
-			InputLibrary.confirm2,
-			InputLibrary.signalscope,
-			InputLibrary.cancel,
-			new ScreenPrompt(QSBLocalization.Current.ExistingSave),
-			new ScreenPrompt(QSBLocalization.Current.NewSave),
-			new ScreenPrompt(QSBLocalization.Current.CopySave),
-			new ScreenPrompt(QSBLocalization.Current.Cancel));
-
-		NewCopyPopup.SetUpPopup(QSBLocalization.Current.HostNewOrCopy,
-			InputLibrary.menuConfirm,
-			InputLibrary.confirm2,
-			InputLibrary.cancel,
-			new ScreenPrompt(QSBLocalization.Current.NewSave),
-			new ScreenPrompt(QSBLocalization.Current.CopySave),
-			new ScreenPrompt(QSBLocalization.Current.Cancel));
-
-		ExistingNewPopup.SetUpPopup(QSBLocalization.Current.HostExistingOrNew,
-			InputLibrary.menuConfirm,
-			InputLibrary.confirm2,
-			InputLibrary.cancel,
-			new ScreenPrompt(QSBLocalization.Current.ExistingSave),
-			new ScreenPrompt(QSBLocalization.Current.NewSave),
-			new ScreenPrompt(QSBLocalization.Current.Cancel));
+		ConnectPopup.SetText(text, text, QSBLocalization.Current.Connect, QSBLocalization.Current.Cancel);
+		ExistingNewCopyPopup.SetText(QSBLocalization.Current.HostExistingOrNewOrCopy, QSBLocalization.Current.ExistingSave, QSBLocalization.Current.NewSave, QSBLocalization.Current.CopySave, QSBLocalization.Current.Cancel);
+		NewCopyPopup.SetText(QSBLocalization.Current.HostNewOrCopy, QSBLocalization.Current.NewSave, QSBLocalization.Current.CopySave, QSBLocalization.Current.Cancel);
+		ExistingNewPopup.SetText(QSBLocalization.Current.HostExistingOrNew, QSBLocalization.Current.ExistingSave, QSBLocalization.Current.NewSave, QSBLocalization.Current.Cancel);
 	}
 
 	private void Update()
@@ -169,117 +147,6 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 			_nowLoadingSB.Append(num.ToString("P0"));
 			_loadingText.text = _nowLoadingSB.ToString();
 		}
-	}
-
-	public ThreeChoicePopupMenu CreateThreeChoicePopup(string message, string confirm1Text, string confirm2Text, string cancelText)
-	{
-		var newPopup = Instantiate(_choicePopupPrefab);
-
-		switch (LoadManager.GetCurrentScene())
-		{
-			case OWScene.TitleScreen:
-				newPopup.transform.parent = GameObject.Find("/TitleMenu/PopupCanvas").transform;
-				break;
-			case OWScene.SolarSystem:
-			case OWScene.EyeOfTheUniverse:
-				newPopup.transform.parent = GameObject.Find("/PauseMenu/PopupCanvas").transform;
-				break;
-		}
-
-		newPopup.transform.localPosition = Vector3.zero;
-		newPopup.transform.localScale = Vector3.one;
-		newPopup.GetComponentsInChildren<LocalizedText>().ForEach(Destroy);
-
-		var originalPopup = newPopup.GetComponent<PopupMenu>();
-
-		var ok1Button = originalPopup._confirmButton.gameObject;
-
-		var ok2Button = Instantiate(ok1Button, ok1Button.transform.parent);
-		ok2Button.transform.SetSiblingIndex(1);
-
-		var popup = newPopup.AddComponent<ThreeChoicePopupMenu>();
-		popup._labelText = originalPopup._labelText;
-		popup._cancelAction = originalPopup._cancelAction;
-		popup._ok1Action = originalPopup._okAction;
-		popup._ok2Action = ok2Button.GetComponent<SubmitAction>();
-		popup._cancelButton = originalPopup._cancelButton;
-		popup._confirmButton1 = originalPopup._confirmButton;
-		popup._confirmButton2 = ok2Button.GetComponent<ButtonWithHotkeyImageElement>();
-		popup._rootCanvas = originalPopup._rootCanvas;
-		popup._menuActivationRoot = originalPopup._menuActivationRoot;
-		popup._startEnabled = originalPopup._startEnabled;
-		popup._selectOnActivate = originalPopup._selectOnActivate;
-		popup._selectableItemsRoot = originalPopup._selectableItemsRoot;
-		popup._subMenus = originalPopup._subMenus;
-		popup._menuOptions = originalPopup._menuOptions;
-		popup.SetUpPopup(
-			message,
-			InputLibrary.menuConfirm,
-			InputLibrary.confirm2,
-			InputLibrary.cancel,
-			new ScreenPrompt(confirm1Text),
-			new ScreenPrompt(confirm2Text),
-			new ScreenPrompt(cancelText));
-		return popup;
-	}
-
-	public FourChoicePopupMenu CreateFourChoicePopup(string message, string confirm1Text, string confirm2Text, string confirm3Text, string cancelText)
-	{
-		var newPopup = Instantiate(_choicePopupPrefab);
-
-		switch (LoadManager.GetCurrentScene())
-		{
-			case OWScene.TitleScreen:
-				newPopup.transform.parent = GameObject.Find("/TitleMenu/PopupCanvas").transform;
-				break;
-			case OWScene.SolarSystem:
-			case OWScene.EyeOfTheUniverse:
-				newPopup.transform.parent = GameObject.Find("/PauseMenu/PopupCanvas").transform;
-				break;
-		}
-
-		newPopup.transform.localPosition = Vector3.zero;
-		newPopup.transform.localScale = Vector3.one;
-		newPopup.GetComponentsInChildren<LocalizedText>().ForEach(Destroy);
-
-		var originalPopup = newPopup.GetComponent<PopupMenu>();
-
-		var ok1Button = originalPopup._confirmButton.gameObject;
-
-		var ok2Button = Instantiate(ok1Button, ok1Button.transform.parent);
-		ok2Button.transform.SetSiblingIndex(1);
-
-		var ok3Button = Instantiate(ok1Button, ok1Button.transform.parent);
-		ok3Button.transform.SetSiblingIndex(2);
-
-		var popup = newPopup.AddComponent<FourChoicePopupMenu>();
-		popup._labelText = originalPopup._labelText;
-		popup._cancelAction = originalPopup._cancelAction;
-		popup._ok1Action = originalPopup._okAction;
-		popup._ok2Action = ok2Button.GetComponent<SubmitAction>();
-		popup._ok3Action = ok3Button.GetComponent<SubmitAction>();
-		popup._cancelButton = originalPopup._cancelButton;
-		popup._confirmButton1 = originalPopup._confirmButton;
-		popup._confirmButton2 = ok2Button.GetComponent<ButtonWithHotkeyImageElement>();
-		popup._confirmButton3 = ok3Button.GetComponent<ButtonWithHotkeyImageElement>();
-		popup._rootCanvas = originalPopup._rootCanvas;
-		popup._menuActivationRoot = originalPopup._menuActivationRoot;
-		popup._startEnabled = originalPopup._startEnabled;
-		popup._selectOnActivate = originalPopup._selectOnActivate;
-		popup._selectableItemsRoot = originalPopup._selectableItemsRoot;
-		popup._subMenus = originalPopup._subMenus;
-		popup._menuOptions = originalPopup._menuOptions;
-		popup.SetUpPopup(
-			message,
-			InputLibrary.menuConfirm,
-			InputLibrary.confirm2,
-			InputLibrary.signalscope,
-			InputLibrary.cancel,
-			new ScreenPrompt(confirm1Text),
-			new ScreenPrompt(confirm2Text),
-			new ScreenPrompt(confirm3Text),
-			new ScreenPrompt(cancelText));
-		return popup;
 	}
 
 	public void LoadGame(bool inEye)
@@ -342,7 +209,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 	private void CreateCommonPopups()
 	{
 		var text = QSBCore.UseKcpTransport ? QSBLocalization.Current.PublicIPAddress : QSBLocalization.Current.SteamID;
-		ConnectPopup = QSBCore.MenuApi.MakeInputFieldPopup(text, text, QSBLocalization.Current.Connect, QSBLocalization.Current.Cancel);
+		ConnectPopup = QSBCore.Helper.MenuHelper.PopupMenuManager.CreateInputFieldPopup(text, text, QSBLocalization.Current.Connect, QSBLocalization.Current.Cancel);
 		ConnectPopup.CloseMenuOnOk(false);
 		ConnectPopup.OnPopupConfirm += () =>
 		{
@@ -362,18 +229,19 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 			if (QSBCore.Helper.Interaction.ModExists("Raicuparta.NomaiVR"))
 			{
 				// ClearInputTextField is called AFTER OnActivateMenu
-				Delay.RunNextFrame(() => ConnectPopup._inputField.SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
+				Delay.RunNextFrame(() => ConnectPopup.GetInputField().SetTextWithoutNotify(GUIUtility.systemCopyBuffer));
 			}
 		};
 
-		OneButtonInfoPopup = QSBCore.MenuApi.MakeInfoPopup("", "");
+		OneButtonInfoPopup = QSBCore.Helper.MenuHelper.PopupMenuManager.CreateInfoPopup("", "");
 		OneButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
 
-		TwoButtonInfoPopup = QSBCore.MenuApi.MakeTwoChoicePopup("", "", "");
+		TwoButtonInfoPopup = QSBCore.Helper.MenuHelper.PopupMenuManager.CreateTwoChoicePopup("", "", "");
 		TwoButtonInfoPopup.OnPopupConfirm += () => OnCloseInfoPopup(true);
 		TwoButtonInfoPopup.OnPopupCancel += () => OnCloseInfoPopup(false);
 
-		ExistingNewCopyPopup = CreateFourChoicePopup(QSBLocalization.Current.HostExistingOrNewOrCopy,
+		ExistingNewCopyPopup = QSBCore.Helper.MenuHelper.PopupMenuManager.CreateFourChoicePopup(
+			QSBLocalization.Current.HostExistingOrNewOrCopy,
 			QSBLocalization.Current.ExistingSave,
 			QSBLocalization.Current.NewSave,
 			QSBLocalization.Current.CopySave,
@@ -399,7 +267,8 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 			Host(false);
 		};
 
-		NewCopyPopup = CreateThreeChoicePopup(QSBLocalization.Current.HostNewOrCopy,
+		NewCopyPopup = QSBCore.Helper.MenuHelper.PopupMenuManager.CreateThreeChoicePopup(
+			QSBLocalization.Current.HostNewOrCopy,
 			QSBLocalization.Current.NewSave,
 			QSBLocalization.Current.CopySave,
 			QSBLocalization.Current.Cancel);
@@ -423,7 +292,8 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 			Host(false);
 		};
 
-		ExistingNewPopup = CreateThreeChoicePopup(QSBLocalization.Current.HostExistingOrNew,
+		ExistingNewPopup = QSBCore.Helper.MenuHelper.PopupMenuManager.CreateThreeChoicePopup(
+			QSBLocalization.Current.HostExistingOrNew,
 			QSBLocalization.Current.ExistingSave,
 			QSBLocalization.Current.NewSave,
 			QSBLocalization.Current.Cancel);
@@ -431,7 +301,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 		ExistingNewPopup.OnPopupConfirm2 += () => Host(true);
 	}
 
-	private static void SetButtonActive(Button button, bool active)
+	private static void SetButtonActive(SubmitAction button, bool active)
 		=> SetButtonActive(button ? button.gameObject : null, active);
 
 	private static void SetButtonActive(GameObject button, bool active)
@@ -458,10 +328,10 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		CreateCommonPopups();
 
-		DisconnectPopup = QSBCore.MenuApi.MakeTwoChoicePopup(QSBLocalization.Current.DisconnectAreYouSure, QSBLocalization.Current.Yes, QSBLocalization.Current.No);
+		DisconnectPopup = QSBCore.Helper.MenuHelper.PopupMenuManager.CreateTwoChoicePopup(QSBLocalization.Current.DisconnectAreYouSure, QSBLocalization.Current.Yes, QSBLocalization.Current.No);
 		DisconnectPopup.OnPopupConfirm += Disconnect;
 
-		DisconnectButton = QSBCore.MenuApi.PauseMenu_MakeMenuOpenButton(QSBLocalization.Current.PauseMenuDisconnect, DisconnectPopup);
+		DisconnectButton = QSBCore.Helper.MenuHelper.PauseMenuManager.MakeMenuOpenButton(QSBLocalization.Current.PauseMenuDisconnect, DisconnectPopup, 0, true);
 
 		QuitButton = FindObjectOfType<PauseMenuManager>()._exitToMainMenuAction.gameObject;
 
@@ -479,7 +349,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 		var text = QSBCore.IsHost
 			? QSBLocalization.Current.PauseMenuStopHosting
 			: QSBLocalization.Current.PauseMenuDisconnect;
-		DisconnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = text;
+		QSBCore.Helper.MenuHelper.PauseMenuManager.SetButtonText(DisconnectButton, text);
 
 		var popupText = QSBCore.IsHost
 			? QSBLocalization.Current.StopHostingAreYouSure
@@ -502,10 +372,11 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 	{
 		CreateCommonPopups();
 
-		HostButton = QSBCore.MenuApi.TitleScreen_MakeSimpleButton(QSBLocalization.Current.MainMenuHost, _titleButtonIndex);
-		HostButton.onClick.AddListener(PreHost);
+		HostButton = QSBCore.Helper.MenuHelper.TitleMenuManager.CreateTitleButton(QSBLocalization.Current.MainMenuHost, _titleButtonIndex, true);
+		HostButton.OnSubmitAction += PreHost;
 
-		ConnectButton = QSBCore.MenuApi.TitleScreen_MakeMenuOpenButton(QSBLocalization.Current.MainMenuConnect, _titleButtonIndex + 1, ConnectPopup);
+		ConnectButton = QSBCore.Helper.MenuHelper.TitleMenuManager.CreateTitleButton(QSBLocalization.Current.MainMenuConnect, _titleButtonIndex + 1, true);
+		ConnectButton.OnSubmitAction += () => ConnectPopup.EnableMenu(true);
 
 		ResumeGameButton = GameObject.Find("MainMenuLayoutGroup/Button-ResumeGame");
 		NewGameButton = GameObject.Find("MainMenuLayoutGroup/Button-NewGame");
@@ -513,37 +384,6 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 		SetButtonActive(ConnectButton, true);
 		Delay.RunWhen(PlayerData.IsLoaded, () => SetButtonActive(ResumeGameButton, PlayerData.LoadLoopCount() > 1));
 		SetButtonActive(NewGameButton, true);
-
-		var mainMenuFontController = GameObject.Find("MainMenu").GetComponent<FontAndLanguageController>();
-		mainMenuFontController.AddTextElement(HostButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
-		mainMenuFontController.AddTextElement(ConnectButton.transform.GetChild(0).GetChild(1).GetComponent<Text>());
-
-		mainMenuFontController.AddTextElement(OneButtonInfoPopup._labelText, false);
-		mainMenuFontController.AddTextElement(OneButtonInfoPopup._confirmButton._buttonText, false);
-
-		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._labelText, false);
-		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._confirmButton._buttonText, false);
-		mainMenuFontController.AddTextElement(TwoButtonInfoPopup._cancelButton._buttonText, false);
-
-		mainMenuFontController.AddTextElement(ConnectPopup._labelText, false);
-		mainMenuFontController.AddTextElement(ConnectPopup._confirmButton._buttonText, false);
-		mainMenuFontController.AddTextElement(ConnectPopup._cancelButton._buttonText, false);
-
-		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._labelText, false);
-		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._confirmButton1._buttonText, false);
-		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._confirmButton2._buttonText, false);
-		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._confirmButton3._buttonText, false);
-		mainMenuFontController.AddTextElement(ExistingNewCopyPopup._cancelButton._buttonText, false);
-
-		mainMenuFontController.AddTextElement(NewCopyPopup._labelText, false);
-		mainMenuFontController.AddTextElement(NewCopyPopup._confirmButton1._buttonText, false);
-		mainMenuFontController.AddTextElement(NewCopyPopup._confirmButton2._buttonText, false);
-		mainMenuFontController.AddTextElement(NewCopyPopup._cancelButton._buttonText, false);
-
-		mainMenuFontController.AddTextElement(ExistingNewPopup._labelText, false);
-		mainMenuFontController.AddTextElement(ExistingNewPopup._confirmButton1._buttonText, false);
-		mainMenuFontController.AddTextElement(ExistingNewPopup._confirmButton2._buttonText, false);
-		mainMenuFontController.AddTextElement(ExistingNewPopup._cancelButton._buttonText, false);
 	}
 
 	private void Disconnect()

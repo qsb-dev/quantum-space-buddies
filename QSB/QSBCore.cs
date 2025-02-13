@@ -78,7 +78,6 @@ public class QSBCore : ModBehaviour
 	public static IProfileManager ProfileManager => IsStandalone
 		? QSBStandaloneProfileManager.SharedInstance
 		: QSBMSStoreProfileManager.SharedInstance;
-	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
 
 	private static string randomSkinType;
@@ -251,8 +250,6 @@ public class QSBCore : ModBehaviour
 
 		// init again to get addon patches
 		QSBPatchManager.Init();
-
-		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
 
 		LoadBundleAsync("qsb_network_big");
 		LoadBundleAsync("qsb_skins", request => BodyCustomizer.Instance.OnBundleLoaded(request.assetBundle));
