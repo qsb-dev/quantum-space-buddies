@@ -13,6 +13,7 @@ using System;
 using System.Linq;
 using QSB.Menus;
 using UnityEngine;
+using Newtonsoft.Json.Linq;
 
 namespace QSB.Utility;
 
@@ -186,31 +187,73 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 			WriteLine(2, $"Ready : {player.IsReady}");
 			WriteLine(2, $"Suited Up : {player.SuitedUp}");
 			WriteLine(2, $"In Suited Up State : {player.AnimationSync?.InSuitedUpState}");
-			WriteLine(2, $"InDreamWorld : {player.InDreamWorld}");
+			//WriteLine(2, $"InDreamWorld : {player.InDreamWorld}");
 
 			if (player.IsReady && QSBWorldSync.AllObjectsReady)
 			{
 				WriteLine(2, $"Illuminated : {player.LightSensor?.IsIlluminated()}");
 				var singleLightSensor = (SingleLightSensor)player.LightSensor;
 				// will be null for remote player light sensors
-				if (singleLightSensor?._lightSources != null)
+				/*if (singleLightSensor?._lightSources != null)
 				{
 					foreach (var item in singleLightSensor._lightSources)
 					{
 						WriteLine(2, $"- {item.GetLightSourceType()}");
 					}
-				}
+				}*/
 
 				var networkTransform = player.TransformSync;
 				var referenceSector = networkTransform.ReferenceSector;
 				var referenceTransform = networkTransform.ReferenceTransform;
 
-				WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", referenceSector == null ? Color.red : Color.white);
-				WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
-				WriteLine(2, $"   - Local Position : {player.Body.transform.localPosition}");
-				WriteLine(2, $"   - Position : {player.Body.transform.position}");
+				//WriteLine(2, $" - Ref. Sector : {(referenceSector == null ? "NULL" : referenceSector.Name)}", referenceSector == null ? Color.red : Color.white);
+				//WriteLine(2, $" - Ref. Transform : {(referenceTransform == null ? "NULL" : referenceTransform.name)}", referenceTransform == null ? Color.red : Color.white);
+				//WriteLine(2, $"   - Local Position : {player.Body.transform.localPosition}");
+				//WriteLine(2, $"   - Position : {player.Body.transform.position}");
 
-				WriteLine(2, $" - Entangled Object: {(player.EntangledObject == null ? "NULL" : player.EntangledObject.Name)}");
+				//WriteLine(2, $" - Entangled Object: {(player.EntangledObject == null ? "NULL" : player.EntangledObject.Name)}");
+
+				var visibleAnimator = player.AnimationSync.VisibleAnimator;
+				var invisibleAnimator = player.AnimationSync.InvisibleAnimator;
+				foreach (var param in visibleAnimator.parameters)
+				{
+					object value = null;
+					switch (param.type)
+					{
+						case AnimatorControllerParameterType.Bool:
+							value = visibleAnimator.GetBool(param.nameHash);
+							break;
+						case AnimatorControllerParameterType.Float:
+							value = visibleAnimator.GetFloat(param.nameHash);
+							break;
+						case AnimatorControllerParameterType.Int:
+							value = visibleAnimator.GetInteger(param.nameHash);
+							break;
+						case AnimatorControllerParameterType.Trigger:
+							value = visibleAnimator.GetBool(param.nameHash);
+							break;
+					}
+
+					//WriteLine(2, $"   - {param.name} | {param.type} | {value}");
+				}
+
+				WriteLine(2, $" - VISIBLE ANIMATOR");
+				for (var i = 0; i < visibleAnimator.layerCount; i++)
+				{
+					var layerName = visibleAnimator.GetLayerName(i);
+					var weight = visibleAnimator.GetLayerWeight(i);
+					WriteLine(2, $" - {layerName} : {weight}");
+
+					//var currentState = visibleAnimator.GetCurrentAnimatorStateInfo(i);
+					//WriteLine(2, $"   - Hash: {currentState.fullPathHash}");
+					//WriteLine(2, $"   - Speed: {currentState.speed}");
+					WriteLine(2, $"   - Clips:");
+					foreach (var item in visibleAnimator.GetCurrentAnimatorClipInfo(i))
+					{
+						WriteLine(2, $"      - Clip name: {item.clip.name}");
+						//WriteLine(2, $"      - Weight: {item.weight}");
+					}
+				}
 			}
 		}
 

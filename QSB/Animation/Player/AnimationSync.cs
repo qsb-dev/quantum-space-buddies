@@ -15,6 +15,14 @@ namespace QSB.Animation.Player;
 [UsedInUnityProject]
 public class AnimationSync : PlayerSyncObject
 {
+	public static int DropHeldItem = Animator.StringToHash("DropHeldItem");
+	public static int HoldLantern = Animator.StringToHash("HoldLantern");
+	public static int HoldSharedStone = Animator.StringToHash("HoldSharedStone");
+	public static int HoldScroll = Animator.StringToHash("HoldScroll");
+	public static int HoldWarpCore = Animator.StringToHash("HoldWarpCore");
+	public static int HoldAdvWarpCore = Animator.StringToHash("HoldAdvWarpCore");
+	public static int HoldItem = Animator.StringToHash("HoldItem");
+
 	private RuntimeAnimatorController _suitedAnimController;
 	private AnimatorOverrideController _unsuitedAnimController;
 	private GameObject _suitedGraphics;
@@ -208,5 +216,21 @@ public class AnimationSync : PlayerSyncObject
 
 		Mirror.RebuildFloatParams();
 		NetworkAnimator.Invoke("Awake");
+	}
+
+	public void PickUpItem(int animHash)
+	{
+		VisibleAnimator.SetTrigger(animHash);
+		VisibleAnimator.SetLayerWeight(2, 1);
+		InvisibleAnimator.SetTrigger(animHash);
+		InvisibleAnimator.SetLayerWeight(2, 1);
+	}
+
+	public void DropItem()
+	{
+		VisibleAnimator.SetTrigger(DropHeldItem);
+		VisibleAnimator.SetLayerWeight(2, 1);
+		InvisibleAnimator.SetTrigger(DropHeldItem);
+		InvisibleAnimator.SetLayerWeight(2, 1);
 	}
 }
