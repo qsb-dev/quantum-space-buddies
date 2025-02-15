@@ -44,6 +44,7 @@
   "WaitingForAllToDie": "Waiting for {0} player(s) to die...",
   "AttachToShip": "Attach to ship",
   "DetachFromShip": "Detach from ship",
+  "ModMismatch": "{0} installation state does not match. (Client:{1}, Server:{2})",
   "DeathMessages": {
     "Default": [
       "{0} died",

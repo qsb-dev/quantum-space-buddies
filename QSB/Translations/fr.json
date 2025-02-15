@@ -44,6 +44,7 @@
   "WaitingForAllToDie": "Attendez que {0} joueur(s) meurt/meurent...",
   "AttachToShip": "S'attacher à la fusée",
   "DetachFromShip": "Se détacher de la fusée",
+  "ModMismatch": "Les états d'installation du {0} ne correspondent pas. (Client:{1}, Serveur:{2})",
   "DeathMessages": {
     "Default": [
       "{0} est mort",

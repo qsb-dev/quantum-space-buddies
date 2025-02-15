@@ -43,6 +43,7 @@
   "WaitingForAllToDie": "等待剩余{0}人死亡……",
   "AttachToShip": "固定在飞船上",
   "DetachFromShip": "取消固定",
+  "ModMismatch": "{0} 安装状态不匹配。(客户端：{1}，服务器：{2}）。",
   "DeathMessages": {
     "Default": [
       "{0}死了",

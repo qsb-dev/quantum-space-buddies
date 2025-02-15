@@ -16,6 +16,7 @@ public class PlayerJoinMessage : QSBMessage
 	private string QSBVersion;
 	private string GameVersion;
 	private bool DlcInstalled;
+	private bool NewHorizonsInstalled;
 
 	private int[] AddonHashes;
 
@@ -25,6 +26,7 @@ public class PlayerJoinMessage : QSBMessage
 		QSBVersion = QSBCore.QSBVersion;
 		GameVersion = QSBCore.GameVersion;
 		DlcInstalled = QSBCore.DLCInstalled;
+		NewHorizonsInstalled = QSBCore.QSBNHAssembly != null;
 
 		AddonHashes = QSBCore.Addons.Keys
 			.Except(QSBCore.CosmeticAddons)
@@ -39,6 +41,7 @@ public class PlayerJoinMessage : QSBMessage
 		writer.Write(QSBVersion);
 		writer.Write(GameVersion);
 		writer.Write(DlcInstalled);
+		writer.Write(NewHorizonsInstalled);
 
 		writer.Write(AddonHashes);
 	}
@@ -50,6 +53,7 @@ public class PlayerJoinMessage : QSBMessage
 		QSBVersion = reader.ReadString();
 		GameVersion = reader.ReadString();
 		DlcInstalled = reader.Read<bool>();
+		NewHorizonsInstalled = reader.Read<bool>();
 
 		AddonHashes = reader.Read<int[]>();
 	}
@@ -101,6 +105,14 @@ public class PlayerJoinMessage : QSBMessage
 			{
 				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with addon mismatch. (Client:{AddonHashes.Join()}, Server:{addonHashes.Join()})", MessageType.Error);
 				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.AddonMismatch, AddonHashes.Length, addonHashes.Length)).Send();
+				return;
+			}
+
+			var nhInstalled = QSBCore.QSBNHAssembly != null;
+			if (NewHorizonsInstalled != nhInstalled)
+			{
+				DebugLog.ToConsole($"Error - Client {PlayerName} connecting with NH mismatch. (Client:{NewHorizonsInstalled}, Server:{nhInstalled})", MessageType.Error);
+				new PlayerKickMessage(From, string.Format(QSBLocalization.Current.ModMismatch, "New Horizons", NewHorizonsInstalled, nhInstalled)).Send();
 				return;
 			}
 		}
