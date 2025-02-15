@@ -10,7 +10,6 @@ public class APITestMod : ModBehaviour
 	public void Start()
 	{
 		var qsbAPI = ModHelper.Interaction.TryGetModApi<IQSBAPI>("Raicuparta.QuantumSpaceBuddies");
-		var menuFrameworkAPI = ModHelper.Interaction.TryGetModApi<IMenuAPI>("_nebula.MenuFramework");
 
 		LoadManager.OnCompleteSceneLoad += (oldScene, newScene) =>
 		{
@@ -19,7 +18,7 @@ public class APITestMod : ModBehaviour
 				return;
 			}
 
-			var button = menuFrameworkAPI.PauseMenu_MakeSimpleButton("QSB Api Test");
+			var button = ModHelper.MenuHelper.PauseMenuManager.MakeSimpleButton("QSB API Test", 0, false);
 
 			qsbAPI.OnPlayerJoin().AddListener((uint playerId) => ModHelper.Console.WriteLine($"{playerId} joined the game!", MessageType.Success));
 			qsbAPI.OnPlayerLeave().AddListener((uint playerId) => ModHelper.Console.WriteLine($"{playerId} left the game!", MessageType.Success));
@@ -29,7 +28,7 @@ public class APITestMod : ModBehaviour
 			qsbAPI.RegisterHandler<int>("apitest-int", MessageHandler);
 			qsbAPI.RegisterHandler<float>("apitest-float", MessageHandler);
 
-			button.onClick.AddListener(() =>
+			button.OnSubmitAction += () =>
 			{
 				ModHelper.Console.WriteLine("TESTING QSB API!");
 
@@ -57,7 +56,7 @@ public class APITestMod : ModBehaviour
 
 				qsbAPI.SendChatMessage("Non-system chat message", false, Color.white);
 				qsbAPI.SendChatMessage("System chat message", true, Color.cyan);
-			});
+			};
 		};
 	}
 
