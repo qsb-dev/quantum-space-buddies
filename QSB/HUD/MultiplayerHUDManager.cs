@@ -287,7 +287,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	{
 		AstroObject.Name.TimberHearth => "TIMBER_HEARTH",
 		AstroObject.Name.DreamWorld => "DREAMWORLD",
-		AstroObject.Name.RingWorld => "RINGWORLD",
+		AstroObject.Name.RingWorld => "INVISIBLE_PLANET", // mfw
 		AstroObject.Name.GiantsDeep => "GIANTS_DEEP",
 		AstroObject.Name.VolcanicMoon => "VOLCANIC_MOON",
 		AstroObject.Name.BrittleHollow => "BRITTLE_HOLLOW",
