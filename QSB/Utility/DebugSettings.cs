@@ -36,7 +36,7 @@ public class DebugSettings
 	/// Timeout in seconds
 	/// </summary>
 	[JsonProperty("timeout")]
-	public int Timeout = 25;
+	public int Timeout = 40;
 
 	[JsonProperty("debugMode")]
 	public bool DebugMode;
