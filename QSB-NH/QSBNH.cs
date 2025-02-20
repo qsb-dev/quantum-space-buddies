@@ -1,10 +1,15 @@
-﻿using Mirror;
+﻿using System.Reflection;
+using Mirror;
 using NewHorizons;
+using NewHorizons.Builder.ShipLog;
+using NewHorizons.Components.Orbital;
 using OWML.Common;
-using OWML.ModHelper;
 using QSB;
+using QSB.HUD;
+using QSB.Messaging;
 using QSB.Utility;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace QSBNH
 {
@@ -19,6 +24,48 @@ namespace QSBNH
 			Instance = this;
 			DebugLog.DebugWrite($"Start of QSB-NH compatibility code.", MessageType.Success);
 			NewHorizonsAPI = QSBCore.Helper.Interaction.TryGetModApi<INewHorizons>("xen.NewHorizons");
+
+			GlobalMessenger.AddListener(OWEvents.WakeUp, OnWakeUp);
+		}
+
+		private void OnWakeUp()
+		{
+			// Allow time for MultiplayerHUDManager.OnWakeUp to run
+			Delay.RunNextFrame(() =>
+			{
+				var currentPlanets = NewHorizons.Main.BodyDict[NewHorizons.Main.Instance.CurrentStarSystem];
+				foreach (var planet in currentPlanets)
+				{
+					if (planet.Object == null)
+					{
+						continue;
+					}
+
+					var nhAstro = planet.Object.GetComponent<NHAstroObject>();
+
+					if (planet.Config?.ShipLog == null)
+					{
+						continue;
+					}
+
+					var _astroObjectToShipLog = (Dictionary<GameObject, ShipLogAstroObject>)typeof(MapModeBuilder)
+						.GetField("_astroObjectToShipLog", BindingFlags.Static | BindingFlags.NonPublic)
+						.GetValue(null);
+					var shipLogAstroObject = _astroObjectToShipLog[planet.Object];
+
+					var astroObjName = nhAstro.isVanilla
+						? Enum.GetName(typeof(AstroObject.Name), nhAstro.GetAstroObjectName())
+						: planet.Config.name;
+
+					var sprite = shipLogAstroObject._imageObj.GetComponent<Image>().sprite;
+					MultiplayerHUDManager.Instance.PlanetToSprite[astroObjName] = sprite;
+
+					if (!nhAstro.isVanilla)
+					{
+						MultiplayerHUDManager.CreateTrigger(nhAstro.GetRootSector().gameObject, astroObjName);
+					}
+				}
+			});
 		}
 
 		public static string HashToMod(int hash)

@@ -52,6 +52,12 @@
       "value": true,
       "tooltip": "Show extra HUD elements, like player status and minimap icons."
     },
+    "alwaysShowPlanetIcons": {
+      "title": "Always Show Planet Icons",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "If disabled, the planet icon shown for each player will be replaced by a question mark (?) in thematically appropriate situations."
+    } ,
     "textChatInput": {
       "title": "Text Chat Input",
       "type": "toggle",

@@ -171,14 +171,12 @@ public partial class PlayerInfo
 	{
 		IsDead = true;
 		SetVisible(false, 1);
-		HUDBox.OnDeath();
 	}
 
 	public void Revive()
 	{
 		IsDead = false;
 		SetVisible(true, 1);
-		HUDBox.OnRespawn();
 	}
 
 	// internal for RequestStateResyncMessage

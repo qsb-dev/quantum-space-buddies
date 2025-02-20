@@ -60,19 +60,15 @@ public class EnterLeaveMessage : QSBMessage<EnterLeaveType>
 		{
 			case EnterLeaveType.EnterMoon:
 				player.IsInMoon = true;
-				player.HUDBox.OnEnterUnknown();
 				break;
 			case EnterLeaveType.ExitMoon:
 				player.IsInMoon = false;
-				player.HUDBox.OnExitUnknown();
 				break;
 			case EnterLeaveType.EnterCloak:
 				player.IsInCloak = true;
-				player.HUDBox.OnEnterUnknown();
 				break;
 			case EnterLeaveType.ExitCloak:
 				player.IsInCloak = false;
-				player.HUDBox.OnExitUnknown();
 				break;
 			case EnterLeaveType.EnterPlatform:
 				CustomNomaiRemoteCameraPlatform.CustomPlatformList[ObjectId]

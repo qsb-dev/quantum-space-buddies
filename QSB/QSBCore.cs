@@ -6,7 +6,6 @@ using QSB.Localization;
 using QSB.Menus;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.QuantumSync;
 using QSB.SaveSync;
 using QSB.ServerSettings;
 using QSB.Utility;
@@ -24,7 +23,6 @@ using QSB.BodyCustomization;
 using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Random = System.Random;
 using QSB.Utility.Deterministic;
 
 /*
@@ -70,6 +68,7 @@ public class QSBCore : ModBehaviour
 	public static bool ShowPlayerNames { get; private set; }
 	public static bool ShipDamage { get; private set; }
 	public static bool ShowExtraHUDElements { get; private set; }
+	public static bool AlwaysShowPlanetIcons { get; private set; }
 	public static bool TextChatInput { get; private set; }
 	public static string SkinVariation { get; private set; } = "Default";
 	public static string JetpackVariation { get; private set; } = "Orange";
@@ -413,6 +412,7 @@ public class QSBCore : ModBehaviour
 		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
 		ShowExtraHUDElements = config.GetSettingsValue<bool>("showExtraHud");
 		TextChatInput = config.GetSettingsValue<bool>("textChatInput");
+		AlwaysShowPlanetIcons = config.GetSettingsValue<bool>("alwaysShowPlanetIcons");
 
 		if (DebugSettings.RandomizeSkins)
 		{
@@ -428,6 +428,7 @@ public class QSBCore : ModBehaviour
 		if (IsHost)
 		{
 			ServerSettingsManager.ServerShowPlayerNames = ShowPlayerNames;
+			ServerSettingsManager.ServerAlwaysShowPlanetIcons = AlwaysShowPlanetIcons;
 			new ServerSettingsMessage().Send();
 		}
 

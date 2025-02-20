@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using OWML.Common;
 using QSB.ClientServerStateSync;
-using QSB.HUD;
 using QSB.Messaging;
 using QSB.Utility;
 
@@ -21,7 +20,7 @@ public class PlayerInformationMessage : QSBMessage
 	private ClientState ClientState;
 	private float FieldOfView;
 	private bool IsInShip;
-	private HUDIcon HUDIcon;
+	private string CurrentPlanet;
 	private string SkinType;
 	private string JetpackType;
 
@@ -40,7 +39,7 @@ public class PlayerInformationMessage : QSBMessage
 		ClientState = player.State;
 		FieldOfView = PlayerData.GetGraphicSettings().fieldOfView;
 		IsInShip = player.IsInShip;
-		HUDIcon = player.HUDBox == null ? HUDIcon.UNKNOWN : player.HUDBox.PlanetIcon;
+		CurrentPlanet = player.HUDBox == null ? "__UNKNOWN__" : player.HUDBox.CurrentPlanet;
 		SkinType = QSBCore.SkinVariation;
 		JetpackType = QSBCore.JetpackVariation;
 	}
@@ -60,7 +59,7 @@ public class PlayerInformationMessage : QSBMessage
 		writer.Write(ClientState);
 		writer.Write(FieldOfView);
 		writer.Write(IsInShip);
-		writer.Write(HUDIcon);
+		writer.Write(CurrentPlanet);
 		writer.Write(SkinType);
 		writer.Write(JetpackType);
 	}
@@ -80,7 +79,7 @@ public class PlayerInformationMessage : QSBMessage
 		ClientState = reader.Read<ClientState>();
 		FieldOfView = reader.ReadFloat();
 		IsInShip = reader.ReadBool();
-		HUDIcon = reader.Read<HUDIcon>();
+		CurrentPlanet = reader.Read<string>();
 		SkinType = reader.ReadString();
 		JetpackType = reader.ReadString();
 	}
@@ -120,7 +119,7 @@ public class PlayerInformationMessage : QSBMessage
 			Delay.RunWhen(() => player.HUDBox != null, () =>
 			{
 				player.HUDBox.PlayerName.text = PlayerName.ToUpper();
-				player.HUDBox.UpdateIcon(HUDIcon);
+				player.HUDBox.UpdateIcon(CurrentPlanet);
 			});
 		}
 		else
