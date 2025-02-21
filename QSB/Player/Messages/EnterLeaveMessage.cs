@@ -22,6 +22,8 @@ public class EnterLeaveMessage : QSBMessage<EnterLeaveType>
 		GlobalMessenger.AddListener(OWEvents.ExitShip, () => Handler(EnterLeaveType.ExitShip));
 		GlobalMessenger.AddListener(OWEvents.EnterCloak, () => Handler(EnterLeaveType.EnterCloak));
 		GlobalMessenger.AddListener(OWEvents.ExitCloak, () => Handler(EnterLeaveType.ExitCloak));
+		GlobalMessenger.AddListener(OWEvents.PlayerEnterBrambleDimension, () => Handler(EnterLeaveType.EnterBramble));
+		GlobalMessenger.AddListener(OWEvents.PlayerExitBrambleDimension, () => Handler(EnterLeaveType.ExitBramble));
 	}
 
 	private static void Handler(EnterLeaveType type, int objectId = -1)
@@ -83,6 +85,12 @@ public class EnterLeaveMessage : QSBMessage<EnterLeaveType>
 				break;
 			case EnterLeaveType.ExitShip:
 				ShipManager.Instance.RemovePlayerFromShip(player);
+				break;
+			case EnterLeaveType.EnterBramble:
+				player.IsInBramble = true;
+				break;
+			case EnterLeaveType.ExitBramble:
+				player.IsInBramble = false;
 				break;
 			default:
 				DebugLog.ToConsole($"Warning - Unknown EnterLeaveType : {Data}", MessageType.Warning);

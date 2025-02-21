@@ -40,6 +40,7 @@ public partial class PlayerInfo
 	public bool IsInEyeShuttle { get; set; }
 	public bool IsInShip { get; set; }
 	public bool IsInCloak { get; set; }
+	public bool IsInBramble { get; set; }
 	public IQSBQuantumObject EntangledObject { get; set; }
 	public QSBPlayerAudioController AudioController { get; set; }
 	public bool IsLocalPlayer => TransformSync.isLocalPlayer; // if TransformSync is ever null, i give permission for nebula to make fun of me about it for the rest of time - johncorby

@@ -43,4 +43,6 @@ public static class OWEvents
 	public const string ExitCloak = nameof(ExitCloak);
 	public const string PutOnHelmet = nameof(PutOnHelmet);
 	public const string RemoveHelmet = nameof(RemoveHelmet);
+	public const string PlayerEnterBrambleDimension = nameof(PlayerEnterBrambleDimension);
+	public const string PlayerExitBrambleDimension = nameof(PlayerExitBrambleDimension);
 }

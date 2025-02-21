@@ -85,6 +85,11 @@ public class PlayerBox : MonoBehaviour
 			return true;
 		}
 
+		if (_player.IsInBramble)
+		{
+			return true;
+		}
+
 		// TODO : Get NH interference volumes / map restrictions working here
 
 		return false;

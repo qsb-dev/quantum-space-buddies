@@ -41,10 +41,11 @@ public class PlayerHUDMarker : HUDDistanceMarker
 		}
 
 		return _player.IsReady &&
-			!_player.IsDead &&
-			_player.Visible &&
-			_player.InDreamWorld == QSBPlayerManager.LocalPlayer.InDreamWorld &&
-			_player.IsInMoon == QSBPlayerManager.LocalPlayer.IsInMoon;
+		       !_player.IsDead &&
+		       _player.Visible &&
+		       _player.InDreamWorld == QSBPlayerManager.LocalPlayer.InDreamWorld && // TODO: check for same dreamworld zone
+		       _player.IsInMoon == QSBPlayerManager.LocalPlayer.IsInMoon &&
+		       !_player.IsInBramble; // TODO: players in the same bramble node should be able to see their markers
 	}
 
 	private void Update()
