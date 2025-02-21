@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <AssemblyTitle>Steam Transport</AssemblyTitle>
+        <Product>Steam Transport</Product>
+        <Title>Steam Transport</Title>
+        <Description>A custom Mirror transport based on FizzySteamworks</Description>
+        <Authors>William Corby, Henry Pointer</Authors>
+        <Company>William Corby, Henry Pointer</Company>
+        <Copyright>Copyright © William Corby, Henry Pointer 2022-2025</Copyright>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="OuterWildsGameLibs" Version="1.1.14.768" IncludeAssets="compile" />
+        <PackageReference Include="OWML" Version="2.11.1" IncludeAssets="compile" />
+        <Reference Include="..\Lib\*.dll" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="steam_api64.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+</Project>
