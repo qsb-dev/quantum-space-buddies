@@ -71,8 +71,10 @@ public class PlayerMapMarker : MonoBehaviour
 			_player.IsReady &&
 			!_player.IsDead &&
 			_player.Visible &&
-			_player.InDreamWorld == QSBPlayerManager.LocalPlayer.InDreamWorld &&
-			_player.IsInMoon == QSBPlayerManager.LocalPlayer.IsInMoon;
+			!_player.InDreamWorld &&
+			!_player.IsInMoon &&
+			!_player.IsInBramble &&
+			!_player.IsInCloak;
 	}
 
 	public void LateUpdate()
