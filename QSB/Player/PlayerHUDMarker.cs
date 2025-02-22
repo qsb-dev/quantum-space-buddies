@@ -45,7 +45,56 @@ public class PlayerHUDMarker : HUDDistanceMarker
 		       _player.Visible &&
 		       _player.InDreamWorld == QSBPlayerManager.LocalPlayer.InDreamWorld && // TODO: check for same dreamworld zone
 		       _player.IsInMoon == QSBPlayerManager.LocalPlayer.IsInMoon &&
-		       !_player.IsInBramble; // TODO: players in the same bramble node should be able to see their markers
+		       !_player.IsInBramble && // TODO: players in the same bramble node should be able to see their markers
+		       ShouldBeVisibleEye();
+	}
+
+	private bool ShouldBeVisibleEye()
+	{
+		if (QSBSceneManager.CurrentScene != OWScene.EyeOfTheUniverse)
+		{
+			return true;
+		}
+
+		var localPlayer = QSBPlayerManager.LocalPlayer;
+		var localState = localPlayer.EyeState;
+
+		if (localState 
+			    is EyeState.AboardVessel 
+			    or EyeState.WarpedToSurface 
+		    && _player.EyeState 
+			    is EyeState.AboardVessel 
+			    or EyeState.WarpedToSurface)
+		{
+			return true;
+		}
+
+		if (localState == EyeState.Observatory && _player.EyeState == EyeState.Observatory)
+		{
+			return true;
+		}
+
+		if (localState
+			    is EyeState.ForestOfGalaxies
+			    or EyeState.ForestIsDark
+		    && _player.EyeState
+				is EyeState.ForestOfGalaxies
+				or EyeState.ForestIsDark)
+		{
+			return true;
+		}
+
+		if (localState
+			    is EyeState.InstrumentHunt
+			    or EyeState.JamSession
+		    && _player.EyeState
+			    is EyeState.InstrumentHunt
+				or EyeState.JamSession)
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	private void Update()
