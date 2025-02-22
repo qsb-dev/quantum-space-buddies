@@ -15,6 +15,7 @@ public class QSBQuantumInstrument : WorldObject<QuantumInstrument>
 			foreach (var player in MaskManager.WentOnSolanumsWildRide)
 			{
 				player.SetVisible(true, 2);
+				player.OnSolanumsWildRide = false;
 			}
 
 			maskZoneController._whiteSphere.SetActive(false);

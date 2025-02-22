@@ -48,6 +48,7 @@ public partial class PlayerInfo
 	public bool FlyingShip => ShipManager.Instance.CurrentFlyer == PlayerId;
 	public bool FlyingModelShip => ModelShipManager.Instance.CurrentFlyer == PlayerId;
 	public RemotePlayerRulesetDetector RulesetDetector { get; set; }
+	public bool OnSolanumsWildRide { get; set; }
 
 	public PlayerInfo(PlayerTransformSync transformSync)
 	{

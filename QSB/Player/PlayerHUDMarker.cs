@@ -57,6 +57,13 @@ public class PlayerHUDMarker : HUDDistanceMarker
 		}
 
 		var localPlayer = QSBPlayerManager.LocalPlayer;
+
+		// Hide players who aren't in the mask sequence
+		if (_player.OnSolanumsWildRide != localPlayer.OnSolanumsWildRide)
+		{
+			return false;
+		}
+
 		var localState = localPlayer.EyeState;
 
 		if (localState 
