@@ -1,5 +1,6 @@
 ﻿using Steamworks;
 using System;
+using System.Threading;
 
 namespace SteamTransport;
 
@@ -38,21 +39,26 @@ public static class Program
 
 					return;
 				}
+
+				SteamClient.SetWarningMessageHook((severity, text) => Console.WriteLine(text));
 			}
 
 			switch (Console.ReadKey().KeyChar)
 			{
 				case '1':
+					Console.WriteLine("server");
 					DoServer();
 					break;
 				case '2':
+					Console.WriteLine("client");
 					DoClient();
 					break;
 			}
-
 		}
 		finally
 		{
+			SteamAPI.Shutdown();
+
 			Console.WriteLine("Press any key to exit");
 			Console.ReadKey();
 		}
@@ -60,17 +66,40 @@ public static class Program
 
 	private static void DoServer()
 	{
+		using var cb = Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t>.Create(t =>
+		{
+			Console.WriteLine($"{t.m_info.m_szConnectionDescription} | state = {t.m_info.m_eState} | {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}");
+		});
+
 		var address = new SteamNetworkingIPAddr();
-		address.SetIPv6LocalHost();
+		address.Clear();
 		var socket = SteamNetworkingSockets.CreateListenSocketIP(ref address, 0, new SteamNetworkingConfigValue_t[0]);
+		Console.WriteLine("listening...");
+
+		while (true)
+		{
+			SteamAPI.RunCallbacks();
+			Thread.Sleep(10);
+		}
 	}
 
 	private static void DoClient()
 	{
+		using var cb = Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t>.Create(t =>
+		{
+			Console.WriteLine($"{t.m_info.m_szConnectionDescription} | state = {t.m_info.m_eState} | {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}");
+		});
+
 		var address = new SteamNetworkingIPAddr();
 		address.SetIPv6LocalHost();
+		Console.WriteLine($"is localhost = {address.IsLocalHost()}");
 		var conn = SteamNetworkingSockets.ConnectByIPAddress(ref address, 0, new SteamNetworkingConfigValue_t[0]);
+		Console.WriteLine("connecting...");
 
-
+		while (true)
+		{
+			SteamAPI.RunCallbacks();
+			Thread.Sleep(10);
+		}
 	}
 }
