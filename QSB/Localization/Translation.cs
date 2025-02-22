@@ -49,5 +49,6 @@ public class Translation
 	public string WaitingForAllToDie;
 	public string AttachToShip;
 	public string DetachFromShip;
+	public string ModMismatch;
 	public Dictionary<DeathType, string[]> DeathMessages;
 }

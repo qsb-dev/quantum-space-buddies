@@ -43,6 +43,7 @@
   "WaitingForAllToDie": "Esperando a que {0} jugador(es) mueran...",
   "AttachToShip": "Anclar a la nave",
   "DetachFromShip": "Desanclar de la nave",
+  "ModMismatch": "{0} el estado de la instalación no coincide. (Cliente:{1}, Servidor:{2})",
   "DeathMessages": {
     "Default": [
       "{0} ha muerto",

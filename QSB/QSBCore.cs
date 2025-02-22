@@ -6,7 +6,6 @@ using QSB.Localization;
 using QSB.Menus;
 using QSB.Messaging;
 using QSB.Patches;
-using QSB.QuantumSync;
 using QSB.SaveSync;
 using QSB.ServerSettings;
 using QSB.Utility;
@@ -24,11 +23,10 @@ using QSB.BodyCustomization;
 using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Random = System.Random;
 using QSB.Utility.Deterministic;
 
 /*
-	Copyright (C) 2020 - 2024
+	Copyright (C) 2020 - 2025
 			Henry Pointer (_nebula / misternebula),
 			Will Corby (JohnCorby),
 			Aleksander Waage (AmazingAlek),
@@ -70,6 +68,7 @@ public class QSBCore : ModBehaviour
 	public static bool ShowPlayerNames { get; private set; }
 	public static bool ShipDamage { get; private set; }
 	public static bool ShowExtraHUDElements { get; private set; }
+	public static bool AlwaysShowPlanetIcons { get; private set; }
 	public static bool TextChatInput { get; private set; }
 	public static string SkinVariation { get; private set; } = "Default";
 	public static string JetpackVariation { get; private set; } = "Orange";
@@ -78,7 +77,6 @@ public class QSBCore : ModBehaviour
 	public static IProfileManager ProfileManager => IsStandalone
 		? QSBStandaloneProfileManager.SharedInstance
 		: QSBMSStoreProfileManager.SharedInstance;
-	public static IMenuAPI MenuApi { get; private set; }
 	public static DebugSettings DebugSettings { get; private set; } = new();
 
 	private static string randomSkinType;
@@ -252,8 +250,6 @@ public class QSBCore : ModBehaviour
 		// init again to get addon patches
 		QSBPatchManager.Init();
 
-		MenuApi = ModHelper.Interaction.TryGetModApi<IMenuAPI>(ModHelper.Manifest.Dependencies[0]);
-
 		LoadBundleAsync("qsb_network_big");
 		LoadBundleAsync("qsb_skins", request => BodyCustomizer.Instance.OnBundleLoaded(request.assetBundle));
 
@@ -416,6 +412,7 @@ public class QSBCore : ModBehaviour
 		ShipDamage = config.GetSettingsValue<bool>("shipDamage");
 		ShowExtraHUDElements = config.GetSettingsValue<bool>("showExtraHud");
 		TextChatInput = config.GetSettingsValue<bool>("textChatInput");
+		AlwaysShowPlanetIcons = config.GetSettingsValue<bool>("alwaysShowPlanetIcons");
 
 		if (DebugSettings.RandomizeSkins)
 		{
@@ -431,6 +428,7 @@ public class QSBCore : ModBehaviour
 		if (IsHost)
 		{
 			ServerSettingsManager.ServerShowPlayerNames = ShowPlayerNames;
+			ServerSettingsManager.ServerAlwaysShowPlanetIcons = AlwaysShowPlanetIcons;
 			new ServerSettingsMessage().Send();
 		}
 

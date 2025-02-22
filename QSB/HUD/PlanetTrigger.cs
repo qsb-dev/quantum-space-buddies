@@ -6,7 +6,7 @@ namespace QSB.HUD;
 
 public class PlanetTrigger : SectoredMonoBehaviour
 {
-	public HUDIcon Icon;
+	public string PlanetID;
 
 	public override void OnSectorOccupantAdded(SectorDetector detector)
 	{
@@ -15,7 +15,7 @@ public class PlanetTrigger : SectoredMonoBehaviour
 			return;
 		}
 
-		MultiplayerHUDManager.HUDIconStack.Push(Icon);
+		MultiplayerHUDManager.HUDIconStack.Push(PlanetID);
 		var top = MultiplayerHUDManager.HUDIconStack.PeekFront();
 		new PlanetMessage(top).Send();
 	}
@@ -27,7 +27,7 @@ public class PlanetTrigger : SectoredMonoBehaviour
 			return;
 		}
 
-		MultiplayerHUDManager.HUDIconStack.Remove(Icon);
+		MultiplayerHUDManager.HUDIconStack.Remove(PlanetID);
 		var top = MultiplayerHUDManager.HUDIconStack.PeekFront();
 		new PlanetMessage(top).Send();
 	}

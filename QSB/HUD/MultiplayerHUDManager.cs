@@ -7,6 +7,7 @@ using QSB.ServerSettings;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -39,11 +40,15 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 	public static Sprite DarkBramble;
 	public static Sprite Interloper;
 	public static Sprite WhiteHole;
+	public static Sprite Ringworld;
+	public static Sprite QuantumMoon;
 
-	public static readonly ListStack<HUDIcon> HUDIconStack = new(true);
+	public static readonly ListStack<string> HUDIconStack = new(true);
 
 	public class ChatEvent : UnityEvent<string, uint> { }
 	public static readonly ChatEvent OnChatMessageEvent = new();
+
+	public Dictionary<string, Sprite> PlanetToSprite = null;
 
 	private void Start()
 	{
@@ -57,16 +62,6 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		UnknownSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_unknown.png");
 		DeadSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_dead.png");
 		ShipSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_ship.png");
-		CaveTwin = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_cavetwin.png");
-		TowerTwin = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_towertwin.png");
-		TimberHearth = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_timberhearth.png");
-		Attlerock = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_attlerock.png");
-		BrittleHollow = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_brittlehollow.png");
-		HollowsLantern = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_hollowslantern.png");
-		GiantsDeep = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_giantsdeep.png");
-		DarkBramble = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_darkbramble.png");
-		Interloper = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_interloper.png");
-		WhiteHole = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_whitehole.png");
 		SpaceSprite = QSBCore.HUDAssetBundle.LoadAsset<Sprite>("Assets/MULTIPLAYER_UI/playerbox_space.png");
 	}
 
@@ -265,6 +260,52 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		}
 	}
 
+	public void CreatePlanetToSprite()
+	{
+		PlanetToSprite = new Dictionary<string, Sprite>()
+		{
+			{ "__SHIP__", MultiplayerHUDManager.ShipSprite },
+			{ "__DEAD__", MultiplayerHUDManager.DeadSprite },
+			{ "__SPACE__", MultiplayerHUDManager.SpaceSprite },
+			{ "__UNKNOWN__", MultiplayerHUDManager.UnknownSprite },
+			{ nameof(AstroObject.Name.CaveTwin), MultiplayerHUDManager.CaveTwin },
+			{ nameof(AstroObject.Name.TowerTwin), MultiplayerHUDManager.TowerTwin },
+			{ nameof(AstroObject.Name.TimberHearth), MultiplayerHUDManager.TimberHearth },
+			{ nameof(AstroObject.Name.TimberMoon), MultiplayerHUDManager.Attlerock },
+			{ nameof(AstroObject.Name.BrittleHollow), MultiplayerHUDManager.BrittleHollow },
+			{ nameof(AstroObject.Name.VolcanicMoon), MultiplayerHUDManager.HollowsLantern },
+			{ nameof(AstroObject.Name.GiantsDeep), MultiplayerHUDManager.GiantsDeep },
+			{ nameof(AstroObject.Name.DarkBramble), MultiplayerHUDManager.DarkBramble },
+			{ nameof(AstroObject.Name.Comet), MultiplayerHUDManager.Interloper },
+			{ nameof(AstroObject.Name.WhiteHole), MultiplayerHUDManager.WhiteHole },
+			{ nameof(AstroObject.Name.RingWorld), MultiplayerHUDManager.Ringworld },
+			{ nameof(AstroObject.Name.QuantumMoon), MultiplayerHUDManager.QuantumMoon },
+		};
+	}
+
+	private string AstroObjectNameToStringID(AstroObject.Name name) => name switch
+	{
+		AstroObject.Name.TimberHearth => "TIMBER_HEARTH",
+		AstroObject.Name.DreamWorld => "DREAMWORLD",
+		AstroObject.Name.RingWorld => "INVISIBLE_PLANET", // mfw
+		AstroObject.Name.GiantsDeep => "GIANTS_DEEP",
+		AstroObject.Name.VolcanicMoon => "VOLCANIC_MOON",
+		AstroObject.Name.BrittleHollow => "BRITTLE_HOLLOW",
+		AstroObject.Name.WhiteHole => "WHITE_HOLE",
+		AstroObject.Name.ProbeCannon => "ORBITAL_PROBE_CANNON",
+		AstroObject.Name.TimberMoon => "TIMBER_MOON",
+		AstroObject.Name.QuantumMoon => "QUANTUM_MOON",
+		AstroObject.Name.Eye => "EYE_OF_THE_UNIVERSE",
+		AstroObject.Name.SunStation => "SUN_STATION",
+		AstroObject.Name.Sun => "SUN",
+		AstroObject.Name.DarkBramble => "DARK_BRAMBLE",
+		AstroObject.Name.WhiteHoleTarget => "WHITE_HOLE_TARGET",
+		AstroObject.Name.Comet => "COMET",
+		AstroObject.Name.TowerTwin => "TOWER_TWIN",
+		AstroObject.Name.CaveTwin => "CAVE_TWIN",
+		_ => throw new ArgumentOutOfRangeException(nameof(name), name, null),
+	};
+
 	private void OnWakeUp()
 	{
 		var hudController = Locator.GetPlayerCamera().transform.Find("Helmet").Find("HUDController").GetComponent<HUDCanvas>();
@@ -299,22 +340,59 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			}
 		}
 
-		CreateTrigger("TowerTwin_Body/Sector_TowerTwin", HUDIcon.TOWER_TWIN);
-		CreateTrigger("CaveTwin_Body/Sector_CaveTwin", HUDIcon.CAVE_TWIN);
-		CreateTrigger("TimberHearth_Body/Sector_TH", HUDIcon.TIMBER_HEARTH);
-		CreateTrigger("Moon_Body/Sector_THM", HUDIcon.ATTLEROCK);
-		CreateTrigger("BrittleHollow_Body/Sector_BH", HUDIcon.BRITTLE_HOLLOW);
-		CreateTrigger("VolcanicMoon_Body/Sector_VM", HUDIcon.HOLLOWS_LANTERN);
-		CreateTrigger("GiantsDeep_Body/Sector_GD", HUDIcon.GIANTS_DEEP);
-		CreateTrigger("DarkBramble_Body/Sector_DB", HUDIcon.DARK_BRAMBLE);
-		CreateTrigger("Comet_Body/Sector_CO", HUDIcon.INTERLOPER);
-		CreateTrigger("WhiteHole_Body/Sector_WhiteHole", HUDIcon.WHITE_HOLE);
+		var shipLogMapMode = Resources.FindObjectsOfTypeAll<ShipLogMapMode>()[0];
+		var allShipLogAstroObjects = new List<ShipLogAstroObject>();
+		allShipLogAstroObjects.AddRange(shipLogMapMode._topRow);
+		allShipLogAstroObjects.AddRange(shipLogMapMode._midRow);
+		allShipLogAstroObjects.AddRange(shipLogMapMode._bottomRow);
+
+		Sprite GetSprite(AstroObject.Name name)
+		{
+			var stringID = AstroObjectNameToStringID(name);
+			var shipLogAstroObject = allShipLogAstroObjects.FirstOrDefault(x => x._id == stringID);
+
+			if (shipLogAstroObject == null)
+			{
+				DebugLog.DebugWrite($"Couldn't find ShipLogAstroObject for {name} ({stringID})", MessageType.Error);
+				return null;
+			}
+
+			return shipLogAstroObject._image.sprite;
+		}
+
+		CaveTwin = GetSprite(AstroObject.Name.CaveTwin);
+		TowerTwin = GetSprite(AstroObject.Name.TowerTwin);
+		TimberHearth = GetSprite(AstroObject.Name.TimberHearth);
+		Attlerock = GetSprite(AstroObject.Name.TimberMoon);
+		BrittleHollow = GetSprite(AstroObject.Name.BrittleHollow);
+		HollowsLantern = GetSprite(AstroObject.Name.VolcanicMoon);
+		GiantsDeep = GetSprite(AstroObject.Name.GiantsDeep);
+		DarkBramble = GetSprite(AstroObject.Name.DarkBramble);
+		Interloper = GetSprite(AstroObject.Name.Comet);
+		WhiteHole = GetSprite(AstroObject.Name.WhiteHole);
+		Ringworld = GetSprite(AstroObject.Name.RingWorld);
+		QuantumMoon = GetSprite(AstroObject.Name.QuantumMoon);
+
+		CreatePlanetToSprite();
+
+		CreateTrigger("TowerTwin_Body/Sector_TowerTwin", AstroObject.Name.TowerTwin);
+		CreateTrigger("CaveTwin_Body/Sector_CaveTwin", AstroObject.Name.CaveTwin);
+		CreateTrigger("TimberHearth_Body/Sector_TH", AstroObject.Name.TimberHearth);
+		CreateTrigger("Moon_Body/Sector_THM", AstroObject.Name.TimberMoon);
+		CreateTrigger("BrittleHollow_Body/Sector_BH", AstroObject.Name.BrittleHollow);
+		CreateTrigger("VolcanicMoon_Body/Sector_VM", AstroObject.Name.VolcanicMoon);
+		CreateTrigger("GiantsDeep_Body/Sector_GD", AstroObject.Name.GiantsDeep);
+		CreateTrigger("DarkBramble_Body/Sector_DB", AstroObject.Name.DarkBramble);
+		CreateTrigger("Comet_Body/Sector_CO", AstroObject.Name.Comet);
+		CreateTrigger("WhiteHole_Body/Sector_WhiteHole", AstroObject.Name.WhiteHole);
+		CreateTrigger("RingWorld_Body/Sector_RingWorld", AstroObject.Name.RingWorld); // TODO : this doesnt work????
+		CreateTrigger("QuantumMoon_Body/Sector_QuantumMoon", AstroObject.Name.QuantumMoon);
 
 		HUDIconStack.Clear();
-		HUDIconStack.Push(HUDIcon.SPACE);
-		HUDIconStack.Push(HUDIcon.TIMBER_HEARTH);
+		HUDIconStack.Push("__SPACE__");
 
-		new PlanetMessage(HUDIcon.TIMBER_HEARTH).Send();
+		HUDIconStack.Push("TimberHearth");
+		new PlanetMessage("TimberHearth").Send();
 
 		_textChat = multiplayerGroup.transform.Find("TextChat");
 		var inputFieldGO = _textChat.Find("InputField");
@@ -460,10 +538,10 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		WriteSystemMessage(string.Format(QSBLocalization.Current.PlayerLeftTheGame, player.Name), Color.yellow);
 	}
 
-	private PlanetTrigger CreateTrigger(string parentPath, HUDIcon icon)
-		=> CreateTrigger(Find(parentPath), icon);
+	public static PlanetTrigger CreateTrigger(string parentPath, AstroObject.Name name)
+		=> CreateTrigger(Find(parentPath), Enum.GetName(typeof(AstroObject.Name), name));
 
-	private PlanetTrigger CreateTrigger(GameObject parent, HUDIcon icon)
+	public static PlanetTrigger CreateTrigger(GameObject parent, string name)
 	{
 		if (parent == null)
 		{
@@ -474,7 +552,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 		if (triggerGO != null)
 		{
 			var trigger = triggerGO.GetAddComponent<PlanetTrigger>();
-			trigger.Icon = icon;
+			trigger.PlanetID = name;
 			return trigger;
 		}
 		else
@@ -483,7 +561,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			triggerGO.transform.SetParent(parent.transform, false);
 			triggerGO.SetActive(false);
 			var trigger = triggerGO.AddComponent<PlanetTrigger>();
-			trigger.Icon = icon;
+			trigger.PlanetID = name;
 			triggerGO.SetActive(true);
 			return trigger;
 		}

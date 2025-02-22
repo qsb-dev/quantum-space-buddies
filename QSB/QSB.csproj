@@ -6,7 +6,7 @@
     <Description>Multiplayer mod for Outer Wilds</Description>
     <Authors>Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes</Authors>
     <Company>Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes</Company>
-    <Copyright>Copyright © Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes 2020-2024</Copyright>
+    <Copyright>Copyright © Henry Pointer, William Corby, Aleksander Waage, Ricardo Lopes 2020-2025</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <OutputPath Condition="Exists('$(OwmlDir)')">$(OwmlDir)\Mods\Raicuparta.QuantumSpaceBuddies</OutputPath>
@@ -75,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OuterWildsGameLibs" Version="1.1.15.1018" IncludeAssets="compile" />
-    <PackageReference Include="OWML" Version="2.14.0" IncludeAssets="compile" />
+    <PackageReference Include="OWML" Version="2.15.1" IncludeAssets="compile" />
     <Reference Include="..\Lib\*.dll" />
     <ProjectReference Include="..\FizzySteamworks\FizzySteamworks.csproj" />
     <ProjectReference Include="..\SteamRerouter\SteamRerouter.csproj" />

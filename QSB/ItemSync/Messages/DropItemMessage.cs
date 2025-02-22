@@ -1,4 +1,5 @@
-﻿using QSB.ItemSync.WorldObjects;
+﻿using QSB.Animation.Player;
+using QSB.ItemSync.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
 using QSB.Messaging;
 using QSB.Player;
@@ -69,6 +70,6 @@ public class DropItemMessage : QSBWorldObjectMessage<IQSBItem,
 
 		var player = QSBPlayerManager.GetPlayer(From);
 		player.HeldItem = null;
-		player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
+		player.AnimationSync.DropItem();
 	}
 }

@@ -40,6 +40,7 @@ public partial class PlayerInfo
 	public bool IsInEyeShuttle { get; set; }
 	public bool IsInShip { get; set; }
 	public bool IsInCloak { get; set; }
+	public bool IsInBramble { get; set; }
 	public IQSBQuantumObject EntangledObject { get; set; }
 	public QSBPlayerAudioController AudioController { get; set; }
 	public bool IsLocalPlayer => TransformSync.isLocalPlayer; // if TransformSync is ever null, i give permission for nebula to make fun of me about it for the rest of time - johncorby
@@ -47,6 +48,7 @@ public partial class PlayerInfo
 	public bool FlyingShip => ShipManager.Instance.CurrentFlyer == PlayerId;
 	public bool FlyingModelShip => ModelShipManager.Instance.CurrentFlyer == PlayerId;
 	public RemotePlayerRulesetDetector RulesetDetector { get; set; }
+	public bool OnSolanumsWildRide { get; set; }
 
 	public PlayerInfo(PlayerTransformSync transformSync)
 	{
@@ -171,14 +173,12 @@ public partial class PlayerInfo
 	{
 		IsDead = true;
 		SetVisible(false, 1);
-		HUDBox.OnDeath();
 	}
 
 	public void Revive()
 	{
 		IsDead = false;
 		SetVisible(true, 1);
-		HUDBox.OnRespawn();
 	}
 
 	// internal for RequestStateResyncMessage

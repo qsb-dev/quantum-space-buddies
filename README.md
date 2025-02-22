@@ -151,7 +151,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md)
 
 ## License and legal stuff
 
-Copyright (C) 2020 - 2024 : 
+Copyright (C) 2020 - 2025 : 
 - Henry Pointer (_nebula or misternebula)
 - Will Corby (JohnCorby)
 - Aleksander Waage (AmazingAlek)

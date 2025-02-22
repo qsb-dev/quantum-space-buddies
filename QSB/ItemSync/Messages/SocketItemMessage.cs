@@ -1,4 +1,5 @@
-﻿using QSB.ItemSync.WorldObjects.Items;
+﻿using QSB.Animation.Player;
+using QSB.ItemSync.WorldObjects.Items;
 using QSB.ItemSync.WorldObjects.Sockets;
 using QSB.Messaging;
 using QSB.Player;
@@ -29,7 +30,7 @@ public class SocketItemMessage : QSBWorldObjectMessage<IQSBItem, (SocketMessageT
 
 					var player = QSBPlayerManager.GetPlayer(From);
 					player.HeldItem = null;
-					player.AnimationSync.VisibleAnimator.SetTrigger("DropHeldItem");
+					player.AnimationSync.DropItem();
 					return;
 				}
 			case SocketMessageType.StartUnsocket:

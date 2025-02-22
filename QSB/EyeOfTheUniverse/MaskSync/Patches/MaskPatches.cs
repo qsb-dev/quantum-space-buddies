@@ -15,7 +15,11 @@ public class MaskPatches : QSBPatch
 	[HarmonyPatch(typeof(EyeShuttleController), nameof(EyeShuttleController.OnLaunchSlotActivated))]
 	public static bool DontLaunch(EyeShuttleController __instance)
 	{
-		QSBPlayerManager.PlayerList.Where(x => x.IsInEyeShuttle).ForEach(x => MaskManager.WentOnSolanumsWildRide.Add(x));
+		QSBPlayerManager.PlayerList.Where(x => x.IsInEyeShuttle).ForEach(x =>
+		{
+			MaskManager.WentOnSolanumsWildRide.Add(x);
+			x.OnSolanumsWildRide = true;
+		});
 
 		if (__instance._isPlayerInside)
 		{
@@ -44,6 +48,11 @@ public class MaskPatches : QSBPatch
 			Locator.GetPlayerBody().SetVelocity(Vector3.zero);
 			var component = Locator.GetPlayerCamera().GetComponent<PlayerCameraController>();
 			component.SetDegreesY(component.GetMinDegreesY());
+		}
+
+		foreach (var item in MaskManager.WentOnSolanumsWildRide)
+		{
+			item.OnSolanumsWildRide = false;
 		}
 
 		__instance.enabled = false;

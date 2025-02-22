@@ -44,6 +44,7 @@
   "WaitingForAllToDie": "{0} oyuncunun daha ölmesi bekleniyor...",
   "AttachToShip": "Gemiye tutun",
   "DetachFromShip": "Gemiyi bırak",
+  "ModMismatch": "{0} kurulum durumu eşleşmiyor. (İstemci:{1}, Sunucu:{2})",
   "DeathMessages": {
     "Default": [
       "{0} öldü",

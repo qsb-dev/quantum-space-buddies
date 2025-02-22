@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Mirror;
 using OWML.Common;
-using QSB.Animation.Player.Thrusters;
 using QSB.Messaging;
 using QSB.Player;
 using QSB.ShipSync.Messages;
@@ -10,7 +9,6 @@ using QSB.ShipSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -173,7 +171,6 @@ public class ShipManager : WorldObjectManager
 	public void AddPlayerToShip(PlayerInfo player)
 	{
 		player.IsInShip = true;
-		player.HUDBox.OnEnterShip();
 		_playersInShip.Add(player);
 		UpdateElectricalComponent();
 	}
@@ -181,7 +178,6 @@ public class ShipManager : WorldObjectManager
 	public void RemovePlayerFromShip(PlayerInfo player)
 	{
 		player.IsInShip = false;
-		player.HUDBox.OnExitShip();
 		_playersInShip.Remove(player);
 		UpdateElectricalComponent();
 	}

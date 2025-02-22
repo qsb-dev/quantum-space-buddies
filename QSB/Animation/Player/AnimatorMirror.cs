@@ -15,7 +15,7 @@ public class AnimatorMirror : MonoBehaviour
 	private Animator _to;
 	private NetworkAnimator _networkAnimator;
 
-	private readonly Dictionary<string, AnimFloatParam> _floatParams = new();
+	private readonly Dictionary<int, AnimFloatParam> _floatParams = new();
 
 	/// <summary>
 	/// Initializes the Animator Mirror
@@ -82,36 +82,38 @@ public class AnimatorMirror : MonoBehaviour
 			switch (fromParam.type)
 			{
 				case AnimatorControllerParameterType.Float:
-					_floatParams[fromParam.name].Target = _from.GetFloat(fromParam.name);
+					_floatParams[fromParam.nameHash].Target = _from.GetFloat(fromParam.nameHash);
 					break;
 
 				case AnimatorControllerParameterType.Int:
-					_to.SetInteger(fromParam.name, _from.GetInteger(fromParam.name));
+					_to.SetInteger(fromParam.nameHash, _from.GetInteger(fromParam.nameHash));
 					break;
 
 				case AnimatorControllerParameterType.Bool:
-					_to.SetBool(fromParam.name, _from.GetBool(fromParam.name));
+					_to.SetBool(fromParam.nameHash, _from.GetBool(fromParam.nameHash));
 					break;
 
 				case AnimatorControllerParameterType.Trigger:
-					if (_from.GetBool(fromParam.name) && !_to.GetBool(fromParam.name))
+					if (_from.GetBool(fromParam.nameHash) && !_to.GetBool(fromParam.nameHash))
 					{
 						if (_networkAnimator != null)
 						{
-							_networkAnimator.SetTrigger(fromParam.name);
+							DebugLog.DebugWrite($"Set {fromParam.name} on netanim");
+							_networkAnimator.SetTrigger(fromParam.nameHash);
 						}
 
-						_to.SetTrigger(fromParam.name);
+						_to.SetTrigger(fromParam.nameHash);
 					}
 
-					if (!_from.GetBool(fromParam.name) && _to.GetBool(fromParam.name))
+					if (!_from.GetBool(fromParam.nameHash) && _to.GetBool(fromParam.nameHash))
 					{
 						if (_networkAnimator != null)
 						{
-							_networkAnimator.ResetTrigger(fromParam.name);
+							DebugLog.DebugWrite($"Reset {fromParam.name} on netanim");
+							_networkAnimator.ResetTrigger(fromParam.nameHash);
 						}
 
-						_to.ResetTrigger(fromParam.name);
+						_to.ResetTrigger(fromParam.nameHash);
 					}
 
 					break;
@@ -142,7 +144,7 @@ public class AnimatorMirror : MonoBehaviour
 		_floatParams.Clear();
 		foreach (var param in _from.parameters.Where(p => p.type == AnimatorControllerParameterType.Float))
 		{
-			_floatParams.Add(param.name, new AnimFloatParam());
+			_floatParams.Add(param.nameHash, new AnimFloatParam());
 		}
 	}
 }

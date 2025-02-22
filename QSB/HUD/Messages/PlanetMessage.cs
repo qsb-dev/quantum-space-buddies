@@ -1,12 +1,11 @@
 ﻿using QSB.Messaging;
 using QSB.Player;
-using QSB.Utility;
 
 namespace QSB.HUD.Messages;
 
-public class PlanetMessage : QSBMessage<HUDIcon>
+public class PlanetMessage : QSBMessage<string>
 {
-	public PlanetMessage(HUDIcon icon) : base(icon) { }
+	public PlanetMessage(string planet) : base(planet) { }
 
 	public override void OnReceiveLocal() => OnReceiveRemote();
 

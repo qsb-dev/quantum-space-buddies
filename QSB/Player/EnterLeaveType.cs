@@ -9,5 +9,7 @@ public enum EnterLeaveType
 	EnterShip,
 	ExitShip,
 	EnterCloak,
-	ExitCloak
+	ExitCloak,
+	EnterBramble,
+	ExitBramble
 }
