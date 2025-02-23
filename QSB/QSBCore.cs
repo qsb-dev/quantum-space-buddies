@@ -363,13 +363,11 @@ public class QSBCore : ModBehaviour
 	{
 		DebugSettings.Update(config);
 
+		Application.logMessageReceived -= OnDebugLog;
+
 		if (DebugSettings.HookDebugLogs)
 		{
 			Application.logMessageReceived += OnDebugLog;
-		}
-		else
-		{
-			Application.logMessageReceived -= OnDebugLog;
 		}
 
 		// Configure gets called before Start, so these might not exist yet
