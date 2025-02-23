@@ -78,7 +78,7 @@ public class QSBCore : ModBehaviour
 	public static IProfileManager ProfileManager => IsStandalone
 		? QSBStandaloneProfileManager.SharedInstance
 		: QSBMSStoreProfileManager.SharedInstance;
-	public static DebugSettings DebugSettings { get; private set; }
+	public static readonly DebugSettings DebugSettings = new();
 
 	public static Assembly QSBNHAssembly = null;
 
@@ -384,8 +384,9 @@ public class QSBCore : ModBehaviour
 
 	public override void Configure(IModConfig config)
 	{
-		DebugSettings = new DebugSettings(config);
+		DebugSettings.Update(config);
 
+		// Configure gets called before Start, so these might not exist yet
 		if (GetComponent<DebugActions>() != null)
 		{
 			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;

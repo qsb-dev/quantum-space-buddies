@@ -12,7 +12,7 @@ public class DebugCameraSettings : MonoBehaviour, IAddComponentOnStart
 			Camera.main.backgroundColor = _origColor;
 		}
 
-		if (QSBCore.DebugSettings == null || !QSBCore.DebugSettings.GreySkybox)
+		if (!QSBCore.DebugSettings.GreySkybox)
 		{
 			return;
 		}

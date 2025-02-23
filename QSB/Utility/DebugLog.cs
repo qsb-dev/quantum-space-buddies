@@ -16,7 +16,7 @@ public static class DebugLog
 
 	public static void ToConsole(string message, MessageType type = MessageType.Message)
 	{
-		if (QSBCore.DebugSettings != null && QSBCore.DebugSettings.InstanceIDInLogs)
+		if (QSBCore.DebugSettings.InstanceIDInLogs)
 		{
 			message = $"[{ProcessInstanceId}] " + message;
 		}
@@ -44,7 +44,7 @@ public static class DebugLog
 
 	public static void DebugWrite(string message, MessageType type = MessageType.Message)
 	{
-		if (QSBCore.Helper == null || QSBCore.DebugSettings == null || QSBCore.DebugSettings.DebugMode)
+		if (QSBCore.Helper == null || QSBCore.DebugSettings.DebugMode)
 		{
 			ToConsole(message, type);
 		}

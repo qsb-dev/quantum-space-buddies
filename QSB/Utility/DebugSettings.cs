@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
-using OWML.Common;
+﻿using OWML.Common;
 
 namespace QSB.Utility;
 
-[JsonObject(MemberSerialization.OptIn)]
+/// <summary>
+/// purely organizational class to store all debug settings
+/// </summary>
 public class DebugSettings
 {
 	public bool DebugMode;
@@ -38,7 +39,7 @@ public class DebugSettings
 	private bool _greySkybox;
 	public bool GreySkybox => DebugMode && _greySkybox;
 
-	public DebugSettings(IModConfig config)
+	public void Update(IModConfig config)
 	{
 		DebugMode = config.GetSettingsValue<bool>("debugMode");
 
