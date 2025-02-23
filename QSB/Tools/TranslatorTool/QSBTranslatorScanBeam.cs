@@ -80,7 +80,7 @@ public class QSBTranslatorScanBeam : MonoBehaviour
 
 	private void OnRenderObject()
 	{
-		if (!QSBCore.DrawLines || !QSBWorldSync.AllObjectsReady)
+		if (!QSBCore.DebugSettings.DrawLines || !QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}

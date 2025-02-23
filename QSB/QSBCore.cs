@@ -24,6 +24,7 @@ using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using QSB.Utility.Deterministic;
+using Debug = System.Diagnostics.Debug;
 
 /*
 	Copyright (C) 2020 - 2025
@@ -74,43 +75,12 @@ public class QSBCore : ModBehaviour
 	public static string JetpackVariation { get; private set; } = "Orange";
 	public static int Timeout { get; private set; }
 
-	public static bool DebugMode { get; private set; }
-
-	private static bool _instanceIdInLogs;
-	public static bool InstanceIDInLogs => DebugMode && _instanceIdInLogs;
-
-	private static bool _hookDebugLogs;
-	public static bool HookDebugLogs => DebugMode && _hookDebugLogs;
-
-	private static bool _avoidTimeSync;
-	public static bool AvoidTimeSync => DebugMode && _avoidTimeSync;
-
-	private static bool _autoStart;
-	public static bool AutoStart => DebugMode && _autoStart;
-
-	private static bool _drawGUI;
-	public static bool DrawGUI => DebugMode && _drawGUI;
-
-	private static bool _drawLines;
-	public static bool DrawLines => DebugMode && _drawLines;
-
-	private static bool _drawLabels;
-	public static bool DrawLabels => DebugMode && _drawLabels;
-
-	private static bool _greySkybox;
-	public static bool GreySkybox => DebugMode && _greySkybox;
-
-	private static float _latencySimulation;
-	public static float LatencySimulation => DebugMode ? _latencySimulation : 0;
-
-	private static bool _logQSBMessages;
-	public static bool LogQSBMessages => DebugMode && _logQSBMessages;
-
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
 		? QSBStandaloneProfileManager.SharedInstance
 		: QSBMSStoreProfileManager.SharedInstance;
+	public static DebugSettings DebugSettings { get; private set; }
 
 	public static Assembly QSBNHAssembly = null;
 
@@ -247,7 +217,7 @@ public class QSBCore : ModBehaviour
 
 		CheckNewHorizons();
 
-		if (HookDebugLogs)
+		if (DebugSettings.HookDebugLogs)
 		{
 			Application.logMessageReceived += (condition, stackTrace, logType) =>
 				DebugLog.ToConsole(
@@ -265,7 +235,7 @@ public class QSBCore : ModBehaviour
 				);
 		}
 
-		if (AutoStart)
+		if (DebugSettings.AutoStart)
 		{
 			UseKcpTransport = true;
 		}
@@ -416,29 +386,18 @@ public class QSBCore : ModBehaviour
 
 	public override void Configure(IModConfig config)
 	{
-		DebugMode = config.GetSettingsValue<bool>("debugMode");
+		DebugSettings = new DebugSettings(config);
 
 		if (GetComponent<DebugActions>() != null)
 		{
-			GetComponent<DebugActions>().enabled = DebugMode;
-			GetComponent<DebugGUI>().enabled = DebugMode;
+			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
+			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
 		}
-
-		_instanceIdInLogs = config.GetSettingsValue<bool>("instanceIdInLogs");
-		_hookDebugLogs = config.GetSettingsValue<bool>("hookDebugLogs");
-		_avoidTimeSync = config.GetSettingsValue<bool>("avoidTimeSync");
-		_autoStart = config.GetSettingsValue<bool>("autoStart");
-		_drawGUI = config.GetSettingsValue<bool>("drawGui");
-		_drawLines = config.GetSettingsValue<bool>("drawLines");
-		_drawLabels = config.GetSettingsValue<bool>("drawLabels");
-		_greySkybox = config.GetSettingsValue<bool>("greySkybox");
-		_latencySimulation = config.GetSettingsValue<int>("latencySimulation");
-		_logQSBMessages = config.GetSettingsValue<bool>("logQSBMessages");
 
 		DebugCameraSettings.UpdateFromDebugSetting();
 
 		Timeout = config.GetSettingsValue<int>("timeout");
-		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport") || AutoStart;
+		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport") || DebugSettings.AutoStart;
 		var foundValue = config.GetSettingsValue<int>("kcpPort");
 		KcpPort = (ushort)Mathf.Clamp(foundValue, ushort.MinValue, ushort.MaxValue);
 		QSBNetworkManager.UpdateTransport();
@@ -470,13 +429,13 @@ public class QSBCore : ModBehaviour
 	{
 		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.NumpadEnter].wasPressedThisFrame)
 		{
-			DebugMode = !DebugMode;
+			DebugSettings.DebugMode = !DebugSettings.DebugMode;
 
-			GetComponent<DebugActions>().enabled = DebugMode;
-			GetComponent<DebugGUI>().enabled = DebugMode;
+			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
+			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
 			DebugCameraSettings.UpdateFromDebugSetting();
 
-			DebugLog.ToConsole($"DEBUG MODE = {DebugMode}");
+			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
 		}
 
 		if (_steamworksInitialized)

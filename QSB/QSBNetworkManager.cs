@@ -91,11 +91,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		{
 			_latencyTransport = gameObject.AddComponent<LatencySimulation>();
-			_latencyTransport.reliableLatency = _latencyTransport.unreliableLatency = QSBCore.LatencySimulation;
+			_latencyTransport.reliableLatency = _latencyTransport.unreliableLatency = QSBCore.DebugSettings.LatencySimulation;
 			_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 		}
 
-		transport = QSBCore.LatencySimulation > 0
+		transport = QSBCore.DebugSettings.LatencySimulation > 0
 			? _latencyTransport
 			: QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 
@@ -176,7 +176,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		if (singleton != null)
 		{
-			if (QSBCore.LatencySimulation > 0)
+			if (QSBCore.DebugSettings.LatencySimulation > 0)
 			{
 				_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 				singleton.transport = Transport.active = _latencyTransport;

@@ -124,7 +124,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 		}
 		else
 		{
-			if (!QSBCore.AvoidTimeSync)
+			if (!QSBCore.DebugSettings.AvoidTimeSync)
 			{
 				WakeUpOrSleep();
 			}
@@ -275,7 +275,7 @@ public class WakeUpSync : MonoBehaviour, IAddComponentOnStart
 		{
 			UpdateServer();
 		}
-		else if (NetworkClient.active && QSBSceneManager.IsInUniverse && !QSBCore.AvoidTimeSync)
+		else if (NetworkClient.active && QSBSceneManager.IsInUniverse && !QSBCore.DebugSettings.AvoidTimeSync)
 		{
 			UpdateClient();
 		}

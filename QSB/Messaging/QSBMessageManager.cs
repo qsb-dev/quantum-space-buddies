@@ -49,7 +49,7 @@ public static class QSBMessageManager
 		NetworkServer.RegisterHandler<Wrapper>((_, wrapper) => OnServerReceive(wrapper));
 		NetworkClient.RegisterHandler<Wrapper>(wrapper => OnClientReceive(wrapper));
 
-		if (!QSBCore.LogQSBMessages)
+		if (!QSBCore.DebugSettings.LogQSBMessages)
 		{
 			return;
 		}
@@ -169,7 +169,7 @@ public static class QSBMessageManager
 
 	public static void SaveRXTX(QSBMessage msg, bool transmit)
 	{
-		if (!QSBCore.LogQSBMessages)
+		if (!QSBCore.DebugSettings.LogQSBMessages)
 		{
 			return;
 		}

@@ -309,7 +309,7 @@ public abstract class SyncBase : QSBNetworkTransform
 
 	protected virtual void OnRenderObject()
 	{
-		if (!QSBCore.DrawLines
+		if (!QSBCore.DebugSettings.DrawLines
 		    || !IsValid
 		    || !ReferenceTransform)
 		{
@@ -334,7 +334,7 @@ public abstract class SyncBase : QSBNetworkTransform
 
 	private void OnGUI()
 	{
-		if (!QSBCore.DrawLabels
+		if (!QSBCore.DebugSettings.DrawLabels
 		    || Event.current.type != EventType.Repaint
 		    || !IsValid
 		    || !ReferenceTransform)

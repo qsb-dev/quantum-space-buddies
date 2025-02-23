@@ -111,7 +111,7 @@ public class PlayerTransformSync : SectoredTransformSync
 
 	protected override void OnRenderObject()
 	{
-		if (!QSBCore.DrawLines
+		if (!QSBCore.DebugSettings.DrawLines
 		    || !IsValid
 		    || !ReferenceTransform)
 		{

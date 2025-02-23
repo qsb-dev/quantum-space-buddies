@@ -37,7 +37,7 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 	private void Awake()
 	{
-		enabled = QSBCore.DebugMode;
+		enabled = QSBCore.DebugSettings.DebugMode;
 
 		guiGUIStyle.fontSize = 9;
 	}
@@ -105,7 +105,7 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 		WriteLine(1, $"Ping : {Math.Round(NetworkTime.rtt * 1000.0)} ms");
-		if (!QSBCore.DrawGUI)
+		if (!QSBCore.DebugSettings.DrawGUI)
 		{
 			return;
 		}
@@ -408,7 +408,7 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 	private static void DrawWorldObjectLabels()
 	{
-		if (QSBCore.DrawLabels)
+		if (QSBCore.DebugSettings.DrawLabels)
 		{
 			var list = DebugActions.WorldObjectSelection == null
 				? QSBWorldSync.GetWorldObjects()
@@ -428,7 +428,7 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 	private static void DrawWorldObjectLines()
 	{
-		if (QSBCore.DrawLines)
+		if (QSBCore.DebugSettings.DrawLines)
 		{
 			var list = DebugActions.WorldObjectSelection == null
 				? QSBWorldSync.GetWorldObjects()

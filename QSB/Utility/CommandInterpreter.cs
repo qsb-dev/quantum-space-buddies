@@ -60,7 +60,7 @@ public class CommandInterpreter : MonoBehaviour, IAddComponentOnStart
 
 	public static void ShipCommand(string[] arguments)
 	{
-		if (!QSBCore.DebugMode)
+		if (!QSBCore.DebugSettings.DebugMode)
 		{
 			return;
 		}

@@ -71,7 +71,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 
 		QSBLocalization.LanguageChanged += OnLanguageChanged;
 
-		if (QSBCore.AutoStart)
+		if (QSBCore.DebugSettings.AutoStart)
 		{
 			// auto host/connect
 			Delay.RunWhen(PlayerData.IsLoaded, () =>
