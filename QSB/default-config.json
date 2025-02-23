@@ -101,7 +101,7 @@
       "title": "[DEBUG] Auto Start",
       "type": "toggle",
       "value": false,
-      "tooltip": "[DEBUG] Automatically host or connect to localhost (depending on which instance of the game is opened first) on game launch."
+      "tooltip": "[DEBUG] Automatically host or connect to localhost on game launch (depending on which instance of the game is opened first)."
     },
     "drawGui": {
       "title": "[DEBUG] Draw GUI",
