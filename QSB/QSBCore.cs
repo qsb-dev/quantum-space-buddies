@@ -215,29 +215,6 @@ public class QSBCore : ModBehaviour
 
 		CheckNewHorizons();
 
-		if (DebugSettings.HookDebugLogs)
-		{
-			Application.logMessageReceived += (condition, stackTrace, logType) =>
-				DebugLog.ToConsole(
-					$"[Debug] {condition}" +
-					(stackTrace != string.Empty ? $"\nStacktrace: {stackTrace}" : string.Empty),
-					logType switch
-					{
-						LogType.Error => MessageType.Error,
-						LogType.Assert => MessageType.Error,
-						LogType.Warning => MessageType.Warning,
-						LogType.Log => MessageType.Message,
-						LogType.Exception => MessageType.Error,
-						_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
-					}
-				);
-		}
-
-		if (DebugSettings.AutoStart)
-		{
-			UseKcpTransport = true;
-		}
-
 		RegisterAddons();
 
 		InitAssemblies();
@@ -386,6 +363,15 @@ public class QSBCore : ModBehaviour
 	{
 		DebugSettings.Update(config);
 
+		if (DebugSettings.HookDebugLogs)
+		{
+			Application.logMessageReceived += OnDebugLog;
+		}
+		else
+		{
+			Application.logMessageReceived -= OnDebugLog;
+		}
+
 		// Configure gets called before Start, so these might not exist yet
 		if (GetComponent<DebugActions>() != null)
 		{
@@ -426,21 +412,26 @@ public class QSBCore : ModBehaviour
 
 	private void Update()
 	{
-		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.NumpadEnter].wasPressedThisFrame)
-		{
-			DebugSettings.DebugMode = !DebugSettings.DebugMode;
-
-			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
-			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
-			DebugCameraSettings.UpdateFromDebugSetting();
-
-			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
-		}
-
 		if (_steamworksInitialized)
 		{
 			SteamAPI.RunCallbacks();
 		}
+	}
+
+	/// <summary>
+	/// called when unity does Debug log
+	/// </summary>
+	private static void OnDebugLog(string condition, string stackTrace, LogType logType)
+	{
+		DebugLog.ToConsole($"[Debug] {condition}" + (stackTrace != string.Empty ? $"\nStacktrace: {stackTrace}" : string.Empty), logType switch
+		{
+			LogType.Error => MessageType.Error,
+			LogType.Assert => MessageType.Error,
+			LogType.Warning => MessageType.Warning,
+			LogType.Log => MessageType.Message,
+			LogType.Exception => MessageType.Error,
+			_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
+		});
 	}
 
 	private void CheckNewHorizons()

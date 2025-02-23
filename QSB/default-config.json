@@ -83,13 +83,13 @@
       "title": "[DEBUG] Instance ID in Logs",
       "type": "toggle",
       "value": false,
-      "tooltip": "[DEBUG] Appends the game instance id to every log message sent. Only takes effect after a game restart."
+      "tooltip": "[DEBUG] Appends the game instance id to every log message sent."
     },
     "hookDebugLogs": {
       "title": "[DEBUG] Hook Debug Logs",
       "type": "toggle",
       "value": false,
-      "tooltip": "[DEBUG] Prints every Unity warning + error to the logs. Only takes effect after a game restart."
+      "tooltip": "[DEBUG] Prints every Unity warning + error to the logs."
     },
     "avoidTimeSync": {
       "title": "[DEBUG] Disable Time Sync",
@@ -101,7 +101,7 @@
       "title": "[DEBUG] Auto Start",
       "type": "toggle",
       "value": false,
-      "tooltip": "[DEBUG] Automatically host and connect depending on the game instance id for faster testing."
+      "tooltip": "[DEBUG] Automatically host or connect to localhost (depending on which instance of the game is opened first) on game launch."
     },
     "drawGui": {
       "title": "[DEBUG] Draw GUI",
