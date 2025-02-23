@@ -11,10 +11,12 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="OuterWildsGameLibs" Version="1.1.14.768" IncludeAssets="compile" />
-        <PackageReference Include="OWML" Version="2.11.1" IncludeAssets="compile" />
         <Reference Include="..\Lib\*.dll" />
     </ItemGroup>
     <ItemGroup>
+        <None Include="..\Lib\*.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Include="steam_api64.dll">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
