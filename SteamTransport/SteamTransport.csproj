@@ -21,4 +21,7 @@
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\QSB\QSB.csproj" />
+    </ItemGroup>
 </Project>
