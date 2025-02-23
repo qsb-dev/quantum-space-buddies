@@ -17,14 +17,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json.Linq;
 using QSB.API;
 using QSB.BodyCustomization;
 using QSB.Player.Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using QSB.Utility.Deterministic;
-using Debug = System.Diagnostics.Debug;
 
 /*
 	Copyright (C) 2020 - 2025

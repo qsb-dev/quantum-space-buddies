@@ -70,6 +70,9 @@
       "value": true,
       "tooltip": "Disable this if using NomaiVR, or any other mod with conflicting inputs."
     },
+    "Debug Options": {
+      "type": "separator"
+    },
     "debugMode": {
       "title": "[DEBUG] Debug Mode",
       "type": "toggle",
