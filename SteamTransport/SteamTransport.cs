@@ -5,7 +5,7 @@ namespace SteamTransport;
 
 public class SteamTransport : Transport
 {
-	public override bool Available() => throw new NotImplementedException();
+	public override bool Available() => true;
 
 	public override bool ClientConnected() => throw new NotImplementedException();
 

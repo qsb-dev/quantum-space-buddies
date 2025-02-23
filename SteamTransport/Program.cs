@@ -69,12 +69,19 @@ public static class Program
 		using var cb = Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t>.Create(t =>
 		{
 			Console.WriteLine($"{t.m_info.m_szConnectionDescription} | state = {t.m_info.m_eState} | {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}");
+
+			// requesting connection, automatically allow
+			if (t.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting)
+			{
+				SteamNetworkingSockets.AcceptConnection(t.m_hConn);
+			}
 		});
 
 		var address = new SteamNetworkingIPAddr();
-		address.Clear();
+		address.ParseString("0.0.0.0:1234");
+		address.ToString(out var addressStr, true);
 		var socket = SteamNetworkingSockets.CreateListenSocketIP(ref address, 0, new SteamNetworkingConfigValue_t[0]);
-		Console.WriteLine("listening...");
+		Console.WriteLine($"listening on {addressStr}...");
 
 		while (true)
 		{
@@ -91,10 +98,22 @@ public static class Program
 		});
 
 		var address = new SteamNetworkingIPAddr();
-		address.SetIPv6LocalHost();
+		address.ParseString("127.0.0.1:1234");
+		address.ToString(out var addressStr, true);
 		Console.WriteLine($"is localhost = {address.IsLocalHost()}");
-		var conn = SteamNetworkingSockets.ConnectByIPAddress(ref address, 0, new SteamNetworkingConfigValue_t[0]);
-		Console.WriteLine("connecting...");
+		var conn = SteamNetworkingSockets.ConnectByIPAddress(ref address, 1, new SteamNetworkingConfigValue_t[]
+		{
+			new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IP_AllowWithoutAuth,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_int32 = 1,
+				}
+			}
+		});
+		Console.WriteLine($"connecting to {addressStr}...");
 
 		while (true)
 		{
