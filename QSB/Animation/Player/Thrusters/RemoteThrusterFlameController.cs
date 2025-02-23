@@ -105,7 +105,7 @@ public class RemoteThrusterFlameController : MonoBehaviour
 
 	private void OnRenderObject()
 	{
-		if (!QSBCore.DebugSettings.DrawLines || !QSBWorldSync.AllObjectsReady)
+		if (!QSBCore.DrawLines || !QSBWorldSync.AllObjectsReady)
 		{
 			return;
 		}

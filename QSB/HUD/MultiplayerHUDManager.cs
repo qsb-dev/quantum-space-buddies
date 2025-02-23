@@ -230,7 +230,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 			previousMessages.Push(message);
 
-			if (QSBCore.DebugSettings.DebugMode && CommandInterpreter.InterpretCommand(message))
+			if (QSBCore.DebugMode && CommandInterpreter.InterpretCommand(message))
 			{
 				return;
 			}

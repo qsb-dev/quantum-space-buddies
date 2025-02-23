@@ -72,15 +72,45 @@ public class QSBCore : ModBehaviour
 	public static bool TextChatInput { get; private set; }
 	public static string SkinVariation { get; private set; } = "Default";
 	public static string JetpackVariation { get; private set; } = "Orange";
+	public static int Timeout { get; private set; }
+
+	public static bool DebugMode { get; private set; }
+
+	private static bool _instanceIdInLogs;
+	public static bool InstanceIDInLogs => DebugMode && _instanceIdInLogs;
+
+	private static bool _hookDebugLogs;
+	public static bool HookDebugLogs => DebugMode && _hookDebugLogs;
+
+	private static bool _avoidTimeSync;
+	public static bool AvoidTimeSync => DebugMode && _avoidTimeSync;
+
+	private static bool _autoStart;
+	public static bool AutoStart => DebugMode && _autoStart;
+
+	private static bool _drawGUI;
+	public static bool DrawGUI => DebugMode && _drawGUI;
+
+	private static bool _drawLines;
+	public static bool DrawLines => DebugMode && _drawLines;
+
+	private static bool _drawLabels;
+	public static bool DrawLabels => DebugMode && _drawLabels;
+
+	private static bool _greySkybox;
+	public static bool GreySkybox => DebugMode && _greySkybox;
+
+	private static float _latencySimulation;
+	public static float LatencySimulation => DebugMode ? _latencySimulation : 0;
+
+	private static bool _logQSBMessages;
+	public static bool LogQSBMessages => DebugMode && _logQSBMessages;
+
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
 		? QSBStandaloneProfileManager.SharedInstance
 		: QSBMSStoreProfileManager.SharedInstance;
-	public static DebugSettings DebugSettings { get; private set; } = new();
-
-	private static string randomSkinType;
-	private static string randomJetpackType;
 
 	public static Assembly QSBNHAssembly = null;
 
@@ -217,9 +247,7 @@ public class QSBCore : ModBehaviour
 
 		CheckNewHorizons();
 
-		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
-
-		if (DebugSettings.HookDebugLogs)
+		if (HookDebugLogs)
 		{
 			Application.logMessageReceived += (condition, stackTrace, logType) =>
 				DebugLog.ToConsole(
@@ -237,10 +265,9 @@ public class QSBCore : ModBehaviour
 				);
 		}
 
-		if (DebugSettings.AutoStart)
+		if (AutoStart)
 		{
 			UseKcpTransport = true;
-			DebugSettings.DebugMode = true;
 		}
 
 		RegisterAddons();
@@ -273,19 +300,6 @@ public class QSBCore : ModBehaviour
 		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
-
-		if (DebugSettings.RandomizeSkins)
-		{
-			var skinSetting = (JObject)ModHelper.Config.Settings["skinType"];
-			var skinOptions = skinSetting["options"].ToObject<string[]>();
-			randomSkinType = skinOptions[UnityEngine.Random.Range(0, skinOptions.Length - 1)];
-
-			var jetpackSetting = (JObject)ModHelper.Config.Settings["jetpackType"];
-			var jetpackOptions = jetpackSetting["options"].ToObject<string[]>();
-			randomJetpackType = jetpackOptions[UnityEngine.Random.Range(0, jetpackOptions.Length - 1)];
-
-			Configure(ModHelper.Config);
-		}
 	}
 
 	private AssetBundle LoadBundle(string bundleName)
@@ -402,7 +416,29 @@ public class QSBCore : ModBehaviour
 
 	public override void Configure(IModConfig config)
 	{
-		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport") || DebugSettings.AutoStart;
+		DebugMode = config.GetSettingsValue<bool>("debugMode");
+
+		if (GetComponent<DebugActions>() != null)
+		{
+			GetComponent<DebugActions>().enabled = DebugMode;
+			GetComponent<DebugGUI>().enabled = DebugMode;
+		}
+
+		_instanceIdInLogs = config.GetSettingsValue<bool>("instanceIdInLogs");
+		_hookDebugLogs = config.GetSettingsValue<bool>("hookDebugLogs");
+		_avoidTimeSync = config.GetSettingsValue<bool>("avoidTimeSync");
+		_autoStart = config.GetSettingsValue<bool>("autoStart");
+		_drawGUI = config.GetSettingsValue<bool>("drawGui");
+		_drawLines = config.GetSettingsValue<bool>("drawLines");
+		_drawLabels = config.GetSettingsValue<bool>("drawLabels");
+		_greySkybox = config.GetSettingsValue<bool>("greySkybox");
+		_latencySimulation = config.GetSettingsValue<int>("latencySimulation");
+		_logQSBMessages = config.GetSettingsValue<bool>("logQSBMessages");
+
+		DebugCameraSettings.UpdateFromDebugSetting();
+
+		Timeout = config.GetSettingsValue<int>("timeout");
+		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport") || AutoStart;
 		var foundValue = config.GetSettingsValue<int>("kcpPort");
 		KcpPort = (ushort)Mathf.Clamp(foundValue, ushort.MinValue, ushort.MaxValue);
 		QSBNetworkManager.UpdateTransport();
@@ -414,16 +450,8 @@ public class QSBCore : ModBehaviour
 		TextChatInput = config.GetSettingsValue<bool>("textChatInput");
 		AlwaysShowPlanetIcons = config.GetSettingsValue<bool>("alwaysShowPlanetIcons");
 
-		if (DebugSettings.RandomizeSkins)
-		{
-			SkinVariation = randomSkinType;
-			JetpackVariation = randomJetpackType;
-		}
-		else
-		{
-			SkinVariation = config.GetSettingsValue<string>("skinType");
-			JetpackVariation = config.GetSettingsValue<string>("jetpackType");
-		}
+		SkinVariation = config.GetSettingsValue<string>("skinType");
+		JetpackVariation = config.GetSettingsValue<string>("jetpackType");
 
 		if (IsHost)
 		{
@@ -442,13 +470,13 @@ public class QSBCore : ModBehaviour
 	{
 		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.NumpadEnter].wasPressedThisFrame)
 		{
-			DebugSettings.DebugMode = !DebugSettings.DebugMode;
+			DebugMode = !DebugMode;
 
-			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
-			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
+			GetComponent<DebugActions>().enabled = DebugMode;
+			GetComponent<DebugGUI>().enabled = DebugMode;
 			DebugCameraSettings.UpdateFromDebugSetting();
 
-			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
+			DebugLog.ToConsole($"DEBUG MODE = {DebugMode}");
 		}
 
 		if (_steamworksInitialized)

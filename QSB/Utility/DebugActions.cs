@@ -45,7 +45,7 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 	private static void DamageShipElectricalSystem() =>
 		ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
-	private void Awake() => enabled = QSBCore.DebugSettings.DebugMode;
+	private void Awake() => enabled = QSBCore.DebugMode;
 
 	private int _otherPlayerToTeleportTo;
 	private int _backTimer;

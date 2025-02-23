@@ -66,9 +66,6 @@
     </None>
     <None Remove="AssetBundles\AssetBundles" />
     <None Remove="AssetBundles\*.manifest" />
-    <None Condition="Exists('debugsettings.json')" Include="debugsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\Lib\*.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

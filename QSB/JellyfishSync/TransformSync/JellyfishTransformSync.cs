@@ -88,7 +88,7 @@ public class JellyfishTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBeh
 
 	protected override void OnRenderObject()
 	{
-		if (!QSBCore.DebugSettings.DrawLines
+		if (!QSBCore.DrawLines
 			|| !IsValid
 			|| !ReferenceTransform
 			|| !AttachedTransform.gameObject.activeInHierarchy)

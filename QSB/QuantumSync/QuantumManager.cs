@@ -56,7 +56,7 @@ public class QuantumManager : WorldObjectManager
 
 	public void OnRenderObject()
 	{
-		if (!QSBCore.DebugSettings.DrawLines)
+		if (!QSBCore.DrawLines)
 		{
 			return;
 		}

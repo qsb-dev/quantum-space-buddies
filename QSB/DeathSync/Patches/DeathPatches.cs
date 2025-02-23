@@ -83,7 +83,7 @@ public class DeathPatches : QSBPatch
 			}
 
 			var deadPlayersCount = QSBPlayerManager.PlayerList.Count(x => x.IsDead);
-			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1 && !QSBCore.DebugSettings.DisableLoopDeath)
+			if (deadPlayersCount == QSBPlayerManager.PlayerList.Count - 1)
 			{
 				new EndLoopMessage().Send();
 				DebugLog.DebugWrite($"- All players are dead.");

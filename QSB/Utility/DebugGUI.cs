@@ -37,7 +37,7 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 	private void Awake()
 	{
-		enabled = QSBCore.DebugSettings.DebugMode;
+		enabled = QSBCore.DebugMode;
 
 		guiGUIStyle.fontSize = 9;
 	}
@@ -105,7 +105,7 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 		WriteLine(1, $"Ping : {Math.Round(NetworkTime.rtt * 1000.0)} ms");
-		if (!QSBCore.DebugSettings.DrawGui)
+		if (!QSBCore.DrawGUI)
 		{
 			return;
 		}
@@ -408,23 +408,13 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 	private static void DrawWorldObjectLabels()
 	{
-		if (QSBCore.DebugSettings.DrawLabels)
+		if (QSBCore.DrawLabels)
 		{
 			var list = DebugActions.WorldObjectSelection == null
 				? QSBWorldSync.GetWorldObjects()
 				: QSBWorldSync.GetWorldObjects(DebugActions.WorldObjectSelection);
 
 			foreach (var obj in list)
-			{
-				if (obj.ShouldDisplayDebug())
-				{
-					DrawLabel(obj.AttachedObject.transform, obj.ReturnLabel());
-				}
-			}
-		}
-		else if (QSBCore.DebugSettings.DrawGhostAI)
-		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects<IGhostObject>())
 			{
 				if (obj.ShouldDisplayDebug())
 				{
@@ -438,23 +428,13 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 	private static void DrawWorldObjectLines()
 	{
-		if (QSBCore.DebugSettings.DrawLines)
+		if (QSBCore.DrawLines)
 		{
 			var list = DebugActions.WorldObjectSelection == null
 				? QSBWorldSync.GetWorldObjects()
 				: QSBWorldSync.GetWorldObjects(DebugActions.WorldObjectSelection);
 
 			foreach (var obj in list)
-			{
-				if (obj.ShouldDisplayDebug())
-				{
-					obj.DisplayLines();
-				}
-			}
-		}
-		else if (QSBCore.DebugSettings.DrawGhostAI)
-		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects<IGhostObject>())
 			{
 				if (obj.ShouldDisplayDebug())
 				{

@@ -64,7 +64,7 @@ public class AnglerTransformSync : UnsectoredRigidbodySync, ILinkedNetworkBehavi
 
 	protected override void OnRenderObject()
 	{
-		if (!QSBCore.DebugSettings.DrawLines
+		if (!QSBCore.DrawLines
 			|| !IsValid
 			|| !ReferenceTransform
 			|| !AttachedTransform.gameObject.activeInHierarchy)

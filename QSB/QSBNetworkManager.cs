@@ -79,23 +79,23 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
 			// KCP uses milliseconds
-			_kcpTransport.Timeout = QSBCore.DebugSettings.Timeout * 1000;
+			_kcpTransport.Timeout = QSBCore.Timeout * 1000;
 			_kcpTransport.Port = QSBCore.KcpPort;
 		}
 
 		{
 			_steamTransport = gameObject.AddComponent<FizzySteamworks>();
 			// Steam uses seconds
-			_steamTransport.Timeout = QSBCore.DebugSettings.Timeout;
+			_steamTransport.Timeout = QSBCore.Timeout;
 		}
 
 		{
 			_latencyTransport = gameObject.AddComponent<LatencySimulation>();
-			_latencyTransport.reliableLatency = _latencyTransport.unreliableLatency = QSBCore.DebugSettings.LatencySimulation;
+			_latencyTransport.reliableLatency = _latencyTransport.unreliableLatency = QSBCore.LatencySimulation;
 			_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 		}
 
-		transport = QSBCore.DebugSettings.LatencySimulation > 0
+		transport = QSBCore.LatencySimulation > 0
 			? _latencyTransport
 			: QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 
@@ -176,7 +176,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		if (singleton != null)
 		{
-			if (QSBCore.DebugSettings.LatencySimulation > 0)
+			if (QSBCore.LatencySimulation > 0)
 			{
 				_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 				singleton.transport = Transport.active = _latencyTransport;
