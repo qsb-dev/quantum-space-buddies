@@ -92,7 +92,7 @@ public static class Program
 							running = false;
 							break;
 						case 's':
-							transport.ServerSend(theConn, new ArraySegment<byte>(new byte[] { 1, 2, 3 }));
+							transport.ServerSend(theConn, new ArraySegment<byte>(new byte[] { 1, 2, 3, 4, 5 }, 1, 5 - 1));
 							break;
 						case 'd':
 							transport.ServerDisconnect(theConn);
@@ -136,7 +136,7 @@ public static class Program
 							running = false;
 							break;
 						case 's':
-							transport.ClientSend(new ArraySegment<byte>(new byte[] { 1, 2, 3 }));
+							transport.ClientSend(new ArraySegment<byte>(new byte[] { 1, 2, 3, 4, 5 }, 1, 5 - 1));
 							break;
 					}
 				}

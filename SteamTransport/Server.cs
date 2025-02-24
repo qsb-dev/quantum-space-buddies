@@ -46,6 +46,7 @@ public class Server
 
 	public bool IsListening;
 	private HSteamListenSocket _listenSocket;
+	// connection id is derived from uint to int cast here. is that okay???
 	private readonly List<HSteamNetConnection> _conns = new();
 
 	public void StartListening()
@@ -62,13 +63,12 @@ public class Server
 	{
 		var conn = new HSteamNetConnection((uint)connectionId);
 
-		var data = new byte[segment.Count];
-		Array.Copy(segment.Array, segment.Offset, data, 0, data.Length);
+		// use pointer to managed array instead of making copy. is this okay?
 		unsafe
 		{
-			fixed (byte* pData = data)
+			fixed (byte* pData = segment.Array)
 			{
-				var result = SteamNetworkingSockets.SendMessageToConnection(conn, (IntPtr)pData, (uint)data.Length, Util.MirrorChannel2SendFlag(channelId), out _);
+				var result = SteamNetworkingSockets.SendMessageToConnection(conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
 				_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
 			}
 		}

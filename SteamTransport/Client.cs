@@ -69,13 +69,12 @@ public class Client
 
 	public void Send(ArraySegment<byte> segment, int channelId)
 	{
-		var data = new byte[segment.Count];
-		Array.Copy(segment.Array, segment.Offset, data, 0, data.Length);
+		// use pointer to managed array instead of making copy. is this okay?
 		unsafe
 		{
-			fixed (byte* pData = data)
+			fixed (byte* pData = segment.Array)
 			{
-				var result = SteamNetworkingSockets.SendMessageToConnection(_conn, (IntPtr)pData, (uint)data.Length, Util.MirrorChannel2SendFlag(channelId), out _);
+				var result = SteamNetworkingSockets.SendMessageToConnection(_conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
 				_transport.OnClientDataSent?.Invoke(segment, channelId);
 			}
 		}
