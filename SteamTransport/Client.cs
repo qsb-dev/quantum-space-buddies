@@ -58,19 +58,7 @@ public class Client
 		}
 
 		_transport.Log($"connecting to {address}");
-		var options = new SteamNetworkingConfigValue_t[]
-		{
-			new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IP_AllowWithoutAuth,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_int32 = 1,
-				}
-			}
-		};
-		_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, options.Length, options);
+		_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
 	}
 
 	public void Send(ArraySegment<byte> segment, int channelId)

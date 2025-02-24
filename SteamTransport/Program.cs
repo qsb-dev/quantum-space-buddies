@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
 using Steamworks;
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace SteamTransport;
@@ -77,7 +75,13 @@ public static class Program
 
 		try
 		{
-			while (true)
+			var running = true;
+			Console.CancelKeyPress += (sender, args) =>
+			{
+				args.Cancel = true;
+				running = false;
+			};
+			while (running)
 			{
 				transport.ServerEarlyUpdate();
 				SteamAPI.RunCallbacks();
@@ -103,15 +107,18 @@ public static class Program
 
 		try
 		{
-			var stopwatch = Stopwatch.StartNew();
-			while (true)
+			var running = true;
+			Console.CancelKeyPress += (sender, args) =>
+			{
+				args.Cancel = true;
+				running = false;
+			};
+			while (running)
 			{
 				transport.ClientEarlyUpdate();
 				SteamAPI.RunCallbacks();
 				transport.ClientLateUpdate();
 				Thread.Sleep(10);
-
-				if (stopwatch.ElapsedMilliseconds > 10 * 1000) break;
 			}
 		}
 		finally

@@ -52,17 +52,11 @@ public class Server
 
 	public void Send(int connectionId, ArraySegment<byte> segment, int channelId) { }
 
-	public void RecieveData()
-	{
-	}
+	public void RecieveData() { }
 
-	public void Flush()
-	{
-	}
+	public void Flush() { }
 
-	public void Disconnect(int connectionId)
-	{
-	}
+	public void Disconnect(int connectionId) { }
 
 	public void Close()
 	{
