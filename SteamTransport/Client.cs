@@ -17,8 +17,10 @@ public class Client
 		_onStatusChanged = Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t>.Create(t =>
 		{
 			_transport.Log($"STATUS CHANGED for {t.m_info.m_szConnectionDescription}\n" +
-				$"state = {t.m_info.m_eState}\n" +
-				$"end = {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}\n");
+				$"  state = {t.m_info.m_eState}\n" +
+				$"  end = {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}");
+			// SteamNetworkingSockets.GetDetailedConnectionStatus(t.m_hConn, out var status, 1000);
+			// _transport.Log(status);
 
 			switch (t.m_info.m_eState)
 			{
