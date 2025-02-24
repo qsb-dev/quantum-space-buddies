@@ -28,6 +28,11 @@ public class Server
 					// ignore max connections for now
 					SteamNetworkingSockets.AcceptConnection(t.m_hConn);
 					break;
+				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
+					break;
+				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
+				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
+					break;
 			}
 		});
 	}

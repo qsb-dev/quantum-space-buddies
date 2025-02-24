@@ -1,5 +1,7 @@
-﻿using Steamworks;
+﻿using HarmonyLib;
+using Steamworks;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -78,6 +80,7 @@ public static class Program
 			while (true)
 			{
 				transport.ServerEarlyUpdate();
+				SteamAPI.RunCallbacks();
 				transport.ServerLateUpdate();
 				Thread.Sleep(10);
 			}
@@ -92,17 +95,23 @@ public static class Program
 	{
 		var transport = new SteamTransport();
 		transport.Log = Console.WriteLine;
+		transport.OnClientError = (error, s) => Console.Error.WriteLine(s);
+		transport.OnClientDataReceived = (bytes, i) => Console.WriteLine($"recv {bytes.Join()}");
 		transport.UseLocalhost = true;
 
 		transport.ClientConnect("unused");
 
 		try
 		{
+			var stopwatch = Stopwatch.StartNew();
 			while (true)
 			{
 				transport.ClientEarlyUpdate();
+				SteamAPI.RunCallbacks();
 				transport.ClientLateUpdate();
 				Thread.Sleep(10);
+
+				if (stopwatch.ElapsedMilliseconds > 10 * 1000) break;
 			}
 		}
 		finally

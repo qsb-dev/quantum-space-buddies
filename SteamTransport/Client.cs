@@ -1,7 +1,7 @@
-﻿using HarmonyLib;
-using Mirror;
+﻿using Mirror;
 using Steamworks;
 using System;
+using System.Runtime.InteropServices;
 
 namespace SteamTransport;
 
@@ -58,7 +58,19 @@ public class Client
 		}
 
 		_transport.Log($"connecting to {address}");
-		_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
+		var options = new SteamNetworkingConfigValue_t[]
+		{
+			new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IP_AllowWithoutAuth,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_int32 = 1,
+				}
+			}
+		};
+		_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, options.Length, options);
 	}
 
 	public void Send(ArraySegment<byte> segment, int channelId)
@@ -77,10 +89,10 @@ public class Client
 			unsafe
 			{
 				var msg = *(SteamNetworkingMessage_t*)ppOutMessage; // probably not gonna work
-				var data = new ArraySegment<byte>(new Span<byte>((byte*)msg.m_pData, msg.m_cbSize).ToArray());
+				var data = new byte[msg.m_cbSize];
+				Marshal.Copy(msg.m_pData, data, 0, data.Length);
 				var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
-				_transport.Log($"received data {data.Join()}");
-				_transport.OnClientDataReceived(data, channel);
+				_transport.OnClientDataReceived(new ArraySegment<byte>(data), channel);
 				msg.Release();
 			}
 		}
@@ -93,7 +105,7 @@ public class Client
 
 	public void Close()
 	{
-		// SteamNetworkingSockets.CloseConnection(_conn, )
+		SteamNetworkingSockets.CloseConnection(_conn, 0, "client closed connection", false);
 
 		_onStatusChanged.Dispose();
 	}
