@@ -18,7 +18,7 @@
         <Reference Include="..\Lib\*.dll" />
         <Reference Include="..\standaloneLibs\*.dll" />
     </ItemGroup>
-    <Target Name="copy standalone dlls to unity" AfterTargets="PostBuildEvent">
+    <Target Name="copy standalone dlls" AfterTargets="PostBuildEvent">
         <ItemGroup>
             <_Files Remove="@(_Files)" />
             <_Files Include="..\Lib\*.dll" />

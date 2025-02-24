@@ -29,17 +29,17 @@ public class Client
 					IsConnected = false;
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
-					_transport.OnClientConnected?.Invoke();
 					IsConnecting = false;
 					IsConnected = true;
+					_transport.OnClientConnected?.Invoke();
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
-					_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
 					SteamNetworkingSockets.CloseConnection(_conn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
-					_transport.OnClientDisconnected?.Invoke();
 					IsConnecting = false;
 					IsConnected = false;
+					_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
+					_transport.OnClientDisconnected?.Invoke();
 					break;
 			}
 		});
@@ -89,15 +89,12 @@ public class Client
 		for (var i = 0; i < numMessages; i++)
 		{
 			var ppOutMessage = ppOutMessages[i];
-			unsafe
-			{
-				var msg = *(SteamNetworkingMessage_t*)ppOutMessage; // probably not gonna work
-				var data = new byte[msg.m_cbSize];
-				Marshal.Copy(msg.m_pData, data, 0, data.Length);
-				var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
-				_transport.OnClientDataReceived?.Invoke(new ArraySegment<byte>(data), channel);
-				msg.Release();
-			}
+			var msg = Marshal.PtrToStructure<SteamNetworkingMessage_t>(ppOutMessage); // cant pointer cast for some reason
+			var data = new byte[msg.m_cbSize];
+			Marshal.Copy(msg.m_pData, data, 0, data.Length);
+			var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
+			_transport.OnClientDataReceived?.Invoke(new ArraySegment<byte>(data), channel);
+			SteamNetworkingMessage_t.Release(ppOutMessage);
 		}
 	}
 
@@ -110,6 +107,9 @@ public class Client
 	{
 		_transport.Log("client close");
 		SteamNetworkingSockets.CloseConnection(_conn, 0, "client closed connection", false);
+		IsConnecting = false;
+		IsConnected = false;
+		// should this do error?
 		_transport.OnClientDisconnected?.Invoke();
 
 		_onStatusChanged.Dispose();

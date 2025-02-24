@@ -35,10 +35,10 @@ public class Server
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
-					_transport.OnServerError?.Invoke((int)t.m_hConn.m_HSteamNetConnection, TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
 					SteamNetworkingSockets.CloseConnection(t.m_hConn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
-					_transport.OnServerDisconnected?.Invoke((int)t.m_hConn.m_HSteamNetConnection);
 					_conns.Remove(t.m_hConn);
+					_transport.OnServerError?.Invoke((int)t.m_hConn.m_HSteamNetConnection, TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
+					_transport.OnServerDisconnected?.Invoke((int)t.m_hConn.m_HSteamNetConnection);
 					break;
 			}
 		});
@@ -85,15 +85,12 @@ public class Server
 			for (var i = 0; i < numMessages; i++)
 			{
 				var ppOutMessage = ppOutMessages[i];
-				unsafe
-				{
-					var msg = *(SteamNetworkingMessage_t*)ppOutMessage; // probably not gonna work
-					var data = new byte[msg.m_cbSize];
-					Marshal.Copy(msg.m_pData, data, 0, data.Length);
-					var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
-					_transport.OnServerDataReceived((int)conn.m_HSteamNetConnection, new ArraySegment<byte>(data), channel);
-					msg.Release();
-				}
+				var msg = Marshal.PtrToStructure<SteamNetworkingMessage_t>(ppOutMessage); // cant pointer cast for some reason
+				var data = new byte[msg.m_cbSize];
+				Marshal.Copy(msg.m_pData, data, 0, data.Length);
+				var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
+				_transport.OnServerDataReceived((int)conn.m_HSteamNetConnection, new ArraySegment<byte>(data), channel);
+				SteamNetworkingMessage_t.Release(ppOutMessage);
 			}
 		}
 	}
@@ -109,13 +106,17 @@ public class Server
 	public void Disconnect(int connectionId)
 	{
 		var conn = new HSteamNetConnection((uint)connectionId);
+		_transport.Log($"disconnect {conn.GetDescription()}");
 		SteamNetworkingSockets.CloseConnection(conn, 0, "disconnected by server", false);
 		_conns.Remove(conn);
+		// should this do error?
+		_transport.OnServerDisconnected?.Invoke((int)conn.m_HSteamNetConnection);
 	}
 
 	public void Close()
 	{
 		_transport.Log("stop server");
+		// mirror disconnects all clients for us before this
 		SteamNetworkingSockets.CloseListenSocket(_listenSocket);
 		IsListening = false;
 

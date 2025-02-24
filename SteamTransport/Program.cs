@@ -44,7 +44,7 @@ public static class Program
 				SteamClient.SetWarningMessageHook((severity, text) => Console.WriteLine(text));
 			}
 
-			switch (Console.ReadKey().KeyChar)
+			switch (Console.ReadKey(true).KeyChar)
 			{
 				case '1':
 					Console.WriteLine("server");
@@ -71,19 +71,34 @@ public static class Program
 		transport.Log = Console.WriteLine;
 		transport.UseLocalhost = true;
 
+		transport.OnServerError = (conn, error, s) => Console.Error.WriteLine($"ERROR {conn} {error} {s}");
+		var theConn = -1;
+		transport.OnServerConnected = conn => theConn = conn;
+		transport.OnServerDataReceived = (conn, bytes, i) => Console.WriteLine($"RECV {conn} {bytes.Join()} {i}");
+
 		transport.ServerStart();
 
 		try
 		{
 			var running = true;
-			Console.CancelKeyPress += (sender, args) =>
-			{
-				args.Cancel = true;
-				running = false;
-			};
 			while (running)
 			{
 				transport.ServerEarlyUpdate();
+				if (Console.KeyAvailable)
+				{
+					switch (Console.ReadKey(true).KeyChar)
+					{
+						case 'q':
+							running = false;
+							break;
+						case 's':
+							transport.ServerSend(theConn, new ArraySegment<byte>(new byte[] { 1, 2, 3 }));
+							break;
+						case 'd':
+							transport.ServerDisconnect(theConn);
+							break;
+					}
+				}
 				SteamAPI.RunCallbacks();
 				transport.ServerLateUpdate();
 				Thread.Sleep(10);
@@ -91,6 +106,7 @@ public static class Program
 		}
 		finally
 		{
+			transport.ServerDisconnect(theConn); // mirror does this for us
 			transport.ServerStop();
 		}
 	}
@@ -99,23 +115,31 @@ public static class Program
 	{
 		var transport = new SteamTransport();
 		transport.Log = Console.WriteLine;
-		transport.OnClientError = (error, s) => Console.Error.WriteLine(s);
-		transport.OnClientDataReceived = (bytes, i) => Console.WriteLine($"recv {bytes.Join()}");
 		transport.UseLocalhost = true;
+
+		transport.OnClientError = (error, s) => Console.Error.WriteLine($"ERROR {error} {s}");
+		transport.OnClientDataReceived = (bytes, i) => Console.WriteLine($"RECV {bytes.Join()} {i}");
 
 		transport.ClientConnect("unused");
 
 		try
 		{
 			var running = true;
-			Console.CancelKeyPress += (sender, args) =>
-			{
-				args.Cancel = true;
-				running = false;
-			};
 			while (running)
 			{
 				transport.ClientEarlyUpdate();
+				if (Console.KeyAvailable)
+				{
+					switch (Console.ReadKey(true).KeyChar)
+					{
+						case 'q':
+							running = false;
+							break;
+						case 's':
+							transport.ClientSend(new ArraySegment<byte>(new byte[] { 1, 2, 3 }));
+							break;
+					}
+				}
 				SteamAPI.RunCallbacks();
 				transport.ClientLateUpdate();
 				Thread.Sleep(10);
