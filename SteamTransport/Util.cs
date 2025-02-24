@@ -19,4 +19,16 @@ public static class Util
 		Channels.Unreliable => Constants.k_nSteamNetworkingSend_Unreliable,
 		_ => throw new ArgumentOutOfRangeException(nameof(mirrorChannel), mirrorChannel, null)
 	};
+
+	public static string CustomToString(this HSteamNetConnection conn)
+	{
+		SteamNetworkingSockets.GetConnectionInfo(conn, out var pInfo);
+		return pInfo.m_szConnectionDescription;
+	}
+
+	public static string CustomToString(this SteamNetworkingIPAddr addr)
+	{
+		addr.ToString(out var s, true);
+		return s;
+	}
 }

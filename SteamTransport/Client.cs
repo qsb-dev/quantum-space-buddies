@@ -16,9 +16,9 @@ public class Client
 
 		_onStatusChanged = Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t>.Create(t =>
 		{
-			Console.WriteLine($"STATUS CHANGED for {t.m_info.m_szConnectionDescription}\n" +
+			_transport.Log($"STATUS CHANGED for {t.m_info.m_szConnectionDescription}\n" +
 				$"state = {t.m_info.m_eState}\n" +
-				$"end = {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}");
+				$"end = {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}\n");
 
 			switch (t.m_info.m_eState)
 			{
@@ -27,12 +27,15 @@ public class Client
 					IsConnected = false;
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
+					_transport.OnClientConnected?.Invoke();
 					IsConnecting = false;
 					IsConnected = true;
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
-					_transport.OnClientError(TransportError.ConnectionClosed, $"end = {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}");
+					_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
+					SteamNetworkingSockets.CloseConnection(_conn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
+					_transport.OnClientDisconnected?.Invoke();
 					IsConnecting = false;
 					IsConnected = false;
 					break;
@@ -54,6 +57,7 @@ public class Client
 		if (!parsed)
 		{
 			_transport.OnClientError(TransportError.DnsResolve, $"couldnt parse address {address} when connect");
+			// should we call disconnect here? idk
 			return;
 		}
 
@@ -63,10 +67,19 @@ public class Client
 
 	public void Send(ArraySegment<byte> segment, int channelId)
 	{
-		throw new NotImplementedException();
+		var data = new byte[segment.Count];
+		Array.Copy(segment.Array, segment.Offset, data, 0, data.Length);
+		unsafe
+		{
+			fixed (byte* pData = data)
+			{
+				var result = SteamNetworkingSockets.SendMessageToConnection(_conn, (IntPtr)pData, (uint)data.Length, Util.MirrorChannel2SendFlag(channelId), out _);
+				_transport.OnClientDataSent?.Invoke(segment, channelId);
+			}
+		}
 	}
 
-	public void RecieveData()
+	public void Receive()
 	{
 		const int maxMessages = 10;
 		var ppOutMessages = new IntPtr[maxMessages];
@@ -80,7 +93,7 @@ public class Client
 				var data = new byte[msg.m_cbSize];
 				Marshal.Copy(msg.m_pData, data, 0, data.Length);
 				var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
-				_transport.OnClientDataReceived(new ArraySegment<byte>(data), channel);
+				_transport.OnClientDataReceived?.Invoke(new ArraySegment<byte>(data), channel);
 				msg.Release();
 			}
 		}
@@ -88,12 +101,14 @@ public class Client
 
 	public void Flush()
 	{
-		SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
+		var result = SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
 	}
 
 	public void Close()
 	{
+		_transport.Log("client close");
 		SteamNetworkingSockets.CloseConnection(_conn, 0, "client closed connection", false);
+		_transport.OnClientDisconnected?.Invoke();
 
 		_onStatusChanged.Dispose();
 	}

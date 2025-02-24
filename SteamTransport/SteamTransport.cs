@@ -13,6 +13,9 @@ public class SteamTransport : Transport
 	private Server _server;
 	private Client _client;
 
+	/// <summary>
+	/// logs will verbosely go here. must be set
+	/// </summary>
 	public Action<string> Log;
 	/// <summary>
 	/// use localhost port 1234 instead of steam p2p
@@ -59,7 +62,7 @@ public class SteamTransport : Transport
 		_server.Disconnect(connectionId);
 	}
 
-	public override string ServerGetClientAddress(int connectionId) => throw new NotImplementedException();
+	public override string ServerGetClientAddress(int connectionId) => throw new NotImplementedException("shouldnt be used");
 
 	public override void ServerStop()
 	{
@@ -84,12 +87,12 @@ public class SteamTransport : Transport
 
 	public override void ClientEarlyUpdate()
 	{
-		_client.RecieveData();
+		_client.Receive();
 	}
 
 	public override void ServerEarlyUpdate()
 	{
-		_server.RecieveData();
+		_server.Receive();
 	}
 
 	public override void ClientLateUpdate()
