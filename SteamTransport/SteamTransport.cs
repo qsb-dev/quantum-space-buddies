@@ -1,4 +1,8 @@
-﻿using Mirror;
+﻿// https://github.com/MirrorNetworking/Mirror/blob/master/Assets/Mirror/Core/Transport.cs
+// https://partner.steamgames.com/doc/api/ISteamNetworkingSockets
+// https://partner.steamgames.com/doc/api/steamnetworkingtypes
+
+using Mirror;
 using Steamworks;
 using System;
 
@@ -10,6 +14,10 @@ public class SteamTransport : Transport
 	private Client _client;
 
 	public Action<string> Log;
+	/// <summary>
+	/// use localhost port 1234 instead of steam p2p
+	/// </summary>
+	public bool UseLocalhost;
 
 	public override bool Available() => true;
 
@@ -33,7 +41,7 @@ public class SteamTransport : Transport
 
 	public override Uri ServerUri() => throw new NotImplementedException("shouldnt be used");
 
-	public override bool ServerActive() => _server != null && _server.Listening;
+	public override bool ServerActive() => _server != null && _server.IsListening;
 
 	public override void ServerStart()
 	{
@@ -64,12 +72,12 @@ public class SteamTransport : Transport
 	{
 		if (_client != null)
 		{
-			_client.Dispose();
+			_client.Close();
 			_client = null;
 		}
 		if (_server != null)
 		{
-			_server.Dispose();
+			_server.Close();
 			_server = null;
 		}
 	}

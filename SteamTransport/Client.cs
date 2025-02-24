@@ -1,12 +1,11 @@
-﻿using Mirror;
+﻿using HarmonyLib;
+using Mirror;
 using Steamworks;
 using System;
-using System.Runtime.InteropServices;
-using IDisposable = Delaunay.Utils.IDisposable;
 
 namespace SteamTransport;
 
-public class Client : IDisposable
+public class Client
 {
 	private SteamTransport _transport;
 	private Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t> _onStatusChanged;
@@ -34,6 +33,8 @@ public class Client : IDisposable
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
 					_transport.OnClientError(TransportError.ConnectionClosed, $"end = {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}");
+					IsConnecting = false;
+					IsConnected = false;
 					break;
 			}
 		});
@@ -47,8 +48,9 @@ public class Client : IDisposable
 
 	public void Connect(string address)
 	{
-		var ipAddr = new SteamNetworkingIPAddr();
-		var parsed = ipAddr.ParseString(address);
+		address = "127.0.0.1:1234";
+		var steamAddr = new SteamNetworkingIPAddr();
+		var parsed = steamAddr.ParseString(address);
 		if (!parsed)
 		{
 			_transport.OnClientError(TransportError.DnsResolve, $"couldnt parse address {address} when connect");
@@ -56,24 +58,31 @@ public class Client : IDisposable
 		}
 
 		_transport.Log($"connecting to {address}");
-		_conn = SteamNetworkingSockets.ConnectByIPAddress(ref ipAddr, 0, new SteamNetworkingConfigValue_t[0]);
+		_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
 	}
 
-	public void Dispose()
+	public void Send(ArraySegment<byte> segment, int channelId)
 	{
-		_onStatusChanged.Dispose();
+		throw new NotImplementedException();
 	}
 
 	public void RecieveData()
 	{
-		var ppOutMessages = new IntPtr[10];
-		SteamNetworkingSockets.ReceiveMessagesOnConnection(_conn, ppOutMessages, 10);
-
-		foreach (var ppOutMessage in ppOutMessages)
+		const int maxMessages = 10;
+		var ppOutMessages = new IntPtr[maxMessages];
+		var numMessages = SteamNetworkingSockets.ReceiveMessagesOnConnection(_conn, ppOutMessages, maxMessages);
+		for (var i = 0; i < numMessages; i++)
 		{
-			var msg = Marshal.PtrToStructure<SteamNetworkingMessage_t>(ppOutMessage);
-			// do joe
-			msg.Release();
+			var ppOutMessage = ppOutMessages[i];
+			unsafe
+			{
+				var msg = *(SteamNetworkingMessage_t*)ppOutMessage; // probably not gonna work
+				var data = new ArraySegment<byte>(new Span<byte>((byte*)msg.m_pData, msg.m_cbSize).ToArray());
+				var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
+				_transport.Log($"received data {data.Join()}");
+				_transport.OnClientDataReceived(data, channel);
+				msg.Release();
+			}
 		}
 	}
 
@@ -82,8 +91,10 @@ public class Client : IDisposable
 		SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
 	}
 
-	public void Send(ArraySegment<byte> segment, int channelId)
+	public void Close()
 	{
-		throw new NotImplementedException();
+		// SteamNetworkingSockets.CloseConnection(_conn, )
+
+		_onStatusChanged.Dispose();
 	}
 }

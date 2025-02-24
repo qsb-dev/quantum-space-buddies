@@ -1,10 +1,9 @@
 ﻿using Steamworks;
 using System;
-using IDisposable = Delaunay.Utils.IDisposable;
 
 namespace SteamTransport;
 
-public class Server : IDisposable
+public class Server
 {
 	private SteamTransport _transport;
 	private Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t> _onStatusChanged;
@@ -23,8 +22,8 @@ public class Server : IDisposable
 			{
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting:
 					SteamNetworkingSockets.GetConnectionInfo(t.m_hConn, out var pInfo);
-					pInfo.m_addrRemote.ToString(out var addr, true);
-					_transport.Log($"accepting conn from {addr}");
+					pInfo.m_addrRemote.ToString(out var address, true);
+					_transport.Log($"accepting conn from {address}");
 
 					// ignore max connections for now
 					SteamNetworkingSockets.AcceptConnection(t.m_hConn);
@@ -33,32 +32,38 @@ public class Server : IDisposable
 		});
 	}
 
-	public bool Listening { get; set; }
+	public bool IsListening;
+	private HSteamListenSocket _listenSocket;
 
-	public void Dispose()
+	public void StartListening()
 	{
-		_onStatusChanged.Dispose();
-	}
-
-	public void RecieveData()
-	{
-		throw new NotImplementedException();
-	}
-
-	public void Flush()
-	{
-		throw new NotImplementedException();
+		var address = "0.0.0.0:1234";
+		var steamAddr = new SteamNetworkingIPAddr();
+		steamAddr.ParseString(address);
+		_listenSocket = SteamNetworkingSockets.CreateListenSocketIP(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
+		_transport.Log($"listening on {address}");
+		IsListening = true;
 	}
 
 	public void Send(int connectionId, ArraySegment<byte> segment, int channelId) { }
 
-	public void Disconnect(int connectionId)
+	public void RecieveData()
 	{
-		throw new NotImplementedException();
 	}
 
-	public void StartListening()
+	public void Flush()
 	{
-		throw new NotImplementedException();
+	}
+
+	public void Disconnect(int connectionId)
+	{
+	}
+
+	public void Close()
+	{
+		SteamNetworkingSockets.CloseListenSocket(_listenSocket);
+		_transport.Log("stop server");
+
+		_onStatusChanged.Dispose();
 	}
 }

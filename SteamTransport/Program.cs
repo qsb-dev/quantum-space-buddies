@@ -1,5 +1,6 @@
 ﻿using Steamworks;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace SteamTransport;
@@ -66,59 +67,47 @@ public static class Program
 
 	private static void DoServer()
 	{
-		using var cb = Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t>.Create(t =>
-		{
-			Console.WriteLine($"{t.m_info.m_szConnectionDescription} | state = {t.m_info.m_eState} | {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}");
+		var transport = new SteamTransport();
+		transport.Log = Console.WriteLine;
+		transport.UseLocalhost = true;
 
-			// requesting connection, automatically allow
-			if (t.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting)
+		transport.ServerStart();
+
+		try
+		{
+			while (true)
 			{
-				SteamNetworkingSockets.AcceptConnection(t.m_hConn);
+				transport.ServerEarlyUpdate();
+				transport.ServerLateUpdate();
+				Thread.Sleep(10);
 			}
-		});
-
-		var address = new SteamNetworkingIPAddr();
-		address.ParseString("0.0.0.0:1234");
-		address.ToString(out var addressStr, true);
-		var socket = SteamNetworkingSockets.CreateListenSocketIP(ref address, 0, new SteamNetworkingConfigValue_t[0]);
-		Console.WriteLine($"listening on {addressStr}...");
-
-		while (true)
+		}
+		finally
 		{
-			SteamAPI.RunCallbacks();
-			Thread.Sleep(10);
+			transport.ServerStop();
 		}
 	}
 
 	private static void DoClient()
 	{
-		using var cb = Steamworks.Callback<SteamNetConnectionStatusChangedCallback_t>.Create(t =>
-		{
-			Console.WriteLine($"{t.m_info.m_szConnectionDescription} | state = {t.m_info.m_eState} | {(ESteamNetConnectionEnd)t.m_info.m_eEndReason} {t.m_info.m_szEndDebug}");
-		});
+		var transport = new SteamTransport();
+		transport.Log = Console.WriteLine;
+		transport.UseLocalhost = true;
 
-		var address = new SteamNetworkingIPAddr();
-		address.ParseString("127.0.0.1:1234");
-		address.ToString(out var addressStr, true);
-		Console.WriteLine($"is localhost = {address.IsLocalHost()}");
-		var conn = SteamNetworkingSockets.ConnectByIPAddress(ref address, 1, new SteamNetworkingConfigValue_t[]
+		transport.ClientConnect("unused");
+
+		try
 		{
-			new SteamNetworkingConfigValue_t
+			while (true)
 			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_IP_AllowWithoutAuth,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_int32 = 1,
-				}
+				transport.ClientEarlyUpdate();
+				transport.ClientLateUpdate();
+				Thread.Sleep(10);
 			}
-		});
-		Console.WriteLine($"connecting to {addressStr}...");
-
-		while (true)
+		}
+		finally
 		{
-			SteamAPI.RunCallbacks();
-			Thread.Sleep(10);
+			transport.ClientDisconnect();
 		}
 	}
 }
