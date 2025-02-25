@@ -40,6 +40,7 @@ public class Client
 					IsConnected = false;
 					_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
 					_transport.OnClientDisconnected?.Invoke();
+					// mirror will shutdown transport
 					break;
 			}
 		});
@@ -115,6 +116,7 @@ public class Client
 		IsConnected = false;
 		// should this do error?
 		_transport.OnClientDisconnected?.Invoke();
+		// mirror will shutdown transport
 
 		_onStatusChanged.Dispose();
 	}
