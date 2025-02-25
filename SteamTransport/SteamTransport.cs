@@ -23,6 +23,10 @@ public class SteamTransport : Transport
 	public string TestIpAddress;
 
 	// TODO: configurable timeout
+	/// <summary>
+	/// timeout in seconds when connecting, and timeout before detecting a loss in connection
+	/// </summary>
+	public int Timeout;
 
 	public override bool Available() => true;
 

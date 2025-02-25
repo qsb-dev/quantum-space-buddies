@@ -1,6 +1,4 @@
-﻿using Epic.OnlineServices.Logging;
-using Mirror;
-using Mirror.FizzySteam;
+﻿using Mirror;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -70,7 +68,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 	private static LatencySimulation _latencyTransport;
 	private static kcp2k.KcpTransport _kcpTransport;
-	private static FizzySteamworks _steamTransport;
+	private static SteamTransport.SteamTransport _steamTransport;
 
 	public override void Awake()
 	{
@@ -84,7 +82,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		}
 
 		{
-			_steamTransport = gameObject.AddComponent<FizzySteamworks>();
+			_steamTransport = gameObject.AddComponent<SteamTransport.SteamTransport>();
 			// Steam uses seconds
 			_steamTransport.Timeout = QSBCore.Timeout;
 		}
