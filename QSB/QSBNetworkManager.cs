@@ -254,10 +254,14 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		return template;
 	}
 
+	// who knows why this is a separate function
 	private void ConfigureNetworkManager()
 	{
 		networkAddress = QSBCore.DefaultServerIP;
 
+		{
+			_steamTransport.Log = s => DebugLog.DebugWrite("[STEAM] " + s);
+		}
 		{
 			kcp2k.Log.Info = s =>
 			{
@@ -272,6 +276,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			kcp2k.Log.Error = s => DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
 		}
 
+		// this is where the logic for stopping host in the title screen is
 		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
 		{
 			if (QSBCore.IsInMultiplayer && loadScene == OWScene.TitleScreen)
