@@ -167,6 +167,10 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		}
 
 		_kcpTransport.Port = QSBCore.KcpPort;
+		_kcpTransport.Timeout = QSBCore.Timeout * 1000;
+
+		_steamTransport.Timeout = QSBCore.Timeout * 1000;
+		_steamTransport.TestIpAddress = QSBCore.DebugSettings.SteamTestIpAddress;
 
 		if (QSBCore.IsInMultiplayer)
 		{
