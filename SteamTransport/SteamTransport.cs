@@ -50,7 +50,8 @@ public class SteamTransport : Transport
 
 	public override void ClientDisconnect()
 	{
-		Shutdown();
+		_client.Close();
+		_client = null;
 	}
 
 	public override Uri ServerUri() => throw new NotImplementedException("dont need to implement this i think");
@@ -77,13 +78,15 @@ public class SteamTransport : Transport
 
 	public override void ServerStop()
 	{
-		Shutdown();
+		_server.Close();
+		_server = null;
 	}
 
 	public override int GetMaxPacketSize(int channelId = 0) => Constants.k_cbMaxSteamNetworkingSocketsMessageSizeSend;
 
 	public override void Shutdown()
 	{
+		// gotta null check because might be only one existing
 		if (_client != null)
 		{
 			_client.Close();
