@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace SteamTransport;
 
+// could check more Result stuff for functions. idc rn
 public class Server
 {
 	private SteamTransport _transport;
@@ -47,7 +48,7 @@ public class Server
 
 	public bool IsListening;
 	private HSteamListenSocket _listenSocket;
-	// mirror connection id is derived from uint to int cast here. seems to be okay for now
+	// mirror connection id is derived from uint to int cast here. seems to do unchecked cast and be fine
 	private readonly List<HSteamNetConnection> _conns = new();
 
 	public void StartListening()
@@ -77,6 +78,20 @@ public class Server
 	{
 		var conn = new HSteamNetConnection((uint)connectionId);
 
+		// from fizzy
+		var data = new byte[segment.Count];
+		Array.Copy(segment.Array, segment.Offset, data, 0, data.Length);
+		var pinnedArray = GCHandle.Alloc(data, GCHandleType.Pinned);
+		var pData = pinnedArray.AddrOfPinnedObject();
+
+		var result = SteamNetworkingSockets.SendMessageToConnection(conn, pData, (uint)data.Length, Util.MirrorChannel2SendFlag(channelId), out _);
+		if (result == EResult.k_EResultOK)
+			_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
+		else
+			_transport.OnServerError?.Invoke(connectionId, TransportError.InvalidSend, $"send returned {result}");
+		// i dont think we have to check for disconnect result here since the status change handles that
+
+		/*
 		// use pointer to managed array instead of making copy. is this okay?
 		unsafe
 		{
@@ -90,6 +105,7 @@ public class Server
 				// i dont think we have to check for disconnect result here since the status change handles that
 			}
 		}
+		*/
 	}
 
 	public void Receive()
@@ -104,9 +120,9 @@ public class Server
 				var ppOutMessage = ppOutMessages[i];
 				var msg = SteamNetworkingMessage_t.FromIntPtr(ppOutMessage);
 				var data = new byte[msg.m_cbSize];
-				Marshal.Copy(msg.m_pData, data, 0, data.Length);
+				Marshal.Copy(msg.m_pData, data, 0, msg.m_cbSize);
 				var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
-				_transport.OnServerDataReceived((int)conn.m_HSteamNetConnection, new ArraySegment<byte>(data), channel);
+				_transport.OnServerDataReceived?.Invoke((int)conn.m_HSteamNetConnection, new ArraySegment<byte>(data), channel);
 				SteamNetworkingMessage_t.Release(ppOutMessage);
 			}
 		}

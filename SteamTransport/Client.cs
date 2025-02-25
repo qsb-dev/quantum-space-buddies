@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace SteamTransport;
 
+// could check more Result stuff for functions. idc rn
 public class Client
 {
 	private SteamTransport _transport;
@@ -87,6 +88,20 @@ public class Client
 
 	public void Send(ArraySegment<byte> segment, int channelId)
 	{
+		// from fizzy
+		var data = new byte[segment.Count];
+		Array.Copy(segment.Array, segment.Offset, data, 0, data.Length);
+		var pinnedArray = GCHandle.Alloc(data, GCHandleType.Pinned);
+		var pData = pinnedArray.AddrOfPinnedObject();
+
+		var result = SteamNetworkingSockets.SendMessageToConnection(_conn, pData, (uint)data.Length, Util.MirrorChannel2SendFlag(channelId), out _);
+		if (result == EResult.k_EResultOK)
+			_transport.OnClientDataSent?.Invoke(segment, channelId);
+		else
+			_transport.OnClientError?.Invoke(TransportError.InvalidSend, $"send returned {result}");
+		// i dont think we have to check for disconnect result here since the status change handles that
+
+		/*
 		// use pointer to managed array instead of making copy. is this okay?
 		unsafe
 		{
@@ -100,6 +115,7 @@ public class Client
 				// i dont think we have to check for disconnect result here since the status change handles that
 			}
 		}
+		*/
 	}
 
 	public void Receive()
@@ -111,7 +127,7 @@ public class Client
 			var ppOutMessage = ppOutMessages[i];
 			var msg = SteamNetworkingMessage_t.FromIntPtr(ppOutMessage);
 			var data = new byte[msg.m_cbSize];
-			Marshal.Copy(msg.m_pData, data, 0, data.Length);
+			Marshal.Copy(msg.m_pData, data, 0, msg.m_cbSize);
 			var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
 			_transport.OnClientDataReceived?.Invoke(new ArraySegment<byte>(data), channel);
 			SteamNetworkingMessage_t.Release(ppOutMessage);
