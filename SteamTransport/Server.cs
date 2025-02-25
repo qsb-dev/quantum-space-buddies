@@ -73,6 +73,7 @@ public class Server
 					_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
 				else
 					_transport.OnServerError?.Invoke(connectionId, TransportError.InvalidSend, $"send returned {result}");
+				// i dont think we have to check for disconnect result here since the status change handles that
 			}
 		}
 	}
@@ -105,6 +106,7 @@ public class Server
 			var result = SteamNetworkingSockets.FlushMessagesOnConnection(conn);
 			if (result != EResult.k_EResultOK)
 				_transport.OnServerError?.Invoke((int)conn.m_HSteamNetConnection, TransportError.Unexpected, $"flush returned {result}");
+			// i dont think we have to check for disconnect result here since the status change handles that
 		}
 	}
 

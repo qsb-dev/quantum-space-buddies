@@ -125,6 +125,7 @@ public static class Program
 		try
 		{
 			var running = true;
+			transport.OnClientDisconnected = () => running = false; // mirror normally does this
 			while (running)
 			{
 				transport.ClientEarlyUpdate();

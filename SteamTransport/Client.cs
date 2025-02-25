@@ -40,7 +40,7 @@ public class Client
 					IsConnected = false;
 					_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
 					_transport.OnClientDisconnected?.Invoke();
-					// mirror will shutdown transport
+					// OnClientDisconnected will causes mirror to shutdown the transport
 					break;
 			}
 		});
@@ -80,6 +80,7 @@ public class Client
 					_transport.OnClientDataSent?.Invoke(segment, channelId);
 				else
 					_transport.OnClientError?.Invoke(TransportError.InvalidSend, $"send returned {result}");
+				// i dont think we have to check for disconnect result here since the status change handles that
 			}
 		}
 	}
@@ -106,6 +107,7 @@ public class Client
 		var result = SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
 		if (result != EResult.k_EResultOK)
 			_transport.OnClientError?.Invoke(TransportError.Unexpected, $"flush returned {result}");
+		// i dont think we have to check for disconnect result here since the status change handles that
 	}
 
 	public void Close()
@@ -116,7 +118,6 @@ public class Client
 		IsConnected = false;
 		// should this do error?
 		_transport.OnClientDisconnected?.Invoke();
-		// mirror will shutdown transport
 
 		_onStatusChanged.Dispose();
 	}
