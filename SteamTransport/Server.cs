@@ -26,7 +26,7 @@ public class Server
 			switch (t.m_info.m_eState)
 			{
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting:
-					// ignore max connections for now
+					// mirror handles max connections. dont do this here
 					SteamNetworkingSockets.AcceptConnection(t.m_hConn);
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
@@ -122,8 +122,8 @@ public class Server
 
 	public void Close()
 	{
-		_transport.Log("stop server");
 		// mirror disconnects all clients for us before this
+		_transport.Log("stop server");
 		SteamNetworkingSockets.CloseListenSocket(_listenSocket);
 		IsListening = false;
 
