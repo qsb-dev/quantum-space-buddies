@@ -26,7 +26,7 @@ public class Server
 			switch (t.m_info.m_eState)
 			{
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting:
-					// mirror handles max connections. dont do this here
+					// mirror handles max connections. client will just get generic disconnect message, but its okay.
 					SteamNetworkingSockets.AcceptConnection(t.m_hConn);
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
@@ -34,6 +34,7 @@ public class Server
 					_transport.OnServerConnected?.Invoke((int)t.m_hConn.m_HSteamNetConnection);
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
+					// this logs an error below even tho it isnt really an error. its fine
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
 					SteamNetworkingSockets.CloseConnection(t.m_hConn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
 					_conns.Remove(t.m_hConn);
@@ -46,16 +47,29 @@ public class Server
 
 	public bool IsListening;
 	private HSteamListenSocket _listenSocket;
-	// connection id is derived from uint to int cast here. is that okay???
+	// mirror connection id is derived from uint to int cast here. seems to be okay for now
 	private readonly List<HSteamNetConnection> _conns = new();
 
 	public void StartListening()
 	{
-		var address = "0.0.0.0:1234";
-		var steamAddr = new SteamNetworkingIPAddr();
-		steamAddr.ParseString(address);
-		_listenSocket = SteamNetworkingSockets.CreateListenSocketIP(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
-		_transport.Log($"listening on {address}");
+		if (!string.IsNullOrEmpty(_transport.TestIpAddress))
+		{
+			var steamAddr = new SteamNetworkingIPAddr();
+			var parsed = steamAddr.ParseString(_transport.TestIpAddress);
+			if (!parsed)
+			{
+				_transport.OnServerError?.Invoke(-1, TransportError.DnsResolve, $"couldnt parse address {_transport.TestIpAddress} when listening");
+				// dont really need to stop server here. mirror isnt designed to let us fail to listen anyway so this is all kinda silly
+				return;
+			}
+			_listenSocket = SteamNetworkingSockets.CreateListenSocketIP(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
+			_transport.Log($"listening on {steamAddr.DebugToString()}");
+		}
+		else
+		{
+			_listenSocket = SteamNetworkingSockets.CreateListenSocketP2P(0, 0, new SteamNetworkingConfigValue_t[0]);
+			_transport.Log($"listening on p2p");
+		}
 		IsListening = true;
 	}
 
@@ -113,11 +127,11 @@ public class Server
 	public void Disconnect(int connectionId)
 	{
 		var conn = new HSteamNetConnection((uint)connectionId);
-		_transport.Log($"disconnect {conn.GetDescription()}");
+		_transport.Log($"disconnect {conn.DebugToString()}");
 		SteamNetworkingSockets.CloseConnection(conn, 0, "disconnected by server", false);
 		_conns.Remove(conn);
-		// should this do error?
-		_transport.OnServerDisconnected?.Invoke((int)conn.m_HSteamNetConnection);
+		// dont need an error for disconnecting client
+		_transport.OnServerDisconnected?.Invoke(connectionId);
 	}
 
 	public void Close()

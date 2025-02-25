@@ -54,18 +54,28 @@ public class Client
 
 	public void Connect(string address)
 	{
-		address = "127.0.0.1:1234";
-		var steamAddr = new SteamNetworkingIPAddr();
-		var parsed = steamAddr.ParseString(address);
-		if (!parsed)
+		if (!string.IsNullOrEmpty(_transport.TestIpAddress))
 		{
-			_transport.OnClientError(TransportError.DnsResolve, $"couldnt parse address {address} when connect");
-			// should we call disconnect here? idk
-			return;
-		}
+			var steamAddr = new SteamNetworkingIPAddr();
+			var parsed = steamAddr.ParseString(_transport.TestIpAddress);
+			if (!parsed)
+			{
+				_transport.OnClientError?.Invoke(TransportError.DnsResolve, $"couldnt parse address {address} when connecting");
+				_transport.OnClientDisconnected?.Invoke(); // will show error box
+				return;
+			}
 
-		_transport.Log($"connecting to {address}");
-		_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
+			_transport.Log($"connecting to {address}");
+			_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
+		}
+		else
+		{
+			var identity = new SteamNetworkingIdentity();
+			identity.ParseString(address); // uh how does this work
+
+			_conn = SteamNetworkingSockets.ConnectP2P(ref identity, 0, 0, new SteamNetworkingConfigValue_t[0]);
+			_transport.Log($"connecting to {identity.DebugToString()}");
+		}
 	}
 
 	public void Send(ArraySegment<byte> segment, int channelId)
@@ -116,7 +126,7 @@ public class Client
 		SteamNetworkingSockets.CloseConnection(_conn, 0, "client closed connection", false);
 		IsConnecting = false;
 		IsConnected = false;
-		// should this do error?
+		// dont need to do error because we dont show dialogue box for intentional disconnect
 		_transport.OnClientDisconnected?.Invoke();
 
 		_onStatusChanged.Dispose();

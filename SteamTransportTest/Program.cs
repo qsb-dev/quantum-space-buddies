@@ -29,7 +29,7 @@ public static class Program
 					Console.Error.WriteLine("[Steamworks.NET] DllCheck Test returned false, One or more of the Steamworks binaries seems to be the wrong version.");
 				}
 
-				// qsbcore
+				// yes, these have to be the same. even for connecting to ip address
 				Environment.SetEnvironmentVariable("SteamAppId", "480");
 				Environment.SetEnvironmentVariable("SteamGameId", "480");
 
@@ -70,7 +70,7 @@ public static class Program
 	{
 		var transport = new SteamTransport.SteamTransport();
 		transport.Log = Console.WriteLine;
-		transport.UseLocalhost = true;
+		transport.TestIpAddress = "0.0.0.0:1234";
 
 		transport.OnServerError = (conn, error, s) => Console.Error.WriteLine($"ERROR {conn} {error} {s}");
 		var theConn = -1;
@@ -117,12 +117,12 @@ public static class Program
 	{
 		var transport = new SteamTransport.SteamTransport();
 		transport.Log = Console.WriteLine;
-		transport.UseLocalhost = true;
+		transport.TestIpAddress = "127.0.0.1:1234";
 
 		transport.OnClientError = (error, s) => Console.Error.WriteLine($"ERROR {error} {s}");
 		transport.OnClientDataReceived = (bytes, i) => Console.WriteLine($"RECV {bytes.Join()} {i}");
 
-		transport.ClientConnect("unused");
+		transport.ClientConnect("76561198150564286");
 
 		try
 		{

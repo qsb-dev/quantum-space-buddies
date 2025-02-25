@@ -18,9 +18,11 @@ public class SteamTransport : Transport
 	/// </summary>
 	public Action<string> Log;
 	/// <summary>
-	/// use localhost port 1234 instead of steam p2p
+	/// if set, will use this ip address and port for listening/connecting
 	/// </summary>
-	public bool UseLocalhost;
+	public string TestIpAddress;
+
+	// TODO: configurable timeout
 
 	public override bool Available() => true;
 
@@ -42,7 +44,7 @@ public class SteamTransport : Transport
 		Shutdown();
 	}
 
-	public override Uri ServerUri() => throw new NotImplementedException("shouldnt be used");
+	public override Uri ServerUri() => throw new NotImplementedException("dont need to implement this i think");
 
 	public override bool ServerActive() => _server != null && _server.IsListening;
 
@@ -62,7 +64,7 @@ public class SteamTransport : Transport
 		_server.Disconnect(connectionId);
 	}
 
-	public override string ServerGetClientAddress(int connectionId) => throw new NotImplementedException("shouldnt be used");
+	public override string ServerGetClientAddress(int connectionId) => throw new NotImplementedException("dont need to implement this i think");
 
 	public override void ServerStop()
 	{
