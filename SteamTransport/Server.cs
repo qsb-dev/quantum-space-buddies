@@ -69,7 +69,10 @@ public class Server
 			fixed (byte* pData = segment.Array)
 			{
 				var result = SteamNetworkingSockets.SendMessageToConnection(conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
-				_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
+				if (result == EResult.k_EResultOK)
+					_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
+				else
+					_transport.OnServerError?.Invoke(connectionId, TransportError.InvalidSend, $"send returned {result}");
 			}
 		}
 	}
@@ -100,6 +103,8 @@ public class Server
 		foreach (var conn in _conns)
 		{
 			var result = SteamNetworkingSockets.FlushMessagesOnConnection(conn);
+			if (result != EResult.k_EResultOK)
+				_transport.OnServerError?.Invoke((int)conn.m_HSteamNetConnection, TransportError.Unexpected, $"flush returned {result}");
 		}
 	}
 
