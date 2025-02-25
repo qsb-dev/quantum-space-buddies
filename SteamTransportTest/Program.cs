@@ -70,7 +70,7 @@ public static class Program
 	{
 		var transport = new SteamTransport.SteamTransport();
 		transport.Log = Console.WriteLine;
-		transport.TestIpAddress = "0.0.0.0:1234";
+		transport.TestIpAddress = "127.0.0.1:1234";
 
 		transport.OnServerError = (conn, error, s) => Console.Error.WriteLine($"ERROR {conn} {error} {s}");
 		var theConn = -1;
