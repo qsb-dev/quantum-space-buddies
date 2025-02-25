@@ -78,20 +78,6 @@ public class Server
 	{
 		var conn = new HSteamNetConnection((uint)connectionId);
 
-		// from fizzy
-		var data = new byte[segment.Count];
-		Array.Copy(segment.Array, segment.Offset, data, 0, data.Length);
-		var pinnedArray = GCHandle.Alloc(data, GCHandleType.Pinned);
-		var pData = pinnedArray.AddrOfPinnedObject();
-
-		var result = SteamNetworkingSockets.SendMessageToConnection(conn, pData, (uint)data.Length, Util.MirrorChannel2SendFlag(channelId), out _);
-		if (result == EResult.k_EResultOK)
-			_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
-		else
-			_transport.OnServerError?.Invoke(connectionId, TransportError.InvalidSend, $"send returned {result}");
-		// i dont think we have to check for disconnect result here since the status change handles that
-
-		/*
 		// use pointer to managed array instead of making copy. is this okay?
 		unsafe
 		{
@@ -105,7 +91,6 @@ public class Server
 				// i dont think we have to check for disconnect result here since the status change handles that
 			}
 		}
-		*/
 	}
 
 	public void Receive()

@@ -96,23 +96,24 @@ public class SteamTransport : Transport
 		}
 	}
 
+	// all of these update functions run all the time, so we must null check
 	public override void ClientEarlyUpdate()
 	{
-		_client.Receive();
+		_client?.Receive();
 	}
 
 	public override void ServerEarlyUpdate()
 	{
-		_server.Receive();
+		_server?.Receive();
 	}
 
 	public override void ClientLateUpdate()
 	{
-		_client.Flush();
+		_client?.Flush();
 	}
 
 	public override void ServerLateUpdate()
 	{
-		_server.Flush();
+		_server?.Flush();
 	}
 }
