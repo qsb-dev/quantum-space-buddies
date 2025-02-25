@@ -17,7 +17,7 @@ public static class Program
 
 		try
 		{
-			// stupid copied init code
+			// copied from qsbcore and steamworks.net docs
 			{
 				if (!Packsize.Test())
 				{
@@ -44,6 +44,7 @@ public static class Program
 				SteamClient.SetWarningMessageHook((severity, text) => Console.WriteLine(text));
 			}
 
+			Console.WriteLine("press 1 for server, 2 for client");
 			switch (Console.ReadKey(true).KeyChar)
 			{
 				case '1':
@@ -60,7 +61,7 @@ public static class Program
 		{
 			SteamAPI.Shutdown();
 
-			Console.WriteLine("Press any key to exit");
+			Console.WriteLine("Done. Press any key to exit");
 			Console.ReadKey();
 		}
 	}
@@ -80,6 +81,7 @@ public static class Program
 
 		try
 		{
+			Console.WriteLine("press q to quit, s to send, d to disconnect");
 			var running = true;
 			while (running)
 			{
@@ -124,6 +126,8 @@ public static class Program
 
 		try
 		{
+			Console.WriteLine("press q to quit, s to send");
+
 			var running = true;
 			transport.OnClientDisconnected = () => running = false; // mirror normally does this
 			while (running)
