@@ -53,7 +53,7 @@ public class SteamTransport : Transport
 		// mirror seems to cause this sometimes
 		if (_client == null)
 		{
-			OnClientError?.Invoke(TransportError.Unexpected, "tried to ClientDisconnect when client is null");
+			Log("tried to ClientDisconnect when client is null. i think this is normal.");
 			return;
 		}
 		_client.Close();
@@ -87,7 +87,7 @@ public class SteamTransport : Transport
 		// mirror seems to cause this sometimes
 		if (_server == null)
 		{
-			OnServerError?.Invoke(-1, TransportError.Unexpected, "tried to ServerStop when server is null");
+			Log("tried to ServerStop when server is null. i think this is normal.");
 			return;
 		}
 		_server.Close();
