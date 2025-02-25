@@ -83,8 +83,9 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		{
 			_steamTransport = gameObject.AddComponent<SteamTransport.SteamTransport>();
-			// Steam uses seconds
-			_steamTransport.Timeout = QSBCore.Timeout;
+			// Steam uses milliseconds
+			_steamTransport.Timeout = QSBCore.Timeout * 1000;
+			_steamTransport.TestIpAddress = QSBCore.DebugSettings.SteamTestIpAddress;
 		}
 
 		{

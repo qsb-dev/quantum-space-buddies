@@ -38,7 +38,7 @@
       "title": "Timeout",
       "type": "number",
       "value": 40,
-      "tooltip": "How many seconds it takes for a connection to time out."
+      "tooltip": "How many seconds it takes for a connection to time out. Used both when connecting and checked when playing."
     },
     "showPlayerNames": {
       "title": "Show Player Names",
@@ -138,6 +138,12 @@
       "type": "toggle",
       "value": false,
       "tooltip": "[DEBUG] If enabled, QSB creates log files of every network message received and transmitted."
+    },
+    "steamTestIpAddress": {
+      "title": "[DEBUG] Steam Test IP Address",
+      "type": "text",
+      "value": "",
+      "tooltip": "[DEBUG] If not empty, the steam transport will use this ip:port when listening/connecting. Host should probably use 0.0.0.0:port."
     }
   }
 }

@@ -39,6 +39,9 @@ public class DebugSettings
 	private bool _greySkybox;
 	public bool GreySkybox => DebugMode && _greySkybox;
 
+	private string _steamTestIpAddress;
+	public string SteamTestIpAddress => DebugMode ? _steamTestIpAddress : null;
+
 	public void Update(IModConfig config)
 	{
 		DebugMode = config.GetSettingsValue<bool>("debugMode");
@@ -53,5 +56,6 @@ public class DebugSettings
 		_greySkybox = config.GetSettingsValue<bool>("greySkybox");
 		_latencySimulation = config.GetSettingsValue<int>("latencySimulation");
 		_logQSBMessages = config.GetSettingsValue<bool>("logQSBMessages");
+		_steamTestIpAddress = config.GetSettingsValue<string>("steamTestIpAddress");
 	}
 }
