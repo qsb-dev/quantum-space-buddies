@@ -65,13 +65,20 @@ public class Client
 				return;
 			}
 
-			_transport.Log($"connecting to {address}");
 			_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
+			_transport.Log($"connecting to {steamAddr}");
 		}
 		else
 		{
 			var identity = new SteamNetworkingIdentity();
-			identity.ParseString(address); // uh how does this work
+			var parsed = ulong.TryParse(address, out var steamId);
+			if (!parsed)
+			{
+				_transport.OnClientError?.Invoke(TransportError.DnsResolve, $"couldnt parse address {address} when connecting");
+				_transport.OnClientDisconnected?.Invoke(); // will show error box
+				return;
+			}
+			identity.SetSteamID64(steamId);
 
 			_conn = SteamNetworkingSockets.ConnectP2P(ref identity, 0, 0, new SteamNetworkingConfigValue_t[0]);
 			_transport.Log($"connecting to {identity.DebugToString()}");
@@ -115,7 +122,7 @@ public class Client
 	public void Flush()
 	{
 		var result = SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
-		if (result != EResult.k_EResultOK)
+		if (result != EResult.k_EResultOK && result != EResult.k_EResultIgnored) // k_EResultIgnored gives spam when connecting
 			_transport.OnClientError?.Invoke(TransportError.Unexpected, $"flush returned {result}");
 		// i dont think we have to check for disconnect result here since the status change handles that
 	}
