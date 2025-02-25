@@ -77,7 +77,7 @@
       "title": "[DEBUG] Debug Mode",
       "type": "toggle",
       "value": false,
-      "tooltip": "[DEBUG] Enables debug mode. If this is disabled, none of the following settings do anything."
+      "tooltip": "[DEBUG] Enables debug mode. Prints more helpful logs. If this is disabled, none of the following settings do anything."
     },
     "instanceIdInLogs": {
       "title": "[DEBUG] Instance ID in Logs",
