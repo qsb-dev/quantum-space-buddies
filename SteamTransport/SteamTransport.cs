@@ -15,6 +15,8 @@ public class SteamTransport : Transport
 
 	/// <summary>
 	/// logs will verbosely go here. must be set
+	///
+	/// my policy is to log every potential error here, but otherwise ignore it. then if its an actual issue i do OnClientError and handle it properly.
 	/// </summary>
 	public Action<string> Log;
 	/// <summary>
@@ -50,12 +52,14 @@ public class SteamTransport : Transport
 
 	public override void ClientDisconnect()
 	{
-		// mirror seems to call this when its null sometimes
-		if (_client != null)
+		// mirror seems to cause this sometimes
+		if (_client == null)
 		{
-			_client.Close();
-			_client = null;
+			Log("tried to ClientDisconnect when client is null");
+			return;
 		}
+		_client.Close();
+		_client = null;
 	}
 
 	public override Uri ServerUri() => throw new NotImplementedException("dont need to implement this i think");
@@ -82,12 +86,14 @@ public class SteamTransport : Transport
 
 	public override void ServerStop()
 	{
-		// mirror seems to call this when its null sometimes
-		if (_server != null)
+		// mirror seems to cause this sometimes
+		if (_server == null)
 		{
-			_server.Close();
-			_server = null;
+			Log("tried to ServerStop when server is null");
+			return;
 		}
+		_server.Close();
+		_server = null;
 	}
 
 	public override int GetMaxPacketSize(int channelId = 0) => Constants.k_cbMaxSteamNetworkingSocketsMessageSizeSend;

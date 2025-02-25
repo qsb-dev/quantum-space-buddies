@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 
 namespace SteamTransport;
 
-// could check result for these functions (e.g. send), but it seems to work fine without
 public class Server
 {
 	private SteamTransport _transport;
@@ -27,21 +26,27 @@ public class Server
 			switch (t.m_info.m_eState)
 			{
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting:
-					// mirror handles max connections. client will just get generic disconnect message, but its okay.
-					SteamNetworkingSockets.AcceptConnection(t.m_hConn);
-					break;
+					{
+						// mirror handles max connections. client will just get generic disconnect message, but its okay.
+						var result = SteamNetworkingSockets.AcceptConnection(t.m_hConn);
+						if (result != EResult.k_EResultOK) _transport.Log($"[warn] accept {t.m_info.m_szConnectionDescription} returned {result}");
+						break;
+					}
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
 					_conns.Add(t.m_hConn);
 					_transport.OnServerConnected?.Invoke((int)t.m_hConn.m_HSteamNetConnection);
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
-					// this logs an error below even tho it isnt really an error. its fine
+				// this logs an error below even tho it isnt really an error. its fine
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
-					SteamNetworkingSockets.CloseConnection(t.m_hConn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
-					_conns.Remove(t.m_hConn);
-					_transport.OnServerError?.Invoke((int)t.m_hConn.m_HSteamNetConnection, TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
-					_transport.OnServerDisconnected?.Invoke((int)t.m_hConn.m_HSteamNetConnection);
-					break;
+					{
+						var result = SteamNetworkingSockets.CloseConnection(t.m_hConn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
+						if (result != true) _transport.Log($"[warn] close {t.m_info.m_szConnectionDescription} returned {result}");
+						_conns.Remove(t.m_hConn);
+						_transport.OnServerError?.Invoke((int)t.m_hConn.m_HSteamNetConnection, TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
+						_transport.OnServerDisconnected?.Invoke((int)t.m_hConn.m_HSteamNetConnection);
+						break;
+					}
 			}
 		});
 	}
@@ -64,7 +69,7 @@ public class Server
 				return;
 			}
 			_listenSocket = SteamNetworkingSockets.CreateListenSocketIP(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
-			_transport.Log($"listening on {steamAddr.DebugToString()}");
+			_transport.Log($"listening on {steamAddr.ToDebugString()}");
 		}
 		else
 		{
@@ -83,7 +88,8 @@ public class Server
 		{
 			fixed (byte* pData = segment.Array)
 			{
-				SteamNetworkingSockets.SendMessageToConnection(conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
+				var result = SteamNetworkingSockets.SendMessageToConnection(conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
+				if (result != EResult.k_EResultOK) _transport.Log($"[warn] send {conn.ToDebugString()} returned {result}");
 				_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
 			}
 		}
@@ -113,15 +119,17 @@ public class Server
 	{
 		foreach (var conn in _conns)
 		{
-			SteamNetworkingSockets.FlushMessagesOnConnection(conn);
+			var result = SteamNetworkingSockets.FlushMessagesOnConnection(conn);
+			if (result != EResult.k_EResultOK) _transport.Log($"[warn] flush {conn.ToDebugString()} returned {result}");
 		}
 	}
 
 	public void Disconnect(int connectionId)
 	{
 		var conn = new HSteamNetConnection((uint)connectionId);
-		_transport.Log($"disconnect {conn.DebugToString()}");
-		SteamNetworkingSockets.CloseConnection(conn, 0, "disconnected by server", false);
+		_transport.Log($"disconnect {conn.ToDebugString()}");
+		var result = SteamNetworkingSockets.CloseConnection(conn, 0, "disconnected by server", false);
+		if (result != true) _transport.Log($"[warn] flush {conn.ToDebugString()} returned {result}");
 		_conns.Remove(conn);
 		// dont need an error for disconnecting client
 		_transport.OnServerDisconnected?.Invoke(connectionId);
@@ -131,7 +139,8 @@ public class Server
 	{
 		// mirror disconnects all clients for us before this
 		_transport.Log("stop server");
-		SteamNetworkingSockets.CloseListenSocket(_listenSocket);
+		var result = SteamNetworkingSockets.CloseListenSocket(_listenSocket);
+		if (result != true) _transport.Log($"[warn] stop server returned {result}");
 		IsListening = false;
 
 		_onStatusChanged.Dispose();

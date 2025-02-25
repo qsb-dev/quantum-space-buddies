@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace SteamTransport;
 
-// could check result for these functions (e.g. send), but it seems to work fine without
 public class Client
 {
 	private SteamTransport _transport;
@@ -36,7 +35,8 @@ public class Client
 					break;
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
-					SteamNetworkingSockets.CloseConnection(_conn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
+					var result = SteamNetworkingSockets.CloseConnection(_conn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
+					if (result != true) _transport.Log($"[warn] close returned {result}");
 					IsConnecting = false;
 					IsConnected = false;
 					_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
@@ -67,7 +67,7 @@ public class Client
 			}
 
 			_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
-			_transport.Log($"connecting to {steamAddr.DebugToString()}");
+			_transport.Log($"connecting to {steamAddr.ToDebugString()}");
 		}
 		else
 		{
@@ -82,7 +82,7 @@ public class Client
 			identity.SetSteamID64(steamId);
 
 			_conn = SteamNetworkingSockets.ConnectP2P(ref identity, 0, 0, new SteamNetworkingConfigValue_t[0]);
-			_transport.Log($"connecting to {identity.DebugToString()}");
+			_transport.Log($"connecting to {identity.ToDebugString()}");
 		}
 	}
 
@@ -93,7 +93,8 @@ public class Client
 		{
 			fixed (byte* pData = segment.Array)
 			{
-				SteamNetworkingSockets.SendMessageToConnection(_conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
+				var result = SteamNetworkingSockets.SendMessageToConnection(_conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
+				if (result != EResult.k_EResultOK) _transport.Log($"[warn] send returned {result}");
 				_transport.OnClientDataSent?.Invoke(segment, channelId);
 			}
 		}
@@ -117,13 +118,15 @@ public class Client
 
 	public void Flush()
 	{
-		SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
+		var result = SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
+		if (result != EResult.k_EResultOK) _transport.Log($"[warn] flush returned {result}");
 	}
 
 	public void Close()
 	{
 		_transport.Log("client close");
-		SteamNetworkingSockets.CloseConnection(_conn, 0, "client closed connection", false);
+		var result = SteamNetworkingSockets.CloseConnection(_conn, 0, "client closed connection", false);
+		if (result != true) _transport.Log($"[warn] client close returned {result}");
 		IsConnecting = false;
 		IsConnected = false;
 		// its not an error for us to close ourselves

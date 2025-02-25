@@ -22,18 +22,18 @@ public static class Util
 		_ => throw new ArgumentOutOfRangeException(nameof(mirrorChannel), mirrorChannel, null)
 	};
 
-	public static string DebugToString(this HSteamNetConnection conn)
+	public static string ToDebugString(this HSteamNetConnection conn)
 	{
 		SteamNetworkingSockets.GetConnectionInfo(conn, out var pInfo);
 		return pInfo.m_szConnectionDescription;
 	}
 
-	public static string DebugToString(this SteamNetworkingIdentity ident)
+	public static string ToDebugString(this SteamNetworkingIdentity ident)
 	{
 		ident.ToString(out var s);
 		return s;
 	}
-	public static string DebugToString(this SteamNetworkingIPAddr addr)
+	public static string ToDebugString(this SteamNetworkingIPAddr addr)
 	{
 		addr.ToString(out var s, true);
 		return s;
