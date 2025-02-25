@@ -123,6 +123,8 @@ public class Client
 			_transport.Log($"[warn] flush returned {result}");
 	}
 
+	// there was one weird case where we werent doing an intentional disconnect but there was no status change causing an error.
+	// if that happens again, add a stack trace to see where that comes from.
 	public void Close()
 	{
 		_transport.Log("client close");
