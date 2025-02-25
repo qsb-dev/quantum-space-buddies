@@ -261,6 +261,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		{
 			_steamTransport.Log = s => DebugLog.DebugWrite("[Steam] " + s);
+			// temp
+			_steamTransport.OnClientDataReceived += (bytes, i) => DebugLog.DebugWrite($"[Steam] RECV {i} {bytes.Count}");
+			_steamTransport.OnServerDataReceived += (conn, bytes, i) => DebugLog.DebugWrite($"[Steam] RECV {conn} {i} {bytes.Count}");
+			_steamTransport.OnClientDataSent += (bytes, i) => DebugLog.DebugWrite($"[Steam] SEND {i} {bytes.Count}");
+			_steamTransport.OnServerDataSent += (conn, bytes, i) => DebugLog.DebugWrite($"[Steam] SEND {conn} {i} {bytes.Count}");
 		}
 		{
 			kcp2k.Log.Info = s =>

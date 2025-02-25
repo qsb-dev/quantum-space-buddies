@@ -6,6 +6,8 @@ namespace SteamTransport;
 
 public static class Util
 {
+	public const int MaxMessages = 256; // same as fizzy steamworks
+
 	public static int SendFlag2MirrorChannel(int sendFlag) => sendFlag switch
 	{
 		Constants.k_nSteamNetworkingSend_Reliable => Channels.Reliable,

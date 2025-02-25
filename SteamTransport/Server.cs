@@ -94,12 +94,11 @@ public class Server
 
 	public void Receive()
 	{
-		const int maxMessages = 10;
-		var ppOutMessages = new IntPtr[maxMessages];
+		var ppOutMessages = new IntPtr[Util.MaxMessages];
 
 		foreach (var conn in _conns)
 		{
-			var numMessages = SteamNetworkingSockets.ReceiveMessagesOnConnection(conn, ppOutMessages, maxMessages);
+			var numMessages = SteamNetworkingSockets.ReceiveMessagesOnConnection(conn, ppOutMessages, ppOutMessages.Length);
 			for (var i = 0; i < numMessages; i++)
 			{
 				var ppOutMessage = ppOutMessages[i];

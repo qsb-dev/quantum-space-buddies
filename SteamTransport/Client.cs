@@ -104,9 +104,8 @@ public class Client
 
 	public void Receive()
 	{
-		const int maxMessages = 10;
-		var ppOutMessages = new IntPtr[maxMessages];
-		var numMessages = SteamNetworkingSockets.ReceiveMessagesOnConnection(_conn, ppOutMessages, maxMessages);
+		var ppOutMessages = new IntPtr[Util.MaxMessages];
+		var numMessages = SteamNetworkingSockets.ReceiveMessagesOnConnection(_conn, ppOutMessages, ppOutMessages.Length);
 		for (var i = 0; i < numMessages; i++)
 		{
 			var ppOutMessage = ppOutMessages[i];
