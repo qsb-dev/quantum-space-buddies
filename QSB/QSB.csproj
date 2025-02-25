@@ -75,7 +75,7 @@
     <PackageReference Include="OWML" Version="2.15.1" IncludeAssets="compile" />
     <Reference Include="..\Lib\*.dll" />
     <ProjectReference Include="..\FizzySteamworks\FizzySteamworks.csproj" />
-<!--    <ProjectReference Include="..\SteamTransport\SteamTransport.csproj" />-->
+    <ProjectReference Include="..\SteamTransport\SteamTransport.csproj" />
     <ProjectReference Include="..\SteamRerouter\SteamRerouter.csproj" />
     <ProjectReference Include="..\QSBPatcher\QSBPatcher.csproj" />
     <ProjectReference Include="..\MirrorWeaver\MirrorWeaver.csproj" ReferenceOutputAssembly="false" />

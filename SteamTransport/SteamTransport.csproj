@@ -1,9 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
-        <LangVersion>latest</LangVersion>
-
-        <OutputType>Exe</OutputType>
         <AssemblyTitle>Steam Transport</AssemblyTitle>
         <Product>Steam Transport</Product>
         <Title>Steam Transport</Title>
@@ -16,14 +12,5 @@
         <PackageReference Include="OuterWildsGameLibs" Version="1.1.14.768" IncludeAssets="compile" />
         <PackageReference Include="OWML" Version="2.11.1" IncludeAssets="compile" />
         <Reference Include="..\Lib\*.dll" />
-        <Reference Include="..\standaloneLibs\*.dll" />
     </ItemGroup>
-    <Target Name="copy standalone dlls" AfterTargets="PostBuildEvent">
-        <ItemGroup>
-            <_Files Remove="@(_Files)" />
-            <_Files Include="..\Lib\*.dll" />
-            <_Files Include="..\standaloneLibs\*.dll" />
-        </ItemGroup>
-        <Copy SourceFiles="@(_Files)" DestinationFolder="$(OutputPath)" />
-    </Target>
 </Project>

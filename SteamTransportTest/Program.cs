@@ -3,7 +3,7 @@ using Steamworks;
 using System;
 using System.Threading;
 
-namespace SteamTransport;
+namespace SteamTransportTest;
 
 /// <summary>
 /// entry point for testing.
@@ -67,7 +67,7 @@ public static class Program
 
 	private static void DoServer()
 	{
-		var transport = new SteamTransport();
+		var transport = new SteamTransport.SteamTransport();
 		transport.Log = Console.WriteLine;
 		transport.UseLocalhost = true;
 
@@ -113,7 +113,7 @@ public static class Program
 
 	private static void DoClient()
 	{
-		var transport = new SteamTransport();
+		var transport = new SteamTransport.SteamTransport();
 		transport.Log = Console.WriteLine;
 		transport.UseLocalhost = true;
 
