@@ -89,7 +89,7 @@ public class Server
 			for (var i = 0; i < numMessages; i++)
 			{
 				var ppOutMessage = ppOutMessages[i];
-				var msg = Marshal.PtrToStructure<SteamNetworkingMessage_t>(ppOutMessage); // cant pointer cast for some reason
+				var msg = SteamNetworkingMessage_t.FromIntPtr(ppOutMessage);
 				var data = new byte[msg.m_cbSize];
 				Marshal.Copy(msg.m_pData, data, 0, data.Length);
 				var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
