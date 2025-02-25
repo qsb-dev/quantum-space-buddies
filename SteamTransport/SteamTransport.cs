@@ -50,14 +50,12 @@ public class SteamTransport : Transport
 
 	public override void ClientDisconnect()
 	{
-		// mirror seems to cause this sometimes
-		if (_client == null)
+		// mirror seems to call this when its null sometimes
+		if (_client != null)
 		{
-			Log("tried to ClientDisconnect when client is null. i think this is normal.");
-			return;
+			_client.Close();
+			_client = null;
 		}
-		_client.Close();
-		_client = null;
 	}
 
 	public override Uri ServerUri() => throw new NotImplementedException("dont need to implement this i think");
@@ -84,14 +82,12 @@ public class SteamTransport : Transport
 
 	public override void ServerStop()
 	{
-		// mirror seems to cause this sometimes
-		if (_server == null)
+		// mirror seems to call this when its null sometimes
+		if (_server != null)
 		{
-			Log("tried to ServerStop when server is null. i think this is normal.");
-			return;
+			_server.Close();
+			_server = null;
 		}
-		_server.Close();
-		_server = null;
 	}
 
 	public override int GetMaxPacketSize(int channelId = 0) => Constants.k_cbMaxSteamNetworkingSocketsMessageSizeSend;

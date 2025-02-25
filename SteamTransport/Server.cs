@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace SteamTransport;
 
-// could check more Result stuff for functions. idc rn
+// could check result for these functions (e.g. send), but it seems to work fine without
 public class Server
 {
 	private SteamTransport _transport;
@@ -78,17 +78,13 @@ public class Server
 	{
 		var conn = new HSteamNetConnection((uint)connectionId);
 
-		// use pointer to managed array instead of making copy. is this okay?
+		// use pointer to managed array instead of making copy. seems to work okay
 		unsafe
 		{
 			fixed (byte* pData = segment.Array)
 			{
-				var result = SteamNetworkingSockets.SendMessageToConnection(conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
-				if (result == EResult.k_EResultOK)
-					_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
-				else
-					_transport.OnServerError?.Invoke(connectionId, TransportError.InvalidSend, $"send returned {result}");
-				// i dont think we have to check for disconnect result here since the status change handles that
+				SteamNetworkingSockets.SendMessageToConnection(conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
+				_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
 			}
 		}
 	}
@@ -117,10 +113,7 @@ public class Server
 	{
 		foreach (var conn in _conns)
 		{
-			var result = SteamNetworkingSockets.FlushMessagesOnConnection(conn);
-			if (result != EResult.k_EResultOK)
-				_transport.OnServerError?.Invoke((int)conn.m_HSteamNetConnection, TransportError.Unexpected, $"flush returned {result}");
-			// i dont think we have to check for disconnect result here since the status change handles that
+			SteamNetworkingSockets.FlushMessagesOnConnection(conn);
 		}
 	}
 

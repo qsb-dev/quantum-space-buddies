@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace SteamTransport;
 
-// could check more Result stuff for functions. idc rn
+// could check result for these functions (e.g. send), but it seems to work fine without
 public class Client
 {
 	private SteamTransport _transport;
@@ -88,17 +88,13 @@ public class Client
 
 	public void Send(ArraySegment<byte> segment, int channelId)
 	{
-		// use pointer to managed array instead of making copy. is this okay?
+		// use pointer to managed array instead of making copy. seems to work okay
 		unsafe
 		{
 			fixed (byte* pData = segment.Array)
 			{
-				var result = SteamNetworkingSockets.SendMessageToConnection(_conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
-				if (result == EResult.k_EResultOK)
-					_transport.OnClientDataSent?.Invoke(segment, channelId);
-				else
-					_transport.OnClientError?.Invoke(TransportError.InvalidSend, $"send returned {result}");
-				// i dont think we have to check for disconnect result here since the status change handles that
+				SteamNetworkingSockets.SendMessageToConnection(_conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
+				_transport.OnClientDataSent?.Invoke(segment, channelId);
 			}
 		}
 	}
@@ -121,10 +117,7 @@ public class Client
 
 	public void Flush()
 	{
-		var result = SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
-		if (result != EResult.k_EResultOK && result != EResult.k_EResultIgnored) // k_EResultIgnored gives spam when connecting
-			_transport.OnClientError?.Invoke(TransportError.Unexpected, $"flush returned {result}");
-		// i dont think we have to check for disconnect result here since the status change handles that
+		SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
 	}
 
 	public void Close()
@@ -133,7 +126,7 @@ public class Client
 		SteamNetworkingSockets.CloseConnection(_conn, 0, "client closed connection", false);
 		IsConnecting = false;
 		IsConnected = false;
-		// dont need to do error because we dont show dialogue box for intentional disconnect
+		// its not an error for us to close ourselves
 		_transport.OnClientDisconnected?.Invoke();
 
 		_onStatusChanged.Dispose();
