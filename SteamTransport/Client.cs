@@ -66,7 +66,7 @@ public class Client
 			}
 
 			_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
-			_transport.Log($"connecting to {steamAddr}");
+			_transport.Log($"connecting to {steamAddr.DebugToString()}");
 		}
 		else
 		{

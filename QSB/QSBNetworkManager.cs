@@ -260,7 +260,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		networkAddress = QSBCore.DefaultServerIP;
 
 		{
-			_steamTransport.Log = s => DebugLog.DebugWrite("[STEAM] " + s);
+			_steamTransport.Log = s => DebugLog.DebugWrite("[Steam] " + s);
 		}
 		{
 			kcp2k.Log.Info = s =>
