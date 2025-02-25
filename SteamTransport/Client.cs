@@ -119,7 +119,8 @@ public class Client
 	public void Flush()
 	{
 		var result = SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
-		if (result != EResult.k_EResultOK) _transport.Log($"[warn] flush returned {result}");
+		if (result != EResult.k_EResultOK && result != EResult.k_EResultIgnored) // flush does ignored when connecting. ignore cuz spam
+			_transport.Log($"[warn] flush returned {result}");
 	}
 
 	public void Close()
