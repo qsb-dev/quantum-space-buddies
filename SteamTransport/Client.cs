@@ -60,7 +60,7 @@ public class Client
 			var parsed = steamAddr.ParseString(_transport.TestIpAddress);
 			if (!parsed)
 			{
-				_transport.OnClientError?.Invoke(TransportError.DnsResolve, $"couldnt parse address {address} when connecting");
+				_transport.OnClientError?.Invoke(TransportError.DnsResolve, $"couldnt parse address {_transport.TestIpAddress} when connecting");
 				_transport.OnClientDisconnected?.Invoke(); // will show error box
 				return;
 			}
