@@ -70,8 +70,8 @@ public static class Util
 		// 50% change of doing all, delay .5 seconds
 		if (transport.DoFakeNetworkErrors)
 		{
-			var floatHandle = GCHandle.Alloc((float)50, GCHandleType.Pinned);
-			var intHandle = GCHandle.Alloc((int)100, GCHandleType.Pinned);
+			var floatHandle = GCHandle.Alloc((float)20, GCHandleType.Pinned);
+			var intHandle = GCHandle.Alloc((int)200, GCHandleType.Pinned);
 
 			// global scope = dont apply to connection
 			SteamNetworkingUtils.SetConfigValue(

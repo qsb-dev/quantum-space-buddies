@@ -73,7 +73,7 @@ public static class Program
 		transport.TestIpAddress = "127.0.0.1:1234";
 		// make timeout for client detecting server drop different than timeout for server detecting client drop
 		transport.Timeout = 5000;
-		transport.DoFakeNetworkErrors = true;
+		transport.DoFakeNetworkErrors = false;
 
 		transport.OnServerError = (conn, error, s) => Console.Error.WriteLine($"ERROR {conn} {error} {s}");
 		var theConn = -1;
@@ -85,7 +85,7 @@ public static class Program
 
 		try
 		{
-			Console.WriteLine("press q to quit, s to send, d to disconnect");
+			Console.WriteLine("press c to close, s to send, d to disconnect");
 			var running = true;
 			while (running)
 			{
@@ -94,7 +94,7 @@ public static class Program
 				{
 					switch (Console.ReadKey(true).KeyChar)
 					{
-						case 'q':
+						case 'c':
 							// running = false;
 							transport.ServerDisconnect(theConn); // mirror does this for us
 							transport.ServerStop();
@@ -135,7 +135,7 @@ public static class Program
 
 		try
 		{
-			Console.WriteLine("press q to quit, s to send");
+			Console.WriteLine("press c to close, s to send");
 
 			var running = true;
 			// transport.OnClientDisconnected = () => running = false; // mirror normally does this
@@ -146,7 +146,7 @@ public static class Program
 				{
 					switch (Console.ReadKey(true).KeyChar)
 					{
-						case 'q':
+						case 'c':
 							// running = false;
 							transport.ClientDisconnect();
 							break;
