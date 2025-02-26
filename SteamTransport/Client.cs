@@ -123,16 +123,19 @@ public class Client
 			_transport.Log($"[warn] flush returned {result}");
 	}
 
-	// there was one weird case where we werent doing an intentional disconnect but there was no status change causing an error.
-	// if that happens again, add a stack trace to see where that comes from.
 	public void Close()
 	{
-		_transport.Log("client close");
+		// theres a weird case where we arent doing an intentional disconnect but there isnt a status change disonnect either
+		// not sure whats going on there, but ill slap a stack trace on it
+
+		_transport.Log($"client close\n{Environment.StackTrace}");
 		var result = SteamNetworkingSockets.CloseConnection(_conn, 0, "client closed connection", false);
 		if (result != true) _transport.Log($"[warn] client close returned {result}");
 		IsConnecting = false;
 		IsConnected = false;
-		// its not an error for us to close ourselves
+		// its not an error for us to close ourselves intentionally
+		// but we do it anyway cuz above comment
+		_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, "client closed connection, but you shouldnt be seeing this in game. make sure [DEBUG] Debug Mode is on and check logs for stack trace");
 		_transport.OnClientDisconnected?.Invoke();
 
 		_onStatusChanged.Dispose();

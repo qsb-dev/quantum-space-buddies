@@ -131,7 +131,7 @@ public class Server
 		var result = SteamNetworkingSockets.CloseConnection(conn, 0, "disconnected by server", false);
 		if (result != true) _transport.Log($"[warn] flush {conn.ToDebugString()} returned {result}");
 		_conns.Remove(conn);
-		// dont need an error for disconnecting client
+		// its not an error for us to disconnect a client intentionally
 		_transport.OnServerDisconnected?.Invoke(connectionId);
 	}
 
