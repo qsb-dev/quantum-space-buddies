@@ -42,6 +42,9 @@ public class DebugSettings
 	private string _steamTestIpAddress;
 	public string SteamTestIpAddress => DebugMode ? _steamTestIpAddress : null;
 
+	private bool _steamFakeNetworkErrors;
+	public bool SteamFakeNetworkErrors => DebugMode && _steamFakeNetworkErrors;
+
 	public void Update(IModConfig config)
 	{
 		DebugMode = config.GetSettingsValue<bool>("debugMode");
@@ -57,5 +60,6 @@ public class DebugSettings
 		_latencySimulation = config.GetSettingsValue<int>("latencySimulation");
 		_logQSBMessages = config.GetSettingsValue<bool>("logQSBMessages");
 		_steamTestIpAddress = config.GetSettingsValue<string>("steamTestIpAddress");
+		_steamFakeNetworkErrors = config.GetSettingsValue<bool>("steamFakeNetworkErrors");
 	}
 }

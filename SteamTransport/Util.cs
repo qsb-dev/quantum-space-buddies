@@ -66,8 +66,8 @@ public static class Util
 			}
 		});
 
-		// 50% change of doing all (dont do lag cuz thats all packets), delay max 1 second
-		if (transport.DoFakePacket)
+		// 50% change of doing all, delay .5 seconds
+		if (transport.DoFakeNetworkErrors)
 		{
 			result.Add(new SteamNetworkingConfigValue_t
 			{
@@ -85,6 +85,24 @@ public static class Util
 				m_val = new SteamNetworkingConfigValue_t.OptionValue
 				{
 					m_float = 50
+				}
+			});
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Send,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_int32 = 500
+				}
+			});
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Recv,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_int32 = 500
 				}
 			});
 			result.Add(new SteamNetworkingConfigValue_t
@@ -111,7 +129,7 @@ public static class Util
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
 				m_val = new SteamNetworkingConfigValue_t.OptionValue
 				{
-					m_int32 = 1000
+					m_int32 = 500
 				}
 			});
 			result.Add(new SteamNetworkingConfigValue_t
@@ -138,7 +156,7 @@ public static class Util
 				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
 				m_val = new SteamNetworkingConfigValue_t.OptionValue
 				{
-					m_int32 = 1000
+					m_int32 = 500
 				}
 			});
 		}

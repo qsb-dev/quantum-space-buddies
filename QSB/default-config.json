@@ -144,6 +144,12 @@
       "type": "text",
       "value": "",
       "tooltip": "[DEBUG] If not empty, the steam transport will use this ip:port when listening/connecting. Host should probably use 0.0.0.0:port."
+    },
+    "steamFakeNetworkErrors": {
+      "title": "[DEBUG] Steam Fake Network Errors",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Aggressively simulates common network errors (loss, lag, reordering, duplication) to test resiliency."
     }
   }
 }

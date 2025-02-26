@@ -30,9 +30,9 @@ public class SteamTransport : Transport
 	/// </summary>
 	public int Timeout;
 	/// <summary>
-	/// whether or not to simulate fake packet loss, reorder, and dup
+	/// whether or not to simulate fake packet loss, lag, reorder, and dup
 	/// </summary>
-	public bool DoFakePacket;
+	public bool DoFakeNetworkErrors;
 
 	public override bool Available() => true;
 

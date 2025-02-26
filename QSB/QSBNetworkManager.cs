@@ -86,6 +86,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			// Steam uses milliseconds
 			_steamTransport.Timeout = QSBCore.Timeout * 1000;
 			_steamTransport.TestIpAddress = QSBCore.DebugSettings.SteamTestIpAddress;
+			_steamTransport.DoFakeNetworkErrors = QSBCore.DebugSettings.SteamFakeNetworkErrors;
 		}
 
 		{
@@ -171,6 +172,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		_steamTransport.Timeout = QSBCore.Timeout * 1000;
 		_steamTransport.TestIpAddress = QSBCore.DebugSettings.SteamTestIpAddress;
+		_steamTransport.DoFakeNetworkErrors = QSBCore.DebugSettings.SteamFakeNetworkErrors;
 
 		if (QSBCore.IsInMultiplayer)
 		{
