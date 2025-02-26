@@ -55,6 +55,8 @@ public class Client
 
 	public void Connect(string address)
 	{
+		var options = Util.MakeOptions(_transport);
+
 		if (!string.IsNullOrEmpty(_transport.TestIpAddress))
 		{
 			var steamAddr = new SteamNetworkingIPAddr();
@@ -66,7 +68,7 @@ public class Client
 				return;
 			}
 
-			_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
+			_conn = SteamNetworkingSockets.ConnectByIPAddress(ref steamAddr, options.Length, options);
 			_transport.Log($"connecting to {steamAddr.ToDebugString()}");
 		}
 		else
@@ -81,7 +83,7 @@ public class Client
 			}
 			identity.SetSteamID64(steamId);
 
-			_conn = SteamNetworkingSockets.ConnectP2P(ref identity, 0, 0, new SteamNetworkingConfigValue_t[0]);
+			_conn = SteamNetworkingSockets.ConnectP2P(ref identity, 0, options.Length, options);
 			_transport.Log($"connecting to {identity.ToDebugString()}");
 		}
 	}

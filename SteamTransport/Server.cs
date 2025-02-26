@@ -58,6 +58,8 @@ public class Server
 
 	public void StartListening()
 	{
+		var options = Util.MakeOptions(_transport);
+
 		if (!string.IsNullOrEmpty(_transport.TestIpAddress))
 		{
 			var steamAddr = new SteamNetworkingIPAddr();
@@ -68,12 +70,12 @@ public class Server
 				// dont really need to stop server here. mirror isnt designed to let us fail to listen anyway so this is all kinda silly
 				return;
 			}
-			_listenSocket = SteamNetworkingSockets.CreateListenSocketIP(ref steamAddr, 0, new SteamNetworkingConfigValue_t[0]);
+			_listenSocket = SteamNetworkingSockets.CreateListenSocketIP(ref steamAddr, options.Length, options);
 			_transport.Log($"listening on {steamAddr.ToDebugString()}");
 		}
 		else
 		{
-			_listenSocket = SteamNetworkingSockets.CreateListenSocketP2P(0, 0, new SteamNetworkingConfigValue_t[0]);
+			_listenSocket = SteamNetworkingSockets.CreateListenSocketP2P(0, options.Length, options);
 			_transport.Log($"listening on p2p");
 		}
 		IsListening = true;

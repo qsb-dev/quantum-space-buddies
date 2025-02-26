@@ -25,14 +25,12 @@ public class SteamTransport : Transport
 	public string TestIpAddress;
 
 	/// <summary>
-	/// timeout in seconds when connecting, and timeout before detecting a loss in connection
+	/// timeout in ms when connecting, and timeout before detecting a loss in connection
 	/// </summary>
-	// TODO implement
 	public int Timeout;
 	/// <summary>
-	/// whether or not to simulate fake packet loss, lag, reorder, and dup
+	/// whether or not to simulate fake packet loss, reorder, and dup
 	/// </summary>
-	// TODO implement
 	public bool DoFakePacket;
 
 	public override bool Available() => true;

@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using Steamworks;
 using System;
+using System.Collections.Generic;
 
 namespace SteamTransport;
 
@@ -33,9 +34,114 @@ public static class Util
 		ident.ToString(out var s);
 		return s;
 	}
+
 	public static string ToDebugString(this SteamNetworkingIPAddr addr)
 	{
 		addr.ToString(out var s, true);
 		return s;
+	}
+
+	// could do send/recv util, but i wanna inline for performance
+
+	public static SteamNetworkingConfigValue_t[] MakeOptions(SteamTransport transport)
+	{
+		var result = new List<SteamNetworkingConfigValue_t>();
+
+		result.Add(new SteamNetworkingConfigValue_t
+		{
+			m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_TimeoutInitial,
+			m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+			m_val = new SteamNetworkingConfigValue_t.OptionValue
+			{
+				m_int32 = transport.Timeout
+			}
+		});
+		result.Add(new SteamNetworkingConfigValue_t
+		{
+			m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_TimeoutConnected,
+			m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+			m_val = new SteamNetworkingConfigValue_t.OptionValue
+			{
+				m_int32 = transport.Timeout
+			}
+		});
+
+		// 50% change of doing all (dont do lag cuz thats all packets), delay max 1 second
+		if (transport.DoFakePacket)
+		{
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Send,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_float = 50
+				}
+			});
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Recv,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_float = 50
+				}
+			});
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Send,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_float = 50
+				}
+			});
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Recv,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_float = 50
+				}
+			});
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Time,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_int32 = 1000
+				}
+			});
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Send,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_float = 50
+				}
+			});
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Recv,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_float = 50
+				}
+			});
+			result.Add(new SteamNetworkingConfigValue_t
+			{
+				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_TimeMax,
+				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				m_val = new SteamNetworkingConfigValue_t.OptionValue
+				{
+					m_int32 = 1000
+				}
+			});
+		}
+		return result.ToArray();
 	}
 }

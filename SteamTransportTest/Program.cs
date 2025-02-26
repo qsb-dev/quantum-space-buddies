@@ -71,6 +71,7 @@ public static class Program
 		var transport = new SteamTransport.SteamTransport();
 		transport.Log = Console.WriteLine;
 		transport.TestIpAddress = "127.0.0.1:1234";
+		transport.Timeout = 1000;
 
 		transport.OnServerError = (conn, error, s) => Console.Error.WriteLine($"ERROR {conn} {error} {s}");
 		var theConn = -1;
@@ -118,6 +119,7 @@ public static class Program
 		var transport = new SteamTransport.SteamTransport();
 		transport.Log = Console.WriteLine;
 		transport.TestIpAddress = "127.0.0.1:1234";
+		transport.Timeout = 1000;
 
 		transport.OnClientError = (error, s) => Console.Error.WriteLine($"ERROR {error} {s}");
 		transport.OnClientDataReceived = (bytes, i) => Console.WriteLine($"RECV {bytes.Join()} {i}");
