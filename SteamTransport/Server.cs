@@ -2,7 +2,6 @@
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace SteamTransport;
 
@@ -85,9 +84,7 @@ public class Server
 	{
 		var conn = new HSteamNetConnection((uint)connectionId);
 
-		var handle = GCHandle.Alloc(segment.Array, GCHandleType.Pinned); // prevent moving or gc when passing to native function
-		var result = SteamNetworkingSockets.SendMessageToConnection(conn, handle.AddrOfPinnedObject() + segment.Offset, (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
-		handle.Free();
+		var result = conn.Send(segment, channelId);
 		if (result != EResult.k_EResultOK) _transport.Log($"[warn] send {conn.ToDebugString()} returned {result}");
 		_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
 	}
@@ -101,13 +98,8 @@ public class Server
 			var numMessages = SteamNetworkingSockets.ReceiveMessagesOnConnection(conn, ppOutMessages, ppOutMessages.Length);
 			for (var i = 0; i < numMessages; i++)
 			{
-				var ppOutMessage = ppOutMessages[i];
-				var msg = SteamNetworkingMessage_t.FromIntPtr(ppOutMessage);
-				var data = new byte[msg.m_cbSize];
-				Marshal.Copy(msg.m_pData, data, 0, msg.m_cbSize);
-				var channel = Util.SendFlag2MirrorChannel(msg.m_nFlags);
-				_transport.OnServerDataReceived?.Invoke((int)conn.m_HSteamNetConnection, new ArraySegment<byte>(data), channel);
-				SteamNetworkingMessage_t.Release(ppOutMessage);
+				var (segment, channelId) = Util.Receive(ppOutMessages[i]);
+				_transport.OnServerDataReceived?.Invoke((int)conn.m_HSteamNetConnection, segment, channelId);
 			}
 		}
 	}

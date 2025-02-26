@@ -42,7 +42,23 @@ public static class Util
 		return s;
 	}
 
-	// could do send/recv util, but i wanna inline for performance
+	public static EResult Send(this HSteamNetConnection conn, ArraySegment<byte> segment, int channelId)
+	{
+		var handle = GCHandle.Alloc(segment.Array, GCHandleType.Pinned); // prevent moving or gc when passing to native function
+		var result = SteamNetworkingSockets.SendMessageToConnection(conn, handle.AddrOfPinnedObject() + segment.Offset, (uint)segment.Count, MirrorChannel2SendFlag(channelId), out _);
+		handle.Free();
+		return result;
+	}
+
+	public static (ArraySegment<byte> segment, int channelId) Receive(IntPtr ppOutMessage)
+	{
+		var msg = SteamNetworkingMessage_t.FromIntPtr(ppOutMessage);
+		var segment = new ArraySegment<byte>(new byte[msg.m_cbSize]);
+		Marshal.Copy(msg.m_pData, segment.Array, 0, msg.m_cbSize);
+		var channel = SendFlag2MirrorChannel(msg.m_nFlags);
+		SteamNetworkingMessage_t.Release(ppOutMessage);
+		return (segment, channel);
+	}
 
 	public static SteamNetworkingConfigValue_t[] MakeOptions(SteamTransport transport)
 	{
