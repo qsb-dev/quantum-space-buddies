@@ -71,7 +71,7 @@ public static class Util
 		if (transport.DoFakeNetworkErrors)
 		{
 			var floatHandle = GCHandle.Alloc((float)50, GCHandleType.Pinned);
-			var intHandle = GCHandle.Alloc((int)500, GCHandleType.Pinned);
+			var intHandle = GCHandle.Alloc((int)100, GCHandleType.Pinned);
 
 			// global scope = dont apply to connection
 			SteamNetworkingUtils.SetConfigValue(
@@ -88,101 +88,66 @@ public static class Util
 				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
 				floatHandle.AddrOfPinnedObject()
 			);
-			/*
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Send,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_float = 50
-				}
-			});
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Recv,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_float = 50
-				}
-			});
 
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Send,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_int32 = 500
-				}
-			});
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Recv,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_int32 = 500
-				}
-			});
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Send,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				intHandle.AddrOfPinnedObject()
+			);
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Recv,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				intHandle.AddrOfPinnedObject()
+			);
 
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Send,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_float = 50
-				}
-			});
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Recv,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_float = 50
-				}
-			});
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Time,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_int32 = 500
-				}
-			});
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Send,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				floatHandle.AddrOfPinnedObject()
+			);
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Recv,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				floatHandle.AddrOfPinnedObject()
+			);
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Time,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				intHandle.AddrOfPinnedObject()
+			);
 
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Send,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_float = 50
-				}
-			});
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Recv,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_float = 50
-				}
-			});
-			result.Add(new SteamNetworkingConfigValue_t
-			{
-				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_TimeMax,
-				m_eDataType = ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				m_val = new SteamNetworkingConfigValue_t.OptionValue
-				{
-					m_int32 = 500
-				}
-			});
-			*/
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Send,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				floatHandle.AddrOfPinnedObject()
+			);
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Recv,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				floatHandle.AddrOfPinnedObject()
+			);
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_TimeMax,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+				intHandle.AddrOfPinnedObject()
+			);
+
 			floatHandle.Free();
 			intHandle.Free();
 		}

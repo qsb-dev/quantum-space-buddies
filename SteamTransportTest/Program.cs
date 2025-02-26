@@ -73,12 +73,13 @@ public static class Program
 		transport.TestIpAddress = "127.0.0.1:1234";
 		// make timeout for client detecting server drop different than timeout for server detecting client drop
 		transport.Timeout = 5000;
-		transport.DoFakeNetworkErrors = false;
+		transport.DoFakeNetworkErrors = true;
 
 		transport.OnServerError = (conn, error, s) => Console.Error.WriteLine($"ERROR {conn} {error} {s}");
 		var theConn = -1;
 		transport.OnServerConnected = conn => theConn = conn;
-		transport.OnServerDataReceived = (conn, bytes, i) => Console.WriteLine($"RECV {conn} {bytes.Join()} {i}");
+		transport.OnServerDataSent = (conn, bytes, i) => Console.WriteLine($"SEND {conn} {i} {bytes.Join()}");
+		transport.OnServerDataReceived = (conn, bytes, i) => Console.WriteLine($"RECV {conn} {i} {bytes.Join()}");
 
 		transport.ServerStart();
 
@@ -94,7 +95,9 @@ public static class Program
 					switch (Console.ReadKey(true).KeyChar)
 					{
 						case 'q':
-							running = false;
+							// running = false;
+							transport.ServerDisconnect(theConn); // mirror does this for us
+							transport.ServerStop();
 							break;
 						case 's':
 							transport.ServerSend(theConn, new ArraySegment<byte>(new byte[] { 1, 2, 3, 4, 5 }, 1, 5 - 1));
@@ -125,7 +128,8 @@ public static class Program
 		transport.DoFakeNetworkErrors = true;
 
 		transport.OnClientError = (error, s) => Console.Error.WriteLine($"ERROR {error} {s}");
-		transport.OnClientDataReceived = (bytes, i) => Console.WriteLine($"RECV {bytes.Join()} {i}");
+		transport.OnClientDataSent = (bytes, i) => Console.WriteLine($"SEND {i} {bytes.Join()}");
+		transport.OnClientDataReceived = (bytes, i) => Console.WriteLine($"RECV {i} {bytes.Join()}");
 
 		transport.ClientConnect("76561198150564286");
 
@@ -134,7 +138,7 @@ public static class Program
 			Console.WriteLine("press q to quit, s to send");
 
 			var running = true;
-			transport.OnClientDisconnected = () => running = false; // mirror normally does this
+			// transport.OnClientDisconnected = () => running = false; // mirror normally does this
 			while (running)
 			{
 				transport.ClientEarlyUpdate();
@@ -143,7 +147,8 @@ public static class Program
 					switch (Console.ReadKey(true).KeyChar)
 					{
 						case 'q':
-							running = false;
+							// running = false;
+							transport.ClientDisconnect();
 							break;
 						case 's':
 							transport.ClientSend(new ArraySegment<byte>(new byte[] { 1, 2, 3, 4, 5 }, 1, 5 - 1));
