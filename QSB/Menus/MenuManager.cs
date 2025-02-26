@@ -491,7 +491,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 				LoadGame(PlayerData.GetWarpedToTheEye());
 				// wait until scene load and then wait until Start has ran
 				// this is done cuz otherwise client can get into scene before server. could start on transition but eh
-				// also this means Awake patches dont run because host happens after Start, but it seems to be okay for now
+				// see issue #710
 				Delay.RunWhen(() => TimeLoop._initialized, () =>
 				{
 					QSBNetworkManager.singleton.StartHost();
@@ -508,7 +508,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 			LoadGame(PlayerData.GetWarpedToTheEye());
 			// wait until scene load and then wait until Start has ran
 			// this is done cuz otherwise client can get into scene before server. could start on transition but eh
-			// also this means Awake patches dont run because host happens after Start, but it seems to be okay for now
+			// see issue #710
 			Delay.RunWhen(() => TimeLoop._initialized, () =>
 			{
 				QSBNetworkManager.singleton.StartHost();
