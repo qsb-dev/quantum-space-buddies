@@ -98,7 +98,7 @@ public class AnimatorMirror : MonoBehaviour
 					{
 						if (_networkAnimator != null)
 						{
-							DebugLog.DebugWrite($"Set {fromParam.name} on netanim");
+							// DebugLog.DebugWrite($"Set {fromParam.name} on netanim");
 							_networkAnimator.SetTrigger(fromParam.nameHash);
 						}
 
@@ -109,7 +109,7 @@ public class AnimatorMirror : MonoBehaviour
 					{
 						if (_networkAnimator != null)
 						{
-							DebugLog.DebugWrite($"Reset {fromParam.name} on netanim");
+							// DebugLog.DebugWrite($"Reset {fromParam.name} on netanim");
 							_networkAnimator.ResetTrigger(fromParam.nameHash);
 						}
 
