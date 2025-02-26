@@ -85,16 +85,11 @@ public class Server
 	{
 		var conn = new HSteamNetConnection((uint)connectionId);
 
-		// use pointer to managed array instead of making copy. seems to work okay
-		unsafe
-		{
-			fixed (byte* pData = segment.Array)
-			{
-				var result = SteamNetworkingSockets.SendMessageToConnection(conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
-				if (result != EResult.k_EResultOK) _transport.Log($"[warn] send {conn.ToDebugString()} returned {result}");
-				_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
-			}
-		}
+		var handle = GCHandle.Alloc(segment.Array, GCHandleType.Pinned); // prevent moving or gc when passing to native function
+		var result = SteamNetworkingSockets.SendMessageToConnection(conn, handle.AddrOfPinnedObject() + segment.Offset, (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
+		handle.Free();
+		if (result != EResult.k_EResultOK) _transport.Log($"[warn] send {conn.ToDebugString()} returned {result}");
+		_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
 	}
 
 	public void Receive()

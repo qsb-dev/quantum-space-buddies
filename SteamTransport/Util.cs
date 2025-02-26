@@ -2,6 +2,7 @@
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace SteamTransport;
 
@@ -69,6 +70,25 @@ public static class Util
 		// 50% change of doing all, delay .5 seconds
 		if (transport.DoFakeNetworkErrors)
 		{
+			var floatHandle = GCHandle.Alloc((float)50, GCHandleType.Pinned);
+			var intHandle = GCHandle.Alloc((int)500, GCHandleType.Pinned);
+
+			// global scope = dont apply to connection
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Send,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				floatHandle.AddrOfPinnedObject()
+			);
+			SteamNetworkingUtils.SetConfigValue(
+				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Recv,
+				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+				IntPtr.Zero,
+				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
+				floatHandle.AddrOfPinnedObject()
+			);
+			/*
 			result.Add(new SteamNetworkingConfigValue_t
 			{
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Send,
@@ -87,6 +107,7 @@ public static class Util
 					m_float = 50
 				}
 			});
+
 			result.Add(new SteamNetworkingConfigValue_t
 			{
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Send,
@@ -105,6 +126,7 @@ public static class Util
 					m_int32 = 500
 				}
 			});
+
 			result.Add(new SteamNetworkingConfigValue_t
 			{
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Send,
@@ -132,6 +154,7 @@ public static class Util
 					m_int32 = 500
 				}
 			});
+
 			result.Add(new SteamNetworkingConfigValue_t
 			{
 				m_eValue = ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Send,
@@ -159,7 +182,11 @@ public static class Util
 					m_int32 = 500
 				}
 			});
+			*/
+			floatHandle.Free();
+			intHandle.Free();
 		}
+
 		return result.ToArray();
 	}
 }

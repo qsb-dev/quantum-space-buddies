@@ -90,16 +90,11 @@ public class Client
 
 	public void Send(ArraySegment<byte> segment, int channelId)
 	{
-		// use pointer to managed array instead of making copy. seems to work okay
-		unsafe
-		{
-			fixed (byte* pData = segment.Array)
-			{
-				var result = SteamNetworkingSockets.SendMessageToConnection(_conn, (IntPtr)(pData + segment.Offset), (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
-				if (result != EResult.k_EResultOK) _transport.Log($"[warn] send returned {result}");
-				_transport.OnClientDataSent?.Invoke(segment, channelId);
-			}
-		}
+		var handle = GCHandle.Alloc(segment.Array, GCHandleType.Pinned); // prevent moving or gc when passing to native function
+		var result = SteamNetworkingSockets.SendMessageToConnection(_conn, handle.AddrOfPinnedObject() + segment.Offset, (uint)segment.Count, Util.MirrorChannel2SendFlag(channelId), out _);
+		handle.Free();
+		if (result != EResult.k_EResultOK) _transport.Log($"[warn] send returned {result}");
+		_transport.OnClientDataSent?.Invoke(segment, channelId);
 	}
 
 	public void Receive()

@@ -73,7 +73,7 @@ public static class Program
 		transport.TestIpAddress = "127.0.0.1:1234";
 		// make timeout for client detecting server drop different than timeout for server detecting client drop
 		transport.Timeout = 5000;
-		transport.DoFakeNetworkErrors = true;
+		transport.DoFakeNetworkErrors = false;
 
 		transport.OnServerError = (conn, error, s) => Console.Error.WriteLine($"ERROR {conn} {error} {s}");
 		var theConn = -1;
@@ -122,7 +122,7 @@ public static class Program
 		transport.Log = Console.WriteLine;
 		transport.TestIpAddress = "127.0.0.1:1234";
 		transport.Timeout = 20000;
-		transport.DoFakeNetworkErrors = false;
+		transport.DoFakeNetworkErrors = true;
 
 		transport.OnClientError = (error, s) => Console.Error.WriteLine($"ERROR {error} {s}");
 		transport.OnClientDataReceived = (bytes, i) => Console.WriteLine($"RECV {bytes.Join()} {i}");
