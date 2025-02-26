@@ -100,7 +100,7 @@ public static class Program
 							transport.ServerStop();
 							break;
 						case 's':
-							transport.ServerSend(theConn, new ArraySegment<byte>(new byte[] { 1, 2, 3, 4, 5 }, 1, 5 - 1));
+							transport.ServerSend(theConn, new ArraySegment<byte>(new byte[] { 1, 2, (byte)DateTime.Now.Millisecond, 4, 5 }, 1, 5 - 1));
 							break;
 						case 'd':
 							transport.ServerDisconnect(theConn);
@@ -151,7 +151,7 @@ public static class Program
 							transport.ClientDisconnect();
 							break;
 						case 's':
-							transport.ClientSend(new ArraySegment<byte>(new byte[] { 1, 2, 3, 4, 5 }, 1, 5 - 1));
+							transport.ClientSend(new ArraySegment<byte>(new byte[] { 1, 2, (byte)DateTime.Now.Millisecond, 4, 5 }, 1, 5 - 1), 1);
 							break;
 					}
 				}
