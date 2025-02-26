@@ -67,7 +67,7 @@ public static class Util
 			}
 		});
 
-		// 20% change of doing all, all delays are 200 ms. leads to about 1 second of rtt ping if enables on both ends.
+		// 20% change of doing all, all delays are 200 ms. leads to about 1 second of rtt ping if enabled on both ends.
 		if (transport.DoFakeNetworkErrors)
 		{
 			var floatHandle = GCHandle.Alloc((float)20, GCHandleType.Pinned);
