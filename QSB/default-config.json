@@ -37,7 +37,7 @@
     "timeout": {
       "title": "Timeout",
       "type": "number",
-      "value": 40,
+      "value": 30,
       "tooltip": "How many seconds it takes for a connection to time out. Used both when connecting and checked when playing."
     },
     "showPlayerNames": {

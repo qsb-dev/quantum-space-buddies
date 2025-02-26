@@ -25,7 +25,8 @@ public class SteamTransport : Transport
 	public string TestIpAddress;
 
 	/// <summary>
-	/// timeout in ms when connecting, and timeout before detecting a loss in connection
+	/// timeout in ms when connecting, and timeout before detecting a loss in connection.
+	/// after-connection timeout seems to be around 10x longer than specified.
 	/// </summary>
 	public int Timeout;
 	/// <summary>
