@@ -26,9 +26,10 @@ public class SteamTransport : Transport
 
 	/// <summary>
 	/// timeout in ms when connecting, and timeout before detecting a loss in connection.
-	/// after-connection timeout seems to be around 10x longer than specified.
+	/// after-connection timeout seems to be around 0-10 more seconds than specified.
 	/// </summary>
-	public int Timeout;
+	// default from steam https://github.com/ValveSoftware/GameNetworkingSockets/blob/master/src/steamnetworkingsockets/clientlib/csteamnetworkingsockets.cpp#L76
+	public int Timeout = 10000;
 	/// <summary>
 	/// whether or not to simulate fake packet loss, lag, reorder, and dup
 	/// </summary>
