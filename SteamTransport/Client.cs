@@ -132,7 +132,7 @@ public class Client
 		IsConnected = false;
 		// its not an error for us to close ourselves intentionally
 		// but we do it anyway cuz above comment
-		_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, "client closed connection, but you shouldnt be seeing this in game. make sure [DEBUG] Debug Mode is on and check logs for stack trace");
+		_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, "client closed connection, but you shouldnt be seeing this in game. make sure [DEBUG] Debug Mode is on and check logs for stack trace. report this please!");
 		_transport.OnClientDisconnected?.Invoke();
 
 		_onStatusChanged.Dispose();
