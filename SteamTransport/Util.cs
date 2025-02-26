@@ -55,9 +55,9 @@ public static class Util
 		var msg = SteamNetworkingMessage_t.FromIntPtr(ppOutMessage);
 		var segment = new ArraySegment<byte>(new byte[msg.m_cbSize]);
 		Marshal.Copy(msg.m_pData, segment.Array, 0, msg.m_cbSize);
-		var channel = SendFlag2MirrorChannel(msg.m_nFlags);
+		var channelId = SendFlag2MirrorChannel(msg.m_nFlags);
 		SteamNetworkingMessage_t.Release(ppOutMessage);
-		return (segment, channel);
+		return (segment, channelId);
 	}
 
 	public static SteamNetworkingConfigValue_t[] MakeOptions(SteamTransport transport)
