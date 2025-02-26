@@ -331,7 +331,7 @@ public class MenuManager : MonoBehaviour, IAddComponentOnStart
 		DisconnectPopup = QSBCore.Helper.MenuHelper.PopupMenuManager.CreateTwoChoicePopup(QSBLocalization.Current.DisconnectAreYouSure, QSBLocalization.Current.Yes, QSBLocalization.Current.No);
 		DisconnectPopup.OnPopupConfirm += Disconnect;
 
-		DisconnectButton = QSBCore.Helper.MenuHelper.PauseMenuManager.MakeMenuOpenButton(QSBLocalization.Current.PauseMenuDisconnect, DisconnectPopup, 0, true);
+		DisconnectButton = QSBCore.Helper.MenuHelper.PauseMenuManager.MakeMenuOpenButton(QSBLocalization.Current.PauseMenuDisconnect, DisconnectPopup, 0, false);
 
 		QuitButton = FindObjectOfType<PauseMenuManager>()._exitToMainMenuAction.gameObject;
 
