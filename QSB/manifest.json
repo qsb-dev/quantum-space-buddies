@@ -4,7 +4,7 @@
 	"author": "Nebula, John, Alek, & Rai",
 	"name": "Quantum Space Buddies",
 	"uniqueName": "Raicuparta.QuantumSpaceBuddies",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"owmlVersion": "2.14.0",
 	"dependencies": [ "JohnCorby.VanillaFix" ],
 	"pathsToPreserve": [ "debugsettings.json" ],

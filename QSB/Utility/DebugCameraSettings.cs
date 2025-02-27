@@ -6,21 +6,21 @@ public class DebugCameraSettings : MonoBehaviour, IAddComponentOnStart
 {
 	public static void UpdateFromDebugSetting()
 	{
-		if (QSBCore.DebugSettings.GreySkybox)
+		QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+		if (Camera.main)
 		{
-			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
-			if (Camera.main)
-			{
-				Camera.main.backgroundColor = Color.gray;
-			}
+			Camera.main.backgroundColor = _origColor;
 		}
-		else
+
+		if (!QSBCore.DebugSettings.GreySkybox)
 		{
-			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
-			if (Camera.main)
-			{
-				Camera.main.backgroundColor = _origColor;
-			}
+			return;
+		}
+
+		QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
+		if (Camera.main)
+		{
+			Camera.main.backgroundColor = Color.gray;
 		}
 	}
 

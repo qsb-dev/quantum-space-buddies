@@ -16,7 +16,7 @@ public static class DebugLog
 
 	public static void ToConsole(string message, MessageType type = MessageType.Message)
 	{
-		if (QSBCore.DebugSettings.InstanceIdInLogs)
+		if (QSBCore.DebugSettings.InstanceIDInLogs)
 		{
 			message = $"[{ProcessInstanceId}] " + message;
 		}

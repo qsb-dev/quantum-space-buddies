@@ -105,7 +105,7 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 
 		WriteLine(1, $"FPS : {Mathf.Round(1f / Time.smoothDeltaTime)}");
 		WriteLine(1, $"Ping : {Math.Round(NetworkTime.rtt * 1000.0)} ms");
-		if (!QSBCore.DebugSettings.DrawGui)
+		if (!QSBCore.DebugSettings.DrawGUI)
 		{
 			return;
 		}
@@ -422,16 +422,6 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 				}
 			}
 		}
-		else if (QSBCore.DebugSettings.DrawGhostAI)
-		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects<IGhostObject>())
-			{
-				if (obj.ShouldDisplayDebug())
-				{
-					DrawLabel(obj.AttachedObject.transform, obj.ReturnLabel());
-				}
-			}
-		}
 	}
 
 	public void OnRenderObject() => DrawWorldObjectLines();
@@ -445,16 +435,6 @@ public class DebugGUI : MonoBehaviour, IAddComponentOnStart
 				: QSBWorldSync.GetWorldObjects(DebugActions.WorldObjectSelection);
 
 			foreach (var obj in list)
-			{
-				if (obj.ShouldDisplayDebug())
-				{
-					obj.DisplayLines();
-				}
-			}
-		}
-		else if (QSBCore.DebugSettings.DrawGhostAI)
-		{
-			foreach (var obj in QSBWorldSync.GetWorldObjects<IGhostObject>())
 			{
 				if (obj.ShouldDisplayDebug())
 				{

@@ -99,9 +99,9 @@ Outer Wilds Online is easier to set up, but much more basic in its features. The
 
 See [TRANSLATING.md](TRANSLATING.md)
 
-## Development Setup / Contributing
+## Development Setup / Contributing / Debugging
 
-See [DEVELOPMENT.md](DEVELOPMENT.md)
+See the [QSB Developer Wiki](https://github.com/qsb-dev/quantum-space-buddies/wiki)
 
 ## Authors and Special Thanks
 

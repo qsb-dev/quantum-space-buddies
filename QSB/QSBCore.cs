@@ -17,7 +17,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json.Linq;
 using QSB.API;
 using QSB.BodyCustomization;
 using QSB.Player.Messages;
@@ -72,15 +71,14 @@ public class QSBCore : ModBehaviour
 	public static bool TextChatInput { get; private set; }
 	public static string SkinVariation { get; private set; } = "Default";
 	public static string JetpackVariation { get; private set; } = "Orange";
+	public static int Timeout { get; private set; }
+
 	public static GameVendor GameVendor { get; private set; } = GameVendor.None;
 	public static bool IsStandalone => GameVendor is GameVendor.Epic or GameVendor.Steam;
 	public static IProfileManager ProfileManager => IsStandalone
 		? QSBStandaloneProfileManager.SharedInstance
 		: QSBMSStoreProfileManager.SharedInstance;
-	public static DebugSettings DebugSettings { get; private set; } = new();
-
-	private static string randomSkinType;
-	private static string randomJetpackType;
+	public static readonly DebugSettings DebugSettings = new();
 
 	public static Assembly QSBNHAssembly = null;
 
@@ -217,32 +215,6 @@ public class QSBCore : ModBehaviour
 
 		CheckNewHorizons();
 
-		DebugSettings = Helper.Storage.Load<DebugSettings>("debugsettings.json") ?? new DebugSettings();
-
-		if (DebugSettings.HookDebugLogs)
-		{
-			Application.logMessageReceived += (condition, stackTrace, logType) =>
-				DebugLog.ToConsole(
-					$"[Debug] {condition}" +
-					(stackTrace != string.Empty ? $"\nStacktrace: {stackTrace}" : string.Empty),
-					logType switch
-					{
-						LogType.Error => MessageType.Error,
-						LogType.Assert => MessageType.Error,
-						LogType.Warning => MessageType.Warning,
-						LogType.Log => MessageType.Message,
-						LogType.Exception => MessageType.Error,
-						_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
-					}
-				);
-		}
-
-		if (DebugSettings.AutoStart)
-		{
-			UseKcpTransport = true;
-			DebugSettings.DebugMode = true;
-		}
-
 		RegisterAddons();
 
 		InitAssemblies();
@@ -273,19 +245,6 @@ public class QSBCore : ModBehaviour
 		QSBWorldSync.Managers = components.OfType<WorldObjectManager>().ToArray();
 		QSBPatchManager.OnPatchType += OnPatchType;
 		QSBPatchManager.OnUnpatchType += OnUnpatchType;
-
-		if (DebugSettings.RandomizeSkins)
-		{
-			var skinSetting = (JObject)ModHelper.Config.Settings["skinType"];
-			var skinOptions = skinSetting["options"].ToObject<string[]>();
-			randomSkinType = skinOptions[UnityEngine.Random.Range(0, skinOptions.Length - 1)];
-
-			var jetpackSetting = (JObject)ModHelper.Config.Settings["jetpackType"];
-			var jetpackOptions = jetpackSetting["options"].ToObject<string[]>();
-			randomJetpackType = jetpackOptions[UnityEngine.Random.Range(0, jetpackOptions.Length - 1)];
-
-			Configure(ModHelper.Config);
-		}
 	}
 
 	private AssetBundle LoadBundle(string bundleName)
@@ -402,6 +361,25 @@ public class QSBCore : ModBehaviour
 
 	public override void Configure(IModConfig config)
 	{
+		DebugSettings.Update(config);
+
+		Application.logMessageReceived -= OnDebugLog;
+
+		if (DebugSettings.HookDebugLogs)
+		{
+			Application.logMessageReceived += OnDebugLog;
+		}
+
+		// Configure gets called before Start, so these might not exist yet
+		if (GetComponent<DebugActions>() != null)
+		{
+			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
+			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
+		}
+
+		DebugCameraSettings.UpdateFromDebugSetting();
+
+		Timeout = config.GetSettingsValue<int>("timeout");
 		UseKcpTransport = config.GetSettingsValue<bool>("useKcpTransport") || DebugSettings.AutoStart;
 		var foundValue = config.GetSettingsValue<int>("kcpPort");
 		KcpPort = (ushort)Mathf.Clamp(foundValue, ushort.MinValue, ushort.MaxValue);
@@ -414,16 +392,8 @@ public class QSBCore : ModBehaviour
 		TextChatInput = config.GetSettingsValue<bool>("textChatInput");
 		AlwaysShowPlanetIcons = config.GetSettingsValue<bool>("alwaysShowPlanetIcons");
 
-		if (DebugSettings.RandomizeSkins)
-		{
-			SkinVariation = randomSkinType;
-			JetpackVariation = randomJetpackType;
-		}
-		else
-		{
-			SkinVariation = config.GetSettingsValue<string>("skinType");
-			JetpackVariation = config.GetSettingsValue<string>("jetpackType");
-		}
+		SkinVariation = config.GetSettingsValue<string>("skinType");
+		JetpackVariation = config.GetSettingsValue<string>("jetpackType");
 
 		if (IsHost)
 		{
@@ -440,21 +410,26 @@ public class QSBCore : ModBehaviour
 
 	private void Update()
 	{
-		if (Keyboard.current[Key.Q].isPressed && Keyboard.current[Key.NumpadEnter].wasPressedThisFrame)
-		{
-			DebugSettings.DebugMode = !DebugSettings.DebugMode;
-
-			GetComponent<DebugActions>().enabled = DebugSettings.DebugMode;
-			GetComponent<DebugGUI>().enabled = DebugSettings.DebugMode;
-			DebugCameraSettings.UpdateFromDebugSetting();
-
-			DebugLog.ToConsole($"DEBUG MODE = {DebugSettings.DebugMode}");
-		}
-
 		if (_steamworksInitialized)
 		{
 			SteamAPI.RunCallbacks();
 		}
+	}
+
+	/// <summary>
+	/// called when unity does Debug log
+	/// </summary>
+	private static void OnDebugLog(string condition, string stackTrace, LogType logType)
+	{
+		DebugLog.ToConsole($"[Debug] {condition}" + (stackTrace != string.Empty ? $"\nStacktrace: {stackTrace}" : string.Empty), logType switch
+		{
+			LogType.Error => MessageType.Error,
+			LogType.Assert => MessageType.Error,
+			LogType.Warning => MessageType.Warning,
+			LogType.Log => MessageType.Message,
+			LogType.Exception => MessageType.Error,
+			_ => throw new ArgumentOutOfRangeException(nameof(logType), logType, null)
+		});
 	}
 
 	private void CheckNewHorizons()

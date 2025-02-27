@@ -1,6 +1,4 @@
-﻿using Epic.OnlineServices.Logging;
-using Mirror;
-using Mirror.FizzySteam;
+﻿using Mirror;
 using OWML.Common;
 using OWML.Utils;
 using QSB.Anglerfish.TransformSync;
@@ -66,11 +64,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 	private GameObject _probePrefab;
 	private bool _everConnected;
 
-	private (TransportError error, string reason) _lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
+	private (TransportError error, string reason) _lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh. report this please!");
 
 	private static LatencySimulation _latencyTransport;
 	private static kcp2k.KcpTransport _kcpTransport;
-	private static FizzySteamworks _steamTransport;
+	private static SteamTransport.SteamTransport _steamTransport;
 
 	public override void Awake()
 	{
@@ -79,14 +77,16 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		{
 			_kcpTransport = gameObject.AddComponent<kcp2k.KcpTransport>();
 			// KCP uses milliseconds
-			_kcpTransport.Timeout = QSBCore.DebugSettings.Timeout * 1000;
+			_kcpTransport.Timeout = QSBCore.Timeout * 1000;
 			_kcpTransport.Port = QSBCore.KcpPort;
 		}
 
 		{
-			_steamTransport = gameObject.AddComponent<FizzySteamworks>();
-			// Steam uses seconds
-			_steamTransport.Timeout = QSBCore.DebugSettings.Timeout;
+			_steamTransport = gameObject.AddComponent<SteamTransport.SteamTransport>();
+			// Steam uses milliseconds
+			_steamTransport.Timeout = QSBCore.Timeout * 1000;
+			_steamTransport.TestIpAddress = QSBCore.DebugSettings.SteamTestIpAddress;
+			_steamTransport.DoFakeNetworkErrors = QSBCore.DebugSettings.SteamFakeNetworkErrors;
 		}
 
 		{
@@ -168,6 +168,11 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		}
 
 		_kcpTransport.Port = QSBCore.KcpPort;
+		_kcpTransport.Timeout = QSBCore.Timeout * 1000;
+
+		_steamTransport.Timeout = QSBCore.Timeout * 1000;
+		_steamTransport.TestIpAddress = QSBCore.DebugSettings.SteamTestIpAddress;
+		_steamTransport.DoFakeNetworkErrors = QSBCore.DebugSettings.SteamFakeNetworkErrors;
 
 		if (QSBCore.IsInMultiplayer)
 		{
@@ -251,10 +256,14 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		return template;
 	}
 
+	// who knows why this is a separate function
 	private void ConfigureNetworkManager()
 	{
 		networkAddress = QSBCore.DefaultServerIP;
 
+		{
+			_steamTransport.Log = s => DebugLog.DebugWrite("[Steam] " + s);
+		}
 		{
 			kcp2k.Log.Info = s =>
 			{
@@ -269,6 +278,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 			kcp2k.Log.Error = s => DebugLog.DebugWrite("[KCP] " + s, MessageType.Error);
 		}
 
+		// this is where the logic for stopping host in the title screen is
 		QSBSceneManager.OnPostSceneLoad += (_, loadScene) =>
 		{
 			if (QSBCore.IsInMultiplayer && loadScene == OWScene.TitleScreen)
@@ -365,7 +375,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 		DebugLog.DebugWrite("OnClientDisconnect");
 		base.OnClientDisconnect();
 		OnClientDisconnected?.SafeInvoke(_lastTransportError.error, _lastTransportError.reason);
-		_lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh");
+		_lastTransportError = (TransportError.Unexpected, "transport did not give an error. uh oh. report this please!");
 	}
 
 	public override void OnServerDisconnect(NetworkConnectionToClient conn) // Called on the server when any client disconnects

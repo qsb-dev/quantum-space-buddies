@@ -34,6 +34,12 @@
       "value": "localhost",
       "tooltip": "Used if you leave the connect prompt blank."
     },
+    "timeout": {
+      "title": "Timeout",
+      "type": "number",
+      "value": 30,
+      "tooltip": "How many seconds it takes for a connection to time out. Used both when connecting and checked when playing."
+    },
     "showPlayerNames": {
       "title": "Show Player Names",
       "type": "toggle",
@@ -57,12 +63,93 @@
       "type": "toggle",
       "value": false,
       "tooltip": "If disabled, the planet icon shown for each player will be replaced by a question mark (?) in thematically appropriate situations."
-    } ,
+    },
     "textChatInput": {
       "title": "Text Chat Input",
       "type": "toggle",
       "value": true,
       "tooltip": "Disable this if using NomaiVR, or any other mod with conflicting inputs."
+    },
+    "Debug Options": {
+      "type": "separator"
+    },
+    "debugMode": {
+      "title": "[DEBUG] Debug Mode",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Enables debug mode. Prints more helpful logs. If this is disabled, none of the following settings do anything."
+    },
+    "instanceIdInLogs": {
+      "title": "[DEBUG] Instance ID in Logs",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Appends the game instance id to every log message sent."
+    },
+    "hookDebugLogs": {
+      "title": "[DEBUG] Hook Debug Logs",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Prints every Unity warning + error to the logs."
+    },
+    "avoidTimeSync": {
+      "title": "[DEBUG] Disable Time Sync",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] If enabled, you will no longer fast forward / pause to match the server time. THIS CAN BREAK A LOT OF STUFF!"
+    },
+    "autoStart": {
+      "title": "[DEBUG] Auto Start",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Automatically host or connect to localhost on game launch (depending on which instance of the game is opened first)."
+    },
+    "drawGui": {
+      "title": "[DEBUG] Draw GUI",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Draws a lot of helpful text at the top of the screen."
+    },
+    "drawLines": {
+      "title": "[DEBUG] Draw Lines",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Draws a lot of helpful lines between stuff. LAGGY!"
+    },
+    "drawLabels": {
+      "title": "[DEBUG] Draw Labels",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Draws a lot of helpful labels on stuff. LAGGY!"
+    },
+    "greySkybox": {
+      "title": "[DEBUG] Grey Skybox",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Makes the skybox grey."
+    },
+    "latencySimulation": {
+      "title": "[DEBUG] Latency Simulation",
+      "type": "number",
+      "value": 0,
+      "tooltip": "[DEBUG] How many seconds of latency to simulate."
+    },
+    "logQSBMessages": {
+      "title": "[DEBUG] Log QSB Messages",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] If enabled, QSB creates log files of every network message received and transmitted."
+    },
+    "steamTestIpAddress": {
+      "title": "[DEBUG] Steam Test IP Address",
+      "type": "text",
+      "value": "",
+      "tooltip": "[DEBUG] If not empty, the steam transport will use this ip:port when listening/connecting. Host should probably use 0.0.0.0:port."
+    },
+    "steamFakeNetworkErrors": {
+      "title": "[DEBUG] Steam Fake Network Errors",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "[DEBUG] Aggressively simulates common network errors (loss, lag, reordering, duplication) to test resiliency."
     }
   }
 }

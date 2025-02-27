@@ -1,63 +1,65 @@
-﻿using Newtonsoft.Json;
+﻿using OWML.Common;
 
 namespace QSB.Utility;
 
-[JsonObject(MemberSerialization.OptIn)]
+/// <summary>
+/// purely organizational class to store all debug settings
+/// </summary>
 public class DebugSettings
 {
-	[JsonProperty("logQSBMessages")]
-	public bool LogQSBMessages;
-
-	[JsonProperty("instanceIdInLogs")]
-	public bool InstanceIdInLogs;
-
-	[JsonProperty("hookDebugLogs")]
-	public bool HookDebugLogs;
-
-	[JsonProperty("avoidTimeSync")]
-	public bool AvoidTimeSync;
-
-	[JsonProperty("autoStart")]
-	public bool AutoStart;
-
-	[JsonProperty("kickEveryone")]
-	public bool KickEveryone;
-
-	[JsonProperty("disableLoopDeath")]
-	public bool DisableLoopDeath;
-
-	[JsonProperty("latencySimulation")]
-	public int LatencySimulation;
-
-	[JsonProperty("randomizeSkins")]
-	public bool RandomizeSkins;
-
-	/// <summary>
-	/// Timeout in seconds
-	/// </summary>
-	[JsonProperty("timeout")]
-	public int Timeout = 40;
-
-	[JsonProperty("debugMode")]
 	public bool DebugMode;
 
-	[JsonProperty("drawGui")]
-	private bool _drawGui;
-	public bool DrawGui => DebugMode && _drawGui;
+	private bool _logQSBMessages;
+	public bool LogQSBMessages => DebugMode && _logQSBMessages;
 
-	[JsonProperty("drawLines")]
+	private bool _instanceIdInLogs;
+	public bool InstanceIDInLogs => DebugMode && _instanceIdInLogs;
+
+	private bool _hookDebugLogs;
+	public bool HookDebugLogs => DebugMode && _hookDebugLogs;
+
+	private bool _avoidTimeSync;
+	public bool AvoidTimeSync => DebugMode && _avoidTimeSync;
+
+	private bool _autoStart;
+	public bool AutoStart => DebugMode && _autoStart;
+
+	private int _latencySimulation;
+	public int LatencySimulation => DebugMode ? _latencySimulation : 0;
+
+	private bool _drawGUI;
+	public bool DrawGUI => DebugMode && _drawGUI;
+
 	private bool _drawLines;
 	public bool DrawLines => DebugMode && _drawLines;
 
-	[JsonProperty("drawLabels")]
 	private bool _drawLabels;
 	public bool DrawLabels => DebugMode && _drawLabels;
 
-	[JsonProperty("drawGhostAI")]
-	private bool _drawGhostAI;
-	public bool DrawGhostAI => DebugMode && _drawGhostAI;
-
-	[JsonProperty("greySkybox")]
 	private bool _greySkybox;
 	public bool GreySkybox => DebugMode && _greySkybox;
+
+	private string _steamTestIpAddress;
+	public string SteamTestIpAddress => DebugMode ? _steamTestIpAddress : null;
+
+	private bool _steamFakeNetworkErrors;
+	public bool SteamFakeNetworkErrors => DebugMode && _steamFakeNetworkErrors;
+
+	public void Update(IModConfig config)
+	{
+		DebugMode = config.GetSettingsValue<bool>("debugMode");
+
+		_instanceIdInLogs = config.GetSettingsValue<bool>("instanceIdInLogs");
+		_hookDebugLogs = config.GetSettingsValue<bool>("hookDebugLogs");
+		_avoidTimeSync = config.GetSettingsValue<bool>("avoidTimeSync");
+		_autoStart = config.GetSettingsValue<bool>("autoStart");
+		_drawGUI = config.GetSettingsValue<bool>("drawGui");
+		_drawLines = config.GetSettingsValue<bool>("drawLines");
+		_drawLabels = config.GetSettingsValue<bool>("drawLabels");
+		_greySkybox = config.GetSettingsValue<bool>("greySkybox");
+		_latencySimulation = config.GetSettingsValue<int>("latencySimulation");
+		_logQSBMessages = config.GetSettingsValue<bool>("logQSBMessages");
+		_steamTestIpAddress = config.GetSettingsValue<string>("steamTestIpAddress");
+		_steamFakeNetworkErrors = config.GetSettingsValue<bool>("steamFakeNetworkErrors");
+	}
 }
