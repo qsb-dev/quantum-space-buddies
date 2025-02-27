@@ -67,7 +67,6 @@ public class QSBInflationTrigger : QSBTrigger<CosmicInflationController>
 	{
 		var repelVolume = (WhiteHoleFluidVolume)TriggerOwner._repelVolume;
 		repelVolume.SetVolumeActivation(false);
-		QSBPlayerManager.ShowAllPlayers(); // seeing all players in big bang is funny so i want them visible
 
 		TriggerOwner._state = CosmicInflationController.State.Collapsing;
 		TriggerOwner._stateChangeTime = Time.time;
