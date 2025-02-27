@@ -132,7 +132,7 @@ public class Server
 		var result = SteamNetworkingSockets.CloseConnection(conn, 0, "disconnected by server", false);
 		if (result != true)
 		{
-			_transport.Log($"[warn] flush {conn.ToDebugString()} returned {result}");
+			_transport.Log($"[warn] close {conn.ToDebugString()} returned {result}");
 		}
 		_conns.Remove(conn);
 		// its not an error for us to disconnect a client intentionally
