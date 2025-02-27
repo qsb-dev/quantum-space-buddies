@@ -19,8 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MirrorWeaver", "MirrorWeaver\MirrorWeaver.csproj", "{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FizzySteamworks", "FizzySteamworks\FizzySteamworks.csproj", "{D47034D8-B92D-47DA-884C-C76F735E2D5D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamRerouter", "SteamRerouter\SteamRerouter.csproj", "{750563ED-4F2A-42DD-81A3-3A85DEBB691E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mirror", "Mirror", "{851AB4AD-366C-4D69-9F4E-E9EDC7CCD2BB}"
@@ -38,6 +36,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QSBPatcher", "QSBPatcher\QS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QSB-NH", "QSB-NH\QSB-NH.csproj", "{74F84A39-1C9D-4EF7-889A-485D33B7B324}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTransport", "SteamTransport\SteamTransport.csproj", "{83E8A790-CD63-4642-81D1-E406FC9F8EED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTransportTest", "SteamTransportTest\SteamTransportTest.csproj", "{8E74FA1D-466F-4BE5-981E-8D95E9B2D9AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,10 +54,6 @@ Global
 		{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA8A467E-15BA-456C-9034-6EB80BAF1FF9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D47034D8-B92D-47DA-884C-C76F735E2D5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D47034D8-B92D-47DA-884C-C76F735E2D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D47034D8-B92D-47DA-884C-C76F735E2D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D47034D8-B92D-47DA-884C-C76F735E2D5D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{750563ED-4F2A-42DD-81A3-3A85DEBB691E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -72,6 +70,14 @@ Global
 		{74F84A39-1C9D-4EF7-889A-485D33B7B324}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74F84A39-1C9D-4EF7-889A-485D33B7B324}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74F84A39-1C9D-4EF7-889A-485D33B7B324}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83E8A790-CD63-4642-81D1-E406FC9F8EED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83E8A790-CD63-4642-81D1-E406FC9F8EED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83E8A790-CD63-4642-81D1-E406FC9F8EED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83E8A790-CD63-4642-81D1-E406FC9F8EED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E74FA1D-466F-4BE5-981E-8D95E9B2D9AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E74FA1D-466F-4BE5-981E-8D95E9B2D9AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E74FA1D-466F-4BE5-981E-8D95E9B2D9AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E74FA1D-466F-4BE5-981E-8D95E9B2D9AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
