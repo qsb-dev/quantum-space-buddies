@@ -35,7 +35,10 @@ public class Client
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
 					var result = SteamNetworkingSockets.CloseConnection(_conn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
-					if (result != true) _transport.Log($"[warn] close returned {result}");
+					if (result != true)
+					{
+						_transport.Log($"[warn] close returned {result}");
+					}
 					IsConnecting = false;
 					IsConnected = false;
 					_transport.OnClientError?.Invoke(TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
@@ -90,7 +93,10 @@ public class Client
 	public void Send(ArraySegment<byte> segment, int channelId)
 	{
 		var result = _conn.Send(segment, channelId);
-		if (result != EResult.k_EResultOK) _transport.Log($"[warn] send returned {result}");
+		if (result != EResult.k_EResultOK)
+		{
+			_transport.Log($"[warn] send returned {result}");
+		}
 		_transport.OnClientDataSent?.Invoke(segment, channelId);
 	}
 
@@ -108,8 +114,10 @@ public class Client
 	public void Flush()
 	{
 		var result = SteamNetworkingSockets.FlushMessagesOnConnection(_conn);
-		if (result != EResult.k_EResultOK && result != EResult.k_EResultIgnored) // flush does ignored when connecting. ignore cuz spam
+		if (result != EResult.k_EResultOK && result != EResult.k_EResultIgnored) // flush does ignored when connecting. dont log cuz spam
+		{
 			_transport.Log($"[warn] flush returned {result}");
+		}
 	}
 
 	public void Close()
@@ -119,7 +127,10 @@ public class Client
 
 		_transport.Log($"client close\n{Environment.StackTrace}");
 		var result = SteamNetworkingSockets.CloseConnection(_conn, 0, "client closed connection", false);
-		if (result != true) _transport.Log($"[warn] client close returned {result}");
+		if (result != true)
+		{
+			_transport.Log($"[warn] client close returned {result}");
+		}
 		IsConnecting = false;
 		IsConnected = false;
 		// its not an error for us to close ourselves intentionally

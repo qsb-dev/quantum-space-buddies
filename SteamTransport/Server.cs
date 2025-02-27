@@ -28,7 +28,10 @@ public class Server
 					{
 						// mirror handles max connections. client will just get generic disconnect message, but its okay.
 						var result = SteamNetworkingSockets.AcceptConnection(t.m_hConn);
-						if (result != EResult.k_EResultOK) _transport.Log($"[warn] accept {t.m_info.m_szConnectionDescription} returned {result}");
+						if (result != EResult.k_EResultOK)
+						{
+							_transport.Log($"[warn] accept {t.m_info.m_szConnectionDescription} returned {result}");
+						}
 						break;
 					}
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
@@ -40,7 +43,10 @@ public class Server
 				case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
 					{
 						var result = SteamNetworkingSockets.CloseConnection(t.m_hConn, t.m_info.m_eEndReason, t.m_info.m_szEndDebug, false);
-						if (result != true) _transport.Log($"[warn] close {t.m_info.m_szConnectionDescription} returned {result}");
+						if (result != true)
+						{
+							_transport.Log($"[warn] close {t.m_info.m_szConnectionDescription} returned {result}");
+						}
 						_conns.Remove(t.m_hConn);
 						_transport.OnServerError?.Invoke((int)t.m_hConn.m_HSteamNetConnection, TransportError.ConnectionClosed, t.m_info.m_szEndDebug);
 						_transport.OnServerDisconnected?.Invoke((int)t.m_hConn.m_HSteamNetConnection);
@@ -85,7 +91,10 @@ public class Server
 		var conn = new HSteamNetConnection((uint)connectionId);
 
 		var result = conn.Send(segment, channelId);
-		if (result != EResult.k_EResultOK) _transport.Log($"[warn] send {conn.ToDebugString()} returned {result}");
+		if (result != EResult.k_EResultOK)
+		{
+			_transport.Log($"[warn] send {conn.ToDebugString()} returned {result}");
+		}
 		_transport.OnServerDataSent?.Invoke(connectionId, segment, channelId);
 	}
 
@@ -109,7 +118,10 @@ public class Server
 		foreach (var conn in _conns)
 		{
 			var result = SteamNetworkingSockets.FlushMessagesOnConnection(conn);
-			if (result != EResult.k_EResultOK) _transport.Log($"[warn] flush {conn.ToDebugString()} returned {result}");
+			if (result != EResult.k_EResultOK)
+			{
+				_transport.Log($"[warn] flush {conn.ToDebugString()} returned {result}");
+			}
 		}
 	}
 
@@ -118,7 +130,10 @@ public class Server
 		var conn = new HSteamNetConnection((uint)connectionId);
 		_transport.Log($"disconnect {conn.ToDebugString()}");
 		var result = SteamNetworkingSockets.CloseConnection(conn, 0, "disconnected by server", false);
-		if (result != true) _transport.Log($"[warn] flush {conn.ToDebugString()} returned {result}");
+		if (result != true)
+		{
+			_transport.Log($"[warn] flush {conn.ToDebugString()} returned {result}");
+		}
 		_conns.Remove(conn);
 		// its not an error for us to disconnect a client intentionally
 		_transport.OnServerDisconnected?.Invoke(connectionId);
@@ -129,7 +144,10 @@ public class Server
 		// mirror disconnects all clients for us before this
 		_transport.Log("stop server");
 		var result = SteamNetworkingSockets.CloseListenSocket(_listenSocket);
-		if (result != true) _transport.Log($"[warn] stop server returned {result}");
+		if (result != true)
+		{
+			_transport.Log($"[warn] stop server returned {result}");
+		}
 		IsListening = false;
 
 		_onStatusChanged.Dispose();

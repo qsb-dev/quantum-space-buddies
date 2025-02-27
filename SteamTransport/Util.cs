@@ -10,18 +10,16 @@ public static class Util
 {
 	public const int MaxMessages = 256; // same as fizzy steamworks
 
-	public static int SendFlag2MirrorChannel(int sendFlag) => sendFlag switch
+	private static int SendFlag2MirrorChannel(int sendFlag) => sendFlag switch
 	{
 		Constants.k_nSteamNetworkingSend_Reliable => Channels.Reliable,
-		Constants.k_nSteamNetworkingSend_Unreliable => Channels.Unreliable,
-		_ => throw new ArgumentOutOfRangeException(nameof(sendFlag), sendFlag, null)
+		Constants.k_nSteamNetworkingSend_Unreliable => Channels.Unreliable
 	};
 
-	public static int MirrorChannel2SendFlag(int mirrorChannel) => mirrorChannel switch
+	private static int MirrorChannel2SendFlag(int mirrorChannel) => mirrorChannel switch
 	{
 		Channels.Reliable => Constants.k_nSteamNetworkingSend_Reliable,
-		Channels.Unreliable => Constants.k_nSteamNetworkingSend_Unreliable,
-		_ => throw new ArgumentOutOfRangeException(nameof(mirrorChannel), mirrorChannel, null)
+		Channels.Unreliable => Constants.k_nSteamNetworkingSend_Unreliable
 	};
 
 	public static string ToDebugString(this HSteamNetConnection conn)
@@ -86,86 +84,37 @@ public static class Util
 		// 20% change of doing all, all delays are 200 ms. leads to about 1 second of rtt ping if enabled on both ends.
 		if (transport.DoFakeNetworkErrors)
 		{
-			var floatHandle = GCHandle.Alloc((float)20, GCHandleType.Pinned);
-			var intHandle = GCHandle.Alloc((int)200, GCHandleType.Pinned);
-
 			// global scope = dont apply to connection
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Send,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				floatHandle.AddrOfPinnedObject()
-			);
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Recv,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				floatHandle.AddrOfPinnedObject()
-			);
+			static void SetConfigValue(ESteamNetworkingConfigValue key, object value)
+			{
+				var handle = GCHandle.Alloc(value, GCHandleType.Pinned);
+				SteamNetworkingUtils.SetConfigValue(
+					key,
+					ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
+					IntPtr.Zero,
+					handle.Target switch
+					{
+						int => ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
+						float => ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float
+					},
+					handle.AddrOfPinnedObject()
+				);
+				handle.Free();
+			}
 
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Send,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				intHandle.AddrOfPinnedObject()
-			);
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Recv,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				intHandle.AddrOfPinnedObject()
-			);
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Send, (float)20);
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLoss_Recv, (float)20);
 
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Send,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				floatHandle.AddrOfPinnedObject()
-			);
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Recv,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				floatHandle.AddrOfPinnedObject()
-			);
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Time,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				intHandle.AddrOfPinnedObject()
-			);
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Send, (int)200);
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketLag_Recv, (int)200);
 
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Send,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				floatHandle.AddrOfPinnedObject()
-			);
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Recv,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Float,
-				floatHandle.AddrOfPinnedObject()
-			);
-			SteamNetworkingUtils.SetConfigValue(
-				ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_TimeMax,
-				ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global,
-				IntPtr.Zero,
-				ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32,
-				intHandle.AddrOfPinnedObject()
-			);
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Send, (float)20);
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Recv, (float)20);
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketReorder_Time, (int)200);
 
-			floatHandle.Free();
-			intHandle.Free();
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Send, (float)20);
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_Recv, (float)20);
+			SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_FakePacketDup_TimeMax, (int)200);
 		}
 
 		return result.ToArray();
