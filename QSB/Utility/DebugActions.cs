@@ -160,12 +160,34 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 
 		if (Keyboard.current[Key.Numpad2].wasPressedThisFrame)
 		{
+			var location = DreamArrivalPoint.Location.Undefined;
+			if (Keyboard.current[Key.Digit1].isPressed)
+			{
+				location = DreamArrivalPoint.Location.Zone1;
+			}
+			else if (Keyboard.current[Key.Digit2].isPressed)
+			{
+				location = DreamArrivalPoint.Location.Zone2;
+			}
+			else if (Keyboard.current[Key.Digit3].isPressed)
+			{
+				location = DreamArrivalPoint.Location.Zone3;
+			}
+			else if (Keyboard.current[Key.Digit4].isPressed)
+			{
+				location = DreamArrivalPoint.Location.Zone4;
+			}
+
 			if (!QSBPlayerManager.LocalPlayer.InDreamWorld)
 			{
+				if (location == DreamArrivalPoint.Location.Undefined)
+				{
+					return;
+				}
+
 				// modified from DayDream debug thing
 				var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
 
-				var location = Keyboard.current[Key.LeftShift].isPressed ? DreamArrivalPoint.Location.Zone4 : DreamArrivalPoint.Location.Zone3;
 				var arrivalPoint = Locator.GetDreamArrivalPoint(location);
 				var dreamCampfire = Locator.GetDreamCampfire(location);
 				if (Locator.GetToolModeSwapper().GetItemCarryTool().GetHeldItemType() != ItemType.DreamLantern)
@@ -187,6 +209,35 @@ public class DebugActions : MonoBehaviour, IAddComponentOnStart
 					var dreamLanternItem = QSBPlayerManager.LocalPlayer.AssignedSimulationLantern.AttachedObject;
 					Locator.GetToolModeSwapper().GetItemCarryTool().PickUpItemInstantly(dreamLanternItem);
 				}
+
+				if (location == DreamArrivalPoint.Location.Undefined)
+				{
+					return;
+				}
+
+				// copied from DreamWorldController.FixedUpdate
+
+				var relativeLocation = new RelativeLocationData(Vector3.up * 2 + Vector3.forward * 2, Quaternion.identity, Vector3.zero);
+				var arrivalPoint = Locator.GetDreamArrivalPoint(location);
+				var controller = Locator.GetDreamWorldController();
+
+				Locator.GetPlayerBody().MoveToRelativeLocation(relativeLocation, controller._dreamBody, arrivalPoint.transform);
+				GlobalMessenger.FireEvent("WarpPlayer");
+				if (!Physics.autoSyncTransforms)
+				{
+					Physics.SyncTransforms();
+				}
+
+				var playerSectorDetector = Locator.GetPlayerSectorDetector();
+				playerSectorDetector.RemoveFromAllSectors();
+				var sector = arrivalPoint.GetSector();
+				while (sector != null)
+				{
+					sector.GetTriggerVolume().AddObjectToVolume(playerSectorDetector.gameObject);
+					sector = sector.GetParentSector();
+				}
+
+				arrivalPoint.OnEnterDreamWorld(QSBPlayerManager.LocalPlayer.AssignedSimulationLantern.AttachedObject);
 			}
 		}
 
