@@ -2,7 +2,6 @@
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SteamTransport;
 
@@ -103,8 +102,7 @@ public class Server
 	{
 		var ppOutMessages = new IntPtr[Util.MaxMessages];
 
-		var connList = _conns.ToList();
-		foreach (var conn in connList)
+		foreach (var conn in _conns)
 		{
 			var numMessages = SteamNetworkingSockets.ReceiveMessagesOnConnection(conn, ppOutMessages, ppOutMessages.Length);
 			for (var i = 0; i < numMessages; i++)
@@ -117,8 +115,7 @@ public class Server
 
 	public void Flush()
 	{
-		var connList = _conns.ToList();
-		foreach (var conn in connList)
+		foreach (var conn in _conns)
 		{
 			var result = SteamNetworkingSockets.FlushMessagesOnConnection(conn);
 			if (result != EResult.k_EResultOK)
