@@ -103,8 +103,8 @@ public class Server
 	{
 		var ppOutMessages = new IntPtr[Util.MaxMessages];
 
-		var connList = _conns.ToList();
-		foreach (var conn in connList)
+		// receive can result in disconnect, which modifies the collection. we must copy
+		foreach (var conn in _conns.ToList())
 		{
 			var numMessages = SteamNetworkingSockets.ReceiveMessagesOnConnection(conn, ppOutMessages, ppOutMessages.Length);
 			for (var i = 0; i < numMessages; i++)
@@ -117,8 +117,7 @@ public class Server
 
 	public void Flush()
 	{
-		var connList = _conns.ToList();
-		foreach (var conn in connList)
+		foreach (var conn in _conns)
 		{
 			var result = SteamNetworkingSockets.FlushMessagesOnConnection(conn);
 			if (result != EResult.k_EResultOK)
