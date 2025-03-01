@@ -65,9 +65,26 @@ public class ItemManager : WorldObjectManager
 			assemblies = assemblies.Append(QSBCore.QSBNHAssembly);
 		}
 
+		// If the class inherits from QSBItem<T>, this will return what T is else null
+		static Type GetTypeFromQSBItem(Type type)
+		{
+			if (type.IsInterface || type.IsAbstract || type.BaseType == null)
+			{
+				return null;
+			}
+			if (type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(QSBItem<>))
+			{
+				return type.BaseType.GetGenericArguments()[0];
+			}
+			else
+			{
+				return GetTypeFromQSBItem(type.BaseType);
+			}
+		}
+
 		return assemblies.SelectMany(x => x.GetTypes())
-			.Where(x => !x.IsInterface && !x.IsAbstract && x.BaseType != null && x.BaseType.IsGenericType && x.BaseType.GetGenericTypeDefinition() == typeof(QSBItem<>))
-			.Select(x => x.BaseType.GetGenericArguments()[0])
+			.Select(GetTypeFromQSBItem)
+			.Where(x => x != null)
 			.OrderBy(x => x.FullName);
 	}
 }
