@@ -40,6 +40,7 @@ public class ItemManager : WorldObjectManager
 		QSBWorldSync.Init<QSBItemSocket, OWItemSocket>();
 
 		// other drop targets that don't already have world objects
+		// breaks if mod adds custom subclass of IItemDropTarget and then makes WorldObject of that but can just fix that when that happens
 		var listToInitFrom = QSBWorldSync.GetUnityObjects<MonoBehaviour>()
 			.Where(x => x is IItemDropTarget and not (RaftDock or RaftController or PrisonCellElevator))
 			.SortDeterministic();
