@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using HarmonyLib;
 using OWML.Common;
 using QSB.ItemSync.WorldObjects;
 using QSB.ItemSync.WorldObjects.Items;
@@ -26,14 +27,16 @@ public class ItemManager : WorldObjectManager
 		QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
 		QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
 		// dream lantern and vision torch are set up in their own managers
+		// the rest can just use the generic thing below because they dont have special things using them
 
 		// Use the basic QSBItem class for any items that do not require custom code through a derived class (mod compatibility)
 		// QSB addons can still define their own QSBItem derived classes and they will just get skipped here
-		var handledItemTypes = GetHandledItemTypes();
-		DebugLog.DebugWrite($"Handled OWItem types (the rest will get generic QSBItem support) are: {string.Join(", ", handledItemTypes)}");
+		var handledItemTypes = new HashSet<Type>(GetHandledItemTypes()); // set cuz we do Contains below
+		DebugLog.DebugWrite($"Handled OWItem types (the rest will get generic QSBItem support) are: {handledItemTypes.Join()}");
 		var otherItemlistToInitFrom = QSBWorldSync.GetUnityObjects<OWItem>()
 			.Where(x => !handledItemTypes.Contains(x.GetType()))
 			.SortDeterministic();
+		// could make a subclass for this but i dont care, and would have to filter out from reflection thing below
 		QSBWorldSync.Init<QSBItem<OWItem>, OWItem>(otherItemlistToInitFrom);
 
 		// Sockets
@@ -50,7 +53,6 @@ public class ItemManager : WorldObjectManager
 	/// <summary>
 	/// Gets all types that extend QSBItem and returns the list of OWItem types that are already handled by dedicated classes
 	/// </summary>
-	/// <returns></returns>
 	private static IEnumerable<Type> GetHandledItemTypes()
 	{
 		var assemblies = QSBCore.Addons.Values
