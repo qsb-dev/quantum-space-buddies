@@ -23,10 +23,6 @@ public class ItemManager : WorldObjectManager
 		DebugLog.DebugWrite("Building OWItems...", MessageType.Info);
 
 		// Items
-		QSBWorldSync.Init<QSBNomaiConversationStone, NomaiConversationStone>();
-		// QSBWorldSync.Init<QSBScrollItem, ScrollItem>();
-		QSBWorldSync.Init<QSBSharedStone, SharedStone>();
-		QSBWorldSync.Init<QSBSimpleLanternItem, SimpleLanternItem>();
 		QSBWorldSync.Init<QSBSlideReelItem, SlideReelItem>();
 		QSBWorldSync.Init<QSBWarpCoreItem, WarpCoreItem>();
 		// dream lantern and vision torch are set up in their own managers
