@@ -396,6 +396,16 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 		foreach (var trigger in planetTriggers)
 		{
+			if (trigger == null)
+			{
+				continue;
+			}
+
+			if (trigger._sector == null)
+			{
+				continue;
+			}
+
 			if (!trigger._sector.ContainsOccupant(DynamicOccupant.Player))
 			{
 				continue;
@@ -573,6 +583,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			triggerGO.transform.SetParent(parent.transform, false);
 			triggerGO.SetActive(false);
 			var trigger = triggerGO.AddComponent<PlanetTrigger>();
+			trigger.Reset(); // Force _sector to be found immediately
 			trigger.PlanetID = name;
 			triggerGO.SetActive(true);
 			return trigger;
