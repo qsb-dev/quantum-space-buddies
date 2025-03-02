@@ -6,6 +6,7 @@ using NewHorizons.Components.Orbital;
 using OWML.Common;
 using QSB;
 using QSB.HUD;
+using QSB.HUD.Messages;
 using QSB.Messaging;
 using QSB.Utility;
 using UnityEngine;
@@ -33,6 +34,8 @@ namespace QSBNH
 			// Allow time for MultiplayerHUDManager.OnWakeUp to run
 			Delay.RunNextFrame(() =>
 			{
+				var triggers = new List<PlanetTrigger>();
+
 				var currentPlanets = NewHorizons.Main.BodyDict[NewHorizons.Main.Instance.CurrentStarSystem];
 				foreach (var planet in currentPlanets)
 				{
@@ -62,8 +65,20 @@ namespace QSBNH
 
 					if (!nhAstro.isVanilla)
 					{
-						MultiplayerHUDManager.CreateTrigger(nhAstro.GetRootSector().gameObject, astroObjName);
+						triggers.Add(MultiplayerHUDManager.CreateTrigger(nhAstro.GetRootSector().gameObject, astroObjName));
 					}
+				}
+
+				foreach (var trigger in triggers)
+				{
+					if (!trigger._sector.ContainsOccupant(DynamicOccupant.Player))
+					{
+						continue;
+					}
+
+					MultiplayerHUDManager.HUDIconStack.Push(trigger.PlanetID);
+					new PlanetMessage(trigger.PlanetID).Send();
+					break;
 				}
 			});
 		}
