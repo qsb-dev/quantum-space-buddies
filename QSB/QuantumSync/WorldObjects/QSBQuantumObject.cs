@@ -71,6 +71,15 @@ public abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		if (attachedShapes.All(x => x.enabled && x.gameObject.activeInHierarchy && x.active))
 		{
 			IsEnabled = true;
+			// If the shapes are already enabled then OnShapeActivated won't get triggered until it turns off and on again
+			// Then nobody ends up controlling the object until that happens
+			// This doesn't affect base game because there are no quantum objects at spawn, but can affect NH mods
+			// In this case where the host has spawned in and the object is enabled with no ControllingPlayer, the host should take control
+			if (QSBCore.IsHost)
+			{
+				// first player is the host
+				ControllingPlayer = QSBPlayerManager.PlayerList[0].PlayerId;
+			}
 		}
 		else
 		{
@@ -215,7 +224,7 @@ public abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 				{
 					_visibleToProbes.Add(player);
 				}
-				
+
 				AttachedObject._visibleInProbeSnapshot = true;
 				return;
 			}
@@ -261,7 +270,7 @@ public abstract class QSBQuantumObject<T> : WorldObject<T>, IQSBQuantumObject
 		{
 			_visibleToProbes.Remove(player);
 		}
-		
+
 		AttachedObject._visibleInProbeSnapshot = _visibleToProbes.Any();
 	}
 
