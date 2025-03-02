@@ -37,10 +37,13 @@ public class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
 	{
 		base.SendInitialState(to);
 
-		this.SendMessage(new SocketStateChangeMessage(
-			AttachedObject._occupiedSocket.GetWorldObject<QSBQuantumSocket>().ObjectId,
-			AttachedObject.transform.localRotation)
-		{ To = to });
+		if (this.ControllingPlayer != 0 && AttachedObject._occupiedSocket != null)
+		{
+			this.SendMessage(new SocketStateChangeMessage(
+				AttachedObject._occupiedSocket.GetWorldObject<QSBQuantumSocket>().ObjectId,
+				AttachedObject.transform.localRotation)
+			{ To = to });
+		}
 	}
 
 	public void MoveToSocket(uint playerId, int socketId, Quaternion localRotation)
