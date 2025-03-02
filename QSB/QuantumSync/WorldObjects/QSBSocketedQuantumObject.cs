@@ -1,6 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using OWML.Common;
+using QSB.Messaging;
 using QSB.Player;
+using QSB.QuantumSync.Messages;
 using QSB.Utility;
 using QSB.WorldSync;
 using System;
@@ -35,7 +37,10 @@ public class QSBSocketedQuantumObject : QSBQuantumObject<SocketedQuantumObject>
 	{
 		base.SendInitialState(to);
 
-		// todo SendInitialState
+		this.SendMessage(new SocketStateChangeMessage(
+			AttachedObject._occupiedSocket.GetWorldObject<QSBQuantumSocket>().ObjectId,
+			AttachedObject.transform.localRotation)
+		{ To = to });
 	}
 
 	public void MoveToSocket(uint playerId, int socketId, Quaternion localRotation)
