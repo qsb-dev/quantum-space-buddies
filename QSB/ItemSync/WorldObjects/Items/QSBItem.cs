@@ -12,6 +12,8 @@ using UnityEngine;
 
 namespace QSB.ItemSync.WorldObjects.Items;
 
+// not abstract so modded items can use this QSBItem<OWItem>
+// could use QSBOtherItem subclass but i dont feel like it
 public class QSBItem<T> : WorldObject<T>, IQSBItem
 	where T : OWItem
 {

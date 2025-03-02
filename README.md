@@ -114,7 +114,7 @@ See the [QSB Developer Wiki](https://github.com/qsb-dev/quantum-space-buddies/wi
 
 ### Contributers
 
-- [xen](https://github.com/xen-42) - Help with syncing particle/sound effects, fixing lantern item bugs, and syncing addon data.
+- [xen](https://github.com/xen-42) - Help with syncing particle/sound effects, fixing lantern item bugs, syncing addon data, and NH compatibility/bug fixes.
 - [Moonstone](https://github.com/MoonstoneStudios) - Improvements to elevators and lifts.
 - [Chris Yeninas](https://github.com/PhantomGamers) - Help with project files and GitHub workflows.
 - [Locochoco](https://github.com/loco-choco) - Code improvements.

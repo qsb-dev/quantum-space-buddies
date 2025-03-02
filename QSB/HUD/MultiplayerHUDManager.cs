@@ -375,24 +375,46 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 
 		CreatePlanetToSprite();
 
-		CreateTrigger("TowerTwin_Body/Sector_TowerTwin", AstroObject.Name.TowerTwin);
-		CreateTrigger("CaveTwin_Body/Sector_CaveTwin", AstroObject.Name.CaveTwin);
-		CreateTrigger("TimberHearth_Body/Sector_TH", AstroObject.Name.TimberHearth);
-		CreateTrigger("Moon_Body/Sector_THM", AstroObject.Name.TimberMoon);
-		CreateTrigger("BrittleHollow_Body/Sector_BH", AstroObject.Name.BrittleHollow);
-		CreateTrigger("VolcanicMoon_Body/Sector_VM", AstroObject.Name.VolcanicMoon);
-		CreateTrigger("GiantsDeep_Body/Sector_GD", AstroObject.Name.GiantsDeep);
-		CreateTrigger("DarkBramble_Body/Sector_DB", AstroObject.Name.DarkBramble);
-		CreateTrigger("Comet_Body/Sector_CO", AstroObject.Name.Comet);
-		CreateTrigger("WhiteHole_Body/Sector_WhiteHole", AstroObject.Name.WhiteHole);
-		CreateTrigger("RingWorld_Body/Sector_RingWorld", AstroObject.Name.RingWorld); // TODO : this doesnt work????
-		CreateTrigger("QuantumMoon_Body/Sector_QuantumMoon", AstroObject.Name.QuantumMoon);
+		var planetTriggers = new List<PlanetTrigger>
+		{
+			CreateTrigger("TowerTwin_Body/Sector_TowerTwin", AstroObject.Name.TowerTwin),
+			CreateTrigger("CaveTwin_Body/Sector_CaveTwin", AstroObject.Name.CaveTwin),
+			CreateTrigger("TimberHearth_Body/Sector_TH", AstroObject.Name.TimberHearth),
+			CreateTrigger("Moon_Body/Sector_THM", AstroObject.Name.TimberMoon),
+			CreateTrigger("BrittleHollow_Body/Sector_BH", AstroObject.Name.BrittleHollow),
+			CreateTrigger("VolcanicMoon_Body/Sector_VM", AstroObject.Name.VolcanicMoon),
+			CreateTrigger("GiantsDeep_Body/Sector_GD", AstroObject.Name.GiantsDeep),
+			CreateTrigger("DarkBramble_Body/Sector_DB", AstroObject.Name.DarkBramble),
+			CreateTrigger("Comet_Body/Sector_CO", AstroObject.Name.Comet),
+			CreateTrigger("WhiteHole_Body/Sector_WhiteHole", AstroObject.Name.WhiteHole),
+			CreateTrigger("RingWorld_Body/Sector_RingWorld", AstroObject.Name.RingWorld),
+			CreateTrigger("QuantumMoon_Body/Sector_QuantumMoon", AstroObject.Name.QuantumMoon)
+		};
 
 		HUDIconStack.Clear();
 		HUDIconStack.Push("__SPACE__");
 
-		HUDIconStack.Push("TimberHearth");
-		new PlanetMessage("TimberHearth").Send();
+		foreach (var trigger in planetTriggers)
+		{
+			if (trigger == null)
+			{
+				continue;
+			}
+
+			if (trigger._sector == null)
+			{
+				continue;
+			}
+
+			if (!trigger._sector.ContainsOccupant(DynamicOccupant.Player))
+			{
+				continue;
+			}
+
+			HUDIconStack.Push(trigger.PlanetID);
+			new PlanetMessage(trigger.PlanetID).Send();
+			break;
+		}
 
 		_textChat = multiplayerGroup.transform.Find("TextChat");
 		var inputFieldGO = _textChat.Find("InputField");
@@ -561,6 +583,7 @@ public class MultiplayerHUDManager : MonoBehaviour, IAddComponentOnStart
 			triggerGO.transform.SetParent(parent.transform, false);
 			triggerGO.SetActive(false);
 			var trigger = triggerGO.AddComponent<PlanetTrigger>();
+			trigger.Reset(); // Force _sector to be found immediately
 			trigger.PlanetID = name;
 			triggerGO.SetActive(true);
 			return trigger;
