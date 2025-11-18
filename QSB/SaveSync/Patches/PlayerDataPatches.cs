@@ -13,7 +13,13 @@ public class PlayerDataPatches : QSBPatch
 	[HarmonyPatch(nameof(PlayerData.ResetGame))]
 	public static bool ResetGame()
 	{
+		var flag = false;
+		if (PlayerData._currentGameSave != null)
+		{
+			flag = PlayerData._currentGameSave.didRunInitGammaSetting;
+		}
 		PlayerData._currentGameSave = new GameSave();
+		PlayerData._currentGameSave.didRunInitGammaSetting = flag;
 		QSBCore.ProfileManager.SaveGame(PlayerData._currentGameSave, null, null, null);
 		return false;
 	}
