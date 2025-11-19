@@ -4,7 +4,9 @@ using QSB.Patches;
 using QSB.Player;
 using QSB.QuantumSync.Messages;
 using QSB.QuantumSync.Patches.Common;
+using QSB.Utility;
 using System.Linq;
+using OWML.Common;
 using UnityEngine;
 
 namespace QSB.QuantumSync.Patches.Server;
@@ -89,7 +91,7 @@ public class ServerQuantumMoonPatches : QSBPatch
 			}
 			else
 			{
-				Debug.LogError("Quantum moon orbit position occupied! Aborting collapse.");
+				DebugLog.ToConsole("Quantum moon orbit position occupied! Aborting collapse.", MessageType.Error);
 			}
 		}
 
@@ -143,7 +145,7 @@ public class ServerQuantumMoonPatches : QSBPatch
 
 		if (orbitIndex == -1)
 		{
-			Debug.LogError("QUANTUM MOON FAILED TO FIND ORBIT FOR STATE " + stateIndex);
+			DebugLog.ToConsole("QUANTUM MOON FAILED TO FIND ORBIT FOR STATE " + stateIndex, MessageType.Error);
 		}
 	}
 

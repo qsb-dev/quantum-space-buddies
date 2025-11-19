@@ -69,7 +69,7 @@ public class QSBMSStoreProfileManager : IProfileManager
 		{
 			Gdk.Helpers.SignIn();
 			SpinnerUI.Show();
-			Debug.Log("MSStoreProfileManager.Initialize");
+			DebugLog.DebugWrite("MSStoreProfileManager.Initialize");
 			Gdk.Helpers.OnGameSaveSucceeded += OnGameSaveComplete;
 			Gdk.Helpers.OnGameSaveFailed += OnGameSaveFailed;
 			Gdk.Helpers.OnGameSaveLoaded += OnGameSaveLoaded;

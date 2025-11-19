@@ -23,7 +23,7 @@ public class GdkPatches : QSBPatch
 			return false;
 		}
 
-		Debug.Log(string.Format("[GDK] Save system setup complete. Blobs returned: {0}", blobs.Count));
+		DebugLog.DebugWrite(string.Format("[GDK] Save system setup complete. Blobs returned: {0}", blobs.Count));
 		foreach (var keyValuePair in blobs)
 		{
 			DebugLog.DebugWrite(keyValuePair.Key);

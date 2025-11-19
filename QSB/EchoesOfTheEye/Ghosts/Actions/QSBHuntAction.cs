@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GhostEnums;
+using OWML.Common;
 using QSB.EchoesOfTheEye.Ghosts;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
 using QSB.Utility;
@@ -37,7 +38,7 @@ public class QSBHuntAction : QSBGhostAction
 	{
 		if (_running)
 		{
-			Debug.LogError("Changing node maps while the Hunt action is running is almost definitely not supported!");
+			DebugLog.ToConsole("Changing node maps while the Hunt action is running is almost definitely not supported!", MessageType.Error);
 			_huntFailed = true;
 		}
 
@@ -210,7 +211,7 @@ public class QSBHuntAction : QSBGhostAction
 		var num = _spotlightIndexList[_spotlightIndex];
 		if (node != _nodesToSearch[num].node)
 		{
-			Debug.LogError("Why are we facing this node??? " + node.name);
+			DebugLog.ToConsole("Why are we facing this node??? " + node.name, MessageType.Error);
 			Debug.Break();
 			return;
 		}

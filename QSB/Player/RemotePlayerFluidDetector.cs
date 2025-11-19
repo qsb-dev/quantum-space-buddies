@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OWML.Common;
 using UnityEngine;
 
 namespace QSB.Player;
@@ -179,7 +180,7 @@ public class RemotePlayerFluidDetector : PriorityDetector
 			var gameObject = Instantiate(splashPrefab, _splashSpawnRoot.position, rotation);
 			if (gameObject.GetComponent<OWRigidbody>() != null)
 			{
-				Debug.LogError("SPLASHES SHOULD NO LONGER HAVE RIGIDBODIES!!!", gameObject);
+				DebugLog.ToConsole("SPLASHES SHOULD NO LONGER HAVE RIGIDBODIES!!!", MessageType.Error);
 				gameObject.GetComponent<OWRigidbody>().MakeKinematic();
 			}
 

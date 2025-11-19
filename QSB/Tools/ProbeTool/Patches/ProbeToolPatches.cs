@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using OWML.Common;
 using OWML.Utils;
 using QSB.Messaging;
 using QSB.Patches;
@@ -18,7 +19,7 @@ public class ProbeToolPatches : QSBPatch
 	{
 		if (__instance._id != ProbeCamera.ID.Rotating)
 		{
-			Debug.LogWarning("Tried to rotate a non-rotating ProbeCamera!", __instance);
+			DebugLog.ToConsole("Tried to rotate a non-rotating ProbeCamera!", MessageType.Warning);
 			return false;
 		}
 
@@ -35,7 +36,7 @@ public class ProbeToolPatches : QSBPatch
 	{
 		if (__instance._id != ProbeCamera.ID.Rotating)
 		{
-			Debug.LogWarning("Tried to rotate a non-rotating ProbeCamera!", __instance);
+			DebugLog.ToConsole("Tried to rotate a non-rotating ProbeCamera!", MessageType.Warning);
 			return false;
 		}
 

@@ -1,4 +1,6 @@
 ﻿using GhostEnums;
+using OWML.Common;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Actions;
@@ -74,7 +76,7 @@ public class QSBSearchAction : QSBGhostAction
 		_targetSearchNode = GetHighestPriorityNodeToSearch();
 		if (_targetSearchNode == null)
 		{
-			Debug.LogError("Failed to find any nodes to search!  Did we exhaust our existing options?", _controller.AttachedObject);
+			DebugLog.ToConsole("Failed to find any nodes to search!  Did we exhaust our existing options?", MessageType.Error);
 			Debug.Break();
 		}
 

@@ -4,8 +4,10 @@ using QSB.Player;
 using QSB.QuantumSync;
 using QSB.Tools.ProbeLauncherTool.Messages;
 using QSB.Tools.ProbeTool;
+using QSB.Utility;
 using QSB.WorldSync;
 using System.Threading;
+using OWML.Common;
 using UnityEngine;
 
 namespace QSB.Tools.ProbeLauncherTool.WorldObjects;
@@ -62,7 +64,10 @@ public class QSBProbeLauncher : WorldObject<ProbeLauncher>
 		_probeOwnerID = probeOwnerID;
 		LaunchedProbe = QSBPlayerManager.GetPlayer(_probeOwnerID)?.Probe;
 
-		if (LaunchedProbe == null) Debug.LogError($"Could not find probe owner with ID {_probeOwnerID}");
+		if (LaunchedProbe == null)
+		{
+			DebugLog.ToConsole($"Could not find probe owner with ID {_probeOwnerID}", MessageType.Error);
+		}
 
 		if (!AttachedObject._preLaunchProbeProxy.activeSelf)
 		{

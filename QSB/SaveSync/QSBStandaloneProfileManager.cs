@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using OWML.Common;
 using UnityEngine;
 
 namespace QSB.SaveSync;
@@ -175,7 +176,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 
 		if (_fileOpsBusyLocks <= 0)
 		{
-			Debug.LogWarning("No File I/O lock to remove!");
+			DebugLog.ToConsole("No File I/O lock to remove!", MessageType.Warning);
 			return;
 		}
 
@@ -254,35 +255,35 @@ public class QSBStandaloneProfileManager : IProfileManager
 			{
 				profile.brokenSaveData = File.Exists(savePath);
 				saveData = new GameSave();
-				Debug.LogError("Could not find game save for " + profile.profileName);
+				DebugLog.ToConsole("Could not find game save for " + profile.profileName, MessageType.Error);
 			}
 
 			if (multSaveData == null)
 			{
 				profile.brokenMultSaveData = File.Exists(multSavePath);
 				multSaveData = new GameSave();
-				Debug.LogError("Could not find multiplayer game save for " + profile.profileName);
+				DebugLog.ToConsole("Could not find multiplayer game save for " + profile.profileName, MessageType.Error);
 			}
 
 			if (settingsData == null)
 			{
 				profile.brokenSettingsData = File.Exists(settingsPath);
 				settingsData = new SettingsSave();
-				Debug.LogError("Could not find game settings for " + profile.profileName);
+				DebugLog.ToConsole("Could not find game settings for " + profile.profileName, MessageType.Error);
 			}
 
 			if (graphicsData == null)
 			{
 				profile.brokenGfxSettingsData = File.Exists(graphicsPath);
 				graphicsData = new GraphicSettings(init: true);
-				Debug.LogError("Could not find graphics settings for " + profile.profileName);
+				DebugLog.ToConsole("Could not find graphics settings for " + profile.profileName, MessageType.Error);
 			}
 
 			if (string.IsNullOrEmpty(inputJSON))
 			{
 				profile.brokenRebindingData = File.Exists(inputsPath);
 				inputJSON = ((InputManager)OWInput.SharedInputManager).commandManager.DefaultInputActions.ToJson();
-				Debug.LogError("Could not find input action settings for " + profile.profileName);
+				DebugLog.ToConsole("Could not find input action settings for " + profile.profileName, MessageType.Error);
 			}
 
 			profile.gameSave = saveData;
@@ -359,7 +360,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 		}
 		catch (Exception ex)
 		{
-			Debug.LogError("[" + ex.Message + "] Failed loading opening file " + fullPath);
+			DebugLog.ToConsole("[" + ex.Message + "] Failed loading opening file " + fullPath, MessageType.Error);
 			result = false;
 		}
 
@@ -373,20 +374,20 @@ public class QSBStandaloneProfileManager : IProfileManager
 		{
 			saveData = default;
 			saveData = (T)_binaryFormatter.Deserialize(dataStream);
-			Debug.Log("Successfully read " + typeof(T).Name + " save data as binary");
+			DebugLog.DebugWrite("Successfully read " + typeof(T).Name + " save data as binary");
 			result = true;
 		}
 		catch (Exception ex)
 		{
 			saveData = default;
-			Debug.LogError(string.Concat(new string[]
+			DebugLog.ToConsole(string.Concat(new string[]
 			{
 				"[",
 				ex.Message,
 				"] Deserialization error for binary ",
 				typeof(T).Name,
 				" save data"
-			}));
+			}), MessageType.Error);
 			result = false;
 		}
 
@@ -404,7 +405,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 		catch (Exception)
 		{
 			rebindingData = default;
-			Debug.LogWarning("Could not read " + typeof(T).Name + " save data as JSON, it might be in binary so giving that a try.");
+			DebugLog.ToConsole("Could not read " + typeof(T).Name + " save data as JSON, it might be in binary so giving that a try.", MessageType.Warning);
 			result = false;
 		}
 
@@ -419,13 +420,13 @@ public class QSBStandaloneProfileManager : IProfileManager
 			using var streamReader = new StreamReader(dataStream);
 			var text = streamReader.ReadToEnd();
 			inputJSON = text;
-			Debug.Log("Successfully read Input Bindings save data as JSON");
+			DebugLog.DebugWrite("Successfully read Input Bindings save data as JSON");
 			result = true;
 		}
 		catch (Exception ex)
 		{
 			inputJSON = null;
-			Debug.LogError("[" + ex.Message + "] Deserialization error for Input Actions Save");
+			DebugLog.ToConsole("[" + ex.Message + "] Deserialization error for Input Actions Save", MessageType.Error);
 			result = false;
 		}
 
@@ -436,7 +437,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 	{
 		if (currentProfile == null)
 		{
-			Debug.LogError("QSBStandaloneProfileManager.CurrentProfileHasBrokenData We should never get here outside of the Unity Editor");
+			DebugLog.ToConsole("QSBStandaloneProfileManager.CurrentProfileHasBrokenData We should never get here outside of the Unity Editor", MessageType.Error);
 			return false;
 		}
 
@@ -591,7 +592,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 				}
 				else
 				{
-					Debug.LogError("Could not load backup input bindings save.");
+					DebugLog.ToConsole("Could not load backup input bindings save.", MessageType.Error);
 				}
 
 				stream?.Close();
@@ -609,7 +610,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 				}
 				else
 				{
-					Debug.LogError("Could not load backup " + typeof(T).Name + " save.");
+					DebugLog.ToConsole("Could not load backup " + typeof(T).Name + " save.", MessageType.Error);
 				}
 
 				stream?.Close();
@@ -620,7 +621,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 		catch (Exception ex)
 		{
 			stream?.Close();
-			Debug.LogError("Exception during backup restore: " + ex.Message);
+			DebugLog.ToConsole("Exception during backup restore: " + ex.Message, MessageType.Error);
 			MarkBusyWithFileOps(isBusy: false);
 		}
 
@@ -629,6 +630,12 @@ public class QSBStandaloneProfileManager : IProfileManager
 
 	private bool TrySaveProfile(QSBProfileData profileData, GameSave gameSave, SettingsSave settingsSave, GraphicSettings graphicsSettings, string inputJson)
 	{
+		if (profileData == null)
+		{
+			DebugLog.ToConsole("Tried calling TrySaveProfile before profiles have been initialized!", MessageType.Error);
+			return false;
+		}
+
 		MarkBusyWithFileOps(isBusy: true);
 		var profilePath = _profilesPath + "/" + profileData.profileName;
 		var profileManifestPath = _profilesPath + "/" + profileData.profileName + ".owprofile";
@@ -794,7 +801,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 
 			OnProfileDataSaved?.Invoke(false);
 
-			Debug.LogError("[" + ex.Message + "] Error saving file for " + profileData.profileName);
+			DebugLog.ToConsole("[" + ex.Message + "] Error saving file for " + profileData.profileName, MessageType.Error);
 			MarkBusyWithFileOps(isBusy: false);
 			return false;
 		}
@@ -955,7 +962,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 
 	public void DeleteProfile(string profileName)
 	{
-		Debug.Log("DeleteProfile");
+		DebugLog.DebugWrite("DeleteProfile");
 		var flag = false;
 		var profileData = new QSBProfileData
 		{
@@ -999,79 +1006,79 @@ public class QSBStandaloneProfileManager : IProfileManager
 			if (File.Exists(profileManifestPath))
 			{
 				File.Delete(profileManifestPath);
-				Debug.Log("Delete " + profileManifestPath);
+				DebugLog.DebugWrite("Delete " + profileManifestPath);
 			}
 
 			if (File.Exists(gameSavePath))
 			{
 				File.Delete(gameSavePath);
-				Debug.Log("Delete " + gameSavePath);
+				DebugLog.DebugWrite("Delete " + gameSavePath);
 			}
 
 			if (File.Exists(multGameSavePath))
 			{
 				File.Delete(multGameSavePath);
-				Debug.Log("Delete " + multGameSavePath);
+				DebugLog.DebugWrite("Delete " + multGameSavePath);
 			}
 
 			if (File.Exists(settingsPath))
 			{
 				File.Delete(settingsPath);
-				Debug.Log("Delete " + settingsPath);
+				DebugLog.DebugWrite("Delete " + settingsPath);
 			}
 
 			if (File.Exists(graphicsPath))
 			{
 				File.Delete(graphicsPath);
-				Debug.Log("Delete " + graphicsPath);
+				DebugLog.DebugWrite("Delete " + graphicsPath);
 			}
 
 			if (File.Exists(oldInputsPath))
 			{
 				File.Delete(oldInputsPath);
-				Debug.Log("Delete " + oldInputsPath);
+				DebugLog.DebugWrite("Delete " + oldInputsPath);
 			}
 
 			if (File.Exists(inputsPath))
 			{
 				File.Delete(inputsPath);
-				Debug.Log("Delete " + inputsPath);
+				DebugLog.DebugWrite("Delete " + inputsPath);
 			}
 
 			if (File.Exists(backupGameSave))
 			{
 				File.Delete(backupGameSave);
-				Debug.Log("Delete " + backupGameSave);
+				DebugLog.DebugWrite("Delete " + backupGameSave);
 			}
 
 			if (File.Exists(backupMultGameSave))
 			{
 				File.Delete(backupMultGameSave);
-				Debug.Log("Delete " + backupMultGameSave);
+				DebugLog.DebugWrite("Delete " + backupMultGameSave);
 			}
 
 			if (File.Exists(backupSettingsPath))
 			{
 				File.Delete(backupSettingsPath);
-				Debug.Log("Delete " + backupSettingsPath);
+				DebugLog.DebugWrite("Delete " + backupSettingsPath);
 			}
 
 			if (File.Exists(backupGraphicsPath))
 			{
 				File.Delete(backupGraphicsPath);
-				Debug.Log("Delete " + backupGraphicsPath);
+				DebugLog.DebugWrite("Delete " + backupGraphicsPath);
 			}
 
 			if (File.Exists(backupOldInputsPath))
 			{
 				File.Delete(backupOldInputsPath);
-				Debug.Log("Delete " + backupOldInputsPath);
+				DebugLog.DebugWrite("Delete " + backupOldInputsPath);
 			}
 
 			if (File.Exists(backupInputsPath))
 			{
 				File.Delete(backupInputsPath);
-				Debug.Log("Delete " + backupInputsPath);
+				DebugLog.DebugWrite("Delete " + backupInputsPath);
 			}
 
 			profiles.Remove(profileData);
@@ -1083,7 +1090,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 			}
 			else
 			{
-				Debug.LogWarning(" Directory not empty. Cannot delete. ");
+				DebugLog.ToConsole(" Directory not empty. Cannot delete. ", MessageType.Warning);
 			}
 
 			if (Directory.Exists(backupProfilePath))
@@ -1096,7 +1103,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 				}
 				else
 				{
-					Debug.LogWarning("Backup Directory not empty. Cannot delete.");
+					DebugLog.ToConsole("Backup Directory not empty. Cannot delete.", MessageType.Warning);
 				}
 			}
 
@@ -1105,7 +1112,7 @@ public class QSBStandaloneProfileManager : IProfileManager
 		catch (Exception ex)
 		{
 			stream?.Close();
-			Debug.LogError("[" + ex.Message + "] Failed to delete all profile data");
+			DebugLog.ToConsole("[" + ex.Message + "] Failed to delete all profile data", MessageType.Error);
 			MarkBusyWithFileOps(isBusy: false);
 		}
 
