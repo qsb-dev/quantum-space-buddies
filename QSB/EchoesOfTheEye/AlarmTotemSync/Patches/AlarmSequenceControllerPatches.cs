@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using OWML.Common;
 using QSB.Patches;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.AlarmTotemSync.Patches;
@@ -30,7 +32,7 @@ public class AlarmSequenceControllerPatches : QSBPatch
 		if (__instance._alarmCounter < 0)
 		{
 			__instance._alarmCounter = 0;
-			Debug.LogError("Something went wrong, alarm counter should never drop below zero!");
+			DebugLog.ToConsole("Something went wrong, alarm counter should never drop below zero!", MessageType.Error);
 		}
 		return false;
 	}

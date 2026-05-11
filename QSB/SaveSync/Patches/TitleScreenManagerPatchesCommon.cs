@@ -13,6 +13,7 @@ public class TitleScreenManagerPatchesCommon : QSBPatch
 	public static bool Awake(TitleScreenManager __instance)
 	{
 		__instance._profileManager = QSBCore.ProfileManager;
+		__instance._titleCodeManager.enabled = true;
 		__instance._profileManager.PreInitialize();
 		LoadManager.OnStartSceneLoad += __instance.OnStartSceneLoad;
 		LoadManager.OnCompleteSceneLoad += __instance.OnCompleteSceneLoad;
@@ -20,6 +21,8 @@ public class TitleScreenManagerPatchesCommon : QSBPatch
 		MenuStackManager.SharedInstance.OnMenuPop += __instance.OnMenuPop;
 		__instance._resumeGameTextSetter = __instance._resumeGameObject.GetComponentInChildren<ResumeGameLocalizedText>();
 		__instance.InitializePopupPrompts();
+		__instance._disconnectedGameObject.SetActive(false);
+		__instance._allowDisconnectedMessage = false;
 
 		return false;
 	}

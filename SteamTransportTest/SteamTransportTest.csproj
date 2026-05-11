@@ -10,9 +10,7 @@
         <Copyright>Copyright © William Corby, Henry Pointer 2022-2025</Copyright>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="OuterWildsGameLibs" Version="1.1.14.768" />
         <ProjectReference Include="..\SteamTransport\SteamTransport.csproj" />
-        <PackageReference Include="OWML" Version="2.11.1" />
         <Reference Include="..\Lib\*.dll" />
     </ItemGroup>
     <Target Name="copy standalone dlls" AfterTargets="PostBuildEvent">

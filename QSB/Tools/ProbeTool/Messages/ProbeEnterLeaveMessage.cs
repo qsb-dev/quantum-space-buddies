@@ -18,7 +18,6 @@ public class ProbeEnterLeaveMessage : QSBMessage<ProbeEnterLeaveType>
 	{
 		GlobalMessenger.AddListener(OWEvents.ProbeEnterQuantumMoon, () => Handler(ProbeEnterLeaveType.EnterQuantumMoon));
 		GlobalMessenger.AddListener(OWEvents.ProbeExitQuantumMoon, () => Handler(ProbeEnterLeaveType.ExitQuantumMoon));
-		// TODO : add cloak messages
 	}
 
 	private static void Handler(ProbeEnterLeaveType type)
@@ -40,6 +39,14 @@ public class ProbeEnterLeaveMessage : QSBMessage<ProbeEnterLeaveType>
 			case ProbeEnterLeaveType.ExitQuantumMoon:
 				DebugLog.DebugWrite($"{player} probe exit QM");
 				player.Probe.InsideQuantumMoon = false;
+				break;
+			case ProbeEnterLeaveType.EnterCloak:
+				DebugLog.DebugWrite($"{player} probe enter cloak");
+				player.Probe.InsideCloak = true;
+				break;
+			case ProbeEnterLeaveType.ExitCloak:
+				DebugLog.DebugWrite($"{player} probe exit cloak");
+				player.Probe.InsideCloak = false;
 				break;
 		}
 	}

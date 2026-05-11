@@ -1,9 +1,11 @@
 ﻿using GhostEnums;
+using QSB.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OWML.Common;
 using UnityEngine;
 
 namespace QSB.EchoesOfTheEye.Ghosts.Actions;
@@ -60,7 +62,7 @@ public class QSBElevatorWalkAction : QSBGhostAction
 			this._controller.PathfindToNode(this._elevatorNode, MoveType.PATROL);
 			return;
 		}
-		Debug.LogError("MissingElevatorNode");
+		DebugLog.ToConsole("MissingElevatorNode", MessageType.Error);
 	}
 
 	protected override void OnEnterAction()

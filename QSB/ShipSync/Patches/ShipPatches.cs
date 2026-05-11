@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using OWML.Common;
 using OWML.Utils;
 using QSB.Messaging;
 using QSB.Patches;
@@ -310,7 +311,7 @@ public class ShipPatches : QSBPatch
 			{
 				if (__instance._reticuleController == null)
 				{
-					Debug.LogError("ReticuleController cannot be null!");
+					DebugLog.ToConsole("ReticuleController cannot be null!", MessageType.Error);
 				}
 
 				__instance._signalscopeUI.Activate(__instance._signalscopeTool, __instance._reticuleController);

@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using QSB.Patches;
 using System.Collections.Generic;
+using QSB.Utility;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -204,6 +205,12 @@ public class ProfileMenuManagerPatches : QSBPatch
 	[HarmonyPatch(nameof(ProfileMenuManager.SetCurrentProfileLabel))]
 	public static bool SetCurrentProfileLabel(ProfileMenuManager __instance)
 	{
+		if (QSBStandaloneProfileManager.SharedInstance.currentProfile == null)
+		{
+			// nh causes this to happen. thank you xen very cool
+			return false;
+		}
+
 		__instance._currenProfileLabel.text = UITextLibrary.GetString(UITextType.MenuProfile)
 			+ " "
 			+ QSBStandaloneProfileManager.SharedInstance.currentProfile.profileName;

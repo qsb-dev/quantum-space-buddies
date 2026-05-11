@@ -103,7 +103,7 @@ public class ServerMeteorPatches : QSBPatch
 		{
 			if (__instance._meteorPool.Count == 0)
 			{
-				Debug.LogWarning("MeteorLauncher is out of Meteors!", __instance);
+				DebugLog.ToConsole("MeteorLauncher is out of Meteors!", MessageType.Warning);
 			}
 			else
 			{
@@ -117,7 +117,7 @@ public class ServerMeteorPatches : QSBPatch
 		{
 			if (__instance._dynamicMeteorPool.Count == 0)
 			{
-				Debug.LogWarning("MeteorLauncher is out of Dynamic Meteors!", __instance);
+				DebugLog.ToConsole("MeteorLauncher is out of Dynamic Meteors!", MessageType.Warning);
 			}
 			else
 			{

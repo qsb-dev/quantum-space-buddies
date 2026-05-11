@@ -1,5 +1,7 @@
-﻿using QSB.EchoesOfTheEye.Ghosts.Actions;
+﻿using OWML.Common;
+using QSB.EchoesOfTheEye.Ghosts.Actions;
 using QSB.EchoesOfTheEye.Ghosts.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using UnityEngine;
 
@@ -69,13 +71,13 @@ public abstract class QSBGhostAction
 				ghostAction = new QSBSearchAction();
 				break;
 			default:
-				Debug.LogError("Failed to create action from name " + name);
+				DebugLog.ToConsole("Failed to create action from name " + name, MessageType.Error);
 				return null;
 		}
 
 		if (ghostAction.GetName() != name)
 		{
-			Debug.LogError("New action name " + ghostAction.GetName() + "does not match supplied name " + name);
+			DebugLog.ToConsole("New action name " + ghostAction.GetName() + "does not match supplied name " + name, MessageType.Error);
 			Debug.Break();
 		}
 

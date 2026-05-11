@@ -1,6 +1,8 @@
-﻿using System;
+﻿using QSB.Utility;
+using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using OWML.Common;
 using UnityEngine;
 
 namespace QSB.EyeOfTheUniverse.GalaxyMap;
@@ -124,7 +126,7 @@ public class CustomDialogueTree : MonoBehaviour
 			}
 		}
 
-		Debug.LogWarning("CharacterDialogueTree " + _characterName + " no EntryConditions satisfied. Did you forget to add <EntryCondition>DEFAULT</EntryCondition> to a node?");
+		DebugLog.ToConsole("CharacterDialogueTree " + _characterName + " no EntryConditions satisfied. Did you forget to add <EntryCondition>DEFAULT</EntryCondition> to a node?", MessageType.Warning);
 	}
 
 	private bool LoadXml()
@@ -154,7 +156,7 @@ public class CustomDialogueTree : MonoBehaviour
 				}
 				else
 				{
-					Debug.LogWarning("Missing name on a Node");
+					DebugLog.ToConsole("Missing name on a Node", MessageType.Warning);
 				}
 
 				var randomize = xelement3.Element("Randomize") != null;
@@ -319,7 +321,7 @@ public class CustomDialogueTree : MonoBehaviour
 					}
 					else
 					{
-						Debug.LogError("Target Node: " + targetName + " does not exist", this);
+						DebugLog.ToConsole("Target Node: " + targetName + " does not exist", MessageType.Error);
 					}
 				}
 				else
@@ -330,7 +332,7 @@ public class CustomDialogueTree : MonoBehaviour
 		}
 		catch (Exception ex)
 		{
-			Debug.LogError("XML Error in CharacterDialogueTree!\n" + ex.Message, this);
+			DebugLog.ToConsole("XML Error in CharacterDialogueTree!\n" + ex.Message, MessageType.Error);
 			return false;
 		}
 
@@ -501,7 +503,7 @@ public class CustomDialogueTree : MonoBehaviour
 
 		if (!_mapDialogueNodes.ContainsKey(selectedOption.TargetName))
 		{
-			Debug.LogError("Cannot find target node " + selectedOption.TargetName);
+			DebugLog.ToConsole("Cannot find target node " + selectedOption.TargetName, MessageType.Error);
 			Debug.Break();
 		}
 

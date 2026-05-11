@@ -9,8 +9,8 @@
         <Copyright>Copyright © William Corby, Henry Pointer 2022-2025</Copyright>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="OuterWildsGameLibs" Version="1.1.14.768" IncludeAssets="compile" />
-        <PackageReference Include="OWML" Version="2.11.1" IncludeAssets="compile" />
+        <PackageReference Include="OuterWildsGameLibs" Version="1.1.16.1372" IncludeAssets="compile" />
+        <PackageReference Include="OWML" Version="2.16.1" IncludeAssets="compile" />
         <Reference Include="..\Lib\*.dll" />
     </ItemGroup>
 </Project>

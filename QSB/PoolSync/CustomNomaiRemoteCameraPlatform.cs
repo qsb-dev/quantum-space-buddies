@@ -88,7 +88,7 @@ public class CustomNomaiRemoteCameraPlatform : NomaiShared
 		}
 		else
 		{
-			Debug.LogWarning("SharedStoneSocket not found!", this);
+			DebugLog.ToConsole("SharedStoneSocket not found!", MessageType.Warning);
 		}
 
 		UpdatePoolRenderer();
@@ -438,13 +438,13 @@ public class CustomNomaiRemoteCameraPlatform : NomaiShared
 		_sharedStone = socketable as SharedStone;
 		if (_sharedStone == null)
 		{
-			Debug.LogError("Placed an empty item or a non SharedStone in a NomaiRemoteCameraPlatform");
+			DebugLog.ToConsole("Placed an empty item or a non SharedStone in a NomaiRemoteCameraPlatform", MessageType.Error);
 		}
 
 		_slavePlatform = GetPlatform(_sharedStone.GetRemoteCameraID());
 		if (_slavePlatform == null)
 		{
-			Debug.LogError("Shared stone with Remote Camera ID: " + _sharedStone.GetRemoteCameraID() + " has no registered camera platform!");
+			DebugLog.ToConsole("Shared stone with Remote Camera ID: " + _sharedStone.GetRemoteCameraID() + " has no registered camera platform!", MessageType.Error);
 		}
 
 		if (_slavePlatform == this || !_slavePlatform.gameObject.activeSelf)
