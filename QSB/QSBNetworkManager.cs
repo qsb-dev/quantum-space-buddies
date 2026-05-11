@@ -91,7 +91,7 @@ public class QSBNetworkManager : NetworkManager, IAddComponentOnStart
 
 		{
 			_latencyTransport = gameObject.AddComponent<LatencySimulation>();
-			_latencyTransport.latency = QSBCore.DebugSettings.LatencySimulation;
+			_latencyTransport.reliableLatency = _latencyTransport.unreliableLatency = QSBCore.DebugSettings.LatencySimulation;
 			_latencyTransport.wrap = QSBCore.UseKcpTransport ? _kcpTransport : _steamTransport;
 		}
 
